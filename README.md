@@ -73,3 +73,7 @@ draw_multiplex_default(x,mel,input_type="tuple")
 plt.show()
 
 ```
+
+
+![Alt text](images/test1.jpg?raw=true "Title")
+![Alt text](images/test2.jpg?raw=true "Title")
