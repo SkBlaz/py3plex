@@ -92,7 +92,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     if display == True:
         plt.show()
 
-def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1):
+def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier"):
 
     #indices are correct network positions
 
@@ -106,11 +106,36 @@ def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",line
             p2 = [network_positions[el[0][0]][el[0][1]][1],network_positions[el[1][0]][el[1][1]][0]]
 
             ## miljon enih ifelse stavkov comes here..
-            print(p1,p2)
-            x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height)
-            print(x,y)
-            # #plot the result
-            plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+
+            if style == "line":
+
+                plt.plot(p1,p2,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+
+            elif style == "curve2_bezier":                
+
+                x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height)
+                plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+                
+            
+            elif style == "curve3_bezier":
+
+                x,y = bezier.draw_bezier(len(network_list),p1,p2,mode="cubic")
+
+            elif style == "curve3_fit":
+
+                x,y = polyfit.draw_order3(len(network_list),p1,p2)
+
+                plt.plot(x,y)
+
+            elif style == "piramidal":
+                
+                x,y = polyfit.draw_piramidal(len(network_list),p1,p2)
+                plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+                
+            else:                
+                pass
+            
+
 
     elif input_type == "nodes":
 
@@ -126,9 +151,37 @@ def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",line
         for pair in multi_edge_tuple:
             try:
                 p1 = [global_positions[str(pair[0])][0],global_positions[str(pair[1])][0]]
-                p2 = [global_positions[str(pair[0])][1],global_positions[str(pair[1])][1]]                                
-                x,y = bezier.draw_bezier(len(network_list),p1,p2,mode="quadratic",path_height=curve_height)
-                plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+                p2 = [global_positions[str(pair[0])][1],global_positions[str(pair[1])][1]]
+
+
+                if style == "line":
+
+                    plt.plot(p1,p2,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+                    
+                elif style == "curve2_bezier":                
+
+                    x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height)
+                    plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+                
+            
+                elif style == "curve3_bezier":
+
+                    x,y = bezier.draw_bezier(len(network_list),p1,p2,mode="cubic")
+
+                elif style == "curve3_fit":
+
+                    x,y = polyfit.draw_order3(len(network_list),p1,p2)
+
+                    plt.plot(x,y)
+
+                elif style == "piramidal":
+                
+                    x,y = polyfit.draw_piramidal(len(network_list),p1,p2)
+                    plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+                
+                else:                
+                    pass
+                
             except:
                 pass
             
