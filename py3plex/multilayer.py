@@ -92,7 +92,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     if display == True:
         plt.show()
 
-def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier"):
+def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both"):
 
     #indices are correct network positions
 
@@ -113,7 +113,7 @@ def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",line
 
             elif style == "curve2_bezier":                
 
-                x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height)
+                x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height,linemode=linmod)
                 plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
                 
             
@@ -135,7 +135,6 @@ def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",line
             else:                
                 pass
             
-
 
     elif input_type == "nodes":
 
@@ -160,8 +159,8 @@ def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",line
                     
                 elif style == "curve2_bezier":                
 
-                    x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height)
-                    plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
+                    x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height,inversion=invert,linemode=linmod)
+                    plt.plot(x,y,linestyle=linepoints,lw=linewidth,alpha=alphachannel,color=linecolor)
                 
             
                 elif style == "curve3_bezier":

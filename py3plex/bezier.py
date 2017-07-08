@@ -3,8 +3,8 @@
 
 import numpy as np # this is used for vectorized bezier computation
 
-def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=1):
-
+def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=1,linemode="both"):
+    
     if mode == "quadratic":
         #draw quadratic polinome
         space = np.linspace(0,8,10000)
@@ -15,18 +15,28 @@ def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=1)
             y_delay = p1[1]
             x_delay = p2[0]
 
-        if p1[0] > p1[1]:            
-            x = ((1-space)**2)*p1[0]+2*(1-space)*space*x_delay+space**2*p1[1]
-            y = (1-space)**2*p2[0]+path_height*(1-space)*space*y_delay+space**2*p2[1]
-            idx = np.argmin(np.abs(x - p2[0]))
-            idy = np.argmin(np.abs(y - p2[1]))
 
-        elif p1[0] < p1[1]:
-            x = ((1-space)**2)*p1[1]+2*(1-space)*space*x_delay+space**2*p1[0]
-            y = (1-space)**2*p2[1]+path_height*(1-space)*space*y_delay+space**2*p2[0]
-            idx = np.argmin(np.abs(x - p2[1]))
-            idy = np.argmin(np.abs(y - p2[0]))
+        if linemode == "both":
+            if p1[0] > p1[1]:            
+                x = ((1-space)**2)*p1[0]+2*(1-space)*space*x_delay+space**2*p1[1]
+                y = (1-space)**2*p2[0]+path_height*(1-space)*space*y_delay+space**2*p2[1]
+                idx = np.argmin(np.abs(x - p2[0]))
+                idy = np.argmin(np.abs(y - p2[1]))
+
+            elif p1[0] < p1[1]:
+                x = ((1-space)**2)*p1[1]+2*(1-space)*space*x_delay+space**2*p1[0]
+                y = (1-space)**2*p2[1]+path_height*(1-space)*space*y_delay+space**2*p2[0]
+                idx = np.argmin(np.abs(x - p2[1]))
+                idy = np.argmin(np.abs(y - p2[0]))
             
+            else:
+                pass
+        elif linemode == "upper":
+            if p1[0] > p1[1]:
+                x = ((1-space)**2)*p1[0]+2*(1-space)*space*x_delay+space**2*p1[1]
+                y = (1-space)**2*p2[0]+path_height*(1-space)*space*y_delay+space**2*p2[1]
+                idx = np.argmin(np.abs(x - p2[0]))
+                idy = np.argmin(np.abs(y - p2[1]))
         else:
             pass
 
