@@ -1,5 +1,5 @@
 
-#This is the py3plex, a lightweight multiplex network visualization library. It is caoable of visualizing complex networks in an intuitive manner.
+# This is the *Py3plex*, a lightweight multiplex network visualization library. It is capable of visualizing complex networks in an intuitive manner. Technically, this is some form of mixture between hive plots and ordinary 2d graph layouts.
 
 Main goals of this library are:
 
@@ -8,7 +8,7 @@ Main goals of this library are:
 > elegance - all parameters can be tweaked an optimized for the best look
 > modularity - this library is built from a programatic point of view, not a mathematical one. Basic structures revolve around list-like structures and not matrices.
 
-#What is the main goal:
+# What is the main goal:
 
 ![Alt text](images/merged1.png?raw=true "Title")
 
@@ -53,7 +53,7 @@ plt.show()
 ```
 ![Alt text](images/test1.jpg?raw=true "Title")
 
-##Another simple example, this time using randomly generated networks
+## Another simple example, this time using randomly generated networks
 
 ```{python}
 
@@ -68,7 +68,7 @@ plt.show()
 ```
 
 
-##Or a simple tuple based edge..
+## Or a simple tuple based edge..
 
 ```{python}
 
@@ -167,7 +167,7 @@ plt.show()
 
 ![Alt text](images/test9.png?raw=true "Title")
 
-##Other examples
+## Other examples
 
 ![Alt text](images/test4.png?raw=true "Title")
 ![Alt text](images/test8.png?raw=true "Title")
