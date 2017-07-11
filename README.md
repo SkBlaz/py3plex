@@ -76,7 +76,7 @@ plt.show()
 
 ```
 
-![Alt text](images/test4.png?raw=true "Title")
+![Alt text](images/test2.jpg?raw=true "Title")
 
 ##Compare with standard layouts
 
@@ -161,3 +161,8 @@ plt.show()
 
 
 ![Alt text](images/test9.png?raw=true "Title")
+
+##Other examples
+
+![Alt text](images/test4.png?raw=true "Title")
+![Alt text](images/test8.png?raw=true "Title")
