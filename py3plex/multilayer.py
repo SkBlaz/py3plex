@@ -185,7 +185,7 @@ def draw_multiplex_default(network_list,multi_edge_tuple,input_type="nodes",line
                 pass
             
         
-def generate_random_multiedges(network_list,random_edges,style="line",linepoints="-.",upper_first=2,lower_first=0,lower_second=2,inverse_tag=False):
+def generate_random_multiedges(network_list,random_edges,style="line",linepoints="-.",upper_first=2,lower_first=0,lower_second=2,inverse_tag=False,pheight=1):
 
     edge_subplot = main_figure.add_subplot(111)
     return_list = []
@@ -212,7 +212,7 @@ def generate_random_multiedges(network_list,random_edges,style="line",linepoints
 
             elif style == "curve2_bezier":                
 
-                x,y = bezier.draw_bezier(len(network_list),p1,p2,inversion=inverse_tag)
+                x,y = bezier.draw_bezier(len(network_list),p1,p2,inversion=inverse_tag,path_height=pheight)
                 plt.plot(x,y,linestyle=linepoints,lw=1,alpha=0.3)
                 
             
