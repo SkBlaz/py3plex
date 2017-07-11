@@ -1,5 +1,7 @@
 
-# This is the *Py3plex*, a lightweight multiplex network visualization library. It is capable of visualizing complex networks in an intuitive manner. Technically, this is some form of mixture between hive plots and ordinary 2d graph layouts.
+# This is the *Py3plex*, a lightweight multiplex network visualization library.
+
+> It is capable of visualizing complex networks in an intuitive manner. Technically, this is some form of mixture between hive plots and ordinary 2d graph layouts.
 
 Main goals of this library are:
 
@@ -83,7 +85,7 @@ plt.show()
 
 ![Alt text](images/test2.jpg?raw=true "Title")
 
-##Compare with standard layouts
+## Compare with standard layouts
 
 ```{python}
 
