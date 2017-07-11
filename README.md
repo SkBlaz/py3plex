@@ -8,6 +8,11 @@ Main goals of this library are:
 > elegance - all parameters can be tweaked an optimized for the best look
 > modularity - this library is built from a programatic point of view, not a mathematical one. Basic structures revolve around list-like structures and not matrices.
 
+#What is the main goal:
+
+![Alt text](images/merged1.png?raw=true "Title")
+
+
 ```python
 
 #### This is an example for the py3plex multiplex network visualization library
