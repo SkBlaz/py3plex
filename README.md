@@ -1,5 +1,5 @@
 
-# This is the *Py3plex*, a lightweight multiplex network visualization library.
+# This is the *Py3plex*, a lightweight multiplex network visualization and analysis library.
 
 > It is capable of visualizing complex networks in an intuitive manner. Technically, this is some form of mixture between hive plots and ordinary 2d graph layouts.
 
@@ -14,6 +14,8 @@ A multiplex network can be constructed in 3 simple steps:
 1. Load individual layers
 2. select layouts for individual layers
 3. add multiplex connections
+
+Layout part is not necessary required, should the networks only be analized.
 
 
 # What is the main goal:
