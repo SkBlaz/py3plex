@@ -10,12 +10,16 @@ class multiplex_network:
 
     def connectivity_ratio(self):
 
-        ## compute ratio of inter_edges/intra_edges
+        ## compute ratio of inter_edges/intra_    
+        pass
+    
+    def layerwise_modularity_variability(self):
+        ## check how community formation varies accross layers
         pass
 
     def layerwise_modularity(self):
-
-        ## how modular are different networks
+        ## for layer in layers:
+        ## do, compute modularity and return a vector of reals
         pass
 
     def inter_layer_connections(self):
