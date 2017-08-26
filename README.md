@@ -1,5 +1,5 @@
 
-# This is the *Py3plex*, a lightweight multiplex network visualization and analysis library.
+# This is the *PyPlex*, a lightweight multiplex network visualization and analysis library.
 
 > It is capable of visualizing complex networks in an intuitive manner. Technically, this is some form of mixture between hive plots and ordinary 2d graph layouts.
 
