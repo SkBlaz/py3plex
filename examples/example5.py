@@ -15,13 +15,13 @@ networks = defaultdict(list)
 label_dict = {}
 
 ## get the nodes
-with open("testgraph/multiplex_datasets/Arabidopsis_Multiplex_Genetic/Dataset/arabidopsis_genetic_multiplex.edges") as me:
+with open("../testgraph/multiplex_datasets/Arabidopsis_Multiplex_Genetic/Dataset/arabidopsis_genetic_multiplex.edges") as me:
     for line in me:
         layer, n1, n2, weight = line.strip().split()
         networks[layer].append((n1,n2))
 
 ## get the labels
-with open("testgraph/multiplex_datasets/Arabidopsis_Multiplex_Genetic/Dataset/arabidopsis_genetic_layers.txt") as lx:
+with open("../testgraph/multiplex_datasets/Arabidopsis_Multiplex_Genetic/Dataset/arabidopsis_genetic_layers.txt") as lx:
     for line in lx:
         lid, lname = line.strip().split()
         label_dict[lid] = lname

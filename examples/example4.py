@@ -53,12 +53,12 @@ def view_by_type(inputgraph,limit=False):
 
     plt.show()
     
-#view_by_type("testgraph/epigenetics.gpickle")
+view_by_type("../testgraph/epigenetics.gpickle")
 
 ## plot using force directed layout
 
 
-input_graph = nx.read_gpickle("testgraph/epigenetics.gpickle")
+input_graph = nx.read_gpickle("../testgraph/epigenetics.gpickle")
 
 ## node color setting:
 
