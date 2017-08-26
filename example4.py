@@ -30,7 +30,6 @@ def view_by_type(inputgraph,limit=False):
         else:
             tmp_graph = input_graph.subgraph(v)
             
-        #if tmp_graph.number_of_edges() > 2:
         labs.append(k)
         tmp_pos=nx.spring_layout(tmp_graph)
         nx.set_node_attributes(tmp_graph,'pos',tmp_pos)

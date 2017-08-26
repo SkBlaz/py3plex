@@ -11,6 +11,7 @@ from matplotlib.patches import Circle
 
 import random
 import matplotlib.pyplot as plt
+import numpy as np
 
 from . import colors # those are color ranges
 from . import bezier # those are bezier curves
@@ -86,7 +87,11 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
         
         start_location_network += 1
         start_location_background += 1
-        nx.draw(network, nx.get_node_attributes(network, 'pos'),node_color=facecolor_list[color], with_labels=False,edge_size=5,node_size=[v * nodesize for v in degrees.values()])
+        # if(len(network) > 1000):
+        #     node_sizes = [v * nodesize for v in degrees.values()]
+        # else:
+        node_sizes = [np.log(v) * nodesize for v in degrees.values()]
+        nx.draw(network, nx.get_node_attributes(network, 'pos'),node_color=facecolor_list[color], with_labels=False,edge_size=5,node_size=node_sizes)
         color += 1
 
     if display == True:

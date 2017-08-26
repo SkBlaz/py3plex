@@ -1,0 +1,4 @@
+layerID layerLabel
+1 ElectrJ
+2 MonoSyn
+3 PolySyn

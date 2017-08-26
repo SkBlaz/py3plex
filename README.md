@@ -8,7 +8,13 @@ Main goals of this library are:
 > speed - heavy operations are vectorized using numpy
 > simplicity - there are only two main functions which extend basic Networkx syntax
 > elegance - all parameters can be tweaked an optimized for the best look
-> modularity - this library is built from a programatic point of view, not a mathematical one. Basic structures revolve around list-like structures and not matrices.
+
+A multiplex network can be constructed in 3 simple steps:
+
+1. Load individual layers
+2. select layouts for individual layers
+3. add multiplex connections
+
 
 # What is the main goal:
 
@@ -169,6 +175,55 @@ plt.show()
 
 ![Alt text](images/test9.png?raw=true "Title")
 
+
+```{python}
+
+## this example demonstrates the use of basic algorithms
+
+import matplotlib.pyplot as plt
+import networkx as nx
+
+from py3plex.multilayer import *
+from py3plex.algorithms import *
+
+from collections import defaultdict
+
+## this example apart from visualization demonstrates some common algorithms
+## algorithms operate on multiplex object, as seen below.
+
+networks = defaultdict(list)
+label_dict = {}
+
+## get the nodes
+with open("testgraph/multiplex_datasets/Arabidopsis_Multiplex_Genetic/Dataset/arabidopsis_genetic_multiplex.edges") as me:
+    for line in me:
+        layer, n1, n2, weight = line.strip().split()
+        networks[layer].append((n1,n2))
+
+## get the labels
+with open("testgraph/multiplex_datasets/Arabidopsis_Multiplex_Genetic/Dataset/arabidopsis_genetic_layers.txt") as lx:
+    for line in lx:
+        lid, lname = line.strip().split()
+        label_dict[lid] = lname
+
+## draw the network
+multilayer_network = []
+labs = []
+for network_id,network_data in networks.items():
+    G = nx.Graph()
+    G.add_edges_from(network_data)
+    print(nx.info(G))
+    tmp_pos=nx.spring_layout(G)
+    nx.set_node_attributes(G,'pos',tmp_pos)
+    multilayer_network.append(G)
+    labs.append(label_dict[network_id])
+
+draw_multilayer_default(multilayer_network,background_shape="circle",display=True,labels=labs,networks_color="rainbow")
+
+
+```
+
+![Alt text](images/test13.png?raw=true "Title")
 ## Other examples
 
 ![Alt text](images/test4.png?raw=true "Title")
