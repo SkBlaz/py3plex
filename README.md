@@ -59,9 +59,9 @@ draw_multiplex_default(networks,multiplex_edges2,alphachannel=0.5,linepoints="-"
 plt.show()
 
 
-
 ```
-![Alt text](images/test1.jpg?raw=true "Title")
+
+![Alt text](images/test2.jpg?raw=true "Title")
 
 ## Another simple example, this time using randomly generated networks
 
@@ -76,7 +76,7 @@ generate_random_multiedges(x,80,style="curve2_bezier")
 plt.show()
 
 ```
-
+![Alt text](images/test1.jpg?raw=true "Title")
 
 ## Or a simple tuple based edge..
 
@@ -90,8 +90,6 @@ draw_multiplex_default(x,mel,input_type="tuple")
 plt.show()
 
 ```
-
-![Alt text](images/test2.jpg?raw=true "Title")
 
 ## Compare with standard layouts
 
