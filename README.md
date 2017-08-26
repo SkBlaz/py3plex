@@ -175,6 +175,7 @@ plt.show()
 
 ![Alt text](images/test9.png?raw=true "Title")
 
+## Plot a generic multilayer network (Arabidopsis)
 
 ```{python}
 
