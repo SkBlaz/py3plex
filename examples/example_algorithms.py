@@ -41,3 +41,5 @@ print(multi_object.degree_layerwise_stats())
 ## k-clique based multi-community influence
 print(multi_object.inter_community_influence(4))
 
+## community percentage
+print(multi_object.multilayer_community_stats(4))

@@ -65,6 +65,26 @@ class multiplex_network:
         result = {'variance' : variance,'sd' : sd,'mean' : mean}
         return result        
 
+    def multilayer_community_stats(self,minclique):
+
+        communities = {}
+        for nid,network in enumerate(self.networks):
+            communities_kc = nx.k_clique_communities(network, minclique)
+            unique_nodes = len(set(itertools.chain(communities_kc)))
+            communities[nid] = unique_nodes*100/len(network)
+
+        percentages = np.fromiter(iter(communities.values()), dtype=float)
+        total_variability = np.var(percentages)
+        total_deviance = np.std(percentages)
+        total_mean = np.mean(percentages)
+
+        return {'variability' : total_variability,'deviation' : total_deviance, 'mean' : total_mean,'data' : communities}
+
+            
+            
+            
+
+    
     def multiplex_degree_gain(self):
 
         ## for each multiplex edge, check its degree and compare to layer mean degree
