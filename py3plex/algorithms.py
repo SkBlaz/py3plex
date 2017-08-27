@@ -2,7 +2,8 @@
 ## algorithms, used in the BioGrid analysis
 import networkx as nx
 from collections import defaultdict
-
+import numpy as np
+import itertools
 
 class multiplex_network:
 
@@ -11,51 +12,60 @@ class multiplex_network:
         self.multiedges = edges
         self.name = name
 
+    def print_basic_info(self):
+        print("MULTIPLEX OBJECT DESCRIPTION")
+        print("Number of layers",len(self.networks))
+        print("Number of multiedges",len(self.multiedges))
+
     def inter_community_influence(self,minclique):
 
+        if self.multiedges == []:
+            return {'multiplex_community_percentage' : 0}
+        
         communities = {}
         for nid,network in enumerate(self.networks):
             communities[nid] = nx.k_clique_communities(network, minclique)
 
         partial_mpx_community = 0
-        for k,v communities.items():
-            ## get length of all nodes in communities
-            ## get percentage of nodes in multiplex
-            ## add ratio to partial_mpx_community
-            ## finally, divide by nummber of all layers
-            pass
+
+        nmpx = 0
+        mpx = 0
         
-            
-    def connectivity_ratio(self):
+        for k,v in communities.items():
 
-        ## compute ratio of inter_edges/intra_    
-        pass
-    
-    def layerwise_modularity_variability(self):
-        ## check how community formation varies accross layers
-        pass
+            ## check all communities, accross all networks
+            for node in v:
+                try:
+                    mpx = False
+                    
+                    ## check individual multiedges
+                    for x,y in self.multiedges:
+                        if node == x or node == y:
+                            mpx = True
+                    if mpx:
+                        mpx += 1
+                    else:
+                        mmpx += 1                    
+                except:
+                    pass
 
-    def layerwise_modularity(self):
-        ## for layer in layers:
-        ## do, compute modularity and return a vector of reals
-        pass
+        if mpx > 0:
+            return {'multiplex_community_percentage' : nmpx*100/mpx}
 
-    def inter_layer_connections(self):
 
-        ## number of inter-layer connections
-        pass
-    
-    def multiplex_entropy(self):
+    def degree_layerwise_stats(self):
 
-        ## 
-        pass
+        ## This algorithm computes the layer-wise degree stats        
+        all_degrees = [sum(nx.degree(X).values())/len(X) for X in self.networks]
+        variance = np.var(all_degrees)
+        sd = np.std(all_degrees)
+        mean = np.mean(all_degrees)
 
-    def clustering_coefficient(self):
+        ## result object
+        result = {'variance' : variance,'sd' : sd,'mean' : mean}
+        return result        
 
-        ##
-        pass
+    def multiplex_degree_gain(self):
 
-    def transitivity(self):
-
-        ##
+        ## for each multiplex edge, check its degree and compare to layer mean degree
         pass
