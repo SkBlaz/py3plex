@@ -3,11 +3,9 @@
 
 from py3plex.multilayer import *
 
-x = generate_random_networks(20)
+x = generate_random_networks(10)
 draw_multilayer_default(x,display=False,background_shape="circle")
 #generate_random_multiedges(x,10,style="piramidal")
-generate_random_multiedges(x,60,style="curve2_bezier",pheight=0.7,inverse_tag=False)
+generate_random_multiedges(x,160,style="curve2_bezier",pheight=0.7)
 #generate_random_multiedges(x,10,style="line")
 plt.show()
-
-
