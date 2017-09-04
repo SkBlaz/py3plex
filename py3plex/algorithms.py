@@ -94,7 +94,7 @@ class multiplex_network:
             self.monitor("Finding communities for layer: "+name)
             best_partition = community.best_partition(network)
             dx = defaultdict(list)
-            for k,v in best_partition.items():
+            for k,v in best_partition.items():                
                 dx[v].append(k)
 
             communities[name] = list(dx.values())
