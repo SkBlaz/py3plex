@@ -4,6 +4,7 @@ from py3plex.algorithms import *
 from collections import defaultdict
 import pandas as pd ## this is for tabelaric manipulations
 import multiprocessing as mp
+import itertools
 
 networks = defaultdict(list)
 label_dict = {}
@@ -40,7 +41,9 @@ print("Found layers:",labs)
 
 ## construct the mx object
 multi_object = multiplex_network(multilayer_network,[None],labs)
-multi_object.detect_communities()
+#multi_object.detect_communities()
+print("Detecting triangles..")
+multi_object.detect_triangles()
 
 comcounts = pd.DataFrame(columns=['time','count','layer'])
 
@@ -62,15 +65,18 @@ pool = mp.Pool(processes=2)
 with open(path_activity) as ax:
     for line in ax:
         tmplc +=1
-        if tmplc % 1000 == 0:
+        if tmplc % 10000 == 0:
             print("Progress:",str(tmplc*100/num_lines),"%")
             print(comcounts.describe())
         try:
             n1,n2,time,layer = line.strip().split()
-            tmpCount = 0                        
-            for com in multi_object.communities[layer]:
-                if n1 in com and n2 in com:
-                    tmpCount +=1
+            tmpCount = 0
+
+            tmpCount += multi_object.triangles[layer][n1]
+            tmpCount += multi_object.triangles[layer][n2]
+#            for com in multi_object.communities[layer]:
+#                if n1 in com or n2 in com:
+#                    tmpCount +=1
 
             comcounts = comcounts.append({'time':time,'count':tmpCount,'layer' : layer},ignore_index=True)
             
@@ -80,8 +86,6 @@ with open(path_activity) as ax:
 
 print(comcounts.describe())
 comcounts.to_csv("anomaly_dataset.csv")
-
-0
 
 
 print("Finished analysis..")       
