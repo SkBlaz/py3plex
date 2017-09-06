@@ -18,26 +18,29 @@ otls = {}
 otls_vals = []
 
 ## to zavij v funkcijo, ki iterira do max stevila outlierjev.
-for name, df in pdfrm.groupby('layer'):
 
-    ts = pd.Series(df['count'])
-    r = pyasl.generalizedESD(ts, 40, 0.05, fullOutput=True)
+threshold = 4
+it = 2
+while True:
+    for name, df in pdfrm.groupby('layer'):
+        ts = pd.Series(df['count'])
+        r = pyasl.generalizedESD(ts, it, 0.05, fullOutput=True)
+        ## remember outliers
+        otls[name]= r[1]
+        otls_times = df.iloc[r[1]]['time']
+        otls_vals.append(set(otls_times))
 
-    ## remember outliers
-    print("Outliers",r[0],name)
-    otls[name]= r[1]
-    otls_times = df.iloc[r[1]]['time']
-    otls_vals.append(set(otls_times))
+    real_outlier = []
+    for j in range(2,len(otls_vals)+1):
+        ilist = list(itertools.combinations(otls_vals,j))
+        for ex in ilist:
+            intersection =set.intersection(*ex)
+            if len(intersection) != 0:
+                real_outlier.append(intersection)
 
-real_outlier = []
-for j in range(2,len(otls_vals)+1):
-    ilist = list(itertools.combinations(otls_vals,j))
-    for ex in ilist:
-        intersection =set.intersection(*ex)
-        if len(intersection) != 0:
-            real_outlier.append(intersection)
-    
-print("real_outlier:",real_outlier)
+    if len(real_outlier) > threshold:
+        break
+    it+=1
 
 plt.figure(1)
 
@@ -63,3 +66,6 @@ for name,datax in pdfrm_copy.groupby('layer'):
     
 plt.xlabel("Time")
 plt.show()
+
+plt.figure(2)
+
