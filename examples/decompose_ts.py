@@ -5,42 +5,53 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-
+import itertools
 from PyAstronomy import pyasl
-#from statsmodels.tsa.seasonal import seasonal_decompose
 
 sns.set_style("white")
 pdfrm = pd.read_csv("anomaly_dataset.csv")
-
+pdfrm_copy = pdfrm
 plt.figure(1)
-count = 0
+
 
 otls = {}
-
 otls_vals = []
 
+## to zavij v funkcijo, ki iterira do max stevila outlierjev.
 for name, df in pdfrm.groupby('layer'):
 
     ts = pd.Series(df['count'])
-    r = pyasl.generalizedESD(ts, 10, 0.05, fullOutput=True)
+    r = pyasl.generalizedESD(ts, 40, 0.05, fullOutput=True)
 
     ## remember outliers
     print("Outliers",r[0],name)
     otls[name]= r[1]
+    otls_times = df.iloc[r[1]]['time']
+    otls_vals.append(set(otls_times))
 
-    if name != "RE":
-        otls_vals.append(set(r[1]))
-
-real_outlier = set.intersection(*otls_vals)
+real_outlier = []
+for j in range(2,len(otls_vals)+1):
+    ilist = list(itertools.combinations(otls_vals,j))
+    for ex in ilist:
+        intersection =set.intersection(*ex)
+        if len(intersection) != 0:
+            real_outlier.append(intersection)
+    
 print("real_outlier:",real_outlier)
 
 plt.figure(1)
-count = 0
-ccols = ["red","green","blue","red"]
-for name,datax in pdfrm.groupby('layer'):
 
-    outliers = otls[name]
-    outdf = datax.iloc[outliers]    
+count = 0
+for name,datax in pdfrm_copy.groupby('layer'):
+
+    time_outliers = []
+    for j in real_outlier:
+        for x in j:
+            time_outliers.append(x)
+            
+#    outliers = otls[name]
+    outdf = datax[datax['time'].isin(time_outliers)]
+#    outdf = datax.iloc[outliers]
     count +=1
     plt.subplot("31"+str(count))
     if count == 2:
