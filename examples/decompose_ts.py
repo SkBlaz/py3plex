@@ -25,6 +25,7 @@ while True:
     for name, df in pdfrm.groupby('layer'):
         ts = pd.Series(df['count'])
         r = pyasl.generalizedESD(ts, it, 0.05, fullOutput=True)
+
         ## remember outliers
         otls[name]= r[1]
         otls_times = df.iloc[r[1]]['time']
@@ -52,7 +53,7 @@ for name,datax in pdfrm_copy.groupby('layer'):
         for x in j:
             time_outliers.append(x)
             
-#    outliers = otls[name]
+    outliers = otls[name]
     outdf = datax[datax['time'].isin(time_outliers)]
 #    outdf = datax.iloc[outliers]
     count +=1
