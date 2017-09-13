@@ -19,8 +19,9 @@ otls_vals = []
 
 ## to zavij v funkcijo, ki iterira do max stevila outlierjev.
 
-threshold = 4
+threshold = 5
 it = 2
+
 while True:
     for name, df in pdfrm.groupby('layer'):
         ts = pd.Series(df['count'])
@@ -31,19 +32,18 @@ while True:
         otls_times = df.iloc[r[1]]['time']
         otls_vals.append(set(otls_times))
 
-    real_outlier = []
+    real_outlier = []        
     for j in range(2,len(otls_vals)+1):
         ilist = list(itertools.combinations(otls_vals,j))
         for ex in ilist:
-            intersection =set.intersection(*ex)
+            intersection = set.intersection(*ex)
             if len(intersection) != 0:
                 real_outlier.append(intersection)
 
-    if len(real_outlier) > threshold:
+    if len(real_outlier) > threshold:        
         break
     it+=1
 
-plt.figure(1)
 
 count = 0
 for name,datax in pdfrm_copy.groupby('layer'):
@@ -53,7 +53,7 @@ for name,datax in pdfrm_copy.groupby('layer'):
         for x in j:
             time_outliers.append(x)
             
-    outliers = otls[name]
+#    outliers = otls[name]
     outdf = datax[datax['time'].isin(time_outliers)]
 #    outdf = datax.iloc[outliers]
     count +=1
@@ -67,6 +67,3 @@ for name,datax in pdfrm_copy.groupby('layer'):
     
 plt.xlabel("Time")
 plt.show()
-
-plt.figure(2)
-
