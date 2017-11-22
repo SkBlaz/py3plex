@@ -17,6 +17,13 @@ A multiplex network can be constructed in 3 simple steps:
 
 Layout part is not necessary required, should the networks only be analized.
 
+Citation:
+'''
+@article{vskrljcommunity,
+  title={Community-based semantic subgroup discovery},
+  author={{\v{S}}krlj, Blaz and Vavpetic, Anze and Kralj, Jan and Lavrac, Nada}
+}
+'''
 
 # What is the main goal:
 
