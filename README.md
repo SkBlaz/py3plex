@@ -22,7 +22,7 @@ Citation:
 @inproceedings{vskrljcommunity,
 keywords = {myconf,cbssd},
   title={Community-based semantic subgroup discovery},
-  author={{\v{S}}krlj, Blaz and Vavpetic, Anze and Kralj, Jan and Lavrac, Nada},
+  author={{\v{S}}krlj, Blaz and Vavpeti\v{c}, Anze and Kralj, Jan and Lavra\v{c}, Nada},
   booktitle = {New Frontiers in Mining Complex Patterns - 6th International Workshop, NFMCP 2017,held in conjunction with ECML-PKDD 2017, Skopje, Macedonia, September 22, 2016, Revised Selected Papers. Accpeted for publication}
 }
 ```
