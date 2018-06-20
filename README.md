@@ -8,10 +8,10 @@ some of the state-of-the-art algorithms for decomposition and analysis of such a
 To get started, please view **examples** folder.
 ### Prerequisites
 
-1. Networkx
-2. Numpy
-3. Scipy
-4. RDFlib (for ontology-based tasks)
+1. Networkx (2.1)
+2. Numpy (0.8)
+3. Scipy  (1.1.0)
+4. RDFlib (for ontology-based tasks) (any)
 
 ### Installing
 
