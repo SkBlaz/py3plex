@@ -1,5 +1,4 @@
-# Py3Plex
-## a library for analysis and visualization of heterogeneous networks
+# *Py3Plex* - a library for analysis and visualization of heterogeneous networks
 
 Heterogeneous networks are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such algorithms.
