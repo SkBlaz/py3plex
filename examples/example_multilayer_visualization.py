@@ -1,7 +1,7 @@
 ## visualization of a simple heterogeneous network
 from py3plex.visualization.multilayer import *
 from py3plex.visualization.colors import all_color_names
-from py3plex.core import multinetk
+from py3plex.core import multinet
 
 ## multilayer
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=False, input_type="gpickle_biomine")

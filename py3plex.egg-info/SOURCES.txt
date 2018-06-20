@@ -1,3 +1,4 @@
+README.md
 setup.py
 py3plex/__init__.py
 py3plex.egg-info/PKG-INFO
@@ -16,6 +17,11 @@ py3plex/algorithms/node_ranking.py
 py3plex/algorithms/ontology_toolkit.py
 py3plex/algorithms/random_gpu.py
 py3plex/algorithms/walkers.py
+py3plex/algorithms/community/__init__.py
+py3plex/algorithms/community/community_louvain.py
+py3plex/algorithms/community/community_status.py
+py3plex/algorithms/infomap/__init__.py
+py3plex/algorithms/infomap/infomap.py
 py3plex/core/__init__.py
 py3plex/core/converters.py
 py3plex/core/multinet.py
