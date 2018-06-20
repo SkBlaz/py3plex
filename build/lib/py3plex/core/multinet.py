@@ -84,9 +84,7 @@ class multi_layer_network:
                 dout = hinmine_decompose(self.hinmine_network,heuristic=x, cycle=cycle, parallel = parallel)
                 decomposition = dout.decomposed['decomposition']
                 ## use alpha and beta levels
-                print(decomposition.shape)
                 final_decomposition = alpha*decomposition + beta*induced_net
-                
                 yield (final_decomposition,dout.label_matrix, x)
             except:
                 print("No decomposition found for:", x)
