@@ -29,6 +29,17 @@ python3 setup.py install
 
 Here are some showcase examples!
 
+**Some simple statistics**
+```python
+from py3plex.core import multinet
+from py3plex.algorithms.statistics import *
+
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/imdb_gml.gml",directed=True,input_type="gml")
+
+stats_frame = core_network_statistics(multilayer_network.core_network)
+print(stats_frame)
+```
+
 
 **Network decomposition**
 ```python
@@ -70,6 +81,7 @@ for edge_type,edges in multilinks.items():
     enum+=1
 plt.show()
 ```
+
 # Citation
 
 ```
