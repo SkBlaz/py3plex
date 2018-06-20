@@ -1,0 +1,7 @@
+/home/blazs/miniconda3/lib/python3.6/site-packages/py3plex-0.2-py3.6.egg/EGG-INFO/not-zip-safe
+/home/blazs/miniconda3/lib/python3.6/site-packages/py3plex-0.2-py3.6.egg/EGG-INFO/top_level.txt
+/home/blazs/miniconda3/lib/python3.6/site-packages/py3plex-0.2-py3.6.egg/EGG-INFO/SOURCES.txt
+/home/blazs/miniconda3/lib/python3.6/site-packages/py3plex-0.2-py3.6.egg/EGG-INFO/PKG-INFO
+/home/blazs/miniconda3/lib/python3.6/site-packages/py3plex-0.2-py3.6.egg/EGG-INFO/dependency_links.txt
+/home/blazs/miniconda3/lib/python3.6/site-packages/py3plex-0.2-py3.6.egg/py3plex/__init__.py
+/home/blazs/miniconda3/lib/python3.6/site-packages/py3plex-0.2-py3.6.egg/py3plex/__pycache__/__init__.cpython-36.pyc

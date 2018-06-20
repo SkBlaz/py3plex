@@ -1,0 +1,29 @@
+
+## embedding
+from sklearn.manifold import TSNE
+import pandas as pd
+from plotnine import *
+import numpy as np
+import matplotlib.pyplot as plt
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--emb_file",default="none")
+args = parser.parse_args()
+## get the embedding matrix
+lcount = 0
+emb_mat = []
+with open(args.emb_file) as emb:
+    for line in emb:
+        lcount += 1
+        if lcount > 1:
+            emb_mat.append([float(x) for x  in line.strip().split(" ")])            
+X = np.matrix(emb_mat)
+X_embedded = TSNE(n_components=2).fit_transform(X)
+dfr = pd.DataFrame(X_embedded,columns=['dim1','dim2'])
+print(dfr.head())
+gx = (ggplot(dfr, aes('dim1', 'dim2'))
+      + geom_point(size=0.5)+ theme_bw()
+)
+gx.draw()
+plt.show()
+

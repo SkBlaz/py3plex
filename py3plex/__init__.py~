@@ -1,4 +1,0 @@
-## this runs when module is loaded
-
-#print ("Loading required modules..")
-#print ("py3plex loaded successfully")

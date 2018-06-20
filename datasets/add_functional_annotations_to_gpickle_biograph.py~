@@ -1,0 +1,20 @@
+
+import networkx as nx
+
+## load first a GAF mapping file
+
+G = nx.read_gpickle("epigenetics.gpickle")
+print(nx.info(G))
+
+to_annotate_nodeset = []
+
+for node in G.nodes(data=True):
+    if node[0].split(":")[0] == "Protein_UniProt":
+        to_annotate_nodeset.append(node)
+
+print(len(to_annotate_nodeset))
+
+## map to each annotation its GO terms. Count by frequency these terms.
+## take top 100 most frequent
+## add to the graph a label tag with as set of GO terms
+## try to load this via hinmine methodology.

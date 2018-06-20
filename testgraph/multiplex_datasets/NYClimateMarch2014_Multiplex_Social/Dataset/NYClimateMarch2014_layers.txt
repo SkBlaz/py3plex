@@ -1,4 +1,0 @@
-layerID layerLabel
-1 RT
-2 MT
-3 RE
