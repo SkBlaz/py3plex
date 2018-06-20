@@ -93,4 +93,15 @@ abstract="Modern data mining algorithms frequently need to address learning from
 isbn="978-3-319-78680-3"
 }
 
+@article{kralj2018hinmine,
+  title={HINMINE: heterogeneous information network mining with information retrieval heuristics},
+  author={Kralj, Jan and Robnik-{\v{S}}ikonja, Marko and Lavra{\v{c}}, Nada},
+  journal={Journal of Intelligent Information Systems},
+  volume={50},
+  number={1},
+  pages={29--61},
+  year={2018},
+  publisher={Springer}
+}
+
 ```
