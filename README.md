@@ -24,6 +24,12 @@ To install, simply:
 python3 setup.py install
 ```
 
+You can also try:
+```
+pip3 install py3plex
+```
+yet this version is updated only on larger updates!
+
 ### Examples
 
 Here are some showcase examples!
