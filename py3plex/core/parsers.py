@@ -33,7 +33,12 @@ def parse_nx(nx_object,directed):
 def parse_matrix(file_name,directed):
     mat = scipy.io.loadmat(file_name)
     labels= mat['group']
-    core_network= mat['network']
+    if directed:
+        cn = nx.DiGraph()
+        core_network= nx.from_scipy_sparse_matrix(mat['network'],create_using=cn)
+    else:
+        cn = nx.Graph()
+        core_network= nx.from_scipy_sparse_matrix(mat['network'],create_using=cn)
     return(core_network,labels)
 
 def parse_gpickle(file_name, directed):

@@ -1,5 +1,5 @@
 
-colors_default = ["red","green","navy","orange","black","red","blue","green","yellow","gray"]*3
+colors_default = ["red","green","navy","orange","black","red","blue","green","yellow","gray"]*20
 
 all_color_names = {
 'aliceblue':            '#F0F8FF',
