@@ -23,6 +23,10 @@ py3plex/algorithms/community/community_louvain.py
 py3plex/algorithms/community/community_status.py
 py3plex/algorithms/infomap/__init__.py
 py3plex/algorithms/infomap/infomap.py
+py3plex/algorithms/statistics/__init__.py
+py3plex/algorithms/statistics/basic_statistics.py
+py3plex/algorithms/statistics/enrichment.py
+py3plex/algorithms/statistics/statistics.py
 py3plex/core/__init__.py
 py3plex/core/converters.py
 py3plex/core/multinet.py

@@ -21,13 +21,6 @@ def parse_gml(file_name,directed):
     return (H,None)
 
 def parse_nx(nx_object,directed):
-
-    ## check if the network is in correct shape.
-    if directed:
-        nx_object.to_directed()
-
-    ## TODO add labels if present
-    ## check the nx object for possible classes
     return (nx_object,None)
 
 def parse_matrix(file_name,directed):
