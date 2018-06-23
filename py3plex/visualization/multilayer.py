@@ -245,7 +245,7 @@ def generate_random_networks(number_of_networks):
         network_list.append(tmp_graph)
     return network_list         
 
-def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=True):
+def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True):
 
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
@@ -257,27 +257,31 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     
     for node in nodes:
         potlabs.append(node[1]['type'])
-        
-    unique_colors = np.unique(potlabs)
-
 
     if color_list is None:
-        color_mapping= dict(zip(list(unique_colors), color_list))
+        unique_colors = np.unique(potlabs)
+        color_mapping= dict(zip(list(unique_colors), colors.colors_default))
+        final_color_mapping = [color_mapping[n[1]['type']] for n in nodes]        
     else:
         print("Creating color mappings..")
-        color_mapping = dict(zip(list(unique_colors), colors.colors_default))
-
+        unique_colors = np.unique(color_list)
+        color_mapping= dict(zip(list(unique_colors), colors.all_color_names))
+        final_color_mapping = color_list
+    
     print("plotting..")
-    final_color_mapping = [color_mapping[n[1]['type']] for n in nodes]        
-    degrees = dict(nx.degree(nx.Graph(g)))   
-    nsizes = [np.log(v) * nodesize if v > 400 else 0.5 for v in degrees.values()]
+
+    degrees = dict(nx.degree(nx.Graph(g)))
+    if scale_by_size:
+        nsizes = [np.log(v) * nodesize if v > 10 else v for v in degrees.values()]
+    else:
+        nsizes = [nodesize for x in g.nodes()]
 
     if layout_parameters is not None:
         pos = nx.spring_layout(g,**layout_parameters)
     else:
         pos = nx.spring_layout(g)
         
-    ec = nx.draw_networkx_edges(g, pos, alpha=0.8,edge_color="black", width=0.1,arrows=False)
+    ec = nx.draw_networkx_edges(g, pos, alpha=0.85,edge_color="black", width=0.1,arrows=False)
     nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=False, node_size=nsizes)
     plt.axis('off')
 

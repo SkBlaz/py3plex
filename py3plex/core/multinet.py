@@ -26,7 +26,7 @@ class multi_layer_network:
         self.core_network, self.labels = parsers.parse_network(self.input_file, self.input_type, directed=self.directed, label_delimiter=self.label_delimiter)
         
         return self
-        
+    
     def monitor(self,message):
         print("-"*20,"\n",message,"\n","-"*20)
 
@@ -34,6 +34,12 @@ class multi_layer_network:
         self.monitor("Computing core stats")
         print(nx.info(self.core_network))
 
+    def get_edges(self,data=False):
+        return self.core_network.edges(data=data)
+
+    def get_nodes(self,data=False):
+        return self.core_network.nodes(data=data)
+        
     def get_layers(self,style="diagonal"):
         self.monitor("Network splitting + layout construction in progress")
 
