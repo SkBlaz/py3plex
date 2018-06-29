@@ -6,7 +6,10 @@ def prepare_for_visualization(multinet):
 
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
-        layers[node[1]['type']].append(node[0])
+        try:
+            layers[node[1]['type']].append(node[0])
+        except:
+            pass
 
     networks = {layer_name : multinet.subgraph(v) for layer_name,v in layers.items()}
     inverse_mapping = {}
@@ -14,7 +17,7 @@ def prepare_for_visualization(multinet):
     enumerator = 0
     for name, net in networks.items():
         print("Constructing layout for:",name,"layer.")
-        tmp_pos=nx.spring_layout(net)
+        tmp_pos=nx.spring_layout(net,iterations=30)
         for node in net.nodes(data=True):
             coordinates = tmp_pos[node[0]]
             node[1]['pos'] = coordinates
@@ -27,8 +30,11 @@ def prepare_for_visualization(multinet):
 
     multiedges = defaultdict(list)
     for edge in multinet.edges(data=True):
-        if inverse_mapping[edge[0]] != inverse_mapping[edge[1]]:            
-            multiedges[edge[2]['type']].append((edge[0],edge[1]))
+        try:
+            if inverse_mapping[edge[0]] != inverse_mapping[edge[1]]:
+                multiedges[edge[2]['type']].append((edge[0],edge[1]))
+        except:
+            pass
 
     names,networks = zip(*networks.items())
     return (names,networks,multiedges)
