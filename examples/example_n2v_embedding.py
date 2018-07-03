@@ -11,7 +11,7 @@ multilayer_network = multinet.multi_layer_network().load_network("../datasets/im
 multilayer_network.save_network("../datasets/test.edgelist")
 
 ## call a specific embedding binary --- this is not limited to n2v
-train_node2vec_embedding.call_node2vec_binary("../datasets/test.edgelist","../datasets/test_embedding.emb",binary="/home/skblaz/deepR/algorithms/./node2vec",weighted=False)
+train_node2vec_embedding.call_node2vec_binary("../datasets/test.edgelist","../datasets/test_embedding.emb",binary="./node2vec",weighted=False)
 
 ## preprocess and check embedding
 multilayer_network.load_embedding("../datasets/test_embedding.emb")
