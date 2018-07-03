@@ -245,7 +245,7 @@ def generate_random_networks(number_of_networks):
         network_list.append(tmp_graph)
     return network_list         
 
-def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True):
+def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default"):
 
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
@@ -276,10 +276,11 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     else:
         nsizes = [nodesize for x in g.nodes()]
 
-    if layout_parameters is not None:
-        pos = nx.spring_layout(g,**layout_parameters)
-    else:
-        pos = nx.spring_layout(g)
+    if layout_algorithm == "force_default":
+        if layout_parameters is not None:
+            pos = nx.spring_layout(g,**layout_parameters)
+        else:
+            pos = nx.spring_layout(g)
         
     ec = nx.draw_networkx_edges(g, pos, alpha=0.85,edge_color="black", width=0.1,arrows=False)
     nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=False, node_size=nsizes)
