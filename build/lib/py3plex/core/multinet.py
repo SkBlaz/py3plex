@@ -30,6 +30,10 @@ class multi_layer_network:
     def monitor(self,message):
         print("-"*20,"\n",message,"\n","-"*20)
 
+    def save_network(self,output_file=None,output_type="edgelist"):
+        if output_type == "edgelist":
+            parsers.save_edgelist(self.core_network,output_file=output_file)
+        
     def basic_stats(self):
         self.monitor("Computing core stats")
         print(nx.info(self.core_network))

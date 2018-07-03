@@ -43,4 +43,4 @@ py3plex/visualization/multilayer.py
 py3plex/visualization/polyfit.py
 py3plex/wrappers/__init__.py
 py3plex/wrappers/benchmark_nodes.py
-py3plex/wrappers/node2vec_embedding.py
+py3plex/wrappers/train_node2vec_embedding.py
