@@ -6,8 +6,9 @@ from plotnine import *
 import numpy as np
 import matplotlib.pyplot as plt
 
-def visualize_embedding (embedding,labels=None):
+def visualize_embedding (multinet,labels=None):
 
+    embedding = multinet.embedding
     X = embedding[0]
     indices = embedding[1]
 
@@ -24,3 +25,23 @@ def visualize_embedding (embedding,labels=None):
         gx.draw()
         plt.show()
 
+def get_2d_coordinates_tsne(multinet,output_format="json"):
+
+    embedding = multinet.embedding    
+    X = embedding[0]
+    indices = embedding[1]
+    
+    X_embedded = TSNE(n_components=2).fit_transform(X)
+    dfr = pd.DataFrame(X_embedded,columns=['dim1','dim2'])
+    dfr['node_names'] = [n for n in multinet.get_nodes()]
+    
+    if output_format == "json":        
+        ## export this as json
+        return dfr.to_json(orient='records')
+    
+    elif output_format == "dataframe":
+        ## pure pandas dataframe
+        return dfr
+    
+    else:
+        return None
