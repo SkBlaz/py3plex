@@ -1,8 +1,7 @@
 ## decomposition with ground truth
 
 from py3plex.core import multinet
-from py3plex.algorithms.node_ranking import sparse_page_rank, stochastic_normalization_hin
-from py3plex.algorithms.benchmark_classification import *
+from py3plex.algorithms.network_ranking.node_ranking import sparse_page_rank, stochastic_normalization_hin
 
 dataset = "../datasets/labeled_epigenetics.gpickle"
 
