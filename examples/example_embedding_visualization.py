@@ -4,4 +4,4 @@ from py3plex.visualization import embedding_visualization
 
 ## visualization steps
 multilayer_network = multinet.multi_layer_network().load_embedding("../datasets/karate.emb")
-embedding_visualization.visualize_embedding(multilayer_network.embedding)
+embedding_visualization.visualize_embedding(multilayer_network)
