@@ -126,6 +126,7 @@ output_json = embedding_visualization.get_2d_coordinates_tsne(multilayer_network
 with open('../datasets/embedding_coordinates.json', 'w') as outfile:
     json.dump(output_json, outfile)
 ```
+![Non-labeled embedding](example_images/example_embedding.png)
 
 # Citation
 
