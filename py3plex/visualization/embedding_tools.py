@@ -13,7 +13,6 @@ except ImportError:
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 def get_2d_coordinates_tsne(multinet,output_format="json",verbose=True):
 
@@ -30,8 +29,7 @@ def get_2d_coordinates_tsne(multinet,output_format="json",verbose=True):
     dfr = pd.DataFrame(X_embedded,columns=['dim1','dim2'])
     dfr['node_names'] = [n for n in multinet.get_nodes()]
     dfr['node_codes'] = indices
-    if output_format == "json":        
-        ## export this as json
+    if output_format == "json":
         return dfr.to_json(orient='records')
     
     elif output_format == "dataframe":
