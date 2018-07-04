@@ -112,19 +112,20 @@ def parse_multi_edgelist(input_name,directed):
 def parse_simple_edgelist(input_name,directed):
 
     if directed:
-        G = nx.MultiDiGraph()
+        G = nx.DiGraph()
         
     else:
-        G = nx.MultiGraph()
+        G = nx.Graph()
     
     with open(input_name) as IN:
         for line in IN:
             parts = line.strip().split()
             if len(parts) > 2:
-                node_first,layer_first,weight = parts
+                node_first,node_second,weight = parts
             else:
-                node_first,layer_first = parts
+                node_first,node_second = parts
                 weight = 1
+                
             G.add_node(node_first)
             G.add_node(node_second)
             G.add_edge(node_first,node_second,weight=weight)

@@ -27,15 +27,14 @@ def visualize_embedding (multinet,labels=None):
 
 def get_2d_coordinates_tsne(multinet,output_format="json",verbose=True):
 
-    core_network = multinet.core_network
-    embedding = multinet.embedding    
+    embedding = multinet.embedding
     X = embedding[0]
     indices = embedding[1]
     if verbose:
         multinet.monitor("Doing the TSNE reduction to 2 dimensions!")
     X_embedded = TSNE(n_components=2).fit_transform(X)
     dfr = pd.DataFrame(X_embedded,columns=['dim1','dim2'])
-    dfr['node_names'] = [n for n in core_network.get_nodes()]
+    dfr['node_names'] = [n for n in multinet.get_nodes()]
     dfr['node_codes'] = indices
     if output_format == "json":        
         ## export this as json
