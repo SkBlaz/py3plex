@@ -1,7 +1,7 @@
 ## example network embedding using a binary
 from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
-from py3plex.visualization import embedding_visualization
+from py3plex.visualization import embedding_visualization,embedding_tools
 import json
 
 ## load network in GML
@@ -20,7 +20,7 @@ multilayer_network.load_embedding("../datasets/test_embedding.emb")
 embedding_visualization.visualize_embedding(multilayer_network)
 
 ## output embedded coordinates as JSON
-output_json = embedding_visualization.get_2d_coordinates_tsne(multilayer_network,output_format="json")
+output_json = embedding_tools.get_2d_coordinates_tsne(multilayer_network,output_format="json")
 
 with open('../datasets/embedding_coordinates.json', 'w') as outfile:
     json.dump(output_json, outfile)
