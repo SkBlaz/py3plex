@@ -4,7 +4,7 @@ import networkx as nx
 import numpy as np
 from sklearn.cluster import AffinityPropagation
 import multiprocessing as mp
-from node_ranking import *
+from ..network_ranking.node_ranking import sparse_page_rank,modularity,stochastic_normalization
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster.hierarchy import fcluster
 import scipy.sparse as sp

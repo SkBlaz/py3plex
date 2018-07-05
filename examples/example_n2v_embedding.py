@@ -1,7 +1,7 @@
 ## example network embedding using a binary
 from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
-from py3plex.visualization import embedding_visualization,embedding_tools
+from py3plex.visualization.embedding_visualization import embedding_visualization,embedding_tools
 import json
 
 ## load network in GML

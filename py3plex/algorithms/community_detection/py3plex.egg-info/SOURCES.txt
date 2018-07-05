@@ -1,0 +1,11 @@
+community/__init__.py
+community/community_louvain.py
+community/community_status.py
+infomap/__init__.py
+infomap/infomap.py
+py3plex.egg-info/PKG-INFO
+py3plex.egg-info/SOURCES.txt
+py3plex.egg-info/dependency_links.txt
+py3plex.egg-info/not-zip-safe
+py3plex.egg-info/requires.txt
+py3plex.egg-info/top_level.txt

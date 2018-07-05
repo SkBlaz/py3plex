@@ -1,6 +1,6 @@
 ## simple embedding visualization example
 from py3plex.core import multinet
-from py3plex.visualization import embedding_visualization
+from py3plex.visualization.embedding_visualization import embedding_visualization
 
 ## visualization steps
 multilayer_network = multinet.multi_layer_network().load_embedding("../datasets/test_embedding.emb")

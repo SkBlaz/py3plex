@@ -1,1 +1,1 @@
-## modules for community detection
+## node ranking algorithms

@@ -35,10 +35,11 @@ py3plex/core/HINMINE/decomposition.py
 py3plex/visualization/__init__.py
 py3plex/visualization/bezier.py
 py3plex/visualization/colors.py
-py3plex/visualization/embedding_tools.py
-py3plex/visualization/embedding_visualization.py
 py3plex/visualization/multilayer.py
 py3plex/visualization/polyfit.py
+py3plex/visualization/embedding_visualization/__init__.py
+py3plex/visualization/embedding_visualization/embedding_tools.py
+py3plex/visualization/embedding_visualization/embedding_visualization.py
 py3plex/wrappers/__init__.py
 py3plex/wrappers/benchmark_nodes.py
 py3plex/wrappers/train_node2vec_embedding.py
