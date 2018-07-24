@@ -34,6 +34,7 @@ py3plex/core/HINMINE/decomposition.py
 py3plex/visualization/__init__.py
 py3plex/visualization/bezier.py
 py3plex/visualization/colors.py
+py3plex/visualization/layout_algorithms.py
 py3plex/visualization/multilayer.py
 py3plex/visualization/polyfit.py
 py3plex/visualization/embedding_visualization/__init__.py

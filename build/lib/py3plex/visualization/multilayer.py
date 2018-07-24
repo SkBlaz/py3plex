@@ -16,6 +16,7 @@ import numpy as np
 from . import colors # those are color ranges
 from . import bezier # those are bezier curves
 from . import polyfit
+from . layout_algorithms import *
 
 main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
@@ -275,12 +276,8 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
         nsizes = [np.log(v) * nodesize if v > 10 else v for v in degrees.values()]
     else:
         nsizes = [nodesize for x in g.nodes()]
-
-    if layout_algorithm == "force_default":
-        if layout_parameters is not None:
-            pos = nx.spring_layout(g,**layout_parameters)
-        else:
-            pos = nx.spring_layout(g)
+    if layout_algorithm == "force":
+        pos = compute_force_directed_layout(g,layout_parameters)
         
     ec = nx.draw_networkx_edges(g, pos, alpha=0.85,edge_color="black", width=0.1,arrows=False)
     nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=False, node_size=nsizes)
