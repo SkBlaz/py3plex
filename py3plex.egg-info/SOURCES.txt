@@ -22,7 +22,9 @@ py3plex/algorithms/statistics/__init__.py
 py3plex/algorithms/statistics/basic_statistics.py
 py3plex/algorithms/statistics/correlation_networks.py
 py3plex/algorithms/statistics/enrichment.py
+py3plex/algorithms/statistics/powerlaw.py
 py3plex/algorithms/statistics/statistics.py
+py3plex/algorithms/statistics/topology.py
 py3plex/core/__init__.py
 py3plex/core/converters.py
 py3plex/core/multinet.py
