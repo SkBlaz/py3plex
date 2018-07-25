@@ -192,7 +192,6 @@ def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None)
     elif f_type == "edgelist_spin":
         return parse_spin_edgelist(input_name,directed)
 
-
 def save_edgelist(input_network,output_file,attributes=False):
     fh=open(output_file,'wb')
     input_network = nx.convert_node_labels_to_integers(input_network, first_label=0, ordering='default', label_attribute=None)

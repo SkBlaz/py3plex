@@ -35,6 +35,11 @@ def get_2d_coordinates_tsne(multinet,output_format="json",verbose=True):
     elif output_format == "dataframe":
         ## pure pandas dataframe
         return dfr
+    elif output_format == "pos_dict":
+        output_dict = {}
+        for index, row in dfr.iterrows():
+            output_dict[row['node_names']] = ( row['dim1'],row['dim2'])
+        return output_dict
     
     else:
         return None

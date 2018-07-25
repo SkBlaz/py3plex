@@ -21,7 +21,7 @@ from . layout_algorithms import *
 main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False):
+def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,layout_algorithm="force",layout_parameters=None):
 
     if background_color == "default":
         
@@ -57,7 +57,21 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     circle_size = 1.05
     for network in network_list:
 
-        degrees = dict(nx.degree(nx.Graph(network)))   
+        degrees = dict(nx.degree(nx.Graph(network)))
+
+        if layout_algorithm == "force":
+            tmp_pos = compute_force_directed_layout(network,layout_parameters)
+            
+        elif layout_algorithm == "random":
+            tmp_pos = compute_random_layout(network)
+            
+        elif layout_algorithm == "custom_coordinates":
+            tmp_pos = layout_parameters['pos']
+            
+        for node in network.nodes(data=True):
+            coordinates = tmp_pos[node[0]]
+            node[1]['pos'] = coordinates
+            
         positions = nx.get_node_attributes(network, 'pos')
         for position in positions:
             try:
@@ -276,9 +290,18 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
         nsizes = [np.log(v) * nodesize if v > 10 else v for v in degrees.values()]
     else:
         nsizes = [nodesize for x in g.nodes()]
+
+    ## standard force -- directed layout
     if layout_algorithm == "force":
         pos = compute_force_directed_layout(g,layout_parameters)
-        
+
+    ## random layout -- used for initialization of more complex algorithms
+    elif layout_algorithm == "random":
+        pos = compute_random_layout(g)
+
+    elif layout_algorithm == "custom_coordinates":
+        pos = layout_parameters['pos']
+
     ec = nx.draw_networkx_edges(g, pos, alpha=0.85,edge_color="black", width=0.1,arrows=False)
     nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=False, node_size=nsizes)
     plt.axis('off')
