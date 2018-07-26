@@ -41,7 +41,7 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
                 pos = forceatlas2.forceatlas2_networkx_layout(g, pos=initial_positions)
             
             norm = np.max([np.abs(x) for x in itertools.chain(zip(*pos.values()))])
-            pos_pairs = [((a/norm+1)/2,(b/norm+1)/2) for a,b in pos.values()]
+            pos_pairs = [np.array([(a/norm),(b/norm)]) for a,b in pos.values()]
             pos = dict(zip(pos.keys(),pos_pairs))
             
         except Exception as e:
@@ -59,7 +59,7 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
         else:
             pos = nx.spring_layout(g)
         print("Using standard layout algorithm, fa2 not present on the system.")
-        print(pos)
+        
     ## return positions
     return pos
 
