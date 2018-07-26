@@ -24,7 +24,7 @@ plt.show()
 
 ## string layout for larger network -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/soc-Epinions1.edgelist", label_delimiter="---",input_type="edgelist",directed=True)
-hairball_plot(multilayer_network.core_network,layout_algorithm="force")
+hairball_plot(multilayer_network.core_network,layout_algorithm="force",layout_parameters={"iterations": 300})
 plt.show()
 
 ## embedding-based layout (custom coordinates) -----------------------------------
