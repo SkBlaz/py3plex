@@ -141,7 +141,10 @@ def parse_spin_edgelist(input_name,directed):
             node_first = parts[0]
             node_second = parts[1]
             tag = parts[2]
-            weight = parts[3]
+            if len(parts) >= 4:
+                weight = parts[3]
+            else:
+                weight = 1
             
             G.add_node(node_first)
             G.add_node(node_second)

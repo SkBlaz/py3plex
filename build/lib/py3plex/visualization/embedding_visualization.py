@@ -23,3 +23,4 @@ def visualize_embedding (embedding,labels=None):
         )
         gx.draw()
         plt.show()
+
