@@ -119,16 +119,17 @@ def parse_simple_edgelist(input_name,directed):
     
     with open(input_name) as IN:
         for line in IN:
-            parts = line.strip().split()
-            if len(parts) > 2:                
-                node_first,node_second,weight = parts
-            else:
-                node_first,node_second = parts
-                weight = 1
-                
-            G.add_node(node_first)
-            G.add_node(node_second)
-            G.add_edge(node_first,node_second,weight=weight)
+            if line.split()[0] != "#":
+                parts = line.strip().split()
+                if len(parts) > 2:                
+                    node_first,node_second,weight = parts
+                else:
+                    node_first,node_second = parts
+                    weight = 1
+                    
+                G.add_node(node_first,type="null")
+                G.add_node(node_second,type="null")
+                G.add_edge(node_first,node_second,weight=weight)
     return (G,None)
 
 def parse_spin_edgelist(input_name,directed):

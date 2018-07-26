@@ -16,13 +16,16 @@ for edge_type,edges in multilinks.items():
     enum+=1
 plt.show()
 
-
 ### basic string layout -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/imdb_gml.gml",directed=False,label_delimiter="---")
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 hairball_plot(graph,network_colors,layout_algorithm="force")
 plt.show()
 
+## string layout for larger network -----------------------------------
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/soc-Epinions1.edgelist", label_delimiter="---",input_type="edgelist",directed=True)
+hairball_plot(multilayer_network.core_network,layout_algorithm="force")
+plt.show()
 
 ## embedding-based layout (custom coordinates) -----------------------------------
 from py3plex.wrappers import train_node2vec_embedding
