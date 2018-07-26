@@ -34,18 +34,19 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
 
                 # Log
                 verbose=True)
-
+            
             if layout_parameters != None:
                 pos = forceatlas2.forceatlas2_networkx_layout(g, pos=initial_positions,**layout_parameters)
             else:
                 pos = forceatlas2.forceatlas2_networkx_layout(g, pos=initial_positions)
-
-            norm = np.max(itertools.chain(zip(*pos)))
-            pos = [(a/norm,b/norm) for a,b in pos]
-            print(pos)
             
-        except:
-            print("Too few nodes for BH approximation, standard algorithm is being used..")
+            norm = np.max([np.abs(x) for x in itertools.chain(zip(*pos.values()))])
+            pos_pairs = [((a/norm+1)/2,(b/norm+1)/2) for a,b in pos.values()]
+            pos = dict(zip(pos.keys(),pos_pairs))
+            
+        except Exception as e:
+
+            print(e)
             if layout_parameters is not None:
                 pos = nx.spring_layout(g,**layout_parameters)
             else:
@@ -58,7 +59,7 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
         else:
             pos = nx.spring_layout(g)
         print("Using standard layout algorithm, fa2 not present on the system.")
-        
+        print(pos)
     ## return positions
     return pos
 
@@ -66,3 +67,11 @@ def compute_random_layout(g):
     coordinates = tuple(np.random.rand(1,2))
     pos = {n : tuple(np.random.rand(1,2).tolist()[0]) for n in g.nodes()}
     return pos
+
+if __name__ == "__main__":
+
+
+    G = nx.gaussian_random_partition_graph(1000,10,10,.25,.1)
+    print(nx.info(G))
+    compute_force_directed_layout(G)
+    print("Finished..")

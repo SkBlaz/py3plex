@@ -46,3 +46,10 @@ def get_2d_coordinates_tsne(multinet,output_format="json",verbose=True):
     else:
         return None
 
+def layout_positions_to_json(position_dict):
+    
+    outlist = []
+    for k,v in position_dict.items():
+        outlist.append({node_names:k,dim1:v[0],dim2:v[1]})
+    return outlist
+
