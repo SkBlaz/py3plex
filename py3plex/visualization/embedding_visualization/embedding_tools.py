@@ -29,12 +29,14 @@ def get_2d_coordinates_tsne(multinet,output_format="json",verbose=True):
     dfr = pd.DataFrame(X_embedded,columns=['dim1','dim2'])
     dfr['node_names'] = [n for n in multinet.get_nodes()]
     dfr['node_codes'] = indices
+    
     if output_format == "json":
         return dfr.to_json(orient='records')
     
     elif output_format == "dataframe":
         ## pure pandas dataframe
         return dfr
+    
     elif output_format == "pos_dict":
         output_dict = {}
         for index, row in dfr.iterrows():

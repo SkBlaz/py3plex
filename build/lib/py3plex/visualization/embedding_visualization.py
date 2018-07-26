@@ -2,12 +2,12 @@
 ## embedding
 from sklearn.manifold import TSNE
 import pandas as pd
+from plotnine import *
 import numpy as np
 import matplotlib.pyplot as plt
-from plotnine import *
 
-def visualize_embedding (multinet,labels=None):
-    embedding = multinet.embedding
+def visualize_embedding (embedding,labels=None):
+
     X = embedding[0]
     indices = embedding[1]
 

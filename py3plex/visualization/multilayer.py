@@ -319,9 +319,10 @@ if __name__ == "__main__":
 
     x = generate_random_networks(4)
     draw_multilayer_default(x,display=False,background_shape="circle")
-    # generate_random_multiedges(x,12,style="piramidal")
-    generate_random_multiedges(x,12,style="curve2_bezier")
+    # generate_random_multiedges(x,12,style="piramidal")    
+    generate_random_multiedges(x,12,style="curve2_bezier")    
     # network 1's 4 to network 6's 3 etc..    
-    #mel = [((1,1),(5,1))]
-    #draw_multiedges(x,mel,input_type="tuple")    
+    # mel = [((1,1),(5,1))]
+    # draw_multiedges(x,mel,input_type="tuple")
+    
     plt.show()

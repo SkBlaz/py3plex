@@ -10,7 +10,7 @@ try:
 except:
     forceImport = False
 
-def compute_force_directed_layout(g,layout_parameters=None):
+def compute_force_directed_layout(g,layout_parameters=None,initial_positions=None):
     
     if forceImport:
         try:
@@ -36,9 +36,9 @@ def compute_force_directed_layout(g,layout_parameters=None):
                 verbose=True)
 
             if layout_parameters != None:
-                pos = forceatlas2.forceatlas2_networkx_layout(g, pos=None, **layout_parameters)
+                pos = forceatlas2.forceatlas2_networkx_layout(g, pos=initial_positions,**layout_parameters)
             else:
-                pos = forceatlas2.forceatlas2_networkx_layout(g, pos=None)
+                pos = forceatlas2.forceatlas2_networkx_layout(g, pos=initial_positions)
 
             norm = np.max(itertools.chain(zip(*pos)))
             pos = [(a/norm,b/norm) for a,b in pos]
@@ -51,9 +51,7 @@ def compute_force_directed_layout(g,layout_parameters=None):
             else:
                 pos = nx.spring_layout(g)
             print("Using standard layout algorithm, fa2 not present on the system.")
-            
-
-                
+                            
     else:
         if layout_parameters is not None:
             pos = nx.spring_layout(g,**layout_parameters)

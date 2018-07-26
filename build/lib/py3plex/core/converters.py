@@ -1,6 +1,7 @@
 ## converters
 import networkx as nx
 from collections import defaultdict
+from ..visualization.layout_algorithms import *
 
 def prepare_for_visualization(multinet):
 
@@ -14,14 +15,21 @@ def prepare_for_visualization(multinet):
     networks = {layer_name : multinet.subgraph(v) for layer_name,v in layers.items()}
     inverse_mapping = {}
     layouts = []
-    enumerator = 0
-    for name, net in networks.items():
-        print("Constructing layout for:",name,"layer.")
-        tmp_pos=nx.spring_layout(net,iterations=30)
-        for node in net.nodes(data=True):
-            coordinates = tmp_pos[node[0]]
-            node[1]['pos'] = coordinates
-        enumerator+=1
+    # enumerator = 0
+    # for name, net in networks.items():
+    #     print("Constructing layout for:",name,"layer.")
+        
+    #     if layout_algorithm == "force":
+    #         tmp_pos = compute_force_directed_layout(net,layout_parameters)
+    #     elif layout_algorithm == "random":
+    #         tmp_pos = compute_random_layout(net)
+    #     elif layout_algorithm == "custom_coordinates":
+    #         tmp_pos = layout_parameters['pos']
+            
+    #     for node in net.nodes(data=True):
+    #         coordinates = tmp_pos[node[0]]
+    #         node[1]['pos'] = coordinates
+    #     enumerator+=1
             
     ## construct the inverse mapping
     for k,v in layers.items():
