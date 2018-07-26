@@ -141,7 +141,10 @@ def parse_spin_edgelist(input_name,directed):
             node_first = parts[0]
             node_second = parts[1]
             tag = parts[2]
-            weight = parts[3]
+            if len(parts) >= 4:
+                weight = parts[3]
+            else:
+                weight = 1
             
             G.add_node(node_first)
             G.add_node(node_second)
@@ -191,7 +194,6 @@ def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None)
     
     elif f_type == "edgelist_spin":
         return parse_spin_edgelist(input_name,directed)
-
 
 def save_edgelist(input_network,output_file,attributes=False):
     fh=open(output_file,'wb')
