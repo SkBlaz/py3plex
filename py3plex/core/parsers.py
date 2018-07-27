@@ -121,11 +121,13 @@ def parse_simple_edgelist(input_name,directed):
         for line in IN:
             if line.split()[0] != "#":
                 parts = line.strip().split()
-                if len(parts) > 2:                
+                if len(parts) == 3:
                     node_first,node_second,weight = parts
-                else:
+                elif len(parts) == 2:
                     node_first,node_second = parts
                     weight = 1
+                else:
+                    continue
                     
                 G.add_node(node_first,type="null")
                 G.add_node(node_second,type="null")
