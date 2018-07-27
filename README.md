@@ -135,6 +135,8 @@ plt.show()
 
 ```
 
+![Non-labeled embedding](example_images/communities.png)
+
 **Network Embedding visualization**
 ```python
 from py3plex.core import multinet
