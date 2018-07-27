@@ -53,6 +53,7 @@ print(top_n_by_degree)
 ```
 
 **Network decomposition**
+What is network decomposition? Does your network consist of multiple node types? Are there directed edges present? If so, information from the whole network can be used to construct artificial edges between the nodes of a user-defined type (defined using node triplets). This way, a heterogeneous network can be simplified to a homogeneous one, useful for e.g., machine learning tasks!
 ```python
 from py3plex.core import multinet
 from py3plex.algorithms.node_ranking import sparse_page_rank, stochastic_normalization_hin
@@ -71,7 +72,6 @@ for decomposition in multilayer_network.get_decomposition(heuristic=["idf","rf"]
 ```
 
 **Multilayer visualization**
-
 
 ```python
 from py3plex.visualization.multilayer import *
