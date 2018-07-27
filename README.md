@@ -98,6 +98,8 @@ network_colors, graph = multilayer_network.get_layers(style="hairball")
 hairball_plot(graph,network_colors)
 plt.show()
 ```
+![Non-labeled embedding](example_images/multilayer.png)
+
 
 **Network community visualization**
 ```python
