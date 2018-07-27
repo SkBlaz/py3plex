@@ -31,8 +31,9 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
         
         facecolor_list_background = colors.colors_default
 
-    elif background_color == "none":
+    elif background_color == None:
         
+        facecolor_list_background = colors.colors_default
         alphalevel=0
 
     else:
@@ -88,13 +89,13 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
                 pass
         
         if background_shape == "rectangle":
+            print(alphalevel)
             shape_subplot.add_patch(Rectangle(
                 (start_location_background, start_location_background), rectanglex, rectangley,
                 alpha=alphalevel, linestyle="dotted", fill=True,facecolor=facecolor_list_background[color]
             ))
 
         elif background_shape == "circle":
-            ## tukaj pride krogeci
             shape_subplot.add_patch(Circle((start_location_background+shadow_size, start_location_background+shadow_size), circle_size, color=facecolor_list_background[color],alpha=alphalevel))
             pass
         else:
