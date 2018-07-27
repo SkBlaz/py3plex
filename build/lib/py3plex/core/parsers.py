@@ -11,6 +11,7 @@ import operator
 import numpy as np
 import scipy.io
 from collections import defaultdict, Counter
+import gzip
 
 def parse_gml(file_name,directed):
     H = nx.read_gml(file_name)
@@ -116,8 +117,15 @@ def parse_simple_edgelist(input_name,directed):
         
     else:
         G = nx.Graph()
-    
-    with open(input_name) as IN:
+
+
+    if ".gz" in input_name:
+        handle = gzip.open(input_name,'rt')
+        
+    else:
+        handle = open(input_name)
+        
+    with handle as IN:
         for line in IN:
             if line.split()[0] != "#":
                 parts = line.strip().split()
@@ -128,7 +136,7 @@ def parse_simple_edgelist(input_name,directed):
                     weight = 1
                 else:
                     continue
-                    
+
                 G.add_node(node_first,type="null")
                 G.add_node(node_second,type="null")
                 G.add_edge(node_first,node_second,weight=weight)

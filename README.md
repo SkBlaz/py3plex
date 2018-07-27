@@ -141,6 +141,14 @@ plt.show()
 
 ![Non-labeled embedding](example_images/communities.png)
 
+Or if run as
+
+```python
+python3 example_community_detection.py --input_network ~/Downloads/soc-Epinions1.txt.gz --input_type edgelist
+```
+
+![Non-labeled embedding](example_images/communities2.png)
+
 **Network Embedding visualization**
 ```python
 from py3plex.core import multinet
