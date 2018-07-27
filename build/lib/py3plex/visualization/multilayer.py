@@ -301,6 +301,9 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
 
     elif layout_algorithm == "custom_coordinates":
         pos = layout_parameters['pos']
+        
+    else:
+        pos = compute_force_directed_layout(g,layout_parameters)
 
     ec = nx.draw_networkx_edges(g, pos, alpha=0.85,edge_color="black", width=0.1,arrows=False)
     nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=False, node_size=nsizes)

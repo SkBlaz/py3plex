@@ -132,6 +132,30 @@ def parse_simple_edgelist(input_name,directed):
                 G.add_edge(node_first,node_second,weight=weight)
     return (G,None)
 
+def parse_edgelist_multi_types(input_name,directed):
+    if directed:
+        G = nx.MultiDiGraph()
+        
+    else:
+        G = nx.MultiGraph()
+    
+    with open(input_name) as IN:
+        for line in IN:
+            if line.split()[0] != "#":
+                parts = line.strip().split()
+                if len(parts) > 2:                
+                    node_first,node_second,weight = parts
+                else:
+                    node_first,node_second = parts
+                    weight = 1
+
+                edge_type = parts[3]
+                G.add_node(node_first,type="null")
+                G.add_node(node_second,type="null")
+                G.add_edge(node_first,node_second,weight=weight,type=edge_type)
+    return (G,None)
+    pass
+
 def parse_spin_edgelist(input_name,directed):
 
     G = nx.Graph()    
@@ -195,6 +219,9 @@ def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None)
     
     elif f_type == "edgelist_spin":
         return parse_spin_edgelist(input_name,directed)
+    
+    elif f_type == "edgelist_with_edge_types":
+        return parse_edgelist_multi_types(input_name,directed)
 
 def save_edgelist(input_network,output_file,attributes=False):
     fh=open(output_file,'wb')
