@@ -34,10 +34,13 @@ class multi_layer_network:
         if output_type == "edgelist":
             parsers.save_edgelist(self.core_network,output_file=output_file)
         
-    def basic_stats(self):
+    def basic_stats(self,target_network=None):
         self.monitor("Computing core stats")
-        print(nx.info(self.core_network))
-
+        if target_network is None:
+            print(nx.info(self.core_network))
+        else:
+            print(nx.info(target_network))
+            
     def get_edges(self,data=False):
         return self.core_network.edges(data=data)
 
@@ -45,7 +48,7 @@ class multi_layer_network:
         return self.core_network.nodes(data=data)
         
     def get_layers(self,style="diagonal"):
-        self.monitor("Network splitting + layout construction in progress")
+        self.monitor("Network splitting in progress")
 
         ## multilayer visualization
         if style == "diagonal":
