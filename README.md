@@ -102,6 +102,8 @@ plt.show()
 
 
 **Network community visualization**
+Communities are relevant for exploring network-function association, as well as higher order organization in networks.
+
 ```python
 
 from py3plex.algorithms.community_detection import community_wrapper as cw
@@ -150,6 +152,9 @@ python3 example_community_detection.py --input_network ~/Downloads/soc-Epinions1
 ![Non-labeled embedding](example_images/communities2.png)
 
 **Network Embedding visualization**
+
+Recent improvements in network analysis commonly rely on network embeddings. This library offers wrappers for embedding construction and visualization.
+
 ```python
 from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
