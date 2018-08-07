@@ -27,7 +27,7 @@ for edge_type,edges in multilinks.items():
 plt.show()
 
 ### basic string layout ----------------------------------
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/imdb_gml.gml",directed=False,label_delimiter="---")
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=False,label_delimiter="---",input_type="gpickle_biomine")
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 hairball_plot(graph,network_colors,layout_algorithm="force")
 plt.show()
