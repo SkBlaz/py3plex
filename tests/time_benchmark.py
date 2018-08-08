@@ -36,9 +36,9 @@ if __name__ == "__main__":
     import itertools
     import pandas as pd
     
-    number_of_nodes = [10,100,200,1000,2000,5000]
+    number_of_nodes = [10,100,200,1000,2000]
     number_of_edges = reversed([x+1 for x in list(range(8))])
-    probabilities = np.arange(0.05,0.5,0.1).tolist()
+    probabilities = np.arange(0.05,0.3,0.05).tolist()
 
     merged = [number_of_nodes,number_of_edges,probabilities]
     combinations = list(itertools.product(*merged))
@@ -49,8 +49,13 @@ if __name__ == "__main__":
         N,L,p = combination
         print("Evaluating {} {} {} setting.".format(N,L,p))        
         net = models.er_multilayer(N,L,p)
-        t_pp = py3plex_visualization(net.edges)
-        t_pmn = pymnet_visualization(net)
+        try:
+            t_pp = py3plex_visualization(net.edges)
+            t_pmn = pymnet_visualization(net)
+
+        except Exception as err:
+            print(err)
+            
         datapoint = {"N":N,"E":L,"p":p,"Py3plex":t_pp,"Pymnet":t_pmn}
         datapoints.append(datapoint)
 
