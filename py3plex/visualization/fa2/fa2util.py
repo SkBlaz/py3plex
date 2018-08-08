@@ -11,7 +11,7 @@
 # Available under the GPLv3
 
 from math import sqrt
-
+from cython.parallel import prange
 
 # This will substitute for the nLayout object
 class Node:
@@ -112,7 +112,8 @@ def linAttraction(n1, n2, e, distributedAttraction, coefficient=0):
 # instead of the main file because Python is slow with loops.
 def apply_repulsion(nodes, coefficient):
     i = 0
-    for n1 in nodes:
+    for i in prange(nodes,nogil=True):
+        n1 = nodes[i]
         j = i
         for n2 in nodes:
             if j == 0:
@@ -124,23 +125,28 @@ def apply_repulsion(nodes, coefficient):
 
 def apply_gravity(nodes, gravity, useStrongGravity=False):
     if not useStrongGravity:
-        for n in nodes:
+        for i in prange(nodes,nogil=True):
+            node = node[i]
             linGravity(n, gravity)
     else:
-        for n in nodes:
+        for i in prange(nodes,nogil=True):
+            node = node[i]
             strongGravity(n, gravity)
 
 
 def apply_attraction(nodes, edges, distributedAttraction, coefficient, edgeWeightInfluence):
     # Optimization, since usually edgeWeightInfluence is 0 or 1, and pow is slow
     if edgeWeightInfluence == 0:
-        for edge in edges:
+        for i in prange(edges,nogil=True):
+            edge = edges[i]
             linAttraction(nodes[edge.node1], nodes[edge.node2], 1, distributedAttraction, coefficient)
     elif edgeWeightInfluence == 1:
-        for edge in edges:
+        for i in prange(nodes,nogil=True):
+            edge = edges[i]
             linAttraction(nodes[edge.node1], nodes[edge.node2], edge.weight, distributedAttraction, coefficient)
     else:
-        for edge in edges:
+        for i in prange(nodes,nogil=True):
+            edge = edges[i]
             linAttraction(nodes[edge.node1], nodes[edge.node2], pow(edge.weight, edgeWeightInfluence),
                           distributedAttraction, coefficient)
 
@@ -161,7 +167,8 @@ class Region:
             self.mass = 0
             massSumX = 0
             massSumY = 0
-            for n in self.nodes:
+            for i in prange(nodes,nogil=True):
+                n = self.nodes[i]
                 self.mass += n.mass
                 massSumX += n.x * n.mass
                 massSumY += n.y * n.mass
@@ -251,7 +258,8 @@ class Region:
                     subregion.applyForce(n, theta, coefficient)
 
     def applyForceOnNodes(self, nodes, theta, coefficient=0):
-        for n in nodes:
+        for i in prange(nodes,nogil=True):
+            n = nodes[i]
             self.applyForce(n, theta, coefficient)
 
 
@@ -260,7 +268,9 @@ def adjustSpeedAndApplyForces(nodes, speed, speedEfficiency, jitterTolerance):
     # Auto adjust speed.
     totalSwinging = 0.0  # How much irregular movement
     totalEffectiveTraction = 0.0  # How much useful movement
-    for n in nodes:
+    
+    for i in prange(nodes,nogil=True):
+        n = nodes[i]
         swinging = sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) + (n.old_dy - n.dy) * (n.old_dy - n.dy))
         totalSwinging += n.mass * swinging
         totalEffectiveTraction += .5 * n.mass * sqrt(
@@ -301,7 +311,8 @@ def adjustSpeedAndApplyForces(nodes, speed, speedEfficiency, jitterTolerance):
     #
     # Need to add a case if adjustSizes ("prevent overlap") is
     # implemented.
-    for n in nodes:
+    for i in prange(nodes,nogil=True):
+        n = nodes[i]
         swinging = n.mass * sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) + (n.old_dy - n.dy) * (n.old_dy - n.dy))
         factor = speed / (1.0 + sqrt(speed * swinging))
         n.x = n.x + (n.dx * factor)
