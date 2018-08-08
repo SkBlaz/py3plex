@@ -3,13 +3,15 @@ from py3plex.visualization.multilayer import *
 from py3plex.visualization.colors import all_color_names,colors_default
 from py3plex.core import multinet
 import time
+import matplotlib.pyplot as plt
 
 def py3plex_visualization(network):
 
     start = time.time()
-    multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=False, input_type="gpickle_biomine")
+    multilayer_network = multinet.multi_layer_network(verbose=False).load_network(network,directed=False, input_type="multiedge_tuple_list")
     network_labels, graphs, multilinks = multilayer_network.get_layers() ## get layers for visualization
-    draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,layout_algorithm="force")
+
+    draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,layout_algorithm="force",verbose=False)
 
     enum = 1
     color_mappings = {idx : col for idx, col in enumerate(colors_default)}
@@ -18,12 +20,14 @@ def py3plex_visualization(network):
         enum+=1
         
     end = time.time()
+    plt.clf()
     return (end - start)
 
 def pymnet_visualization(network):
     start = time.time()    
     fig = draw(network)
     end = time.time()
+    plt.clf()
     return (end - start)
 
 if __name__ == "__main__":
@@ -32,9 +36,9 @@ if __name__ == "__main__":
     import itertools
     import pandas as pd
     
-    number_of_nodes = [5,10,100,200,500,1000,5000,1000]
-    number_of_edges = list(range(10))
-    probabilities = np.arange(0,0.5,0.1).tolist()
+    number_of_nodes = [10,100,200,1000,2000,5000]
+    number_of_edges = reversed([x+1 for x in list(range(8))])
+    probabilities = np.arange(0.05,0.5,0.1).tolist()
 
     merged = [number_of_nodes,number_of_edges,probabilities]
     combinations = list(itertools.product(*merged))
@@ -43,12 +47,12 @@ if __name__ == "__main__":
     
     for combination in combinations:
         N,L,p = combination
-        print("Evaluating {} {} {} setting.".format(N,L,p))
-        
-        net = models.er_multilayer(N,L,p)        
-        t_pp = py3plex_visualization(net)
+        print("Evaluating {} {} {} setting.".format(N,L,p))        
+        net = models.er_multilayer(N,L,p)
+        t_pp = py3plex_visualization(net.edges)
         t_pmn = pymnet_visualization(net)
-        datapoints.append({"N":N,"E":L,"p":p,"Py3plex":t_pp,"Pymnet":t_pmn})
+        datapoint = {"N":N,"E":L,"p":p,"Py3plex":t_pp,"Pymnet":t_pmn}
+        datapoints.append(datapoint)
 
     result_frame = pd.DataFrame(datapoints)
     result_frame.to_csv("example_benchmark.csv")

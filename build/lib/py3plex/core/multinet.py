@@ -11,10 +11,11 @@ import scipy.sparse as sp
 class multi_layer_network:
 
     ## constructor
-    def __init__(self):
+    def __init__(self,verbose=True):
         self.core_network = None     
         self.labels = None
         self.embedding = None
+        self.verbose = verbose
         
     def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
         ## core constructor methods
@@ -35,7 +36,8 @@ class multi_layer_network:
             parsers.save_edgelist(self.core_network,output_file=output_file)
         
     def basic_stats(self,target_network=None):
-        self.monitor("Computing core stats")
+        if self.verbose:
+            self.monitor("Computing core stats")
         if target_network is None:
             print(nx.info(self.core_network))
         else:
@@ -48,7 +50,9 @@ class multi_layer_network:
         return self.core_network.nodes(data=data)
         
     def get_layers(self,style="diagonal"):
-        self.monitor("Network splitting in progress")
+
+        if self.verbose:
+            self.monitor("Network splitting in progress")
 
         ## multilayer visualization
         if style == "diagonal":
@@ -79,7 +83,8 @@ class multi_layer_network:
         if heuristic == "all":
             heuristic = ["idf","tf","chi","ig","gr","delta","rf","okapi"] ## all available
         if self.hinmine_network is None:
-            print("Loading into a hinmine object..")
+            if self.verbose:
+                print("Loading into a hinmine object..")
             self.hinmine_network = load_hinmine_object(self.core_network, self.label_delimiter)
 
         if beta > 0:

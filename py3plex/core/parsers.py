@@ -204,6 +204,20 @@ def parse_embedding(input_name):
     embedding_indices = np.array(embedding_indices)    
     return (embedding_matrix,embedding_indices)
 
+def parse_multiedge_tuple_list(network,directed):
+    if directed:
+        G = nx.MultiDiGraph()
+        
+    else:
+        G = nx.MultiGraph()
+    for _edgetuple in network:
+        node_first,node_second,layer_first,layer_second,weight = _edgetuple
+        G.add_node(node_first,type=layer_first)
+        G.add_node(node_second,type=layer_second)
+        G.add_edge(node_first,node_second,weight=weight)
+    return (G,None)
+    pass
+
 ## main parser method
 def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None):
     if f_type == "gml":
@@ -232,6 +246,9 @@ def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None)
     
     elif f_type == "edgelist_with_edge_types":
         return parse_edgelist_multi_types(input_name,directed)
+    
+    elif f_type == "multiedge_tuple_list":
+        return parse_multiedge_tuple_list(input_name,directed)
 
 def save_edgelist(input_network,output_file,attributes=False):
     fh=open(output_file,'wb')

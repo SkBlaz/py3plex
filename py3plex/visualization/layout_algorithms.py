@@ -10,7 +10,7 @@ try:
 except:
     forceImport = False
 
-def compute_force_directed_layout(g,layout_parameters=None,initial_positions=None):
+def compute_force_directed_layout(g,layout_parameters=None,initial_positions=None,verbose=False):
     
     if forceImport:
         try:
@@ -33,7 +33,7 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
                 gravity=1.0,
 
                 # Log
-                verbose=True)
+                verbose=verbose)
             
             if layout_parameters != None:
                 pos = forceatlas2.forceatlas2_networkx_layout(g, pos=initial_positions,**layout_parameters)

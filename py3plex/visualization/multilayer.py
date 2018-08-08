@@ -21,7 +21,7 @@ from . layout_algorithms import *
 main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,layout_algorithm="force",layout_parameters=None):
+def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,layout_algorithm="force",layout_parameters=None,verbose=True):
 
     if background_color == "default":
         
@@ -61,7 +61,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
         degrees = dict(nx.degree(nx.Graph(network)))
 
         if layout_algorithm == "force":
-            tmp_pos = compute_force_directed_layout(network,layout_parameters)
+            tmp_pos = compute_force_directed_layout(network,layout_parameters,verbose=verbose)
             
         elif layout_algorithm == "random":
             tmp_pos = compute_random_layout(network)
