@@ -42,13 +42,13 @@ if __name__ == "__main__":
     datapoints = []
     
     for combination in combinations:
-        N,E,p = combination
-        print("Evaluating {} {} {} setting.".format(N,E,p))
+        N,L,p = combination
+        print("Evaluating {} {} {} setting.".format(N,L,p))
         
-        net = models.er_multilayer(N,E,p)        
+        net = models.er_multilayer(N,L,p)        
         t_pp = py3plex_visualization(net)
         t_pmn = pymnet_visualization(net)
-        datapoints.append({"N":N,"E":E,"p":p,"Py3plex":t_pp,"Pymnet":t_pmn})
+        datapoints.append({"N":N,"E":L,"p":p,"Py3plex":t_pp,"Pymnet":t_pmn})
 
     result_frame = pd.DataFrame(datapoints)
     result_frame.to_csv("example_benchmark.csv")
