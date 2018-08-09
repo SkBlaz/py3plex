@@ -1,0 +1,91 @@
+Network construction and manipulation
+====================================
+
+This section includes some basic information about the core multilayer data structure used in the py3plex library.
+ 
+The multinet
+------------
+
+The multinet class is the main data structure used. Its functionality can be described in three simple points:
+
+#. Network parsing
+#. Network conversion
+#. Network decomposition
+
+
+Every time a new network is used, it needs to be packed into a simple object-line interface, as done below:
+   
+.. code-block:: python
+   :linenos:
+
+   from py3plex.core import multinet
+   
+   # initialize the network object
+   multilayer_network = multinet.multi_layer_network()
+
+   # load the file
+   multilayer_network.load_network("imdb_gml.gml",directed=False,label_delimiter="---")
+
+   # compute some basic statistics
+   multilayer_network.basic_stats()
+
+Network parsers
+---------------
+
+Network parsers lie at the core of every network library. As py3plex is build on top of NetworkX package, it supports all parsers present there, for example:
+
+* edgelist parsing (edgelist)
+* gpickle compressed network parsing (gpickle)
+* GML format (gml)
+* networkx objects (nx)
+* ...
+
+The user must simply take care of the input file ending, or in the case of a raw networkx file, simply pass it as input.
+
+The input type is specified using the *input_type* flag when using the *load_network* method.
+
+
+Working with multilayer networks
+--------------------------------
+
+Having introduced some basic concepts, we continue with conventions, adopted to successfully work with multilayer networks.
+
+#. Each not and edge can have a *type* flag assigned.
+#. Each edge can have a *weight*.
+#. Target node class (if specified), must have the *label* flag, where the value is a string representing different delimiter-separated classes. For example: class1---class2---class3 represent a node with 3 classes assigned (multiclass-multilabel problem.
+
+The *label_delimiter* is specified when inputting the network
+
+.. code-block:: python
+   :linenos:
+      
+   load_network(input_file="example.gpickle", directed=False, input_type="gpickle",label_delimiter="---"):
+
+
+Examples
+--------
+
+Load a gml file:
+
+.. code-block:: python
+   :linenos:
+      
+   multilayer_network.load_network(input_file="example.gml", directed=False, input_type="gml"):
+
+
+Load a gpickle file:
+
+.. code-block:: python
+   :linenos:
+      
+   multilayer_network.load_network(input_file="example.gpickle", directed=False, input_type="gpickle"):
+
+
+Load a gpickle file, with one type of nodes labeled:
+
+.. code-block:: python
+   :linenos:
+      
+   multilayer_network.load_network(input_file="example.gpickle", directed=False, input_type="gpickle",label_delimiter="---"):
+
+etc.

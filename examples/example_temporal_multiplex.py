@@ -27,6 +27,7 @@ for time,network_slice in time_network_slices.items():
     network_labels, graphs, multilinks = network_slice.get_layers()
 
     multilayer_network.monitor("Drawing in progress")
+    
     ## draw the type-wise projection
     a = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,layout_algorithm="force")
 

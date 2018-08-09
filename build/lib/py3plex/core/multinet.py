@@ -8,6 +8,10 @@ from .HINMINE.IO import * ## parse the graph
 from .HINMINE.decomposition import * ## decompose the graph
 import scipy.sparse as sp
 
+## visualization modules
+from ..visualization.multilayer import *
+from ..visualization.colors import all_color_names,colors_default
+
 class multi_layer_network:
 
     ## constructor
@@ -85,6 +89,28 @@ class multi_layer_network:
         ## convert this to a tensor of some sort
         pass
 
+    def visualize_network(self,style="diagonal"):
+
+        network_labels, graphs, multilinks = self.get_layers(style)
+
+        if style == "diagonal":
+
+            ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,layout_algorithm="force")
+            enum = 1
+            color_mappings = {idx : col for idx, col in enumerate(colors_default)}
+            for edge_type,edges in multilinks.items():
+                ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-.",linecolor="black",curve_height=5,linmod="upper",linewidth=0.4)
+                enum+=1
+            return ax
+        
+        elif style == "hairball":
+            network_colors, graph = multilayer_network.get_layers(style="hairball")
+            ax = hairball_plot(graph,network_colors,layout_algorithm="force")
+            return ax
+
+        else:
+            raise Exception("Please, specify visualization style using: .style. keyword")
+            
     def get_nx_object(self):
         return self.core_network
 

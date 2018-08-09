@@ -17,4 +17,5 @@ The documentation is structured as follows:
 
    core
    visualization
+   py3plex
    

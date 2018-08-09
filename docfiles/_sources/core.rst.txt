@@ -1,7 +1,7 @@
 Network construction and manipulation
 ====================================
 
-This section includes some basic information about the core multilayer data structure used in the py3plex library.
+This section includes some basic information about the core multilayer data structure used in the py3plex library..
  
 The multinet
 ------------
@@ -11,7 +11,6 @@ The multinet class is the main data structure used. Its functionality can be des
 #. Network parsing
 #. Network conversion
 #. Network decomposition
-
 
 Every time a new network is used, it needs to be packed into a simple object-line interface, as done below:
    

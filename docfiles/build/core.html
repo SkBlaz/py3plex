@@ -1,0 +1,165 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Network construction and manipulation &#8212; py3plex 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Network visualization" href="visualization.html" />
+    <link rel="prev" title="Py3plex - documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="network-construction-and-manipulation">
+<h1>Network construction and manipulation<a class="headerlink" href="#network-construction-and-manipulation" title="Permalink to this headline">¶</a></h1>
+<p>This section includes some basic information about the core multilayer data structure used in the py3plex library.</p>
+<div class="section" id="the-multinet">
+<h2>The multinet<a class="headerlink" href="#the-multinet" title="Permalink to this headline">¶</a></h2>
+<p>The multinet class is the main data structure used. Its functionality can be described in three simple points:</p>
+<ol class="arabic simple">
+<li>Network parsing</li>
+<li>Network conversion</li>
+<li>Network decomposition</li>
+</ol>
+<p>Every time a new network is used, it needs to be packed into a simple object-line interface, as done below:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># initialize the network object</span>
+<span class="n">multilayer_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># load the file</span>
+<span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;imdb_gml.gml&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute some basic statistics</span>
+<span class="n">multilayer_network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="network-parsers">
+<h2>Network parsers<a class="headerlink" href="#network-parsers" title="Permalink to this headline">¶</a></h2>
+<p>Network parsers lie at the core of every network library. As py3plex is build on top of NetworkX package, it supports all parsers present there, for example:</p>
+<ul class="simple">
+<li>edgelist parsing (edgelist)</li>
+<li>gpickle compressed network parsing (gpickle)</li>
+<li>GML format (gml)</li>
+<li>networkx objects (nx)</li>
+<li>…</li>
+</ul>
+<p>The user must simply take care of the input file ending, or in the case of a raw networkx file, simply pass it as input.</p>
+<p>The input type is specified using the <em>input_type</em> flag when using the <em>load_network</em> method.</p>
+</div>
+<div class="section" id="working-with-multilayer-networks">
+<h2>Working with multilayer networks<a class="headerlink" href="#working-with-multilayer-networks" title="Permalink to this headline">¶</a></h2>
+<p>Having introduced some basic concepts, we continue with conventions, adopted to successfully work with multilayer networks.</p>
+<ol class="arabic simple">
+<li>Each not and edge can have a <em>type</em> flag assigned.</li>
+<li>Each edge can have a <em>weight</em>.</li>
+<li>Target node class (if specified), must have the <em>label</em> flag, where the value is a string representing different delimiter-separated classes. For example: class1—class2—class3 represent a node with 3 classes assigned (multiclass-multilabel problem.</li>
+</ol>
+<p>The <em>label_delimiter</em> is specified when inputting the network</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">):</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Load a gml file:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gml&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gml&quot;</span><span class="p">):</span>
+</pre></div>
+</td></tr></table></div>
+<p>Load a gpickle file:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">):</span>
+</pre></div>
+</td></tr></table></div>
+<p>Load a gpickle file, with one type of nodes labeled:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">):</span>
+</pre></div>
+</td></tr></table></div>
+<p>etc.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter"><em>Py3plex</em> - documentation</a></li>
+      <li>Next: <a href="visualization.html" title="next chapter">Network visualization</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Blaž Škrlj.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/core.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
