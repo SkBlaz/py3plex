@@ -90,10 +90,10 @@ plt.show()
 multilayer_network.visualize_network(style="hairball")
 plt.show()
 
-```python
+```
 For fine-tuning, plots can be constructed using functional API:
 
-```
+```python
 
 ## individual visualization elements can be accessed, and customized as follows
 network_labels, graphs, multilinks = multilayer_network.get_layers() ## get layers for visualization
@@ -113,6 +113,7 @@ network_colors, graph = multilayer_network.get_layers(style="hairball")
 hairball_plot(graph,network_colors)
 plt.show()
 ```
+
 ![Non-labeled embedding](example_images/multilayer.png)
 
 
