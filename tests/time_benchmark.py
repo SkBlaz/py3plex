@@ -36,9 +36,9 @@ if __name__ == "__main__":
     import itertools
     import pandas as pd
     
-    number_of_nodes = [10,100,200,1000,2000]
+    number_of_nodes = [10,50,100]
     number_of_edges = reversed([x+1 for x in list(range(8))])
-    probabilities = np.arange(0.05,0.3,0.05).tolist()
+    probabilities = np.arange(0.05,0.2,0.05).tolist()
 
     merged = [number_of_nodes,number_of_edges,probabilities]
     combinations = list(itertools.product(*merged))

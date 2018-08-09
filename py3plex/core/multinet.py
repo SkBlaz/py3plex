@@ -11,22 +11,38 @@ import scipy.sparse as sp
 class multi_layer_network:
 
     ## constructor
-    def __init__(self,verbose=True):
+    def __init__(self,verbose=True,network_type="multilayer",layer_node_code = "$LN$"):
+
+        ## initialize the class
+        
         self.core_network = None     
         self.labels = None
         self.embedding = None
         self.verbose = verbose
+        self.network_type = network_type ## assing network type
+        self.layer_node_code = layer_node_code
         
     def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
         ## core constructor methods
+        
         self.input_file = input_file
         self.input_type = input_type
         self.label_delimiter = label_delimiter
         self.hinmine_network = None
         self.directed = directed
-        self.core_network, self.labels = parsers.parse_network(self.input_file, self.input_type, directed=self.directed, label_delimiter=self.label_delimiter)
+        self.temporal_edges = None
+        self.core_network, self.labels = parsers.parse_network(self.input_file,
+                                            self.input_type,
+                                            directed=self.directed,
+                                            label_delimiter=self.label_delimiter,
+                                            network_type=self.network_type,
+                                            layer_node_code = self.layer_node_code)
         
         return self
+
+    def load_temporal_edge_information(self,input_file=None,input_type="edge_activity",directed=False,layer_mapping=None):
+
+        self.temporal_edges = parsers.load_temporal_edge_information(input_file,input_type=input_type,layer_mapping=layer_mapping,layer_node_code = self.layer_node_code)
     
     def monitor(self,message):
         print("-"*20,"\n",message,"\n","-"*20)
@@ -36,10 +52,13 @@ class multi_layer_network:
             parsers.save_edgelist(self.core_network,output_file=output_file)
         
     def basic_stats(self,target_network=None):
+        
         if self.verbose:
             self.monitor("Computing core stats")
-        if target_network is None:
+            
+        if target_network is None:            
             print(nx.info(self.core_network))
+            
         else:
             print(nx.info(target_network))
             

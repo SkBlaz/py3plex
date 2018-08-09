@@ -15,7 +15,7 @@ def prepare_for_visualization(multinet):
     networks = {layer_name : multinet.subgraph(v) for layer_name,v in layers.items()}
     inverse_mapping = {}
     layouts = []
-            
+
     ## construct the inverse mapping
     for k,v in layers.items():
         for x in v:
@@ -27,8 +27,8 @@ def prepare_for_visualization(multinet):
             if inverse_mapping[edge[0]] != inverse_mapping[edge[1]]:
                 multiedges[edge[2]['type']].append((edge[0],edge[1]))
         except:
-            pass
-
+            pass        
+        
     names,networks = zip(*networks.items())
     return (names,networks,multiedges)
 
