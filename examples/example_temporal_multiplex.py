@@ -24,21 +24,11 @@ for time,network_slice in time_network_slices.items():
     print(network_slice.basic_stats())
     
     ## obtain visualization layers
-    network_labels, graphs, multilinks = network_slice.get_layers()
 
     multilayer_network.monitor("Drawing in progress")
     
     ## draw the type-wise projection
-    a = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,layout_algorithm="force")
-
-    multilayer_network.monitor("Adding edges..")
-    ## add trans-layer edges (i.e., multiplex)    
-    enum = 1
-    color_mappings = {idx : col for idx, col in enumerate(colors_default)}
-    for edge_type,edges in multilinks.items():
-        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-.",linecolor="black",curve_height=5,linmod="upper",linewidth=0.4)
-        enum+=1
-    #plt.show()
+    a = network_slice.visualize_network()
     frame_images.append(a)
     plt.show()
     plt.clf()

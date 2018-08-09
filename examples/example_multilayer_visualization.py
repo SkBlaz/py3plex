@@ -6,6 +6,11 @@ from py3plex.core import multinet
 ## multilayer -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=False, input_type="gpickle_biomine")
 multilayer_network.basic_stats() ## check core imports
+multilayer_network.visualize_network() ## visualize
+plt.show()
+
+## You can also access individual graphical elements separately!
+
 network_labels, graphs, multilinks = multilayer_network.get_layers() ## get layers for visualization
 draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,layout_algorithm="force")
 
