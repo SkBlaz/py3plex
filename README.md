@@ -78,9 +78,24 @@ from py3plex.visualization.multilayer import *
 from py3plex.visualization.colors import all_color_names,colors_default
 from py3plex.core import multinet
 
+## you can try the default visualization options --- this is the simplest option/
+
 ## multilayer
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/goslim_mirna.gpickle",directed=False, input_type="gpickle_biomine")
 multilayer_network.basic_stats() ## check core imports
+
+multilayer_network.visualize_network(style="diagonal")
+plt.show()
+
+multilayer_network.visualize_network(style="hairball")
+plt.show()
+
+```
+For fine-tuning, plots can be constructed using functional API:
+
+```python
+
+## individual visualization elements can be accessed, and customized as follows
 network_labels, graphs, multilinks = multilayer_network.get_layers() ## get layers for visualization
 #print(network_labels,graphs)
 draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels)
@@ -98,6 +113,7 @@ network_colors, graph = multilayer_network.get_layers(style="hairball")
 hairball_plot(graph,network_colors)
 plt.show()
 ```
+
 ![Non-labeled embedding](example_images/multilayer.png)
 
 
@@ -183,6 +199,48 @@ with open('../datasets/embedding_coordinates.json', 'w') as outfile:
     json.dump(output_json, outfile)
 ```
 ![Non-labeled embedding](example_images/example_embedding.png)
+
+
+**Temporal and multiplex networks**
+
+This example demonstrates, how dynamic multiplex networks can easily be visualized and manipulated. Note that the initial class is initialized differently, however, other methods remain similar.
+```python
+from py3plex.visualization.multilayer import *
+from py3plex.core import multinet
+from py3plex.algorithms.temporal_multiplex import *
+
+## load the network as multiplex (coupled) network. (layer n1 n2 weight)
+multilayer_network = multinet.multi_layer_network(network_type="multiplex").load_network("../datasets/moscow_edges.txt",directed=True, input_type="multiplex_edges")
+
+multilayer_network.basic_stats() ## check core imports
+
+multilayer_network.load_temporal_edge_information("../datasets/moscow_activity.txt",input_type="edge_activity",layer_mapping="../datasets/moscow_layer_mapping.txt")
+
+## split timeframe to 50 equally sized slices
+time_network_slices = split_to_temporal_slices(multilayer_network,slices=5)
+
+multilayer_network.monitor("Proceeding to visualization part..")
+## for each slice -- plot the network
+
+frame_images = []
+
+for time,network_slice in time_network_slices.items():
+
+    print(network_slice.basic_stats())
+    
+    ## obtain visualization layers
+
+    multilayer_network.monitor("Drawing in progress")
+    
+    ## draw the type-wise projection
+    a = network_slice.visualize_network()
+    frame_images.append(a)
+    plt.show()
+    plt.clf()
+
+
+```
+
 
 # Acknowledgements
 ForceAtlas2 cython implementation is based on the one provided at https://github.com/bhargavchippada/forceatlas2, developed by Bhargav Chippada. The code is included by the author's permission. We also thank Thomas Aynaud for the permission to include the initial version of the Louvain algorithm.
