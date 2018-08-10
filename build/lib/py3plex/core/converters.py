@@ -8,8 +8,8 @@ def prepare_for_visualization(multinet):
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
         try:
-            layers[node[1]['type']].append(node[0])
-        except:
+            layers[node[0][1]].append(node[0])
+        except Exception as err:
             pass
 
     networks = {layer_name : multinet.subgraph(v) for layer_name,v in layers.items()}

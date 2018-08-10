@@ -194,7 +194,7 @@ def parse_multiedge_tuple_list(network,directed):
     return (G,None)
     pass
 
-def parse_multiplex_edges(input_name,directed,layer_node_code="$LN$"):
+def parse_multiplex_edges(input_name,directed):
     
     if directed:
         G = nx.MultiDiGraph()
@@ -208,9 +208,6 @@ def parse_multiplex_edges(input_name,directed,layer_node_code="$LN$"):
                 
                 ## layerID nodeID nodeID weight
                 layer, node_first, node_second, weight = line.strip().split()
-                
-                node_first = str(layer)+layer_node_code+str(node_first)
-                node_second = str(layer)+layer_node_code+str(node_second)
 
                 ## construct the network                
                 G.add_node(node_first,type=str(layer))
@@ -220,7 +217,7 @@ def parse_multiplex_edges(input_name,directed,layer_node_code="$LN$"):
     return (G,None)
 
 ## main parser method
-def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,network_type="multilayer",layer_node_code = "$LN$"):
+def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,network_type="multilayer"):
         
     if f_type == "gml":
         parsed_network,labels,labels = parse_gml(input_name,directed)
@@ -253,19 +250,19 @@ def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,
         parsed_network,labels = parse_multiedge_tuple_list(input_name,directed)
 
     elif f_type == "multiplex_edges":
-        parsed_network,labels = parse_multiplex_edges(input_name,directed,layer_node_code)
+        parsed_network,labels = parse_multiplex_edges(input_name,directed)
 
     if network_type == "multilayer":
         return (parsed_network, labels)
     
     elif network_type == "multiplex":
-        multiplex_graph = add_mpx_edges(parsed_network,layer_node_code)
+        multiplex_graph = add_mpx_edges(parsed_network)
         return (multiplex_graph, labels)
     
     else:
         raise Exception("Please, specify heterogeneous network type.")
     
-def load_edge_activity_file(fname,layer_mapping=None,layer_node_code="$LN$"):
+def load_edge_activity_file(fname,layer_mapping=None):
 
     
     # Example edge looks like this: 11 11 1375695069 RE
@@ -284,15 +281,14 @@ def load_edge_activity_file(fname,layer_mapping=None,layer_node_code="$LN$"):
             node1,node2,timestamp,layer = line.strip().split()
             if layer_mapping is not None:
                 layer = lmap[layer]
-            data.append({"node_first":layer+layer_node_code+node1,"node_second":layer+layer_node_code+node2,"timestamp":timestamp})
+            data.append({"node_first":node1,"node_second":node2,"layer":layer,"timestamp":timestamp})
     outframe = outframe.from_dict(data)
     return outframe
-
     
-def load_temporal_edge_information(input_network,input_type,layer_mapping=None,layer_node_code="$LN$"):
+def load_temporal_edge_information(input_network,input_type,layer_mapping=None):
 
     if input_type == "edge_activity":
-        return load_edge_activity_file(input_network,layer_mapping=layer_mapping,layer_node_code=layer_node_code)
+        return load_edge_activity_file(input_network,layer_mapping=layer_mapping)
     else:
         return None            
     

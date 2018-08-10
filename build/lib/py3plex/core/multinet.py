@@ -6,6 +6,7 @@ from . import  parsers
 from . import converters
 from .HINMINE.IO import * ## parse the graph
 from .HINMINE.decomposition import * ## decompose the graph
+from .supporting import *
 import scipy.sparse as sp
 
 ## visualization modules
@@ -15,7 +16,7 @@ from ..visualization.colors import all_color_names,colors_default
 class multi_layer_network:
 
     ## constructor
-    def __init__(self,verbose=True,network_type="multilayer",layer_node_code = "$LN$"):
+    def __init__(self,verbose=True,network_type="multilayer",directed=True,dummy_layer="null"):
         """Class initializer  
         
         This is the main class initializer method. User here specifies the type of the network, as well as other global parameters.
@@ -23,12 +24,13 @@ class multi_layer_network:
         """
         ## initialize the class
         
-        self.core_network = None     
+        self.core_network = None
+        self.directed = directed
+        self.dummy_layer = dummy_layer
         self.labels = None
         self.embedding = None
         self.verbose = verbose
         self.network_type = network_type ## assing network type
-        self.layer_node_code = layer_node_code
         
     def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
         """Main method for loading networks"""
@@ -44,15 +46,14 @@ class multi_layer_network:
                                             self.input_type,
                                             directed=self.directed,
                                             label_delimiter=self.label_delimiter,
-                                            network_type=self.network_type,
-                                            layer_node_code = self.layer_node_code)
+                                            network_type=self.network_type)
         
         return self
 
     def load_temporal_edge_information(self,input_file=None,input_type="edge_activity",directed=False,layer_mapping=None):
         """ A method for loading temporal edge information """
         
-        self.temporal_edges = parsers.load_temporal_edge_information(input_file,input_type=input_type,layer_mapping=layer_mapping,layer_node_code = self.layer_node_code)
+        self.temporal_edges = parsers.load_temporal_edge_information(input_file,input_type=input_type,layer_mapping=layer_mapping)
     
     def monitor(self,message):
         """ A simple monithor method """
@@ -85,17 +86,14 @@ class multi_layer_network:
                 yield edge
                 
         elif self.network_type == "multiplex":
-
             if not mpx_edges:
                 for edge in self.core_network.edges(data=data,keys=True):
                     if edge[2] == "mpx":
                         continue
-                    yield edge
-            
+                    yield edge            
             else:            
                 for edge in self.core_network.edges(data=data):
                     yield edge
-
         else:
             raise Exception("Specify network type!  e.g., multilayer_network")
                 
@@ -119,12 +117,82 @@ class multi_layer_network:
         ## hairball visualization
         if style == "hairball":
             return converters.prepare_for_visualization_hairball(self.core_network)
+
+    def add_edges(self,edge_dict_list):
+        """ A method for adding edges.. """
+
+        if self.core_network is None:
+            if self.directed:
+                self.core_network = nx.MultiDiGraph()
+            else:
+                self.core_network = nx.MultiGraph()
+
+        if isinstance(edge_dict_list,dict):
+            edge_dict = edge_dict_list
+            if "source_type" in edge_dict_list.keys() and "target_type" in edge_dict_list.keys():
+                edge_dict['v_for_edge'] = (edge_dict['target'],edge_dict['source_type'])
+                edge_dict['u_for_edge'] = (edge_dict['source'],edge_dict['target_type'])
+            else:
+                edge_dict['v_for_edge'] = (edge_dict['target'],self.dummy_layer)
+                edge_dict['u_for_edge'] = (edge_dict['source'],self.dummy_layer)
+                
+            del edge_dict['target'];del edge_dict['source']
+            #del edge_dict['target_type'];del edge_dict['source_type']
+            self.core_network.add_edge(**edge_dict)
+                
+        else:
+            for edge_dict in edge_dict_list:
+
+                if "source_type" in edge_dict.keys() and "target_type" in edge_dict.keys():
+                    edge_dict['v_for_edge'] = (edge_dict['target'],edge_dict['source_type'])
+                    edge_dict['u_for_edge'] = (edge_dict['source'],edge_dict['target_type'])
+                else:
+                    edge_dict['v_for_edge'] = (edge_dict['target'],self.dummy_layer)
+                    edge_dict['u_for_edge'] = (edge_dict['source'],self.dummy_layer)
+                
+                del edge_dict['target'];del edge_dict['source']
+                #del edge_dict['target_type'];del edge_dict['source_type']
+                self.core_network.add_edge(**edge_dict)
+
+        if self.network_type == "multiplex":
+            self.core_network = add_mpx_edges(self.core_network)
+
+    def add_nodes(self,node_dict_list):
+        """ A method for adding nodes.. """
+
+        if self.core_network is None:
+            if self.directed:
+                self.core_network = nx.MultiDiGraph()
+            else:
+                self.core_network = nx.MultiGraph()
+
+        if isinstance(node_dict_list,dict):
+            node_dict = node_dict_list
+            node_dict["node_for_adding"] = node_dict["source"]
+            
+            if "type" in node_dict.keys():
+                node_dict["node_for_adding"] = (node_dict["source"],node_dict['type'])
+            else:
+                node_dict["node_for_adding"] = (node_dict["source"],self.dummy_layer)                
+            del node_dict["source"]        
+            self.core_network.add_node(**node_dict)
+        else:                
+            for node_dict in node_dict_list:
+                if "type" in node_dict.keys():
+                    node_dict["node_for_adding"] = (node_dict["source"],node_dict['type'])
+                else:
+                    node_dict["node_for_adding"] = (node_dict["source"],self.dummy_layer)          
+                del node_dict["source"]        
+                self.core_network.add_node(**node_dict)
+            
+        if self.network_type == "multiplex":
+            self.core_network = add_mpx_edges(self.core_network)
             
     def get_tensor(self):
         ## convert this to a tensor of some sort
         pass
 
-    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None):
+    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False):
 
         """ network visualization method """
         
@@ -145,12 +213,16 @@ class multi_layer_network:
                 enum = 1
                 for edge_type,edges in multilinks.items():
                     ax = draw_multiedges(graphs,edges,**parameters_multiedges)
-                    enum+=1                                    
+                    enum+=1
+            if show:
+                plt.show()
             return ax
         
         elif style == "hairball":
             network_colors, graph = multilayer_network.get_layers(style="hairball")
             ax = hairball_plot(graph,network_colors,layout_algorithm="force")
+            if show:
+                plt.show()
             return ax
 
         else:

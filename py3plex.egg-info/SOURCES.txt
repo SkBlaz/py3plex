@@ -45,6 +45,7 @@ py3plex/core/__init__.py
 py3plex/core/converters.py
 py3plex/core/multinet.py
 py3plex/core/parsers.py
+py3plex/core/random_generators.py
 py3plex/core/supporting.py
 py3plex/core/HINMINE/IO.py
 py3plex/core/HINMINE/__init__.py
