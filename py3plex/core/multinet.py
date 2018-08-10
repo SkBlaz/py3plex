@@ -78,15 +78,32 @@ class multi_layer_network:
         else:
             print(nx.info(target_network))
             
-    def get_edges(self,data=False):
+    def get_edges(self,data=False,mpx_edges=False):
         """ A method for obtaining a network's edges """
-        
-        return self.core_network.edges(data=data)
+        if self.network_type == "multilayer":        
+            for edge in self.core_network.edges(data=data):
+                yield edge
+                
+        elif self.network_type == "multiplex":
 
+            if not mpx_edges:
+                for edge in self.core_network.edges(data=data,keys=True):
+                    if edge[2] == "mpx":
+                        continue
+                    yield edge
+            
+            else:            
+                for edge in self.core_network.edges(data=data):
+                    yield edge
+
+        else:
+            raise Exception("Specify network type!  e.g., multilayer_network")
+                
     def get_nodes(self,data=False):
         """ A method for obtaining a network's nodes """
         
-        return self.core_network.nodes(data=data)
+        for node in self.core_network.nodes(data=data):
+            yield node
         
     def get_layers(self,style="diagonal"):
 

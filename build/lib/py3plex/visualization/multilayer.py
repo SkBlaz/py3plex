@@ -102,7 +102,11 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
         
         start_location_network += 1.5
         start_location_background += 1.5
-        node_sizes = [np.log(v) * nodesize if v > 400 else 1 for v in degrees.values()]
+        if len(network.nodes()) > 10000:
+            correction=10
+        else:
+            correction = 1
+        node_sizes = [(np.log(v) * nodesize)/correction if v > 400 else 1/correction for v in degrees.values()]
         
         nx.draw(network, nx.get_node_attributes(network, 'pos'),node_color=facecolor_list[color], with_labels=False,edge_size=5,node_size=node_sizes)
         color += 1

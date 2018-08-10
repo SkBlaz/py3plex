@@ -16,7 +16,11 @@ class multi_layer_network:
 
     ## constructor
     def __init__(self,verbose=True,network_type="multilayer",layer_node_code = "$LN$"):
-        """ Class initializer  """
+        """Class initializer  
+        
+        This is the main class initializer method. User here specifies the type of the network, as well as other global parameters.
+
+        """
         ## initialize the class
         
         self.core_network = None     
@@ -27,8 +31,7 @@ class multi_layer_network:
         self.layer_node_code = layer_node_code
         
     def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
-
-        """ Main method for loading networks  """
+        """Main method for loading networks"""
         ## core constructor methods
         
         self.input_file = input_file
@@ -47,7 +50,6 @@ class multi_layer_network:
         return self
 
     def load_temporal_edge_information(self,input_file=None,input_type="edge_activity",directed=False,layer_mapping=None):
-
         """ A method for loading temporal edge information """
         
         self.temporal_edges = parsers.load_temporal_edge_information(input_file,input_type=input_type,layer_mapping=layer_mapping,layer_node_code = self.layer_node_code)
@@ -76,15 +78,32 @@ class multi_layer_network:
         else:
             print(nx.info(target_network))
             
-    def get_edges(self,data=False):
+    def get_edges(self,data=False,mpx_edges=False):
         """ A method for obtaining a network's edges """
-        
-        return self.core_network.edges(data=data)
+        if self.network_type == "multilayer":        
+            for edge in self.core_network.edges(data=data):
+                yield edge
+                
+        elif self.network_type == "multiplex":
 
+            if not mpx_edges:
+                for edge in self.core_network.edges(data=data,keys=True):
+                    if edge[2] == "mpx":
+                        continue
+                    yield edge
+            
+            else:            
+                for edge in self.core_network.edges(data=data):
+                    yield edge
+
+        else:
+            raise Exception("Specify network type!  e.g., multilayer_network")
+                
     def get_nodes(self,data=False):
         """ A method for obtaining a network's nodes """
         
-        return self.core_network.nodes(data=data)
+        for node in self.core_network.nodes(data=data):
+            yield node
         
     def get_layers(self,style="diagonal"):
 
