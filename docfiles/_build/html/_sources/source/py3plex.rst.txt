@@ -1,7 +1,5 @@
-py3plex package --- all functions
+py3plex package
 ===============
-
-This part of the documentation contains all method definitions currently present in Py3plex.
 
 Subpackages
 -----------

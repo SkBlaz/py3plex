@@ -13,7 +13,7 @@ The aim of this library is to:
 The documentation is structured as follows:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    core
    visualization
