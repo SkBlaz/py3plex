@@ -118,14 +118,14 @@ class multi_layer_network:
         if style == "hairball":
             return converters.prepare_for_visualization_hairball(self.core_network)
 
-    def add_edges(self,edge_dict_list):
-        """ A method for adding edges.. """
-
+    def _initiate_network(self):
         if self.core_network is None:
             if self.directed:
                 self.core_network = nx.MultiDiGraph()
             else:
                 self.core_network = nx.MultiGraph()
+
+    def _generic_edge_dict_manipulator(self,edge_dict_list,target_function):
 
         if isinstance(edge_dict_list,dict):
             edge_dict = edge_dict_list
@@ -137,8 +137,8 @@ class multi_layer_network:
                 edge_dict['u_for_edge'] = (edge_dict['source'],self.dummy_layer)
                 
             del edge_dict['target'];del edge_dict['source']
-            #del edge_dict['target_type'];del edge_dict['source_type']
-            self.core_network.add_edge(**edge_dict)
+            del edge_dict['target_type'];del edge_dict['source_type']
+            eval("self.core_network."+target_function+"(**edge_dict)")
                 
         else:
             for edge_dict in edge_dict_list:
@@ -151,21 +151,22 @@ class multi_layer_network:
                     edge_dict['u_for_edge'] = (edge_dict['source'],self.dummy_layer)
                 
                 del edge_dict['target'];del edge_dict['source']
-                #del edge_dict['target_type'];del edge_dict['source_type']
-                self.core_network.add_edge(**edge_dict)
+                del edge_dict['target_type'];del edge_dict['source_type']
+                eval("self.core_network."+target_function+"(**edge_dict)")
+        
+    def _generic_edge_list_manipulator(self,edge_list,target_function):
 
-        if self.network_type == "multiplex":
-            self.core_network = add_mpx_edges(self.core_network)
-
-    def add_nodes(self,node_dict_list):
-        """ A method for adding nodes.. """
-
-        if self.core_network is None:
-            if self.directed:
-                self.core_network = nx.MultiDiGraph()
-            else:
-                self.core_network = nx.MultiGraph()
-
+        if isinstance(edge_list[0],list):
+            for edge in edge_list:
+                n1,l1,n2,l2,w = edge
+                eval("self.core_network."+target_function+"((n1,l1),(n2,l2))")
+            
+        else:
+            n1,l1,n2,l2,w = edge_list
+            eval("self.core_network."+target_function+"((n1,l1),(n2,l2))")
+    
+    def _generic_node_dict_manipulator(self,node_dict_list,target_function):
+        
         if isinstance(node_dict_list,dict):
             node_dict = node_dict_list
             node_dict["node_for_adding"] = node_dict["source"]
@@ -174,16 +175,61 @@ class multi_layer_network:
                 node_dict["node_for_adding"] = (node_dict["source"],node_dict['type'])
             else:
                 node_dict["node_for_adding"] = (node_dict["source"],self.dummy_layer)                
-            del node_dict["source"]        
-            self.core_network.add_node(**node_dict)
+            del node_dict["source"]
+            eval("self.core_network."+target_function+"(**node_dict)")
+            
         else:                
             for node_dict in node_dict_list:
                 if "type" in node_dict.keys():
                     node_dict["node_for_adding"] = (node_dict["source"],node_dict['type'])
                 else:
                     node_dict["node_for_adding"] = (node_dict["source"],self.dummy_layer)          
-                del node_dict["source"]        
-                self.core_network.add_node(**node_dict)
+                del node_dict["source"]
+                eval("self.core_network."+target_function+"(**node_dict)")                    
+                
+    def add_edges(self,edge_dict_list,input_type="dict"):
+        """ A method for adding edges.. """
+        
+        self._initiate_network()
+
+        if input_type == "dict":
+            self._generic_edge_dict_manipulator(edge_dict_list,"add_edge")
+        elif input_type == "list":
+            self._generic_edge_list_manipulator(edge_dict_list,"add_edge")
+        else:
+            raise Exception("Please, use dict or list input.")
+
+        if self.network_type == "multiplex":
+            self.core_network = add_mpx_edges(self.core_network)
+
+    def remove_edges(self,edge_dict_list,input_type="dict"):
+        """ A method for removing edges.. """
+        
+        if input_type == "dict":
+            self._generic_edge_dict_manipulator(edge_dict_list,"remove_edge")
+        elif input_type == "list":
+            self._generic_edge_list_manipulator(edge_dict_list,"remove_edge")
+        else:
+            raise Exception("Please, use dict or list input.")
+
+        if self.network_type == "multiplex":
+            self.core_network = add_mpx_edges(self.core_network)
+            
+    def add_nodes(self,node_dict_list,input_type="dict"):
+        """ A method for adding nodes.. """
+
+        self._initiate_network()
+
+        if input_type == "dict":
+            self._generic_node_dict_manipulator(node_dict_list,"add_node")
+            
+        if self.network_type == "multiplex":
+            self.core_network = add_mpx_edges(self.core_network)
+
+    def remove_nodes(self,node_dict_list,input_type="dict"):
+        
+        if input_type == "dict":
+            self._generic_node_dict_manipulator(node_dict_list,"remove_node")
             
         if self.network_type == "multiplex":
             self.core_network = add_mpx_edges(self.core_network)
