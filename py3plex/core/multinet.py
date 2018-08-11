@@ -17,7 +17,7 @@ class multi_layer_network:
 
     ## constructor
     def __init__(self,verbose=True,network_type="multilayer",directed=True,dummy_layer="null"):
-        """Class initializer  
+        """Class initializer
         
         This is the main class initializer method. User here specifies the type of the network, as well as other global parameters.
 
@@ -79,14 +79,14 @@ class multi_layer_network:
         else:
             print(nx.info(target_network))
             
-    def get_edges(self,data=False,mpx_edges=False):
+    def get_edges(self,data=False,multiplex_edges=False):
         """ A method for obtaining a network's edges """
         if self.network_type == "multilayer":        
             for edge in self.core_network.edges(data=data):
                 yield edge
                 
         elif self.network_type == "multiplex":
-            if not mpx_edges:
+            if not multiplex_edges:
                 for edge in self.core_network.edges(data=data,keys=True):
                     if edge[2] == "mpx":
                         continue
@@ -158,12 +158,12 @@ class multi_layer_network:
 
         if isinstance(edge_list[0],list):
             for edge in edge_list:
-                n1,l1,n2,l2,w = edge
-                eval("self.core_network."+target_function+"((n1,l1),(n2,l2))")
+                n1,l1,n2,l2,w = edge                
+                eval("self.core_network."+target_function+"((n1,l1),(n2,l2),weight="+str(w)+",type=\"default\")")
             
         else:
             n1,l1,n2,l2,w = edge_list
-            eval("self.core_network."+target_function+"((n1,l1),(n2,l2))")
+            eval("self.core_network."+target_function+"((n1,l1),(n2,l2),weight="+str(w)+",type=\"default\"))")
     
     def _generic_node_dict_manipulator(self,node_dict_list,target_function):
         
@@ -186,6 +186,10 @@ class multi_layer_network:
                     node_dict["node_for_adding"] = (node_dict["source"],self.dummy_layer)          
                 del node_dict["source"]
                 eval("self.core_network."+target_function+"(**node_dict)")                    
+
+    def _to_multiplex(self):
+        self.network_type = "multiplex"
+        self.core_network = add_mpx_edges(self.core_network)
                 
     def add_edges(self,edge_dict_list,input_type="dict"):
         """ A method for adding edges.. """

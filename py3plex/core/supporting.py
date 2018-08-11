@@ -66,14 +66,18 @@ def add_mpx_edges(input_network):
     
     min_node_layer = {}
     for layer,network in _layerwise_nodes.items():
-        min_node_layer[layer] = set([n[0][1] for n in network.nodes(data=True)])
-    
+        min_node_layer[layer] = set([n[0][0] for n in network.nodes(data=True)])
+        
     for pair in itertools.combinations(list(min_node_layer.keys()),2):
         layer_first = pair[0]
         layer_second = pair[1]
         pair_intersection = set.intersection(min_node_layer[layer_first],min_node_layer[layer_second])
+
         for node in pair_intersection:
-            input_network.add_edge((node,layer_first),(node,layer_second),key="mpx",type="multiplex")
+            n1 = (node,layer_first)
+            n2 = (node,layer_second)
+            input_network.add_edge(n1,n2,key="mpx",type="multiplex")
+            input_network.add_edge(n2,n1,key="mpx",type="multiplex")
 
     return input_network
         

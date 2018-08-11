@@ -10,9 +10,13 @@ def prepare_for_visualization(multinet):
         try:
             layers[node[0][1]].append(node[0])
         except Exception as err:
-            pass
+            print(err)
 
+#    for k,v in layers.items():
+#        print(k,list(v),list(multinet.edges()),list(multinet.subgraph(v).edges()))
+        
     networks = {layer_name : multinet.subgraph(v) for layer_name,v in layers.items()}
+        
     inverse_mapping = {}
     layouts = []
 
@@ -26,8 +30,9 @@ def prepare_for_visualization(multinet):
         try:
             if inverse_mapping[edge[0]] != inverse_mapping[edge[1]]:
                 multiedges[edge[2]['type']].append((edge[0],edge[1]))
-        except:
-            pass        
+                print(multiedges)
+        except Exception as err:
+            print(err)  
         
     names,networks = zip(*networks.items())
     return (names,networks,multiedges)

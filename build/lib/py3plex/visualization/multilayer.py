@@ -162,17 +162,15 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
 
         network_positions = [nx.get_node_attributes(network, 'pos') for network in network_list]
         global_positions = {}
-        global_layers = []
         for position in network_positions:
             for k,v in position.items():
                 global_positions[k]=v
-                global_layers.append(k.split("_")[0])
         
         for pair in multi_edge_tuple:
             try:
-                p1 = [global_positions[str(pair[0])][0],global_positions[str(pair[1])][0]]
-                p2 = [global_positions[str(pair[0])][1],global_positions[str(pair[1])][1]]
-
+                
+                p1 = [global_positions[pair[0]],global_positions[pair[0]]]
+                p2 = [global_positions[pair[1]],global_positions[pair[1]]]
                 if style == "line":
 
                     plt.plot(p1,p2,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
