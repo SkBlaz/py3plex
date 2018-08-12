@@ -30,10 +30,9 @@ def prepare_for_visualization(multinet):
         try:
             if inverse_mapping[edge[0]] != inverse_mapping[edge[1]]:
                 multiedges[edge[2]['type']].append((edge[0],edge[1]))
-                print(multiedges)
         except Exception as err:
             print(err)  
-        
+
     names,networks = zip(*networks.items())
     return (names,networks,multiedges)
 

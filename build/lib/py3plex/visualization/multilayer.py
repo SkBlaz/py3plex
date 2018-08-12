@@ -164,19 +164,25 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
         global_positions = {}
         for position in network_positions:
             for k,v in position.items():
+                print(k,v)
                 global_positions[k]=v
         
         for pair in multi_edge_tuple:
             try:
+
+                p1 = global_positions[pair[0]]
+                p2 = global_positions[pair[1]]
+#                p1 = [global_positions[pair[0]],global_positions[pair[0]]]
+#                p2 = [global_positions[pair[1]],global_positions[pair[1]]]
                 
-                p1 = [global_positions[pair[0]],global_positions[pair[0]]]
-                p2 = [global_positions[pair[1]],global_positions[pair[1]]]
                 if style == "line":
 
                     plt.plot(p1,p2,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
                     
                 elif style == "curve2_bezier":
+
                     x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height,inversion=invert,linemode=linmod)
+
                     plt.plot(x,y,linestyle=linepoints,lw=linewidth,alpha=alphachannel,color=linecolor)
                 
                 elif style == "curve3_bezier":
@@ -197,9 +203,8 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
                 else:                
                     pass
                 
-            except:
-                pass
-#                print("Failed to get global positions..")
+            except Exception as err:
+                print(err)
             
         
 def generate_random_multiedges(network_list,random_edges,style="line",linepoints="-.",upper_first=2,lower_first=0,lower_second=2,inverse_tag=False,pheight=1):
