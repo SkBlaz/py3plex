@@ -50,7 +50,7 @@ class multi_layer_network:
         
         return self
 
-    def load_temporal_edge_information(self,input_file=None,input_type="edge_activity",directed=False,layer_mapping=None):
+    def load_temporal_edge_information(self,input_file=None,input_type="edge_activity",directxed=False,layer_mapping=None):
         """ A method for loading temporal edge information """
         
         self.temporal_edges = parsers.load_temporal_edge_information(input_file,input_type=input_type,layer_mapping=layer_mapping)
@@ -103,7 +103,7 @@ class multi_layer_network:
         for node in self.core_network.nodes(data=data):
             yield node
         
-    def get_layers(self,style="diagonal"):
+    def get_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
 
         """ A method for obtaining layerwise distributions """
         
@@ -112,11 +112,11 @@ class multi_layer_network:
 
         ## multilayer visualization
         if style == "diagonal":
-            return converters.prepare_for_visualization(self.core_network)
+            return converters.prepare_for_visualization(self.core_network,compute_layouts=compute_layouts,layout_parameters=layout_parameters,verbose=verbose)
 
         ## hairball visualization
         if style == "hairball":
-            return converters.prepare_for_visualization_hairball(self.core_network)
+            return converters.prepare_for_visualization_hairball(self.core_network,compute_layouts=True)
 
     def _initiate_network(self):
         if self.core_network is None:
@@ -242,7 +242,7 @@ class multi_layer_network:
         ## convert this to a tensor of some sort
         pass
 
-    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False):
+    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True):
 
         """ network visualization method """
         
@@ -250,14 +250,17 @@ class multi_layer_network:
         
         if style == "diagonal":
             if parameters_layers is None:                
-                ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,layout_algorithm="force")
+                ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,nodesize=6)
             else:
                 ax = draw_multilayer_default(graphs,**parameters_layers)
 
             if parameters_multiedges is None:                
                 enum = 1
                 for edge_type,edges in multilinks.items():
-                    ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-.",linecolor="black",curve_height=5,linmod="upper",linewidth=0.4)
+                    if edge_type == "multiplex":
+                        ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="both",linewidth=1.7)
+                    else:
+                        ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-.",linecolor="black",curve_height=2,linmod="both",linewidth=0.4)                      
                     enum+=1
             else:
                 enum = 1

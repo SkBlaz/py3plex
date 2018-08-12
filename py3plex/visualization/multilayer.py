@@ -21,7 +21,7 @@ from . layout_algorithms import *
 main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,layout_algorithm="force",layout_parameters=None,verbose=True):
+def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False):
 
     if background_color == "default":
         
@@ -49,7 +49,6 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
 
     else:
         pass
-
     
     start_location_network = 0
     start_location_background = 0
@@ -59,19 +58,6 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     for network in network_list:
 
         degrees = dict(nx.degree(nx.Graph(network)))
-
-        if layout_algorithm == "force":
-            tmp_pos = compute_force_directed_layout(network,layout_parameters,verbose=verbose)
-            
-        elif layout_algorithm == "random":
-            tmp_pos = compute_random_layout(network)
-            
-        elif layout_algorithm == "custom_coordinates":
-            tmp_pos = layout_parameters['pos']
-            
-        for node in network.nodes(data=True):
-            coordinates = tmp_pos[node[0]]
-            node[1]['pos'] = coordinates
             
         positions = nx.get_node_attributes(network, 'pos')
         for position in positions:
@@ -117,48 +103,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
 def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both"):
 
     #indices are correct network positions
-
-    if input_type == "tuple":
-        network_positions = [nx.get_node_attributes(network, 'pos') for network in network_list]
-    
-        for el in multi_edge_tuple:
-
-            p1 = [network_positions[el[0][0]][el[0][1]][0],network_positions[el[1][0]][el[1][1]][1]]
-
-            p2 = [network_positions[el[0][0]][el[0][1]][1],network_positions[el[1][0]][el[1][1]][0]]
-
-            ## miljon enih ifelse stavkov comes here..
-
-            if style == "line":
-
-                plt.plot(p1,p2,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
-
-            elif style == "curve2_bezier":                
-
-                x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height,linemode=linmod)
-                plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
-                
-            
-            elif style == "curve3_bezier":
-
-                x,y = bezier.draw_bezier(len(network_list),p1,p2,mode="cubic")
-
-            elif style == "curve3_fit":
-
-                x,y = polyfit.draw_order3(len(network_list),p1,p2)
-
-                plt.plot(x,y)
-
-            elif style == "piramidal":
-                
-                x,y = polyfit.draw_piramidal(len(network_list),p1,p2)
-                plt.plot(x,y,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
-                
-            else:                
-                pass
-            
-
-    elif input_type == "nodes":
+    if input_type == "nodes":
 
         network_positions = [nx.get_node_attributes(network, 'pos') for network in network_list]
         global_positions = {}
@@ -169,10 +114,9 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
         for pair in multi_edge_tuple:
             try:
 
-                p1 = global_positions[pair[0]]
-                p2 = global_positions[pair[1]]
-#                p1 = [global_positions[pair[0]],global_positions[pair[0]]]
-#                p2 = [global_positions[pair[1]],global_positions[pair[1]]]
+                ## x0 x1, y0 y1                
+                p1 = [global_positions[pair[0]][0],global_positions[pair[1]][0]]
+                p2 = [global_positions[pair[0]][1],global_positions[pair[1]][1]]
                 
                 if style == "line":
 
@@ -296,7 +240,7 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
         nsizes = [np.log(v) * nodesize if v > 10 else v for v in degrees.values()]
     else:
         nsizes = [nodesize for x in g.nodes()]
-
+        
     ## standard force -- directed layout
     if layout_algorithm == "force":
         pos = compute_force_directed_layout(g,layout_parameters)

@@ -24,42 +24,6 @@ def split_to_layers(input_network):
     
     return subgraph_dictionary
 
-
-# def add_mx_edges(node):
-#    layer_appearances = []
-#    for layer,net in _layerwise_nodes.items():
-#        layer_nodes = set([n.split(_layer_node_code)[1] for n in net.nodes()])
-#        if node in layer_nodes:
-#            layer_appearances.append(layer)
-#    layer_appearances = set(layer_appearances)
-#    if len(layer_appearances) > 1:
-#        for comb in itertools.combinations(layer_appearances, 2):
-#            _tmp_net.add_edge(comb[0]+_layer_node_code+node,comb[1]+_layer_node_code+node,type="mpx")
-
-
-# def add_mpx_edges_parallel(input_network,layer_node_code):
-
-
-# #    Ref: E. Omodei, M. De Domenico, A. Arenas. - Characterizing interactions in online social networks during exceptional events.. Front. Phys. 3, 59 (2015)
-    
-#     ## split network by layers
-#     global _layerwise_nodes
-#     global _layer_node_code
-#     global _tmp_net
-
-#     _tmp_net = input_network
-#     del input_network
-#     _layer_node_code = layer_node_code    
-#     _layerwise_nodes = split_to_layers(_tmp_net,layer_node_code)
-#     unique_nodes = [n.split(layer_node_code)[1] for n in _tmp_net.nodes()]
-#     pool = mp.Pool(processes=3)
-#     with mp.Pool(processes=mp.num_cpu()) as pool:
-#         for _ in tqdm.tqdm(pool.imap_unordered(add_mx_edges,unique_nodes), total=len(unique_nodes)):
-#             pass
-
-#     return _tmp_net
-
-
 def add_mpx_edges(input_network):
     
     _layerwise_nodes = split_to_layers(input_network)
@@ -77,7 +41,6 @@ def add_mpx_edges(input_network):
             n1 = (node,layer_first)
             n2 = (node,layer_second)
             input_network.add_edge(n1,n2,key="mpx",type="multiplex")
-            input_network.add_edge(n2,n1,key="mpx",type="multiplex")
 
     return input_network
         

@@ -3,7 +3,7 @@ import networkx as nx
 from collections import defaultdict
 from ..visualization.layout_algorithms import *
 
-def prepare_for_visualization(multinet):
+def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters=None,verbose=True):
 
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
@@ -11,12 +11,32 @@ def prepare_for_visualization(multinet):
             layers[node[0][1]].append(node[0])
         except Exception as err:
             print(err)
-
-#    for k,v in layers.items():
-#        print(k,list(v),list(multinet.edges()),list(multinet.subgraph(v).edges()))
         
     networks = {layer_name : multinet.subgraph(v) for layer_name,v in layers.items()}
+
+    for layer, network in networks.items():
         
+        if compute_layouts == "force":
+            tmp_pos = compute_force_directed_layout(network,layout_parameters,verbose=verbose)
+            
+        elif compute_layouts == "random":
+            tmp_pos = compute_random_layout(network)
+
+        elif compute_layouts == "custom_coordinates":
+            tmp_pos = layout_parameters['pos']
+
+        else:
+            break
+            
+        for node in network.nodes(data=True):
+            coordinates = tmp_pos[node[0]]
+            if network.degree(node[0]) == 0:
+                coordinates = coordinates/5
+            elif network.degree(node[0]) == 1:
+                coordinates = coordinates/2
+            
+            node[1]['pos'] = coordinates
+    
     inverse_mapping = {}
     layouts = []
 
@@ -31,16 +51,16 @@ def prepare_for_visualization(multinet):
             if inverse_mapping[edge[0]] != inverse_mapping[edge[1]]:
                 multiedges[edge[2]['type']].append((edge[0],edge[1]))
         except Exception as err:
-            print(err)  
+            pass
 
     names,networks = zip(*networks.items())
     return (names,networks,multiedges)
 
-def prepare_for_visualization_hairball(multinet):
+def prepare_for_visualization_hairball(multinet,compute_layouts=False):
 
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
-        layers[node[1]['type']].append(node[0])
+        layers[node[0][1]].append(node[0])
 
     inverse_mapping = {}
     enumerated_layers = {name : ind for ind,name in enumerate(set(list(layers.keys())))}
