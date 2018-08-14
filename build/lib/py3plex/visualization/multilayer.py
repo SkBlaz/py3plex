@@ -21,7 +21,7 @@ from . layout_algorithms import *
 main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False):
+def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5):
 
     if background_color == "default":
         
@@ -94,7 +94,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
             correction = 1
         node_sizes = [(np.log(v) * nodesize)/correction if v > 400 else 1/correction for v in degrees.values()]
         
-        nx.draw(network, nx.get_node_attributes(network, 'pos'),node_color=facecolor_list[color], with_labels=False,edge_size=5,node_size=node_sizes)
+        nx.draw(network, nx.get_node_attributes(network, 'pos'),node_color=facecolor_list[color], with_labels=False,edge_size=5,node_size=node_sizes,arrowsize=arrowsize)
         color += 1
 
     if display == True:

@@ -2,46 +2,58 @@
 ## each curve needs 4 points, each of those points is computed via Bernstein polynomials
 
 import numpy as np # this is used for vectorized bezier computation
+from scipy.interpolate import CubicSpline
 
-def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=1,linemode="both"):
+def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2,linemode="both",resolution=0.05):
     if mode == "quadratic":
-        #draw quadratic polinome
-        space = np.linspace(0,8,10000)
-        if inversion == False:
-            x_delay = p1[1]
-            y_delay = p2[0]
+
+        if p1[0] < p1[1]:
+            x0,x1 = p1
+            y0,y1 = p2
         else:
-            y_delay = p1[1]
-            x_delay = p2[0]
-
-
-        if linemode == "both":
-
-            if p1[0] > p1[1]:
-                x = ((1-space)**2)*p1[0]+2*(1-space)*space*x_delay+space**2*p1[1]
-                y = (1-space)**2*p2[0]+path_height*(1-space)*space*y_delay+space**2*p2[1]
-                idx = np.argmin(np.abs(x - p2[0]))
-                idy = np.argmin(np.abs(y - p2[1]))
-
-            elif p1[0] < p1[1]:
-                x = ((1-space)**2)*p1[1]+2*(1-space)*space*x_delay+space**2*p1[0]
-                y = (1-space)**2*p2[1]+path_height*(1-space)*space*y_delay+space**2*p2[0]
-                idx = np.argmin(np.abs(x - p2[1]))
-                idy = np.argmin(np.abs(y - p2[0]))
+            x1,x0 = p1
+            y1,y0 = p2            
             
-            else:
-                pass
+#        path_height = np.linalg.norm(np.array(p2)-np.array(p1))*path_height
+        
+        dfx = np.arange(x0,x1,resolution)
+                
+        slope = (y1-y0)/(x1-x0)
+        n = y1-slope*x1
+        midpoint_x = (x0+x1)/2
+        mp_y = slope*midpoint_x+n
+        nn = mp_y-midpoint_x*(-1/slope)
+        
+        ## x0 x1, y0 y1                
+        if linemode == "both":
+            if True:
+                midpoint_y = (midpoint_x*(-1/slope)+nn)*path_height
+                x_t = [x0,midpoint_x,x1]
+                y_t = [y0,midpoint_y,y1]    
+                cs = CubicSpline(x_t,y_t)
+                dfy = cs(dfx)        
             
         elif linemode == "upper":
-            if p1[0] > p1[1]:
-                x = ((1-space)**2)*p1[0]+2*(1-space)*space*x_delay+space**2*p1[1]
-                y = (1-space)**2*p2[0]+path_height*(1-space)*space*y_delay+space**2*p2[1]
-                idx = np.argmin(np.abs(x - p2[0]))
-                idy = np.argmin(np.abs(y - p2[1]))
-        else:
-            pass
+            try:
+                midpoint_y = (midpoint_x*(-1/slope)+nn)*path_height
+                x_t = [x0,midpoint_x,x1]
+                y_t = [y0,midpoint_y,y1]    
+                cs = CubicSpline(x_t,y_t)
+                dfy = cs(dfx)        
+            except Exception as err:
+                print([x0,midpoint_x,x1],[y0,midpoint_y,y1])
+            
+        elif linemode == "bottom":
+            try:
+                midpoint_y = -(midpoint_x*(-1/slope)+nn)*path_height
+                x_t = [x0,midpoint_x,x1]
+                y_t = [y0,midpoint_y,y1]    
+                cs = CubicSpline(x_t,y_t)
+                dfy = cs(dfx)        
+            except Exception as err:
+                print([x0,midpoint_x,x1],[y0,midpoint_y,y1])
 
-        return (x[1:idy],y[1:idy])
+        return (dfx,dfy)
     
     elif mode == "cubic":
 

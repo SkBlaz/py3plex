@@ -258,9 +258,10 @@ class multi_layer_network:
                 enum = 1
                 for edge_type,edges in multilinks.items():
                     if edge_type == "multiplex":
+                        
                         ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="both",linewidth=1.7)
                     else:
-                        ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-.",linecolor="black",curve_height=2,linmod="both",linewidth=0.4)                      
+                        ax = draw_multiedges(graphs,edges,alphachannel=0.1,linepoints="-.",linecolor="black",curve_height=2,linmod="upper",linewidth=0.4)                      
                     enum+=1
             else:
                 enum = 1
