@@ -13,7 +13,7 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
             print(err)
         
     networks = {layer_name : multinet.subgraph(v) for layer_name,v in layers.items()}
-
+    
     for layer, network in networks.items():
         
         if compute_layouts == "force":
@@ -31,7 +31,7 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
         for node in network.nodes(data=True):
             coordinates = tmp_pos[node[0]]
             if network.degree(node[0]) == 0:
-                coordinates = coordinates/5
+                coordinates = coordinates/2
             elif network.degree(node[0]) == 1:
                 coordinates = coordinates/2
             
@@ -48,11 +48,11 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
     multiedges = defaultdict(list)
     for edge in multinet.edges(data=True):
         try:
-            if inverse_mapping[edge[0]] != inverse_mapping[edge[1]]:
-                multiedges[edge[2]['type']].append((edge[0],edge[1]))
+            if edge[0] != edge[1]:
+                multiedges[edge[2]['type']].append(edge)
         except Exception as err:
-            pass
-
+            print(err)
+            
     names,networks = zip(*networks.items())
     return (names,networks,multiedges)
 

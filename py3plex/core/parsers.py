@@ -44,31 +44,15 @@ def parse_gpickle_biomine(file_name,directed):
 
     ## convert the biomine
     input_graph = nx.read_gpickle(file_name)
-    type_segments = defaultdict(list)
-    for node in input_graph.nodes(data=True):
-        type_segments[node[0].split("_")[0]].append(node[0])        
-
+    G = nx.MultiDiGraph()
+    
     for edge in input_graph.edges(data=True):
-        edge[2]['type'] = edge[2]['key']
         
-    networks = []
-    labs = []
-    inverse_mapping = {}
-
-    ## assign node types
-    for k,v in type_segments.items():
-        for x in v:
-            inverse_mapping[x] = k
-
-    node_types = {}
-    for gnode in input_graph.nodes(data=False):
-        node_types[gnode] = inverse_mapping[gnode]
-
-    for n in input_graph.nodes(data=True):
-        n[1]['type'] = node_types[n[0]]
-
-    return (input_graph,None)
-
+        l1,n1 = edge[0].split("_")[:2]
+        l2,n2 = edge[1].split("_")[:2]
+        G.add_edge((n1,l1),(n2,l2),type=edge[2]['key'])
+        
+    return (G,None)
 
 def parse_multi_edgelist(input_name,directed):
 

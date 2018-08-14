@@ -247,7 +247,7 @@ class multi_layer_network:
         """ network visualization method """
         
         network_labels, graphs, multilinks = self.get_layers(style)
-        
+
         if style == "diagonal":
             if parameters_layers is None:                
                 ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,nodesize=6)

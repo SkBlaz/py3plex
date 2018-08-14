@@ -117,7 +117,6 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
                 ## x0 x1, y0 y1                
                 p1 = [global_positions[pair[0]][0],global_positions[pair[1]][0]]
                 p2 = [global_positions[pair[0]][1],global_positions[pair[1]][1]]
-                
                 if style == "line":
 
                     plt.plot(p1,p2,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
@@ -218,10 +217,10 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
 
     if not layered:
         for node in g.nodes(data=True):
-            node[1]['type'] = "0"
+            node[0][1] = "0"
     
     for node in nodes:
-        potlabs.append(node[1]['type'])
+        potlabs.append(node[0][1])
 
     if color_list is None:
         unique_colors = np.unique(potlabs)

@@ -4,7 +4,6 @@
 import numpy as np # this is used for vectorized bezier computation
 
 def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=1,linemode="both"):
-    
     if mode == "quadratic":
         #draw quadratic polinome
         space = np.linspace(0,8,10000)
@@ -17,7 +16,8 @@ def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=1,
 
 
         if linemode == "both":
-            if p1[0] > p1[1]:            
+
+            if p1[0] > p1[1]:
                 x = ((1-space)**2)*p1[0]+2*(1-space)*space*x_delay+space**2*p1[1]
                 y = (1-space)**2*p2[0]+path_height*(1-space)*space*y_delay+space**2*p2[1]
                 idx = np.argmin(np.abs(x - p2[0]))
@@ -31,6 +31,7 @@ def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=1,
             
             else:
                 pass
+            
         elif linemode == "upper":
             if p1[0] > p1[1]:
                 x = ((1-space)**2)*p1[0]+2*(1-space)*space*x_delay+space**2*p1[1]
