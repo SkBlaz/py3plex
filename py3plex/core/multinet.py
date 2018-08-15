@@ -114,7 +114,11 @@ class multi_layer_network:
         
         for node in self.core_network.nodes(data=data):
             yield node
-        
+            
+    def networkx_wrapper(self,fx,kwargs):
+        return eval("nx."+fx+"("+**kwargs+")")
+
+            
     def get_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
 
         """ A method for obtaining layerwise distributions """
