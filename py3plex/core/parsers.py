@@ -65,8 +65,8 @@ def parse_multi_edgelist(input_name,directed):
     with open(input_name) as IN:
         for line in IN:
             node_first,layer_first,node_second,layer_second,weight = line.strip().split()
-            G.add_node(node_first,type=layer_first)
-            G.add_node(node_second,type=layer_second)
+            G.add_node((node_first,layer_first),type=layer_first)
+            G.add_node((node_second,layer_second),type=layer_second)
             G.add_edge(node_first,node_second,weight=weight)
     return (G,None)
 
@@ -97,9 +97,14 @@ def parse_simple_edgelist(input_name,directed):
                 else:
                     continue
 
+                node_first = (node_first,"null")
+                node_second = (node_second,"null")
+                
                 G.add_node(node_first,type="null")
                 G.add_node(node_second,type="null")
+                
                 G.add_edge(node_first,node_second,weight=weight)
+
     return (G,None)
 
 def parse_edgelist_multi_types(input_name,directed):
@@ -121,8 +126,8 @@ def parse_edgelist_multi_types(input_name,directed):
                     weight = 1
                     edge_type = None
 
-                G.add_node(node_first,type="null")
-                G.add_node(node_second,type="null")
+                G.add_node((node_first,"null"),type="null")
+                G.add_node((node_second,"null"),type="null")
                 G.add_edge(node_first,node_second,weight=weight,type=edge_type)
     return (G,None)
 

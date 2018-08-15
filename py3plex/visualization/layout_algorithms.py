@@ -10,7 +10,7 @@ try:
 except:
     forceImport = False
 
-def compute_force_directed_layout(g,layout_parameters=None,initial_positions=None,verbose=False):
+def compute_force_directed_layout(g,layout_parameters=None,initial_positions=None,verbose=True):
     
     if forceImport:
         try:

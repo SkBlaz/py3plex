@@ -220,7 +220,10 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
             node[0][1] = "0"
     
     for node in nodes:
-        potlabs.append(node[0][1])
+        try:
+            potlabs.append(node[0][1])
+        except:
+            potlabs.append("unlabeled")
 
     if color_list is None:
         unique_colors = np.unique(potlabs)
