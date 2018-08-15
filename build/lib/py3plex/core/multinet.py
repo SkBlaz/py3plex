@@ -8,6 +8,7 @@ from .HINMINE.IO import * ## parse the graph
 from .HINMINE.decomposition import * ## decompose the graph
 from .supporting import *
 import scipy.sparse as sp
+import tqdm
 
 ## visualization modules
 from ..visualization.multilayer import *
@@ -47,6 +48,10 @@ class multi_layer_network:
                                             directed=self.directed,
                                             label_delimiter=self.label_delimiter,
                                             network_type=self.network_type)
+
+        if self.network_type == "multiplex":
+            self.monitor("Checking multiplex edges..")
+            self._to_multiplex()
         
         return self
 
@@ -256,12 +261,12 @@ class multi_layer_network:
 
             if parameters_multiedges is None:                
                 enum = 1
-                for edge_type,edges in multilinks.items():
-                    if edge_type == "multiplex":
+                for edge_type,edges in tqdm.tqdm(multilinks.items()):
+                    if edge_type == "mpx":
                         
-                        ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="both",linewidth=1.7)
+                        ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7)
                     else:
-                        ax = draw_multiedges(graphs,edges,alphachannel=0.1,linepoints="-.",linecolor="black",curve_height=2,linmod="upper",linewidth=0.4)                      
+                        ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod="upper",linewidth=0.4)                      
                     enum+=1
             else:
                 enum = 1

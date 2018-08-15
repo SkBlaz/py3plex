@@ -214,10 +214,6 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
     potlabs = []
-
-    if not layered:
-        for node in g.nodes(data=True):
-            node[0][1] = "0"
     
     for node in nodes:
         try:

@@ -1,3 +1,4 @@
+MANIFEST.in
 README.md
 setup.py
 py3plex/__init__.py
@@ -62,6 +63,8 @@ py3plex/visualization/embedding_visualization/__init__.py
 py3plex/visualization/embedding_visualization/embedding_tools.py
 py3plex/visualization/embedding_visualization/embedding_visualization.py
 py3plex/visualization/fa2/__init__.py
+py3plex/visualization/fa2/fa2util.c
+py3plex/visualization/fa2/fa2util.pxd
 py3plex/visualization/fa2/fa2util.py
 py3plex/visualization/fa2/forceatlas2.py
 py3plex/wrappers/__init__.py

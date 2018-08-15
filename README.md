@@ -17,6 +17,7 @@ To get started, please view **examples** folder. Extensive documentation is avai
 2. Numpy (0.8)
 3. Scipy  (1.1.0)
 4. RDFlib (for ontology-based tasks) (any)
+5. Cython (>0.28)
 
 ### Installing
 
@@ -31,6 +32,90 @@ You can also try:
 pip3 install py3plex
 ```
 yet this version is updated only on larger updates!
+
+### Network construction and manipulation
+This minimal example offers an intuitive API for multilayer(plex) network construction.
+
+```python
+from py3plex.core import multinet
+from py3plex.core import random_generators
+
+## An example general multilayer network
+A = multinet.multi_layer_network()
+
+## add a single node with type
+simple_node = {"source" : "node1","type":"layer_1"}
+A.add_nodes(simple_node)
+A.monitor("Printing a single node.")
+print(list(A.get_nodes(data=True)))
+
+## add a single edge with type
+simple_edge = {"source":"node1",
+               "target":"node2",
+               "type":"mention",
+               "source_type":"layer_1",
+               "weight" : 2, ## add arbitrary attributes!
+               "target_type":"layer_2"}
+
+A.add_edges(simple_edge)
+A.monitor("Printing a single edge.")
+print(list(A.get_edges(data=True)))
+
+```
+A single, as well as multiple edges(nodes) can be added via add_edges() or add_nodes() methods. Simply pack multiple edges(nodes) into a list and use it as argument to the add_ method.
+
+```python
+
+## multiple edges are added by simply packing existing edges into a list.
+simple_attributed_edges = [{"source":"node1","target":"node6","type":"mention","source_type":"t1","target_type":"t5"},{"source":"node3","target":"node2","type":"mention","source_type":"t1","target_type":"t3"}]
+A.add_edges(simple_attributed_edges)
+A.monitor("Printing multiple edges")
+print(list(A.get_edges(data=True)))
+
+## Edges can also be added as lists: [n1,l1,n2,l2,w]
+example_list_edge = [["node3","t2","node2","t6",1],["node3","t2","node2","t6",1]]
+
+## specify that input is list, all else is recognized by Py3plex!
+A.add_edges(example_list_edge,input_type="list")
+print(list(A.get_edges()))
+
+```
+
+One of the simplest ways is list-based construction.., where
+*[1,1,2,2,1]* cooresponds to node 1 on layer 1 connects with node 2 on layer 2, where the edge is *weighted as 1*. Note that node and layer names are**not** limited to integers, an example edge might also look like
+
+```python
+["person1","facebook","person2","twitter",2]
+```
+
+```python
+## dealing with multiplex networks
+B = multinet.multi_layer_network(network_type="multiplex")
+B.add_edges([[1,1,2,1,1],[1,2,3,2,1],[1,2,3,1,1],[2,1,3,2,1]],input_type="list")
+
+## coupled edges
+B.monitor(list(B.get_edges(multiplex_edges=True)))
+
+## non-coupled edges
+B.monitor(list(B.get_edges(multiplex_edges=False)))
+
+## visualize this toy example
+B.visualize_network(show=True)
+
+```
+
+Py3plex also offers some random graph generators.
+
+```python
+
+A.monitor("Random ER multilayer graph in progress")
+ER_multilayer = random_generators.random_multilayer_ER(300,6,0.05,directed=False)
+ER_multilayer.visualize_network(show=True)
+
+```
+
+For more examples, please inspect the ./examples folder. For any questions, feature requests and similar, hesitate not to contact me!
+
 
 ### Examples
 

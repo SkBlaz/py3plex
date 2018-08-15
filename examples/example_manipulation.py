@@ -38,8 +38,8 @@ A.add_edges(example_list_edge,input_type="list")
 print(list(A.get_edges()))
 
 A.monitor("Random ER multilayer graph in progress")
-ER_multilayer = random_generators.random_multilayer_ER(300,4,0.05,directed=False)
-#ER_multilayer.visualize_network(show=True)
+ER_multilayer = random_generators.random_multilayer_ER(300,6,0.05,directed=False)
+ER_multilayer.visualize_network(show=True)
 
 ## dealing with multiplex networks
 B = multinet.multi_layer_network(network_type="multiplex")
@@ -51,4 +51,5 @@ B.monitor(list(B.get_edges(multiplex_edges=True)))
 ## non-coupled edges
 B.monitor(list(B.get_edges(multiplex_edges=False)))
 
+## visualize this toy example
 B.visualize_network(show=True)

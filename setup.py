@@ -8,10 +8,12 @@ from setuptools.extension import Extension
 
 here = path.abspath(path.dirname(__file__))
 
+# Get the long description from the README file
+
 if path.isfile(path.join(here, 'py3plex/visualization/fa2/fa2util.c')):
     # cython build locally and add fa2/fa2util.c to MANIFEST or fa2.egg-info/SOURCES.txt
     # run: python setup.py build_ext --inplace
-    ext_modules = [Extension('py3plex/visualization/fa2.fa2util', ['py3plex/visualization/fa2util.c'])]
+    ext_modules = [Extension('fa2.fa2util', ['py3plex/visualization/fa2/fa2util.c'])]
     cmdclass = {}
     cythonopts = {"ext_modules": ext_modules,
                   "cmdclass": cmdclass}
@@ -24,7 +26,7 @@ else:
     if cythonopts is None:
         from Cython.Build import build_ext
 
-        ext_modules = [Extension('py3plex/visualization/fa2.fa2util', ['py3plex/visualization/fa2/fa2util.py', 'py3plex/visualization/fa2/fa2util.pxd'])]
+        ext_modules = [Extension('fa2.fa2util', ['py3plex/visualization/fa2/fa2util.py', 'py3plex/visualization/fa2/fa2util.pxd'])]
         cmdclass = {'build_ext': build_ext}
         cythonopts = {"ext_modules": ext_modules,
                       "cmdclass": cmdclass}
@@ -38,4 +40,6 @@ setup(name='py3plex',
       license='MIT',
       packages=find_packages(),
       zip_safe=False,
-      install_requires=['rdflib','numpy','networkx','scipy'])
+      install_requires=['rdflib','numpy','networkx','scipy'],
+      include_package_data=True,
+      **cythonopts)

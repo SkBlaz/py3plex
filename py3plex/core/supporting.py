@@ -40,7 +40,7 @@ def add_mpx_edges(input_network):
         for node in pair_intersection:
             n1 = (node,layer_first)
             n2 = (node,layer_second)
-            input_network.add_edge(n1,n2,key="mpx",type="multiplex")
+            input_network.add_edge(n1,n2,key="mpx",type="mpx")
 
     return input_network
         

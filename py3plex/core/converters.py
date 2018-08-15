@@ -32,8 +32,8 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
             coordinates = tmp_pos[node[0]]
             if network.degree(node[0]) == 0:
                 coordinates = coordinates/2
-#            elif network.degree(node[0]) == 1:
-#                coordinates = coordinates/2
+            elif network.degree(node[0]) == 1:
+                coordinates = coordinates/2
             
             node[1]['pos'] = coordinates
     
@@ -48,10 +48,10 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
     multiedges = defaultdict(list)
     for edge in multinet.edges(data=True):
         try:
-            if edge[0] != edge[1]:
+            if edge[0][1] != edge[1][1]:
                 multiedges[edge[2]['type']].append(edge)
         except Exception as err:
-            print(err)
+            print(err,"test")
             
     names,networks = zip(*networks.items())
     return (names,networks,multiedges)

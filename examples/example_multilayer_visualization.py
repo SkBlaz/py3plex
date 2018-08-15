@@ -31,7 +31,7 @@ for edge_type,edges in multilinks.items():
     enum+=1
 plt.show()
 
-basic string layout ----------------------------------
+## basic string layout ----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=False,label_delimiter="---",input_type="gpickle_biomine")
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 hairball_plot(graph,network_colors,legend=True)

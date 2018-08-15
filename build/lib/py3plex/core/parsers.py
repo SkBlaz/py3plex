@@ -1,9 +1,4 @@
-## these are the parser methods
-# Conventions:
-# 1.) node types are given as "type"
-# 2.) edge types are given as "type"
-# 3.) node classes are given as "labels", e.g. "1;5;7" indicates the node is labeled as 1 5 and with 7th class
-# 3.) edge classes are given as "labels", e.g. "1;5;7" indicates the edge is labeled as 1 5 and with 7th class
+## set of parsers used in Py3plex.
 
 import networkx as nx
 import itertools
@@ -31,10 +26,12 @@ def parse_matrix(file_name,directed):
     labels= mat['group']
     if directed:
         cn = nx.DiGraph()
-        core_network= nx.from_scipy_sparse_matrix(mat['network'],create_using=cn)
     else:
         cn = nx.Graph()
-        core_network= nx.from_scipy_sparse_matrix(mat['network'],create_using=cn)
+
+    core_network= nx.from_scipy_sparse_matrix(mat['network'],create_using=cn)
+    mapping = {n:(n,"null") for n in core_network.nodes()}    
+    core_network = nx.relabel_nodes(core_network,mapping)
     return(core_network,labels)
 
 def parse_gpickle(file_name, directed):
@@ -209,7 +206,7 @@ def parse_multiplex_edges(input_name,directed):
 def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,network_type="multilayer"):
         
     if f_type == "gml":
-        parsed_network,labels,labels = parse_gml(input_name,directed)
+        parsed_network,labels = parse_gml(input_name,directed)
     
     elif f_type == "nx":
         parsed_network,labels = parse_nx(input_name,directed)

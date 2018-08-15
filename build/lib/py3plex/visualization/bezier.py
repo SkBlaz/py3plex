@@ -4,7 +4,7 @@
 import numpy as np # this is used for vectorized bezier computation
 from scipy.interpolate import CubicSpline
 
-def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2,linemode="both",resolution=0.05):
+def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2, linemode="both",resolution=0.01):
     if mode == "quadratic":
 
         if p1[0] < p1[1]:
@@ -13,11 +13,9 @@ def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2,
         else:
             x1,x0 = p1
             y1,y0 = p2            
-            
-#        path_height = np.linalg.norm(np.array(p2)-np.array(p1))*path_height
-        
-        dfx = np.arange(x0,x1,resolution)
-                
+
+        ## coordinate init phase
+        dfx = np.arange(x0,x1,resolution)                
         slope = (y1-y0)/(x1-x0)
         n = y1-slope*x1
         midpoint_x = (x0+x1)/2
@@ -26,13 +24,25 @@ def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2,
         
         ## x0 x1, y0 y1                
         if linemode == "both":
-            if True:
-                midpoint_y = (midpoint_x*(-1/slope)+nn)*path_height
-                x_t = [x0,midpoint_x,x1]
-                y_t = [y0,midpoint_y,y1]    
-                cs = CubicSpline(x_t,y_t)
-                dfy = cs(dfx)        
-            
+
+            r1 = np.round(y0,0)
+            r2 = np.round(y1,0)
+            try:                        
+                if r1 > y0 and r2 > y1:
+                    midpoint_y = (midpoint_x*(-1/slope)+nn)*path_height
+                    x_t = [x0,midpoint_x,x1]
+                    y_t = [y0,midpoint_y,y1]    
+                    cs = CubicSpline(x_t,y_t)
+                    dfy = cs(dfx)        
+                else:
+                    midpoint_y = 1/((midpoint_x*(-1/slope)+nn)*path_height)
+                    x_t = [x0,midpoint_x,x1]
+                    y_t = [y0,midpoint_y,y1]    
+                    cs = CubicSpline(x_t,y_t)
+                    dfy = cs(dfx)
+            except:
+                print([x0,midpoint_x,x1],[y0,midpoint_y,y1])
+
         elif linemode == "upper":
             try:
                 midpoint_y = (midpoint_x*(-1/slope)+nn)*path_height
@@ -45,11 +55,11 @@ def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2,
             
         elif linemode == "bottom":
             try:
-                midpoint_y = -(midpoint_x*(-1/slope)+nn)*path_height
+                midpoint_y = 1/((midpoint_x*(-1/slope)+nn)*path_height)
                 x_t = [x0,midpoint_x,x1]
                 y_t = [y0,midpoint_y,y1]    
                 cs = CubicSpline(x_t,y_t)
-                dfy = cs(dfx)        
+                dfy = cs(dfx)
             except Exception as err:
                 print([x0,midpoint_x,x1],[y0,midpoint_y,y1])
 

@@ -6,11 +6,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from plotnine import *
 
-def visualize_embedding (multinet,labels=None):
+def visualize_embedding (multinet,labels=None,verbose=True):
     embedding = multinet.embedding
     X = embedding[0]
     indices = embedding[1]
 
+    if verbose:
+        print("------ Starting embedding visualization -------")
+    
     if labels:    
         ## optionally match indices to labels and add a column
         label_vector = [labels[x] for x in indices]
