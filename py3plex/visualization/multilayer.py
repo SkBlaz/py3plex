@@ -209,6 +209,13 @@ def generate_random_networks(number_of_networks):
         network_list.append(tmp_graph)
     return network_list         
 
+
+def supra_adjacency_matrix_plot(matrix,display=False):    
+    plt.imshow(matrix, interpolation='nearest', cmap=plt.cm.binary)
+    if display:
+        plt.show()
+    
+
 def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default"):
 
     print("Beginning parsing..")

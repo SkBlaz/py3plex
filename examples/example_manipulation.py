@@ -53,3 +53,12 @@ B.monitor(list(B.get_edges(multiplex_edges=False)))
 
 ## visualize this toy example
 B.visualize_network(show=True)
+
+## nodes can also be removed easily
+B.remove_edges([[1,1,2,1,1],[1,2,3,2,1],[1,2,3,1,1],[2,1,3,2,1]],input_type="list")
+print(list(B.get_edges()))
+
+B.remove_nodes([(1,1),(3,1)],input_type="list")
+print(list(B.get_nodes()))
+
+
