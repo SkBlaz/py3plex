@@ -32,6 +32,13 @@ class multi_layer_network:
         self.embedding = None
         self.verbose = verbose
         self.network_type = network_type ## assing network type
+
+    def __getitem__(self,i,j=None):
+        if j is None:
+            return self.core_network[i]
+        else:
+            return self.core_network[i][j]
+        pass
         
     def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
         """Main method for loading networks"""
