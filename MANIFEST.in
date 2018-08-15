@@ -1,0 +1,2 @@
+include py3plex/visualization/fa2/fa2util.c
+include py3plex/visualization/fa2/fa2util.pxd
