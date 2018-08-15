@@ -263,10 +263,22 @@ class multi_layer_network:
             
         if self.network_type == "multiplex":
             self.core_network = add_mpx_edges(self.core_network)
+
+    def _get_num_layers(self):
+        self.number_of_layers = len(set(x[1] for x in self.get_nodes()))
+
+    def _get_num_nodes(self):
+        self.number_of_unique_nodes = len(set(x[0] for x in self.get_nodes()))
+            
+    def _node_layer_mappings(self):
+        
+        pass
             
     def get_tensor(self,sparsity_type = "bsr"):
         ## convert this to a tensor of some sort
-        
+        ## maximum number of layers
+        ## maximum number of nodes
+        ## are nodes/layers strings? if so, do the encoding
         
         pass
 
