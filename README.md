@@ -75,7 +75,9 @@ example_list_edge = [["node3","t2","node2","t6",1],["node3","t2","node2","t6",1]
 ## specify that input is list, all else is recognized by Py3plex!
 A.add_edges(example_list_edge,input_type="list")
 print(list(A.get_edges()))
-
+```
+Random network generation is as simple as they come..
+```python
 A.monitor("Random ER multilayer graph in progress")
 ER_multilayer = random_generators.random_multilayer_ER(300,6,0.05,directed=False)
 ER_multilayer.visualize_network(show=True)
@@ -83,6 +85,21 @@ ER_multilayer.visualize_network(show=True)
 ## dealing with multiplex networks
 B = multinet.multi_layer_network(network_type="multiplex")
 B.add_edges([[1,1,2,1,1],[1,2,3,2,1],[1,2,3,1,1],[2,1,3,2,1]],input_type="list")
+```
+Network indexing is now simple (multiple levels supported!)
+```python
+
+C = B.subnetwork([2],subset_by="layers")
+print(list(C.get_nodes()))
+
+C = B.subnetwork([2],subset_by="node_names")
+print(list(C.get_nodes()))
+
+C = B.subnetwork([(1,1),(1,2)],subset_by="node_layer_names")
+print(list(C.get_nodes()))
+```
+Coupled edges can be obtained as follows (non-ordinal couplings only!)
+```python
 
 ## coupled edges
 B.monitor(list(B.get_edges(multiplex_edges=True)))

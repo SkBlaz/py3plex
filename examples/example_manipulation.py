@@ -45,6 +45,16 @@ ER_multilayer.visualize_network(show=True)
 B = multinet.multi_layer_network(network_type="multiplex")
 B.add_edges([[1,1,2,1,1],[1,2,3,2,1],[1,2,3,1,1],[2,1,3,2,1]],input_type="list")
 
+## subset the network by layers
+C = B.subnetwork([2],subset_by="layers")
+print(list(C.get_nodes()))
+
+C = B.subnetwork([2],subset_by="node_names")
+print(list(C.get_nodes()))
+
+C = B.subnetwork([(1,1),(1,2)],subset_by="node_layer_names")
+print(list(C.get_nodes()))
+
 ## coupled edges
 B.monitor(list(B.get_edges(multiplex_edges=True)))
 
@@ -52,7 +62,7 @@ B.monitor(list(B.get_edges(multiplex_edges=True)))
 B.monitor(list(B.get_edges(multiplex_edges=False)))
 
 ## visualize this toy example
-B.visualize_network(show=True)
+B.visualize_network(show=True,resolution=0.01)
 
 ## nodes can also be removed easily
 B.remove_edges([[1,1,2,1,1],[1,2,3,2,1],[1,2,3,1,1],[2,1,3,2,1]],input_type="list")
@@ -60,5 +70,4 @@ print(list(B.get_edges()))
 
 B.remove_nodes([(1,1),(3,1)],input_type="list")
 print(list(B.get_nodes()))
-
 

@@ -100,7 +100,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     if display == True:
         plt.show()
 
-def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both"):
+def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1):
 
     #indices are correct network positions
     if input_type == "nodes":
@@ -123,13 +123,13 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
                     
                 elif style == "curve2_bezier":
 
-                    x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height,inversion=invert,linemode=linmod)
+                    x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height,inversion=invert,linemode=linmod,resolution=resolution)
 
                     plt.plot(x,y,linestyle=linepoints,lw=linewidth,alpha=alphachannel,color=linecolor)
                 
                 elif style == "curve3_bezier":
 
-                    x,y = bezier.draw_bezier(len(network_list),p1,p2,mode="cubic")
+                    x,y = bezier.draw_bezier(len(network_list),p1,p2,mode="cubic",resolution=resolution)
 
                 elif style == "curve3_fit":
 
