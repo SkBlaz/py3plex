@@ -4,7 +4,7 @@
 import numpy as np # this is used for vectorized bezier computation
 from scipy.interpolate import CubicSpline
 
-def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2, linemode="both",resolution=0.01):
+def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2, linemode="both",resolution=0.1):
     if mode == "quadratic":
 
         if p1[0] < p1[1]:

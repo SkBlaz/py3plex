@@ -18,14 +18,14 @@ def node_dependent_performance(df):
     print(df2.head())
     df2 = df2.groupby(['p','N','variable']).mean().reset_index()
     print(df2.head())
-    df2.columns = ["p","|N|","Library","time"]
+    df2.columns = ["p","|N|","Library","time (s)"]
     print(df2)
     
     # grid = sns.FacetGrid(df2, col="N", hue="variable", col_wrap=2)
     # grid.map(sns.swarmplot, "E", "value",marker="o").add_legend()
 
 
-    sns.boxplot(x="|N|", y="time", data=df2,hue="Library",
+    sns.boxplot(x="|N|", y="time (s)", data=df2,hue="Library",
                 whis="range", palette="vlag")
  
     plt.show()
