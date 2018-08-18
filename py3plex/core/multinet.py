@@ -157,6 +157,13 @@ class multi_layer_network:
             else:
                 self.core_network = nx.MultiGraph()
 
+
+    def monoplex_nx_wrapper(self,method,kwargs=None):
+        ''' a generic networkx function wrapper '''
+        
+        result = eval("nx."+method+"(self.core_network)")
+        return result
+                
     def _generic_edge_dict_manipulator(self,edge_dict_list,target_function):
 
         if isinstance(edge_dict_list,dict):
