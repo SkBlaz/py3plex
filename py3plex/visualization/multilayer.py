@@ -21,7 +21,7 @@ from . layout_algorithms import *
 main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5):
+def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1):
 
     if background_color == "default":
         
@@ -70,7 +70,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
         ## this is the default delay for matplotlib canvas
         if labels != False:
             try:
-                shape_subplot.text(start_location_network+0.8,start_location_network-0.8, labels[color])
+                shape_subplot.text(start_location_network+label_position,start_location_network-label_position, labels[color])
             except:
                 pass
         
@@ -100,7 +100,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     if display == True:
         plt.show()
 
-def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both"):
+def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1):
 
     #indices are correct network positions
     if input_type == "nodes":
@@ -123,13 +123,13 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
                     
                 elif style == "curve2_bezier":
 
-                    x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height,inversion=invert,linemode=linmod)
+                    x,y = bezier.draw_bezier(len(network_list),p1,p2,path_height=curve_height,inversion=invert,linemode=linmod,resolution=resolution)
 
                     plt.plot(x,y,linestyle=linepoints,lw=linewidth,alpha=alphachannel,color=linecolor)
                 
                 elif style == "curve3_bezier":
 
-                    x,y = bezier.draw_bezier(len(network_list),p1,p2,mode="cubic")
+                    x,y = bezier.draw_bezier(len(network_list),p1,p2,mode="cubic",resolution=resolution)
 
                 elif style == "curve3_fit":
 
@@ -208,6 +208,13 @@ def generate_random_networks(number_of_networks):
         nx.set_node_attributes(tmp_graph,'pos',tmp_pos)
         network_list.append(tmp_graph)
     return network_list         
+
+
+def supra_adjacency_matrix_plot(matrix,display=False):    
+    plt.imshow(matrix, interpolation='nearest', cmap=plt.cm.binary)
+    if display:
+        plt.show()
+    
 
 def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default"):
 

@@ -28,7 +28,6 @@ def visualize_network(input_file, input_type, directed,top_n_communities):
     hairball_plot(network.core_network,color_list = network_colors,layered=False,layout_parameters={"iterations" : args.iterations},scale_by_size=True,layout_algorithm="force",legend=False)
     plt.show()
 
-
 if __name__ == "__main__":
 
     import argparse
@@ -36,7 +35,8 @@ if __name__ == "__main__":
     parser.add_argument("--input_network",default="../datasets/cora.mat")
     parser.add_argument("--input_type",default="sparse")
     parser.add_argument("--iterations",default=200,type=int)
-    parser.add_argument("--top_n_communities",default=200,type=int)
-    args = parser.parse_args()
-    visualize_network(args.network_file,args.network_type,args.directed,args.top_n_communities)
+    parser.add_argument("--directed",default=False)
+    parser.add_argument("--top_n_communities",default=5,type=int)
     
+    args = parser.parse_args()
+    visualize_network(args.input_network,args.input_type,args.directed,args.top_n_communities)
