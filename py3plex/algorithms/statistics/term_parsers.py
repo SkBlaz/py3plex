@@ -38,12 +38,15 @@ def parse_gaf_file(gaf_mappings,whole_list_counts=False):
 def read_topology_mappings(mapping):
 
     ## read the mapping in for of n:term
-    components = defaultdict(set)
-    with open(mapping) as cf:
-        for line in cf:
-            node, module = line.strip().split()
-            components[module].add(node)
-    return components
+    if isinstance(mapping,dict):
+        return mapping
+    else:
+        components = defaultdict(set)
+        with open(mapping) as cf:
+            for line in cf:
+                node, module = line.strip().split()
+                components[module].add(node)
+        return components
 
 def read_uniprot_GO(filename,verbose=True):
     ## read the GAF file..

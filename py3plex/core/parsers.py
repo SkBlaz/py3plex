@@ -39,16 +39,20 @@ def parse_gpickle(file_name, directed):
 
 def parse_gpickle_biomine(file_name,directed):
 
-    ## convert the biomine
+    ## convert the biomine    
     input_graph = nx.read_gpickle(file_name)
-    G = nx.MultiDiGraph()
+    
+    if directed:
+        G = nx.MultiDiGraph()
+    else:
+        G = nx.MultiGraph()
     
     for edge in input_graph.edges(data=True):
         
         l1,n1 = edge[0].split("_")[:2]
         l2,n2 = edge[1].split("_")[:2]
         G.add_edge((n1,l1),(n2,l2),type=edge[2]['key'])
-        
+
     return (G,None)
 
 def parse_multi_edgelist(input_name,directed):

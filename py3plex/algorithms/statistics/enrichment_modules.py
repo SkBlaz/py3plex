@@ -14,7 +14,6 @@ import pandas as pd
 
 def calculate_pval(term):
 
-
 #    _partition_name,_partition_entries,term,_map_term_database,_number_of_all_annotated
     ## this calculates p value
     #print(component, term_dataset, term, count_all)
@@ -117,8 +116,6 @@ def compute_enrichment(term_dataset, term_database, topology_map, all_counts, wh
     
     return finalFrame
 
-
-
 ## specifiy how this is formatted..
 def fet_enrichment_generic(term_dataset,term_database,all_counts,topology_map):
     """
@@ -141,7 +138,7 @@ def fet_enrichment_uniprot(partition_mappings,annotation_mappings):
     term_dataset, term_database, all_counts =  read_uniprot_GO(annotation_mappings)
     
     ## 2.) partition function dict.
-    topology_map = read_topology_mappings(mappings)
+    topology_map = read_topology_mappings(partition_mappings)
 
     ## 3.) calculate p-vals.
     significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False)
