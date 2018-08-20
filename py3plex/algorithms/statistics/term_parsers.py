@@ -2,6 +2,7 @@
 
 from collections import defaultdict, Counter
 import itertools
+import gzip
 
 def read_termlist(terms):
 
@@ -18,17 +19,19 @@ def parse_gaf_file(gaf_mappings,whole_list_counts=False):
     uniGO = defaultdict(set)
     if whole_list_counts:
         whole_list = []
-    with open(gaf_mappings) as im:
-        for line in im:
-            parts = line.strip().split("\t")
-            try:
-                if parts[4] != "":
-                    uniGO[parts[1]].add(parts[4]) ## GO and ref both added
-                                    
-                if whole_list_counts:
-                    whole_list.append(parts[4])
-            except:
-                pass
+
+    if ".gz" in gaf_mappings:        
+        with gzip.open(gaf_mappings) as im:
+            for line in im:
+                parts = line.strip().split("\t")
+                try:
+                    if parts[4] != "":
+                        uniGO[parts[1]].add(parts[4]) ## GO and ref both added
+
+                    if whole_list_counts:
+                        whole_list.append(parts[4])
+                except:
+                    pass
 
     if whole_list_counts:
         return (uniGO,whole_list)    

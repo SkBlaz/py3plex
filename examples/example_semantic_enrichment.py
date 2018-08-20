@@ -27,6 +27,6 @@ for node, community in partition.items():
             community_object[community].add(node)
 
 ## p<0.05 and fdr_bh correction for GO function -- this can take some time!
-enrichment_table = enrichment_modules.fet_enrichment_uniprot(community_object, "../datasets/goa_human.gaf")
+enrichment_table = enrichment_modules.fet_enrichment_uniprot(community_object, "../datasets/goa_human.gaf.gz")
 
 print(enrichment_table)
