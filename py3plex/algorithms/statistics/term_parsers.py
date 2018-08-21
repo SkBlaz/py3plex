@@ -21,8 +21,9 @@ def parse_gaf_file(gaf_mappings,whole_list_counts=False):
         whole_list = []
 
     if ".gz" in gaf_mappings:        
-        with gzip.open(gaf_mappings) as im:
+        with gzip.open(gaf_mappings,"rb") as im:
             for line in im:
+                line = line.decode("utf-8")
                 parts = line.strip().split("\t")
                 try:
                     if parts[4] != "":
