@@ -22,7 +22,7 @@ rdf_partitions.serialize(destination = dataset_name, format="n3")
 hedwig.obo2n3("../datasets/go.obo.gz", "../background_knowledge/bk.n3", "../datasets/goa_human.gaf.gz")
 
 ## some default input parameters
-hedwig_input_parameters = {"bk_dir": "../background_knowledge", "data": "../datasets/example_partition_inputs.n3", "format": "n3", "output": None, "covered": None, "mode": "subgroups", "target": None, "score": "lift", "negations": True, "alpha": 0.05, "latex_report": False, "adjust": "fwer", "FDR": 0.05, "leaves": False, "learner": "heuristic", "optimalsubclass": False, "uris": False, "beam": 20, "support": 0.1, "depth": 5, "nocache": False, "verbose": False,"adjust":"none"}
+hedwig_input_parameters = {"bk_dir": "../background_knowledge", "data": "../datasets/example_partition_inputs.n3", "format": "n3", "output": None, "covered": None, "mode": "subgroups", "target": None, "score": "lift", "negations": True, "alpha": 0.05, "latex_report": False, "adjust": "fwer", "FDR": 0.05, "leaves": False, "learner": "heuristic", "optimalsubclass": False, "uris": False, "beam": 20, "support": 0.1, "depth": 5, "nocache": False, "verbose": True,"adjust":"none"}
 
 network.monitor("Starting rule learning")
 
