@@ -5,7 +5,7 @@ Helper functions.
 '''
 from math import sqrt
 
-from hedwig.core.settings import W3C, HEDWIG
+from .settings import W3C, HEDWIG
 
 def avg(x):
     n = float(len(x))

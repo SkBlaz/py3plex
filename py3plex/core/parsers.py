@@ -34,8 +34,27 @@ def parse_matrix(file_name,directed):
     core_network = nx.relabel_nodes(core_network,mapping)
     return(core_network,labels)
 
-def parse_gpickle(file_name, directed):
-    return (nx.read_gpickle(file_name),None)
+def parse_gpickle(file_name, directed=False,layer_separator=":"):
+
+    if directed:
+        A = nx.MultiDiGraph()
+    else:
+        A = nx.MultiGraph()
+    
+    G = nx.read_gpickle(file_name)
+    if layer_separator is not None:
+        for edge in G.edges():
+            e1,e2 = edge
+            try:
+                layer1,n1 = e1.split(layer_separator)
+                layer2,n2 = e2.split(layer_separator)
+                A.add_edge((n1,layer1),(n2,layer2))
+            except:
+                pass
+    else:
+        A = G
+            
+    return (A,None)
 
 def parse_gpickle_biomine(file_name,directed):
 

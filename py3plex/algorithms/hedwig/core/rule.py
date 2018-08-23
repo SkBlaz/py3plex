@@ -6,10 +6,10 @@ The rule class.
 import json
 from collections import defaultdict
 
-from hedwig.core.predicate import UnaryPredicate, BinaryPredicate
-from hedwig.core.example import Example
-from hedwig.core.helpers import avg, std
-from hedwig.core.settings import DEFAULT_ANNOTATION_NAME
+from .predicate import UnaryPredicate, BinaryPredicate
+from .example import Example
+from .helpers import avg, std
+from .settings import DEFAULT_ANNOTATION_NAME
 
 
 class Rule:

@@ -9,8 +9,8 @@ import hashlib
 import os
 import _pickle as  cPickle
 
-from hedwig.core.settings import logger, HEDWIG, GENERIC_NAMESPACE
-from hedwig.core.example import Example
+from .settings import logger, HEDWIG, GENERIC_NAMESPACE
+from .example import Example
 
 
 def rdf(paths, def_format='n3'):

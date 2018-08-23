@@ -1,6 +1,6 @@
-from hedwig.stats import scorefunctions
-from hedwig.stats import adjustment
-from hedwig.stats import significance
-from hedwig.stats.validate import Validate
+from . import scorefunctions
+from . import adjustment
+from . import significance
+from .validate import Validate
 
 __all__ = ["scorefunctions", "adjustment", "significance", "Validate"]

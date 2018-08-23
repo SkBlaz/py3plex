@@ -6,10 +6,10 @@ Main learner class.
 from collections import defaultdict
 from itertools import combinations
 
-from hedwig.core import UnaryPredicate, Rule, Example
-from hedwig.core.settings import logger
-from hedwig.stats.significance import is_redundant
-from hedwig.stats.scorefunctions import interesting
+from ..core import UnaryPredicate, Rule, Example
+from ..core.settings import logger
+from ..stats.significance import is_redundant
+from ..stats.scorefunctions import interesting
 
 from .learner import Learner
 

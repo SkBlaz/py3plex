@@ -7,10 +7,10 @@ from collections import defaultdict
 from bitarray import bitarray
 from rdflib import RDF, RDFS, URIRef
 
-from hedwig.core.example import Example
-from hedwig.core.predicate import UnaryPredicate
-from hedwig.core.helpers import avg, std, user_defined
-from hedwig.core.settings import EXAMPLE_SCHEMA, logger, W3C, HEDWIG
+from .example import Example
+from .predicate import UnaryPredicate
+from .helpers import avg, std, user_defined
+from .settings import EXAMPLE_SCHEMA, logger, W3C, HEDWIG
 
 
 class ExperimentKB:

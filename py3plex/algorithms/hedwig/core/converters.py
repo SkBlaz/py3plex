@@ -3,8 +3,9 @@ import rdflib
 from .term_parsers import *
 import os
 from collections import defaultdict
+import gzip
 
-def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=True,split_node_by=":",keep_index=1,layer_type="Protein",annotation_mapping_file="test.gaf"):
+def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_node_by=":",keep_index=1,layer_type="uniprotkb",annotation_mapping_file="test.gaf"):
     
     ## generate input examples based on community assignment
     g = rdflib.graph.Graph()
@@ -22,7 +23,7 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=True,split_no
                 if layer == layer_type:
                     mapping_file[node.split(split_node_by)[keep_index]] = v
     else:
-        for k,v in input_mapping.items():
+        for k,v in input_mapping_file.items():
             node,layer = k
             if layer_type != False:
                 if layer == layer_type:
@@ -67,7 +68,7 @@ def obo2n3(obofile,n3out, gaf_file):
     gaf_mappings = parse_gaf_file(gaf_file)
     
     ## iterate through all files
-    with open(obofile) as obo:
+    with gzip.open(obofile,"rt") as obo:
         for line in obo:            
             parts = line.split()
             try:

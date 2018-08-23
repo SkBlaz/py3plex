@@ -1,5 +1,5 @@
-from hedwig.learners.learner import Learner as HeuristicLearner
-from hedwig.learners.optimal import OptimalLearner
+from .learner import Learner as HeuristicLearner
+from .optimal import OptimalLearner
 
 ## here add random rules, as well as bottom-up search
 
