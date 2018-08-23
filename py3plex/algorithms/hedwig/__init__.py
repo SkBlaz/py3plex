@@ -4,11 +4,12 @@ from datetime import datetime
 import logging
 import json
 
-from hedwig.core import ExperimentKB, Rule
-from hedwig.learners import HeuristicLearner, OptimalLearner
-from hedwig.stats import scorefunctions, adjustment, significance, Validate
-from hedwig.core.load import load_graph
-from hedwig.core.settings import VERSION, DESCRIPTION, logger
+from .core import ExperimentKB, Rule
+from .learners import HeuristicLearner, OptimalLearner
+from .stats import scorefunctions, adjustment, significance, Validate
+from .core.load import load_graph
+from .core.settings import VERSION, DESCRIPTION, logger
+from .core.converters import *
 
 def _parameters_report(args, start, time_taken):
     sep = '-'*40 + '\n'
@@ -24,21 +25,24 @@ def _parameters_report(args, start, time_taken):
 
     return rep
 
-def generate_rules_report(kwargs, rules_per_target,
-                          human=lambda label, rule: label):
+def generate_rules_report(kwargs, rules_per_target, human=lambda label, rule: label):
     rules_report = ''
     for _, rules in rules_per_target:
         
         if rules:
             rules_report += Rule.ruleset_report(rules, show_uris=kwargs['uris'],
-                                                human=human)
+                                                human=human,latex=kwargs['latex_report'])
             rules_report += '\n'
     if not rules_report:
         rules_report = 'No significant rules found'
+        
     return rules_report
 
-
 def run(kwargs, cli=False):
+
+    
+    ## change non-default settings. This is useful for func calls
+        
     if cli:
         logger.setLevel(logging.DEBUG if kwargs['verbose'] else logging.INFO)
     else:
@@ -80,7 +84,7 @@ def run(kwargs, cli=False):
             else:
                 f.write(parameters_report)
                 f.write(rules_report)
-    elif cli:
+    else:
         print (parameters_report)
         print (rules_report)
 

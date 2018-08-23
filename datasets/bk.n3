@@ -1,0 +1,180 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://purl.obolibrary.org/obo/GO:0003674> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0000988>,
+        <http://purl.obolibrary.org/obo/GO:0003677>,
+        <http://purl.obolibrary.org/obo/GO:0003700>,
+        <http://purl.obolibrary.org/obo/GO:0003723>,
+        <http://purl.obolibrary.org/obo/GO:0003924>,
+        <http://purl.obolibrary.org/obo/GO:0004386>,
+        <http://purl.obolibrary.org/obo/GO:0004518>,
+        <http://purl.obolibrary.org/obo/GO:0005198>,
+        <http://purl.obolibrary.org/obo/GO:0008092>,
+        <http://purl.obolibrary.org/obo/GO:0008134>,
+        <http://purl.obolibrary.org/obo/GO:0008168>,
+        <http://purl.obolibrary.org/obo/GO:0008233>,
+        <http://purl.obolibrary.org/obo/GO:0008289>,
+        <http://purl.obolibrary.org/obo/GO:0008565>,
+        <http://purl.obolibrary.org/obo/GO:0016301>,
+        <http://purl.obolibrary.org/obo/GO:0016491>,
+        <http://purl.obolibrary.org/obo/GO:0016746>,
+        <http://purl.obolibrary.org/obo/GO:0016757>,
+        <http://purl.obolibrary.org/obo/GO:0016765>,
+        <http://purl.obolibrary.org/obo/GO:0016779>,
+        <http://purl.obolibrary.org/obo/GO:0016791>,
+        <http://purl.obolibrary.org/obo/GO:0016798>,
+        <http://purl.obolibrary.org/obo/GO:0016810>,
+        <http://purl.obolibrary.org/obo/GO:0016829>,
+        <http://purl.obolibrary.org/obo/GO:0016853>,
+        <http://purl.obolibrary.org/obo/GO:0016874>,
+        <http://purl.obolibrary.org/obo/GO:0016887>,
+        <http://purl.obolibrary.org/obo/GO:0019899>,
+        <http://purl.obolibrary.org/obo/GO:0022857>,
+        <http://purl.obolibrary.org/obo/GO:0030234>,
+        <http://purl.obolibrary.org/obo/GO:0030674>,
+        <http://purl.obolibrary.org/obo/GO:0032182>,
+        <http://purl.obolibrary.org/obo/GO:0042393>,
+        <http://purl.obolibrary.org/obo/GO:0043167>,
+        <http://purl.obolibrary.org/obo/GO:0051082> .
+
+<http://purl.obolibrary.org/obo/GO:0005575> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0005576>,
+        <http://purl.obolibrary.org/obo/GO:0005615>,
+        <http://purl.obolibrary.org/obo/GO:0005622>,
+        <http://purl.obolibrary.org/obo/GO:0005623>,
+        <http://purl.obolibrary.org/obo/GO:0005635>,
+        <http://purl.obolibrary.org/obo/GO:0005654>,
+        <http://purl.obolibrary.org/obo/GO:0005737>,
+        <http://purl.obolibrary.org/obo/GO:0005815>,
+        <http://purl.obolibrary.org/obo/GO:0005829>,
+        <http://purl.obolibrary.org/obo/GO:0005886>,
+        <http://purl.obolibrary.org/obo/GO:0009579>,
+        <http://purl.obolibrary.org/obo/GO:0030312>,
+        <http://purl.obolibrary.org/obo/GO:0031012>,
+        <http://purl.obolibrary.org/obo/GO:0032991>,
+        <http://purl.obolibrary.org/obo/GO:0043226> .
+
+<http://purl.obolibrary.org/obo/GO:0008150> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0000003>,
+        <http://purl.obolibrary.org/obo/GO:0000902>,
+        <http://purl.obolibrary.org/obo/GO:0002376>,
+        <http://purl.obolibrary.org/obo/GO:0003013>,
+        <http://purl.obolibrary.org/obo/GO:0005975>,
+        <http://purl.obolibrary.org/obo/GO:0006091>,
+        <http://purl.obolibrary.org/obo/GO:0006457>,
+        <http://purl.obolibrary.org/obo/GO:0006464>,
+        <http://purl.obolibrary.org/obo/GO:0006629>,
+        <http://purl.obolibrary.org/obo/GO:0006790>,
+        <http://purl.obolibrary.org/obo/GO:0006810>,
+        <http://purl.obolibrary.org/obo/GO:0006950>,
+        <http://purl.obolibrary.org/obo/GO:0007005>,
+        <http://purl.obolibrary.org/obo/GO:0007010>,
+        <http://purl.obolibrary.org/obo/GO:0007049>,
+        <http://purl.obolibrary.org/obo/GO:0007059>,
+        <http://purl.obolibrary.org/obo/GO:0007155>,
+        <http://purl.obolibrary.org/obo/GO:0007165>,
+        <http://purl.obolibrary.org/obo/GO:0007267>,
+        <http://purl.obolibrary.org/obo/GO:0007568>,
+        <http://purl.obolibrary.org/obo/GO:0008219>,
+        <http://purl.obolibrary.org/obo/GO:0008283>,
+        <http://purl.obolibrary.org/obo/GO:0009056>,
+        <http://purl.obolibrary.org/obo/GO:0009058>,
+        <http://purl.obolibrary.org/obo/GO:0015979>,
+        <http://purl.obolibrary.org/obo/GO:0019748>,
+        <http://purl.obolibrary.org/obo/GO:0021700>,
+        <http://purl.obolibrary.org/obo/GO:0022607>,
+        <http://purl.obolibrary.org/obo/GO:0030154>,
+        <http://purl.obolibrary.org/obo/GO:0030198>,
+        <http://purl.obolibrary.org/obo/GO:0032196>,
+        <http://purl.obolibrary.org/obo/GO:0034330>,
+        <http://purl.obolibrary.org/obo/GO:0034641>,
+        <http://purl.obolibrary.org/obo/GO:0040007>,
+        <http://purl.obolibrary.org/obo/GO:0040011>,
+        <http://purl.obolibrary.org/obo/GO:0042254>,
+        <http://purl.obolibrary.org/obo/GO:0042592>,
+        <http://purl.obolibrary.org/obo/GO:0043473>,
+        <http://purl.obolibrary.org/obo/GO:0044281>,
+        <http://purl.obolibrary.org/obo/GO:0044403>,
+        <http://purl.obolibrary.org/obo/GO:0048646>,
+        <http://purl.obolibrary.org/obo/GO:0048856>,
+        <http://purl.obolibrary.org/obo/GO:0050877>,
+        <http://purl.obolibrary.org/obo/GO:0051186>,
+        <http://purl.obolibrary.org/obo/GO:0051276>,
+        <http://purl.obolibrary.org/obo/GO:0051301>,
+        <http://purl.obolibrary.org/obo/GO:0051604>,
+        <http://purl.obolibrary.org/obo/GO:0061024>,
+        <http://purl.obolibrary.org/obo/GO:0071554>,
+        <http://purl.obolibrary.org/obo/GO:0071941>,
+        <http://purl.obolibrary.org/obo/GO:0140014> .
+
+<http://purl.obolibrary.org/obo/ends_during> rdfs:subClassOf <http://purl.obolibrary.org/obo/happens_during> .
+
+<http://purl.obolibrary.org/obo/regulates> rdfs:subClassOf <http://purl.obolibrary.org/obo/negatively_regulates>,
+        <http://purl.obolibrary.org/obo/positively_regulates> .
+
+<http://purl.obolibrary.org/obo/GO:0003723> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0003729>,
+        <http://purl.obolibrary.org/obo/GO:0008135>,
+        <http://purl.obolibrary.org/obo/GO:0019843>,
+        <http://purl.obolibrary.org/obo/GO:0030533>,
+        <http://purl.obolibrary.org/obo/GO:0030555> .
+
+<http://purl.obolibrary.org/obo/GO:0005198> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0003735> .
+
+<http://purl.obolibrary.org/obo/GO:0005694> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0000228>,
+        <http://purl.obolibrary.org/obo/GO:0000229> .
+
+<http://purl.obolibrary.org/obo/GO:0005773> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0005764> .
+
+<http://purl.obolibrary.org/obo/GO:0006810> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0006605>,
+        <http://purl.obolibrary.org/obo/GO:0006913>,
+        <http://purl.obolibrary.org/obo/GO:0007034>,
+        <http://purl.obolibrary.org/obo/GO:0016192>,
+        <http://purl.obolibrary.org/obo/GO:0030705>,
+        <http://purl.obolibrary.org/obo/GO:0055085> .
+
+<http://purl.obolibrary.org/obo/GO:0007049> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0000278> .
+
+<http://purl.obolibrary.org/obo/GO:0009056> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0006914>,
+        <http://purl.obolibrary.org/obo/GO:0034655> .
+
+<http://purl.obolibrary.org/obo/GO:0009058> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0006412> .
+
+<http://purl.obolibrary.org/obo/GO:0022607> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0065003> .
+
+<http://purl.obolibrary.org/obo/GO:0030312> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0005618> .
+
+<http://purl.obolibrary.org/obo/GO:0031410> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0005768> .
+
+<http://purl.obolibrary.org/obo/GO:0032991> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0005840> .
+
+<http://purl.obolibrary.org/obo/GO:0034641> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0006259>,
+        <http://purl.obolibrary.org/obo/GO:0006397>,
+        <http://purl.obolibrary.org/obo/GO:0006399>,
+        <http://purl.obolibrary.org/obo/GO:0006412>,
+        <http://purl.obolibrary.org/obo/GO:0034655> .
+
+<http://purl.obolibrary.org/obo/GO:0040011> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0048870> .
+
+<http://purl.obolibrary.org/obo/GO:0043226> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0005634>,
+        <http://purl.obolibrary.org/obo/GO:0005694>,
+        <http://purl.obolibrary.org/obo/GO:0005730>,
+        <http://purl.obolibrary.org/obo/GO:0005739>,
+        <http://purl.obolibrary.org/obo/GO:0005773>,
+        <http://purl.obolibrary.org/obo/GO:0005777>,
+        <http://purl.obolibrary.org/obo/GO:0005783>,
+        <http://purl.obolibrary.org/obo/GO:0005794>,
+        <http://purl.obolibrary.org/obo/GO:0005811>,
+        <http://purl.obolibrary.org/obo/GO:0005840>,
+        <http://purl.obolibrary.org/obo/GO:0005856>,
+        <http://purl.obolibrary.org/obo/GO:0005929>,
+        <http://purl.obolibrary.org/obo/GO:0009536>,
+        <http://purl.obolibrary.org/obo/GO:0031410> .
+
+<http://purl.obolibrary.org/obo/GO:0044281> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0006520> .
+
+<http://purl.obolibrary.org/obo/GO:0048856> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0009790> .
+
+<http://purl.obolibrary.org/obo/GO:0061024> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0007009> .
+
+<http://purl.obolibrary.org/obo/GO:0065003> rdfs:subClassOf <http://purl.obolibrary.org/obo/GO:0022618> .
+

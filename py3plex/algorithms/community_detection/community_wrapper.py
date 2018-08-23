@@ -8,7 +8,7 @@ def louvain_communities(network,input_type="mat",verbose=True):
     #     network = nx.from_scipy_sparse_matrix(network)
 
     if verbose:
-        print ("Detecting communities..")    
+        network.monitor("Detecting communities..")
         
-    partition = best_partition(network)
+    partition = best_partition(network.core_network)
     return partition

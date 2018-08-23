@@ -9,7 +9,7 @@ import multiprocessing as mp
 import random
 from statsmodels.sandbox.stats.multicomp import multipletests
 from collections import defaultdict, Counter
-from .term_parsers import parse_gaf_file,read_termlist,read_topology_mappings,read_uniprot_GO
+from ..term_parsers import parse_gaf_file,read_termlist,read_topology_mappings,read_uniprot_GO
 import pandas as pd
 
 def calculate_pval(term):

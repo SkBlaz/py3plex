@@ -1,0 +1,4 @@
+rdflib
+numpy
+networkx
+scipy

@@ -1,5 +1,4 @@
 import argparse
-
 import hedwig
 from hedwig.stats import scorefunctions, adjustment
 from hedwig.core.settings import VERSION, DESCRIPTION, INPUT_FORMATS, Defaults
@@ -47,6 +46,8 @@ parser.add_argument('-A', '--alpha', default=Defaults.ALPHA, type=float,
                     help='P-value threshold; applies if "--adjust fwer" \
                           is used.')
 
+parser.add_argument('-lx', '--latex_report', action="store_true", help='Report as latex strings')
+
 parser.add_argument('-a', '--adjust', default=Defaults.ADJUST, choices=adjustments,
                     help='Adjustment method for the multiple-testing problem.')
 
@@ -83,6 +84,6 @@ parser.add_argument('-C', '--nocache', action='store_true',
 parser.add_argument("-v", "--verbose", help="Increase output verbosity.",
                     action="store_true")
 
-
 args = parser.parse_args()
+print(args.__dict__)
 hedwig.run(args.__dict__, cli=True)
