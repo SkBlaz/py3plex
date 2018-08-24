@@ -38,7 +38,7 @@ def generate_rules_report(kwargs, rules_per_target, human=lambda label, rule: la
         
     return rules_report
 
-def run(kwargs, cli=False):
+def run(kwargs, cli=True):
 
     
     ## change non-default settings. This is useful for func calls
