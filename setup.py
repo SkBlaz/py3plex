@@ -40,7 +40,7 @@ else:
         
 
 setup(name='py3plex',
-      version='0.4',
+      version='0.42',
       description="A Multilayer network analysis python3 library",
       url='http://github.com/skblaz/py3plex',
       author='Blaž Škrlj',
