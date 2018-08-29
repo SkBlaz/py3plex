@@ -11,6 +11,7 @@ here = path.abspath(path.dirname(__file__))
 # Get the long description from the README file
 
 if path.isfile(path.join(here, 'py3plex/visualization/fa2/fa2util.c')):
+    print("Using existing visualization engine..")
     # cython build locally and add fa2/fa2util.c to MANIFEST or fa2.egg-info/SOURCES.txt
     # run: python setup.py build_ext --inplace
     ext_modules = [Extension('fa2.fa2util', ['py3plex/visualization/fa2/fa2util.c'])]
@@ -18,6 +19,8 @@ if path.isfile(path.join(here, 'py3plex/visualization/fa2/fa2util.c')):
     cythonopts = {"ext_modules": ext_modules,
                   "cmdclass": cmdclass}
 else:
+
+    print("Compiling the visualization engine..")
     cythonopts = None
 
     # Uncomment the following line if you want to install without optimizations

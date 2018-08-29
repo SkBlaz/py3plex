@@ -21,8 +21,6 @@ py3plex/algorithms/community_detection/infomap/__init__.py
 py3plex/algorithms/community_detection/infomap/infomap.py
 py3plex/algorithms/hedwig/__init__.py
 py3plex/algorithms/hedwig/__main__.py
-py3plex/algorithms/hedwig/assets/__init__.py
-py3plex/algorithms/hedwig/assets/__init__.py~
 py3plex/algorithms/hedwig/assets/builtin.n3
 py3plex/algorithms/hedwig/core/__init__.py
 py3plex/algorithms/hedwig/core/converters.py
@@ -76,7 +74,6 @@ py3plex/visualization/embedding_visualization/__init__.py
 py3plex/visualization/embedding_visualization/embedding_tools.py
 py3plex/visualization/embedding_visualization/embedding_visualization.py
 py3plex/visualization/fa2/__init__.py
-py3plex/visualization/fa2/fa2util.c
 py3plex/visualization/fa2/fa2util.pxd
 py3plex/visualization/fa2/fa2util.py
 py3plex/visualization/fa2/forceatlas2.py
