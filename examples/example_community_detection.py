@@ -18,7 +18,7 @@ network = multinet.multi_layer_network().load_network(input_file=args.input_netw
 
 network.basic_stats() ## check core imports
 
-partition = cw.louvain_communities(network.core_network)
+partition = cw.louvain_communities(network)
 
 ## select top n communities by size
 top_n = 15
