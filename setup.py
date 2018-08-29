@@ -25,6 +25,7 @@ else:
 
     # Uncomment the following line if you want to install without optimizations
     # cythonopts = {"py_modules": ["fa2.fa2util"]}
+    
     try:
         if cythonopts is None:
             from Cython.Build import build_ext
@@ -36,7 +37,8 @@ else:
     except:
 
         print("Installing without optimizations.. Please install gcc for better performance!")
-        cythonopts = {"py_modules": ["fa2.fa2util"]}
+        
+        cythonopts = {"py_modules": ["py3plex/visualization/fa2.fa2util"]}
         
 
 setup(name='py3plex',

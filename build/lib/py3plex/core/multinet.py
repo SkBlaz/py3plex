@@ -32,6 +32,13 @@ class multi_layer_network:
         self.embedding = None
         self.verbose = verbose
         self.network_type = network_type ## assing network type
+
+    def __getitem__(self,i,j=None):
+        if j is None:
+            return self.core_network[i]
+        else:
+            return self.core_network[i][j]
+        pass
         
     def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
         """Main method for loading networks"""
@@ -107,7 +114,27 @@ class multi_layer_network:
         
         for node in self.core_network.nodes(data=data):
             yield node
-        
+            
+
+    def subnetwork(self,input_list=None,subset_by="layers"):
+
+        input_list = set(input_list)
+        if subset_by == "layers":
+            subnetwork = self.core_network.subgraph([n for n in self.core_network.nodes() if n[1] in input_list])
+            
+        elif subset_by == "node_names":
+            subnetwork = self.core_network.subgraph([n for n in self.core_network.nodes() if n[0] in input_list])
+
+        elif subset_by == "node_layer_names":
+            subnetwork = self.core_network.subgraph([n for n in self.core_network.nodes() if n in input_list])
+
+        else:
+            self.monitor("Please, select layers of node_names options..")
+
+        tmp_net = multi_layer_network()
+        tmp_net.core_network = subnetwork
+        return tmp_net
+            
     def get_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
 
         """ A method for obtaining layerwise distributions """
@@ -130,6 +157,13 @@ class multi_layer_network:
             else:
                 self.core_network = nx.MultiGraph()
 
+
+    def monoplex_nx_wrapper(self,method,kwargs=None):
+        ''' a generic networkx function wrapper '''
+        
+        result = eval("nx."+method+"(self.core_network)")
+        return result
+                
     def _generic_edge_dict_manipulator(self,edge_dict_list,target_function):
 
         if isinstance(edge_dict_list,dict):
@@ -159,16 +193,22 @@ class multi_layer_network:
                 del edge_dict['target_type'];del edge_dict['source_type']
                 eval("self.core_network."+target_function+"(**edge_dict)")
         
-    def _generic_edge_list_manipulator(self,edge_list,target_function):
+    def _generic_edge_list_manipulator(self,edge_list,target_function,raw=False):
 
         if isinstance(edge_list[0],list):
             for edge in edge_list:
-                n1,l1,n2,l2,w = edge                
-                eval("self.core_network."+target_function+"((n1,l1),(n2,l2),weight="+str(w)+",type=\"default\")")
+                n1,l1,n2,l2,w = edge
+                if raw:
+                    eval("self.core_network."+target_function+"((n1,l1),(n2,l2))")
+                else:
+                    eval("self.core_network."+target_function+"((n1,l1),(n2,l2),weight="+str(w)+",type=\"default\")")
             
         else:
             n1,l1,n2,l2,w = edge_list
-            eval("self.core_network."+target_function+"((n1,l1),(n2,l2),weight="+str(w)+",type=\"default\"))")
+            if raw:
+                eval("self.core_network."+target_function+"((n1,l1),(n2,l2))")
+            else:
+                eval("self.core_network."+target_function+"((n1,l1),(n2,l2),weight="+str(w)+",type=\"default\"))")
     
     def _generic_node_dict_manipulator(self,node_dict_list,target_function):
         
@@ -192,6 +232,18 @@ class multi_layer_network:
                 del node_dict["source"]
                 eval("self.core_network."+target_function+"(**node_dict)")                    
 
+    def _generic_node_list_manipulator(self,node_list,target_function):
+
+        if isinstance(node_list,list):
+            for node in node_list:
+                n1,l1 = node
+                eval("self.core_network."+target_function+"((n1,l1))")
+            
+        else:
+            n1,l1 = node_list
+            eval("self.core_network."+target_function+"((n1,l1))")
+
+            
     def _to_multiplex(self):
         self.network_type = "multiplex"
         self.core_network = add_mpx_edges(self.core_network)
@@ -211,13 +263,13 @@ class multi_layer_network:
         if self.network_type == "multiplex":
             self.core_network = add_mpx_edges(self.core_network)
 
-    def remove_edges(self,edge_dict_list,input_type="dict"):
+    def remove_edges(self,edge_dict_list,input_type="list"):
         """ A method for removing edges.. """
         
         if input_type == "dict":
-            self._generic_edge_dict_manipulator(edge_dict_list,"remove_edge")
+            self._generic_edge_dict_manipulator(edge_dict_list,"remove_edge",raw=True)
         elif input_type == "list":
-            self._generic_edge_list_manipulator(edge_dict_list,"remove_edge")
+            self._generic_edge_list_manipulator(edge_dict_list,"remove_edge",raw=True)
         else:
             raise Exception("Please, use dict or list input.")
 
@@ -239,15 +291,44 @@ class multi_layer_network:
         
         if input_type == "dict":
             self._generic_node_dict_manipulator(node_dict_list,"remove_node")
+
+        if input_type == "list":
+            self._generic_node_list_manipulator(node_dict_list,"remove_node")
             
         if self.network_type == "multiplex":
             self.core_network = add_mpx_edges(self.core_network)
+
+    def _get_num_layers(self):
+        self.number_of_layers = len(set(x[1] for x in self.get_nodes()))
+
+    def _get_num_nodes(self):
+        self.number_of_unique_nodes = len(set(x[0] for x in self.get_nodes()))
             
-    def get_tensor(self):
+    def _node_layer_mappings(self):
+        
+        pass
+            
+    def get_tensor(self,sparsity_type = "bsr"):
         ## convert this to a tensor of some sort
+        ## maximum number of layers
+        ## maximum number of nodes
+        ## are nodes/layers strings? if so, do the encoding
+        
         pass
 
-    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True):
+    def get_supra_adjacency_matrix(self,mtype="sparse"):
+
+        if mtype == "sparse":
+            return nx.to_scipy_sparse_matrix(self.core_network)
+        else:
+            return nx.to_numpy_matrix(self.core_network)
+
+    def visualize_matrix(self,kwargs):
+        adjmat = self.get_supra_adjacency_matrix(mtype="dense")
+        supra_adjacency_matrix_plot(adjmat,**kwargs)
+
+    
+    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01):
 
         """ network visualization method """
         
@@ -264,9 +345,9 @@ class multi_layer_network:
                 for edge_type,edges in tqdm.tqdm(multilinks.items()):
                     if edge_type == "mpx":
                         
-                        ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7)
+                        ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
                     else:
-                        ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod="upper",linewidth=0.4)                      
+                        ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=0.4,resolution=resolution)                      
                     enum+=1
             else:
                 enum = 1
