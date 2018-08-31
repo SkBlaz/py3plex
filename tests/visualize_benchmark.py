@@ -1,5 +1,5 @@
 
-
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -24,10 +24,11 @@ def node_dependent_performance(df):
     # grid = sns.FacetGrid(df2, col="N", hue="variable", col_wrap=2)
     # grid.map(sns.swarmplot, "E", "value",marker="o").add_legend()
 
-
+    df2['time (s)'] = df2['time (s)'].apply(np.log)
     sns.boxplot(x="|N|", y="time (s)", data=df2,hue="Library",
                 whis="range", palette="vlag")
- 
+
+    plt.ylabel("Log of time (s)")
     plt.show()
     
     pass

@@ -5,10 +5,13 @@
 from os import path
 from setuptools import setup,find_packages
 from setuptools.extension import Extension
+import argparse
+
 
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
+
 
 if path.isfile(path.join(here, 'py3plex/visualization/fa2/fa2util.c')):
     print("Using existing visualization engine..")
@@ -25,7 +28,7 @@ else:
 
     # Uncomment the following line if you want to install without optimizations
     # cythonopts = {"py_modules": ["fa2.fa2util"]}
-    
+
     try:
         if cythonopts is None:
             from Cython.Build import build_ext
@@ -37,10 +40,9 @@ else:
     except:
 
         print("Installing without optimizations.. Please install gcc for better performance!")
-        
         cythonopts = {"py_modules": ["py3plex/visualization/fa2.fa2util"]}
-        
 
+    
 setup(name='py3plex',
       version='0.42',
       description="A Multilayer network analysis python3 library",
