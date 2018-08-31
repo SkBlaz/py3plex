@@ -6,7 +6,7 @@ from py3plex.core import multinet
 from sklearn.decomposition import PCA
 import json
 from py3plex.algorithms.node_ranking import sparse_page_rank, stochastic_normalization_hin
-from py3plex.algorithms.benchmark_classification import *
+from py3plex.algorithms.general.benchmark_classification import *
 from functools import reduce
 import itertools
 import numpy as np
@@ -151,7 +151,7 @@ def evolve_decomposition(multilayer_network,heuristics = ["idf","tf","chi","ig",
 if __name__ == "__main__":
 
     np.random.seed(555)   # Seeded to allow replication.
-    datasets = ["../../datasets/imdb_gml.gml","../../datasets/labeled_epigenetics.gpickle"]
+    datasets = ["../datasets/imdb_gml.gml","../datasets/labeled_epigenetics.gpickle"]
 
     ## iterate through datasets..
     for en, dataset in enumerate(datasets):
