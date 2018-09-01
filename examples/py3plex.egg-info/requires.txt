@@ -1,4 +1,0 @@
-rdflib
-numpy
-networkx
-scipy
