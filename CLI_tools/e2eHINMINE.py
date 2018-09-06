@@ -87,7 +87,7 @@ def page_rank_kernel(index_row):
 
 def get_f_measure(M,Tr):
     clf =  OneVsRestClassifier(LogisticRegression())
-    scores = cross_val_score(clf, M, Tr, cv=10, scoring='f1_macro')
+    scores = cross_val_score(clf, M, Tr, cv=2, scoring='f1_macro')
     return np.mean(scores)
     
 def scoring_function_f_measure(combined_matrix,decomposed_label_matrix):
@@ -117,7 +117,7 @@ def evaluate_triplet_heuristic_tuple(input_tuple):
     else:
         return scoring_function_f_measure(decomposed_matrix,labels)
 
-def evolve_decomposition(multilayer_network,heuristics = ["idf","tf","chi","ig","gr","delta","rf","okapi"],merges = ["sum","prod","norm_prod","norm_sum"],alpha=1,beta=1, iterations=100):
+def evolve_decomposition(multilayer_network,heuristics = ["idf","tf","chi","ig","gr","delta","rf","okapi"],merges = ["sum","prod","norm_prod","norm_sum"],alpha=1,beta=1, iterations=5,popsize=5):
 
     global triplet_set
     global heuristics_set
@@ -126,12 +126,12 @@ def evolve_decomposition(multilayer_network,heuristics = ["idf","tf","chi","ig",
     
     heuristics_set = heuristics
     merge_set = merges
-    
+    multilayer_network.monitor("Starting evolution..")
     triplet_set = set(multilayer_network.get_decomposition_cycles())
     alpha_beta = [alpha,beta]
     input_array = np.random.randint(2, size=len(heuristics_set)+len(triplet_set)+len(merge_set)+len(alpha_beta))
     inputs = list(((0,1) for x in input_array))
-    res = optimize.differential_evolution(evaluate_triplet_heuristic_tuple, inputs, popsize=5, maxiter=iterations, disp=True)            
+    res = optimize.differential_evolution(evaluate_triplet_heuristic_tuple, inputs, popsize=popsize, maxiter=iterations, disp=True)            
     result_array = res['x']
     input_tuple = np.rint(result_array)
     heuristics_subset = input_tuple[0:len(heuristics_set)]
@@ -150,6 +150,12 @@ def evolve_decomposition(multilayer_network,heuristics = ["idf","tf","chi","ig",
     
 if __name__ == "__main__":
 
+    import sys
+    import warnings
+
+    if not sys.warnoptions:
+        warnings.simplefilter("ignore")
+        
     np.random.seed(555)   # Seeded to allow replication.
     datasets = ["../datasets/imdb_gml.gml","../datasets/labeled_epigenetics.gpickle"]
 
