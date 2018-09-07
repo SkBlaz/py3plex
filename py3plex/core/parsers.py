@@ -300,6 +300,9 @@ def load_temporal_edge_information(input_network,input_type,layer_mapping=None):
         return load_edge_activity_file(input_network,layer_mapping=layer_mapping)
     else:
         return None            
+
+def save_gpickle(input_network,output_file):
+    nx.write_gpickle(input_network, output_file)
     
 def save_edgelist(input_network,output_file,attributes=False):
     fh=open(output_file,'wb')

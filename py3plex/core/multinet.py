@@ -77,6 +77,9 @@ class multi_layer_network:
         
         if output_type == "edgelist":
             parsers.save_edgelist(self.core_network,output_file=output_file)
+            
+        if output_type == "gpickle":
+            parsers.save_gpickle(self.core_network,output_file=output_file)
         
     def basic_stats(self,target_network=None):
 
