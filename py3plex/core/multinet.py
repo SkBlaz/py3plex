@@ -260,6 +260,8 @@ class multi_layer_network:
             self._generic_edge_dict_manipulator(edge_dict_list,"add_edge")
         elif input_type == "list":
             self._generic_edge_list_manipulator(edge_dict_list,"add_edge")
+        elif input_type == "px_edge":
+            self.core_network.add_edge(edge_dict_list[0],edge_dict_list[1],attr_dict=edge_dict_list[2])
         else:
             raise Exception("Please, use dict or list input.")
 
@@ -335,9 +337,8 @@ class multi_layer_network:
 
         """ network visualization method """
         
-        network_labels, graphs, multilinks = self.get_layers(style)
-
         if style == "diagonal":
+            network_labels, graphs, multilinks = self.get_layers(style)
             if parameters_layers is None:                
                 ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,nodesize=6)
             else:
@@ -362,7 +363,7 @@ class multi_layer_network:
             return ax
         
         elif style == "hairball":
-            network_colors, graph = multilayer_network.get_layers(style="hairball")
+            network_colors, graph = self.get_layers(style="hairball")
             ax = hairball_plot(graph,network_colors,layout_algorithm="force")
             if show:
                 plt.show()

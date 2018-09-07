@@ -34,7 +34,7 @@ def parse_matrix(file_name,directed):
     core_network = nx.relabel_nodes(core_network,mapping)
     return(core_network,labels)
 
-def parse_gpickle(file_name, directed=False,layer_separator=":"):
+def parse_gpickle(file_name, directed=False,layer_separator=None):
 
     if directed:
         A = nx.MultiDiGraph()
