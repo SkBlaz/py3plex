@@ -363,7 +363,7 @@ for time,network_slice in time_network_slices.items():
 # Acknowledgements
 ForceAtlas2 cython implementation is based on the one provided at https://github.com/bhargavchippada/forceatlas2, developed by Bhargav Chippada. The code is included by the author's permission. We also thank Thomas Aynaud for the permission to include the initial version of the Louvain algorithm.
 
-# Some relevant citations of the work included in Py3plex
+# Citation
 
 ```
 @InProceedings{10.1007/978-3-319-78680-3_13,

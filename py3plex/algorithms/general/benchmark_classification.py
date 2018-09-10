@@ -2,6 +2,9 @@
 
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+import numpy as np
+import scipy.sparse as sp
 
 class TopKRanker(OneVsRestClassifier):
     def predict(self, X, top_k_list):
@@ -15,16 +18,16 @@ class TopKRanker(OneVsRestClassifier):
         return all_labels
 
 
-def evaluate_oracle_F1(X,Y):
+def evaluate_oracle_F1(model,X,Y_real):
 
-    probs = numpy.asarray(model.predict(X))
+    probs = np.asarray(model.predict_proba(X))
     all_labels = []
     y_test = [[] for _ in range(Y_real.shape[0])]
-    cy = sparse.csr_matrix(Y_real).tocoo()
+    cy = sp.csr_matrix(Y_real).tocoo()
     for i, b in zip(cy.row, cy.col):
         y_test[i].append(b)
     top_k_list = [len(l) for l in y_test]
-    assert Y_train.shape[0] == len(top_k_list)
+    assert Y_real.shape[0] == len(top_k_list)
     predictions = []
     for i, k in enumerate(top_k_list):
         probs_ = probs[i, :]
@@ -35,6 +38,4 @@ def evaluate_oracle_F1(X,Y):
     predictions = np.matrix(predictions)
     micro = f1_score(Y_real, predictions, average='micro')
     macro = f1_score(Y_real, predictions, average='macro')
-    end = time.time()
-    elapsed = end - start + time_step1
-    return(macro,micro)
+    return(micro)
