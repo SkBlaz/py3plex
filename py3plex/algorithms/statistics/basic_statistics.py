@@ -13,7 +13,7 @@ def identify_n_hubs(G,top_n=100,node_type=None):
         target_nodes = []
         for n in G.nodes(data=True):
             try:
-                if n[1]['type'] == node_type:
+                if n[0][1] == node_type:
                     target_nodes.append(n[0])
             except:
                 pass
