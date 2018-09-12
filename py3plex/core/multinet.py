@@ -17,7 +17,7 @@ from ..visualization.colors import all_color_names,colors_default
 class multi_layer_network:
 
     ## constructor
-    def __init__(self,verbose=True,network_type="multilayer",directed=True,dummy_layer="null"):
+    def __init__(self,verbose=True,network_type="multilayer",directed=True,dummy_layer="null",label_delimiter="---"):
         """Class initializer
         
         This is the main class initializer method. User here specifies the type of the network, as well as other global parameters.
@@ -32,7 +32,10 @@ class multi_layer_network:
         self.embedding = None
         self.verbose = verbose
         self.network_type = network_type ## assing network type
-
+        self.sparse_enabled = False
+        self.hinmine_network = None
+        self.label_delimiter = label_delimiter
+        
     def __getitem__(self,i,j=None):
         if j is None:
             return self.core_network[i]
@@ -40,16 +43,18 @@ class multi_layer_network:
             return self.core_network[i][j]
         pass
         
-    def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
+    def load_network(self,input_file=None, directed=False, input_type="gml"):
         """Main method for loading networks"""
         ## core constructor methods
         
         self.input_file = input_file
         self.input_type = input_type
-        self.label_delimiter = label_delimiter
-        self.hinmine_network = None
         self.directed = directed
         self.temporal_edges = None
+
+        if input_type == "sparse":
+            self.sparse_enabled = True
+            
         self.core_network, self.labels = parsers.parse_network(self.input_file,
                                             self.input_type,
                                             directed=self.directed,
@@ -61,6 +66,18 @@ class multi_layer_network:
             self._to_multiplex()
         
         return self
+
+    def to_sparse_matrix(self,replace_core=False):
+
+        """
+        Conver the matrix to scipy-sparse version. This is useful for classification.
+        """
+        
+        if replace_core:
+            self.core_network = nx.to_scipy_sparse_matrix(self.core_network)
+            self.core_sparse = None
+        else:
+            self.core_sparse = nx.to_scipy_sparse_matrix(self.core_network)
 
     def load_temporal_edge_information(self,input_file=None,input_type="edge_activity",directxed=False,layer_mapping=None):
         """ A method for loading temporal edge information """
@@ -80,10 +97,17 @@ class multi_layer_network:
             
         if output_type == "gpickle":
             parsers.save_gpickle(self.core_network,output_file=output_file)
-        
+
+
+    def sparse_to_px(self,directed=False):
+        self.core_network = nx.from_scipy_sparse_matrix(self.core_network,directed)
+            
     def basic_stats(self,target_network=None):
 
         """ A method for obtaining a network's statistics """
+
+        if self.sparse_enabled:
+            self.monitor("Only sparse matrix is loaded for efficiency! Use .to_px to convert to a px object")
         
         if self.verbose:
             self.monitor("Computing core stats")
@@ -380,9 +404,16 @@ class multi_layer_network:
         """ Return network labels  """
         return self.labels    
 
+    def _assign_types_for_hinmine(self):
+        """
+        Assing some basic types...
+        """
+        for node in self.get_nodes(data=True):
+            node[1]['type'] = node[0][1]
+    
     def get_decomposition_cycles(self,cycle=None):
         """ A supporting method for obtaining decomposition triplets  """
-        
+        self._assign_types_for_hinmine()
         if self.hinmine_network is None:
             self.hinmine_network = load_hinmine_object(self.core_network, self.label_delimiter)
         return hinmine_get_cycles(self.hinmine_network)

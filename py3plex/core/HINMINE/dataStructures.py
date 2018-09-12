@@ -81,24 +81,30 @@ class HeterogeneousInformationNetwork:
     def process_network(self, label_delimiter):        
         if self.target_tag:
             basic_types = set([self.graph.node[x]['type'] for x in self.graph.node if 'labels' in self.graph.node[x]])
+            
+            print("Target type: {}".format(basic_types))
             if len(basic_types) != 1:
                 ## tukej naredi, da enostavno sejvne grafek, to je uporabno za embedding
+                print(basic_types)
                 raise Exception('Unclear target type!')
 
-            self.basic_type = basic_types.pop()
+            self.basic_type = basic_types.pop()                      
             self.node_list = [x for x in self.graph.node if self.graph.node[x]['type'] == self.basic_type]
             try:
-                self.node_list.sort(key=lambda x: float(x))
+                self.node_list.sort(key=lambda x: float(x[0]))
             except ValueError:
                 self.node_list.sort()
             self.node_indices = dict([(item, index) for index, item in enumerate(self.node_list)])
             for node_id in self.node_list:
-                if len(self.graph.node[node_id]['labels']) > 0:
-                    labels = self.graph.node[node_id]['labels'].split(label_delimiter)
-                    self.graph.node[node_id]['labels'] = []
-                    for label in labels:
-                        self.add_label(node_id, label, label_name=label)
-
+                if 'labels' in self.graph.node[node_id]:
+                    if len(self.graph.node[node_id]['labels']) > 0:
+                        labels = self.graph.node[node_id]['labels'].split(label_delimiter)
+                        self.graph.node[node_id]['labels'] = []
+                        for label in labels:
+                            self.add_label(node_id, label, label_name=label)
+                else:
+                    pass
+                            
             for lab in self.label_list:
                 if lab is not None:
                     temp_list = [mem for mem in lab.members if self.graph.node[mem]['type'] == self.basic_type]

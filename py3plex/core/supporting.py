@@ -4,7 +4,6 @@ from collections import defaultdict
 import networkx as nx
 import itertools
 import multiprocessing as mp
-import tqdm
 
 def split_to_layers(input_network):
 
