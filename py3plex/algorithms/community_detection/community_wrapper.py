@@ -9,6 +9,11 @@ def louvain_communities(network,input_type="mat",verbose=True):
 
     if verbose:
         network.monitor("Detecting communities..")
+    try:
+        partition = best_partition(network.core_network)
         
-    partition = best_partition(network.core_network)
+    except:
+        ## network is already the input!
+        partition = best_partition(network)
+        
     return partition
