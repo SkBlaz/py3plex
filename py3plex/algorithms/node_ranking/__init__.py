@@ -2,11 +2,11 @@
 import numpy as np
 import networkx as nx
 import scipy.sparse as sp
-#from networkx.algorithms.community.community_utils import is_partition
+import multiprocessing as mp
 from itertools import product
 
 def stochastic_normalization(matrix):
-    matrix = matrix.tolil()
+    matrix = matrix.tolil()    
     try:
         matrix.setdiag(0)
     except TypeError:
@@ -18,23 +18,10 @@ def stochastic_normalization(matrix):
     matrix = (sp.diags(k, 0).tocsc().dot(matrix)).transpose()
     return matrix
 
-def stochastic_normalization_hin(matrix):
-    matrix = matrix.tolil()
-    try:
-        matrix.setdiag(0)
-    except TypeError:
-        matrix.setdiag(np.zeros(matrix.shape[0]))
-    matrix = matrix.tocsr()
-    d = matrix.sum(axis=1).getA1()
-    nzs = np.where(d > 0)
-    d[nzs] = 1 / d[nzs]
-    matrix = (sp.diags(d, 0).tocsc().dot(matrix)).transpose()
-    return matrix
-
 def page_rank_kernel(index_row):
 
     ## call as results = p.map(pr_kernel, batch)
-    pr = sparse_page_rank(G, [index_row],
+    pr = sparse_page_rank(__graph_matrix, [index_row],
                           epsilon=1e-6,
                           max_steps=100000,
                           damping=damping_hyper,
@@ -47,7 +34,7 @@ def page_rank_kernel(index_row):
         pr = pr / np.linalg.norm(pr, 2)
         return (index_row,pr)
     else:
-        return (index_row,np.zeros(graph.shape[1]))
+        return (index_row,np.zeros(__graph_matrix.shape[1]))
 
 def sparse_page_rank(matrix, start_nodes,
                      epsilon=1e-6,
@@ -55,7 +42,7 @@ def sparse_page_rank(matrix, start_nodes,
                      damping=0.5,
                      spread_step=10,
                      spread_percent=0.3,
-                     try_shrink=False):
+                     try_shrink=True):
     
     assert(len(start_nodes)) > 0
     
@@ -113,21 +100,41 @@ def sparse_page_rank(matrix, start_nodes,
         rank_vec[start_nodes] = 0
         return rank_vec.flatten()
 
-def run_PPR(network,cores=None,jobs=None):
+def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_percent=0.3,targets=None,parallel=False):
 
+    ## normalize the matrix
+    network = stochastic_normalization(network)
+    global __graph_matrix
+    global damping_hyper
+    global spread_step_hyper
+    global spread_percent_hyper
+
+    damping_hyper = damping
+    spread_step_hyper = spread_step
+    spread_percent_hyper = spread_percent
+    
+    __graph_matrix = network
     if cores is None:
         cores = mp.cpu_count()
-        
+
     n = network.shape[1]
     step = cores
     
     if jobs is None:
-        jobs = [range(n)[i:i + step] for i in range(0, n, step)] ## generate jobs
-        
-    with mp.Pool(processes=cores) as p:
-        for batch in jobs:
-            results = p.map(pr_kernel,batch)
-            yield results
+        if targets is None:
+            jobs = [range(n)[i:i + step] for i in range(0, n, step)] ## generate jobs
+        else:
+            jobs = [range(n)[i:i + step] for i in targets] ## generate jobs
+
+    if not parallel:
+        for target in targets:
+            vector = page_rank_kernel(target)
+            yield vector
+    else:
+        with mp.Pool(processes=cores) as p:
+            for batch in jobs:
+                results = p.map(page_rank_kernel,batch)
+                yield results
 
 def hubs_and_authorities(graph):
     return nx.hits_scipy(graph)

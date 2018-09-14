@@ -14,5 +14,3 @@ triplet_set = list(set(multilayer_network.get_decomposition_cycles()))
 print(triplet_set)
 for decomposition in multilayer_network.get_decomposition(heuristic=["idf","rf"], cycle=triplet_set, parallel=True):
     print(decomposition)
-
-

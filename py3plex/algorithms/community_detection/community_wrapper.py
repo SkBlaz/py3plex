@@ -1,14 +1,83 @@
 
 ## high level interface for community detection algorithms
 from .community_louvain import *
+import os
 
-def louvain_communities(network,input_type="mat",verbose=True):
+def run_infomap(infile,multiplex=True,overlapping=False,binary="./infomap",verbose=True,iterations=1000):
+
+    from subprocess import call
+    if verbose:
+        if multiplex:
+            call([binary, infile,"out/","-i multiplex","-N "+str(iterations),"-z"])       
+        else:
+            if overlapping == True:
+                call([binary, infile,"out/","-N "+str(iterations),"--overlapping","-z"])            
+            else:
+                call([binary, infile,"out/","-N "+str(iterations),"-z"])
+    else:
+        if multiplex:
+            call([binary, infile,"out/","-i multiplex","-N "+str(iterations),"-z","--silent"])       
+        else:
+            if overlapping == True:
+                call([binary, infile,"out/","-N "+str(iterations),"--overlapping","-z","--silent"])            
+            else:
+                call([binary, infile,"out/","-N "+str(iterations),"-z","--silent"])
+
+def infomap_communities(graph,binary="./infomap",edgelist_file="./tmp/tmpedgelist.txt",multiplex=False,verbose=False,overlapping=False,iterations=1000):
+
+    ## check type of the network    
+    print("INFO: Infomap community detection in progress..")
+    outstruct = []
+
+    ### go through individual nodes first and enumerate them., also layers
+    inverse_node_map = graph.serialize_to_edgelist(edgelist_file=edgelist_file,multiplex=multiplex)
+    ## run infomap
+    run_infomap(edgelist_file,
+                multiplex=multiplex,
+                binary=binary,
+                verbose=verbose,
+                overlapping=overlapping,
+                iterations=iterations)
     
-    # if input_type == "mat":
-    #     network = nx.from_scipy_sparse_matrix(network)
+    partition = parse_infomap("out/"+edgelist_file.split("/")[-1].split(".")[0]+".tree")
+    partition = {inverse_node_map[k]:v for k,v in partition.items()}
+    non_mapped = set(list(graph.get_nodes())).difference(partition.keys())
+
+    for x in non_mapped:
+        partition[x] = 1
+    
+    import shutil    
+    shutil.rmtree("out", ignore_errors=False, onerror=None)
+    shutil.rmtree("tmp", ignore_errors=False, onerror=None)
+    
+    return partition
+
+            
+def parse_infomap(outfile):
+
+    outmap = {}
+    with open(outfile) as of:
+        for line in of:
+            parts = line.strip().split()
+            try:
+                module = parts[0].split(":")[0]
+                node = parts[3]
+                outmap[int(node)] = int(module)
+            except:
+                pass
+
+    return outmap
+
+            
+def louvain_communities(network,verbose=True):    
 
     if verbose:
         network.monitor("Detecting communities..")
+    try:
+        partition = best_partition(network.core_network)
         
-    partition = best_partition(network.core_network)
+    except:
+        ## network is already the input!
+        partition = best_partition(network)
+        
     return partition
