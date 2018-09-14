@@ -1,0 +1,16 @@
+## a simple example demonstrating label propagation
+
+from py3plex.core import multinet
+from py3plex.algorithms.network_classification import *
+from py3plex.visualization.benchmark_visualizations import *
+
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/cora.mat",directed=True, input_type="sparse")
+
+print(multilayer_network.basic_stats())
+
+## construct self.core_sparse object if replace=True, then self.core_network is a sparse matrix
+multilayer_network.to_sparse_matrix()
+
+validation_results = validate_label_propagation(multilayer_network.core_sparse,multilayer_network.labels,dataset_name="cora",repetitions=2)
+
+plot_core_macro(validation_results)
