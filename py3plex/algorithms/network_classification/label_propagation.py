@@ -40,31 +40,35 @@ def normalize_amplify_freq(mat):
 def normalize_exp(mat):
     return np.exp(mat)
 
-def label_propagation(graph_matrix, class_matrix, alpha, epsilon=1e-12, max_steps=100000,normalization = "freq"):
+def normalize_none(mat):
+    return mat
+
+def label_propagation(graph_matrix, class_matrix, alpha=0.001, epsilon=1e-12, max_steps=100000,normalization = "freq"):
     
     # This method assumes the label-propagation normalization and a symmetric matrix with no rank sinks.
+
+    funHash = {"freq" : "normalize_initial_matrix_freq",
+           "freq_amplify" : "normalize_amplify_freq",
+               "exp": "normalize_exp",
+               "basic": "normalize_none"}
+
     diff = np.inf
     steps = 0
     current_labels = class_matrix
     
-    if normalization == "freq":
-        current_labels = normalize_initial_matrix_freq(current_labels)
-        
-    if normalization == "freq_amplify":
-        current_labels = normalize_amplify_freq(current_labels)
-        
-    if normalization == "exp":
-        current_labels = normalize_exp(current_labels)
+    for candidate in normalization:        
+        fun_string = funHash[candidate]+"(current_labels)"
+        current_labels = eval(fun_string)
     
     while diff > epsilon and steps < max_steps:
         steps += 1
         new_labels = alpha * graph_matrix.dot(current_labels) + (1 - alpha) * class_matrix
         diff = np.linalg.norm(new_labels - current_labels) / np.linalg.norm(new_labels)
         current_labels = new_labels
+
     return current_labels
 
-
-def validate_label_propagation(core_network,labels,dataset_name="test",repetitions=5,normalization_scheme="basic",alpha_value=0.001,random_seed=123):
+def validate_label_propagation(core_network,labels,dataset_name="test",repetitions=5,normalization_scheme="basic",alpha_value=0.001,random_seed=123,verbose=False):
 
     try:
         labels= labels.todense()
@@ -72,12 +76,14 @@ def validate_label_propagation(core_network,labels,dataset_name="test",repetitio
         pass
     
     matrix = label_propagation_normalization(core_network)
-    print("Propagation..")
+    if verbose:
+        print("Propagation..")
     results = []
     df = pd.DataFrame()
     for k in range(repetitions):
         for j in np.arange(0.1,1,0.1):
-            print("Train size:{}, method {}".format(j,normalization_scheme))
+            if verbose:
+                print("Train size:{}, method {}".format(np.round(j,2),normalization_scheme))
             rs = ShuffleSplit(n_splits=10, test_size=j, random_state=random_seed)
             micros = []
             macros = []
@@ -112,8 +118,8 @@ def validate_label_propagation(core_network,labels,dataset_name="test",repetitio
                 micros.append(micro)
                 macros.append(macro)
                 times.append(elapsed)
-            
-            outarray = {"percent_train": np.round(1-j,1), "micro_F":np.mean(micros),"macro_F":np.mean(macros) ,"setting": "LP_"+normalization_scheme ,"dataset": dataset_name,"time":np.mean(times)}
+
+            outarray = {"percent_train": np.round(1-j,1), "micro_F":np.mean(micros),"macro_F":np.mean(macros) ,"setting": "LP_"+"_".join(normalization_scheme) ,"dataset": dataset_name,"time":np.mean(times),"alpha":alpha_value}
             results.append(outarray)
             df = df.append(outarray,ignore_index=True)
 

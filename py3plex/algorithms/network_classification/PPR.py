@@ -8,39 +8,31 @@ import numpy as np
 import multiprocessing as mp
 from sklearn.model_selection import ShuffleSplit
 
-<<<<<<< HEAD
 def construct_PPR_matrix(graph_matrix,parallel=False):
-=======
-
-def construct_PPR_matrix(graph_matrix):
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
 
     """
     PPR matrix is the matrix of features used for classification --- this is the spatially intense version of the classifier
     """
-<<<<<<< HEAD
     
     ## initialize the vectors
     n = graph_matrix.shape[1]
-    vectors = np.zeros((n, n))
-        
+    vectors = np.zeros((n, n))        
     results = run_PPR(graph_matrix,parallel=parallel)
-=======
-    ## initialize the vectors
-    n = graph_matrix.shape[1]    
-    vectors = np.zeros((n, n))    
-    results = run_PPR(graph_matrix)
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
-    
+
     ## get the results in batches
     for result in results:
         if result != None:
+            
             ## individual batches
-            for ppr in result:
-                vectors[ppr[0],:] = ppr[1]            
+            if isinstance(result, list):
+                for ppr in result:
+                    vectors[ppr[0],:] = ppr[1]
+            else:
+                ppr = result
+                vectors[ppr[0],:] = ppr[1]
+                
     return vectors
 
-<<<<<<< HEAD
 def construct_PPR_matrix_targets(graph_matrix,targets,parallel=False):
 
     n = graph_matrix.shape[1]
@@ -54,16 +46,11 @@ def construct_PPR_matrix_targets(graph_matrix,targets,parallel=False):
     ## deal with that now..
 
 def validate_ppr(core_network,labels,dataset_name="test",repetitions=5,random_seed=123,multiclass_classifier=None,target_nodes=None,parallel=False):
-=======
-
-def validate_ppr(core_network,labels,dataset_name="test",repetitions=5,random_seed=123,multiclass_classifier=None):
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
     """
     The main validation class --- use this to obtain CV results!
     """
     df = pd.DataFrame()
     for k in range(repetitions):
-<<<<<<< HEAD
 
         ## this is relevant for supra-adjacency-based tasks..
         if target_nodes is not None:
@@ -74,17 +61,11 @@ def validate_ppr(core_network,labels,dataset_name="test",repetitions=5,random_se
         else:            
             vectors = construct_PPR_matrix(core_network,parallel=parallel)            
         
-=======
-        vectors = construct_PPR_matrix(core_network)
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
         for j in np.arange(0.1,1,0.1):
 
             ## run the training..
             print("Train size:{}, method {}".format(j,"PPR"))
-<<<<<<< HEAD
             print(vectors.shape,labels.shape)
-=======
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
             rs = ShuffleSplit(n_splits=10, test_size=j, random_state=random_seed)
             micros = []
             macros = []
