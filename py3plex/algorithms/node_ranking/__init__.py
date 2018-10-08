@@ -3,10 +3,6 @@ import numpy as np
 import networkx as nx
 import scipy.sparse as sp
 import multiprocessing as mp
-<<<<<<< HEAD
-=======
-#from networkx.algorithms.community.community_utils import is_partition
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
 from itertools import product
 
 def stochastic_normalization(matrix):
@@ -104,11 +100,7 @@ def sparse_page_rank(matrix, start_nodes,
         rank_vec[start_nodes] = 0
         return rank_vec.flatten()
 
-<<<<<<< HEAD
-def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_percent=0.3,targets=None,parallel=False):
-=======
-def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_percent=0.3):
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
+def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_percent=0.3,targets=None,parallel=True):
 
     ## normalize the matrix
     network = stochastic_normalization(network)
@@ -129,29 +121,21 @@ def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_perc
     step = cores
     
     if jobs is None:
-<<<<<<< HEAD
         if targets is None:
             jobs = [range(n)[i:i + step] for i in range(0, n, step)] ## generate jobs
         else:
             jobs = [range(n)[i:i + step] for i in targets] ## generate jobs
 
-    if not parallel:
-        for target in targets:
-            vector = page_rank_kernel(target)
-            yield vector
+    if parallel==False:
+        for target in jobs:
+            for x in target:
+                vector = page_rank_kernel(x)
+                yield vector
     else:
         with mp.Pool(processes=cores) as p:
             for batch in jobs:
                 results = p.map(page_rank_kernel,batch)
                 yield results
-=======
-        jobs = [range(n)[i:i + step] for i in range(0, n, step)] ## generate jobs
-        
-    with mp.Pool(processes=cores) as p:
-        for batch in jobs:
-            results = p.map(page_rank_kernel,batch)
-            yield results
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
 
 def hubs_and_authorities(graph):
     return nx.hits_scipy(graph)

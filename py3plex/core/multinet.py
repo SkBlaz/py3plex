@@ -98,7 +98,6 @@ class multi_layer_network:
         if output_type == "gpickle":
             parsers.save_gpickle(self.core_network,output_file=output_file)
 
-<<<<<<< HEAD
     def add_dummy_layers(self):
 
         if self.directed:
@@ -122,18 +121,10 @@ class multi_layer_network:
         self.tmp_core_network = nx.from_scipy_sparse_matrix(self.core_network,directed)
         self.add_dummy_layers()
         self.sparse_enabled = False
-=======
-
-    def sparse_to_px(self,directed=False):
-        self.core_network = nx.from_scipy_sparse_matrix(self.core_network,directed)
->>>>>>> 76c2b243e0056533c6553b9304ed5873e062b954
             
     def basic_stats(self,target_network=None):
 
         """ A method for obtaining a network's statistics """
-
-        if self.sparse_enabled:
-            self.monitor("Only sparse matrix is loaded for efficiency! Use .to_px to convert to a px object")
         
         if self.sparse_enabled:
             self.monitor("Only sparse matrix is loaded for efficiency! Converting to .px for this task!")
