@@ -23,18 +23,9 @@ def parse_nx(nx_object,directed):
 
 def parse_matrix(file_name,directed):
     mat = scipy.io.loadmat(file_name)
-    labels= mat['group']
-    if directed:
-        cn = nx.DiGraph()
-    else:
-        cn = nx.Graph()
+    return(mat['network'],mat['group'])
 
-    core_network= nx.from_scipy_sparse_matrix(mat['network'],create_using=cn)
-    mapping = {n:(n,"null") for n in core_network.nodes()}    
-    core_network = nx.relabel_nodes(core_network,mapping)
-    return(core_network,labels)
-
-def parse_gpickle(file_name, directed=False,layer_separator=":"):
+def parse_gpickle(file_name, directed=False,layer_separator=None):
 
     if directed:
         A = nx.MultiDiGraph()
@@ -300,6 +291,9 @@ def load_temporal_edge_information(input_network,input_type,layer_mapping=None):
         return load_edge_activity_file(input_network,layer_mapping=layer_mapping)
     else:
         return None            
+
+def save_gpickle(input_network,output_file):
+    nx.write_gpickle(input_network, output_file)
     
 def save_edgelist(input_network,output_file,attributes=False):
     fh=open(output_file,'wb')
