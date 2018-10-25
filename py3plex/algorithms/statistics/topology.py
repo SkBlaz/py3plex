@@ -10,7 +10,7 @@ import pandas as pd
 from .powerlaw import *
 import matplotlib.pyplot as plt
 
-def plot_power_law(degree_sequence,title,xlabel,plabel):
+def plot_power_law(degree_sequence,title,xlabel,plabel,ylabel="Number of nodes"):
 
     plt.figure(2)  
     ax1 = plt.subplot(211)
@@ -54,7 +54,7 @@ def plot_power_law(degree_sequence,title,xlabel,plabel):
     vals = ax1.get_yticks()
     vals = [float(round(x*len(degree_sequence),1)) for x in vals]
     ax1.set_yticklabels(vals[0:6])
-    plt.ylabel("Number of nodes")
+    plt.ylabel(ylabel)
     plt.axvline(x=results.xmin,color="black",linestyle="--")
     plt.ylim(0,0.1)
     ax1.text(70, 0.02, r"$f(k) ="+str(norm)+" k^{-"+str(round(results.alpha,3))+"}$", fontsize=13)
