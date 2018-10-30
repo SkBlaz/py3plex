@@ -11,8 +11,12 @@ import scipy.sparse as sp
 import tqdm
 
 ## visualization modules
-from ..visualization.multilayer import *
-from ..visualization.colors import all_color_names,colors_default
+try:
+    from ..visualization.multilayer import *
+    from ..visualization.colors import all_color_names,colors_default
+    server_mode  = False
+except:
+    server_mode = True
 
 class multi_layer_network:
 
@@ -373,11 +377,15 @@ class multi_layer_network:
             return nx.to_numpy_matrix(self.core_network)
 
     def visualize_matrix(self,kwargs):
+        if server_mode:
+            break
         adjmat = self.get_supra_adjacency_matrix(mtype="dense")
         supra_adjacency_matrix_plot(adjmat,**kwargs)
 
     
     def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01):
+        if server_mode:
+            break
 
         """ network visualization method """
         
