@@ -378,14 +378,14 @@ class multi_layer_network:
 
     def visualize_matrix(self,kwargs):
         if server_mode:
-            break
+            return 0
         adjmat = self.get_supra_adjacency_matrix(mtype="dense")
         supra_adjacency_matrix_plot(adjmat,**kwargs)
 
     
     def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01):
         if server_mode:
-            break
+            return 0
 
         """ network visualization method """
         
