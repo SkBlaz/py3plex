@@ -220,11 +220,11 @@ class multi_layer_network:
         if isinstance(edge_dict_list,dict):
             edge_dict = edge_dict_list
             if "source_type" in edge_dict_list.keys() and "target_type" in edge_dict_list.keys():
-                edge_dict['v_for_edge'] = (edge_dict['target'],edge_dict['source_type'])
-                edge_dict['u_for_edge'] = (edge_dict['source'],edge_dict['target_type'])
+                edge_dict['u_for_edge'] = (edge_dict['source'],edge_dict['source_type'])
+                edge_dict['v_for_edge'] = (edge_dict['target'],edge_dict['target_type'])
             else:
-                edge_dict['v_for_edge'] = (edge_dict['target'],self.dummy_layer)
                 edge_dict['u_for_edge'] = (edge_dict['source'],self.dummy_layer)
+                edge_dict['v_for_edge'] = (edge_dict['target'],self.dummy_layer)
                 
             del edge_dict['target'];del edge_dict['source']
             del edge_dict['target_type'];del edge_dict['source_type']
@@ -234,11 +234,11 @@ class multi_layer_network:
             for edge_dict in edge_dict_list:
 
                 if "source_type" in edge_dict.keys() and "target_type" in edge_dict.keys():
-                    edge_dict['v_for_edge'] = (edge_dict['target'],edge_dict['source_type'])
-                    edge_dict['u_for_edge'] = (edge_dict['source'],edge_dict['target_type'])
+                    edge_dict['u_for_edge'] = (edge_dict['source'],edge_dict['source_type'])
+                    edge_dict['v_for_edge'] = (edge_dict['target'],edge_dict['target_type'])
                 else:
-                    edge_dict['v_for_edge'] = (edge_dict['target'],self.dummy_layer)
                     edge_dict['u_for_edge'] = (edge_dict['source'],self.dummy_layer)
+                    edge_dict['v_for_edge'] = (edge_dict['target'],self.dummy_layer)
                 
                 del edge_dict['target'];del edge_dict['source']
                 del edge_dict['target_type'];del edge_dict['source_type']
