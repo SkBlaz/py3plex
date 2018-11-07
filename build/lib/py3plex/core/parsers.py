@@ -12,11 +12,29 @@ from .supporting import *
 
 def parse_gml(file_name,directed):
     H = nx.read_gml(file_name)
-    if directed:
-        H.to_directed()
 
+    if directed:
+        A = nx.MultiDiGraph()
+    else:
+        A = nx.MultiGraph()
+
+    node_type_map = {}
+    ## initial type maps
+    for node in H.nodes(data=True):        
+        node_type_map[node[0]] = node[1]
+
+        ## read into structure
+    for edge in H.edges(data=True):
+        node_first = (edge[0],node_type_map[edge[0]]['type'])
+        node_second = (edge[1],node_type_map[edge[1]]['type'])
+        edge_props = edge[2]
+
+        A.add_node(node_first,**node_type_map[edge[0]])
+        A.add_node(node_second,**node_type_map[edge[1]])
+        A.add_edge(node_first,node_second,**edge_props)
+    
     ## add labels
-    return (H,None)
+    return (A,None)
 
 def parse_nx(nx_object,directed):
     return (nx_object,None)
