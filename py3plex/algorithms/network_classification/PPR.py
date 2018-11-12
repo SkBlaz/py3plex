@@ -3,6 +3,7 @@
 from ..node_ranking import *
 from ..general.benchmark_classification import *
 import pandas as pd
+from sklearn.svm import SVC
 import time
 import numpy as np
 import multiprocessing as mp
@@ -46,9 +47,14 @@ def construct_PPR_matrix_targets(graph_matrix,targets,parallel=False):
     ## deal with that now..
 
 def validate_ppr(core_network,labels,dataset_name="test",repetitions=5,random_seed=123,multiclass_classifier=None,target_nodes=None,parallel=False):
+
     """
     The main validation class --- use this to obtain CV results!
     """
+
+    if multiclass_classifier is None:
+        multiclass_classifier = SVC(kernel = 'linear', C = 1,probability=True)
+    
     df = pd.DataFrame()
     for k in range(repetitions):
 
