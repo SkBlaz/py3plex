@@ -4,7 +4,7 @@ from py3plex.core import multinet
 
 ## a simple decomposition example. Note that target nodes need to have "labels" property, to which labels are assigned in class1---class2---...and so on...
 
-dataset = "../datasets/imdb_gml.gml"
+dataset = "../datasets/imdb.gpickle"
 
 multilayer_network = multinet.multi_layer_network().load_network(input_file=dataset,directed=True,input_type=dataset.split(".")[-1])
 

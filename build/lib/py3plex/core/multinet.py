@@ -472,6 +472,7 @@ class multi_layer_network:
                 decomposition = dout.decomposed['decomposition']
                 ## use alpha and beta levels
                 final_decomposition = alpha*decomposition + beta*induced_net
+                print("Successfully decomposed: {}".format(x))
                 yield (final_decomposition,dout.label_matrix, x)
             except:
                 print("No decomposition found for:", x)

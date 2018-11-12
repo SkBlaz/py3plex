@@ -66,7 +66,7 @@ def validate_ppr(core_network,labels,dataset_name="test",repetitions=5,random_se
             
         else:            
             vectors = construct_PPR_matrix(core_network,parallel=parallel)            
-        
+            
         for j in np.arange(0.1,1,0.1):
 
             ## run the training..
@@ -82,11 +82,13 @@ def validate_ppr(core_network,labels,dataset_name="test",repetitions=5,random_se
             for y in labels:
                 new_train_y.append(list(y).index(1))
             onedim_labels = np.array(new_train_y)
-                
+
+            print("Came to this point")
             for X_train, X_test in rs.split(labels):
                 start = time.time()
                 train_x = vectors[X_train]
                 test_x = vectors[X_test]
+                
                 train_labels = labels[X_train]
                 test_labels = labels[X_test]
 
