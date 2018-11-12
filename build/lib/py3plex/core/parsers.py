@@ -45,12 +45,14 @@ def parse_matrix(file_name,directed):
 
 def parse_gpickle(file_name, directed=False,layer_separator=None):
 
+    print("Parsing gpickle..")
     if directed:
         A = nx.MultiDiGraph()
     else:
         A = nx.MultiGraph()
     
     G = nx.read_gpickle(file_name)
+    
     if layer_separator is not None:
         for edge in G.edges():
             e1,e2 = edge
@@ -62,7 +64,13 @@ def parse_gpickle(file_name, directed=False,layer_separator=None):
                 pass
     else:
         A = G
-            
+
+    todrop = []
+    for node in A.nodes(data=True):
+        if "labels" in node[1]:
+            if node[1]['labels'] == "":
+                todrop.append(node[0])                
+    A.remove_nodes_from(todrop)
     return (A,None)
 
 def parse_gpickle_biomine(file_name,directed):

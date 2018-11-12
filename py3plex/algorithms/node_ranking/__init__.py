@@ -7,14 +7,19 @@ from itertools import product
 
 def stochastic_normalization(matrix):
     matrix = matrix.tolil()    
+
     try:
         matrix.setdiag(0)
     except TypeError:
         matrix.setdiag(np.zeros(matrix.shape[0]))
+
     matrix = matrix.tocsr()
     d = matrix.sum(axis=1).getA1()
     nzs = np.where(d > 0)
-    k = 1/d[nzs]
+    k = np.zeros(matrix.shape[1])
+    nz = 1/d[nzs]
+    k[nzs] = nz
+    a = sp.diags(k, 0).tocsc()
     matrix = (sp.diags(k, 0).tocsc().dot(matrix)).transpose()
     return matrix
 
@@ -103,6 +108,7 @@ def sparse_page_rank(matrix, start_nodes,
 def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_percent=0.3,targets=None,parallel=True):
 
     ## normalize the matrix
+
     network = stochastic_normalization(network)
     global __graph_matrix
     global damping_hyper

@@ -474,9 +474,11 @@ class multi_layer_network:
                 final_decomposition = alpha*decomposition + beta*induced_net
 
                 print("Successfully decomposed: {}".format(x))
+                
                 yield (final_decomposition,dout.label_matrix, x)
-            except:
+            except Exception as es:
                 print("No decomposition found for:", x)
+                print(es)
 
     def load_embedding(self,embedding_file):
         """ Embedding loading method  """

@@ -3,7 +3,7 @@
 from .dataStructures import HeterogeneousInformationNetwork
 import numpy as np
 
-def load_hinmine_object(infile,label_delimiter=" ",weight_tag = False, targets=True):
+def load_hinmine_object(infile,label_delimiter="---",weight_tag = False, targets=True):
 
     ## load the network to the HINMINE framework (Kralj et al. 2018)
     net = infile    
@@ -18,6 +18,5 @@ def load_hinmine_object(infile,label_delimiter=" ",weight_tag = False, targets=T
     hin.split_to_indices(train_indices=train_indices, test_indices=test_indices)
     if targets:
         hin.create_label_matrix()
-        
     return hin
 

@@ -95,6 +95,7 @@ class HeterogeneousInformationNetwork:
             except ValueError:
                 self.node_list.sort()
             self.node_indices = dict([(item, index) for index, item in enumerate(self.node_list)])
+
             for node_id in self.node_list:
                 if 'labels' in self.graph.node[node_id]:
                     if len(self.graph.node[node_id]['labels']) > 0:
@@ -104,7 +105,7 @@ class HeterogeneousInformationNetwork:
                             self.add_label(node_id, label, label_name=label)
                 else:
                     pass
-                            
+            
             for lab in self.label_list:
                 if lab is not None:
                     temp_list = [mem for mem in lab.members if self.graph.node[mem]['type'] == self.basic_type]
@@ -124,6 +125,8 @@ class HeterogeneousInformationNetwork:
                 self.label_matrix[member_indices, i] = 1.0 / max(len(label.train_indices), 1)
             else:
                 self.label_matrix[member_indices, i] = 1
+
+        
 
     def calculate_schema(self):
         schema = nx.MultiDiGraph()
