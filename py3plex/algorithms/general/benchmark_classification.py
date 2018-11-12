@@ -3,15 +3,12 @@
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
+from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 import scipy.sparse as sp
 
-def evaluate_oracle_F1(model,X,Y_real,input_proba=False):
-    if input_proba:
-        probs = model
-    else:
-        probs = np.asarray(model.predict_proba(X))
-        
+def evaluate_oracle_F1(probs, Y_real):
+            
     all_labels = []
     y_test = [[] for _ in range(Y_real.shape[0])]
     cy = sp.csr_matrix(Y_real).tocoo()
@@ -27,6 +24,8 @@ def evaluate_oracle_F1(model,X,Y_real,input_proba=False):
         a[labels_tmp] = 1
         predictions.append(a)
     predictions = np.matrix(predictions)
+
+    
     micro = f1_score(Y_real, predictions, average='micro')
     macro = f1_score(Y_real, predictions, average='macro')
     return(micro,macro)

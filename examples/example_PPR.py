@@ -10,15 +10,11 @@ from sklearn.model_selection import GridSearchCV
 ## load a sparse network
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/cora.mat",directed=False, input_type="sparse")
 
-## select the classifier and hypertune it..
-#param_grid = [
-#  {'C': [1, 100, 1000], 'gamma': [0.001, 0.0001], 'kernel': ['rbf']},
-# ]
-
 ## this can take some time!
 svc = SVC(kernel = 'linear', C = 1,probability=True)
-#core_classifier = GridSearchCV(estimator=svc, param_grid=param_grid,n_jobs=1)
-model= OneVsRestClassifier(svc,n_jobs=4)
+model= svc
+
+## This setting works for multiclass classifiers, and NOT MULTILABEL.
 
 ## validate PPR embeddings
 validation_results = validate_ppr(multilayer_network.core_network,multilayer_network.labels,multiclass_classifier=model,repetitions=2)

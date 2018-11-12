@@ -65,21 +65,33 @@ def validate_ppr(core_network,labels,dataset_name="test",repetitions=5,random_se
 
             ## run the training..
             print("Train size:{}, method {}".format(j,"PPR"))
+            labels = np.array(labels)
             print(vectors.shape,labels.shape)
             rs = ShuffleSplit(n_splits=10, test_size=j, random_state=random_seed)
             micros = []
             macros = []
             times = []
+
+            new_train_y = []
+            for y in labels:
+                new_train_y.append(list(y).index(1))
+            onedim_labels = np.array(new_train_y)
+                
             for X_train, X_test in rs.split(labels):
                 start = time.time()
                 train_x = vectors[X_train]
                 test_x = vectors[X_test]
                 train_labels = labels[X_train]
                 test_labels = labels[X_test]
+
+                train_labels_first = onedim_labels[X_train]
+                test_labels_second = onedim_labels[X_test]                
                 
                 clf = multiclass_classifier
-                clf.fit(train_x, train_labels)
-                mi,ma = evaluate_oracle_F1(clf,test_x,test_labels,input_proba=False)
+                clf.fit(train_x, train_labels_first)
+                
+                probs = clf.predict_proba(test_x)
+                mi,ma = evaluate_oracle_F1(probs,test_labels)
 
                 ## train the model
                 end = time.time()

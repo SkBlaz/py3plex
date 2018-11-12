@@ -5,12 +5,19 @@
 ## imports first
 
 import networkx as nx
-
-from matplotlib.patches import Rectangle
-from matplotlib.patches import Circle
+try:
+    from matplotlib.patches import Rectangle
+    from matplotlib.patches import Circle
+except:
+    pass
 
 import random
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except:
+    pass
+
 import numpy as np
 
 from . import colors # those are color ranges
