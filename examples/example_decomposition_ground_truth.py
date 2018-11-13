@@ -1,8 +1,14 @@
 ## decomposition with ground truth
 
 from py3plex.core import multinet
-
-## a simple decomposition example. Note that target nodes need to have "labels" property, to which labels are assigned in class1---class2---...and so on...
+from py3plex.algorithms.network_classification.PPR import *
+from py3plex.visualization.benchmark_visualizations import *
+from sklearn.svm import SVC
+from sklearn.ensemble import ExtraTreesClassifier
+#from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import f1_score
+from sklearn.multiclass import OneVsRestClassifier
 
 dataset = "../datasets/imdb.gpickle"
 
@@ -11,7 +17,6 @@ multilayer_network = multinet.multi_layer_network().load_network(input_file=data
 print ("Running optimization for {}".format(dataset))
 multilayer_network.basic_stats() ## check core imports        
 triplet_set = list(set(multilayer_network.get_decomposition_cycles()))
-print(triplet_set)
+print("\n".join(triplet_set))
 for decomposition in multilayer_network.get_decomposition(heuristic=["idf","rf"], cycle=triplet_set, parallel=True):
-    print(decomposition[0])
-    
+    print(decomposition

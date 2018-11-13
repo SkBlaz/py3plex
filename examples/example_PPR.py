@@ -3,16 +3,13 @@
 from py3plex.core import multinet
 from py3plex.algorithms.network_classification.PPR import *
 from py3plex.visualization.benchmark_visualizations import *
-from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV
 
 ## load a sparse network
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/cora.mat",directed=False, input_type="sparse")
 
 ## this can take some time!
-svc = SVC(kernel = 'linear', C = 1,probability=True)
-model= svc
+model = SVC(kernel = 'linear', C = 1,probability=True)
 
 ## This setting works for multiclass classifiers, and NOT MULTILABEL.
 

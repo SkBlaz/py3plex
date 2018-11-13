@@ -4,10 +4,12 @@ from ..node_ranking import *
 from ..general.benchmark_classification import *
 import pandas as pd
 from sklearn.svm import SVC
+from sklearn.metrics import f1_score
 import time
 import numpy as np
 import multiprocessing as mp
-from sklearn.model_selection import ShuffleSplit
+from sklearn.model_selection import StratifiedKFold,StratifiedShuffleSplit
+from sklearn import preprocessing
 
 def construct_PPR_matrix(graph_matrix,parallel=False):
 
@@ -66,41 +68,50 @@ def validate_ppr(core_network,labels,dataset_name="test",repetitions=5,random_se
             
         else:            
             vectors = construct_PPR_matrix(core_network,parallel=parallel)
-            
-        for j in np.arange(0.1,1,0.1):
+
+        ## remove single instance-single target!
+        nz = np.count_nonzero(labels,axis=0)
+        wnz = np.argwhere(nz>2).T[0]
+        labels = labels[:,wnz]
+
+        for j in np.arange(0.1,0.5,0.1):
 
             ## run the training..
             print("Train size:{}, method {}".format(j,"PPR"))
-            labels = np.array(labels)
             print(vectors.shape,labels.shape)
-            rs = ShuffleSplit(n_splits=10, test_size=j, random_state=random_seed)
+            rs = StratifiedShuffleSplit(n_splits=10, test_size=0.5, random_state=random_seed)
+
             micros = []
             macros = []
-            times = []
 
+            times = []            
             new_train_y = []
-            for y in labels:
+            
+            for y in labels:                
                 new_train_y.append(list(y).index(1))
-                    
-            onedim_labels = np.array(new_train_y)
 
-            print("Came to this point")
-            for X_train, X_test in rs.split(labels):
+            onedim_labels = np.array(new_train_y)            
+            for X_train, X_test in rs.split(vectors,new_train_y):
                 start = time.time()
                 train_x = vectors[X_train]
                 test_x = vectors[X_test]
                 
-                train_labels = labels[X_train]
-                test_labels = labels[X_test]
-
+                train_labels = labels[X_train]            
+                test_labels = labels[X_test]                
+                
                 train_labels_first = onedim_labels[X_train]
-                test_labels_second = onedim_labels[X_test]                
+                test_labels_second = onedim_labels[X_test]
                 
                 clf = multiclass_classifier
-                clf.fit(train_x, train_labels_first)
+                clf.fit(train_x, train_labels_first)                
+                preds = clf.predict(test_x)
+
+                mi = f1_score(test_labels_second, preds, average='micro')
+                ma = f1_score(test_labels_second, preds, average='macro')
                 
-                probs = clf.predict_proba(test_x)
-                mi,ma = evaluate_oracle_F1(probs,test_labels)
+                # being_predicted = np.unique(train_labels_first)
+                # tmp_lab = test_labels[:,being_predicted]
+#                mi,ma = evaluate_oracle_F1(probs,tmp_lab)
 
                 ## train the model
                 end = time.time()
