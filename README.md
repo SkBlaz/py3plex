@@ -26,7 +26,14 @@ To install, simply:
 ```
 python3 setup.py install
 ```
-For any errors, please, open an issue!
+
+or you can try:
+
+```
+pip3 install py3plex
+```
+
+For any errors, please open an issue!
 
 ### Network construction and manipulation
 This minimal example offers an intuitive API for multilayer(plex) network construction.
