@@ -443,7 +443,7 @@ class multi_layer_network:
         """ A supporting method for obtaining decomposition triplets  """
         self._assign_types_for_hinmine()
         if self.hinmine_network is None:
-            self.hinmine_network = load_hinmine_object(self.core_network, self.label_delimiter)
+            self.hinmine_network = load_hinmine_object(self.core_network, self.label_delimiter)            
         return hinmine_get_cycles(self.hinmine_network)
     
     def get_decomposition(self, heuristic="all", cycle=None,parallel=True, alpha=1, beta=1):
@@ -468,14 +468,17 @@ class multi_layer_network:
             
         for x in heuristic:
             try:
-                dout = hinmine_decompose(self.hinmine_network,heuristic=x, cycle=cycle, parallel = parallel)
+
+                dout = hinmine_decompose(self.hinmine_network, heuristic=x, cycle=cycle, parallel = parallel)
                 decomposition = dout.decomposed['decomposition']
+                
                 ## use alpha and beta levels
                 final_decomposition = alpha*decomposition + beta*induced_net
 
                 print("Successfully decomposed: {}".format(x))
                 
                 yield (final_decomposition,dout.label_matrix, x)
+                
             except Exception as es:
                 print("No decomposition found for:", x)
                 print(es)
