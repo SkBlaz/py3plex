@@ -10,7 +10,7 @@ Heterogeneous (multilayer) networks             |  Homogeneous networks
 
 ## Getting Started
 
-To get started, please view **examples** folder. Extensive documentation is available at: https://skblaz.github.io/Py3Plex/
+To get started, please view **examples** folder. Extensive documentation is available at: [docs](https://skblaz.github.io/Py3plex)
 ### Prerequisites
 
 1. Networkx (2.1)
