@@ -104,6 +104,10 @@ class multi_layer_network:
 
     def add_dummy_layers(self):
 
+        """
+        Internal function, for conversion between objects
+        """
+        
         if self.directed:
             self.core_network = nx.MultiDiGraph()
         else:
@@ -217,6 +221,10 @@ class multi_layer_network:
                 
     def _generic_edge_dict_manipulator(self,edge_dict_list,target_function):
 
+        """
+        Generic manipulator of edge dicts
+        """
+
         if isinstance(edge_dict_list,dict):
             edge_dict = edge_dict_list
             if "source_type" in edge_dict_list.keys() and "target_type" in edge_dict_list.keys():
@@ -246,6 +254,10 @@ class multi_layer_network:
         
     def _generic_edge_list_manipulator(self,edge_list,target_function,raw=False):
 
+        """
+        Generic manipulator of edge lists
+        """
+
         if isinstance(edge_list[0],list):
             for edge in edge_list:
                 n1,l1,n2,l2,w = edge
@@ -262,6 +274,10 @@ class multi_layer_network:
                 eval("self.core_network."+target_function+"((n1,l1),(n2,l2),weight="+str(w)+",type=\"default\"))")
     
     def _generic_node_dict_manipulator(self,node_dict_list,target_function):
+
+        """
+        Generic manipulator of node dict
+        """
         
         if isinstance(node_dict_list,dict):
             node_dict = node_dict_list
@@ -285,6 +301,10 @@ class multi_layer_network:
 
     def _generic_node_list_manipulator(self,node_list,target_function):
 
+        """
+        Generic manipulator of node lists
+        """
+        
         if isinstance(node_list,list):
             for node in node_list:
                 n1,l1 = node
@@ -341,6 +361,10 @@ class multi_layer_network:
             self.core_network = add_mpx_edges(self.core_network)
 
     def remove_nodes(self,node_dict_list,input_type="dict"):
+
+        """
+        Remove nodes from the network
+        """
         
         if input_type == "dict":
             self._generic_node_dict_manipulator(node_dict_list,"remove_node")
@@ -352,9 +376,19 @@ class multi_layer_network:
             self.core_network = add_mpx_edges(self.core_network)
 
     def _get_num_layers(self):
+
+        """
+        Count layers
+        """
+        
         self.number_of_layers = len(set(x[1] for x in self.get_nodes()))
 
     def _get_num_nodes(self):
+
+        """
+        Count nodes
+        """
+        
         self.number_of_unique_nodes = len(set(x[0] for x in self.get_nodes()))
             
     def _node_layer_mappings(self):
@@ -371,12 +405,21 @@ class multi_layer_network:
 
     def get_supra_adjacency_matrix(self,mtype="sparse"):
 
+        """
+        Get sparse representation of the supra matrix.
+        """
+        
         if mtype == "sparse":
             return nx.to_scipy_sparse_matrix(self.core_network)
         else:
             return nx.to_numpy_matrix(self.core_network)
 
     def visualize_matrix(self,kwargs):
+
+        """
+        Plot the matrix
+        """
+        
         if server_mode:
             return 0
         adjmat = self.get_supra_adjacency_matrix(mtype="dense")
@@ -387,7 +430,10 @@ class multi_layer_network:
         if server_mode:
             return 0
 
-        """ network visualization method """
+        """ 
+        network visualization.
+        Either use diagonal or hairball style. Additional parameters are added with parameters_layers and parameters_edges etc.
+        """
         
         if style == "diagonal":
             network_labels, graphs, multilinks = self.get_layers(style)

@@ -5,6 +5,19 @@ from ..visualization.layout_algorithms import *
 
 def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters=None,verbose=True):
 
+    """ 
+    This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.
+
+    Args:
+        param1 (obj): multilayer object
+        param2 (str): Layout algorithm
+        param3 (dict): Optional layout parameters
+
+    Returns:
+        tuple: (names,networks,multiedges)
+
+    """
+    
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
         try:
@@ -57,6 +70,19 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
     return (names,networks,multiedges)
 
 def prepare_for_visualization_hairball(multinet,compute_layouts=False):
+
+    """ 
+    Compute layout for a hairball visualization
+
+    Args:
+        param1 (obj): multilayer object
+
+    Returns:
+        tuple: (names, prepared network)
+
+    """
+    
+    
 
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
