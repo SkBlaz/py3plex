@@ -71,6 +71,8 @@ def parse_infomap(outfile):
             
 def louvain_communities(network,verbose=True):    
 
+    network.core_network = network.core_network.to_undirected()
+    
     if verbose:
         network.monitor("Detecting communities..")
     try:
