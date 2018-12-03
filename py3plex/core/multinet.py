@@ -172,8 +172,12 @@ class multi_layer_network:
             yield node
             
 
-    def subnetwork(self,input_list=None,subset_by="layers"):
+    def subnetwork(self,input_list=None,subset_by="node_layer_names"):
 
+        """
+        Construct a subgraph based on a set of nodes.
+        """
+        
         input_list = set(input_list)
         if subset_by == "layers":
             subnetwork = self.core_network.subgraph([n for n in self.core_network.nodes() if n[1] in input_list])
@@ -318,18 +322,41 @@ class multi_layer_network:
     def _to_multiplex(self):
         self.network_type = "multiplex"
         self.core_network = add_mpx_edges(self.core_network)
-                
+
+        def _unfreeze(self):
+            if self.directed:
+                self.core_network =  nx.MultiDiGraph(self.core_network)
+            else:
+                self.core_network = nx.MultiGraph(self.core_network)
+        
     def add_edges(self,edge_dict_list,input_type="dict"):
-        """ A method for adding edges.. """
+        """ A method for adding edges.. Types are:
+        dict,list or px_edge. See examples for further use.
+
+        dict = {"source": n1,"target":n2,"type":sth}
+
+        list = [[n1,t1,n2,t2] ...]
+
+        px_edge = ((n1,t1)(n2,t2))
+        """
         
         self._initiate_network()
 
         if input_type == "dict":
             self._generic_edge_dict_manipulator(edge_dict_list,"add_edge")
+            
         elif input_type == "list":
             self._generic_edge_list_manipulator(edge_dict_list,"add_edge")
+            
         elif input_type == "px_edge":
-            self.core_network.add_edge(edge_dict_list[0],edge_dict_list[1],attr_dict=edge_dict_list[2])
+            
+            if edge_dict_list[2] is None:
+                attr_dict = None
+            else:
+                attr_dict = edge_dict_list[2]
+                
+            self._unfreeze()
+            self.core_network.add_edge(edge_dict_list[0],edge_dict_list[1],attr_dict=attr_dict)
         else:
             raise Exception("Please, use dict or list input.")
 
@@ -426,7 +453,7 @@ class multi_layer_network:
         supra_adjacency_matrix_plot(adjmat,**kwargs)
 
     
-    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01):
+    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01,other_parameters=None):
         if server_mode:
             return 0
 
@@ -462,7 +489,7 @@ class multi_layer_network:
         
         elif style == "hairball":
             network_colors, graph = self.get_layers(style="hairball")
-            ax = hairball_plot(graph,network_colors,layout_algorithm="force")
+            ax = hairball_plot(graph,network_colors,layout_algorithm="force",other_parameters=other_parameters)
             if show:
                 plt.show()
             return ax
@@ -534,6 +561,14 @@ class multi_layer_network:
         
         self.embedding = parsers.parse_embedding(embedding_file)
         return self
+
+    def get_degrees(self):
+
+        """
+        A simple wrapper which computes node degrees.
+        """
+        
+        return dict(nx.degree(self.core_network))
     
     def serialize_to_edgelist(self,edgelist_file = "./tmp/tmpedgelist.txt",tmp_folder="tmp",out_folder="out",multiplex=False):
 

@@ -223,8 +223,13 @@ def supra_adjacency_matrix_plot(matrix,display=False):
         plt.show()
     
 
-def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default"):
+def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default",other_parameters=None):
 
+    if other_parameters is not None:
+        with_labels = other_parameters['labels']
+    else:
+        with_labels = False
+    
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
     potlabs = []
@@ -268,7 +273,7 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
         pos = compute_force_directed_layout(g,layout_parameters)
 
     ec = nx.draw_networkx_edges(g, pos, alpha=0.85,edge_color="black", width=0.1,arrows=False)
-    nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=False, node_size=nsizes)
+    nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=with_labels, node_size=nsizes)
     plt.axis('off')
 
     ## add legend

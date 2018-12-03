@@ -58,12 +58,28 @@
 <dl class="function">
 <dt id="py3plex.core.converters.prepare_for_visualization">
 <code class="descclassname">py3plex.core.converters.</code><code class="descname">prepare_for_visualization</code><span class="sig-paren">(</span><em>multinet</em>, <em>compute_layouts='force'</em>, <em>layout_parameters=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.converters.prepare_for_visualization" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>param1 (obj): multilayer object
+param2 (str): Layout algorithm
+param3 (dict): Optional layout parameters</dd>
+<dt>Returns:</dt>
+<dd>tuple: (names,networks,multiedges)</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
 <dt id="py3plex.core.converters.prepare_for_visualization_hairball">
 <code class="descclassname">py3plex.core.converters.</code><code class="descname">prepare_for_visualization_hairball</code><span class="sig-paren">(</span><em>multinet</em>, <em>compute_layouts=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.converters.prepare_for_visualization_hairball" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute layout for a hairball visualization</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>param1 (obj): multilayer object</dd>
+<dt>Returns:</dt>
+<dd>tuple: (names, prepared network)</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-py3plex.core.multinet">
@@ -75,12 +91,17 @@
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.add_dummy_layers">
 <code class="descname">add_dummy_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.add_dummy_layers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Internal function, for conversion between objects</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.add_edges">
 <code class="descname">add_edges</code><span class="sig-paren">(</span><em>edge_dict_list</em>, <em>input_type='dict'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.add_edges" title="Permalink to this definition">¶</a></dt>
-<dd><p>A method for adding edges..</p>
+<dd><p>A method for adding edges.. Types are:
+dict,list or px_edge. See examples for further use.</p>
+<p>dict = {“source”: n1,”target”:n2,”type”:sth}</p>
+<p>list = [[n1,t1,n2,t2] …]</p>
+<p>px_edge = ((n1,t1)(n2,t2))</p>
 </dd></dl>
 
 <dl class="method">
@@ -105,6 +126,12 @@
 <dt id="py3plex.core.multinet.multi_layer_network.get_decomposition_cycles">
 <code class="descname">get_decomposition_cycles</code><span class="sig-paren">(</span><em>cycle=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_decomposition_cycles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A supporting method for obtaining decomposition triplets</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.get_degrees">
+<code class="descname">get_degrees</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple wrapper which computes node degrees.</p>
 </dd></dl>
 
 <dl class="method">
@@ -140,7 +167,8 @@
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.get_supra_adjacency_matrix">
 <code class="descname">get_supra_adjacency_matrix</code><span class="sig-paren">(</span><em>mtype='sparse'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_supra_adjacency_matrix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get sparse representation of the supra matrix.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.get_tensor">
@@ -186,7 +214,8 @@
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.remove_nodes">
 <code class="descname">remove_nodes</code><span class="sig-paren">(</span><em>node_dict_list</em>, <em>input_type='dict'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.remove_nodes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Remove nodes from the network</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.save_network">
@@ -207,8 +236,9 @@
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.subnetwork">
-<code class="descname">subnetwork</code><span class="sig-paren">(</span><em>input_list=None</em>, <em>subset_by='layers'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.subnetwork" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">subnetwork</code><span class="sig-paren">(</span><em>input_list=None</em>, <em>subset_by='node_layer_names'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.subnetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a subgraph based on a set of nodes.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.to_sparse_matrix">
@@ -219,11 +249,12 @@
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.visualize_matrix">
 <code class="descname">visualize_matrix</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.visualize_matrix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plot the matrix</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.visualize_network">
-<code class="descname">visualize_network</code><span class="sig-paren">(</span><em>style='diagonal'</em>, <em>parameters_layers=None</em>, <em>parameters_multiedges=None</em>, <em>show=False</em>, <em>compute_layouts='force'</em>, <em>layouts_parameters=None</em>, <em>verbose=True</em>, <em>orientation='upper'</em>, <em>resolution=0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.visualize_network" title="Permalink to this definition">¶</a></dt>
+<code class="descname">visualize_network</code><span class="sig-paren">(</span><em>style='diagonal'</em>, <em>parameters_layers=None</em>, <em>parameters_multiedges=None</em>, <em>show=False</em>, <em>compute_layouts='force'</em>, <em>layouts_parameters=None</em>, <em>verbose=True</em>, <em>orientation='upper'</em>, <em>resolution=0.01</em>, <em>other_parameters=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.visualize_network" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
