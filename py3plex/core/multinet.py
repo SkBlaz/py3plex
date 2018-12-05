@@ -2,6 +2,7 @@
 ## This is the main data structure container
 
 import networkx as nx
+import itertools
 from . import  parsers
 from . import converters
 from .HINMINE.IO import * ## parse the graph
@@ -92,6 +93,20 @@ class multi_layer_network:
         """ A simple monithor method """
         
         print("-"*20,"\n",message,"\n","-"*20)
+
+    def invert(self):
+
+        """
+        invert the nodes to edges. Get the "edge graph". Each node is here an edge.
+        """
+        
+        ## default structure for a new graph
+        G = nx.MultiGraph()
+        new_edges = []        
+        for node in self.core_network.nodes():
+            ngs = [(neigh,node) for neigh in self.core_network[node] if neigh != node]
+            new_edges += list(itertools.product(ngs,2))
+        self.core_network_inverse = G.add_edges_from(new_edges)
 
     def save_network(self,output_file=None,output_type="edgelist"):
         """ A method for saving the network """
