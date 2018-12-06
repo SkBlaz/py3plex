@@ -373,35 +373,24 @@ ForceAtlas2 cython implementation is based on the one provided at https://github
 # Citation
 
 ```
-@InProceedings{10.1007/978-3-319-78680-3_13,
+@InProceedings{10.1007/978-3-030-05411-3_60,
 author="{\v{S}}krlj, Bla{\v{z}}
 and Kralj, Jan
-and Vavpeti{\v{c}}, An{\v{z}}e
 and Lavra{\v{c}}, Nada",
-editor="Appice, Annalisa
-and Loglisci, Corrado
-and Manco, Giuseppe
-and Masciari, Elio
-and Ras, Zbigniew W.",
-title="Community-Based Semantic Subgroup Discovery",
-booktitle="New Frontiers in Mining Complex Patterns",
-year="2018",
+editor="Aiello, Luca Maria
+and Cherifi, Chantal
+and Cherifi, Hocine
+and Lambiotte, Renaud
+and Li{\'o}, Pietro
+and Rocha, Luis M.",
+title="Py3plex: A Library for Scalable Multilayer Network Analysis and Visualization",
+booktitle="Complex Networks and Their Applications VII",
+year="2019",
 publisher="Springer International Publishing",
 address="Cham",
-pages="182--196",
-abstract="Modern data mining algorithms frequently need to address learning from heterogeneous data and knowledge sources, including ontologies. A data mining task in which ontologies are used as background knowledge is referred to as semantic data mining. A special form of semantic data mining is semantic subgroup discovery, where ontology terms are used in subgroup describing rules. We propose to enhance ontology-based subgroup identification by Community-Based Semantic Subgroup Discovery (CBSSD), taking into account also the structural properties of complex networks related to the studied phenomenon. The application of the developed CBSSD approach is demonstrated on two use cases from the field of molecular biology.",
-isbn="978-3-319-78680-3"
-}
-
-@article{kralj2018hinmine,
-  title={HINMINE: heterogeneous information network mining with information retrieval heuristics},
-  author={Kralj, Jan and Robnik-{\v{S}}ikonja, Marko and Lavra{\v{c}}, Nada},
-  journal={Journal of Intelligent Information Systems},
-  volume={50},
-  number={1},
-  pages={29--61},
-  year={2018},
-  publisher={Springer}
+pages="757--768",
+abstract="Real-life systems are commonly represented as networks of interacting entities. While homogeneous networks consist of nodes of a single node type, multilayer networks are characterized by multiple types of nodes or edges, all present in the same system. Analysis and visualization of such networks represent a challenge for real-life complex network applications. The presented Py3plex Python-based library facilitates the exploration and visualization of multilayer networks. The library includes a diagonal projection-based network visualization, developed specifically for large networks with multiple node (and edge) types. The library also includes state-of-the-art methods for network decomposition and statistical analysis. The Py3plex functionality is showcased on real-world multilayer networks from the domains of biology and on synthetic networks.",
+isbn="978-3-030-05411-3"
 }
 
 ```
