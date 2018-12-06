@@ -176,6 +176,12 @@ dict,list or px_edge. See examples for further use.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.invert">
+<code class="descname">invert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.invert" title="Permalink to this definition">¶</a></dt>
+<dd><p>invert the nodes to edges. Get the “edge graph”. Each node is here an edge.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.load_embedding">
 <code class="descname">load_embedding</code><span class="sig-paren">(</span><em>embedding_file</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_embedding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Embedding loading method</p>
@@ -220,7 +226,8 @@ dict,list or px_edge. See examples for further use.</p>
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.save_network">
 <code class="descname">save_network</code><span class="sig-paren">(</span><em>output_file=None</em>, <em>output_type='edgelist'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.save_network" title="Permalink to this definition">¶</a></dt>
-<dd><p>A method for saving the network</p>
+<dd><p>A method for saving the network 
+:param output_type – edgelist, multiedgelist or gpickle</p>
 </dd></dl>
 
 <dl class="method">
@@ -347,6 +354,12 @@ dict,list or px_edge. See examples for further use.</p>
 <code class="descclassname">py3plex.core.parsers.</code><code class="descname">save_gpickle</code><span class="sig-paren">(</span><em>input_network</em>, <em>output_file</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.save_gpickle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="py3plex.core.parsers.save_multiedgelist">
+<code class="descclassname">py3plex.core.parsers.</code><code class="descname">save_multiedgelist</code><span class="sig-paren">(</span><em>input_network</em>, <em>output_file</em>, <em>attributes=False</em>, <em>encode_with_ints=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.save_multiedgelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save multiedgelist – as n1, l1, n2, l2, w</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-py3plex.core.supporting">
 <span id="py3plex-core-supporting-module"></span><h2>py3plex.core.supporting module<a class="headerlink" href="#module-py3plex.core.supporting" title="Permalink to this headline">¶</a></h2>
@@ -408,8 +421,8 @@ dict,list or px_edge. See examples for further use.</p>
       &copy;2018, Blaž Škrlj.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/source/py3plex.core.rst.txt"

@@ -109,10 +109,19 @@ class multi_layer_network:
         self.core_network_inverse = G.add_edges_from(new_edges)
 
     def save_network(self,output_file=None,output_type="edgelist"):
-        """ A method for saving the network """
+        """ A method for saving the network 
+        :param output_type -- edgelist, multiedgelist or gpickle
+
+        """
         
         if output_type == "edgelist":
             parsers.save_edgelist(self.core_network,output_file=output_file)
+
+        if output_type == "multiedgelist_encoded":
+            self.node_map,self.layer_map = parsers.save_multiedgelist(self.core_network,output_file=output_file,encode_with_ints=True)
+
+        if output_type == "multiedgelist":
+            parsers.save_multiedgelist(self.core_network,output_file=output_file)
             
         if output_type == "gpickle":
             parsers.save_gpickle(self.core_network,output_file=output_file)

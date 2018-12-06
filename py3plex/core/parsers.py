@@ -320,6 +320,37 @@ def load_temporal_edge_information(input_network,input_type,layer_mapping=None):
 
 def save_gpickle(input_network,output_file):
     nx.write_gpickle(input_network, output_file)
+
+def save_multiedgelist(input_network,output_file,attributes=False,encode_with_ints=False):
+
+    """
+    Save multiedgelist -- as n1, l1, n2, l2, w
+    """
+
+    if encode_with_ints:
+
+        unique_nodes = {n[0] for n in input_network.nodes()}
+        unique_node_types = {n[1] for n in input_network.nodes()}        
+        node_encodings = {real : str(enc) for enc,real in enumerate(unique_nodes)}
+        type_encodings = {real : str(enc) for enc,real in enumerate(unique_node_types)}
+        fh = open(output_file,"w+")
+        
+        for edge in input_network.edges(data=True):
+            n1,l1 = edge[0]
+            n2,l2 = edge[1]
+            fh.write("\t".join([node_encodings[n1],type_encodings[l1],node_encodings[n2],type_encodings[l2]])+"\n")
+        fh.close()
+        
+        return (node_encodings,type_encodings)
+
+    else:
+        fh = open(output_file,"w+")    
+        for edge in input_network.edges(data=True):
+            n1,l1 = edge[0]
+            n2,l2 = edge[1]
+            fh.write("\t".join([n1,l1,n2,l2])+"\n")
+        fh.close()
+
     
 def save_edgelist(input_network,output_file,attributes=False):
     fh=open(output_file,'wb')
