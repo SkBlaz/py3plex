@@ -347,11 +347,11 @@ class multi_layer_network:
         self.network_type = "multiplex"
         self.core_network = add_mpx_edges(self.core_network)
 
-        def _unfreeze(self):
-            if self.directed:
-                self.core_network =  nx.MultiDiGraph(self.core_network)
-            else:
-                self.core_network = nx.MultiGraph(self.core_network)
+    def _unfreeze(self):
+        if self.directed:
+            self.core_network =  nx.MultiDiGraph(self.core_network)
+        else:
+            self.core_network = nx.MultiGraph(self.core_network)
         
     def add_edges(self,edge_dict_list,input_type="dict"):
         """ A method for adding edges.. Types are:
