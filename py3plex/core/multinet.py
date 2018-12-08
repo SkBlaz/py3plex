@@ -94,7 +94,7 @@ class multi_layer_network:
         
         print("-"*20,"\n",message,"\n","-"*20)
 
-    def invert(self):
+    def invert(self,override_core=False):
 
         """
         invert the nodes to edges. Get the "edge graph". Each node is here an edge.
@@ -105,8 +105,17 @@ class multi_layer_network:
         new_edges = []        
         for node in self.core_network.nodes():
             ngs = [(neigh,node) for neigh in self.core_network[node] if neigh != node]
-            new_edges += list(itertools.product(ngs,2))
-        self.core_network_inverse = G.add_edges_from(new_edges)
+            if len(ngs) > 0:
+                pairs = itertools.combinations(ngs,2)
+                new_edges += list(pairs)
+                
+        for edge in new_edges:
+            G.add_edge(edge[0],edge[1])
+
+        if override_core:
+            self.core_network =G
+        else:
+            self.core_network_inverse = G#.add_edges_from(new_edges)
 
     def save_network(self,output_file=None,output_type="edgelist"):
         """ A method for saving the network 
