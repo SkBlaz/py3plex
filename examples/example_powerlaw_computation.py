@@ -15,3 +15,5 @@ plot_power_law(val_vect,"","Node degree","individual node")
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=False, input_type="gpickle_biomine")
 val_vect = sorted(dict(nx.degree(multilayer_network.core_network)).values(),reverse=True)
 plot_power_law(val_vect,"","Node degree","individual node")
+
+print(multilayer_network.test_scale_free())

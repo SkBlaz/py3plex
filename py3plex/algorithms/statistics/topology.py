@@ -10,6 +10,15 @@ import pandas as pd
 from .powerlaw import *
 import matplotlib.pyplot as plt
 
+def basic_pl_stats(degree_sequence):
+
+    """
+    :param degree sequence of individual nodes
+    """
+
+    results = Fit(degree_sequence,discrete=True)
+    return (results.alpha,results.sigma)
+
 def plot_power_law(degree_sequence,title,xlabel,plabel,ylabel="Number of nodes"):
 
     plt.figure(2)  

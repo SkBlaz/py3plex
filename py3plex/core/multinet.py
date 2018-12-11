@@ -11,6 +11,11 @@ from .supporting import *
 import scipy.sparse as sp
 import tqdm
 
+try:
+    from ..algorithms.statistics import topology
+except:
+    pass
+
 ## visualization modules
 try:
     from ..visualization.multilayer import *
@@ -533,6 +538,15 @@ class multi_layer_network:
     def get_nx_object(self):
         """ Return only core network with proper annotations """
         return self.core_network
+
+    def test_scale_free(self):
+        """
+        Test the scale-free-nness of the network
+        """
+        
+        val_vect = sorted(dict(nx.degree(self.core_network)).values(),reverse=True)
+        alpha,sigma = topology.basic_pl_stats(val_vect)
+        return (alpha,sigma)
 
     def get_label_matrix(self):
         """ Return network labels  """
