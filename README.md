@@ -122,7 +122,7 @@ print(list(B.get_nodes()))
 ```
 
 One of the simplest ways is list-based construction.., where
-*[1,1,2,2,1]* cooresponds to node 1 on layer 1 connects with node 2 on layer 2, where the edge is *weighted as 1*. Note that node and layer names are**not** limited to integers, an example edge might also look like
+*[1,1,2,2,1]* cooresponds to node 1 on layer 1 connects with node 2 on layer 2, where the edge is *weighted as 1*. Note that node and layer names are **not** limited to integers, an example edge might also look like
 
 ```python
 ["person1","facebook","person2","twitter",2]
