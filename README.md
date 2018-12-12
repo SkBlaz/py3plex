@@ -35,6 +35,35 @@ pip3 install py3plex
 
 For any errors, please open an issue!
 
+### Loading a network
+A network can be loaded by either using one of the many available parsers (below), or constructed using our functional API. Examples of loading the network:
+(See example files in the examples/ folder!)
+First, simple edgelists (n1 n2):
+```python
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/test.edgelist",directed=False, input_type="edgelist")
+```
+
+Adding the layers and the weights, a single edge looks like:
+n1 l1 n2 l2 w
+
+```python
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/multiedgelist.txt",directed=False, input_type="multiedgelist")
+```
+Other handy parsers include:
+
+```python
+from py3plex.core import multinet
+
+## sparse .mat (matlab-like) matrix -- numpy sparse matrix
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/ions.mat",directed=False, input_type="sparse")
+
+## GML
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/ecommerce_0.gml",directed=True, input_type="gml")
+
+## internal gpickle format
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
+```
+
 ### Network construction and manipulation
 This minimal example offers an intuitive API for multilayer(plex) network construction.
 
