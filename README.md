@@ -38,13 +38,21 @@ For any errors, please open an issue!
 ### Loading a network
 A network can be loaded by either using one of the many available parsers (below), or constructed using our functional API. Examples of loading the network:
 (See example files in the examples/ folder!)
-First, simple edgelists (n1 n2):
+First, simple edgelists:
+```
+n1 n2
+n3 n1
+...
+```
 ```python
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/test.edgelist",directed=False, input_type="edgelist")
 ```
 
-Adding the layers and the weights, a single edge looks like:
-n1 l1 n2 l2 w
+Adding the layers and the weights, a single edge looks like (node layer node layer weight):
+```
+n1 l1 n2 l2 0.4
+n1 l3 n3 l1 1
+```
 
 ```python
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/multiedgelist.txt",directed=False, input_type="multiedgelist")
@@ -63,6 +71,7 @@ multilayer_network = multinet.multi_layer_network().load_network("../datasets/ec
 ## internal gpickle format
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
 ```
+A common use is, to parse a given network from a file, and construct a multilayer network object on the fly, as discussed next.
 
 ### Network construction and manipulation
 This minimal example offers an intuitive API for multilayer(plex) network construction.
