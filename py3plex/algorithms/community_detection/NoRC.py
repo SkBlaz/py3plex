@@ -91,7 +91,6 @@ def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=10
                     print("Improved modularity: {}".format(mx))
                 mx_opt = mx
         return dx_hc
-
     if clustering_scheme == "hierarchical":
         if verbose:
             print("Doing hierarchical clustering")
