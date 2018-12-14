@@ -83,3 +83,9 @@ def louvain_communities(network,verbose=True):
         partition = best_partition(network)
         
     return partition
+
+def NoRC_communities(network,verbose=True):
+
+    
+    
+    pass
