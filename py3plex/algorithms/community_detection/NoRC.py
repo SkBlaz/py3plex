@@ -90,7 +90,11 @@ def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=10
                 if verbose:
                     print("Improved modularity: {}".format(mx))
                 mx_opt = mx
-        return dx_hc
+                opt_clust = dx_hc
+                if mx == 1:
+                    return opt_clust
+        return opt_clust
+
     if clustering_scheme == "hierarchical":
         if verbose:
             print("Doing hierarchical clustering")
@@ -99,31 +103,37 @@ def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=10
         for nclust in tqdm.tqdm(range(3,max_com_num)):
             dx_hc = defaultdict(list)
             try:
-                k = nclust
-                cls = fcluster(Z, k, criterion='maxclust')
+                cls = fcluster(Z, nclust, criterion='maxclust')
                 for a,b in zip(cls,A.nodes()):
                     dx_hc[a].append(b)
                 partition_hi = dx_hc.values()
                 mod = modularity(A, partition_hi, weight='weight')
                 if mod > mod_hc_opt:
                     if verbose:
-                        print("Improved modularity: {}".format(mx))
+                        print("Improved modularity: {}".format(mod))
+                        
                     mod_hc_opt = mod
-            except:
-                pass
-            
-        return dx_hc
+                    opt_clust = dx_hc
+                    if mod == 1:
+                        return opt_clust
+            except Exception as es:
+                print (es)
+        return opt_clust
+    
 if __name__ == "__main__":
 
-    n = 50
-    tau1 = 4
-    tau2 = 1.5
-    mu = 0.1
-    graph = LFR_benchmark_graph(n,
-                                tau1,
-                                tau2,
-                                mu,
-                                average_degree=5,
-                                min_community=30,
-                                seed=10)
+    # n = 50
+    # tau1 = 4
+    # tau2 = 1.5
+    # mu = 0.1
+    # graph = LFR_benchmark_graph(n,
+    #                             tau1,
+    #                             tau2,
+    #                             mu,
+    #                             average_degree=5,
+    #                             min_community=30,
+    #                             seed=10)
+    
+    graph = nx.powerlaw_cluster_graph(1000,3,0.1)
+    print(nx.info(graph))
     communities = NoRC_communities(graph,verbose=True,clustering_scheme="kmeans")
