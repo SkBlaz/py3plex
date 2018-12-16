@@ -75,10 +75,11 @@ def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=10
             vectors[pr_vector[0],:] = pr_vector[1]
     vectors = np.nan_to_num(vectors)
     mx_opt = 0
+    community_range = np.arange(1,300,3)
     if clustering_scheme == "kmeans":
         if verbose:
             print("Doing kmeans search")
-        for nclust in tqdm.tqdm(range(2,_RANK_GRAPH.shape[0])):
+        for nclust in tqdm.tqdm(community_range):
             dx_hc = defaultdict(list)
             clustering_algorithm = MiniBatchKMeans(n_clusters=nclust)
             clusters = clustering_algorithm.fit_predict(vectors)
@@ -88,7 +89,7 @@ def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=10
             mx = modularity(A, partitions, weight='weight')
             if mx > mx_opt:
                 if verbose:
-                    print("Improved modularity: {}".format(mx))
+                    print("Improved modularity: {}, found {} communities.".format(mx,len(partitions)))
                 mx_opt = mx
                 opt_clust = dx_hc
                 if mx == 1:
@@ -100,7 +101,7 @@ def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=10
             print("Doing hierarchical clustering")
         Z = linkage(vectors, 'ward')
         mod_hc_opt = 0
-        for nclust in tqdm.tqdm(range(3,max_com_num)):
+        for nclust in tqdm.tqdm(community_range):
             dx_hc = defaultdict(list)
             try:
                 cls = fcluster(Z, nclust, criterion='maxclust')
@@ -110,7 +111,7 @@ def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=10
                 mod = modularity(A, partition_hi, weight='weight')
                 if mod > mod_hc_opt:
                     if verbose:
-                        print("Improved modularity: {}".format(mod))
+                        print("Improved modularity: {}, communities: {}".format(mod, len(partition_hi)))
                         
                     mod_hc_opt = mod
                     opt_clust = dx_hc
@@ -134,6 +135,8 @@ if __name__ == "__main__":
     #                             min_community=30,
     #                             seed=10)
     
-    graph = nx.powerlaw_cluster_graph(1000,3,0.1)
+    graph = nx.powerlaw_cluster_graph(10000,3,0.1)
     print(nx.info(graph))
-    communities = NoRC_communities(graph,verbose=True,clustering_scheme="kmeans")
+#    communities = NoRC_communities(graph,verbose=True,clustering_scheme="kmeans")
+    communities1 = NoRC_communities(graph,verbose=True,clustering_scheme="hierarchical")
+                              
