@@ -232,7 +232,36 @@ class multi_layer_network:
         tmp_net = multi_layer_network()
         tmp_net.core_network = subnetwork
         return tmp_net
+
+    def aggregate_edges(self,metric="count",normalize_by="degree"):
+
+        layer_object = defaultdict(list)
+        edge_object = {}
+        layer_connectivity = {}
+        for node in self.get_nodes():
+            layer_object[node[1]].append(node)            
+        for layer, nodes in layer_object.items():
+            layer_network = self.subnetwork(nodes)
+            if normalize_by  != "raw":
+                connectivity = np.mean([x[1] for x in eval("nx."+normalize_by+"(layer_network.core_network)")])
+            else:
+                connectivity = 1
+            layer_connectivity[layer] = connectivity
+            for edge in layer_network.get_edges():
+                if edge not in edge_object:
+                    edge_object[edge] = 1
+                else:
+                    edge_object[edge] += 1
+        if self.directed:
+            outgraph = nx.DiGraph()
+        else:
+            outgraph = nx.Graph()
             
+        for k,v in edge_object.items():
+            print(k)
+            outgraph.add_edge(k[0][0],k[1][0],weight=v)
+        return outgraph
+    
     def get_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
 
         """ A method for obtaining layerwise distributions """

@@ -58,9 +58,9 @@ def create_tree(centers):
         # ^ you could optionally store other info here (e.g distances)
     return clusters
 
-def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=100,verbose=False):
+def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=100,verbose=False,sparisfy=True):
     if verbose:
-        print("Doing community detection")
+        print("Walking..")
     global _RANK_GRAPH
     _RANK_GRAPH = input_graph
     A = _RANK_GRAPH.copy()
@@ -70,7 +70,7 @@ def NoRC_communities(input_graph,clustering_scheme="hierarchical",max_com_num=10
     with mp.Pool(processes=mp.cpu_count()) as p:
         results = p.map(page_rank_kernel,range(n))
     vectors = np.zeros((n, n))
-    for pr_vector in results:
+    for pr_vector in tqdm.tqdm(results):
         if pr_vector != None:
             vectors[pr_vector[0],:] = pr_vector[1]
     vectors = np.nan_to_num(vectors)
@@ -139,4 +139,3 @@ if __name__ == "__main__":
     print(nx.info(graph))
 #    communities = NoRC_communities(graph,verbose=True,clustering_scheme="kmeans")
     communities1 = NoRC_communities(graph,verbose=True,clustering_scheme="hierarchical")
-                              
