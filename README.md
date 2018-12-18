@@ -126,6 +126,26 @@ ER_multilayer.visualize_network(show=True)
 B = multinet.multi_layer_network(network_type="multiplex")
 B.add_edges([[1,1,2,1,1],[1,2,3,2,1],[1,2,3,1,1],[2,1,3,2,1]],input_type="list")
 ```
+
+Aggregating edges is now simple:
+```python
+import networkx as nx
+from py3plex.core import multinet
+from py3plex.core import random_generators
+
+## initiate an instance of a random graph
+ER_multilayer = random_generators.random_multilayer_ER(500,8,0.05,directed=False)
+
+## simple networkx object
+aggregated_network = ER_multilayer.aggregate_edges(metric="count",normalize_by="degree")
+print(nx.info(aggregated_network))
+
+## unnormalized counts for edge weights
+aggregated_network = ER_multilayer.aggregate_edges(metric="count",normalize_by="raw")
+print(nx.info(aggregated_network))
+```
+
+
 Network indexing is now simple (multiple levels supported!)
 ```python
 
