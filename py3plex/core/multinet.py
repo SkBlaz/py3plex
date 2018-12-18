@@ -258,7 +258,6 @@ class multi_layer_network:
             outgraph = nx.Graph()
             
         for k,v in edge_object.items():
-            print(k)
             outgraph.add_edge(k[0][0],k[1][0],weight=v)
         return outgraph
     
