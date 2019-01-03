@@ -10,6 +10,7 @@ color_list = multilayer_network.monoplex_nx_wrapper("connected_components")
 # hairball_plot(multilayer_network.core_network,layout_parameters={"iterations": 300},color_list=color_list)
 # plt.show()
 
+## use embedding to first initialize the nodes..
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.embedding_visualization import embedding_visualization,embedding_tools
 from py3plex.algorithms.community_detection import community_wrapper as cw
@@ -38,7 +39,7 @@ top_n_communities = list(partition_counts.keys())[0:top_n]
 ## assign node colors
 color_mappings = dict(zip(top_n_communities,[x for x in colors_default if x != "black"][0:top_n]))
 
-network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communities else "black" for x in multilayer_network.network.get_nodes()]
+network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communities else "black" for x in multilayer_network.get_nodes()]
 
 f = plt.figure()
 hairball_plot(graph,network_colors,layout_algorithm="custom_coordinates",layout_parameters=layout_parameters,nodesize=0.05,alpha_channel=0.50,edge_width=0.001,scale_by_size=False,color_list = network_colors)
