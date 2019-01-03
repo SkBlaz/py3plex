@@ -46,24 +46,24 @@ cnames = ["percent_train","micro_F","macro_F","setting","dataset","time"]
 
 ## load all files
 
-def generate_bayesian_diagram(result_matrices):
+def generate_bayesian_diagram(result_matrices,algo_names = ["Node2vec","DNR-e2e (1)"],score_of_interest="micro_F",rope=0.01,rho=1/5):
 
     algo_data = {}
+    
     ## input folders
-    input_folders = ["../final_results/GPU_9/dump.txt"]
-    algo_names = ["Node2vec","DNR-e2e (1)"]
-    train_percentage = 0.2
+    algo_names = algo_names
     df_extracted = []
-    score_of_interest = "micro_F"
+    score_of_interest = score_of_interest
     unique_datasets = set()
 
-
-    rope=0.01 #we consider two classifers equivalent when the difference of accuracy is less that 1%
-    rho=1/5 #we are performing 10 folds, 10 runs cross-validation
-    #pl, pe, pr=bt.hierarchical(result_matrices,rope,rho, verbose=True, names=algo_names)
+    #rope=0.01 #we consider two classifers equivalent when the difference of accuracy is less that 1%
+    #rho=1/5 #we are performing 10 folds, 10 runs cross-validation
+    pl, pe, pr=bt.hierarchical(result_matrices,rope,rho, verbose=True, names=algo_names)
     samples=bt.hierarchical_MC(result_matrices,rope,rho, names=algo_names)
 
     #plt.rcParams['figure.facecolor'] = 'black'
     fig = bt.plot_posterior(samples,algo_names)
+
+    return (pl,pe,pr)
 #    plt.savefig('triangle_hierarchical.png',facecolor="black")
 #    plt.show()
