@@ -223,7 +223,7 @@ def supra_adjacency_matrix_plot(matrix,display=False):
         plt.show()
     
 
-def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default",other_parameters=None):
+def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default",other_parameters=None,edge_width=0.01,alpha_channel=0.5):
 
     if other_parameters is not None:
         with_labels = other_parameters['labels']
@@ -252,7 +252,8 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
         print("Creating color mappings..")
         unique_colors = np.unique(color_list)
         color_mapping= dict(zip(list(unique_colors), colors.all_color_names))
-        final_color_mapping = color_list
+#        final_color_mapping = color_list
+        final_color_mapping = ["black"]*len(nodes)
     
     print("plotting..")
 
@@ -276,8 +277,8 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     else:
         pos = compute_force_directed_layout(g,layout_parameters)
 
-    ec = nx.draw_networkx_edges(g, pos, alpha=0.85,edge_color="black", width=0.1,arrows=False)
-    nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=with_labels, node_size=nsizes)
+    ec = nx.draw_networkx_edges(g, pos, alpha=alpha_channel,edge_color="black", width=edge_width,arrows=False)
+    nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=with_labels, node_size=nsizes,alpha=alpha_channel)
     plt.axis('off')
 
     ## add legend

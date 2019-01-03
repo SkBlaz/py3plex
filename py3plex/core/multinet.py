@@ -146,16 +146,20 @@ class multi_layer_network:
         Internal function, for conversion between objects
         """
         
+        self.tmp_core_network = self.core_network
+        
         if self.directed:
             self.core_network = nx.MultiDiGraph()
         else:
             self.core_network = nx.MultiGraph()
-        
+            
         for edge in self.tmp_core_network.edges():
             self.add_edges({"source":edge[0],
                             "target":edge[1],
                             "source_type":self.dummy_layer,
                             "target_type":self.dummy_layer})
+        del self.tmp_core_network
+        return self 
                     
     def sparse_to_px(self,directed=None):
 

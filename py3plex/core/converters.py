@@ -81,12 +81,13 @@ def prepare_for_visualization_hairball(multinet,compute_layouts=False):
         tuple: (names, prepared network)
 
     """
-    
-    
-
+        
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
-        layers[node[0][1]].append(node[0])
+        try:
+            layers[node[0][1]].append(node[0])
+        except:
+            layers[1].append(node)
 
     inverse_mapping = {}
     enumerated_layers = {name : ind for ind,name in enumerate(set(list(layers.keys())))}
