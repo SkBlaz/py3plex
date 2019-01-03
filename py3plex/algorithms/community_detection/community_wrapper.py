@@ -2,6 +2,7 @@
 ## high level interface for community detection algorithms
 from .community_louvain import *
 import os
+from .NoRC import *
 
 def run_infomap(infile,multiplex=True,overlapping=False,binary="./infomap",verbose=True,iterations=1000):
 
@@ -23,7 +24,7 @@ def run_infomap(infile,multiplex=True,overlapping=False,binary="./infomap",verbo
             else:
                 call([binary, infile,"out/","-N "+str(iterations),"-z","--silent"])
 
-def infomap_communities(graph,binary="./infomap",edgelist_file="./tmp/tmpedgelist.txt",multiplex=False,verbose=False,overlapping=False,iterations=1000):
+def infomap_communities(graph,binary="./infomap",edgelist_file="./tmp/tmpedgelist.txt",multiplex=False,verbose=False,overlapping=False,iterations=200,output="mapping"):
 
     ## check type of the network    
     print("INFO: Infomap community detection in progress..")
@@ -49,6 +50,14 @@ def infomap_communities(graph,binary="./infomap",edgelist_file="./tmp/tmpedgelis
     import shutil    
     shutil.rmtree("out", ignore_errors=False, onerror=None)
     shutil.rmtree("tmp", ignore_errors=False, onerror=None)
+
+    if output == "mapping":
+        return partition
+    else:
+        dx_hc = defaultdict(list)
+        for a,b in partition.items():
+            dx_hc[b].append(a)
+        return dx_hc
     
     return partition
 
@@ -69,23 +78,39 @@ def parse_infomap(outfile):
     return outmap
 
             
-def louvain_communities(network,verbose=True):    
+def louvain_communities(network,verbose=True,output="mapping"):
 
-    network.core_network = network.core_network.to_undirected()
-    
-    if verbose:
-        network.monitor("Detecting communities..")
     try:
-        partition = best_partition(network.core_network)
+        network = network.core_network.to_undirected()
+    except:
+        pass
+    
+    try:
+        partition = best_partition(network)
         
     except:
         ## network is already the input!
         partition = best_partition(network)
+
+    if output == "mapping":
+        return partition
+    else:
+        dx_hc = defaultdict(list)
+        for a,b in partition.items():
+            dx_hc[b].append(a)
+        return dx_hc
+
+def NoRC_communities(network,verbose=True,clustering_scheme="kmeans",output="mapping",prob_threshold = 0.001,parallel_step=8, community_range = [1,3,5,7,11,20,40,50,100,200,300],fine_range=3):
+
+    try:
+        network = network.core_network
         
-    return partition
-
-def NoRC_communities(network,verbose=True):
-
+    except:
+        pass
     
-    
-    pass
+    communities1 = NoRC_communities_main(network,verbose=True,clustering_scheme=clustering_scheme,prob_threshold=prob_threshold,parallel_step=parallel_step, community_range = community_range,fine_range=fine_range)
+
+    if output == "mapping":
+        return communities1
+    else:
+        return communities1

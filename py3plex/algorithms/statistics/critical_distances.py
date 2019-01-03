@@ -3,6 +3,7 @@
  ## plot the results of the run
 
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib import rc, font_manager
 import sys
 import traceback
@@ -39,7 +40,7 @@ def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, outp
     If we were performing Nemenyi post-hoc test (all vs all), this should be None.
     :return: output_figure_file
     """
-
+    
     n = len(list_of_algorithms)
     sorted_algorithms = sorted(list_of_algorithms, key=lambda t: t[1])
     the_index = None
@@ -59,9 +60,9 @@ def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, outp
     link_length_bonus = 0.04
     names_lines_space = 0.12
     first_level_height = 0.5
-    critical_distance_offset = -0.7   # position of the critical distance under the main plot
+    critical_distance_offset = -0.9   # position of the critical distance under the main plot
     end_of_line_manipulator = 3       # shorten the horizontal part of the line by that much
-    font_size = 23
+    font_size = 20
     # latex fonts
     fontProperties = {'family': 'serif', 'serif': ['Computer Modern Roman'],
         'weight' : 'normal', 'size': font_size}
@@ -207,6 +208,7 @@ def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, outp
             fig_folder = output_figure_file[:folder_end]
             if not exists(fig_folder):
                 makedirs(fig_folder)
+        fig.tight_layout()
         fig.savefig(output_figure_file)
         plt.clf()
         print("Plot saved to", output_figure_file)
@@ -226,56 +228,60 @@ def remove_backslash(file_name):
     return "".join(ch_list)
     
 results = []
-try:
-    results_file = sys.argv[1].strip().split("=")[1]
-    options = {"results": None, "the_algorithm": None, "out": None}
+# try:
+#     results_file = sys.argv[1].strip().split("=")[1]
+#     options = {"results": None, "the_algorithm": None, "out": None}
 
-    for i in range(1, len(sys.argv)):
-        option_name, option_value = sys.argv[i].strip().split("=")
-        options[option_name] = option_value
+#     for i in range(1, len(sys.argv)):
+#         option_name, option_value = sys.argv[i].strip().split("=")
+#         options[option_name] = option_value
 
-    with open(results_file, "r") as f:
-        critical_distance_value = float(f.readline().strip().split(" ")[1])
-        for x in f:
-            ime, rang = x.split(" ")
-            results.append([ime, float(rang)])
-    if options["out"] is not None:
-        options["out"] = remove_backslash(options["out"])
-    diagram(results, critical_distance_value, options["the_algorithm"], options["out"])
-except:
-    message = "Something went wrong:\n\n"
-    message += traceback.format_exc()
-    message += """\n
-python ranks2pdf.py results=<results file> [the_algorithm=<the algorithm>] [out=<output file>]
-The options are the following:
+#     with open(results_file, "r") as f:
+#         critical_distance_value = float(f.readline().strip().split(" ")[1])
+#         for x in f:
+#             ime, rang = x.split(" ")
+#             results.append([ime, float(rang)])
+#     if options["out"] is not None:
+#         options["out"] = remove_backslash(options["out"])
+#     diagram(results, critical_distance_value, options["the_algorithm"], options["out"])
+# except:
+#     message = "Something went wrong:\n\n"
+#     message += traceback.format_exc()
+#     message += """\n
+# python ranks2pdf.py results=<results file> [the_algorithm=<the algorithm>] [out=<output file>]
+# The options are the following:
 
-the_algorithm: name of the algorithm as it appears in results_file.
-The results and output file are strings of form path/to/the/file
-The results file contains lines that are of form:
+# the_algorithm: name of the algorithm as it appears in results_file.
+# The results and output file are strings of form path/to/the/file
+# The results file contains lines that are of form:
 
-<N: number of algorithms> <critical distance> <something>   # we read only the critical distance
-alg_name1 avg_rank1
-...
-alg_nameN avg_rankN
+# <N: number of algorithms> <critical distance> <something>   # we read only the critical distance
+# alg_name1 avg_rank1
+# ...
+# alg_nameN avg_rankN
 
-Options in brackets are optional. For the meaning of the arguments, see the docstring of the method diagram.
-"""
+# Options in brackets are optional. For the meaning of the arguments, see the docstring of the method diagram.
+# """
 
-else:
-    message = "Finnished."
-finally:
-    print(message)
+# else:
+#     message = "Finnished."
+# finally:
+#     print(message)
 
  
-def plot_critical_distance(fname,groupby=['dataset', 'setting'],groupby_target='macro_F',outfile="./micro_cd.pdf"):
+def plot_critical_distance(fname,groupby=['dataset', 'setting'],groupby_target='macro_F',outfile="./micro_cd.pdf",aggregator = "mean"):
 
     import Orange
     import matplotlib.pyplot as plt
     from collections import defaultdict
     import operator    
 
-    names = fname.setting.unique()
-    rkx = fname.groupby(groupby)[groupby_target].mean()
+
+    if aggregator == "mean":
+        rkx = fname.groupby(groupby)[groupby_target].mean()
+    else:
+        rkx = fname.groupby(groupby)[groupby_target].max()
+    
     ranks = defaultdict(list)
     clf_ranks = defaultdict(list)
     for df,clf in rkx.index:
@@ -288,9 +294,9 @@ def plot_critical_distance(fname,groupby=['dataset', 'setting'],groupby_target='
             print(en,j[0])
             clf_ranks[j[0]].append(len(sorted_d)-en)
 
-    comparisons = 9
+    comparisons = fname[groupby[0]].nunique()
     clf_score = {k : np.mean(v) for k,v in clf_ranks.items()}
-    names = list(clf_score.keys())
+    names = [x.replace("_"," ") for k,x in enumerate(list(clf_score.keys()))]
     avranks = list(clf_score.values())
     pairs = list(zip(names,avranks))
     cd = Orange.evaluation.compute_CD(avranks[0:(len(avranks)-1)], comparisons, alpha="0.05")

@@ -1,4 +1,4 @@
-## This is the multiplex layer constructor class
+# This is the multiplex layer constructor class
 
 ## draw multi layered network, takes .nx object list as input
 
@@ -243,7 +243,11 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     if color_list is None:
         unique_colors = np.unique(potlabs)
         color_mapping= dict(zip(list(unique_colors), colors.colors_default))
-        final_color_mapping = [color_mapping[n[1]['type']] for n in nodes]        
+        try:
+            final_color_mapping = [color_mapping[n[1]['type']] for n in nodes]
+        except:
+            print("Assigning colors..")
+            final_color_mapping = [1]*len(nodes)
     else:
         print("Creating color mappings..")
         unique_colors = np.unique(color_list)
