@@ -10,7 +10,7 @@ try:
 except:
     forceImport = False
 
-def compute_force_directed_layout(g,layout_parameters=None,initial_positions=None,verbose=True):
+def compute_force_directed_layout(g,layout_parameters=None,initial_positions=None,verbose=True,gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0):
     
     if forceImport:
         try:
@@ -19,18 +19,18 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
                 outboundAttractionDistribution=False,  # Dissuade hubs
                 linLogMode=False,  # NOT IMPLEMENTED
                 adjustSizes=False,  # Prevent overlap (NOT IMPLEMENTED)
-                edgeWeightInfluence=1.0,
+                edgeWeightInfluence=edgeWeightInfluence,
 
                 # Performance
                 jitterTolerance=1.0,  # Tolerance
                 barnesHutOptimize=True,
-                barnesHutTheta=1.2,
+                barnesHutTheta=barnesHutTheta,
                 multiThreaded=False,  # NOT IMPLEMENTED
 
                 # Tuning
-                scalingRatio=2.0,
+                scalingRatio=scalingRatio,
                 strongGravityMode=False,
-                gravity=1.0,
+                gravity=gravity,
 
                 # Log
                 verbose=verbose)

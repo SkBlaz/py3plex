@@ -223,7 +223,7 @@ def supra_adjacency_matrix_plot(matrix,display=False):
         plt.show()
     
 
-def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default",other_parameters=None,edge_width=0.01,alpha_channel=0.5):
+def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default",other_parameters=None,edge_width=0.01,alpha_channel=0.5,gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0):
 
     if other_parameters is not None:
         with_labels = other_parameters['labels']

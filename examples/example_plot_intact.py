@@ -6,9 +6,6 @@ from py3plex.core import multinet
 ## string layout for larger network -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/intact02.gpickle",input_type="gpickle",directed=False).add_dummy_layers()
 multilayer_network.basic_stats()
-color_list = multilayer_network.monoplex_nx_wrapper("connected_components")
-# hairball_plot(multilayer_network.core_network,layout_parameters={"iterations": 300},color_list=color_list)
-# plt.show()
 
 ## use embedding to first initialize the nodes..
 from py3plex.wrappers import train_node2vec_embedding
@@ -25,7 +22,7 @@ multilayer_network.load_embedding("../datasets/test_embedding.emb")
 output_positions = embedding_tools.get_2d_coordinates_tsne(multilayer_network,output_format="pos_dict")
 
 ## custom layouts are part of the custom coordinate option
-layout_parameters = {"iterations":10}
+layout_parameters = {"iterations":200}
 layout_parameters['pos'] = output_positions ## assign parameters
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 
@@ -42,7 +39,8 @@ color_mappings = dict(zip(top_n_communities,[x for x in colors_default if x != "
 network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communities else "black" for x in multilayer_network.get_nodes()]
 
 f = plt.figure()
-hairball_plot(graph,network_colors,layout_algorithm="custom_coordinates",layout_parameters=layout_parameters,nodesize=0.05,alpha_channel=0.50,edge_width=0.001,scale_by_size=False,color_list = network_colors)
+# gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0
+hairball_plot(graph,network_colors,layout_algorithm="custom_coordinates",layout_parameters=layout_parameters,nodesize=0.02,alpha_channel=0.30,edge_width=0.001,scale_by_size=False)
 
 f.savefig("../datasets/intact.png", bbox_inches='tight',dpi=300)
 f.savefig("../datasets/intact.pdf", bbox_inches='tight')
