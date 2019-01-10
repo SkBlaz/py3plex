@@ -5,7 +5,7 @@ import os
 from collections import defaultdict
 import gzip
 
-def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_node_by=":",keep_index=1,layer_type="uniprotkb",annotation_mapping_file="test.gaf"):
+def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_node_by=":",keep_index=1,layer_type="uniprotkb",annotation_mapping_file="test.gaf",go_identifier="GO:"):
     
     ## generate input examples based on community assignment
     g = rdflib.graph.Graph()
@@ -19,15 +19,20 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
     if extract_subnode_info:
         for k,v in input_mapping_file.items():
             node,layer = k
+            if layer_type == None:
+                mapping_file[node] = v                
             if layer_type != False:
                 if layer == layer_type:
                     mapping_file[node.split(split_node_by)[keep_index]] = v
     else:
         for k,v in input_mapping_file.items():
             node,layer = k
+            if layer_type == None:
+                mapping_file[node] = v                
             if layer_type != False:
                 if layer == layer_type:
                      mapping_file[node] = v
+
 
     id_identifier = 0
     if ".gaf" in annotation_mapping_file:
@@ -37,7 +42,8 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
         print("Please, provide gaf-based item-term mappings")
     
     ## iterate through community assignments and construct the trainset
-    ## tukaj morda dodaj example name    
+    ## tukaj morda dodaj example name
+    
     for node, com in mapping_file.items():
         try:
             id_identifier += 1        
@@ -45,12 +51,17 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
             g.add((u, rdflib.RDF.type, KT.Example))
             g.add((u, KT.class_label, rdflib.Literal(str(com)+"_community")))
             for goterm in uniGO[node]:
-                if "GO:" in goterm:
+                if go_identifier is not None:
+                    if go_identifier in goterm:
+                        annotation_uri = rdflib.term.URIRef('%s%s' % (obo_uri, rdflib.Literal(goterm)))
+                        blank = rdflib.BNode()
+                        g.add((u, KT.annotated_with, blank))
+                        g.add((blank, KT.annotation, annotation_uri))
+                else:
                     annotation_uri = rdflib.term.URIRef('%s%s' % (obo_uri, rdflib.Literal(goterm)))
                     blank = rdflib.BNode()
                     g.add((u, KT.annotated_with, blank))
-                    g.add((blank, KT.annotation, annotation_uri))
-                    
+                    g.add((blank, KT.annotation, annotation_uri))              
 
         except Exception as err:
             print(err)
