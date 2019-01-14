@@ -5,7 +5,7 @@ import os
 from collections import defaultdict
 import gzip
 
-def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_node_by=":",keep_index=1,layer_type="uniprotkb",annotation_mapping_file="test.gaf",go_identifier="GO:"):
+def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_node_by=":",keep_index=1,layer_type="uniprotkb",annotation_mapping_file="test.gaf",go_identifier="GO:",prepend_string=None):
     
     ## generate input examples based on community assignment
     g = rdflib.graph.Graph()
@@ -51,6 +51,8 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
             g.add((u, rdflib.RDF.type, KT.Example))
             g.add((u, KT.class_label, rdflib.Literal(str(com)+"_community")))
             for goterm in uniGO[node]:
+                if prepend_string is not None:
+                    goterm = prepend_string+goterm
                 if go_identifier is not None:
                     if go_identifier in goterm:
                         annotation_uri = rdflib.term.URIRef('%s%s' % (obo_uri, rdflib.Literal(goterm)))

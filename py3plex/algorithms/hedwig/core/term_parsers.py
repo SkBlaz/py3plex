@@ -21,7 +21,7 @@ def parse_gaf_file(gaf_mappings,whole_list_counts=False):
     uniGO = defaultdict(set)
     if whole_list_counts:
         whole_list = []
-    print("parsiing GAF file.. {}".format(gaf_mappings))
+#    print("parsing GAF file.. {}".format(gaf_mappings))
     if ".gz" in gaf_mappings:        
         with gzip.open(gaf_mappings,"rb") as im:
             for line in im:
