@@ -3,7 +3,8 @@ import time
 from datetime import datetime
 import logging
 import json
-
+from tqdm import tqdm
+import multiprocessing as mp
 from .core import ExperimentKB, Rule
 from .learners import HeuristicLearner, OptimalLearner
 from .stats import scorefunctions, adjustment, significance, Validate
@@ -38,7 +39,7 @@ def generate_rules_report(kwargs, rules_per_target, human=lambda label, rule: la
         
     return rules_report
 
-def run(kwargs, cli=True):
+def run(kwargs, cli=True,generator_tag=False,num_threads="all"):
 
     
     ## change non-default settings. This is useful for func calls
@@ -61,9 +62,8 @@ def run(kwargs, cli=True):
     validator = Validate(kb, significance_test=significance.apply_fisher,
                          adjustment=getattr(adjustment, kwargs['adjust']))
 
-    rules_per_target = run_learner(kwargs, kb, validator)
+    rules_per_target = run_learner(kwargs, kb, validator,num_threads=num_threads)
     rules_report = generate_rules_report(kwargs, rules_per_target)
-
     end = time.time()
     time_taken = end-start
     logger.info('Finished in %d seconds' % time_taken)
@@ -113,44 +113,101 @@ def build_graph(kwargs):
     return graph
 
 
-def run_learner(kwargs, kb, validator):
+def rule_kernel(target):
+
+    ## find exact rule map
+    # if target:
+    #     logger.info('Starting '+arguments['learner']+' learner for target \'%s\'' % target)
+    # else:
+    #     logger.info('Ranks detected - starting learner.')
+
+    learner_cls = {
+        'heuristic': HeuristicLearner,
+        'optimal': OptimalLearner
+    } [arguments['learner']]
+    learner = learner_cls(knowledgebase,
+                      n=arguments['beam'],
+                      min_sup=int(arguments['support']*knowledgebase.n_examples()),
+                      target=target,
+                      depth=arguments['depth'],
+                      sim=0.9,
+                      use_negations=arguments['negations'],
+                      optimal_subclass=arguments['optimalsubclass'])
+
+    rules = learner.induce()
+
+    if knowledgebase.is_discrete_target():
+        # if arguments['adjust'] == 'fdr':
+        #     logger.info('Validating rules, FDR = %.3f' % arguments['FDR'])
+        # elif arguments['adjust'] == 'fwer':
+        #     logger.info('Validating rules, alpha = %.3f' % arguments['alpha'])
+        rules = validator_object.test(rules, alpha=arguments['alpha'], q=arguments['FDR'])
+        
+    return (target, rules)
+            
+def run_learner(kwargs, kb, validator,generator=False, num_threads="all"):
 
     if kb.is_discrete_target():
-        targets = kb.class_values if not kwargs['target'] else [kwargs['target']]
+        targets = list(kb.class_values if not kwargs['target'] else [kwargs['target']])
     else:
         targets = [None]
-
+    
     rules_report = ''
     rules_per_target = []
 
-    for target in targets:
-        if target:
-            logger.info('Starting '+kwargs['learner']+' learner for target \'%s\'' % target)
+    if num_threads != 0:
+        global knowledgebase
+        global arguments
+        global validator_object
+        validator_object = validator
+        arguments = kwargs
+        knowledgebase = kb
+        n = len(targets)
+        if num_threads == "all":
+            step = mp.cpu_count() ## number of parallel processes
         else:
-            logger.info('Ranks detected - starting learner.')
+            step = num_threads
+        jobs = [range(n)[i:i + step] for i in range(0, n, step)] ## generate jobs
 
-        learner_cls = {
-            'heuristic': HeuristicLearner,
-            'optimal': OptimalLearner
-        } [kwargs['learner']]
-        learner = learner_cls(kb,
-                          n=kwargs['beam'],
-                          min_sup=int(kwargs['support']*kb.n_examples()),
-                          target=target,
-                          depth=kwargs['depth'],
-                          sim=0.9,
-                          use_negations=kwargs['negations'],
-                          optimal_subclass=kwargs['optimalsubclass'])
+        rules_per_target = []
+        pbar = tqdm(total=len(targets))
+        for batch in jobs:
+            with mp.Pool(processes=step) as p:
+                batch = [targets[x] for x in batch]
+                results = p.map(rule_kernel,batch)
+                pbar.update(step)
+                for rule in results:
+                    rules_per_target.append(rule)
+        pbar.close()
+    else:
+        for target in targets:
+            if target:
+                logger.info('Starting '+kwargs['learner']+' learner for target \'%s\'' % target)
+            else:
+                logger.info('Ranks detected - starting learner.')
 
-        rules = learner.induce()
+            learner_cls = {
+                'heuristic': HeuristicLearner,
+                'optimal': OptimalLearner
+            } [kwargs['learner']]
+            learner = learner_cls(kb,
+                              n=kwargs['beam'],
+                              min_sup=int(kwargs['support']*kb.n_examples()),
+                              target=target,
+                              depth=kwargs['depth'],
+                              sim=0.9,
+                              use_negations=kwargs['negations'],
+                              optimal_subclass=kwargs['optimalsubclass'])
 
-        if kb.is_discrete_target():
-            if kwargs['adjust'] == 'fdr':
-                logger.info('Validating rules, FDR = %.3f' % kwargs['FDR'])
-            elif kwargs['adjust'] == 'fwer':
-                logger.info('Validating rules, alpha = %.3f' % kwargs['alpha'])
-            rules = validator.test(rules, alpha=kwargs['alpha'], q=kwargs['FDR'])
+            rules = learner.induce()
 
-        rules_per_target.append((target, rules))
+            if kb.is_discrete_target():
+                if kwargs['adjust'] == 'fdr':
+                    logger.info('Validating rules, FDR = %.3f' % kwargs['FDR'])
+                elif kwargs['adjust'] == 'fwer':
+                    logger.info('Validating rules, alpha = %.3f' % kwargs['alpha'])
+                rules = validator.test(rules, alpha=kwargs['alpha'], q=kwargs['FDR'])
+
+            rules_per_target.append((target, rules))
 
     return rules_per_target

@@ -131,6 +131,19 @@ def fet_enrichment_generic(term_dataset,term_database,all_counts,topology_map):
     return significant_results
 
 
+def fet_enrichment_terms(partition_mappings,annotation_mappings):
+
+    ## 1.) read the database.
+    term_dataset, term_database, all_counts =  read_uniprot_GO(annotation_mappings)
+    
+    ## 2.) partition function dict.
+    topology_map = read_topology_mappings(partition_mappings)
+
+    ## 3.) calculate p-vals.
+    significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False)
+
+    return significant_results
+
 ## write this so it uses vanilla data structures
 def fet_enrichment_uniprot(partition_mappings,annotation_mappings):
     
