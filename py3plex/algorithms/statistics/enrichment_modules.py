@@ -58,7 +58,6 @@ def multiple_test_correction(input_dataset):
             if (significant == True):
                 print (key,term,significant,tmp,pval)
 
-
 def parallel_enrichment(term):
     pval = calculate_pval(_term_database[term])
     return {'observation' : _partition_name,'term' : _term_database[term][0],'pval' : pval}
@@ -129,7 +128,6 @@ def fet_enrichment_generic(term_dataset,term_database,all_counts,topology_map):
     ## 3.) calculate p-vals.
     significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False)
     return significant_results
-
 
 def fet_enrichment_terms(partition_mappings,annotation_mappings):
 

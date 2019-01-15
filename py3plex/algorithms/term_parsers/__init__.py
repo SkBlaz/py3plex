@@ -49,7 +49,7 @@ def parse_gaf_file(gaf_mappings,whole_list_counts=False):
                     print(es)                    
                     
     if whole_list_counts:
-        return (uniGO,whole_list)    
+        return (uniGO,whole_list)
     else:
         return uniGO
 
@@ -74,4 +74,3 @@ def read_uniprot_GO(filename,verbose=True):
     if verbose:
         print("All annotations {}".format(all_terms))
     return (unigo_counts,term_counts,all_terms)
-

@@ -222,8 +222,9 @@ class Learner:
             # Calculate the union of superclasses of each predicate
             supers = set()
             for pred in eligible_preds:
-                supers.update(self.get_superclasses(pred.label))
-                supers.add(pred)
+                if type(pred) == str:
+                    supers.update(self.get_superclasses(pred.label))
+                    supers.add(pred)
 
             # Calculate the top-most left-most non-ancestor
             for lvl in sorted(self.kb.levels.keys()):
