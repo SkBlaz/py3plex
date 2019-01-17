@@ -9,44 +9,7 @@ import numpy as np
 import seaborn as sns
 from collections import defaultdict
 
-cnames = ["percent_train","micro_F","macro_F","setting","dataset","time"]
-
-## this loads a single results file with respect to certain algorithm
-# def read_results_file(filename,algorithm_of_interest="node2vec"):
-#     fnamex = pd.read_csv(filename,sep=" ")
-#     fnamex.columns = cnames
-#     fnamex['dataset'] = fnamex['dataset'].replace({'../matrix_data/multi_class/Blogspot.mat': 'Blogspot',
-#                                                    '../matrix_data/multi_class/Bitcoin.mat': 'Bitcoin',
-#                                                    '../matrix_data/multi_class/Bitcoin_alpha.mat': 'Bitcoin Alpha',
-#                                                    '../matrix_data/multi_class/Homo_sapiens.mat': 'Homo Sapiens PPI',
-#                                                    '../matrix_data/multi_class/POS.mat': 'Wiki',
-#                                                    '../matrix_data/multi_class/ions.mat': 'Ions',
-#                                                    '../matrix_data/multi_class/cora.mat': 'Cora',
-#                                                    '../matrix_data/multi_class/citeseer.mat': 'CiteSeer'})
-    
-#     fnamex.setting = fnamex.setting.replace({"default0" : "DNR (1)",
-#                                              "no_deep_no_community" : "PPR",
-#                                              "default1" :"DNR (2)",
-#                                              "default2" :"DNR (3)",
-#                                              "DNR_e2e0PR" : "DNR-e2e (1)",
-#                                              "DNR_e2e1PR" : "DNR-e2e (2)",
-#                                              "DNR_e2e2PR" : "DNR-e2e (3)",
-#                                              "DNR_e2e0LAPLACIAN" : "L-DNR-e2e (1)",
-#                                              "DNR_e2e1LAPLACIAN" : "L-DNR-e2e (2)",
-#                                              "DNR_e2e2LAPLACIAN" : "L-DNR-e2e (3)",
-#                                              "N2V" : "Node2vec",
-#                                              "RAW2" : "HINMINE",
-#                                              "PCA2" : "HINMINE-PCA",
-#                                              "LP_basic" : "LP"})
-
-#     fnamex = fnamex[fnamex['setting'] == algorithm_of_interest]
-
-#     return fnamex
-
-
-## load all files
-
-def generate_bayesian_diagram(result_matrices,algo_names = ["Node2vec","DNR-e2e (1)"],score_of_interest="micro_F",rope=0.01,rho=1/5):
+def generate_bayesian_diagram(result_matrices,algo_names = ["algo1","algo2"],score_of_interest="micro_F",rope=0.01,rho=1/5):
 
     algo_data = {}
     

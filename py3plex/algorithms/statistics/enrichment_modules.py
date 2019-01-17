@@ -91,7 +91,7 @@ def compute_enrichment(term_dataset, term_database, topology_map, all_counts, wh
 
         ## computational pool instantiation
         ncpu = 2 #mp.cpu_count()
-        pool = mp.Pool(ncpu)
+#        pool = mp.Pool(ncpu)
         
         ## compute the results
         n = len(term_database)
