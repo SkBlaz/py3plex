@@ -5,6 +5,8 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 Heterogeneous networks
 ![Single layer network](example_images/snps_data.png)
+
+
 Homogeneous networks
 ![Multilayer networks](example_images/biomine_community.png)
 
