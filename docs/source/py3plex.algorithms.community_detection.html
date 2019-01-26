@@ -4,38 +4,33 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>py3plex.algorithms.community_detection package &#8212; py3plex 0.1 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="py3plex.algorithms.community_detection.community package" href="py3plex.algorithms.community_detection.community.html" />
+    <link rel="prev" title="py3plex.algorithms.community package" href="py3plex.algorithms.community.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="py3plex-algorithms-community-detection-package">
@@ -46,9 +41,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html">py3plex.algorithms.community_detection.community package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#py3plex-algorithms-community-detection-community-community-louvain-module">py3plex.algorithms.community_detection.community.community_louvain module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#py3plex-algorithms-community-detection-community-community-status-module">py3plex.algorithms.community_detection.community.community_status module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#module-py3plex.algorithms.community_detection.community.community_louvain">py3plex.algorithms.community_detection.community.community_louvain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#module-py3plex.algorithms.community_detection.community.community_status">py3plex.algorithms.community_detection.community.community_status module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#module-py3plex.algorithms.community_detection.community">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -57,25 +52,350 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="py3plex-algorithms-community-detection-community-louvain-module">
-<h2>py3plex.algorithms.community_detection.community_louvain module<a class="headerlink" href="#py3plex-algorithms-community-detection-community-louvain-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-py3plex.algorithms.community_detection.community_louvain">
+<span id="py3plex-algorithms-community-detection-community-louvain-module"></span><h2>py3plex.algorithms.community_detection.community_louvain module<a class="headerlink" href="#module-py3plex.algorithms.community_detection.community_louvain" title="Permalink to this headline">¶</a></h2>
+<p>This module implements community detection.</p>
+<dl class="class">
+<dt id="py3plex.algorithms.community_detection.community_louvain.Status">
+<em class="property">class </em><code class="descclassname">py3plex.algorithms.community_detection.community_louvain.</code><code class="descname">Status</code><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.Status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>To handle several data in one struct.</p>
+<p>Could be replaced by named tuple, but don’t want to depend on python 2.6</p>
+<dl class="method">
+<dt id="py3plex.algorithms.community_detection.community_louvain.Status.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.Status.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a deep copy of status</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.community_detection.community_louvain.Status.degrees">
+<code class="descname">degrees</code><em class="property"> = {}</em><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.Status.degrees" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.community_detection.community_louvain.Status.gdegrees">
+<code class="descname">gdegrees</code><em class="property"> = {}</em><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.Status.gdegrees" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.community_detection.community_louvain.Status.init">
+<code class="descname">init</code><span class="sig-paren">(</span><em>graph</em>, <em>weight</em>, <em>part=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.Status.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the status of a graph with every node in one community</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.community_detection.community_louvain.Status.internals">
+<code class="descname">internals</code><em class="property"> = {}</em><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.Status.internals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.community_detection.community_louvain.Status.node2com">
+<code class="descname">node2com</code><em class="property"> = {}</em><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.Status.node2com" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.community_detection.community_louvain.Status.total_weight">
+<code class="descname">total_weight</code><em class="property"> = 0</em><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.Status.total_weight" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_louvain.best_partition">
+<code class="descclassname">py3plex.algorithms.community_detection.community_louvain.</code><code class="descname">best_partition</code><span class="sig-paren">(</span><em>graph</em>, <em>partition=None</em>, <em>weight='weight'</em>, <em>resolution=1.0</em>, <em>randomize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.best_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the partition of the graph nodes which maximises the modularity
+(or try..) using the Louvain heuristices</p>
+<p>This is the partition of highest modularity, i.e. the highest partition
+of the dendrogram generated by the Louvain algorithm.</p>
+<dl class="docutils">
+<dt>graph <span class="classifier-delimiter">:</span> <span class="classifier">networkx.Graph</span></dt>
+<dd>the networkx graph which is decomposed</dd>
+<dt>partition <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd>the algorithm will start using this partition of the nodes.
+It’s a dictionary where keys are their nodes and values the communities</dd>
+<dt>weight <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>the key in graph to use as weight. Default to ‘weight’</dd>
+<dt>resolution <span class="classifier-delimiter">:</span> <span class="classifier">double, optional</span></dt>
+<dd>Will change the size of the communities, default to 1.
+represents the time described in
+“Laplacian Dynamics and Multiscale Modular Structure in Networks”,
+R. Lambiotte, J.-C. Delvenne, M. Barahona</dd>
+<dt>randomize <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd>Will randomize the node evaluation order and the community evaluation
+order to get different partitions at each call</dd>
+</dl>
+<dl class="docutils">
+<dt>partition <span class="classifier-delimiter">:</span> <span class="classifier">dictionnary</span></dt>
+<dd>The partition, with communities numbered from 0 to number of communities</dd>
+</dl>
+<dl class="docutils">
+<dt>NetworkXError</dt>
+<dd>If the graph is not Eulerian.</dd>
+</dl>
+<p>generate_dendrogram to obtain all the decompositions levels</p>
+<p>Uses Louvain algorithm</p>
+<p>large networks. J. Stat. Mech 10008, 1-12(2008).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="c1">#Basic usage</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">part</span> <span class="o">=</span> <span class="n">best_partition</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#other example to display a graph with its community :</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#better with karate_graph() as defined in networkx examples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#erdos renyi don&#39;t have true community structure</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#first compute the best partition</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">partition</span> <span class="o">=</span> <span class="n">community</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="c1">#drawing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">size</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">com</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">count</span> <span class="o">+=</span> <span class="mf">1.</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">list_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span> <span class="k">for</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span>                                <span class="k">if</span> <span class="n">partition</span><span class="p">[</span><span class="n">nodes</span><span class="p">]</span> <span class="o">==</span> <span class="n">com</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">list_nodes</span><span class="p">,</span> <span class="n">node_size</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+<span class="go">                                node_color = str(count / size))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_louvain.generate_dendrogram">
+<code class="descclassname">py3plex.algorithms.community_detection.community_louvain.</code><code class="descname">generate_dendrogram</code><span class="sig-paren">(</span><em>graph</em>, <em>part_init=None</em>, <em>weight='weight'</em>, <em>resolution=1.0</em>, <em>randomize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.generate_dendrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find communities in the graph and return the associated dendrogram</p>
+<p>A dendrogram is a tree and each level is a partition of the graph nodes.
+Level 0 is the first partition, which contains the smallest communities,
+and the best is len(dendrogram) - 1. The higher the level is, the bigger
+are the communities</p>
+<dl class="docutils">
+<dt>graph <span class="classifier-delimiter">:</span> <span class="classifier">networkx.Graph</span></dt>
+<dd>the networkx graph which will be decomposed</dd>
+<dt>part_init <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd>the algorithm will start using this partition of the nodes. It’s a
+dictionary where keys are their nodes and values the communities</dd>
+<dt>weight <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>the key in graph to use as weight. Default to ‘weight’</dd>
+<dt>resolution <span class="classifier-delimiter">:</span> <span class="classifier">double, optional</span></dt>
+<dd>Will change the size of the communities, default to 1.
+represents the time described in
+“Laplacian Dynamics and Multiscale Modular Structure in Networks”,
+R. Lambiotte, J.-C. Delvenne, M. Barahona</dd>
+</dl>
+<dl class="docutils">
+<dt>dendrogram <span class="classifier-delimiter">:</span> <span class="classifier">list of dictionaries</span></dt>
+<dd>a list of partitions, ie dictionnaries where keys of the i+1 are the
+values of the i. and where keys of the first are the nodes of graph</dd>
+</dl>
+<dl class="docutils">
+<dt>TypeError</dt>
+<dd>If the graph is not a networkx.Graph</dd>
+</dl>
+<p>best_partition</p>
+<p>Uses Louvain algorithm</p>
+<p>networks. J. Stat. Mech 10008, 1-12(2008).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dendo</span> <span class="o">=</span> <span class="n">generate_dendrogram</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dendo</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;partition at level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>          <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="n">partition_at_level</span><span class="p">(</span><span class="n">dendo</span><span class="p">,</span> <span class="n">level</span><span class="p">))</span>
+<span class="go">:param weight:</span>
+<span class="go">:type weight:</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_louvain.induced_graph">
+<code class="descclassname">py3plex.algorithms.community_detection.community_louvain.</code><code class="descname">induced_graph</code><span class="sig-paren">(</span><em>partition</em>, <em>graph</em>, <em>weight='weight'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.induced_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce the graph where nodes are the communities</p>
+<p>there is a link of weight w between communities if the sum of the weights
+of the links between their elements is w</p>
+<dl class="docutils">
+<dt>partition <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>a dictionary where keys are graph nodes and  values the part the node
+belongs to</dd>
+<dt>graph <span class="classifier-delimiter">:</span> <span class="classifier">networkx.Graph</span></dt>
+<dd>the initial graph</dd>
+<dt>weight <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>the key in graph to use as weight. Default to ‘weight’</dd>
+</dl>
+<dl class="docutils">
+<dt>g <span class="classifier-delimiter">:</span> <span class="classifier">networkx.Graph</span></dt>
+<dd>a networkx graph where nodes are the parts</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">complete_graph</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">part</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">part</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span> <span class="o">%</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ind</span> <span class="o">=</span> <span class="n">induced_graph</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">goal</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">goal</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="o">*</span><span class="n">n</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)])</span>  <span class="c1"># NOQA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span><span class="o">.</span><span class="n">is_isomorphic</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">goal</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_louvain.load_binary">
+<code class="descclassname">py3plex.algorithms.community_detection.community_louvain.</code><code class="descname">load_binary</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.load_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load binary graph as used by the cpp implementation of this algorithm</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_louvain.modularity">
+<code class="descclassname">py3plex.algorithms.community_detection.community_louvain.</code><code class="descname">modularity</code><span class="sig-paren">(</span><em>partition</em>, <em>graph</em>, <em>weight='weight'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.modularity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the modularity of a partition of a graph</p>
+<dl class="docutils">
+<dt>partition <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>the partition of the nodes, i.e a dictionary where keys are their nodes
+and values the communities</dd>
+<dt>graph <span class="classifier-delimiter">:</span> <span class="classifier">networkx.Graph</span></dt>
+<dd>the networkx graph which is decomposed</dd>
+<dt>weight <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>the key in graph to use as weight. Default to ‘weight’</dd>
+</dl>
+<dl class="docutils">
+<dt>modularity <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The modularity</dd>
+</dl>
+<dl class="docutils">
+<dt>KeyError</dt>
+<dd>If the partition is not a partition of all graph nodes</dd>
+<dt>ValueError</dt>
+<dd>If the graph has no link</dd>
+<dt>TypeError</dt>
+<dd>If graph is not a networkx.Graph</dd>
+</dl>
+<p>structure in networks. Physical Review E 69, 26113(2004).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">part</span> <span class="o">=</span> <span class="n">best_partition</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modularity</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_louvain.partition_at_level">
+<code class="descclassname">py3plex.algorithms.community_detection.community_louvain.</code><code class="descname">partition_at_level</code><span class="sig-paren">(</span><em>dendrogram</em>, <em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_louvain.partition_at_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the partition of the nodes at the given level</p>
+<p>A dendrogram is a tree and each level is a partition of the graph nodes.
+Level 0 is the first partition, which contains the smallest communities,
+and the best is len(dendrogram) - 1.
+The higher the level is, the bigger are the communities</p>
+<dl class="docutils">
+<dt>dendrogram <span class="classifier-delimiter">:</span> <span class="classifier">list of dict</span></dt>
+<dd>a list of partitions, ie dictionnaries where keys of the i+1 are the
+values of the i.</dd>
+<dt>level <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>the level which belongs to [0..len(dendrogram)-1]</dd>
+</dl>
+<dl class="docutils">
+<dt>partition <span class="classifier-delimiter">:</span> <span class="classifier">dictionnary</span></dt>
+<dd>A dictionary where keys are the nodes and the values are the set it
+belongs to</dd>
+</dl>
+<dl class="docutils">
+<dt>KeyError</dt>
+<dd>If the dendrogram is not well formed or the level is too high</dd>
+</dl>
+<p>best_partition which directly combines partition_at_level and
+generate_dendrogram to obtain the partition of highest modularity</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dendrogram</span> <span class="o">=</span> <span class="n">generate_dendrogram</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dendrogram</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;partition at level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="n">partition_at_level</span><span class="p">(</span><span class="n">dendrogram</span><span class="p">,</span> <span class="n">level</span><span class="p">))</span>  <span class="c1"># NOQA</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 <div class="section" id="py3plex-algorithms-community-detection-community-ranking-module">
 <h2>py3plex.algorithms.community_detection.community_ranking module<a class="headerlink" href="#py3plex-algorithms-community-detection-community-ranking-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="py3plex-algorithms-community-detection-community-wrapper-module">
-<h2>py3plex.algorithms.community_detection.community_wrapper module<a class="headerlink" href="#py3plex-algorithms-community-detection-community-wrapper-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-py3plex.algorithms.community_detection.community_wrapper">
+<span id="py3plex-algorithms-community-detection-community-wrapper-module"></span><h2>py3plex.algorithms.community_detection.community_wrapper module<a class="headerlink" href="#module-py3plex.algorithms.community_detection.community_wrapper" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_wrapper.NoRC_communities">
+<code class="descclassname">py3plex.algorithms.community_detection.community_wrapper.</code><code class="descname">NoRC_communities</code><span class="sig-paren">(</span><em>network, verbose=True, clustering_scheme='kmeans', output='mapping', prob_threshold=0.001, parallel_step=8, community_range=[1, 3, 5, 7, 11, 20, 40, 50, 100, 200, 300], fine_range=3</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_wrapper.NoRC_communities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_wrapper.infomap_communities">
+<code class="descclassname">py3plex.algorithms.community_detection.community_wrapper.</code><code class="descname">infomap_communities</code><span class="sig-paren">(</span><em>graph</em>, <em>binary='./infomap'</em>, <em>edgelist_file='./tmp/tmpedgelist.txt'</em>, <em>multiplex=False</em>, <em>verbose=False</em>, <em>overlapping=False</em>, <em>iterations=200</em>, <em>output='mapping'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_wrapper.infomap_communities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_wrapper.louvain_communities">
+<code class="descclassname">py3plex.algorithms.community_detection.community_wrapper.</code><code class="descname">louvain_communities</code><span class="sig-paren">(</span><em>network</em>, <em>verbose=True</em>, <em>output='mapping'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_wrapper.louvain_communities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_wrapper.parse_infomap">
+<code class="descclassname">py3plex.algorithms.community_detection.community_wrapper.</code><code class="descname">parse_infomap</code><span class="sig-paren">(</span><em>outfile</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_wrapper.parse_infomap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.community_wrapper.run_infomap">
+<code class="descclassname">py3plex.algorithms.community_detection.community_wrapper.</code><code class="descname">run_infomap</code><span class="sig-paren">(</span><em>infile</em>, <em>multiplex=True</em>, <em>overlapping=False</em>, <em>binary='./infomap'</em>, <em>verbose=True</em>, <em>iterations=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.community_wrapper.run_infomap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="py3plex-algorithms-community-detection-node-ranking-module">
-<h2>py3plex.algorithms.community_detection.node_ranking module<a class="headerlink" href="#py3plex-algorithms-community-detection-node-ranking-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-py3plex.algorithms.community_detection.node_ranking">
+<span id="py3plex-algorithms-community-detection-node-ranking-module"></span><h2>py3plex.algorithms.community_detection.node_ranking module<a class="headerlink" href="#module-py3plex.algorithms.community_detection.node_ranking" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.node_ranking.authority_matrix">
+<code class="descclassname">py3plex.algorithms.community_detection.node_ranking.</code><code class="descname">authority_matrix</code><span class="sig-paren">(</span><em>graph</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.node_ranking.authority_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.node_ranking.hub_matrix">
+<code class="descclassname">py3plex.algorithms.community_detection.node_ranking.</code><code class="descname">hub_matrix</code><span class="sig-paren">(</span><em>graph</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.node_ranking.hub_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.node_ranking.hubs_and_authorities">
+<code class="descclassname">py3plex.algorithms.community_detection.node_ranking.</code><code class="descname">hubs_and_authorities</code><span class="sig-paren">(</span><em>graph</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.node_ranking.hubs_and_authorities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.node_ranking.modularity">
+<code class="descclassname">py3plex.algorithms.community_detection.node_ranking.</code><code class="descname">modularity</code><span class="sig-paren">(</span><em>G</em>, <em>communities</em>, <em>weight='weight'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.node_ranking.modularity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.node_ranking.page_rank_kernel">
+<code class="descclassname">py3plex.algorithms.community_detection.node_ranking.</code><code class="descname">page_rank_kernel</code><span class="sig-paren">(</span><em>index_row</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.node_ranking.page_rank_kernel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.node_ranking.sparse_page_rank">
+<code class="descclassname">py3plex.algorithms.community_detection.node_ranking.</code><code class="descname">sparse_page_rank</code><span class="sig-paren">(</span><em>matrix</em>, <em>start_nodes</em>, <em>epsilon=1e-06</em>, <em>max_steps=100000</em>, <em>damping=0.5</em>, <em>spread_step=10</em>, <em>spread_percent=0.3</em>, <em>try_shrink=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.node_ranking.sparse_page_rank" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.node_ranking.stochastic_normalization">
+<code class="descclassname">py3plex.algorithms.community_detection.node_ranking.</code><code class="descname">stochastic_normalization</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.node_ranking.stochastic_normalization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.community_detection.node_ranking.stochastic_normalization_hin">
+<code class="descclassname">py3plex.algorithms.community_detection.node_ranking.</code><code class="descname">stochastic_normalization_hin</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.community_detection.node_ranking.stochastic_normalization_hin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-py3plex.algorithms.community_detection">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.algorithms.community_detection" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -83,17 +403,25 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="py3plex.html">py3plex package</a><ul>
+  <li><a href="py3plex.algorithms.html">py3plex.algorithms package</a><ul>
+      <li>Previous: <a href="py3plex.algorithms.community.html" title="previous chapter">py3plex.algorithms.community package</a></li>
+      <li>Next: <a href="py3plex.algorithms.community_detection.community.html" title="next chapter">py3plex.algorithms.community_detection.community package</a></li>
+  </ul></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -104,8 +432,8 @@
       &copy;2018, Blaž Škrlj.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/source/py3plex.algorithms.community_detection.rst.txt"
