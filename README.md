@@ -3,10 +3,10 @@
 Heterogeneous networks are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
+Heterogeneous networks| ![Single layer network](example_images/snps_data.png) |
+|-----------------------|
+| Homogeneous networks | ![Multilayer networks](example_images/biomine_community.png)
 
-Heterogeneous (multilayer) networks             |  Homogeneous networks
-:-------------------------:|:-------------------------:
-![Single layer network](example_images/snps_data.png)  |  ![Multilayer networks](example_images/biomine_community.png)
 
 ## Getting Started
 
