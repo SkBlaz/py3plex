@@ -59,7 +59,7 @@ def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, outp
     inter_lines_space = 0.32
     link_length_bonus = 0.04
     names_lines_space = 0.12
-    first_level_height = 0.5
+    first_level_height = 0.2
     critical_distance_offset = -0.9   # position of the critical distance under the main plot
     end_of_line_manipulator = 3       # shorten the horizontal part of the line by that much
     font_size = 20

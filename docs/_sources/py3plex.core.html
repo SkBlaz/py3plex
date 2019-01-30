@@ -109,6 +109,11 @@ dict,list or px_edge. See examples for further use.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.aggregate_edges">
+<code class="descname">aggregate_edges</code><span class="sig-paren">(</span><em>metric='count'</em>, <em>normalize_by='degree'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.aggregate_edges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.basic_stats">
 <code class="descname">basic_stats</code><span class="sig-paren">(</span><em>target_network=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.basic_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for obtaining a network’s statistics</p>
@@ -175,7 +180,7 @@ dict,list or px_edge. See examples for further use.</p>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.invert">
-<code class="descname">invert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.invert" title="Permalink to this definition">¶</a></dt>
+<code class="descname">invert</code><span class="sig-paren">(</span><em>override_core=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.invert" title="Permalink to this definition">¶</a></dt>
 <dd><p>invert the nodes to edges. Get the “edge graph”. Each node is here an edge.</p>
 </dd></dl>
 
@@ -243,6 +248,12 @@ dict,list or px_edge. See examples for further use.</p>
 <dt id="py3plex.core.multinet.multi_layer_network.subnetwork">
 <code class="descname">subnetwork</code><span class="sig-paren">(</span><em>input_list=None</em>, <em>subset_by='node_layer_names'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.subnetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a subgraph based on a set of nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.test_scale_free">
+<code class="descname">test_scale_free</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.test_scale_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the scale-free-nness of the network</p>
 </dd></dl>
 
 <dl class="method">
