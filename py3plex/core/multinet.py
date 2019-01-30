@@ -212,7 +212,27 @@ class multi_layer_network:
         
         for node in self.core_network.nodes(data=data):
             yield node
-            
+
+    def merge_with(self,target_px_object):
+
+        '''
+        Merge two px objects.
+        '''
+        
+        all_edges = []
+        for edge in target_px_object.get_edges(data=True):
+            n1_name = edge[0][0]
+            n1_type = edge[0][1]
+            n2_name = edge[1][0]
+            n2_type = edge[1][1]
+            edge_type = edge[2].get('type')
+            weight = edge[2].get('weight')
+            edge_obj = {"source":n1_name,"target":n2_name,"type":edge_type,"source_type":n1_type,"target_type":n2_type}            
+            all_edges.append(edge_obj)
+
+        self.add_edges(all_edges)
+        return self
+        
 
     def subnetwork(self,input_list=None,subset_by="node_layer_names"):
 
