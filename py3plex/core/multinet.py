@@ -77,11 +77,13 @@ class multi_layer_network:
         
         return self
 
-    def to_sparse_matrix(self,replace_core=False):
+    def to_sparse_matrix(self,replace_core=False,return_only=False):
 
         """
         Conver the matrix to scipy-sparse version. This is useful for classification.
         """
+        if return_only:
+            return nx.to_scipy_sparse_matrix(self.core_network)
         
         if replace_core:
             self.core_network = nx.to_scipy_sparse_matrix(self.core_network)
