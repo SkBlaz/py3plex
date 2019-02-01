@@ -2,6 +2,7 @@
 
 import networkx as nx
 import itertools
+import glob
 import operator
 import numpy as np
 import scipy.io
@@ -242,15 +243,69 @@ def parse_multiplex_edges(input_name,directed):
                 
     return (G,None)
 
+def parse_multiplex_folder(input_folder,directed):
+
+    # 16 17 1377438155 RT -> activity n1 n2 time label
+    # 1 RT -> layer name
+    # 1 61450 1252 1 -> layer n1 n2 w
+    # 9 9 node id, lab
+
+    names = glob.glob(input_folder+"/*")
+    edges_file = [x for x in names if ".edges" in x]
+    activity_file = [x for x in names if "activity.txt" in x]
+    time_series_tuples = None
+    layer_file = [x for x in names if "layers.txt" in x]    
+    layer_dict = {}
+    for lx in layer_file:
+        with open(lx) as lf:
+            for line in lf:
+                lid,lname = line.strip().split(" ")
+                layer_dict[lname] = lid
+                
+    if len(activity_file) >= 1:
+        time_series_tuples = defaultdict(list)                
+        for ac in activity_file:
+            with open(ac) as acf:
+                for line in acf:
+                    n1,n2,timestamp,layer_name = line.strip().split(" ")
+                    time_series_tuples[timestamp].append((n1,n2,layer_dict[layer_name]))
+
+#    nodes_file = [x for x in names if "nodes.txt" in x]    
+    
+    if directed:
+        G = nx.MultiDiGraph()
+        
+    else:
+        G = nx.MultiGraph()
+                
+    for edgefile in edges_file:
+        with open(edgefile) as ef:
+            for line in ef:
+                parts = line.strip().split(" ")
+                node_first = parts[1]
+                node_second = parts[2]
+                layer = parts[0]
+                weight = parts[3]
+                G.add_node((node_first,str(layer)))
+                G.add_node((node_second,str(layer)))
+                G.add_edge((node_first,str(layer)),(node_second,str(layer)),key="default",weight=weight,type="default")
+
+    return (G,None,time_series_tuples)
+
 ## main parser method
 def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,network_type="multilayer"):
-        
+
+
+    time_series = None
     if f_type == "gml":
         parsed_network,labels = parse_gml(input_name,directed)
     
     elif f_type == "nx":
         parsed_network,labels = parse_nx(input_name,directed)
 
+    elif f_type == "multiplex_folder":
+        parsed_network,labels,time_series = parse_multiplex_folder(input_name,directed)
+        
     elif f_type == "sparse":
         parsed_network,labels = parse_matrix(input_name,directed)
 
@@ -279,11 +334,11 @@ def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,
         parsed_network,labels = parse_multiplex_edges(input_name,directed)
 
     if network_type == "multilayer":
-        return (parsed_network, labels)
+        return (parsed_network, labels, time_series)
     
     elif network_type == "multiplex":
         multiplex_graph = add_mpx_edges(parsed_network)
-        return (multiplex_graph, labels)
+        return (multiplex_graph, labels, time_series)
     
     else:
         raise Exception("Please, specify heterogeneous network type.")

@@ -65,11 +65,11 @@ class multi_layer_network:
         if input_type == "sparse":
             self.sparse_enabled = True
             
-        self.core_network, self.labels = parsers.parse_network(self.input_file,
-                                            self.input_type,
-                                            directed=self.directed,
-                                            label_delimiter=self.label_delimiter,
-                                            network_type=self.network_type)
+        self.core_network, self.labels, self.activity = parsers.parse_network(self.input_file,
+                                                                              self.input_type,
+                                                                              directed=self.directed,
+                                                                              label_delimiter=self.label_delimiter,
+                                                                              network_type=self.network_type)
 
         if self.network_type == "multiplex":
             self.monitor("Checking multiplex edges..")
@@ -101,6 +101,9 @@ class multi_layer_network:
         
         print("-"*20,"\n",message,"\n","-"*20)
 
+    def get_neighbors(self,node_id,layer_id=None):
+        return self.core_network.neighbors((node_id,layer_id))
+        
     def invert(self,override_core=False):
 
         """
