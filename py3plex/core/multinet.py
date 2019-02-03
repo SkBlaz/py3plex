@@ -34,7 +34,7 @@ class multi_layer_network:
 
         """
         ## initialize the class
-        
+        self.layer_name_map = {}        
         self.core_network = None
         self.directed = directed
         self.dummy_layer = dummy_layer
@@ -54,8 +54,20 @@ class multi_layer_network:
         pass
         
     def load_network(self,input_file=None, directed=False, input_type="gml"):
-        """Main method for loading networks"""
-        ## core constructor methods
+
+        """Main network loader
+
+        This method loads and prepares a given network.
+
+        Args:
+            param1: network name
+            param2: direction
+            param3: input_type
+
+        Returns:
+             self.core_network along with self.labels(optional), self.activity etc.
+
+        """        
         
         self.input_file = input_file
         self.input_type = input_type
@@ -77,6 +89,39 @@ class multi_layer_network:
         
         return self
 
+    def load_layer_name_mapping(self,mapping_name):
+
+        """Layer-node mapping loader method
+
+        Args:
+            param1: The name of the mapping file.
+
+        Returns:
+            self.layer_name_map is filled, returns nothing.
+
+        """
+        
+        with open(mapping_name,"r+") as lf:
+            for line in lf:
+                lid,lname = line.strip().split(" ")
+                self.layer_name_map[lname] = lid
+    
+    def load_network_activity(self,activity_file):
+
+        """Network activity loader
+
+        Args:
+            param1: The name of the generic activity file -> 65432 61888 1377688175 RE
+, n1 n2 timestamp and layer name. Note that layer node mappings MUST be loaded in order to map nodes to activity properly.
+
+        Returns:
+           self.activity is filled.
+
+        """
+        
+        self.activity = parsers.load_edge_activity_raw(activity_file,self.layer_name_map)
+
+                
     def to_sparse_matrix(self,replace_core=False,return_only=False):
 
         """

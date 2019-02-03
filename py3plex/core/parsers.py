@@ -228,19 +228,18 @@ def parse_multiplex_edges(input_name,directed):
         
     else:
         G = nx.MultiGraph()
-    
-    with open(input_name) as IN:
-        for line in IN:
-            if line.split()[0] != "#":
                 
-                ## layerID nodeID nodeID weight
-                layer, node_first, node_second, weight = line.strip().split()
+    with open(input_name) as ef:
+        for line in ef:
+            parts = line.strip().split(" ")
+            node_first = parts[1]
+            node_second = parts[2]
+            layer = parts[0]
+            weight = parts[3]
+            G.add_node((node_first,str(layer)))
+            G.add_node((node_second,str(layer)))
+            G.add_edge((node_first,str(layer)),(node_second,str(layer)),key="default",weight=weight,type="default")
 
-                ## construct the network                
-                G.add_node(node_first,type=str(layer))
-                G.add_node(node_second,type=str(layer))               
-                G.add_edge(node_first,node_second,key="default",weight=weight,type="default")
-                
     return (G,None)
 
 def parse_multiplex_folder(input_folder,directed):
@@ -295,6 +294,9 @@ def parse_multiplex_folder(input_folder,directed):
 ## main parser method
 def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,network_type="multilayer"):
 
+    '''
+    A wrapper method for available parsers!
+    '''
 
     time_series = None
     if f_type == "gml":
@@ -342,6 +344,20 @@ def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,
     
     else:
         raise Exception("Please, specify heterogeneous network type.")
+
+def load_edge_activity_raw(activity_file,layer_mappings):
+
+    '''
+    Basic parser for loading generic activity files. Here, temporal edges are given as tuples -> this can be easily transformed for example into a pandas dataframe!
+    '''
+    
+    time_series_tuples = defaultdict(list)                
+    with open(activity_file,"r+") as acf:
+        for line in acf:
+            n1,n2,timestamp,layer_name = line.strip().split(" ")
+            time_series_tuples[timestamp].append((n1,n2,layer_mappings[layer_name]))
+    return time_series_tuples
+
     
 def load_edge_activity_file(fname,layer_mapping=None):
 
