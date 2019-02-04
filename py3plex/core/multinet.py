@@ -334,6 +334,22 @@ class multi_layer_network:
         for k,v in edge_object.items():
             outgraph.add_edge(k[0][0],k[1][0],weight=v)
         return outgraph
+
+
+    def split_to_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
+
+        """ A method for obtaining layerwise distributions """
+        
+        if self.verbose:
+            self.monitor("Network splitting in progress")
+
+        ## multilayer visualization
+        if style == "diagonal":
+            self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization(self.core_network,compute_layouts=compute_layouts,layout_parameters=layout_parameters,verbose=verbose)
+
+        ## hairball visualization
+        if style == "hairball":
+            self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization_hairball(self.core_network,compute_layouts=True)
     
     def get_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
 

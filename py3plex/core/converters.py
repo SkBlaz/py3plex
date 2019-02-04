@@ -17,7 +17,8 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
         tuple: (names,networks,multiedges)
 
     """
-    
+    if verbose:
+        print("Preparing..")
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
         try:
@@ -26,7 +27,10 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
             print(err)
         
     networks = {layer_name : multinet.subgraph(v) for layer_name,v in layers.items()}
-    
+
+    if verbose:
+        print("Mapped layer names. Computing layout.")
+        
     for layer, network in networks.items():
         
         if compute_layouts == "force":
@@ -49,7 +53,8 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
                 coordinates = coordinates/2
             
             node[1]['pos'] = coordinates
-    
+    if verbose:
+        print("Finished with layout..")
     inverse_mapping = {}
     layouts = []
 
