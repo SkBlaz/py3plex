@@ -53,7 +53,7 @@ class multi_layer_network:
             return self.core_network[i][j]
         pass
         
-    def load_network(self,input_file=None, directed=False, input_type="gml"):
+    def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
 
         """Main network loader
 
@@ -73,7 +73,7 @@ class multi_layer_network:
         self.input_type = input_type
         self.directed = directed
         self.temporal_edges = None
-
+        self.label_delimiter = label_delimiter
         if input_type == "sparse":
             self.sparse_enabled = True
             
