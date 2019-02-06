@@ -232,8 +232,8 @@ def parse_multiplex_edges(input_name,directed):
     with open(input_name) as ef:
         for line in ef:
             parts = line.strip().split(" ")
-            node_first = parts[1]
-            node_second = parts[2]
+            node_first = str(parts[1])
+            node_second = str(parts[2])
             layer = parts[0]
             weight = parts[3]
             G.add_node((node_first,str(layer)))
@@ -267,7 +267,10 @@ def parse_multiplex_folder(input_folder,directed):
             with open(ac) as acf:
                 for line in acf:
                     n1,n2,timestamp,layer_name = line.strip().split(" ")
-                    time_series_tuples[timestamp].append((n1,n2,layer_dict[layer_name]))
+                    time_series_tuples.append({"node_first":1,"node_second":n2,"layer":layer_dict[layer_name],"timestamp":timestamp})
+
+    time_series_tuples = pd.DataFrame()
+    time_series_tuples = time_series_tuples.appen(time_series_tuples,ignore_index=True)
 
 #    nodes_file = [x for x in names if "nodes.txt" in x]    
     
@@ -351,12 +354,15 @@ def load_edge_activity_raw(activity_file,layer_mappings):
     Basic parser for loading generic activity files. Here, temporal edges are given as tuples -> this can be easily transformed for example into a pandas dataframe!
     '''
     
-    time_series_tuples = defaultdict(list)                
+    time_series_tuples = []
+    outframe = pd.DataFrame()
     with open(activity_file,"r+") as acf:
         for line in acf:
             n1,n2,timestamp,layer_name = line.strip().split(" ")
-            time_series_tuples[timestamp].append((n1,n2,layer_mappings[layer_name]))
-    return time_series_tuples
+            
+            time_series_tuples.append({"node_first":n1,"node_second":n2,"layer_name":layer_mappings[layer_name],"timestamp":timestamp})
+    outframe = outframe.append(time_series_tuples,ignore_index=True)
+    return outframe
 
     
 def load_edge_activity_file(fname,layer_mapping=None):

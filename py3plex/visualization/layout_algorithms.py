@@ -65,7 +65,7 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
 
 def compute_random_layout(g):
     coordinates = tuple(np.random.rand(1,2))
-    pos = {n : tuple(np.random.rand(1,2).tolist()[0]) for n in g.nodes()}
+    pos = {n : np.array(tuple(np.random.rand(1,2).tolist()[0])) for n in g.nodes()}
     return pos
 
 if __name__ == "__main__":

@@ -7,7 +7,6 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 ![Multilayer networks](example_images/biomine_community.png)
 
-
 ## Getting Started
 
 To get started, please view **examples** folder. Extensive documentation is available at: [docs](https://skblaz.github.io/Py3plex)
@@ -34,8 +33,10 @@ pip3 install py3plex
 ```
 
 For any errors, please open an issue!
+### Example uses and tutorials
+Currently, there are more than 20 different uses, showcasing Py3plex's functionality; all accessible in the examples/ folder!
 
-### Loading a network
+### First steps
 A network can be loaded by either using one of the many available parsers (below), or constructed using our functional API. Examples of loading the network:
 (See example files in the examples/ folder!)
 First, simple edgelists:

@@ -34,7 +34,8 @@ class multi_layer_network:
 
         """
         ## initialize the class
-        self.layer_name_map = {}        
+        self.layer_name_map = {}
+        self.layer_inverse_name_map = {}
         self.core_network = None
         self.directed = directed
         self.dummy_layer = dummy_layer
@@ -105,6 +106,7 @@ class multi_layer_network:
             for line in lf:
                 lid,lname = line.strip().split(" ")
                 self.layer_name_map[lname] = lid
+                self.layer_inverse_name_map[lid] = lname
     
     def load_network_activity(self,activity_file):
 
@@ -120,6 +122,7 @@ class multi_layer_network:
         """
         
         self.activity = parsers.load_edge_activity_raw(activity_file,self.layer_name_map)
+        self.activity = self.activity.sort_values(by=['timestamp'])
 
                 
     def to_sparse_matrix(self,replace_core=False,return_only=False):
@@ -336,6 +339,35 @@ class multi_layer_network:
         return outgraph
 
 
+    def remove_layer_edges(self):
+
+        if self.separate_layers is not None:
+            self.tmp_layers = []
+            for graph in self.separate_layers:
+                empty_graph = graph.copy()
+                empty_graph.remove_edges_from(graph.edges())
+                assert len(empty_graph.edges()) == 0
+                self.tmp_layers.append(empty_graph)                
+        else:
+            self.monitor("Please,first call your_object.split_to_layers() method!")
+        
+        self.monitor("Finished edge cleaning..")
+
+    def fill_tmp_with_edges(self,edge_df):
+                        
+        node_first_names = edge_df.node_first.values
+        node_second_names = edge_df.node_second.values
+        layer_names = edge_df.layer_name.values
+        layer_edges = defaultdict(list)
+        for enx, en in enumerate(node_first_names):
+            edge = ((str(node_first_names[enx]),str(layer_names[enx])),(str(node_second_names[enx]),str(layer_names[enx])))
+            layer_edges[layer_names[enx]].append(edge)
+
+        ## fill layer by layer
+        for enx,layer in enumerate(self.layer_names):
+            layer_ed = layer_edges[layer]
+            self.tmp_layers[enx].add_edges_from(layer_ed)
+        
     def split_to_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
 
         """ A method for obtaining layerwise distributions """
@@ -346,6 +378,7 @@ class multi_layer_network:
         ## multilayer visualization
         if style == "diagonal":
             self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization(self.core_network,compute_layouts=compute_layouts,layout_parameters=layout_parameters,verbose=verbose)
+            self.real_layer_names = [self.layer_inverse_name_map[lid] for lid in self.layer_names]
 
         ## hairball visualization
         if style == "hairball":
