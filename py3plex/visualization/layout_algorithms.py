@@ -59,8 +59,10 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
         else:
             pos = nx.spring_layout(g)
         print("Using standard layout algorithm, fa2 not present on the system.")
-        
+
+    
     ## return positions
+    
     return pos
 
 def compute_random_layout(g):

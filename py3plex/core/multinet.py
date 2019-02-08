@@ -364,11 +364,11 @@ class multi_layer_network:
             layer_edges[layer_names[enx]].append(edge)
 
         ## fill layer by layer
-        for enx,layer in enumerate(self.layer_names):
+        for enx, layer in enumerate(self.layer_names):
             layer_ed = layer_edges[layer]
             self.tmp_layers[enx].add_edges_from(layer_ed)
         
-    def split_to_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
+    def split_to_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True,multiplex=False):
 
         """ A method for obtaining layerwise distributions """
         
@@ -377,9 +377,8 @@ class multi_layer_network:
 
         ## multilayer visualization
         if style == "diagonal":
-            self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization(self.core_network,compute_layouts=compute_layouts,layout_parameters=layout_parameters,verbose=verbose)
+            self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization(self.core_network,compute_layouts=compute_layouts,layout_parameters=layout_parameters,verbose=verbose,multiplex=multiplex)
             self.real_layer_names = [self.layer_inverse_name_map[lid] for lid in self.layer_names]
-
         ## hairball visualization
         if style == "hairball":
             self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization_hairball(self.core_network,compute_layouts=True)

@@ -22,12 +22,13 @@ from . import colors # those are color ranges
 from . import bezier # those are bezier curves
 from . import polyfit
 from . layout_algorithms import *
+from . import drawing_machinery
 
 main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 import numpy as np
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=True,remove_isolated_nodes=True):
+def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=5):
 
     if background_color == "default":
         
@@ -65,6 +66,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     for network in network_list:
         if remove_isolated_nodes:
             isolates = list(nx.isolates(network))
+            network = network.copy()
             network.remove_nodes_from(isolates)
         
         if verbose:
@@ -77,50 +79,39 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
         for node in network.nodes(data=True):
             if 'pos' not in node[1]:
                 no_position.append(node[0])
-                R = 0.5
-#                crd = np.random.rand(1,2)[0]/2
-                a = np.random.rand(1)[0] * 2 * np.pi
-                r = R * np.sqrt(np.random.rand(1)[0])
-                x = r * np.cos(a)
-                y = r * np.sin(a)
-                random_position = np.array([x,y])
-                node[1]['pos'] = np.array([random_position[0],random_position[1]])
                 cntr+=1
             else:
                 all_positions.append(node[1]['pos'])
                 cntr_all+=1
-        
-        # mean_point = np.abs(np.mean(np.matrix(all_positions),axis=0))
-        # if verbose:
-        #     print(mean_point)
+
+        if len(no_position) > 0:
+            network.remove_nodes_from(no_position)
             
-        # for posi in no_position:
-        #     print(posi)
-        #     network.node[posi]['pos'] = mean_point
-            
-        print("No position for {}. Found position for {}.".format(cntr,cntr_all))
+       # print("No position for {}. Found position for {}.".format(cntr,cntr_all))
         
         positions = nx.get_node_attributes(network, 'pos')
-
+        cntr = 0
+        
         for position in positions:
+            if np.abs(positions[position][0]) > 1 or np.abs(positions[position][1]) > 1:
+                positions[position] = positions[position]/np.linalg.norm(positions[position])
             try:
                 positions[position][0] = positions[position][0] + 0.5 + start_location_network
                 positions[position][1] = positions[position][1] + 0.5 + start_location_network
             except Exception as es:
-                print(es)
-                
+                print(es,"err")
+
         ## this is the default delay for matplotlib canvas
         if labels != False:
             try:
                 shape_subplot.text(start_location_network+label_position,start_location_network-label_position, labels[color])
-            except:
-                pass
+            except Exception as es:
+                print(es)
         
         if background_shape == "rectangle":
             shape_subplot.add_patch(Rectangle(
                 (start_location_background, start_location_background), rectanglex, rectangley,
-                alpha=alphalevel, linestyle="dotted", fill=True,facecolor=facecolor_list_background[color]
-            ))
+                alpha=alphalevel, linestyle="dotted", fill=True,facecolor=facecolor_list_background[color]))
 
         elif background_shape == "circle":
             shape_subplot.add_patch(Circle((start_location_background+shadow_size, start_location_background+shadow_size), circle_size, color=facecolor_list_background[color],alpha=alphalevel))
@@ -134,10 +125,13 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
             correction=10
         else:
             correction = 1
-        node_sizes = [(np.log(v) * nodesize)/correction if v > 400 else 1/correction for v in degrees.values()]
+        node_sizes = [(np.log(v) * nodesize)/correction if v > 400 else nodesize/correction for v in degrees.values()]
 
-#        positions = nx.get_node_attributes(network, 'pos')
-        nx.draw(network, positions, node_color=facecolor_list[color], with_labels=False,edge_size=5,node_size=node_sizes,arrowsize=arrowsize)
+        # cntr+=1
+        # for position in positions:
+        #     if cntr<15:
+        #         print(positions[position][0], positions[position][1])
+        drawing_machinery.draw(network, positions, node_color=facecolor_list[color], with_labels=False,edge_size=edge_size,node_size=node_sizes,arrowsize=arrowsize,ax=axis)
         color += 1
 
     if display == True:
