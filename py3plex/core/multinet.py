@@ -653,15 +653,14 @@ class multi_layer_network:
         if style == "diagonal":
             network_labels, graphs, multilinks = self.get_layers(style)
             if parameters_layers is None:                
-                ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,nodesize=6)
+                ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,nodesize=3,verbose=verbose)
             else:
                 ax = draw_multilayer_default(graphs,**parameters_layers)
 
             if parameters_multiedges is None:                
                 enum = 1
                 for edge_type,edges in tqdm.tqdm(multilinks.items()):
-                    if edge_type == "mpx":
-                        
+                    if edge_type == "mpx":                        
                         ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
                     else:
                         ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=0.4,resolution=resolution)                      

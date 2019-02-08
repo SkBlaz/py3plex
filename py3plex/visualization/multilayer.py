@@ -85,13 +85,14 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
                 cntr_all+=1
 
         if len(no_position) > 0:
+            network = network.copy()
             network.remove_nodes_from(no_position)
             
        # print("No position for {}. Found position for {}.".format(cntr,cntr_all))
         
         positions = nx.get_node_attributes(network, 'pos')
         cntr = 0
-        
+
         for position in positions:
             if np.abs(positions[position][0]) > 1 or np.abs(positions[position][1]) > 1:
                 positions[position] = positions[position]/np.linalg.norm(positions[position])
@@ -131,6 +132,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
         # for position in positions:
         #     if cntr<15:
         #         print(positions[position][0], positions[position][1])
+
         drawing_machinery.draw(network, positions, node_color=facecolor_list[color], with_labels=False,edge_size=edge_size,node_size=node_sizes,arrowsize=arrowsize,ax=axis)
         color += 1
 
@@ -147,11 +149,12 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
         for position in network_positions:
             for k,v in position.items():
                 global_positions[k]=v
-        
+
         for pair in multi_edge_tuple:
             try:
 
-                ## x0 x1, y0 y1                
+                ## x0 x1, y0 y1
+
                 p1 = [global_positions[pair[0]][0],global_positions[pair[1]][0]]
                 p2 = [global_positions[pair[0]][1],global_positions[pair[1]][1]]
                 if style == "line":
@@ -183,7 +186,8 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
                     pass
                 
             except Exception as err:
-                print(err)
+                pass
+#                print(err,"test")
             
         
 def generate_random_multiedges(network_list,random_edges,style="line",linepoints="-.",upper_first=2,lower_first=0,lower_second=2,inverse_tag=False,pheight=1):

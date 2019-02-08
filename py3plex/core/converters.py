@@ -65,10 +65,10 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
                 elif network.degree(node[0]) == 1:
                     coordinates = np.array(coordinates)/2
 
-            if np.abs(coordinates[0]) > 1 or np.abs(coordinates[1]) > 1:
-                coordinates = np.random.rand(1)*coordinates/np.linalg.norm(coordinates)
-                
-            node[1]['pos'] = coordinates
+                if np.abs(coordinates[0]) > 1 or np.abs(coordinates[1]) > 1:
+                    coordinates = np.random.rand(1)*coordinates/np.linalg.norm(coordinates)
+
+                node[1]['pos'] = coordinates
                 
     if verbose:
         print("Finished with layout..")
