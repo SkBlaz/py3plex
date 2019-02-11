@@ -40,7 +40,7 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
         for node in multinet.nodes(data=True):
             coordinates= tmp_pos[node[0]]
             if np.abs(coordinates[0]) > 1 or np.abs(coordinates[1]) > 1:
-                coordinates = np.random.rand(1)*coordinates/np.linalg.norm(coordinates)
+                coordinates = np.random.rand(2)
             node[1]['pos'] = coordinates
 
     else:

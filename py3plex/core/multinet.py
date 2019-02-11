@@ -379,6 +379,7 @@ class multi_layer_network:
         if style == "diagonal":
             self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization(self.core_network,compute_layouts=compute_layouts,layout_parameters=layout_parameters,verbose=verbose,multiplex=multiplex)
             self.real_layer_names = [self.layer_inverse_name_map[lid] for lid in self.layer_names]
+            
         ## hairball visualization
         if style == "hairball":
             self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization_hairball(self.core_network,compute_layouts=True)

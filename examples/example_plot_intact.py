@@ -14,7 +14,7 @@ from py3plex.algorithms.community_detection import community_wrapper as cw
 from collections import Counter
 
 ## call a specific n2v compiled binary
-#train_node2vec_embedding.call_node2vec_binary("../datasets/IntactEdgelistedges.txt","../datasets/test_embedding.emb",binary="../bin/node2vec",weighted=False)
+train_node2vec_embedding.call_node2vec_binary("../datasets/IntactEdgelistedges.txt","../datasets/test_embedding.emb",binary="../bin/node2vec",weighted=False)
 
 ## preprocess and check embedding -- for speed, install parallel tsne from https://github.com/DmitryUlyanov/Multicore-TSNE, py3plex knows how to use it.
 

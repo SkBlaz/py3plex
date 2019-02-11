@@ -116,7 +116,6 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
 
         elif background_shape == "circle":
             shape_subplot.add_patch(Circle((start_location_background+shadow_size, start_location_background+shadow_size), circle_size, color=facecolor_list_background[color],alpha=alphalevel))
-            pass
         else:
             pass
         

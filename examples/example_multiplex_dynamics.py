@@ -19,7 +19,7 @@ multilayer_network.load_network_activity("../multilayer_datasets/MLKing/MLKing20
 ## read correctly?
 multilayer_network.basic_stats()
 
-layout_parameters = {"iterations": 5}
+layout_parameters = {"iterations": 1}
 
 ## internally split to layers
 multilayer_network.split_to_layers(style="diagonal",compute_layouts="force",layout_parameters=layout_parameters,multiplex=True)
@@ -29,13 +29,19 @@ multilayer_network.remove_layer_edges() ## empty graphs are stored as self.empty
 
 ## do the time series splits
 
-n = 20000  #chunk row size
+n = 10000  #chunk row size
 partial_slices = [multilayer_network.activity[i:i+n] for i in range(0,multilayer_network.activity.shape[0],n)]
 
 for enx, time_slice in enumerate(partial_slices):
     
-    fig, ax = plt.subplots(num=enx, clear=True)
-    multilayer_network.fill_tmp_with_edges(time_slice)
-    draw_multilayer_default(multilayer_network.tmp_layers,display=False,background_shape="circle",labels=multilayer_network.real_layer_names,axis=ax,remove_isolated_nodes=True)
-    plt.savefig("../frames/"+str(enx)+"_frame.png")
-    multilayer_network.remove_layer_edges() ## clean the slice edges
+    #    fig, ax = plt.subplots(num=enx, clear=True)
+    if enx < 24:
+        plt.subplot(6,4,enx+1)
+        plt.title("Time slice: {}".format(enx))
+        multilayer_network.fill_tmp_with_edges(time_slice)
+        print(multilayer_network.real_layer_names)
+        draw_multilayer_default(multilayer_network.tmp_layers,labels=multilayer_network.real_layer_names,display=False,background_shape="circle",axis=None,remove_isolated_nodes=True,nodesize=0.05,alphalevel=0.4)
+        
+#        plt.savefig("../frames/"+str(enx)+"_frame.png")
+        multilayer_network.remove_layer_edges() ## clean the slice edges
+plt.show()
