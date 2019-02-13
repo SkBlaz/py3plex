@@ -300,6 +300,9 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     if layout_algorithm == "force":
         pos = compute_force_directed_layout(g,layout_parameters)
 
+    if layout_algorithm == "force_basic":
+        pos = compute_force_directed_layout(g,layout_parameters)
+
     ## random layout -- used for initialization of more complex algorithms
     elif layout_algorithm == "random":
         pos = compute_random_layout(g)

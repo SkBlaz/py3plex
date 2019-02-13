@@ -31,6 +31,9 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
         if compute_layouts == "force":
             tmp_pos = compute_force_directed_layout(multinet,layout_parameters,verbose=verbose)
             
+        if compute_layouts == "force_nx":
+            tmp_pos = compute_force_directed_layout(multinet,layout_parameters,verbose=verbose,forceImport=False)
+            
         elif compute_layouts == "random":
             tmp_pos = compute_random_layout(multinet)
 
