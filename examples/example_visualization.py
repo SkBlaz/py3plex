@@ -30,7 +30,6 @@ def plot_intact_embedding(num_it):
     layout_parameters = {"iterations":num_it}
     layout_parameters['pos'] = output_positions ## assign parameters
     network_colors, graph = multilayer_network.get_layers(style="hairball")
-
     partition = cw.louvain_communities(multilayer_network)
 
     ## select top n communities by size
@@ -45,7 +44,7 @@ def plot_intact_embedding(num_it):
 
     f = plt.figure()
     # gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0
-    hairball_plot(graph,network_colors,layout_algorithm="custom_coordinates",layout_parameters=layout_parameters,nodesize=0.02,alpha_channel=0.30,edge_width=0.001,scale_by_size=False)
+    hairball_plot(graph,network_colors,layout_algorithm="custom_coordinates_initial_force",layout_parameters=layout_parameters,nodesize=0.02,alpha_channel=0.30,edge_width=0.001,scale_by_size=False)
 
     f.savefig("../datasets/"+str(num_it)+"intact.png", bbox_inches='tight',dpi=300)
 

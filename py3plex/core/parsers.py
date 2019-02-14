@@ -1,6 +1,7 @@
 ## set of parsers used in Py3plex.
 
 import networkx as nx
+import json
 import itertools
 import glob
 import operator
@@ -89,6 +90,37 @@ def parse_gpickle_biomine(file_name,directed):
         l1,n1 = edge[0].split("_")[:2]
         l2,n2 = edge[1].split("_")[:2]
         G.add_edge((n1,l1),(n2,l2),type=edge[2]['key'])
+
+    return (G,None)
+
+
+def parse_detangler_json(file_path):
+
+    if directed:
+        G = nx.MultiDiGraph()
+    else:
+        G = nx.MultiGraph()
+    
+    with open(file_path) as f:
+        graph = json.load(f)
+
+    id2n = {}
+    for n in graph[u'nodes']:
+        id2n[n[u'id']] = n
+        layers = n[u'descriptors'].split(';')
+        node = n[u'label']
+        for l in layers:
+            node_dict = {'source':node, 'type':l}
+            G.add_node((node,l))
+        for c in itertools.combinations(layers, 2):
+            G.add_edge((node,c[0]),(node,c[1]))
+
+    for e in graph[u'links']:
+        s = id2n[e[u'source']][u'label']
+        t = id2n[e[u'target']][u'label']
+        layers = e[u'descriptors'].split(';')
+        for l in layers:
+            G.add_edge((s,l),(t,l))
 
     return (G,None)
 
@@ -323,6 +355,9 @@ def parse_network(input_name,f_type = "gml",directed=False,label_delimiter=None,
     elif f_type == "multiedgelist":
         parsed_network,labels = parse_multi_edgelist(input_name,directed)
 
+    elif f_type == "detangler_json":
+        parsed_network,labels = parse_detangler_json(input_name,directed)
+        
     elif f_type == "edgelist":
         parsed_network,labels = parse_simple_edgelist(input_name,directed)
     
