@@ -311,8 +311,6 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
         pos = layout_parameters['pos']
         
     elif layout_algorithm == "custom_coordinates_initial_force":
-        pos = layout_parameters['pos']
-        layout_parameters['initial_positions'] = pos
         pos = compute_force_directed_layout(g,layout_parameters)
         
     else:

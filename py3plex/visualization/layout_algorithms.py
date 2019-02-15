@@ -7,6 +7,7 @@ import itertools
 try:
     from .fa2 import ForceAtlas2
     forceImport = True
+    print("Imported BH algo")
 except:
     forceImport = False
 
@@ -36,9 +37,10 @@ def compute_force_directed_layout(g,layout_parameters=None,initial_positions=Non
                 verbose=verbose)
             
             if layout_parameters != None:
-                pos = forceatlas2.forceatlas2_networkx_layout(g, pos=initial_positions,**layout_parameters)
+                print("Using custom init positions!")
+                pos = forceatlas2.forceatlas2_networkx_layout(g,**layout_parameters)
             else:
-                pos = forceatlas2.forceatlas2_networkx_layout(g, pos=initial_positions)
+                pos = forceatlas2.forceatlas2_networkx_layout(g)
             
             norm = np.max([np.abs(x) for x in itertools.chain(zip(*pos.values()))])
             pos_pairs = [np.array([(a/norm),(b/norm)]) for a,b in pos.values()]
