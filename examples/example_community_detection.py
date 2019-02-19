@@ -9,61 +9,76 @@ from collections import Counter
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input_network",default="../datasets/cora.mat")
-parser.add_argument("--input_type",default="sparse")
-parser.add_argument("--iterations",default=200,type=int)
+parser.add_argument("--input_network", default="../datasets/cora.mat")
+parser.add_argument("--input_type", default="sparse")
+parser.add_argument("--iterations", default=200, type=int)
 args = parser.parse_args()
 
-network = multinet.multi_layer_network().load_network(input_file=args.input_network,directed=False,input_type=args.input_type) ## network and group objects must be present within the .mat object
+# network and group objects must be present within the .mat object
+network = multinet.multi_layer_network().load_network(input_file=args.input_network,
+                                                      directed=False,
+                                                      input_type=args.input_type)
 
-## convert to generic px format (n,l,n2,l2)---dummy layers are added
+# convert to generic px format (n,l,n2,l2)---dummy layers are added
 network.sparse_to_px()
 
-network.basic_stats() ## check core imports
+network.basic_stats()  # check core imports
 
 ##################################
-##### THE LOUVAIN ALGORITHM
+# THE LOUVAIN ALGORITHM
 ##################################
 
 partition = cw.louvain_communities(network)
 
-## select top n communities by size
+# select top n communities by size
 top_n = 15
 partition_counts = dict(Counter(partition.values()))
 top_n_communities = list(partition_counts.keys())[0:top_n]
 
-## assign node colors
+# assign node colors
 color_mappings = dict(zip(top_n_communities,[x for x in colors_default if x != "black"][0:top_n]))
 
 network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communities else "black" for x in network.get_nodes()]
 
-## visualize the network's communities!
-hairball_plot(network.core_network,color_list = network_colors,layered=False,layout_parameters={"iterations" : args.iterations},scale_by_size=True,layout_algorithm="force",legend=False)
+# visualize the network's communities!
+hairball_plot(network.core_network,
+              color_list=network_colors,
+              layered=False,
+              layout_parameters={"iterations": args.iterations},
+              scale_by_size=True,
+              layout_algorithm="force",
+              legend=False)
 plt.show()
 
 
 ##################################
-##### THE INFOMAP ALGORITHM WRAPPER EXAMPLE --- this supports multiplex networks directly
+# THE INFOMAP ALGORITHM WRAPPER EXAMPLE --- this supports multiplex networks directly
 ##################################
 
-partition = cw.infomap_communities(network,binary="../bin/Infomap",multiplex=False,verbose=True)
-## select top n communities by size
+partition = cw.infomap_communities(network, binary="../bin/Infomap", multiplex=False, verbose=True)
+# select top n communities by size
 top_n = 5
 partition_counts = dict(Counter(partition.values()))
 top_n_communities = list(partition_counts.keys())[0:top_n]
 
-## assign node colors
-color_mappings = dict(zip(top_n_communities,[x for x in colors_default if x != "black"][0:top_n]))
+# assign node colors
+color_mappings = dict(zip(top_n_communities, [x for x in colors_default if x != "black"][0:top_n]))
 
 network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communities else "black" for x in network.get_nodes()]
 
-## visualize the network's communities!
-hairball_plot(network.core_network,color_list = network_colors,layered=False,layout_parameters={"iterations" : args.iterations},scale_by_size=True,layout_algorithm="force",legend=False)
+# visualize the network's communities!
+hairball_plot(network.core_network,
+              color_list=network_colors,
+              layered=False,
+              layout_parameters={"iterations": args.iterations},
+              scale_by_size=True,
+              layout_algorithm="force",
+              legend=False)
 plt.show()
 
 ################################
-##### STORING the multiplex edgelist?
+# STORING the multiplex edgelist?
 ###############################
 
-## this creates a tmp_network.txt edgelist format suitable for use elsewhere + returns node mappings to real names.
+# this creates a tmp_network.txt edgelist format suitable for use elsewhere + returns node mappings to real names.
 inverse_node_map = network.serialize_to_edgelist(edgelist_file="tmp_network.txt")
