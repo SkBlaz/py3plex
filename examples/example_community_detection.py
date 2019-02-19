@@ -20,7 +20,8 @@ network = multinet.multi_layer_network().load_network(input_file=args.input_netw
                                                       input_type=args.input_type)
 
 # convert to generic px format (n,l,n2,l2)---dummy layers are added
-network.sparse_to_px()
+if args.input_type == 'sparse':
+    network.sparse_to_px()
 
 network.basic_stats()  # check core imports
 
@@ -29,7 +30,7 @@ network.basic_stats()  # check core imports
 ##################################
 
 partition = cw.louvain_communities(network)
-
+print(partition)
 # select top n communities by size
 top_n = 15
 partition_counts = dict(Counter(partition.values()))
@@ -39,7 +40,6 @@ top_n_communities = list(partition_counts.keys())[0:top_n]
 color_mappings = dict(zip(top_n_communities,[x for x in colors_default if x != "black"][0:top_n]))
 
 network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communities else "black" for x in network.get_nodes()]
-
 # visualize the network's communities!
 hairball_plot(network.core_network,
               color_list=network_colors,
