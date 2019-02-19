@@ -66,4 +66,4 @@ plt.show()
 ###############################
 
 ## this creates a tmp_network.txt edgelist format suitable for use elsewhere + returns node mappings to real names.
-inverse_node_map = network.serialize_to_edgelist(edgelist_file="tmp_network.txt",True)
+inverse_node_map = network.serialize_to_edgelist(edgelist_file="tmp_network.txt")

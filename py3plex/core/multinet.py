@@ -205,7 +205,7 @@ class multi_layer_network:
             self.core_network = nx.MultiDiGraph()
         else:
             self.core_network = nx.MultiGraph()
-            
+
         for edge in self.tmp_core_network.edges():
             self.add_edges({"source":edge[0],
                             "target":edge[1],
@@ -220,8 +220,8 @@ class multi_layer_network:
         
         if directed is None:
             directed = self.directed
-            
-        self.tmp_core_network = nx.from_scipy_sparse_matrix(self.core_network,directed)
+
+        self.core_network = nx.from_scipy_sparse_matrix(self.core_network,directed)
         self.add_dummy_layers()
         self.sparse_enabled = False
             
