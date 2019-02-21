@@ -13,10 +13,7 @@ except:
 
 import random
 
-try:
-    import matplotlib.pyplot as plt
-except:
-    pass
+import matplotlib.pyplot as plt
 
 from . import colors # those are color ranges
 from . import bezier # those are bezier curves
