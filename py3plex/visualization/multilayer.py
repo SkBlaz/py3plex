@@ -135,9 +135,9 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     if display == True:
         plt.show()
 
-def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1):
 
-    #indices are correct network positions
+def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1):
+    # indices are correct network positions
     if input_type == "nodes":
 
         network_positions = [nx.get_node_attributes(network, 'pos') for network in network_list]
@@ -253,13 +253,24 @@ def supra_adjacency_matrix_plot(matrix,display=False):
         plt.show()
     
 
-def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=None,scale_by_size=True,layout_algorithm="force_default",other_parameters=None,edge_width=0.01,alpha_channel=0.5,gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0):
-
-    if other_parameters is not None:
-        with_labels = other_parameters['labels']
-    else:
-        with_labels = False
-    
+def hairball_plot(g, color_list=None,
+                  display=False,
+                  nodesize=1,
+                  layout_parameters=None,
+                  legend=None,
+                  scale_by_size=True,
+                  layout_algorithm="force_default",
+                  edge_width=0.01,
+                  alpha_channel=0.5,
+                  labels=None,
+                  label_font_size=2):
+    # TODO: delete code below
+    # If something crashed, maybe uncomment this code, however, this is obsolete and should be deleted as soon as
+    # tests show it can be.
+    # if other_parameters is not None:
+    #     with_labels = other_parameters['labels']
+    # else:
+    #     with_labels = False
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
     potlabs = []
@@ -293,14 +304,11 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     else:
         nsizes = [nodesize for x in g.nodes()]
         
-    ## standard force -- directed layout
+    # standard force -- directed layout
     if layout_algorithm == "force":
         pos = compute_force_directed_layout(g,layout_parameters)
 
-    if layout_algorithm == "force_basic":
-        pos = compute_force_directed_layout(g,layout_parameters)
-
-    ## random layout -- used for initialization of more complex algorithms
+    # random layout -- used for initialization of more complex algorithms
     elif layout_algorithm == "random":
         pos = compute_random_layout(g)
 
@@ -308,17 +316,20 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
         pos = layout_parameters['pos']
         
     elif layout_algorithm == "custom_coordinates_initial_force":
-        pos = compute_force_directed_layout(g,layout_parameters)
-        
+        pos = compute_force_directed_layout(g, layout_parameters)
     else:
-        pos = compute_force_directed_layout(g,layout_parameters)
+        raise ValueError('Uknown layout algorithm: ' + str(layout_algorithm))
 
-    ec = nx.draw_networkx_edges(g, pos, alpha=alpha_channel,edge_color="black", width=edge_width,arrows=False)
-    nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=with_labels, node_size=nsizes,alpha=alpha_channel)
+    nx.draw_networkx_edges(g, pos, alpha=alpha_channel, edge_color="black", width=edge_width, arrows=False)
+    nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping, node_size=nsizes,alpha=alpha_channel)
+    if labels is not None and labels:
+        if type(labels) == bool:
+            nx.draw_networkx_labels(g, pos, font_size=label_font_size)
+
     plt.axis('off')
 
     #  add legend
-    if legend is not None:
+    if legend is not None and legend:
         # TODO: legacy code - to je stara legenda, ko bodo testi bi js to zbrisal.
         if type(legend) == bool:
             markers = [plt.Line2D([0, 0], [0, 0], color=color_mapping[item], marker='o', linestyle='') for item in
@@ -333,12 +344,13 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     if display:
         plt.show()
 
+
 if __name__ == "__main__":
 
     x = generate_random_networks(4)
-    draw_multilayer_default(x,display=False,background_shape="circle")
-    # generate_random_multiedges(x,12,style="piramidal")    
-    generate_random_multiedges(x,12,style="curve2_bezier")    
+    draw_multilayer_default(x, display=False, background_shape="circle")
+    # generate_random_multiedges(x, 12, style="piramidal")
+    generate_random_multiedges(x, 12, style="curve2_bezier")
     # network 1's 4 to network 6's 3 etc..    
     # mel = [((1,1),(5,1))]
     # draw_multiedges(x,mel,input_type="tuple")
