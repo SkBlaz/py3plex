@@ -253,7 +253,7 @@ def supra_adjacency_matrix_plot(matrix,display=False):
         plt.show()
     
 
-def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=False,scale_by_size=True,layout_algorithm="force_default",other_parameters=None,edge_width=0.01,alpha_channel=0.5,gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0):
+def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout_parameters = None,legend=None,scale_by_size=True,layout_algorithm="force_default",other_parameters=None,edge_width=0.01,alpha_channel=0.5,gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0):
 
     if other_parameters is not None:
         with_labels = other_parameters['labels']
@@ -317,12 +317,19 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
     nc = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping,with_labels=with_labels, node_size=nsizes,alpha=alpha_channel)
     plt.axis('off')
 
-    ## add legend
-    markers = [plt.Line2D([0,0],[0,0], color=color_mapping[item], marker='o', linestyle='') for item in list(unique_colors)]
-    
-    if legend:
-        plt.legend(markers, list(unique_colors), numpoints=1,fontsize = 'medium')
-    
+    #  add legend
+    if legend is not None:
+        # TODO: legacy code - to je stara legenda, ko bodo testi bi js to zbrisal.
+        if type(legend) == bool:
+            markers = [plt.Line2D([0, 0], [0, 0], color=color_mapping[item], marker='o', linestyle='') for item in
+                       list(unique_colors)]
+            plt.legend(markers, range(len(list(unique_colors))), numpoints=1,fontsize = 'medium')
+        # in bi ostal samo tale del:
+        else:
+            # the assumption is that legend[color] is the name of the group, represented by the color
+            legend_colors = list(legend.keys())
+            markers = [plt.Line2D([0, 0], [0, 0], color=key, marker='o', linestyle='') for key in legend_colors]
+            plt.legend(markers, [legend[color] for color in legend_colors], numpoints=1, fontsize='medium')
     if display:
         plt.show()
 
