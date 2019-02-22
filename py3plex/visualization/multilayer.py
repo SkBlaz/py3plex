@@ -282,8 +282,8 @@ def hairball_plot(g,color_list=None,display=False,layered=True,nodesize=1,layout
         print("Creating color mappings..")
         unique_colors = np.unique(color_list)
         color_mapping= dict(zip(list(unique_colors), colors.all_color_names))
-#        final_color_mapping = color_list
-        final_color_mapping = ["black"]*len(nodes)
+        final_color_mapping = color_list
+        # final_color_mapping = ["black"]*len(nodes)
     
     print("plotting..")
 
