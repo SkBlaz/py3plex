@@ -26,7 +26,7 @@ def center(width, n):
     return free_left, free_right
     
 
-def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, output_figure_file):
+def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, output_figure_file,fontsize=10):
     """
     Draws critical distance diagram for Nemenyi or Bonferroni-Dunn post-hoc test.
     The diagram is shown if output_figure_file is None, and saved otherwise
@@ -61,8 +61,8 @@ def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, outp
     names_lines_space = 0.12
     first_level_height = 0.2
     critical_distance_offset = -0.9   # position of the critical distance under the main plot
-    end_of_line_manipulator = 3       # shorten the horizontal part of the line by that much
-    font_size = 20
+    end_of_line_manipulator = 1       # shorten the horizontal part of the line by that much
+    font_size = fontsize
     # latex fonts
     fontProperties = {'family': 'serif', 'serif': ['Computer Modern Roman'],
         'weight' : 'normal', 'size': font_size}
@@ -208,8 +208,8 @@ def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, outp
             fig_folder = output_figure_file[:folder_end]
             if not exists(fig_folder):
                 makedirs(fig_folder)
-        fig.tight_layout()
-        fig.savefig(output_figure_file)
+        fig.tight_layout()        
+        fig.savefig(output_figure_file,bbox_inches='tight', pad_inches = 0, dpi=1200)
         plt.clf()
         print("Plot saved to", output_figure_file)
     else:
@@ -269,13 +269,12 @@ results = []
 #     print(message)
 
  
-def plot_critical_distance(fname,groupby=['dataset', 'setting'],groupby_target='macro_F',outfile="./micro_cd.pdf",aggregator = "mean"):
+def plot_critical_distance(fname,groupby=['dataset', 'setting'],groupby_target='macro_F',outfile="./micro_cd.pdf",aggregator = "mean",fontsize=10):
 
     import Orange
     import matplotlib.pyplot as plt
     from collections import defaultdict
     import operator    
-
 
     if aggregator == "mean":
         rkx = fname.groupby(groupby)[groupby_target].mean()
@@ -300,4 +299,4 @@ def plot_critical_distance(fname,groupby=['dataset', 'setting'],groupby_target='
     avranks = list(clf_score.values())
     pairs = list(zip(names,avranks))
     cd = Orange.evaluation.compute_CD(avranks[0:(len(avranks)-1)], comparisons, alpha="0.05")
-    diagram(pairs,cd,None,outfile)
+    diagram(pairs,cd,None,outfile,fontsize=fontsize)
