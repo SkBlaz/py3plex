@@ -30,7 +30,7 @@ network.basic_stats()  # check core imports
 ##################################
 
 partition = cw.louvain_communities(network)
-print(partition)
+#print(partition)
 # select top n communities by size
 top_n = 15
 partition_counts = dict(Counter(partition.values()))
@@ -43,7 +43,6 @@ network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communit
 # visualize the network's communities!
 hairball_plot(network.core_network,
               color_list=network_colors,
-              layered=False,
               layout_parameters={"iterations": args.iterations},
               scale_by_size=True,
               layout_algorithm="force",
@@ -69,7 +68,6 @@ network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communit
 # visualize the network's communities!
 hairball_plot(network.core_network,
               color_list=network_colors,
-              layered=False,
               layout_parameters={"iterations": args.iterations},
               scale_by_size=True,
               layout_algorithm="force",
@@ -78,7 +76,7 @@ plt.show()
 
 ################################
 # STORING the multiplex edgelist?
-###############################
+################################
 
 # this creates a tmp_network.txt edgelist format suitable for use elsewhere + returns node mappings to real names.
-inverse_node_map = network.serialize_to_edgelist(edgelist_file="tmp_network.txt")
+#inverse_node_map = network.serialize_to_edgelist(edgelist_file="tmp_network.txt")

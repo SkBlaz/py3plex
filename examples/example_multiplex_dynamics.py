@@ -49,7 +49,7 @@ for enx, time_slice in enumerate(partial_slices):
         for k,v in num_edges_int.items():
             num_edges[k].append(v)
         multilayer_network.fill_tmp_with_edges(time_slice)
-        draw_multilayer_default(multilayer_network.tmp_layers,labels=multilayer_network.real_layer_names,display=False,background_shape="circle",axis=None,remove_isolated_nodes=True,nodesize=0.005,alphalevel=0.4)
+        draw_multilayer_default(multilayer_network.tmp_layers,labels=multilayer_network.real_layer_names,display=False,background_shape="circle",axis=None,remove_isolated_nodes=True,nodesize=0.005,alphalevel=0.1)
         multilayer_network.remove_layer_edges() ## clean the slice edges
 plt.show()
 #plt.savefig("../images/temporal.png",dpi=300)

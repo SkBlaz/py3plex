@@ -12,7 +12,7 @@ from collections import defaultdict, Counter
 from ..term_parsers import parse_gaf_file,read_termlist,read_topology_mappings,read_uniprot_GO
 import pandas as pd
 
-def calculate_pval(term):
+def calculate_pval(term,alternative="two-sided"):
 
 #    _partition_name,_partition_entries,term,_map_term_database,_number_of_all_annotated
     ## this calculates p value
@@ -32,7 +32,7 @@ def calculate_pval(term):
 
     query_counts = [inside_local, query_term_count_population]
     pop_counts = [outside_local, _number_of_all_annotated-query_term_count_population]
-    p_value = fisher_exact([query_counts,pop_counts])[1]
+    p_value = fisher_exact([query_counts,pop_counts],alternative=alternative)[1]
     return p_value
 
 def multiple_test_correction(input_dataset):
@@ -59,10 +59,10 @@ def multiple_test_correction(input_dataset):
                 print (key,term,significant,tmp,pval)
 
 def parallel_enrichment(term):
-    pval = calculate_pval(_term_database[term])
+    pval = calculate_pval(_term_database[term],alternative=_alternative)
     return {'observation' : _partition_name,'term' : _term_database[term][0],'pval' : pval}
 
-def compute_enrichment(term_dataset, term_database, topology_map, all_counts, whole_term_list=False,pvalue=0.05,multitest_method="fdr_bh"):
+def compute_enrichment(term_dataset, term_database, topology_map, all_counts, whole_term_list=False,pvalue=0.05,multitest_method="fdr_bh",alternative="two-sided"):
 
     if whole_term_list:
         tvals = set.union(*[x for x in topology_map.values()])
@@ -70,11 +70,13 @@ def compute_enrichment(term_dataset, term_database, topology_map, all_counts, wh
         topology_map['1_community'] = tvals
     
     global _partition_name
+    global _alternative
     global _partition_entries
     global _term_database
     global _map_term_database
     global _number_of_all_annotated
 
+    _alternative = alternative
     _number_of_all_annotated = all_counts
     _term_database = {en : x for en, x in enumerate(term_database.items())} ## database of all annotations
     
@@ -129,7 +131,7 @@ def fet_enrichment_generic(term_dataset,term_database,all_counts,topology_map):
     significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False)
     return significant_results
 
-def fet_enrichment_terms(partition_mappings,annotation_mappings):
+def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two-sided"):
 
     ## 1.) read the database.
     term_dataset, term_database, all_counts =  read_uniprot_GO(annotation_mappings)
@@ -138,7 +140,7 @@ def fet_enrichment_terms(partition_mappings,annotation_mappings):
     topology_map = read_topology_mappings(partition_mappings)
 
     ## 3.) calculate p-vals.
-    significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False)
+    significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False,alternative=alternative)
 
     return significant_results
 
