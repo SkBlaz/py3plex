@@ -32,7 +32,7 @@ network.basic_stats()  # check core imports
 partition = cw.louvain_communities(network)
 #print(partition)
 # select top n communities by size
-top_n = 15
+top_n = 10
 partition_counts = dict(Counter(partition.values()))
 top_n_communities = list(partition_counts.keys())[0:top_n]
 
