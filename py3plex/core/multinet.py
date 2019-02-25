@@ -366,7 +366,7 @@ class multi_layer_network:
         ## fill layer by layer
         for enx, layer in enumerate(self.layer_names):
             layer_ed = layer_edges[layer]
-            self.tmp_layers[enx].add_edges_from(layer_ed)
+            self.tmp_layers[enx].add_edges_from(layer_ed)            
         
     def split_to_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True,multiplex=False):
 

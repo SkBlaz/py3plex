@@ -26,6 +26,7 @@ def py3plex_visualization(network):
 def pymnet_visualization(network):
     start = time.time()    
     fig = draw(network)
+    plt.show()
     end = time.time()
     plt.clf()
     return (end - start)

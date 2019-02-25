@@ -25,7 +25,7 @@ main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 import numpy as np
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=5):
+def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1):
 
     if background_color == "default":
         
@@ -58,7 +58,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
     start_location_background = 0
     color = 0
     shadow_size = 0.5
-    circle_size = 1.05
+    circle_size = 1.07
 
     for network in network_list:
         if remove_isolated_nodes:
@@ -122,7 +122,8 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
             correction=10
         else:
             correction = 1
-        node_sizes = [(np.log(v) * nodesize)/correction if v > 400 else nodesize/correction for v in degrees.values()]
+        node_sizes = [nodesize for v in degrees.values()]
+#        node_sizes = [(np.log(v) * nodesize)/correction if v > 400 else nodesize/correction for v in degrees.values()]
 
         # cntr+=1
         # for position in positions:
