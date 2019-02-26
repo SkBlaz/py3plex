@@ -67,7 +67,7 @@ def sum(X,v):
         data = X.data[start:stop]
         data -= v[row]
 
-def NoRC_communities_main(input_graph,clustering_scheme="hierarchical",max_com_num=100,verbose=False,sparisfy=True,parallel_step=6,prob_threshold=0.001, community_range = [1,3,5,7,11,20,40,50,100,200,300],fine_range=3):
+def NoRC_communities_main(input_graph,clustering_scheme="hierarchical",max_com_num=100,verbose=False,sparisfy=True,parallel_step=6,prob_threshold=0.0005, community_range = [1,3,5,7,11,20,40,50,100,200,300],fine_range=3,lag_threshold=10):
     if verbose:
         print("Walking..")
     global _RANK_GRAPH
@@ -95,6 +95,7 @@ def NoRC_communities_main(input_graph,clustering_scheme="hierarchical",max_com_n
         if verbose:
             print("Doing kmeans search")
         nopt = 0
+        lag_num = 0
         for nclust in tqdm.tqdm(community_range):
             dx_hc = defaultdict(list)
             clustering_algorithm = MiniBatchKMeans(n_clusters=nclust)
@@ -104,6 +105,7 @@ def NoRC_communities_main(input_graph,clustering_scheme="hierarchical",max_com_n
             partitions = dx_hc.values()
             mx = modularity(A, partitions, weight='weight')
             if mx > mx_opt:
+                lag_num = 0
                 if verbose:
                     print("Improved modularity: {}, found {} communities.".format(mx,len(partitions)))
                 mx_opt = mx
@@ -112,6 +114,13 @@ def NoRC_communities_main(input_graph,clustering_scheme="hierarchical",max_com_n
                 if mx == 1:
                     nopt = nclust
                     return opt_clust
+            else:
+                lag_num+=1
+                if verbose:
+                    print("No improvement for {} iterations.".format(lag_num))
+                    
+                if lag_num > lag_threshold:
+                    break                    
                 
         ## fine grained search
         if verbose:

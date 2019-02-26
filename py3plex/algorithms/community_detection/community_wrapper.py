@@ -78,7 +78,7 @@ def parse_infomap(outfile):
     return outmap
 
             
-def louvain_communities(network):
+def louvain_communities(network,output="mapping"):
 
     try:
         network = network.core_network.to_undirected()
@@ -86,20 +86,26 @@ def louvain_communities(network):
     except:
         pass
 
-    return best_partition(network)
+    partition = best_partition(network)
+    if output == "partition":
+        dx_hc = defaultdict(list)
+        for a,b in partition.items():
+            dx_hc[b].append(a)
+        return dx_hc    
+    return partition
 
 
 def NoRC_communities(network,verbose=True,clustering_scheme="kmeans",output="mapping",prob_threshold = 0.001,parallel_step=8, community_range = [1,3,5,7,11,20,40,50,100,200,300],fine_range=3):
 
     try:
         network = network.core_network
-        
     except:
         pass
     
-    communities1 = NoRC_communities_main(network,verbose=True,clustering_scheme=clustering_scheme,prob_threshold=prob_threshold,parallel_step=parallel_step, community_range = community_range,fine_range=fine_range)
+    partition = NoRC_communities_main(network,verbose=True,clustering_scheme=clustering_scheme,prob_threshold=prob_threshold,parallel_step=parallel_step, community_range = community_range,fine_range=fine_range)
 
     if output == "mapping":
-        return communities1
+        ## todo
+        return None
     else:
-        return communities1
+        return partition
