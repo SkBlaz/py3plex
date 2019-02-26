@@ -5,9 +5,21 @@ import numpy as np # this is used for vectorized bezier computation
 from scipy.interpolate import CubicSpline
 
 
-def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2, linemode="both",resolution=0.1):
-    if mode == "quadratic":
+def bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='upper'):
+    if mode == 'upper':
+        midpoint_y = mp_y * path_height
+    elif mode == 'bottom':
+        midpoint_y = mp_y * (2 - path_height)
+    else:
+        raise ValueError('Unknown mode in dfy calculation (value must be one of \'upper\', \'bottom\'')
+    x_t = [x0, midpoint_x, x1]
+    y_t = [y0, midpoint_y, y1]
+    cs = CubicSpline(x_t, y_t)
+    return cs(dfx)
 
+
+def draw_bezier(total_size, p1, p2, mode="quadratic", inversion=False, path_height=2, linemode="both", resolution=0.1):
+    if mode == "quadratic":
         if p1[0] < p1[1]:
             x0, x1 = p1
             y0, y1 = p2
@@ -29,38 +41,46 @@ def draw_bezier(total_size,p1,p2,mode="quadratic",inversion=False,path_height=2,
             r2 = np.round(y1, 0)
             try:                        
                 if r1 > y0 and r2 > y1:
-                    midpoint_y = mp_y*path_height
-                    x_t = [x0, midpoint_x, x1]
-                    y_t = [y0, midpoint_y, y1]
-                    cs = CubicSpline(x_t, y_t)
-                    dfy = cs(dfx)        
+                    dfy = bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='upper')
+                    # midpoint_y = mp_y*path_height
+                    # x_t = [x0, midpoint_x, x1]
+                    # y_t = [y0, midpoint_y, y1]
+                    # cs = CubicSpline(x_t, y_t)
+                    # dfy = cs(dfx)
                 else:
-                    midpoint_y = 1/(mp_y*path_height)
-                    x_t = [x0, midpoint_x, x1]
-                    y_t = [y0, midpoint_y, y1]
-                    cs = CubicSpline(x_t, y_t)
-                    dfy = cs(dfx)
+                    dfy = bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='bottom')
+                    # midpoint_y = 1/(mp_y*path_height)
+                    # midpoint_y = mp_y - path_height
+                    # x_t = [x0, midpoint_x, x1]
+                    # y_t = [y0, midpoint_y, y1]
+                    # cs = CubicSpline(x_t, y_t)
+                    # dfy = cs(dfx)
             except Exception as err:
                 #TODO: takle exception catching ni ok za koncno verzijo...
                 print([x0, midpoint_x, x1], [y0, midpoint_y, y1])
 
         elif linemode == "upper":
             try:
-                midpoint_y = mp_y*path_height
-                x_t = [x0, midpoint_x, x1]
-                y_t = [y0, midpoint_y, y1]
-                cs = CubicSpline(x_t, y_t)
-                dfy = cs(dfx)        
+                dfy = bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='upper')
+                # midpoint_y = mp_y*path_height
+                # midpoint_y = mp_y + path_height
+                # x_t = [x0, midpoint_x, x1]
+                # y_t = [y0, midpoint_y, y1]
+                # cs = CubicSpline(x_t, y_t)
+                # dfy = cs(dfx)
             except Exception as err:
                 print([x0, midpoint_x, x1],[y0,midpoint_y,y1])
             
         elif linemode == "bottom":
             try:
-                midpoint_y = 1/(mp_y*path_height)
-                x_t = [x0, midpoint_x, x1]
-                y_t = [y0, midpoint_y, y1]
-                cs = CubicSpline(x_t, y_t)
-                dfy = cs(dfx)
+                dfy = bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='bottom')
+                # midpoint_y = mp_y*path_height
+                # midpoint_y = 1/(mp_y*path_height)
+                # midpoint_y = mp_y - path_height
+                # x_t = [x0, midpoint_x, x1]
+                # y_t = [y0, midpoint_y, y1]
+                # cs = CubicSpline(x_t, y_t)
+                # dfy = cs(dfx)
             except Exception as err:
                 print([x0, midpoint_x, x1], [y0, midpoint_y, y1])
 
