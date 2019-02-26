@@ -21,11 +21,11 @@ for edge_type,edges in multilinks.items():
     #    network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1
     print(edge_type)
     if edge_type == "refers_to":
-        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="--",linecolor="red",curve_height=5,linmod="upper",linewidth=0.4)
+        draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="--",linecolor="lightblue",curve_height=5,linmod="upper",linewidth=0.4)
     elif edge_type == "refers_to":
-        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints=":",linecolor="black",curve_height=5,linmod="upper",linewidth=0.3)
+        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints=":",linecolor="green",curve_height=5,linmod="upper",linewidth=0.3)
     elif edge_type == "belongs_to":
-        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints=":",linecolor="black",curve_height=5,linmod="upper",linewidth=0.4)
+        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints=":",linecolor="red",curve_height=5,linmod="upper",linewidth=0.4)
     elif edge_type == "codes_for":
         draw_multiedges(graphs,edges,alphachannel=0.2,linepoints=":",linecolor="orange",curve_height=5,linmod="upper",linewidth=0.4)
     else:
