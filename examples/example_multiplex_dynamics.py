@@ -31,14 +31,14 @@ multilayer_network.remove_layer_edges() ## empty graphs are stored as self.empty
 
 ## do the time series splits
 
-n = 10000  #chunk row size
+n = 1000  #chunk row size
 partial_slices = [multilayer_network.activity[i:i+n] for i in range(0,multilayer_network.activity.shape[0],n)]
 
 num_edges = defaultdict(list)
 for enx, time_slice in enumerate(partial_slices):
     if enx < 12:
         plt.subplot(4,3,enx+1)
-        plt.title("Time slice: {}".format(enx))        
+        plt.title("Time slice: {}".format(enx+1))
         num_edges_int = dict()
         for enx, row in time_slice.iterrows():
             real_name = multilayer_network.real_layer_names[int(row.layer_name)-1]
@@ -49,12 +49,13 @@ for enx, time_slice in enumerate(partial_slices):
         for k,v in num_edges_int.items():
             num_edges[k].append(v)
         multilayer_network.fill_tmp_with_edges(time_slice)
-        draw_multilayer_default(multilayer_network.tmp_layers,labels=multilayer_network.real_layer_names,display=False,background_shape="circle",axis=None,remove_isolated_nodes=True,nodesize=0.005,alphalevel=0.4)
+        draw_multilayer_default(multilayer_network.tmp_layers,labels=multilayer_network.real_layer_names,display=False,background_shape="circle",axis=None,remove_isolated_nodes=True,nodesize=0.1,edge_size=0.01)
         multilayer_network.remove_layer_edges() ## clean the slice edges
 plt.show()
 #plt.savefig("../images/temporal.png",dpi=300)
 sns.set_style("whitegrid")
 clx = {"RT":"red","MT":"green","RE":"blue"}
+
 plt.subplot(1,1,1)
 plt.title("Temporal edge dynamics")
 slices = []

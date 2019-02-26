@@ -11,7 +11,7 @@ try:
 except:
     forceImport = False
 
-def compute_force_directed_layout(g,layout_parameters=None,initial_positions=None,verbose=True,gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0,forceImport=True):
+def compute_force_directed_layout(g,layout_parameters=None,verbose=True,gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0,forceImport=True):
     
     if forceImport:
         try:

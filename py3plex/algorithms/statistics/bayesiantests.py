@@ -426,7 +426,7 @@ def hierarchical_MC(diff, rope, rho,   upperAlpha=2, lowerAlpha =1, lowerBeta = 
      
     return samples
 
-def plot_posterior(samples, names=('C1', 'C2')):
+def plot_posterior(samples, names=('C1', 'C2'),proba_triplet=None):
     """
     Args:
         x (array): a vector of differences or a 2d array with pairs of scores.
@@ -435,10 +435,10 @@ def plot_posterior(samples, names=('C1', 'C2')):
     Returns:
         matplotlib.pyplot.figure
     """
-    return plot_simplex(samples, names)
+    return plot_simplex(samples, names,proba_triplet)
 
 
-def plot_simplex(points, names=('C1', 'C2')):
+def plot_simplex(points, names=('C1', 'C2'),proba_triplet=None):
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
     from matplotlib.pylab import rcParams
@@ -474,9 +474,9 @@ def plot_simplex(points, names=('C1', 'C2')):
                    [vert0[0, 1], vert0[i, 1]], color='black'))
     # vertex labels
     rcParams.update({'font.size': 16})
-    fig.gca().text(-0.08, -0.08, 'p({})'.format(names[0]), color='black')
+    fig.gca().text(-0.08, -0.08, 'p({} ({}))'.format(names[0], proba_triplet[0]),color='black')
     fig.gca().text(0.44, np.sqrt(3) / 2 + 0.05, 'p(rope)', color='black')
-    fig.gca().text(1.00, -0.08, 'p({})'.format(names[1]), color='black')
+    fig.gca().text(0.650, -0.08, 'p({} ({}))'.format(names[1], proba_triplet[2]),color='black')
 
     # project and draw points
     tripts = _project(points[:, [0, 2, 1]])
