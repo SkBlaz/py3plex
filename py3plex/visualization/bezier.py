@@ -56,7 +56,7 @@ def draw_bezier(total_size, p1, p2, mode="quadratic", inversion=False, path_heig
             except Exception:
                 raise Exception('Unable to calculate coordinate for points ' + str((x0, y0)) + ', ' + str((x1, y1)))
         else:
-            msg = 'Unknown mode \'{lm}\' in curve calculation (value must be one of \'upper\', \'bottom\', \'both\''
+            msg = 'Unknown linemode \'{linemode}\' in curve calculation (value must be one of \'upper\', \'bottom\', \'both\''
             raise ValueError(msg.format(lm=linemode))
         return dfx, dfy
     
@@ -65,14 +65,5 @@ def draw_bezier(total_size, p1, p2, mode="quadratic", inversion=False, path_heig
         pass
     
     else:
-        print ("Mode incorrect, please use quad or cubic.")
-
-        pass
-    
-def draw_multi_berzier(multiedge_list):
-
-    for edge in multi_edge_list:
-        draw_berzier(p1,p1)
-    
-    pass
-
+        msg = 'Unknown mode \'{mode}\' in curve calculation (value must be one of \'quadratic\', \'cubic\', \'quad\''
+        raise ValueError(msg.format(mode=mode))
