@@ -25,7 +25,7 @@ main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 import numpy as np
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1):
+def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1,node_labels=False,node_font_size=5):
 
     if background_color == "default":
         
@@ -130,7 +130,7 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
         #     if cntr<15:
         #         print(positions[position][0], positions[position][1])
 
-        drawing_machinery.draw(network, positions, node_color=facecolor_list[color], with_labels=False,edge_size=edge_size,node_size=node_sizes,arrowsize=arrowsize,ax=axis)
+        drawing_machinery.draw(network, positions, node_color=facecolor_list[color], with_labels=node_labels,edge_size=edge_size,node_size=node_sizes,arrowsize=arrowsize,ax=axis,font_size=node_font_size)
         color += 1
 
     if display == True:

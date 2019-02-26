@@ -688,7 +688,7 @@ def draw_networkx_edges(G, pos,
 
 def draw_networkx_labels(G, pos,
                          labels=None,
-                         font_size=12,
+                         font_size=1,
                          font_color='k',
                          font_family='sans-serif',
                          font_weight='normal',

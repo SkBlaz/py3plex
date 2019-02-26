@@ -6,18 +6,30 @@ from py3plex.core import multinet
 ## multilayer -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
 multilayer_network.basic_stats() ## check core imports
-multilayer_network.visualize_network() ## visualize
-plt.show()
+#multilayer_network.visualize_network() ## visualize
+#plt.show()
 
 ## You can also access individual graphical elements separately!
 
-network_labels, graphs, multilinks = multilayer_network.get_layers() ## get layers for visualization
+network_labels, graphs, multilinks = multilayer_network.get_layers() ## get layers for visualizat# ion
 draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels)
 
 enum = 1
 color_mappings = {idx : col for idx, col in enumerate(colors_default)}
 for edge_type,edges in multilinks.items():
-    draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-.",linecolor="black",curve_height=5,linmod="both",linewidth=0.4)
+    
+    #    network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1
+    print(edge_type)
+    if edge_type == "refers_to":
+        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="--",linecolor="red",curve_height=5,linmod="upper",linewidth=0.4)
+    elif edge_type == "refers_to":
+        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints=":",linecolor="black",curve_height=5,linmod="upper",linewidth=0.3)
+    elif edge_type == "belongs_to":
+        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints=":",linecolor="black",curve_height=5,linmod="upper",linewidth=0.4)
+    elif edge_type == "codes_for":
+        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints=":",linecolor="orange",curve_height=5,linmod="upper",linewidth=0.4)
+    else:
+        draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-.",linecolor="black",curve_height=5,linmod="both",linewidth=0.4)        
     enum+=1
 plt.show()
 plt.clf()
