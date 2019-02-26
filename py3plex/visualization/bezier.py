@@ -29,12 +29,9 @@ def draw_bezier(total_size, p1, p2, mode="quadratic", inversion=False, path_heig
 
         ## coordinate init phase
         dfx = np.arange(x0, x1, resolution)
-        slope = (y1-y0)/(x1-x0)
         midpoint_x = (x0+x1) / 2
         mp_y = (y0 + y1) / 2
 
-        midpoint_y = None
-        ## x0 x1, y0 y1                
         if linemode == "both":
 
             r1 = np.round(y0, 0)
@@ -42,49 +39,26 @@ def draw_bezier(total_size, p1, p2, mode="quadratic", inversion=False, path_heig
             try:                        
                 if r1 > y0 and r2 > y1:
                     dfy = bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='upper')
-                    # midpoint_y = mp_y*path_height
-                    # x_t = [x0, midpoint_x, x1]
-                    # y_t = [y0, midpoint_y, y1]
-                    # cs = CubicSpline(x_t, y_t)
-                    # dfy = cs(dfx)
                 else:
                     dfy = bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='bottom')
-                    # midpoint_y = 1/(mp_y*path_height)
-                    # midpoint_y = mp_y - path_height
-                    # x_t = [x0, midpoint_x, x1]
-                    # y_t = [y0, midpoint_y, y1]
-                    # cs = CubicSpline(x_t, y_t)
-                    # dfy = cs(dfx)
-            except Exception as err:
-                #TODO: takle exception catching ni ok za koncno verzijo...
-                print([x0, midpoint_x, x1], [y0, midpoint_y, y1])
+            except Exception:
+                raise Exception('Unable to calculate coordinate for points ' + str((x0, y0)) + ', ' + str((x1, y1)))
 
         elif linemode == "upper":
             try:
                 dfy = bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='upper')
-                # midpoint_y = mp_y*path_height
-                # midpoint_y = mp_y + path_height
-                # x_t = [x0, midpoint_x, x1]
-                # y_t = [y0, midpoint_y, y1]
-                # cs = CubicSpline(x_t, y_t)
-                # dfy = cs(dfx)
-            except Exception as err:
-                print([x0, midpoint_x, x1],[y0,midpoint_y,y1])
-            
+            except Exception:
+                raise Exception('Unable to calculate coordinate for points ' + str((x0, y0)) + ', ' + str((x1, y1)))
+
         elif linemode == "bottom":
             try:
                 dfy = bezier_calculate_dfy(mp_y, path_height, x0, midpoint_x, x1, y0, y1, dfx, mode='bottom')
-                # midpoint_y = mp_y*path_height
-                # midpoint_y = 1/(mp_y*path_height)
-                # midpoint_y = mp_y - path_height
-                # x_t = [x0, midpoint_x, x1]
-                # y_t = [y0, midpoint_y, y1]
-                # cs = CubicSpline(x_t, y_t)
-                # dfy = cs(dfx)
-            except Exception as err:
-                print([x0, midpoint_x, x1], [y0, midpoint_y, y1])
-
-        return (dfx,dfy)
+            except Exception:
+                raise Exception('Unable to calculate coordinate for points ' + str((x0, y0)) + ', ' + str((x1, y1)))
+        else:
+            msg = 'Unknown mode \'{lm}\' in curve calculation (value must be one of \'upper\', \'bottom\', \'both\''
+            raise ValueError(msg.format(lm=linemode))
+        return dfx, dfy
     
     elif mode == "cubic":
 
