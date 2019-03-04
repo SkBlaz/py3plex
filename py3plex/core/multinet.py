@@ -612,10 +612,10 @@ class multi_layer_network:
         pass
             
     def get_tensor(self,sparsity_type = "bsr"):
-        ## convert this to a tensor of some sort
-        ## maximum number of layers
-        ## maximum number of nodes
-        ## are nodes/layers strings? if so, do the encoding
+
+        """
+        TODO
+        """
         
         pass
 
@@ -633,7 +633,7 @@ class multi_layer_network:
     def visualize_matrix(self,kwargs):
 
         """
-        Plot the matrix
+        Plot the matrix -- this plots the supra-adjacency matrix
         """
         
         if server_mode:

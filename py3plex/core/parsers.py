@@ -13,6 +13,20 @@ import gzip
 from .supporting import *
 
 def parse_gml(file_name,directed):
+
+    """ 
+    parse a gml network
+
+    Args:
+        param1 (obj): file name
+        param2 (obj): directed?
+
+    Returns:
+    (multigraph, possible labels)
+
+    """
+
+    
     H = nx.read_gml(file_name)
 
     if directed:
