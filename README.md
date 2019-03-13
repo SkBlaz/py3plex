@@ -386,46 +386,61 @@ with open('../datasets/embedding_coordinates.json', 'w') as outfile:
 ![Non-labeled embedding](example_images/example_embedding.png)
 
 
-**Temporal and multiplex networks**
+**Simple spreading**
 
-This example demonstrates, how dynamic multiplex networks can easily be visualized and manipulated. Note that the initial class is initialized differently, however, other methods remain similar.
+Simple spreading for a single origin point.
 ```python
-from py3plex.visualization.multilayer import *
+## simple spreading process on multilayers
+
+## simple spreading process on multilayers
+
 from py3plex.core import multinet
-from py3plex.algorithms.temporal_multiplex import *
+from py3plex.core import random_generators
+import numpy as np
+import queue
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-## load the network as multiplex (coupled) network. (layer n1 n2 weight)
-multilayer_network = multinet.multi_layer_network(network_type="multiplex").load_network("../datasets/moscow_edges.txt",directed=True, input_type="multiplex_edges")
+## some random graph
+ER_multilayer = random_generators.random_multilayer_ER(3000,10,0.05,directed=False)
 
-multilayer_network.basic_stats() ## check core imports
+## seed node
+all_nodes = list(ER_multilayer.get_nodes())
+all_nodes_indexed = {x:en for en,x in enumerate(all_nodes)}
 
-multilayer_network.load_temporal_edge_information("../datasets/moscow_activity.txt",input_type="edge_activity",layer_mapping="../datasets/moscow_layer_mapping.txt")
+## spread from a random node
+random_init = np.random.randint(len(all_nodes))
+random_node = all_nodes[random_init]
+spread_vector = np.zeros(len(ER_multilayer.core_network))
+Q = queue.Queue(maxsize=3000) 
+Q.put(random_node)
 
-## split timeframe to 50 equally sized slices
-time_network_slices = split_to_temporal_slices(multilayer_network,slices=5)
+layer_visit_sequence = []
+node_visit_sequence = []
+iterations = 0
+while True:
+    if not Q.empty():
+        candidate = Q.get()
+        iterations+=1
+        if iterations % 100 == 0:
+            print("Iterations: {}".format(iterations))
+        for neighbor in ER_multilayer.get_neighbors(candidate[0],candidate[1]):
+            idx = all_nodes_indexed[neighbor]
+            if spread_vector[idx] != 1:
+                layer_visit_sequence.append(candidate[1])
+                node_visit_sequence.append((neighbor,iterations))
+                Q.put(neighbor)
+                spread_vector[idx] = 1
+    else:
+        break
 
-multilayer_network.monitor("Proceeding to visualization part..")
-## for each slice -- plot the network
-
-frame_images = []
-
-for time,network_slice in time_network_slices.items():
-
-    print(network_slice.basic_stats())
-    
-    ## obtain visualization layers
-
-    multilayer_network.monitor("Drawing in progress")
-    
-    ## draw the type-wise projection
-    a = network_slice.visualize_network()
-    frame_images.append(a)
-    plt.show()
-    plt.clf()
-
+sns.distplot(layer_visit_sequence)
+plt.xlabel("Layer")
+plt.ylabel("Visit density")
+plt.show()
 
 ```
-
+![Spreading example](example_images/spreading.png)
 
 # Acknowledgements
 ForceAtlas2 cython implementation is based on the one provided at https://github.com/bhargavchippada/forceatlas2, developed by Bhargav Chippada. The code is included by the author's permission. We also thank Thomas Aynaud for the permission to include the initial version of the Louvain algorithm.
