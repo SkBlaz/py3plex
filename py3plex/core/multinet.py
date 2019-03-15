@@ -124,7 +124,19 @@ class multi_layer_network:
         self.activity = parsers.load_edge_activity_raw(activity_file,self.layer_name_map)
         self.activity = self.activity.sort_values(by=['timestamp'])
 
-                
+
+    def to_json(self):
+        """A method for exporting the graph to a json file
+        
+        Args:
+        self
+
+        """
+        
+        from networkx.readwrite import json_graph
+        data = json_graph.node_link_data(self.core_network)
+        return data
+        
     def to_sparse_matrix(self,replace_core=False,return_only=False):
 
         """
