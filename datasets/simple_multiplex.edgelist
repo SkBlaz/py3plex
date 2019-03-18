@@ -1,0 +1,7 @@
+L1 nodeA nodeB 1
+L1 nodeA nodeC 1
+L3 nodeA nodeD 1
+L1 nodeA nodeD 1
+L1 nodeC nodeD 1
+L4 nodeC nodeD 1
+L4 nodeB nodeD 1

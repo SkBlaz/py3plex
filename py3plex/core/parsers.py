@@ -285,7 +285,6 @@ def parse_multiplex_edges(input_name,directed):
             G.add_node((node_first,str(layer)))
             G.add_node((node_second,str(layer)))
             G.add_edge((node_first,str(layer)),(node_second,str(layer)),key="default",weight=weight,type="default")
-
     return (G,None)
 
 def parse_multiplex_folder(input_folder,directed):

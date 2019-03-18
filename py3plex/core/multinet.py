@@ -9,6 +9,7 @@ from .HINMINE.IO import * ## parse the graph
 from .HINMINE.decomposition import * ## decompose the graph
 from .supporting import *
 import scipy.sparse as sp
+import pandas as pd
 import tqdm
 
 try:
@@ -39,6 +40,7 @@ class multi_layer_network:
         self.core_network = None
         self.directed = directed
         self.dummy_layer = dummy_layer
+        self.numeric_core_network = None
         self.labels = None
         self.embedding = None
         self.verbose = verbose
@@ -90,7 +92,7 @@ class multi_layer_network:
         
         return self
 
-    def load_layer_name_mapping(self,mapping_name):
+    def load_layer_name_mapping(self,mapping_name,header=False):
 
         """Layer-node mapping loader method
 
@@ -103,6 +105,8 @@ class multi_layer_network:
         """
         
         with open(mapping_name,"r+") as lf:
+            if header:
+                lf.readlines()
             for line in lf:
                 lid,lname = line.strip().split(" ")
                 self.layer_name_map[lname] = lid
@@ -631,16 +635,47 @@ class multi_layer_network:
         
         pass
 
+    def _encode_to_numeric(self):
+
+        new_edges = []
+        nmap = {}
+        n_count = 0
+        n1 = []
+        n2 = []
+        w = []
+        for edge in self.core_network.edges(data=True):
+            node_first = edge[0]
+            node_second = edge[1]
+            if node_first not in nmap:
+                nmap[node_first] = n_count
+                n_count+=1
+            if node_second not in nmap:
+                nmap[node_second] = n_count
+                n_count+=1
+            try:
+                weight = float(edge[2]['weight'])
+            except:
+                weight = 1
+            n1.append(nmap[node_first])
+            n2.append(nmap[node_second])
+            w.append(weight)
+
+        vectors = sp.coo_matrix((np.array(w), (np.array(n1).astype(int),np.array(n2).astype(int)))).tocsr()
+        self.numeric_core_network = vectors
+    
     def get_supra_adjacency_matrix(self,mtype="sparse"):
 
         """
         Get sparse representation of the supra matrix.
         """
         
+        if self.numeric_core_network is None:
+            self._encode_to_numeric()
+        print(self.numeric_core_network)
         if mtype == "sparse":
-            return nx.to_scipy_sparse_matrix(self.core_network)
+            return self.numeric_core_network
         else:
-            return nx.to_numpy_matrix(self.core_network)
+            return self.numeric_core_network.todense()
 
     def visualize_matrix(self,kwargs):
 
