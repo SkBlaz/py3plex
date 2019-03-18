@@ -2,7 +2,7 @@
 ## high level interface for community detection algorithms
 from .community_louvain import *
 import os
-from .NoRC import *
+#from .NoRC import *
 
 def run_infomap(infile,multiplex=True,overlapping=False,binary="./infomap",verbose=True,iterations=1000):
 
@@ -80,6 +80,11 @@ def parse_infomap(outfile):
             
 def louvain_communities(network,output="mapping"):
 
+    try:
+        network = network.core_network
+    except:
+        pass
+    
     try:
         network = network.core_network.to_undirected()
 

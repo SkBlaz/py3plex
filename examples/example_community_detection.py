@@ -1,10 +1,16 @@
-## a simple example demonstrating the community detection capabilities
+g## a simple example demonstrating the community detection capabilities
 
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
 from py3plex.visualization.multilayer import *
 from py3plex.visualization.colors import colors_default
 from collections import Counter
+
+from py3plex.core import random_generators
+ER_multilayer = random_generators.random_multilayer_ER(50,8,0.05,directed=False)
+partition = cw.louvain_communities(ER_multilayer)
+print(partition)
+
 
 import argparse
 
