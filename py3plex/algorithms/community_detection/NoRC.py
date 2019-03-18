@@ -13,7 +13,7 @@ from scipy.cluster.hierarchy import fcluster
 import scipy.sparse as sp
 from collections import defaultdict
 from itertools import product
-import community
+#import community
 from networkx.algorithms.community import LFR_benchmark_graph
 from sklearn.cluster import AffinityPropagation,DBSCAN,MiniBatchKMeans
 from scipy import cluster
