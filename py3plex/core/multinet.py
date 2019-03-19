@@ -643,6 +643,12 @@ class multi_layer_network:
         n1 = []
         n2 = []
         w = []
+
+        if self.directed:
+            simple_graph = nx.DiGraph()
+        else:
+            simple_graph = nx.Graph()
+        
         for edge in self.core_network.edges(data=True):
             node_first = edge[0]
             node_second = edge[1]
@@ -656,11 +662,15 @@ class multi_layer_network:
                 weight = float(edge[2]['weight'])
             except:
                 weight = 1
-            n1.append(nmap[node_first])
-            n2.append(nmap[node_second])
-            w.append(weight)
 
-        vectors = sp.coo_matrix((np.array(w), (np.array(n1).astype(int),np.array(n2).astype(int)))).tocsr()
+            simple_graph.add_edge(nmap[node_first],nmap[node_second],weight=weight)
+        vectors =  nx.to_scipy_sparse_matrix(simple_graph)
+#            n1.append(nmap[node_first])
+#            n2.append(nmap[node_second])
+#            w.append(weight)
+
+        
+#        vectors = sp.coo_matrix((np.array(w), (np.array(n1).astype(int),np.array(n2).astype(int)))).tocsr()
         self.numeric_core_network = vectors
     
     def get_supra_adjacency_matrix(self,mtype="sparse"):
