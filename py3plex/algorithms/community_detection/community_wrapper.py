@@ -81,14 +81,13 @@ def parse_infomap(outfile):
 def louvain_communities(network,output="mapping"):
 
     try:
-        network = network.core_network
-    except:
-        pass
-    
-    try:
-        network = network.core_network.to_undirected()
+        G = nx.Graph()
+        for edge in network.core_network.edges():
+            G.add_edge(edge[0],edge[1])
+        network = G
 
-    except:
+    except Exception as es:
+        print(es)
         pass
 
     partition = best_partition(network)

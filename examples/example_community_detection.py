@@ -1,4 +1,4 @@
-g## a simple example demonstrating the community detection capabilities
+## a simple example demonstrating the community detection capabilities
 
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
@@ -11,6 +11,11 @@ ER_multilayer = random_generators.random_multilayer_ER(50,8,0.05,directed=False)
 partition = cw.louvain_communities(ER_multilayer)
 print(partition)
 
+comNet = multinet.multi_layer_network().load_network('../datasets/simple_multiplex.edgelist',directed=False,input_type='multiplex_edges')
+comNet.load_layer_name_mapping('../datasets/simple_multiplex.txt')
+comNet.basic_stats()
+part = cw.louvain_communities(comNet)
+print(part)
 
 import argparse
 
@@ -21,6 +26,7 @@ parser.add_argument("--iterations", default=200, type=int)
 args = parser.parse_args()
 
 # network and group objects must be present within the .mat object
+
 network = multinet.multi_layer_network().load_network(input_file=args.input_network,
                                                       directed=False,
                                                       input_type=args.input_type)
