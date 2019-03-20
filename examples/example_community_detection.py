@@ -14,8 +14,8 @@ print(partition)
 comNet = multinet.multi_layer_network().load_network('../datasets/simple_multiplex.edgelist',directed=False,input_type='multiplex_edges')
 comNet.load_layer_name_mapping('../datasets/simple_multiplex.txt')
 comNet.basic_stats()
-part,names = cw.louvain_communities(comNet,name_orderings=True)
-print(part,names)
+part = cw.louvain_communities(comNet)
+print(part)
 
 
 import argparse

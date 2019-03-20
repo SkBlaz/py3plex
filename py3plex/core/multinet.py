@@ -39,6 +39,7 @@ class multi_layer_network:
         self.layer_inverse_name_map = {}
         self.core_network = None
         self.directed = directed
+        self.node_order_in_matrix = None
         self.dummy_layer = dummy_layer
         self.numeric_core_network = None
         self.labels = None
@@ -671,7 +672,10 @@ class multi_layer_network:
 
         
 #        vectors = sp.coo_matrix((np.array(w), (np.array(n1).astype(int),np.array(n2).astype(int)))).tocsr()
+
         self.numeric_core_network = vectors
+        print("cth")
+        self.node_order_in_matrix = simple_graph.nodes()
     
     def get_supra_adjacency_matrix(self,mtype="sparse"):
 
