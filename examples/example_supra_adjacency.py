@@ -15,4 +15,5 @@ comNet.load_layer_name_mapping('../datasets/simple_multiplex.txt')
 mat = comNet.get_supra_adjacency_matrix()
 
 ## how are nodes ordered?
-print(comNet.node_order_in_matrix)
+orderings = dict(zip(comNet.node_order_in_matrix,list(comNet.get_nodes())))
+print(orderings)
