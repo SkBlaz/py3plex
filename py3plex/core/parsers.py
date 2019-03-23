@@ -274,7 +274,8 @@ def parse_multiplex_edges(input_name,directed):
         
     else:
         G = nx.MultiGraph()
-                
+
+    unique_layers = set()    
     with open(input_name) as ef:
         for line in ef:
             parts = line.strip().split(" ")
@@ -284,7 +285,9 @@ def parse_multiplex_edges(input_name,directed):
             weight = parts[3]
             G.add_node((node_first,str(layer)))
             G.add_node((node_second,str(layer)))
-            G.add_edge((node_first,str(layer)),(node_second,str(layer)),key="default",weight=float(weight),type="default")
+            unique_layers.add(str(layer[0]))
+            G.add_edge((node_first,str(layer)),(node_second,str(layer)),weight=float(weight),type="default")
+
     return (G,None)
 
 def parse_multiplex_folder(input_folder,directed):

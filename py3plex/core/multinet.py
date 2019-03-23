@@ -28,13 +28,14 @@ except:
 class multi_layer_network:
 
     ## constructor
-    def __init__(self,verbose=True,network_type="multilayer",directed=True,dummy_layer="null",label_delimiter="---"):
+    def __init__(self,verbose=True,network_type="multilayer",directed=True,dummy_layer="null",label_delimiter="---",coupling_weight=1):
         """Class initializer
         
         This is the main class initializer method. User here specifies the type of the network, as well as other global parameters.
 
         """
         ## initialize the class
+        self.coupling_weight = coupling_weight
         self.layer_name_map = {}
         self.layer_inverse_name_map = {}
         self.core_network = None
@@ -89,10 +90,25 @@ class multi_layer_network:
 
         if self.network_type == "multiplex":
             self.monitor("Checking multiplex edges..")
-            self._to_multiplex()
+            self._couple_all_edges()
         
         return self
 
+
+    def _couple_all_edges(self):
+
+        unique_layers = {n[1] for n in self.core_network.nodes()}
+        unique_nodes = {n[0] for n in self.core_network.nodes()}
+
+        ## draw edges between same nodes accross layers
+        for node in unique_nodes:
+            for layer_first in unique_layers:
+                for layer_second in unique_layers:
+                    if layer_first != layer_second:
+                        coupled_edge = ((node,layer_first),(node,layer_second))
+                        self.core_network.add_edge(coupled_edge[0],coupled_edge[1],type="coupling",weight=self.coupling_weight)
+                        
+    
     def load_layer_name_mapping(self,mapping_name,header=False):
 
         """Layer-node mapping loader method
@@ -524,11 +540,6 @@ class multi_layer_network:
             n1,l1 = node_list
             eval("self.core_network."+target_function+"((n1,l1))")
 
-            
-    def _to_multiplex(self):
-        self.network_type = "multiplex"
-        self.core_network = add_mpx_edges(self.core_network)
-
     def _unfreeze(self):
         if self.directed:
             self.core_network =  nx.MultiDiGraph(self.core_network)
@@ -566,9 +577,6 @@ class multi_layer_network:
         else:
             raise Exception("Please, use dict or list input.")
 
-        if self.network_type == "multiplex":
-            self.core_network = add_mpx_edges(self.core_network)
-
     def remove_edges(self,edge_dict_list,input_type="list"):
         """ A method for removing edges.. """
         
@@ -578,9 +586,6 @@ class multi_layer_network:
             self._generic_edge_list_manipulator(edge_dict_list,"remove_edge",raw=True)
         else:
             raise Exception("Please, use dict or list input.")
-
-        if self.network_type == "multiplex":
-            self.core_network = add_mpx_edges(self.core_network)
             
     def add_nodes(self,node_dict_list,input_type="dict"):
         """ A method for adding nodes.. """
@@ -589,9 +594,6 @@ class multi_layer_network:
 
         if input_type == "dict":
             self._generic_node_dict_manipulator(node_dict_list,"add_node")
-            
-        if self.network_type == "multiplex":
-            self.core_network = add_mpx_edges(self.core_network)
 
     def remove_nodes(self,node_dict_list,input_type="dict"):
 
@@ -604,9 +606,6 @@ class multi_layer_network:
 
         if input_type == "list":
             self._generic_node_list_manipulator(node_dict_list,"remove_node")
-            
-        if self.network_type == "multiplex":
-            self.core_network = add_mpx_edges(self.core_network)
 
     def _get_num_layers(self):
 
@@ -674,7 +673,6 @@ class multi_layer_network:
 #        vectors = sp.coo_matrix((np.array(w), (np.array(n1).astype(int),np.array(n2).astype(int)))).tocsr()
 
         self.numeric_core_network = vectors
-        print("cth")
         self.node_order_in_matrix = simple_graph.nodes()
     
     def get_supra_adjacency_matrix(self,mtype="sparse"):
@@ -685,13 +683,13 @@ class multi_layer_network:
         
         if self.numeric_core_network is None:
             self._encode_to_numeric()
-        print(self.numeric_core_network)
+#        print(self.numeric_core_network)
         if mtype == "sparse":
             return self.numeric_core_network
         else:
             return self.numeric_core_network.todense()
 
-    def visualize_matrix(self,kwargs):
+    def visualize_matrix(self,kwargs={}):
 
         """
         Plot the matrix -- this plots the supra-adjacency matrix
