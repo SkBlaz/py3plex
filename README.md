@@ -161,6 +161,33 @@ C = B.subnetwork([(1,1),(1,2)],subset_by="node_layer_names")
 print(list(C.get_nodes()))
 ```
 
+
+Getting the multiplex supra adjacency is simple!
+During initiation, if you specify the network type to be 'multiplex', node couplings are added.
+```python
+
+from py3plex.core import multinet
+from py3plex.core import random_generators
+
+## initiate an instance of a random graph
+ER_multilayer = random_generators.random_multilayer_ER(500,8,0.05,directed=False)
+mtx = ER_multilayer.get_supra_adjacency_matrix()
+
+comNet = multinet.multi_layer_network(network_type="multiplex",coupling_weight=1).load_network('../datasets/simple_multiplex.edgelist',directed=False,input_type='multiplex_edges')
+comNet.basic_stats()
+comNet.load_layer_name_mapping('../datasets/simple_multiplex.txt')
+mat = comNet.get_supra_adjacency_matrix()
+print(mat.shape)
+kwargs = {"display":True}
+comNet.visualize_matrix(kwargs)
+## how are nodes ordered?
+for edge in comNet.get_edges(data=True):
+    print(edge)
+orderings = dict(zip(comNet.node_order_in_matrix,list(comNet.get_nodes())))
+print(orderings)
+
+```
+
 ![Non-labeled embedding](example_images/supra.png)
 
 
@@ -194,32 +221,6 @@ Py3plex also offers some random graph generators.
 A.monitor("Random ER multilayer graph in progress")
 ER_multilayer = random_generators.random_multilayer_ER(300,6,0.05,directed=False)
 ER_multilayer.visualize_network(show=True)
-
-```
-
-Getting the multiplex supra adjacency is simple!
-During initiation, if you specify the network type to be 'multiplex', node couplings are added.
-```python
-
-from py3plex.core import multinet
-from py3plex.core import random_generators
-
-## initiate an instance of a random graph
-ER_multilayer = random_generators.random_multilayer_ER(500,8,0.05,directed=False)
-mtx = ER_multilayer.get_supra_adjacency_matrix()
-
-comNet = multinet.multi_layer_network(network_type="multiplex",coupling_weight=1).load_network('../datasets/simple_multiplex.edgelist',directed=False,input_type='multiplex_edges')
-comNet.basic_stats()
-comNet.load_layer_name_mapping('../datasets/simple_multiplex.txt')
-mat = comNet.get_supra_adjacency_matrix()
-print(mat.shape)
-kwargs = {"display":True}
-comNet.visualize_matrix(kwargs)
-## how are nodes ordered?
-for edge in comNet.get_edges(data=True):
-    print(edge)
-orderings = dict(zip(comNet.node_order_in_matrix,list(comNet.get_nodes())))
-print(orderings)
 
 ```
 
