@@ -179,8 +179,7 @@ comNet.visualize_matrix(kwargs)
 ## how are nodes ordered?
 for edge in comNet.get_edges(data=True):
     print(edge)
-orderings = dict(zip(comNet.node_order_in_matrix,list(comNet.get_nodes())))
-print(orderings)
+print (comNet.node_order_in_matrix)
 
 ```
 
