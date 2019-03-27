@@ -248,7 +248,7 @@ def generate_random_networks(number_of_networks):
     return network_list         
 
 
-def supra_adjacency_matrix_plot(matrix,display=False):    
+def supra_adjacency_matrix_plot(matrix,display=False):
     plt.imshow(matrix, interpolation='nearest', cmap=plt.cm.binary)
     if display:
         plt.show()

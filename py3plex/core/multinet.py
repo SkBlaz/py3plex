@@ -100,6 +100,9 @@ class multi_layer_network:
         unique_layers = {n[1] for n in self.core_network.nodes()}
         unique_nodes = {n[0] for n in self.core_network.nodes()}
 
+#        for potential_node in itertools.product(unique_nodes,unique_layers):
+#            self.core_network.add_node(potential_node)
+        
         ## draw edges between same nodes accross layers
         for node in unique_nodes:
             for layer_first in unique_layers:
@@ -637,43 +640,75 @@ class multi_layer_network:
 
     def _encode_to_numeric(self):
 
-        new_edges = []
-        nmap = {}
-        n_count = 0
-        n1 = []
-        n2 = []
-        w = []
 
-        if self.directed:
-            simple_graph = nx.DiGraph()
+        # Unique_layers = set(n[1] for n in self.core_network.nodes())
+        # individual_adj = defaultdict(list)
+
+        # for layer in unique_layers:
+            
+        if self.network_type != "multiplex":
+            new_edges = []
+            nmap = {}
+            n_count = 0
+            n1 = []
+            n2 = []
+            w = []
+
+            if self.directed:
+                simple_graph = nx.DiGraph()
+            else:
+                simple_graph = nx.Graph()
+
+            for edge in self.core_network.edges(data=True):
+                node_first = edge[0]
+                node_second = edge[1]
+                if node_first not in nmap:
+                    nmap[node_first] = n_count
+                    n_count+=1
+                if node_second not in nmap:
+                    nmap[node_second] = n_count
+                    n_count+=1
+                try:
+                    weight = float(edge[2]['weight'])
+                except:
+                    weight = 1
+
+                simple_graph.add_edge(nmap[node_first],nmap[node_second],weight=weight)
+            vectors =  nx.to_scipy_sparse_matrix(simple_graph)
+            self.numeric_core_network = vectors
+            self.node_order_in_matrix = simple_graph.nodes()
+            
         else:
-            simple_graph = nx.Graph()
-        
-        for edge in self.core_network.edges(data=True):
-            node_first = edge[0]
-            node_second = edge[1]
-            if node_first not in nmap:
-                nmap[node_first] = n_count
-                n_count+=1
-            if node_second not in nmap:
-                nmap[node_second] = n_count
-                n_count+=1
-            try:
-                weight = float(edge[2]['weight'])
-            except:
-                weight = 1
+            unique_layers = set(n[1] for n in self.core_network.nodes())
+            individual_adj = []
+            all_nodes = []
+            for layer in unique_layers:
+                layer_nodes = [n for n in self.core_network.nodes() if n[1] == layer]
+                H = self.core_network.subgraph(layer_nodes)
+                adj = nx.to_numpy_matrix(H)
+                all_nodes += list(H.nodes())
+                individual_adj.append(adj)
 
-            simple_graph.add_edge(nmap[node_first],nmap[node_second],weight=weight)
-        vectors =  nx.to_scipy_sparse_matrix(simple_graph)
+            whole_mat = []
+            for en,adj_mat in enumerate(individual_adj):                
+                cross = np.identity(adj_mat.shape[0])
+                one_row = []
+                for j in range(len(individual_adj)):
+                    if j < en or j > en:
+                        one_row.append(cross)
+                    if j == en:
+                        one_row.append(adj_mat)
+                
+                whole_mat.append(np.hstack((x for x in one_row)))
+                vectors = np.vstack((x for x in whole_mat))
+            self.numeric_core_network = vectors
+            self.node_order_in_matrix = all_nodes
 #            n1.append(nmap[node_first])
 #            n2.append(nmap[node_second])
 #            w.append(weight)
 
         
 #        vectors = sp.coo_matrix((np.array(w), (np.array(n1).astype(int),np.array(n2).astype(int)))).tocsr()
-
-        self.numeric_core_network = vectors
-        self.node_order_in_matrix = simple_graph.nodes()
     
     def get_supra_adjacency_matrix(self,mtype="sparse"):
 
@@ -687,7 +722,10 @@ class multi_layer_network:
         if mtype == "sparse":
             return self.numeric_core_network
         else:
-            return self.numeric_core_network.todense()
+            try:
+                return self.numeric_core_network.todense()
+            except:
+                return self.numeric_core_network
 
     def visualize_matrix(self,kwargs={}):
 
@@ -697,6 +735,7 @@ class multi_layer_network:
         
         if server_mode:
             return 0
+        
         adjmat = self.get_supra_adjacency_matrix(mtype="dense")
         supra_adjacency_matrix_plot(adjmat,**kwargs)
 
