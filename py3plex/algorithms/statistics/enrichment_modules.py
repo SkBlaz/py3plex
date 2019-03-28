@@ -11,13 +11,15 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 from collections import defaultdict, Counter
 from ..term_parsers import parse_gaf_file,read_termlist,read_topology_mappings,read_uniprot_GO
 import pandas as pd
+import numpy as np
 
 def calculate_pval(term,alternative="two-sided"):
 
-#    _partition_name,_partition_entries,term,_map_term_database,_number_of_all_annotated
-    ## this calculates p value
-    #print(component, term_dataset, term, count_all)
+    """
+    Parallel kernel for computation of p vals. All partitions are considered with respect to agiven GO term! Counts in a given partition are compared to population.
 
+    """
+    
     query_term = term[0]
     query_term_count_population = term[1]
 
@@ -30,7 +32,14 @@ def calculate_pval(term,alternative="two-sided"):
         else:
             outside_local+=1
 
-    query_counts = [inside_local, query_term_count_population]
+    if _normalize_by_comsize:
+        query_term_count_population = int(query_term_count_population/_number_of_communities)
+            
+    ## EASE correction.
+    if inside_local > 1:
+        query_counts = [inside_local-1, query_term_count_population]
+    else:
+        query_counts = [inside_local, query_term_count_population]
     pop_counts = [outside_local, _number_of_all_annotated-query_term_count_population]
     p_value = fisher_exact([query_counts,pop_counts],alternative=alternative)[1]
     return p_value
@@ -62,7 +71,7 @@ def parallel_enrichment(term):
     pval = calculate_pval(_term_database[term],alternative=_alternative)
     return {'observation' : _partition_name,'term' : _term_database[term][0],'pval' : pval}
 
-def compute_enrichment(term_dataset, term_database, topology_map, all_counts, whole_term_list=False,pvalue=0.05,multitest_method="fdr_bh",alternative="two-sided"):
+def compute_enrichment(term_dataset, term_database, topology_map, all_counts, whole_term_list=False,pvalue=0.05,multitest_method="fdr_bh",alternative="two-sided",intra_community=False):
 
     if whole_term_list:
         tvals = set.union(*[x for x in topology_map.values()])
@@ -75,13 +84,20 @@ def compute_enrichment(term_dataset, term_database, topology_map, all_counts, wh
     global _term_database
     global _map_term_database
     global _number_of_all_annotated
-
+    global _number_of_communities
+    global _normalize_by_comsize
+    
     _alternative = alternative
     _number_of_all_annotated = all_counts
     _term_database = {en : x for en, x in enumerate(term_database.items())} ## database of all annotations
     
-    _map_term_database = term_dataset ## entry to acc mappings
+    _map_term_database = term_dataset ## entry to acc mappings        
+    _number_of_communities = len(topology_map)
+    _normalize_by_comsize = intra_community
 
+    if intra_community:
+        _number_of_all_annotated = int(_number_of_all_annotated/_number_of_communities)
+    
     finalFrame = pd.DataFrame()
     
     for k, v in topology_map.items():
@@ -131,7 +147,7 @@ def fet_enrichment_generic(term_dataset,term_database,all_counts,topology_map):
     significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False)
     return significant_results
 
-def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two-sided"):
+def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two-sided",intra_community = True):
 
     ## 1.) read the database.
     term_dataset, term_database, all_counts =  read_uniprot_GO(annotation_mappings)
@@ -140,7 +156,7 @@ def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two
     topology_map = read_topology_mappings(partition_mappings)
 
     ## 3.) calculate p-vals.
-    significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False,alternative=alternative)
+    significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False,alternative=alternative,intra_community=intra_community)
 
     return significant_results
 

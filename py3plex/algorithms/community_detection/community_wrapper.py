@@ -2,7 +2,10 @@
 ## high level interface for community detection algorithms
 from .community_louvain import *
 import os
-#from .NoRC import *
+try:
+    from .NoRC import *
+except:
+    pass
 
 def run_infomap(infile,multiplex=True,overlapping=False,binary="./infomap",verbose=True,iterations=1000):
 
