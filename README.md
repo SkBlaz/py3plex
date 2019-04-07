@@ -35,7 +35,7 @@ pip3 install py3plex
 
 For any errors, please open an issue!
 ### Example uses and tutorials
-Currently, there are more than 20 different uses, showcasing Py3plex's functionality; all accessible in the examples/ folder!
+Currently, there are more than 20 different uses, showcasing Py3plex's functionality; all accessible in the **examples/** folder!
 
 ### First steps
 A network can be loaded by either using one of the many available parsers (below), or constructed using our functional API. Examples of loading the network:

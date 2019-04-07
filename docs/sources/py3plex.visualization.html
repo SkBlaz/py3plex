@@ -60,13 +60,13 @@
 <div class="section" id="module-py3plex.visualization.bezier">
 <span id="py3plex-visualization-bezier-module"></span><h2>py3plex.visualization.bezier module<a class="headerlink" href="#module-py3plex.visualization.bezier" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="py3plex.visualization.bezier.draw_bezier">
-<code class="descclassname">py3plex.visualization.bezier.</code><code class="descname">draw_bezier</code><span class="sig-paren">(</span><em>total_size</em>, <em>p1</em>, <em>p2</em>, <em>mode='quadratic'</em>, <em>inversion=False</em>, <em>path_height=2</em>, <em>linemode='both'</em>, <em>resolution=0.1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.bezier.draw_bezier" title="Permalink to this definition">¶</a></dt>
+<dt id="py3plex.visualization.bezier.bezier_calculate_dfy">
+<code class="descclassname">py3plex.visualization.bezier.</code><code class="descname">bezier_calculate_dfy</code><span class="sig-paren">(</span><em>mp_y</em>, <em>path_height</em>, <em>x0</em>, <em>midpoint_x</em>, <em>x1</em>, <em>y0</em>, <em>y1</em>, <em>dfx</em>, <em>mode='upper'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.bezier.bezier_calculate_dfy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="py3plex.visualization.bezier.draw_multi_berzier">
-<code class="descclassname">py3plex.visualization.bezier.</code><code class="descname">draw_multi_berzier</code><span class="sig-paren">(</span><em>multiedge_list</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.bezier.draw_multi_berzier" title="Permalink to this definition">¶</a></dt>
+<dt id="py3plex.visualization.bezier.draw_bezier">
+<code class="descclassname">py3plex.visualization.bezier.</code><code class="descname">draw_bezier</code><span class="sig-paren">(</span><em>total_size</em>, <em>p1</em>, <em>p2</em>, <em>mode='quadratic'</em>, <em>inversion=False</em>, <em>path_height=2</em>, <em>linemode='both'</em>, <em>resolution=0.1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.bezier.draw_bezier" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -106,7 +106,7 @@ inlcuding the number sign (“#FFFFFF”)</p>
 <span id="py3plex-visualization-layout-algorithms-module"></span><h2>py3plex.visualization.layout_algorithms module<a class="headerlink" href="#module-py3plex.visualization.layout_algorithms" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="py3plex.visualization.layout_algorithms.compute_force_directed_layout">
-<code class="descclassname">py3plex.visualization.layout_algorithms.</code><code class="descname">compute_force_directed_layout</code><span class="sig-paren">(</span><em>g</em>, <em>layout_parameters=None</em>, <em>initial_positions=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.layout_algorithms.compute_force_directed_layout" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">py3plex.visualization.layout_algorithms.</code><code class="descname">compute_force_directed_layout</code><span class="sig-paren">(</span><em>g</em>, <em>layout_parameters=None</em>, <em>verbose=True</em>, <em>gravity=0.2</em>, <em>strongGravityMode=False</em>, <em>barnesHutTheta=1.2</em>, <em>edgeWeightInfluence=1</em>, <em>scalingRatio=2.0</em>, <em>forceImport=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.layout_algorithms.compute_force_directed_layout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -127,7 +127,7 @@ inlcuding the number sign (“#FFFFFF”)</p>
 
 <dl class="function">
 <dt id="py3plex.visualization.multilayer.draw_multilayer_default">
-<code class="descclassname">py3plex.visualization.multilayer.</code><code class="descname">draw_multilayer_default</code><span class="sig-paren">(</span><em>network_list</em>, <em>display=True</em>, <em>nodesize=2</em>, <em>alphalevel=0.13</em>, <em>rectanglex=1</em>, <em>rectangley=1</em>, <em>background_shape='circle'</em>, <em>background_color='rainbow'</em>, <em>networks_color='rainbow'</em>, <em>labels=False</em>, <em>arrowsize=0.5</em>, <em>label_position=1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.draw_multilayer_default" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">py3plex.visualization.multilayer.</code><code class="descname">draw_multilayer_default</code><span class="sig-paren">(</span><em>network_list</em>, <em>display=True</em>, <em>nodesize=2</em>, <em>alphalevel=0.13</em>, <em>rectanglex=1</em>, <em>rectangley=1</em>, <em>background_shape='circle'</em>, <em>background_color='rainbow'</em>, <em>networks_color='rainbow'</em>, <em>labels=False</em>, <em>arrowsize=0.5</em>, <em>label_position=1</em>, <em>verbose=False</em>, <em>remove_isolated_nodes=False</em>, <em>axis=None</em>, <em>edge_size=1</em>, <em>node_labels=False</em>, <em>node_font_size=5</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.draw_multilayer_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -142,7 +142,7 @@ inlcuding the number sign (“#FFFFFF”)</p>
 
 <dl class="function">
 <dt id="py3plex.visualization.multilayer.hairball_plot">
-<code class="descclassname">py3plex.visualization.multilayer.</code><code class="descname">hairball_plot</code><span class="sig-paren">(</span><em>g</em>, <em>color_list=None</em>, <em>display=False</em>, <em>layered=True</em>, <em>nodesize=1</em>, <em>layout_parameters=None</em>, <em>legend=False</em>, <em>scale_by_size=True</em>, <em>layout_algorithm='force_default'</em>, <em>other_parameters=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.hairball_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">py3plex.visualization.multilayer.</code><code class="descname">hairball_plot</code><span class="sig-paren">(</span><em>g</em>, <em>color_list=None</em>, <em>display=False</em>, <em>nodesize=1</em>, <em>layout_parameters=None</em>, <em>legend=None</em>, <em>scale_by_size=True</em>, <em>layout_algorithm='force'</em>, <em>edge_width=0.01</em>, <em>alpha_channel=0.5</em>, <em>labels=None</em>, <em>label_font_size=2</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.hairball_plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -202,8 +202,8 @@ inlcuding the number sign (“#FFFFFF”)</p>
       &copy;2018, Blaž Škrlj.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
       <a href="../_sources/sources/py3plex.visualization.rst.txt"

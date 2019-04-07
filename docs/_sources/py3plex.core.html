@@ -55,7 +55,7 @@
 <span id="py3plex-core-converters-module"></span><h2>py3plex.core.converters module<a class="headerlink" href="#module-py3plex.core.converters" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="py3plex.core.converters.prepare_for_visualization">
-<code class="descclassname">py3plex.core.converters.</code><code class="descname">prepare_for_visualization</code><span class="sig-paren">(</span><em>multinet</em>, <em>compute_layouts='force'</em>, <em>layout_parameters=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.converters.prepare_for_visualization" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">py3plex.core.converters.</code><code class="descname">prepare_for_visualization</code><span class="sig-paren">(</span><em>multinet</em>, <em>compute_layouts='force'</em>, <em>layout_parameters=None</em>, <em>verbose=True</em>, <em>multiplex=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.converters.prepare_for_visualization" title="Permalink to this definition">¶</a></dt>
 <dd><p>This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -84,7 +84,7 @@ param3 (dict): Optional layout parameters</dd>
 <span id="py3plex-core-multinet-module"></span><h2>py3plex.core.multinet module<a class="headerlink" href="#module-py3plex.core.multinet" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="py3plex.core.multinet.multi_layer_network">
-<em class="property">class </em><code class="descclassname">py3plex.core.multinet.</code><code class="descname">multi_layer_network</code><span class="sig-paren">(</span><em>verbose=True</em>, <em>network_type='multilayer'</em>, <em>directed=True</em>, <em>dummy_layer='null'</em>, <em>label_delimiter='---'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">py3plex.core.multinet.</code><code class="descname">multi_layer_network</code><span class="sig-paren">(</span><em>verbose=True</em>, <em>network_type='multilayer'</em>, <em>directed=True</em>, <em>dummy_layer='null'</em>, <em>label_delimiter='---'</em>, <em>coupling_weight=1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.add_dummy_layers">
@@ -118,6 +118,11 @@ dict,list or px_edge. See examples for further use.</p>
 <code class="descname">basic_stats</code><span class="sig-paren">(</span><em>target_network=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.basic_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for obtaining a network’s statistics</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.fill_tmp_with_edges">
+<code class="descname">fill_tmp_with_edges</code><span class="sig-paren">(</span><em>edge_df</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.fill_tmp_with_edges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.get_decomposition">
@@ -156,6 +161,11 @@ dict,list or px_edge. See examples for further use.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.get_neighbors">
+<code class="descname">get_neighbors</code><span class="sig-paren">(</span><em>node_id</em>, <em>layer_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.get_nodes">
 <code class="descname">get_nodes</code><span class="sig-paren">(</span><em>data=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for obtaining a network’s nodes</p>
@@ -176,7 +186,8 @@ dict,list or px_edge. See examples for further use.</p>
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.get_tensor">
 <code class="descname">get_tensor</code><span class="sig-paren">(</span><em>sparsity_type='bsr'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_tensor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>TODO</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.invert">
@@ -191,15 +202,61 @@ dict,list or px_edge. See examples for further use.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.load_layer_name_mapping">
+<code class="descname">load_layer_name_mapping</code><span class="sig-paren">(</span><em>mapping_name</em>, <em>header=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_layer_name_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Layer-node mapping loader method</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>param1: The name of the mapping file.</dd>
+<dt>Returns:</dt>
+<dd>self.layer_name_map is filled, returns nothing.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.load_network">
-<code class="descname">load_network</code><span class="sig-paren">(</span><em>input_file=None</em>, <em>directed=False</em>, <em>input_type='gml'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_network" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main method for loading networks</p>
+<code class="descname">load_network</code><span class="sig-paren">(</span><em>input_file=None</em>, <em>directed=False</em>, <em>input_type='gml'</em>, <em>label_delimiter='---'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_network" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main network loader</p>
+<p>This method loads and prepares a given network.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>param1: network name
+param2: direction
+param3: input_type</dd>
+<dt>Returns:</dt>
+<dd>self.core_network along with self.labels(optional), self.activity etc.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.load_network_activity">
+<code class="descname">load_network_activity</code><span class="sig-paren">(</span><em>activity_file</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_network_activity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Network activity loader</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd>param1: The name of the generic activity file -&gt; 65432 61888 1377688175 RE</dd>
+</dl>
+</div></blockquote>
+<p>, n1 n2 timestamp and layer name. Note that layer node mappings MUST be loaded in order to map nodes to activity properly.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Returns:</dt>
+<dd>self.activity is filled.</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.load_temporal_edge_information">
 <code class="descname">load_temporal_edge_information</code><span class="sig-paren">(</span><em>input_file=None</em>, <em>input_type='edge_activity'</em>, <em>directxed=False</em>, <em>layer_mapping=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_temporal_edge_information" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for loading temporal edge information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.merge_with">
+<code class="descname">merge_with</code><span class="sig-paren">(</span><em>target_px_object</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.merge_with" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge two px objects.</p>
 </dd></dl>
 
 <dl class="method">
@@ -219,6 +276,11 @@ dict,list or px_edge. See examples for further use.</p>
 <code class="descname">remove_edges</code><span class="sig-paren">(</span><em>edge_dict_list</em>, <em>input_type='list'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.remove_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for removing edges..</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.remove_layer_edges">
+<code class="descname">remove_layer_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.remove_layer_edges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.remove_nodes">
@@ -245,6 +307,12 @@ dict,list or px_edge. See examples for further use.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.split_to_layers">
+<code class="descname">split_to_layers</code><span class="sig-paren">(</span><em>style='diagonal'</em>, <em>compute_layouts='force'</em>, <em>layout_parameters=None</em>, <em>verbose=True</em>, <em>multiplex=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.split_to_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method for obtaining layerwise distributions</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.subnetwork">
 <code class="descname">subnetwork</code><span class="sig-paren">(</span><em>input_list=None</em>, <em>subset_by='node_layer_names'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.subnetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a subgraph based on a set of nodes.</p>
@@ -257,15 +325,23 @@ dict,list or px_edge. See examples for further use.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="py3plex.core.multinet.multi_layer_network.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method for exporting the graph to a json file</p>
+<p>Args:
+self</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.to_sparse_matrix">
-<code class="descname">to_sparse_matrix</code><span class="sig-paren">(</span><em>replace_core=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.to_sparse_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">to_sparse_matrix</code><span class="sig-paren">(</span><em>replace_core=False</em>, <em>return_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.to_sparse_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conver the matrix to scipy-sparse version. This is useful for classification.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.visualize_matrix">
-<code class="descname">visualize_matrix</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.visualize_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the matrix</p>
+<code class="descname">visualize_matrix</code><span class="sig-paren">(</span><em>kwargs={}</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.visualize_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the matrix – this plots the supra-adjacency matrix</p>
 </dd></dl>
 
 <dl class="method">
@@ -284,8 +360,19 @@ dict,list or px_edge. See examples for further use.</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="py3plex.core.parsers.load_edge_activity_raw">
+<code class="descclassname">py3plex.core.parsers.</code><code class="descname">load_edge_activity_raw</code><span class="sig-paren">(</span><em>activity_file</em>, <em>layer_mappings</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.load_edge_activity_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic parser for loading generic activity files. Here, temporal edges are given as tuples -&gt; this can be easily transformed for example into a pandas dataframe!</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="py3plex.core.parsers.load_temporal_edge_information">
 <code class="descclassname">py3plex.core.parsers.</code><code class="descname">load_temporal_edge_information</code><span class="sig-paren">(</span><em>input_network</em>, <em>input_type</em>, <em>layer_mapping=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.load_temporal_edge_information" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.core.parsers.parse_detangler_json">
+<code class="descclassname">py3plex.core.parsers.</code><code class="descname">parse_detangler_json</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.parse_detangler_json" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -301,7 +388,15 @@ dict,list or px_edge. See examples for further use.</p>
 <dl class="function">
 <dt id="py3plex.core.parsers.parse_gml">
 <code class="descclassname">py3plex.core.parsers.</code><code class="descname">parse_gml</code><span class="sig-paren">(</span><em>file_name</em>, <em>directed</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.parse_gml" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>parse a gml network</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>param1 (obj): file name
+param2 (obj): directed?</dd>
+</dl>
+<p>Returns:
+(multigraph, possible labels)</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="py3plex.core.parsers.parse_gpickle">
@@ -334,9 +429,15 @@ dict,list or px_edge. See examples for further use.</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="py3plex.core.parsers.parse_multiplex_folder">
+<code class="descclassname">py3plex.core.parsers.</code><code class="descname">parse_multiplex_folder</code><span class="sig-paren">(</span><em>input_folder</em>, <em>directed</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.parse_multiplex_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="py3plex.core.parsers.parse_network">
 <code class="descclassname">py3plex.core.parsers.</code><code class="descname">parse_network</code><span class="sig-paren">(</span><em>input_name</em>, <em>f_type='gml'</em>, <em>directed=False</em>, <em>label_delimiter=None</em>, <em>network_type='multilayer'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.parse_network" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A wrapper method for available parsers!</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="py3plex.core.parsers.parse_nx">
@@ -426,8 +527,8 @@ dict,list or px_edge. See examples for further use.</p>
       &copy;2018, Blaž Škrlj.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
       <a href="_sources/py3plex.core.rst.txt"
