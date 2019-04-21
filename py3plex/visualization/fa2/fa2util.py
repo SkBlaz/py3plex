@@ -319,8 +319,7 @@ def adjustSpeedAndApplyForces(nodes, speed, speedEfficiency, jitterTolerance):
 
 try:
     import cython
-
-    if not cython.compiled:
-        print("Warning: uncompiled fa2util module.  Compile with cython for a 10-100x speed boost.")
+    # if not cython.compiled:
+    #     print("Warning: uncompiled fa2util module.  Compile with cython for a 10-100x speed boost.")
 except:
     print("No cython detected.  Install cython and compile the fa2util module for a 10-100x speed boost.")
