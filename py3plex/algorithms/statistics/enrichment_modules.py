@@ -147,7 +147,7 @@ def fet_enrichment_generic(term_dataset,term_database,all_counts,topology_map):
     significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False)
     return significant_results
 
-def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two-sided",intra_community = True):
+def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two-sided",intra_community = False,pvalue=0.1,multitest_method="fdr_bh"):
 
     ## 1.) read the database.
     term_dataset, term_database, all_counts =  read_uniprot_GO(annotation_mappings)
@@ -156,7 +156,7 @@ def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two
     topology_map = read_topology_mappings(partition_mappings)
 
     ## 3.) calculate p-vals.
-    significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False,alternative=alternative,intra_community=intra_community)
+    significant_results = compute_enrichment(term_dataset, term_database, topology_map, all_counts,whole_term_list=False,alternative=alternative,intra_community=intra_community,pvalue=pvalue,multitest_method=multitest_method)
 
     return significant_results
 

@@ -19,7 +19,7 @@ def basic_pl_stats(degree_sequence):
     results = Fit(degree_sequence,discrete=True)
     return (results.alpha,results.sigma)
 
-def plot_power_law(degree_sequence,title,xlabel,plabel,ylabel="Number of nodes",formula_x=70,formula_y=0.05):
+def plot_power_law(degree_sequence,title,xlabel,plabel,ylabel="Number of nodes",formula_x=70,formula_y=0.05,show=True):
 
     plt.figure(2)  
     ax1 = plt.subplot(211)
@@ -87,9 +87,10 @@ def plot_power_law(degree_sequence,title,xlabel,plabel,ylabel="Number of nodes",
 
     import matplotlib.ticker as mtick
     plt.ylabel(r"$P(k) = Pr(K \geq k)$")
-#    plt.xlim(5,120)    
+    #    plt.xlim(5,120)    
 
-    plt.show()
+    if show:
+        plt.show()
 
 
 if __name__ == "__main__":
