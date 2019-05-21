@@ -57,7 +57,29 @@ class multi_layer_network:
         else:
             return self.core_network[i][j]
         pass
+
+    def read_ground_truth_communities(self, cfile):
+
+        """
+        Parse ground truth community file and make mappings to the original nodes. This works based on node ID mappings, exact node,layer tuplets are to be added.
+        Args:
+            param1: ground truth communities.
+        Returns:
+            self.ground_truth_communities
+        """
         
+        community_assignments = {}
+        with open(cfile) as cf:
+            for line in cf:
+                line = line.strip().split()
+                community_assignments[line[0]] = line[1]
+
+        self.ground_truth_communities = {}        
+        ## reorder the mampings appropriately
+        for node in self.get_nodes():            
+            com = community_assignments[node[0]]
+            self.ground_truth_communities[node] = com
+    
     def load_network(self,input_file=None, directed=False, input_type="gml",label_delimiter="---"):
 
         """Main network loader
@@ -270,7 +292,7 @@ class multi_layer_network:
         else:
             
             if self.verbose:
-                self.monitor("Computing core stats")
+                self.monitor("Computing core stats of the network")
 
             if target_network is None:            
                 print(nx.info(self.core_network))
