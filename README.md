@@ -34,6 +34,13 @@ pip3 install py3plex
 ```
 
 For any errors, please open an issue!
+
+### Contributions
+If you are interested in contributing please:
+- Either open a pull request
+- Or write with your idea
+- Or open an issue with your suggestion (feature requests welcome)
+
 ### Example uses and tutorials
 Currently, there are more than 20 different uses, showcasing Py3plex's functionality; all accessible in the **examples/** folder!
 
