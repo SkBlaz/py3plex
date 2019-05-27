@@ -25,7 +25,7 @@ main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 import numpy as np
 
-def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1,node_labels=False,node_font_size=5):
+def draw_multilayer_default(network_list, display=True, node_size=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1,node_labels=False,node_font_size=5):
 
     if background_color == "default":
         
@@ -122,8 +122,9 @@ def draw_multilayer_default(network_list, display=True, nodesize=2,alphalevel=0.
             correction=10
         else:
             correction = 1
-        node_sizes = [nodesize for v in degrees.values()]
-#        node_sizes = [(np.log(v) * nodesize)/correction if v > 400 else nodesize/correction for v in degrees.values()]
+
+        node_sizes = [vx*node_size for v in degrees.values()]
+#        node_sizes = [(np.log(v) * node_size)/correction if v > 400 else node_size/correction for v in degrees.values()]
 
         # cntr+=1
         # for position in positions:
@@ -256,7 +257,7 @@ def supra_adjacency_matrix_plot(matrix,display=False):
 
 def hairball_plot(g, color_list=None,
                   display=False,
-                  nodesize=1,
+                  node_size=1,
                   layout_parameters=None,
                   legend=None,
                   scale_by_size=True,
@@ -301,9 +302,9 @@ def hairball_plot(g, color_list=None,
 
     degrees = dict(nx.degree(nx.Graph(g)))
     if scale_by_size:
-        nsizes = [np.log(v) * nodesize if v > 10 else v for v in degrees.values()]
+        nsizes = [np.log(v) * node_size if v > 10 else v for v in degrees.values()]
     else:
-        nsizes = [nodesize for x in g.nodes()]
+        nsizes = [node_size for x in g.nodes()]
         
     # standard force -- directed layout
     if layout_algorithm == "force":
