@@ -139,20 +139,48 @@ def parse_detangler_json(file_path):
     return (G,None)
 
 def parse_multi_edgelist(input_name,directed):
-
     if directed:
         G = nx.MultiDiGraph()
-        
     else:
         G = nx.MultiGraph()
-    
     with open(input_name) as IN:
         for line in IN:
             node_first,layer_first,node_second,layer_second,weight = line.strip().split()
-            G.add_node((node_first,layer_first),type=layer_first)
-            G.add_node((node_second,layer_second),type=layer_second)
-            G.add_edge(node_first,node_second,weight=weight)
+            if layer_first == layer_second and node_first == node_second:
+                
+                # first case
+                G.add_node((node_first, layer_first), type=layer_first)
+                G.add_edge((node_first,layer_first), (node_first,layer_first), weight=weight)
+            elif layer_first == layer_second and node_first != node_second:
+                
+                # second case
+                G.add_node((node_first, layer_first), type=layer_first)
+                G.add_node((node_second, layer_second), type=layer_first)
+                G.add_edge((node_first, layer_first), (node_second, layer_second), weight=weight)
+            else:
+                #default case
+                G.add_node((node_first, layer_first), type=layer_first)
+                G.add_node((node_second, layer_second), type=layer_second)
+                G.add_edge(node_first, node_second, weight=weight)
+                
     return (G,None)
+
+## deprecated 
+# def parse_multi_edgelist(input_name,directed):
+
+#     if directed:
+#         G = nx.MultiDiGraph()
+        
+#     else:
+#         G = nx.MultiGraph()
+    
+#     with open(input_name) as IN:
+#         for line in IN:
+#             node_first,layer_first,node_second,layer_second,weight = line.strip().split()
+#             G.add_node((node_first,layer_first),type=layer_first)
+#             G.add_node((node_second,layer_second),type=layer_second)
+#             G.add_edge(node_first,node_second,weight=weight)
+#     return (G,None)
 
 def parse_simple_edgelist(input_name,directed):
 

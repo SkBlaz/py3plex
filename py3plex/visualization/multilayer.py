@@ -25,7 +25,7 @@ main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 import numpy as np
 
-def draw_multilayer_default(network_list, display=True, node_size=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1,node_labels=False,node_font_size=5):
+def draw_multilayer_default(network_list, display=True, node_size=2,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1,node_labels=False,node_font_size=5, scale_by_size=True):
 
     if background_color == "default":
         
@@ -58,7 +58,7 @@ def draw_multilayer_default(network_list, display=True, node_size=2,alphalevel=0
     start_location_background = 0
     color = 0
     shadow_size = 0.5
-    circle_size = 1.07
+    circle_size = 1.04
 
     for network in network_list:
         if remove_isolated_nodes:
@@ -91,7 +91,7 @@ def draw_multilayer_default(network_list, display=True, node_size=2,alphalevel=0
         cntr = 0
 
         for position in positions:
-            if np.abs(positions[position][0]) > 1 or np.abs(positions[position][1]) > 1:
+            if np.abs(positions[position][0]) > 0.5 or np.abs(positions[position][1]) > 0.5:
                 positions[position] = positions[position]/np.linalg.norm(positions[position])
             try:
                 positions[position][0] = positions[position][0] + 0.5 + start_location_network
@@ -123,7 +123,10 @@ def draw_multilayer_default(network_list, display=True, node_size=2,alphalevel=0
         else:
             correction = 1
 
-        node_sizes = [vx*node_size for v in degrees.values()]
+        if scale_by_size:
+            node_sizes = [vx*node_size for vx in degrees.values()]
+        else:
+            node_sizes = [node_size for vx in degrees.values()]
 #        node_sizes = [(np.log(v) * node_size)/correction if v > 400 else node_size/correction for v in degrees.values()]
 
         # cntr+=1

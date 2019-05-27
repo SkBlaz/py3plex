@@ -774,7 +774,7 @@ class multi_layer_network:
         if style == "diagonal":
             network_labels, graphs, multilinks = self.get_layers(style)
             if parameters_layers is None:                
-                ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,nodesize=3,verbose=verbose)
+                ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,node_size=3,verbose=verbose)
             else:
                 ax = draw_multilayer_default(graphs,**parameters_layers)
 
