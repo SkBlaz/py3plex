@@ -125,10 +125,14 @@ def compute_enrichment(term_dataset, term_database, topology_map, all_counts, wh
         tmpframe = tmpframe.append(results,ignore_index=True)
 
         ## multitest corrections on partition level
-        significant, p_adjusted, sidak, bonf = multipletests(tmpframe['pval'],method=multitest_method,is_sorted=False, returnsorted=False, alpha=pvalue)
-        tmpframe['corrected_pval'+"_"+multitest_method] = pd.Series(p_adjusted)
-        tmpframe['significant'] = pd.Series(significant)
-        tmpframe = tmpframe[tmpframe['significant'] == True]
+        if multitest_method == "raw":
+            pass
+        else:
+            significant, p_adjusted, sidak, bonf = multipletests(tmpframe['pval'],method=multitest_method,is_sorted=False, returnsorted=False, alpha=pvalue)
+            tmpframe['corrected_pval'+"_"+multitest_method] = pd.Series(p_adjusted)
+            tmpframe['significant'] = pd.Series(significant)            
+            tmpframe = tmpframe[tmpframe['significant'] == True]
+            
         finalFrame = finalFrame.append(tmpframe,ignore_index=True)
     
     return finalFrame
