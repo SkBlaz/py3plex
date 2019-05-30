@@ -12,6 +12,9 @@ from collections import defaultdict, Counter
 from ..term_parsers import parse_gaf_file,read_termlist,read_topology_mappings,read_uniprot_GO
 import pandas as pd
 import numpy as np
+import logging
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.getLogger().setLevel(logging.INFO)
 
 def calculate_pval(term,alternative="two-sided"):
 
@@ -55,7 +58,7 @@ def multiple_test_correction(input_dataset):
             except:
                 pass
 
-    print ("Component_by_size PFAM_term pvalue")
+    logging.info("Component_by_size PFAM_term pvalue")
     for key, values in pvals.items():
         tmpP = [float(val[1]) for val in values]
         termN = [val[0] for val in values]
@@ -102,7 +105,7 @@ def compute_enrichment(term_dataset, term_database, topology_map, all_counts, wh
     
     for k, v in topology_map.items():
 
-        print("Computing enrichment for partition {}".format(k))
+        logging.info("Computing enrichment for partition {}".format(k))
         ## reassign for parallel usage
         _partition_name = k
         _partition_entries = v
