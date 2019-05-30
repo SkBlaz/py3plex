@@ -126,7 +126,7 @@ def compute_enrichment(term_dataset, term_database, topology_map, all_counts, wh
 
         ## multitest corrections on partition level
         if multitest_method == "raw":
-            pass
+            tmpframe = tmpframe[tmpframe['pval'] < pvalue]
         else:
             significant, p_adjusted, sidak, bonf = multipletests(tmpframe['pval'],method=multitest_method,is_sorted=False, returnsorted=False, alpha=pvalue)
             tmpframe['corrected_pval'+"_"+multitest_method] = pd.Series(p_adjusted)
