@@ -261,6 +261,8 @@ def supra_adjacency_matrix_plot(matrix,display=False):
 def hairball_plot(g, color_list=None,
                   display=False,
                   node_size=1,
+                  text_color="black",
+                  node_sizes = None, ## for custom sizes
                   layout_parameters=None,
                   legend=None,
                   scale_by_size=True,
@@ -269,13 +271,7 @@ def hairball_plot(g, color_list=None,
                   alpha_channel=0.5,
                   labels=None,
                   label_font_size=2):
-    # TODO: delete code below
-    # If something crashed, maybe uncomment this code, however, this is obsolete and should be deleted as soon as
-    # tests show it can be.
-    # if other_parameters is not None:
-    #     with_labels = other_parameters['labels']
-    # else:
-    #     with_labels = False
+    
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
     potlabs = []
@@ -304,10 +300,14 @@ def hairball_plot(g, color_list=None,
     print("plotting..")
 
     degrees = dict(nx.degree(nx.Graph(g)))
+    
     if scale_by_size:
         nsizes = [np.log(v) * node_size if v > 10 else v for v in degrees.values()]
     else:
         nsizes = [node_size for x in g.nodes()]
+
+    if not node_sizes is None:
+        nsizes = node_sizes
         
     # standard force -- directed layout
     if layout_algorithm == "force":
@@ -330,7 +330,7 @@ def hairball_plot(g, color_list=None,
     if labels is not None:
         for el in labels:
             pos_el = pos[el]
-            plt.text(pos_el[0],pos_el[1],el,fontsize=label_font_size)
+            plt.text(pos_el[0],pos_el[1],el,fontsize=label_font_size,color=text_color)
             
 #        nx.draw_networkx_labels(g, pos, font_size=label_font_size)
 
