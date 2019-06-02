@@ -327,9 +327,12 @@ def hairball_plot(g, color_list=None,
 
     nx.draw_networkx_edges(g, pos, alpha=alpha_channel, edge_color="black", width=edge_width, arrows=False)
     nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping, node_size=nsizes,alpha=alpha_channel)
-    if labels is not None and labels:
-        if type(labels) == bool:
-            nx.draw_networkx_labels(g, pos, font_size=label_font_size)
+    if labels is not None:
+        for el in labels:
+            pos_el = pos[el]
+            plt.text(pos_el[0],pos_el[1],el,fontsize=label_font_size)
+            
+#        nx.draw_networkx_labels(g, pos, font_size=label_font_size)
 
     plt.axis('off')
 
