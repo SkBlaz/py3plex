@@ -26,13 +26,19 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
                     mapping_file[node.split(split_node_by)[keep_index]] = v
     else:
         for k,v in input_mapping_file.items():
-            node,layer = k
+            try:
+                node, layer = k
+            except:
+                parts = k.split(split_node_by) ## PSI-MI format
+                if layer_type in parts:
+                    layer, node= k.split(split_node_by) ## PSI-MI format
+                else:                    
+                    continue
             if layer_type == None:
                 mapping_file[node] = v                
             if layer_type != False:
                 if layer == layer_type:
                      mapping_file[node] = v
-
 
     id_identifier = 0
     if ".gaf" in annotation_mapping_file:
@@ -40,7 +46,7 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
         
     else:
         print("Please, provide gaf-based item-term mappings")
-    
+
     ## iterate through community assignments and construct the trainset
     ## tukaj morda dodaj example name
     
@@ -69,7 +75,7 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
             print(err)
             ## incorrect mappings are ignored..
             pass
-    
+
     return g
 
 def obo2n3(obofile,n3out, gaf_file):
@@ -81,16 +87,28 @@ def obo2n3(obofile,n3out, gaf_file):
     gaf_mappings = parse_gaf_file(gaf_file)
     
     ## iterate through all files
-    with gzip.open(obofile,"rt") as obo:
-        for line in obo:            
-            parts = line.split()
-            try:
-                if parts[0] == "id:":
-                    current_term = parts[1]
-                if parts[0] == "is_a:":
-                    ontology[current_term].append(parts[1])
-            except:
-                pass
+    if ".gz" in obofile:
+        with gzip.open(obofile,"rt") as obo:
+            for line in obo:            
+                parts = line.split()
+                try:
+                    if parts[0] == "id:":
+                        current_term = parts[1]
+                    if parts[0] == "is_a:":
+                        ontology[current_term].append(parts[1])
+                except:
+                    pass
+    else:
+        with open(obofile,"rt") as obo:
+            for line in obo:            
+                parts = line.split()
+                try:
+                    if parts[0] == "id:":
+                        current_term = parts[1]
+                    if parts[0] == "is_a:":
+                        ontology[current_term].append(parts[1])
+                except:
+                    pass        
 
     print ("INFO: ontology terms added:", len(ontology.keys()))
     ## construct an ontology graph

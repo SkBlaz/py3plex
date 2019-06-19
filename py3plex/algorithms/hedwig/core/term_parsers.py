@@ -46,7 +46,8 @@ def parse_gaf_file(gaf_mappings,whole_list_counts=False):
                     if whole_list_counts:
                         whole_list.append(parts[4])
                 except Exception as es:
-                    print(es)                    
+                    pass
+#                    print(es)                    
                     
     if whole_list_counts:
         return (uniGO,whole_list)    
