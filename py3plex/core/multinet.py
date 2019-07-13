@@ -784,7 +784,7 @@ class multi_layer_network:
                     if edge_type == "mpx":                        
                         ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
                     else:
-                        ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=0.4,resolution=resolution)                      
+                        ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=1,resolution=resolution)                      
                     enum+=1
             else:
                 enum = 1

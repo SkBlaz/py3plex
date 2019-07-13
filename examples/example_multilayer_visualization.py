@@ -4,6 +4,11 @@ from py3plex.visualization.colors import all_color_names,colors_default
 from py3plex.core import multinet
 
 ## visualization from a simple file
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/edgeList.txt",directed=False, input_type="multiedgelist")
+multilayer_network.basic_stats()
+multilayer_network.visualize_network()
+plt.show()
+
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/multiL.txt", directed=True, input_type="multiedgelist")
 multilayer_network.basic_stats()
 multilayer_network.visualize_network(style="diagonal")

@@ -13,7 +13,10 @@ multilayer_network = multinet.multi_layer_network().load_network("../datasets/te
 
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/multiedgelist.txt",directed=False, input_type="multiedgelist")
 
-#multilayer_network = multinet.multi_layer_network().load_network("../datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TODO
+#multilayer_network = multinet.multi_layer_network().load_network("../datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TOD
+multilayer_network = multinet.multi_layer_network().load_network("../datasets/edgeList.txt",directed=False, input_type="multiedgelist")
+
+
 
 ## save the network as a gpickle object
 multilayer_network.save_network(output_file="../datasets/stored_network.gpickle",output_type="gpickle")
