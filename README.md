@@ -41,6 +41,13 @@ If you are interested in contributing please:
 - Or write with your idea
 - Or open an issue with your suggestion (feature requests welcome)
 
+### Tests
+To test whether the core library functionality works well, you can run the test suite from the ./tests folder as:
+
+```
+python3 -m pytest test_core_functionality.py
+```
+
 ### Example uses and tutorials
 Currently, there are more than 20 different uses, showcasing Py3plex's functionality; all accessible in the **examples/** folder!
 
