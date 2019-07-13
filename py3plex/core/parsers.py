@@ -146,7 +146,6 @@ def parse_multi_edgelist(input_name,directed):
     with open(input_name) as IN:
         for line in IN:
             node_first,layer_first,node_second,layer_second,weight = line.strip().split()
-            print(node_first,layer_first,node_second,layer_second,weight)
             if layer_first == layer_second and node_first == node_second:
                 
                 # first case
