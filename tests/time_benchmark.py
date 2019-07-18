@@ -1,4 +1,4 @@
-from pymnet import *
+#from pymnet import *
 from py3plex.visualization.multilayer import *
 from py3plex.visualization.colors import all_color_names,colors_default
 from py3plex.core import multinet
@@ -20,6 +20,7 @@ def py3plex_visualization(network):
         enum+=1
         
     end = time.time()
+    plt.show()
     plt.clf()
     return (end - start)
 
@@ -48,11 +49,12 @@ if __name__ == "__main__":
     
     for combination in combinations:
         N,L,p = combination
-        print("Evaluating {} {} {} setting.".format(N,L,p))        
+        print("Evaluating {} {} {} setting.".format(N,L,p))     
         net = models.er_multilayer(N,L,p)
         try:
             t_pp = py3plex_visualization(net.edges)
-            t_pmn = pymnet_visualization(net)
+            t_pmn = 0
+#            t_pmn = pymnet_visualization(net)
 
         except Exception as err:
             print(err)
@@ -61,7 +63,4 @@ if __name__ == "__main__":
         datapoints.append(datapoint)
 
     result_frame = pd.DataFrame(datapoints)
-    result_frame.to_csv("example_benchmark.csv")
-
-
-
+    result_frame.to_csv("example_benchmark2.csv")

@@ -15,9 +15,7 @@ def node_dependent_performance(df):
 
     df2 = df[["N","Py3plex","Pymnet","p"]]
     df2 = pd.melt(df2, id_vars=['N','p'], value_vars=['Pymnet','Py3plex'])
-    print(df2.head())
     df2 = df2.groupby(['p','N','variable']).mean().reset_index()
-    print(df2.head())
     df2.columns = ["p","|N|","Library","time (s)"]
     print(df2)
     
@@ -29,9 +27,16 @@ def node_dependent_performance(df):
                 whis="range", palette="vlag")
 
     plt.ylabel("Log of time (s)")
-    plt.show()
-    
-    pass
+    plt.savefig("nodes.png", dpi = 300)
+    plt.clf()
+
+    # df2['time (s)'] = df2['time (s)'].apply(np.log)
+    # df2['|E|'] = df2['|N|']* (df2['|N|']-1)    
+    # sns.boxplot(x="|E|", y="time (s)", data=df2,hue="Library",palette="vlag")
+
+    # plt.ylabel("Log of time (s)")
+    # plt.savefig("edges.png", dpi = 300)
+
 
 if __name__ == "__main__":
 

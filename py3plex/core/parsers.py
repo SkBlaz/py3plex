@@ -145,7 +145,15 @@ def parse_multi_edgelist(input_name,directed):
         G = nx.MultiGraph()
     with open(input_name) as IN:
         for line in IN:
-            node_first,layer_first,node_second,layer_second,weight = line.strip().split()
+            parts = line.strip().split()
+            
+            if len(parts) == 5:
+                node_first,layer_first,node_second,layer_second,weight = parts
+                
+            else:
+                node_first,layer_first,node_second,layer_second = parts
+                weight = 1
+                
             if layer_first == layer_second and node_first == node_second:
                 
                 # first case
@@ -310,7 +318,10 @@ def parse_multiplex_edges(input_name,directed):
             node_first = str(parts[1])
             node_second = str(parts[2])
             layer = parts[0]
-            weight = parts[3]
+            if len(parts) > 2:
+                weight = parts[3]
+            else:
+                weight = 1
             G.add_node((node_first,str(layer)))
             G.add_node((node_second,str(layer)))
             unique_layers.add(str(layer[0]))
