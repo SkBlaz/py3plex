@@ -23,4 +23,4 @@ for p in imrange:
     imgplot = plt.imshow(img)
     myimages.append([imgplot])
 my_anim = animation.ArtistAnimation(fig, myimages, interval=500)
-my_anim.save('../example_images/animation.gif', writer='imagemagick', fps=60)
+my_anim.save('../example_images/animation.gif', writer='imagemagick', fps=2)
