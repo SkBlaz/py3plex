@@ -53,14 +53,31 @@ def parse_gml(file_name,directed):
     return (A,None)
 
 def parse_nx(nx_object,directed):
+
+    """
+    Core parser for networkx objects
+    :input:  a networkx graph
+    """
+    
     return (nx_object,None)
 
 def parse_matrix(file_name,directed):
+
+    """
+    Parser for matrices
+    :input: a SciPy sparse matrix
+    """
+    
     mat = scipy.io.loadmat(file_name)
     return(mat['network'],mat['group'])
 
 def parse_gpickle(file_name, directed=False,layer_separator=None):
 
+    """
+    A parser for generic Gpickle as stored by Py3plex.    
+    :input: gpickle object
+    """
+    
     print("Parsing gpickle..")
     if directed:
         A = nx.MultiDiGraph()
@@ -91,6 +108,11 @@ def parse_gpickle(file_name, directed=False,layer_separator=None):
 
 def parse_gpickle_biomine(file_name,directed):
 
+    """
+    Gpickle parser for biomine graphs
+    :input: Gpickle containing BioMine data
+    """
+    
     ## convert the biomine    
     input_graph = nx.read_gpickle(file_name)
     
@@ -110,6 +132,11 @@ def parse_gpickle_biomine(file_name,directed):
 
 def parse_detangler_json(file_path):
 
+    """
+    Parser for generic Detangler files
+    :input: Detangler JSON
+    """
+    
     if directed:
         G = nx.MultiDiGraph()
     else:
@@ -139,6 +166,13 @@ def parse_detangler_json(file_path):
     return (G,None)
 
 def parse_multi_edgelist(input_name,directed):
+
+    """
+    A generic multiedgelist parser
+    n l n l w
+    :input: a text file containing multiedges
+    """
+    
     if directed:
         G = nx.MultiDiGraph()
     else:
@@ -173,25 +207,13 @@ def parse_multi_edgelist(input_name,directed):
                 
     return (G,None)
 
-## deprecated 
-# def parse_multi_edgelist(input_name,directed):
-
-#     if directed:
-#         G = nx.MultiDiGraph()
-        
-#     else:
-#         G = nx.MultiGraph()
-    
-#     with open(input_name) as IN:
-#         for line in IN:
-#             node_first,layer_first,node_second,layer_second,weight = line.strip().split()
-#             G.add_node((node_first,layer_first),type=layer_first)
-#             G.add_node((node_second,layer_second),type=layer_second)
-#             G.add_edge(node_first,node_second,weight=weight)
-#     return (G,None)
-
 def parse_simple_edgelist(input_name,directed):
 
+    """
+    Simple edgelist n n w
+    :input: a text file
+    """
+    
     if directed:
         G = nx.DiGraph()
         
@@ -274,6 +296,10 @@ def parse_spin_edgelist(input_name,directed):
 
 def parse_embedding(input_name):
 
+    """
+    Loader for generic embedding as outputed by GenSim
+    """
+    
     meta = None
     embedding_matrix = []
     embedding_indices = []
