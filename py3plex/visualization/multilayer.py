@@ -144,7 +144,6 @@ def draw_multilayer_default(network_list, display=True, node_size=10,alphalevel=
     if display == True:
         plt.show()
 
-
 def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1):
     # indices are correct network positions
     if input_type == "nodes":

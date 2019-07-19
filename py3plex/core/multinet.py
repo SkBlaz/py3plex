@@ -762,9 +762,12 @@ class multi_layer_network:
         supra_adjacency_matrix_plot(adjmat,**kwargs)
 
     
-    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01,other_parameters=None):
+    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01,other_parameters=None, axis = None, fig = None):
         if server_mode:
             return 0
+
+        # if fig:
+        #     ax = fig.add_subplot(1,1,1)
 
         """ 
         network visualization.
@@ -773,35 +776,59 @@ class multi_layer_network:
         
         if style == "diagonal":
             network_labels, graphs, multilinks = self.get_layers(style)
-            if parameters_layers is None:                
-                ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,node_size=3,verbose=verbose)
+            if parameters_layers is None:
+                if axis:
+                    axis = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,node_size=3,verbose=verbose)
+                else:
+                    ax = draw_multilayer_default(graphs,display=False,background_shape="circle",labels=network_labels,node_size=3,verbose=verbose)
             else:
-                ax = draw_multilayer_default(graphs,**parameters_layers)
+                if axis:
+                    axis = draw_multilayer_default(graphs,**parameters_layers)
+                else:
+                    ax = draw_multilayer_default(graphs,**parameters_layers)
 
             if parameters_multiedges is None:                
                 enum = 1
                 for edge_type,edges in tqdm.tqdm(multilinks.items()):
-                    if edge_type == "mpx":                        
-                        ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
+                    if edge_type == "mpx":
+                        if axis:
+                            axis = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
+                        else:
+                            ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
                     else:
-                        ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=1,resolution=resolution)                      
+                        if axis:
+                            axis = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=1,resolution=resolution)
+                        else:
+                            ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=1,resolution=resolution)                      
                     enum+=1
             else:
                 enum = 1
                 for edge_type,edges in multilinks.items():
-                    ax = draw_multiedges(graphs,edges,**parameters_multiedges)
+                    if axis:
+                        axis = draw_multiedges(graphs,edges,**parameters_multiedges)
+                    else:
+                        ax = draw_multiedges(graphs,edges,**parameters_multiedges)
                     enum+=1
             if show:
                 plt.show()
-            return ax
+
+            if axis:
+                return axis
+            else:
+                return ax
         
         elif style == "hairball":
             network_colors, graph = self.get_layers(style="hairball")
-            ax = hairball_plot(graph,network_colors,layout_algorithm="force",other_parameters=other_parameters)
+            if axis:
+                axis = hairball_plot(graph,network_colors,layout_algorithm="force",other_parameters=other_parameters)
+            else:
+                ax = hairball_plot(graph,network_colors,layout_algorithm="force",other_parameters=other_parameters)
             if show:
                 plt.show()
-            return ax
-
+            if axis:
+                return axis
+            else:
+                return ax
         else:
             raise Exception("Please, specify visualization style using: .style. keyword")
             

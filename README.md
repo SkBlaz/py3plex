@@ -4,6 +4,7 @@ Heterogeneous networks are complex networks with additional information assigned
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
 ![Single layer network](example_images/snps_data.png)
+![showreel](example_images/animation.gif)
 
 ![Multilayer networks](example_images/biomine_community.png)
 
