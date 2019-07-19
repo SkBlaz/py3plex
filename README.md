@@ -4,7 +4,6 @@ Heterogeneous networks are complex networks with additional information assigned
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
 ![Single layer network](example_images/snps_data.png)
-![showreel](example_images/animation.gif)
 
 ![Multilayer networks](example_images/biomine_community.png)
 
@@ -462,8 +461,13 @@ plt.show()
 ```
 ![Spreading example](example_images/spreading.png)
 
+# Animation Example
+One can easily animate multiple plots (examples/example_animation.py)
+![showreel](example_images/animation.gif)
+
 # Acknowledgements
 ForceAtlas2 cython implementation is based on the one provided at https://github.com/bhargavchippada/forceatlas2, developed by Bhargav Chippada. The code is included by the author's permission. We also thank Thomas Aynaud for the permission to include the initial version of the Louvain algorithm.
+
 
 # Citation
 

@@ -38,144 +38,14 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-py3plex.visualization.fa2.fa2util">
-<span id="py3plex-visualization-fa2-fa2util-module"></span><h2>py3plex.visualization.fa2.fa2util module<a class="headerlink" href="#module-py3plex.visualization.fa2.fa2util" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="py3plex.visualization.fa2.fa2util.Edge">
-<em class="property">class </em><code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">Edge</code><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.Edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="py3plex.visualization.fa2.fa2util.Node">
-<em class="property">class </em><code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">Node</code><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.Node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="py3plex.visualization.fa2.fa2util.Region">
-<em class="property">class </em><code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">Region</code><span class="sig-paren">(</span><em>nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.Region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="py3plex.visualization.fa2.fa2util.Region.applyForce">
-<code class="descname">applyForce</code><span class="sig-paren">(</span><em>n</em>, <em>theta</em>, <em>coefficient=0</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.Region.applyForce" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="py3plex.visualization.fa2.fa2util.Region.applyForceOnNodes">
-<code class="descname">applyForceOnNodes</code><span class="sig-paren">(</span><em>nodes</em>, <em>theta</em>, <em>coefficient=0</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.Region.applyForceOnNodes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="py3plex.visualization.fa2.fa2util.Region.buildSubRegions">
-<code class="descname">buildSubRegions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.Region.buildSubRegions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="py3plex.visualization.fa2.fa2util.Region.updateMassAndGeometry">
-<code class="descname">updateMassAndGeometry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.Region.updateMassAndGeometry" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.adjustSpeedAndApplyForces">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">adjustSpeedAndApplyForces</code><span class="sig-paren">(</span><em>nodes</em>, <em>speed</em>, <em>speedEfficiency</em>, <em>jitterTolerance</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.adjustSpeedAndApplyForces" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.apply_attraction">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">apply_attraction</code><span class="sig-paren">(</span><em>nodes</em>, <em>edges</em>, <em>distributedAttraction</em>, <em>coefficient</em>, <em>edgeWeightInfluence</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.apply_attraction" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.apply_gravity">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">apply_gravity</code><span class="sig-paren">(</span><em>nodes</em>, <em>gravity</em>, <em>useStrongGravity=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.apply_gravity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.apply_repulsion">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">apply_repulsion</code><span class="sig-paren">(</span><em>nodes</em>, <em>coefficient</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.apply_repulsion" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.linAttraction">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">linAttraction</code><span class="sig-paren">(</span><em>n1</em>, <em>n2</em>, <em>e</em>, <em>distributedAttraction</em>, <em>coefficient=0</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.linAttraction" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.linGravity">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">linGravity</code><span class="sig-paren">(</span><em>n</em>, <em>g</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.linGravity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.linRepulsion">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">linRepulsion</code><span class="sig-paren">(</span><em>n1</em>, <em>n2</em>, <em>coefficient=0</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.linRepulsion" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.linRepulsion_region">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">linRepulsion_region</code><span class="sig-paren">(</span><em>n</em>, <em>r</em>, <em>coefficient=0</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.linRepulsion_region" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="py3plex.visualization.fa2.fa2util.strongGravity">
-<code class="descclassname">py3plex.visualization.fa2.fa2util.</code><code class="descname">strongGravity</code><span class="sig-paren">(</span><em>n</em>, <em>g</em>, <em>coefficient=0</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.fa2util.strongGravity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="py3plex-visualization-fa2-fa2util-module">
+<h2>py3plex.visualization.fa2.fa2util module<a class="headerlink" href="#py3plex-visualization-fa2-fa2util-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-py3plex.visualization.fa2.forceatlas2">
-<span id="py3plex-visualization-fa2-forceatlas2-module"></span><h2>py3plex.visualization.fa2.forceatlas2 module<a class="headerlink" href="#module-py3plex.visualization.fa2.forceatlas2" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="py3plex.visualization.fa2.forceatlas2.ForceAtlas2">
-<em class="property">class </em><code class="descclassname">py3plex.visualization.fa2.forceatlas2.</code><code class="descname">ForceAtlas2</code><span class="sig-paren">(</span><em>outboundAttractionDistribution=False</em>, <em>linLogMode=False</em>, <em>adjustSizes=False</em>, <em>edgeWeightInfluence=1.0</em>, <em>jitterTolerance=1.0</em>, <em>barnesHutOptimize=True</em>, <em>barnesHutTheta=1.2</em>, <em>multiThreaded=False</em>, <em>scalingRatio=2.0</em>, <em>strongGravityMode=False</em>, <em>gravity=1.0</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.ForceAtlas2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="py3plex.visualization.fa2.forceatlas2.ForceAtlas2.forceatlas2">
-<code class="descname">forceatlas2</code><span class="sig-paren">(</span><em>G</em>, <em>pos=None</em>, <em>iterations=100</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.ForceAtlas2.forceatlas2" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="py3plex.visualization.fa2.forceatlas2.ForceAtlas2.forceatlas2_igraph_layout">
-<code class="descname">forceatlas2_igraph_layout</code><span class="sig-paren">(</span><em>G</em>, <em>pos=None</em>, <em>iterations=100</em>, <em>weight_attr=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.ForceAtlas2.forceatlas2_igraph_layout" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="py3plex.visualization.fa2.forceatlas2.ForceAtlas2.forceatlas2_networkx_layout">
-<code class="descname">forceatlas2_networkx_layout</code><span class="sig-paren">(</span><em>G</em>, <em>pos=None</em>, <em>iterations=100</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.ForceAtlas2.forceatlas2_networkx_layout" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="py3plex.visualization.fa2.forceatlas2.ForceAtlas2.init">
-<code class="descname">init</code><span class="sig-paren">(</span><em>G</em>, <em>pos=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.ForceAtlas2.init" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="py3plex.visualization.fa2.forceatlas2.Timer">
-<em class="property">class </em><code class="descclassname">py3plex.visualization.fa2.forceatlas2.</code><code class="descname">Timer</code><span class="sig-paren">(</span><em>name='Timer'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.Timer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="py3plex.visualization.fa2.forceatlas2.Timer.display">
-<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.Timer.display" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="py3plex.visualization.fa2.forceatlas2.Timer.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.Timer.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="py3plex.visualization.fa2.forceatlas2.Timer.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.fa2.forceatlas2.Timer.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="py3plex-visualization-fa2-forceatlas2-module">
+<h2>py3plex.visualization.fa2.forceatlas2 module<a class="headerlink" href="#py3plex-visualization-fa2-forceatlas2-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-py3plex.visualization.fa2">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.visualization.fa2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -218,8 +88,8 @@
       &copy;2018, Blaž Škrlj.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/source/py3plex.visualization.fa2.rst.txt"
