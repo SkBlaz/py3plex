@@ -22,5 +22,7 @@ for p in imrange:
     img = mgimg.imread("{}{}.png".format(folder_tmp_files,p))
     imgplot = plt.imshow(img)
     myimages.append([imgplot])
-my_anim = animation.ArtistAnimation(fig, myimages, interval=1000)
+my_anim = animation.ArtistAnimation(fig, myimages, interval=1000, blit=True)
+
+## upload to gif maker or store as a video
 my_anim.save('../example_images/animation.gif', writer='imagemagick', fps=1)
