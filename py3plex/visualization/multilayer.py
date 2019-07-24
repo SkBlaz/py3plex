@@ -27,6 +27,34 @@ import numpy as np
 
 def draw_multilayer_default(network_list, display=True, node_size=10,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1,node_labels=False,node_font_size=5, scale_by_size=False):
 
+    """Core multilayer drawing method
+
+    Args:
+    network_list (list): a list of networks
+    display (bool): Whether to display or not (directly)
+    node_size (int): size of the nodes
+    alphalevel (float): transparency level
+    rectanglex (float): size of rectangles (background) (horizontal part)
+    rectangley (float): size of vertical parts of rectangles
+    background_shape (string): Background shape, either circle or rectangle
+    background_color (string): Background color
+    networks_color (string): Color of individual networks
+    labels (bool): Display labels?
+    arrowsize (float): Sizes of individual arrows
+    label_position (int): position of labels  (diagonal right)
+    verbose (bool): Verbose printout?
+    remove_isolated_nodes (bool): Remove isolated nodes?
+    axis (bools): axis are displayed
+    edge_size (float): Size of edges
+    node_labels (bool): Display node labels?
+    node_font_size (int): Size of the font
+    scale_by_size (bool): Scale nodes according to their degrees?
+
+    Returns:
+        None
+    """
+    
+
     if background_color == "default":
         
         facecolor_list_background = colors.linear_gradient("#4286f4",n=len(network_list))['hex']
@@ -274,6 +302,24 @@ def hairball_plot(g, color_list=None,
                   alpha_channel=0.5,
                   labels=None,
                   label_font_size=2):
+
+
+    """A method for drawing force-directed plots
+    Args:
+    network (networkx): A network to be visualized
+    color_list (list): A list of colors for nodes
+    node_size (float): Size of nodes
+    layout_parameters (dict): A dictionary of label parameters
+    legend (bool): Display legend?
+    scale_by_size (bool): Rescale nodes?
+    layout_algorithm (string): What type of layout algorithm is to be used?
+    edge_width (float): Width of edges
+    alpha_channel (float): Transparency level.
+    labels (bool): Display labels?
+    label_font_size (int): Sizes of labels
+    Returns:
+        None
+    """
     
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
