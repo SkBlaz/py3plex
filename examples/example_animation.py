@@ -10,8 +10,7 @@ import numpy as np
 fig = plt.figure()
 folder_tmp_files = "../datasets/animation"
 def animate(mnod):
-    lx = np.random.randint(2,10,1)[0]
-    ER_multilayer = random_generators.random_multilayer_ER(mnod,lx,0.005,directed=False)
+    ER_multilayer = random_generators.random_multilayer_ER(mnod,6,0.005,directed=False)
     fx = ER_multilayer.visualize_network(show=False)
     plt.savefig("{}{}.png".format(folder_tmp_files,mnod))
 imrange = [100,150,200,300,500,250,600] 
