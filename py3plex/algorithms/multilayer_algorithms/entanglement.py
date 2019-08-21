@@ -15,7 +15,6 @@ import numpy as np
 import itertools
 import math
 
-
 # Build the R and C matrix
 def build_occurrence_matrix(network):
 
@@ -32,7 +31,7 @@ def build_occurrence_matrix(network):
     edge_list = sorted(edge_list, key=lambda x: [x[0],x[1]])
 
     nb_layers = len(layers)
-    r_matrix = np.zeros((nb_layers,nb_layers))
+    r_matrix = np.zeros((nb_layers,nb_layers)).astype(float)
     
     def count_overlap(overlap):
         prev_layers = []
@@ -44,8 +43,7 @@ def build_occurrence_matrix(network):
                 r_matrix[l,layer_index] += 1.0
                 r_matrix[layer_index,l] += 1.0
 
-            prev_layers.append(layer_index)
-            
+            prev_layers.append(layer_index) 
 
     current_edge = None
     flat_pairs = 0.0
