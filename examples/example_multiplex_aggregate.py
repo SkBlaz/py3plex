@@ -5,8 +5,8 @@ from py3plex.core import multinet
 from py3plex.core import random_generators
 
 ## initiate an instance of a random graph
-ER_multilayer = random_generators.random_multilayer_ER(500,8,0.05,directed=False)
-
+ER_multilayer = random_generators.random_multiplex_ER(500,8,0.0005,directed=False)
+ER_multilayer.basic_stats()
 ## simple networkx object
 aggregated_network = ER_multilayer.aggregate_edges(metric="count",normalize_by="degree")
 print(nx.info(aggregated_network))

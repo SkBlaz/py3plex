@@ -1,4 +1,4 @@
-# This is the multiplex layer constructor class
+ # This is the multiplex layer constructor class
 
 ## draw multi layered network, takes .nx object list as input
 
@@ -86,7 +86,7 @@ def draw_multilayer_default(network_list, display=True, node_size=10,alphalevel=
     start_location_background = 0
     color = 0
     shadow_size = 0.5
-    circle_size = 1.04
+    circle_size = 1.05
 
     for network in network_list:
         if remove_isolated_nodes:
@@ -172,7 +172,7 @@ def draw_multilayer_default(network_list, display=True, node_size=10,alphalevel=
     if display == True:
         plt.show()
 
-def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1):
+def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=2,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1):
     # indices are correct network positions
     if input_type == "nodes":
 
@@ -185,10 +185,13 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
         for pair in multi_edge_tuple:
             try:
 
-                ## x0 x1, y0 y1
-
                 p1 = [global_positions[pair[0]][0],global_positions[pair[1]][0]]
                 p2 = [global_positions[pair[0]][1],global_positions[pair[1]][1]]
+                const = 0.04
+                
+                if p1[1] < const or p2[1] < const or p1[0] < const or p1[1] < const:
+                    continue
+                
                 if style == "line":
 
                     plt.plot(p1,p2,linestyle=linepoints,lw=1,alpha=alphachannel,color=linecolor)
@@ -219,6 +222,7 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
                 
             except Exception as err:
                 pass
+            
 #                print(err,"test")
             
         
@@ -226,7 +230,7 @@ def generate_random_multiedges(network_list,random_edges,style="line",linepoints
 
     edge_subplot = main_figure.add_subplot(111)
     return_list = []
-    print(style)
+    
     ## this needs to be in the form of:
     for k in range(random_edges):
         try:
@@ -246,7 +250,7 @@ def generate_random_multiedges(network_list,random_edges,style="line",linepoints
 
                 plt.plot(p1, p2,'k-', lw=1,color="black",linestyle="dotted")
 
-            elif style == "curve2_bezier":                
+            elif style == "curve2_bezier":             
 
                 x,y = bezier.draw_bezier(len(network_list),p1,p2,inversion=inverse_tag,path_height=pheight)
                 plt.plot(x,y,linestyle=linepoints,lw=1,alpha=0.3)
