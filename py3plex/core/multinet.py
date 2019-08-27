@@ -282,7 +282,21 @@ class multi_layer_network:
         self.core_network = nx.from_scipy_sparse_matrix(self.core_network,directed)
         self.add_dummy_layers()
         self.sparse_enabled = False
-            
+
+    def summary(self):
+        
+        """
+        Generate a short summary of the network in form of a dict.
+        """
+
+        unique_layers = len({n[1] for n in self.core_network.nodes()})
+        nodes = len(self.core_network.nodes())
+        edges = len(self.core_network.edges())
+        components =  len(list(nx.connected_components(self.core_network.to_undirected())))
+        node_degree_vector = list(dict(nx.degree(self.core_network)).values())
+        mean_degree = np.mean(node_degree_vector)
+        return {"Number of layers":unique_layers,"Nodes":nodes,"Edges":edges,"Mean degree":mean_degree,"CC":components}
+        
     def basic_stats(self,target_network=None):
 
         """ A method for obtaining a network's statistics """
