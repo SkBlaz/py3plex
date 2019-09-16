@@ -127,7 +127,6 @@ class Fit(object):
             #self.power_law = pl
         else:
             self.fixed_xmin=False
-            print("Calculating best minimal value for power law fit", file=sys.stderr)
             self.find_xmin()
 
         self.data = self.data[self.data>=self.xmin]
@@ -2221,7 +2220,6 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
 
     #If we aren't given an xmin, calculate the best possible one for a power law. This can take awhile!
     if xmin is None or xmin == 'find' or type(xmin) == tuple or type(xmin) == list:
-        print("Calculating best minimal value", file=sys.stderr)
         if 0 in data:
             print("Value 0 in data. Throwing out 0 values", file=sys.stderr)
             data = data[data != 0]
