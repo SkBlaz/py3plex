@@ -469,8 +469,27 @@ One can easily animate multiple plots (examples/example_animation.py)
 ForceAtlas2 cython implementation is based on the one provided at https://github.com/bhargavchippada/forceatlas2, developed by Bhargav Chippada. The code is included by the author's permission. We also thank Thomas Aynaud for the permission to include the initial version of the Louvain algorithm.
 
 
-# Citation
+# Citations
+```
+@Article{Skrlj2019,
+author={Skrlj, Blaz
+and Kralj, Jan
+and Lavrac, Nada},
+title={Py3plex toolkit for visualization and analysis of multilayer networks},
+journal={Applied Network Science},
+year={2019},
+volume={4},
+number={1},
+pages={94},
+abstract={Complex networks are used as means for representing multimodal, real-life systems. With increasing amounts of data that lead to large multilayer networks consisting of different node and edge types, that can also be subject to temporal change, there is an increasing need for versatile visualization and analysis software. This work presents a lightweight Python library, Py3plex, which focuses on the visualization and analysis of multilayer networks. The library implements a set of simple graphical primitives supporting intra- as well as inter-layer visualization. It also supports many common operations on multilayer networks, such as aggregation, slicing, indexing, traversal, and more. The paper also focuses on how node embeddings can be used to speed up contemporary (multilayer) layout computation. The library's functionality is showcased on both real and synthetic networks.},
+issn={2364-8228},
+doi={10.1007/s41109-019-0203-7},
+url={https://doi.org/10.1007/s41109-019-0203-7}
+}
 
+
+```
+and
 ```
 @InProceedings{10.1007/978-3-030-05411-3_60,
 author="{\v{S}}krlj, Bla{\v{z}}
