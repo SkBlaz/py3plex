@@ -48,6 +48,11 @@ def calculate_pval(term,alternative="two-sided"):
     return p_value
 
 def multiple_test_correction(input_dataset):
+
+    """
+    Multiple test correction. Given a dataset with corresponding significance levels, perform MTC.
+    """
+    
     from statsmodels.sandbox.stats.multicomp import multipletests
     pvals = defaultdict(list)
     with open(input_dataset) as ods:
@@ -71,11 +76,20 @@ def multiple_test_correction(input_dataset):
                 print (key,term,significant,tmp,pval)
 
 def parallel_enrichment(term):
+
+    """
+    A simple kernel for parallel computation of p-values. (assuming independence of experiments)
+    """
+    
     pval = calculate_pval(_term_database[term],alternative=_alternative)
     return {'observation' : _partition_name,'term' : _term_database[term][0],'pval' : pval}
 
 def compute_enrichment(term_dataset, term_database, topology_map, all_counts, whole_term_list=False,pvalue=0.05,multitest_method="fdr_bh",alternative="two-sided",intra_community=False):
 
+    """
+    The main method for computing the enrichment of a subnetwork. This work in parallel and also offers methods for multiple test correction.
+    """
+    
     if whole_term_list:
         tvals = set.union(*[x for x in topology_map.values()])
         topology_map = {}
@@ -156,6 +170,10 @@ def fet_enrichment_generic(term_dataset,term_database,all_counts,topology_map):
 
 def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two-sided",intra_community = False,pvalue=0.1,multitest_method="fdr_bh"):
 
+    """
+    This is the most generic enrichment process.
+    """
+    
     ## 1.) read the database.
     term_dataset, term_database, all_counts =  read_uniprot_GO(annotation_mappings)
     
@@ -169,6 +187,10 @@ def fet_enrichment_terms(partition_mappings,annotation_mappings,alternative="two
 
 ## write this so it uses vanilla data structures
 def fet_enrichment_uniprot(partition_mappings,annotation_mappings):
+
+    """
+    This is a pre-designed wrapper for uniprot-like annotation.
+    """
     
     ## 1.) read the database.
     term_dataset, term_database, all_counts =  read_uniprot_GO(annotation_mappings)

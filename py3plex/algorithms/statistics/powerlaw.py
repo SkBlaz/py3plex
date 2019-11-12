@@ -688,11 +688,9 @@ class Distribution(object):
 
         self.V = self.D_plus + self.D_minus
         self.D = max(self.D_plus, self.D_minus)
-        self.Asquare = sum((
-                            (CDF_diff**2) / 
-                            (Theoretical_CDF * (1 - Theoretical_CDF))
-                            )[1:]
-                           )
+        denom = (Theoretical_CDF * (1 - Theoretical_CDF))
+        denom += 1e-9
+        self.Asquare = sum(((CDF_diff**2) / denom)[1:])
         return self.D
 
     def ccdf(self,data=None, survival=True):
