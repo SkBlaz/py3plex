@@ -1,7 +1,7 @@
 numpy>=0.8
 rdflib>=0.1
 scipy>=1.1.0
-networkx>=2.0
+networkx>=2.1
 cython>=0.20
 tqdm>0.0
 matplotlib>=3.0

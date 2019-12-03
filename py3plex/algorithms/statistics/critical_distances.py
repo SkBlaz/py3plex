@@ -26,7 +26,7 @@ def center(width, n):
     return free_left, free_right
     
 
-def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, output_figure_file,fontsize=10):
+def diagram(list_of_algorithms, the_algorithm_candidate, output_figure_file,fontsize=10):
     """
     Draws critical distance diagram for Nemenyi or Bonferroni-Dunn post-hoc test.
     The diagram is shown if output_figure_file is None, and saved otherwise
@@ -198,9 +198,9 @@ def diagram(list_of_algorithms, critical_distance, the_algorithm_candidate, outp
     for i, alg_rank in enumerate(sorted_algos_copy):
         plot_algorithm(i, alg_rank[0], alg_rank[1])
     # critical distance
-    plot_critical_distance()
+#    plot_critical_distance()
     # algorithm groups
-    plot_groups(algorithm_groups())
+#    plot_groups(algorithm_groups())
     # save / show the results
     if output_figure_file is not None:
         folder_end = output_figure_file.rfind("/")
@@ -298,5 +298,5 @@ def plot_critical_distance(fname,groupby=['dataset', 'setting'],groupby_target='
     names = [x.replace("_"," ") for k,x in enumerate(list(clf_score.keys()))]
     avranks = list(clf_score.values())
     pairs = list(zip(names,avranks))
-    cd = Orange.evaluation.compute_CD(avranks[0:(len(avranks)-1)], comparisons, alpha="0.05")
-    diagram(pairs,cd,None,outfile,fontsize=fontsize)
+#    cd = Orange.evaluation.compute_CD(avranks[0:(len(avranks)-1)], comparisons, alpha="0.05")
+    diagram(pairs,None,outfile,fontsize=fontsize)
