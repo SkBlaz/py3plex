@@ -14,45 +14,45 @@ import numpy as np
 
 def test_imports():
     logging.info("Import tests")
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
 
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/ecommerce_0.gml",directed=True, input_type="gml")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/ecommerce_0.gml",directed=True, input_type="gml")
 
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/ions.mat",directed=False, input_type="sparse")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/ions.mat",directed=False, input_type="sparse")
 
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/test.edgelist",directed=False, input_type="edgelist")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/test.edgelist",directed=False, input_type="edgelist")
 
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/multiedgelist.txt",directed=False, input_type="multiedgelist")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/multiedgelist.txt",directed=False, input_type="multiedgelist")
 
-    #multilayer_network = multinet.multi_layer_network().load_network("./datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TOD
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/edgeList.txt",directed=False, input_type="multiedgelist")
+    #multilayer_network = multinet.multi_layer_network().load_network("datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TOD
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/edgeList.txt",directed=False, input_type="multiedgelist")
 
 
     ## save the network as a gpickle object
-    multilayer_network.save_network(output_file="./datasets/stored_network.gpickle",output_type="gpickle")
+    multilayer_network.save_network(output_file="datasets/stored_network.gpickle",output_type="gpickle")
 
 def test_basic_visualizatio1():
     logging.info("Import viz test 1")
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/edgeList.txt",directed=False, input_type="multiedgelist")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/edgeList.txt",directed=False, input_type="multiedgelist")
     multilayer_network.basic_stats()
     multilayer_network.visualize_network()
    
 def test_basic_visualizatio2():
     logging.info("Import viz test 2")
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/multiL.txt", directed=True, input_type="multiedgelist")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/multiL.txt", directed=True, input_type="multiedgelist")
     multilayer_network.basic_stats()
     multilayer_network.visualize_network(style="diagonal")
     
 def test_basic_visualizatio3():
     logging.info("Import viz test 3")
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/multinet_k100.txt",directed=True, input_type="multiedgelist")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/multinet_k100.txt",directed=True, input_type="multiedgelist")
     multilayer_network.basic_stats()
     multilayer_network.visualize_network()
     
 def test_basic_visualizati4():
     ## multilayer -----------------------------------
     logging.info("Import viz test 4")
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
     multilayer_network.basic_stats() ## check core imports
     #multilayer_network.visualize_network() ## visualize
     #
@@ -93,26 +93,26 @@ def test_basic_visualizati4():
 def test_basic_visualizatio5():
     logging.info("Import viz test 6")
     ## basic string layout ----------------------------------
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/epigenetics.gpickle",directed=False,label_delimiter="---",input_type="gpickle_biomine")
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/epigenetics.gpickle",directed=False,label_delimiter="---",input_type="gpickle_biomine")
     network_colors, graph = multilayer_network.get_layers(style="hairball")
     hairball_plot(graph,network_colors,legend=True,layout_parameters={"iterations": 30})
     
 def test_basic_visualizatio6():
     logging.info("Import viz test 7")
     ## string layout for larger network -----------------------------------
-    multilayer_network = multinet.multi_layer_network().load_network("./datasets/soc-Epinions1.edgelist", label_delimiter="---",input_type="edgelist",directed=True)
+    multilayer_network = multinet.multi_layer_network().load_network("datasets/soc-Epinions1.edgelist", label_delimiter="---",input_type="edgelist",directed=True)
     hairball_plot(multilayer_network.core_network,layout_parameters={"iterations": 30})
     
 def test_basic_animation():
     logging.info("Import viz test 8")
     fig = plt.figure()
-    folder_tmp_files = "./datasets/animation"
+    folder_tmp_files = "datasets/animation"
     def animate(mnod):
         lx = np.random.randint(2,10,1)[0]
         ER_multilayer = random_generators.random_multilayer_ER(mnod,lx,0.005,directed=False)
         fx = ER_multilayer.visualize_network(show=False)
         plt.savefig("{}{}.png".format(folder_tmp_files,mnod))
-    imrange = [100,150,200,300,500,250,600] 
+    imrange = [100,150,200]]
     for j in imrange:
         animate(j)
     myimages = []
