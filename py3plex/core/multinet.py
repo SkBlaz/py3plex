@@ -296,7 +296,22 @@ class multi_layer_network:
         node_degree_vector = list(dict(nx.degree(self.core_network)).values())
         mean_degree = np.mean(node_degree_vector)
         return {"Number of layers":unique_layers,"Nodes":nodes,"Edges":edges,"Mean degree":mean_degree,"CC":components}
+
+    def get_unique_entity_counts(self):
+
+        """
+        :input: self object
+        """
         
+        node_layer_tuples = set()
+        unique_nodes = set()
+        
+        for edge in self.core_network.get_nodes():
+            node_layer_tuples.add(edge)
+            unique_nodes.add(edge[0])
+
+        return len(node_layer_tuples), len(unique_nodes)
+    
     def basic_stats(self,target_network=None):
 
         """ A method for obtaining a network's statistics """
@@ -310,9 +325,17 @@ class multi_layer_network:
 
             if target_network is None:            
                 print(nx.info(self.core_network))
+                nt, n = get_unique_entity_counts(self)
+
+                print("Number of unique node-layer tuples: {}".format(nt))
+                print("Number of unique nodes: {}".format(n))
 
             else:
                 print(nx.info(target_network))
+                nt, n = get_unique_entity_counts(self)
+                
+                print("Number of unique node-layer tuples: {}".format(nt))
+                print("Number of unique nodes: {}".format(n))
 
     def get_edges(self,data=False,multiplex_edges=False):
         """ A method for obtaining a network's edges """
