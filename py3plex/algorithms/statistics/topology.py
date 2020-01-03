@@ -19,7 +19,7 @@ def basic_pl_stats(degree_sequence):
     results = Fit(degree_sequence,discrete=True)
     return (results.alpha,results.sigma)
 
-def plot_power_law(degree_sequence,title,xlabel,plabel,ylabel="Number of nodes",formula_x=70,formula_y=0.05,show=True):
+def plot_power_law(degree_sequence,title,xlabel,plabel,ylabel="Number of nodes",formula_x=70,formula_y=0.05,show=True, use_normalization = False):
 
     plt.figure(2)  
     ax1 = plt.subplot(211)
@@ -66,7 +66,11 @@ def plot_power_law(degree_sequence,title,xlabel,plabel,ylabel="Number of nodes",
     plt.ylabel(ylabel)
     plt.axvline(x=results.xmin,color="black",linestyle="--")
     plt.ylim(0,0.1)
-    ax1.text(formula_x, formula_y, r"$f(k) ="+str(norm)+" k^{-"+str(round(results.alpha,3))+"}$", fontsize=13)
+    
+    if not use_normalization:
+        norm = "C"
+        
+    ax1.text(formula_x, formula_y, r"$f(k) = "+norm+" \cdot k^{-"+str(round(results.alpha,3))+"}$", fontsize=13)
 
     #    plt.xlabel(xlabel)
     #    plt.figure(3)

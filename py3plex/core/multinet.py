@@ -306,7 +306,7 @@ class multi_layer_network:
         node_layer_tuples = set()
         unique_nodes = set()
         
-        for edge in self.core_network.get_nodes():
+        for edge in self.get_edges():
             node_layer_tuples.add(edge)
             unique_nodes.add(edge[0])
 
@@ -325,16 +325,12 @@ class multi_layer_network:
 
             if target_network is None:            
                 print(nx.info(self.core_network))
-                nt, n = get_unique_entity_counts(self)
-
-                print("Number of unique node-layer tuples: {}".format(nt))
+                nt, n = self.get_unique_entity_counts()
                 print("Number of unique nodes: {}".format(n))
 
             else:
                 print(nx.info(target_network))
-                nt, n = get_unique_entity_counts(self)
-                
-                print("Number of unique node-layer tuples: {}".format(nt))
+                nt, n = self.get_unique_entity_counts()                
                 print("Number of unique nodes: {}".format(n))
 
     def get_edges(self,data=False,multiplex_edges=False):
