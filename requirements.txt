@@ -5,3 +5,5 @@ networkx>=2.1
 cython>=0.20
 tqdm>0.0
 matplotlib>=3.0
+gensim
+scikit-learn

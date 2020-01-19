@@ -52,6 +52,8 @@ class multi_layer_network:
         self.label_delimiter = label_delimiter
         
     def __getitem__(self,i,j=None):
+        # for node in self.core_network.nodes():
+        #     print(node)
         if j is None:
             return self.core_network[i]
         else:

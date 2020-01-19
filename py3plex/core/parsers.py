@@ -375,7 +375,7 @@ def parse_multiplex_folder(input_folder,directed):
                 layer_dict[lname] = lid
                 
     if len(activity_file) >= 1:
-        time_series_tuples = defaultdict(list)                
+        time_series_tuples = list() #defaultdict(list)                
         for ac in activity_file:
             with open(ac) as acf:
                 for line in acf:
@@ -383,7 +383,7 @@ def parse_multiplex_folder(input_folder,directed):
                     time_series_tuples.append({"node_first":1,"node_second":n2,"layer":layer_dict[layer_name],"timestamp":timestamp})
 
     time_series_tuples = pd.DataFrame()
-    time_series_tuples = time_series_tuples.appen(time_series_tuples,ignore_index=True)
+    time_series_tuples = time_series_tuples.append(time_series_tuples,ignore_index=True)
 
 #    nodes_file = [x for x in names if "nodes.txt" in x]    
     
