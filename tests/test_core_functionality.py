@@ -112,7 +112,7 @@ def test_basic_animation():
         ER_multilayer = random_generators.random_multilayer_ER(mnod,lx,0.005,directed=False)
         fx = ER_multilayer.visualize_network(show=False)
         plt.savefig("{}{}.png".format(folder_tmp_files,mnod))
-    imrange = [100,150,200]]
+    imrange = [100,150,200]
     for j in imrange:
         animate(j)
     myimages = []
