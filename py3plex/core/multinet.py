@@ -797,7 +797,7 @@ class multi_layer_network:
         supra_adjacency_matrix_plot(adjmat,**kwargs)
 
     
-    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01,other_parameters=None, axis = None, fig = None, no_labels = False):
+    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01, axis = None, fig = None, no_labels = False):
         if server_mode:
             return 0
 
@@ -857,9 +857,9 @@ class multi_layer_network:
         elif style == "hairball":
             network_colors, graph = self.get_layers(style="hairball")
             if axis:
-                axis = hairball_plot(graph,network_colors,layout_algorithm="force",other_parameters=other_parameters)
+                axis = hairball_plot(graph,network_colors,layout_algorithm="force")
             else:
-                ax = hairball_plot(graph,network_colors,layout_algorithm="force",other_parameters=other_parameters)
+                ax = hairball_plot(graph,network_colors,layout_algorithm="force")
             if show:
                 plt.show()
             if axis:
@@ -897,7 +897,7 @@ class multi_layer_network:
         """ A supporting method for obtaining decomposition triplets  """
         self._assign_types_for_hinmine()
         if self.hinmine_network is None:
-            self.hinmine_network = load_hinmine_object(self.core_network, self.label_delimiter)            
+            self.hinmine_network = load_hinmine_object(self.core_network, self.label_delimiter)
         return hinmine_get_cycles(self.hinmine_network)
     
     def get_decomposition(self, heuristic="all", cycle=None,parallel=True, alpha=1, beta=1):

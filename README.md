@@ -27,11 +27,19 @@ To install, simply:
 python3 setup.py install
 ```
 
-or you can try:
+or current branch:
+
+```
+pip3 install git+https://github.com/skblaz/py3plex
+```
+
+or you can try (but is not necessarily the most current branch):
 
 ```
 pip3 install py3plex
 ```
+
+That's almost it. For full functionality, one needs node2vec and InfoMap binary files, which need to be put into the ./bin folder. This project offers pre-compiled versions, however was tested only on Ubuntu linux > 15.
 
 For any errors, please open an issue!
 
@@ -61,7 +69,7 @@ n3 n1
 ...
 ```
 ```python
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/test.edgelist",directed=False, input_type="edgelist")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/test.edgelist",directed=False, input_type="edgelist")
 ```
 
 Adding the layers and the weights, a single edge looks like (node layer node layer weight):
@@ -71,7 +79,7 @@ n1 l3 n3 l1 1
 ```
 
 ```python
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/multiedgelist.txt",directed=False, input_type="multiedgelist")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/multiedgelist.txt",directed=False, input_type="multiedgelist")
 ```
 Other handy parsers include:
 
@@ -79,13 +87,13 @@ Other handy parsers include:
 from py3plex.core import multinet
 
 ## sparse .mat (matlab-like) matrix -- numpy sparse matrix
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/ions.mat",directed=False, input_type="sparse")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/ions.mat",directed=False, input_type="sparse")
 
 ## GML
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/ecommerce_0.gml",directed=True, input_type="gml")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/ecommerce_0.gml",directed=True, input_type="gml")
 
 ## internal gpickle format
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/epigenetics.gpickle",directed=True, input_type="gpickle_biomine")
 ```
 A common use is, to parse a given network from a file, and construct a multilayer network object on the fly, as discussed next.
 
@@ -183,9 +191,9 @@ During initiation, if you specify the network type to be 'multiplex', node coupl
 from py3plex.core import multinet
 from py3plex.core import random_generators
 
-comNet = multinet.multi_layer_network(network_type="multiplex",coupling_weight=1).load_network('../datasets/simple_multiplex.edgelist',directed=False,input_type='multiplex_edges')
+comNet = multinet.multi_layer_network(network_type="multiplex",coupling_weight=1).load_network('./datasets/simple_multiplex.edgelist',directed=False,input_type='multiplex_edges')
 comNet.basic_stats()
-comNet.load_layer_name_mapping('../datasets/simple_multiplex.txt')
+comNet.load_layer_name_mapping('./datasets/simple_multiplex.txt')
 mat = comNet.get_supra_adjacency_matrix()
 print(mat.shape)
 kwargs = {"display":True}
@@ -246,7 +254,7 @@ Here are some showcase examples! (**run from the ./examples folder!**)
 from py3plex.core import multinet
 from py3plex.algorithms.statistics.basic_statistics import *
 
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/imdb_gml.gml",directed=True,input_type="gml")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/imdb_gml.gml",directed=True,input_type="gml")
 
 stats_frame = core_network_statistics(multilayer_network.core_network)
 print(stats_frame)
@@ -256,24 +264,6 @@ print(top_n_by_degree)
 
 ```
 
-**Network decomposition**
-What is network decomposition? Does your network consist of multiple node types? Are there directed edges present? If so, information from the whole network can be used to construct artificial edges between the nodes of a user-defined type (defined using node triplets). This way, a heterogeneous network can be simplified to a homogeneous one, useful for e.g., machine learning tasks!
-```python
-from py3plex.core import multinet
-from py3plex.algorithms.node_ranking import sparse_page_rank, stochastic_normalization_hin
-from py3plex.algorithms.benchmark_classification import *
-
-dataset = "../datasets/labeled_epigenetics.gpickle"
-
-multilayer_network = multinet.multi_layer_network().load_network(input_file=dataset,directed=True,input_type=dataset.split(".")[-1])
-
-print ("Running optimization for {}".format(dataset))
-multilayer_network.basic_stats() ## check core imports        
-triplet_set = list(set(multilayer_network.get_decomposition_cycles()))
-print(triplet_set)
-for decomposition in multilayer_network.get_decomposition(heuristic=["idf","rf"], cycle=triplet_set, parallel=True):
-    print(decomposition)
-```
 
 **Multilayer visualization**
 
@@ -285,7 +275,7 @@ from py3plex.core import multinet
 ## you can try the default visualization options --- this is the simplest option/
 
 ## multilayer
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/goslim_mirna.gpickle",directed=False, input_type="gpickle_biomine")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/goslim_mirna.gpickle",directed=False, input_type="gpickle_biomine")
 multilayer_network.basic_stats() ## check core imports
 
 multilayer_network.visualize_network(style="diagonal")
@@ -312,7 +302,7 @@ for edge_type,edges in multilinks.items():
 plt.show()
 
 ### basic string layout
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/imdb_gml.gml",directed=False,label_delimiter="---")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/imdb_gml.gml",directed=False,label_delimiter="---")
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 hairball_plot(graph,network_colors)
 plt.show()
@@ -332,31 +322,33 @@ from py3plex.visualization.multilayer import *
 from py3plex.visualization.colors import colors_default
 from collections import Counter
 
-import argparse
+network = multinet.multi_layer_network().load_network(input_file="./datasets/network.dat",
+                                                      directed=False,
+                                                      input_type="edgelist")
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--input_network",default="../datasets/cora.mat")
-parser.add_argument("--input_type",default="sparse")
-args = parser.parse_args()
+network.basic_stats()  # check core imports
 
-network = multinet.multi_layer_network().load_network(input_file=args.input_network,directed=False,input_type=args.input_type) ## network and group objects must be present within the .mat object
+network.read_ground_truth_communities("./datasets/community.dat")
 
-network.basic_stats() ## check core imports
-
-partition = cw.louvain_communities(network.core_network)
-
-## select top n communities by size
-top_n = 10
+partition = network.ground_truth_communities
+#print(partition)
+# select top n communities by size
+top_n = 100
 partition_counts = dict(Counter(partition.values()))
 top_n_communities = list(partition_counts.keys())[0:top_n]
 
-## assign node colors
-color_mappings = dict(zip(top_n_communities,colors_default[0:top_n]))
+# assign node colors
+color_mappings = dict(zip(top_n_communities,[x for x in colors_default if x != "black"][0:top_n]))
 
 network_colors = [color_mappings[partition[x]] if partition[x] in top_n_communities else "black" for x in network.get_nodes()]
 
-## visualize the network's communities!
-hairball_plot(network.core_network,color_list = network_colors,layered=False,layout_parameters={"iterations" : 50},scale_by_size=True,layout_algorithm="force",legend=False)
+# visualize the network's communities!
+hairball_plot(network.core_network,
+              color_list=network_colors,
+              layout_parameters={"iterations": 30},
+              scale_by_size=True,
+              layout_algorithm="force",
+              legend=False)
 plt.show()
 
 ```
@@ -382,16 +374,16 @@ from py3plex.visualization import embedding_visualization
 import json
 
 ## load network in GML
-multilayer_network = multinet.multi_layer_network().load_network("../datasets/imdb_gml.gml",directed=True,input_type="gml")
+multilayer_network = multinet.multi_layer_network().load_network("./datasets/imdb_gml.gml",directed=True,input_type="gml")
 
 ## save this network as edgelist for node2vec
-multilayer_network.save_network("../datasets/test.edgelist")
+multilayer_network.save_network("./datasets/test.edgelist")
 
 ## call a specific embedding binary --- this is not limited to n2v
-train_node2vec_embedding.call_node2vec_binary("../datasets/test.edgelist","../datasets/test_embedding.emb",binary="../bin/node2vec",weighted=False)
+train_node2vec_embedding.call_node2vec_binary("./datasets/test.edgelist","./datasets/test_embedding.emb",binary="../bin/node2vec",weighted=False)
 
 ## preprocess and check embedding
-multilayer_network.load_embedding("../datasets/test_embedding.emb")
+multilayer_network.load_embedding("./datasets/test_embedding.emb")
 
 ## visualize embedding
 embedding_visualization.visualize_embedding(multilayer_network)
@@ -399,7 +391,7 @@ embedding_visualization.visualize_embedding(multilayer_network)
 ## output embedded coordinates as JSON
 output_json = embedding_visualization.get_2d_coordinates_tsne(multilayer_network,output_format="json")
 
-with open('../datasets/embedding_coordinates.json', 'w') as outfile:
+with open('./datasets/embedding_coordinates.json', 'w') as outfile:
     json.dump(output_json, outfile)
 ```
 ![Non-labeled embedding](example_images/example_embedding.png)
