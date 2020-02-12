@@ -150,7 +150,7 @@ class multi_layer_network:
         
         with open(mapping_name,"r+") as lf:
             if header:
-                lf.readlines()
+                lf.readline()
             for line in lf:
                 lid,lname = line.strip().split(" ")
                 self.layer_name_map[lname] = lid
@@ -446,6 +446,19 @@ class multi_layer_network:
         
         self.monitor("Finished edge cleaning..")
 
+    def edges_from_temporal_table(self, edge_df):
+        
+        node_first_names = edge_df.node_first.values
+        node_second_names = edge_df.node_second.values
+        layer_names = edge_df.layer_name.values
+        layer_edges = defaultdict(list)
+        edges = []
+        for enx, en in enumerate(node_first_names):            
+            edge = (str(node_first_names[enx]),str(node_second_names[enx]),str(layer_names[enx]),str(layer_names[enx]), 1)
+            edges.append(edge)
+        return edges
+        
+        
     def fill_tmp_with_edges(self,edge_df):
                         
         node_first_names = edge_df.node_first.values
@@ -459,7 +472,7 @@ class multi_layer_network:
         ## fill layer by layer
         for enx, layer in enumerate(self.layer_names):
             layer_ed = layer_edges[layer]
-            self.tmp_layers[enx].add_edges_from(layer_ed)            
+            self.tmp_layers[enx].add_edges_from(layer_ed)
         
     def split_to_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True,multiplex=False):
 
@@ -476,6 +489,10 @@ class multi_layer_network:
         ## hairball visualization
         if style == "hairball":
             self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization_hairball(self.core_network,compute_layouts=True)
+
+        if style == "none":
+            self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_parsing(self.core_network)
+
     
     def get_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):
 

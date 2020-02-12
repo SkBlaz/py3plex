@@ -322,10 +322,18 @@ def parse_multiedge_tuple_list(network,directed):
     else:
         G = nx.MultiGraph()
     for _edgetuple in network:
+#        ((str(node_first_names[enx]),str(layer_names[enx])),(str(node_second_names[enx]),str(layer_names[enx])))
+        
         node_first,node_second,layer_first,layer_second,weight = _edgetuple
-        G.add_node(node_first,type=layer_first)
-        G.add_node(node_second,type=layer_second)
-        G.add_edge(node_first,node_second,weight=weight)
+        
+        G.add_node((node_first,layer_first))
+        G.add_node((node_second,layer_second))        
+        G.add_edge((node_first,layer_first),(node_second,layer_second), weight = weight)
+        
+        #G.add_node(node_first,type=layer_first)
+        #G.add_node(node_second,type=layer_second)
+        #G.add_edge(node_first,node_second,weight=weight)
+        
     return (G,None)
     pass
 
