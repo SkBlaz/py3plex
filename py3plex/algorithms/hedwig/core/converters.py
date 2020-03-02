@@ -72,7 +72,6 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
                     g.add((blank, KT.annotation, annotation_uri))              
 
         except Exception as err:
-            print(err)
             ## incorrect mappings are ignored..
             pass
 
