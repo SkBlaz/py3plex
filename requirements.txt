@@ -8,3 +8,4 @@ tqdm>0.0
 matplotlib>=3.0
 gensim
 scikit-learn
+bitarray==1.2.1
