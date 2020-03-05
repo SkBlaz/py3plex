@@ -344,7 +344,7 @@ class multi_layer_network:
         elif self.network_type == "multiplex":
             if not multiplex_edges:
                 for edge in self.core_network.edges(data=data,keys=True):
-                    if edge[2] == "mpx":
+                    if edge[2] == "coupling":
                         continue
                     yield edge            
             else:            
