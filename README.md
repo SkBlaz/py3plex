@@ -10,7 +10,7 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 ![Customization](example_images/part1.png)
 ## Getting Started
 
-To get started, please view **examples** folder. Extensive documentation is available at: [docs](https://skblaz.github.io/Py3plex)
+To get started, please view **examples** folder. Extensive documentation is available at: [docs](https://py3plex.readthedocs.io/en/latest/)
 ### Prerequisites
 
 1. Networkx (2.1)
