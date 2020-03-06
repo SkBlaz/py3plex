@@ -12,9 +12,8 @@ usedy Python3 graph analysis library, it offers intuitive and efficient explorat
     pip install git+https://github.com/skblaz/py3plex
 
 
-The basic usage is discussed next.
+The basic usage is discussed next. More or less all functionality revolves around the multinet class, which is imported as:
 
-    
 .. code:: python3
 
 	  from py3plex.core import multinet

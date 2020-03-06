@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -208,7 +208,7 @@
 28</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
  <span class="c1">## a multilayer object</span>
- <span class="n">A</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;../datasets/multiedgelist.txt&quot;</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+ <span class="n">A</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;../datasets/multiedgelist.txt&quot;</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
  <span class="n">A</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
@@ -216,14 +216,14 @@
  <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Edge looping:&quot;</span><span class="p">)</span>
 
  <span class="c1">## looping through edges:</span>
- <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
-     <span class="k">print</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+ <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+     <span class="nb">print</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
 
  <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Node looping:&quot;</span><span class="p">)</span>
 
  <span class="c1">## what about nodes?</span>
- <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
-     <span class="k">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+ <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+     <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 
  <span class="n">C1</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">],</span><span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
  <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C1</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
@@ -284,13 +284,13 @@
 43
 44</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
  <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
- <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+ <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
  <span class="kn">import</span> <span class="nn">queue</span>
- <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
- <span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+ <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+ <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 
  <span class="c1">## some random graph</span>
- <span class="n">ER_multilayer</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+ <span class="n">ER_multilayer</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
  <span class="c1">## seed node</span>
  <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ER_multilayer</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
@@ -306,12 +306,12 @@
  <span class="n">layer_visit_sequence</span> <span class="o">=</span> <span class="p">[]</span>
  <span class="n">node_visit_sequence</span> <span class="o">=</span> <span class="p">[]</span>
  <span class="n">iterations</span> <span class="o">=</span> <span class="mi">0</span>
- <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+ <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
      <span class="k">if</span> <span class="ow">not</span> <span class="n">Q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
          <span class="n">candidate</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
          <span class="n">iterations</span><span class="o">+=</span><span class="mi">1</span>
          <span class="k">if</span> <span class="n">iterations</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-             <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Iterations: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iterations</span><span class="p">))</span>
+             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterations: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iterations</span><span class="p">))</span>
          <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="n">candidate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">candidate</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
              <span class="n">idx</span> <span class="o">=</span> <span class="n">all_nodes_indexed</span><span class="p">[</span><span class="n">neighbor</span><span class="p">]</span>
              <span class="k">if</span> <span class="n">spread_vector</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>

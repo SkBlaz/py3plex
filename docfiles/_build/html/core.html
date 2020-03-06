@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -186,7 +186,7 @@
 <span class="n">multilayer_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="c1"># load the file</span>
-<span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;imdb_gml.gml&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">)</span>
+<span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;imdb_gml.gml&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">)</span>
 
 <span class="c1"># compute some basic statistics</span>
 <span class="n">multilayer_network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -215,22 +215,22 @@
 <li><p>Target node class (if specified), must have the <em>label</em> flag, where the value is a string representing different delimiter-separated classes. For example: class1—class2—class3 represent a node with 3 classes assigned (multiclass-multilabel problem.</p></li>
 </ol>
 <p>The <em>label_delimiter</em> is specified when inputting the network</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">):</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">):</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>Load a gml file:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gml&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gml&quot;</span><span class="p">):</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gml&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gml&quot;</span><span class="p">):</span>
 </pre></div>
 </td></tr></table></div>
 <p>Load a gpickle file:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">):</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">):</span>
 </pre></div>
 </td></tr></table></div>
 <p>Load a gpickle file, with one type of nodes labeled:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">):</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;example.gpickle&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">,</span><span class="n">label_delimiter</span><span class="o">=</span><span class="s2">&quot;---&quot;</span><span class="p">):</span>
 </pre></div>
 </td></tr></table></div>
 <p>etc.</p>

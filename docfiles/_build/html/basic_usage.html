@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -177,8 +177,8 @@ or
 pip install git+https://github.com/skblaz/py3plex
 </pre></div>
 </div>
-<p>The basic usage is discussed next.</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="k">import</span> <span class="n">multinet</span>
+<p>The basic usage is discussed next. More or less all functionality revolves around the multinet class, which is imported as:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 </pre></div>
 </div>
 <p>For the remainder of this documentation, we assume the datasets (from the home py3plex repo directory) is present along the code.</p>
@@ -275,7 +275,7 @@ Here, the input is expected to be in the form:</p>
  <span class="n">simple_node</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;source&quot;</span> <span class="p">:</span> <span class="s2">&quot;node1&quot;</span><span class="p">,</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;t1&quot;</span><span class="p">}</span>
  <span class="n">A</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">simple_node</span><span class="p">)</span>
  <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Printing a single node.&quot;</span><span class="p">)</span>
- <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">)))</span>
+ <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
 
  <span class="c1">## add a single edge with type</span>
  <span class="n">simple_edge</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span>
@@ -283,25 +283,25 @@ Here, the input is expected to be in the form:</p>
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;mention&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;source_type&quot;</span><span class="p">:</span><span class="s2">&quot;t1&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;weight&quot;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">## add arbitrary attributes!</span>
-                <span class="s2">&quot;sunrise_tomorrow&quot;</span> <span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="s2">&quot;sunrise_tomorrow&quot;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                 <span class="s2">&quot;target_type&quot;</span><span class="p">:</span><span class="s2">&quot;t2&quot;</span><span class="p">}</span>
 
  <span class="n">A</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">simple_edge</span><span class="p">)</span>
  <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Printing a single edge.&quot;</span><span class="p">)</span>
- <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">)))</span>
+ <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
 
  <span class="c1">## multiple edges are added by simply packing existing edges into a list.</span>
  <span class="n">simple_attributed_edges</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span><span class="s2">&quot;target&quot;</span><span class="p">:</span><span class="s2">&quot;node6&quot;</span><span class="p">,</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;mention&quot;</span><span class="p">,</span><span class="s2">&quot;source_type&quot;</span><span class="p">:</span><span class="s2">&quot;t1&quot;</span><span class="p">,</span><span class="s2">&quot;target_type&quot;</span><span class="p">:</span><span class="s2">&quot;t5&quot;</span><span class="p">},{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span><span class="s2">&quot;node3&quot;</span><span class="p">,</span><span class="s2">&quot;target&quot;</span><span class="p">:</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;mention&quot;</span><span class="p">,</span><span class="s2">&quot;source_type&quot;</span><span class="p">:</span><span class="s2">&quot;t1&quot;</span><span class="p">,</span><span class="s2">&quot;target_type&quot;</span><span class="p">:</span><span class="s2">&quot;t3&quot;</span><span class="p">}]</span>
  <span class="n">A</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">simple_attributed_edges</span><span class="p">)</span>
  <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Printing multiple edges&quot;</span><span class="p">)</span>
- <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">)))</span>
+ <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
 
  <span class="c1">## Edges can also be added as lists: [n1,l1,n2,l2,w]</span>
  <span class="n">example_list_edge</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;node3&quot;</span><span class="p">,</span><span class="s2">&quot;t2&quot;</span><span class="p">,</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span><span class="s2">&quot;t6&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="s2">&quot;node3&quot;</span><span class="p">,</span><span class="s2">&quot;t2&quot;</span><span class="p">,</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span><span class="s2">&quot;t6&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
 
  <span class="c1">## specify that input is list, all else is recognized by Py3plex!</span>
  <span class="n">A</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">example_list_edge</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
- <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
+ <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
 </pre></div>
 </td></tr></table></div>
 <p>Hence, arbitrary data (structures) can be added to individual node-layer tuplets, offering additional flexibility. For example, adding temporal component is one of possibilities.</p>
