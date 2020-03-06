@@ -17,13 +17,6 @@ If you are interested in contributing please:
 - Or write with your idea
 - Or open an issue with your suggestion (feature requests welcome)
 
-### Tests
-To test whether the core library functionality works well, you can run the test suite from the ./tests folder as:
-
-```
-python3 -m pytest test_core_functionality.py
-```
-
 
 # Citations
 ```

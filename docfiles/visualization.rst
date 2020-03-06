@@ -32,9 +32,9 @@ The following example shows minimal usecase for obtaining both types of visualiz
 Yields the harball plot:
     
 .. image:: ../example_images/hairball.png
-   :width: 300
+   :width: 400
 	   
 And the *diagonal* multilayer layout:
 
 .. image:: ../example_images/multilayer.png
-   :width: 300
+   :width: 400

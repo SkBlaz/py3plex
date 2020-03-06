@@ -26,7 +26,7 @@ A 3min introduction
 **********************
 
 .. image:: ../example_images/part1.png
-   :width: 200
+   :width: 400
 
 A network can be loaded by either using one of the many available parsers (below), or constructed using our functional API. Examples of loading the network:
 (See example files in the examples/ folder!)
@@ -64,7 +64,7 @@ What about multiplex networks?
 **********************
 
 .. image:: ../example_images/multiplex.png
-   :width: 200
+   :width: 400
 	   
 Compared to multilayers, multiplex networks can be interpreted as the same set of nodes, projected across different contexts (one type of node, multiple possible, different edges between them). py3plex also supports parsing of multiplex networks, such as seen in the example below.
 Here, the input is expected to be in the form::
