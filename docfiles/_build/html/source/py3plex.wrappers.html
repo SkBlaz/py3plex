@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>py3plex.wrappers package &#8212; py3plex 0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="py3plex.visualization.fa2 package" href="py3plex.visualization.fa2.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="py3plex-wrappers-package">
+<h1>py3plex.wrappers package<a class="headerlink" href="#py3plex-wrappers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.wrappers.benchmark_nodes">
+<span id="py3plex-wrappers-benchmark-nodes-module"></span><h2>py3plex.wrappers.benchmark_nodes module<a class="headerlink" href="#module-py3plex.wrappers.benchmark_nodes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="py3plex.wrappers.benchmark_nodes.TopKRanker">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.wrappers.benchmark_nodes.</code><code class="sig-name descname">TopKRanker</code><span class="sig-paren">(</span><em class="sig-param">estimator</em>, <em class="sig-param">n_jobs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.TopKRanker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.multiclass.OneVsRestClassifier</span></code></p>
+<dl class="method">
+<dt id="py3plex.wrappers.benchmark_nodes.TopKRanker.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">top_k_list</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.TopKRanker.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict multi-class targets using underlying estimators.</p>
+<dl class="simple">
+<dt>X<span class="classifier">(sparse) array-like of shape (n_samples, n_features)</span></dt><dd><p>Data.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>y<span class="classifier">(sparse) array-like of shape (n_samples,) or (n_samples, n_classes)</span></dt><dd><p>Predicted multi-class targets.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.wrappers.benchmark_nodes.benchmark_node_classification">
+<code class="sig-prename descclassname">py3plex.wrappers.benchmark_nodes.</code><code class="sig-name descname">benchmark_node_classification</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">core_network</em>, <em class="sig-param">labels_matrix</em>, <em class="sig-param">percent='all'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.benchmark_node_classification" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.wrappers.benchmark_nodes.main">
+<code class="sig-prename descclassname">py3plex.wrappers.benchmark_nodes.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.wrappers.benchmark_nodes.sparse2graph">
+<code class="sig-prename descclassname">py3plex.wrappers.benchmark_nodes.</code><code class="sig-name descname">sparse2graph</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.sparse2graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.wrappers.node2vec_embedding">
+<span id="py3plex-wrappers-node2vec-embedding-module"></span><h2>py3plex.wrappers.node2vec_embedding module<a class="headerlink" href="#module-py3plex.wrappers.node2vec_embedding" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.wrappers.node2vec_embedding.call_node2vec_binary">
+<code class="sig-prename descclassname">py3plex.wrappers.node2vec_embedding.</code><code class="sig-name descname">call_node2vec_binary</code><span class="sig-paren">(</span><em class="sig-param">input_graph</em>, <em class="sig-param">output_graph</em>, <em class="sig-param">p=1</em>, <em class="sig-param">q=1</em>, <em class="sig-param">dimension=128</em>, <em class="sig-param">directed=False</em>, <em class="sig-param">weighted=True</em>, <em class="sig-param">binary='./node2vec'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.node2vec_embedding.call_node2vec_binary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.wrappers.node2vec_embedding.learn_embedding">
+<code class="sig-prename descclassname">py3plex.wrappers.node2vec_embedding.</code><code class="sig-name descname">learn_embedding</code><span class="sig-paren">(</span><em class="sig-param">core_network</em>, <em class="sig-param">labels=[]</em>, <em class="sig-param">ssize=0.5</em>, <em class="sig-param">embedding_outfile='out.emb'</em>, <em class="sig-param">p=0.1</em>, <em class="sig-param">q=0.1</em>, <em class="sig-param">binary_path='./node2vec'</em>, <em class="sig-param">parameter_range='[0.25</em>, <em class="sig-param">0.50</em>, <em class="sig-param">1</em>, <em class="sig-param">2</em>, <em class="sig-param">4]'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.node2vec_embedding.learn_embedding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.wrappers.node2vec_embedding.n2v_embedding">
+<code class="sig-prename descclassname">py3plex.wrappers.node2vec_embedding.</code><code class="sig-name descname">n2v_embedding</code><span class="sig-paren">(</span><em class="sig-param">G, targets, verbose=False, sample_size=0.5, outfile_name='test.emb', p=-100, q=-100, binary_path='./node2vec', parameter_range=[0.25, 0.5, 1, 2, 4], embedding_dimension=128</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.node2vec_embedding.n2v_embedding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.wrappers.train_node2vec_embedding">
+<span id="py3plex-wrappers-train-node2vec-embedding-module"></span><h2>py3plex.wrappers.train_node2vec_embedding module<a class="headerlink" href="#module-py3plex.wrappers.train_node2vec_embedding" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary">
+<code class="sig-prename descclassname">py3plex.wrappers.train_node2vec_embedding.</code><code class="sig-name descname">call_node2vec_binary</code><span class="sig-paren">(</span><em class="sig-param">input_graph</em>, <em class="sig-param">output_graph</em>, <em class="sig-param">p=1</em>, <em class="sig-param">q=1</em>, <em class="sig-param">dimension=128</em>, <em class="sig-param">directed=False</em>, <em class="sig-param">weighted=True</em>, <em class="sig-param">binary='./node2vec'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.wrappers.train_node2vec_embedding.learn_embedding">
+<code class="sig-prename descclassname">py3plex.wrappers.train_node2vec_embedding.</code><code class="sig-name descname">learn_embedding</code><span class="sig-paren">(</span><em class="sig-param">core_network</em>, <em class="sig-param">labels=[]</em>, <em class="sig-param">ssize=0.5</em>, <em class="sig-param">embedding_outfile='out.emb'</em>, <em class="sig-param">p=0.1</em>, <em class="sig-param">q=0.1</em>, <em class="sig-param">binary_path='./node2vec'</em>, <em class="sig-param">parameter_range='[0.25</em>, <em class="sig-param">0.50</em>, <em class="sig-param">1</em>, <em class="sig-param">2</em>, <em class="sig-param">4]'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.train_node2vec_embedding.learn_embedding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.wrappers.train_node2vec_embedding.n2v_embedding">
+<code class="sig-prename descclassname">py3plex.wrappers.train_node2vec_embedding.</code><code class="sig-name descname">n2v_embedding</code><span class="sig-paren">(</span><em class="sig-param">G, targets, verbose=False, sample_size=0.5, outfile_name='test.emb', p=-100, q=-100, binary_path='./node2vec', parameter_range=[0.25, 0.5, 1, 2, 4], embedding_dimension=128</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.train_node2vec_embedding.n2v_embedding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.wrappers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.wrappers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="py3plex.html">py3plex package</a><ul>
+      <li>Previous: <a href="py3plex.visualization.fa2.html" title="previous chapter">py3plex.visualization.fa2 package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Blaž Škrlj.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/py3plex.wrappers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
