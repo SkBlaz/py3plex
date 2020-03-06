@@ -34,6 +34,7 @@ A quick overview is discussed next:
    basic_usage.rst
    basic_usage_analysis.rst
    basic_usage_analysis_multiplex.rst
+   supra.rst
    visualization.rst
    acknowledgements.rst
    community_detection.rst
