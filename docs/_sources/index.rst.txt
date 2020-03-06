@@ -44,7 +44,15 @@ All examples and tutorials are accessible here: _a link: https://github.com/SkBl
 
 The documentation of all methods is given below:
 
+More detailed overview
+==================
+ 
+* :ref:`genindex`
+* :ref:`modindex`
+
 .. toctree::
-   :maxdepth: 4
-	      
-   source/py3plex
+   :maxdepth: 2
+
+	py3plex
+
+			  
