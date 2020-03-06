@@ -1,0 +1,357 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3plex - key principles &mdash; py3plex 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Basic - analysis of multilayers" href="basic_usage_analysis.html" />
+    <link rel="prev" title="Core idea and principles" href="core_idea.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py3plex
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide / Tutorial:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">py3plex - key principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#a-3min-introduction">A 3min introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-about-multiplex-networks">What about multiplex networks?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-involved-input-schemes">More involved input schemes?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Basic - analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Basic - analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="source/py3plex.html">py3plex package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>py3plex - key principles</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/basic_usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3plex-key-principles">
+<h1>py3plex - key principles<a class="headerlink" href="#py3plex-key-principles" title="Permalink to this headline">¶</a></h1>
+<p>py3plex is a general purpose multilayer analysis toolkit. Built on top of NetworkX, a widely
+usedy Python3 graph analysis library, it offers intuitive and efficient exploration of multilayer networks. Written in python3, it can be installed as simply as:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install py3plex
+
+or
+
+pip install git+https://github.com/skblaz/py3plex
+</pre></div>
+</div>
+<p>The basic usage is discussed next.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="k">import</span> <span class="n">multinet</span>
+</pre></div>
+</div>
+<p>For the remainder of this documentation, we assume the datasets (from the home py3plex repo directory) is present along the code.</p>
+<div class="section" id="a-3min-introduction">
+<h2>A 3min introduction<a class="headerlink" href="#a-3min-introduction" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/part1.png"><img alt="_images/part1.png" src="_images/part1.png" style="width: 200px;" /></a>
+<p>A network can be loaded by either using one of the many available parsers (below), or constructed using our functional API. Examples of loading the network:
+(See example files in the examples/ folder!)
+First, simple edgelists:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n1</span> <span class="n">n2</span>
+<span class="n">n3</span> <span class="n">n1</span>
+</pre></div>
+</div>
+<p>Such simple networks are the building block for multilayer structures, and can be loaded as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;./datasets/test.edgelist&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, this is normally not enough, and is not the main purpose of py3plex. Extension can be done by adding the layers and the weights, a single edge looks like (node layer node layer weight):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n1</span> <span class="n">l1</span> <span class="n">n2</span> <span class="n">l2</span> <span class="mf">0.4</span>
+<span class="n">n1</span> <span class="n">l3</span> <span class="n">n3</span> <span class="n">l1</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Note that the node and layer names are <strong>not necessarily</strong> int-encoded, although py3plex can also do that. Taking care of proper mappings is done under the hood, and as such abstracted away from the user.</p>
+<p>The key object around everything evolves is the <em>multilayer_network</em>, initiated as follows (from some multiedgelist as discussed above):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multilayer_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;./datasets/multiedgelist.txt&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And that’s it! You’ve just learned to parse one of the most basic input types.
+Now, what can be done with this object?</p>
+<p>One common step is to summarize what you are dealing with.:</p>
+<p>multilayer_network.basic_stats()</p>
+<p>See other chapters for more detailed functionality.</p>
+</div>
+<div class="section" id="what-about-multiplex-networks">
+<h2>What about multiplex networks?<a class="headerlink" href="#what-about-multiplex-networks" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/multiplex.png"><img alt="_images/multiplex.png" src="_images/multiplex.png" style="width: 200px;" /></a>
+<p>Compared to multilayers, multiplex networks can be interpreted as the same set of nodes, projected across different contexts (one type of node, multiple possible, different edges between them). py3plex also supports parsing of multiplex networks, such as seen in the example below.
+Here, the input is expected to be in the form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">l</span> <span class="n">n1</span> <span class="n">n2</span> <span class="n">w</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multiplex_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span> <span class="o">=</span> <span class="s2">&quot;multiplex&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;./datasets/simple_multiplex.edgelist &quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiplex_edges&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note the <em>network_type</em> argument? This can be set either at “multiplex” or “multilayer”. If multilayer is considered, no additional couplings between same-named nodes across layers will be added. However, in the multiplex case, such couplings are properly added.</p>
+</div>
+<div class="section" id="more-involved-input-schemes">
+<h2>More involved input schemes?<a class="headerlink" href="#more-involved-input-schemes" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes having node-layer tuples is not enough, or not elegant enough. py3plex offers addition of arbitrary <em>attributes</em> to the constructed multilayer (plex) objects as follows.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+ <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
+
+ <span class="c1">## An example general multilayer network</span>
+ <span class="n">A</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+ <span class="c1">## add a single node with type</span>
+ <span class="n">simple_node</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;source&quot;</span> <span class="p">:</span> <span class="s2">&quot;node1&quot;</span><span class="p">,</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;t1&quot;</span><span class="p">}</span>
+ <span class="n">A</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">simple_node</span><span class="p">)</span>
+ <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Printing a single node.&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">)))</span>
+
+ <span class="c1">## add a single edge with type</span>
+ <span class="n">simple_edge</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;mention&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;source_type&quot;</span><span class="p">:</span><span class="s2">&quot;t1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;weight&quot;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">## add arbitrary attributes!</span>
+                <span class="s2">&quot;sunrise_tomorrow&quot;</span> <span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="s2">&quot;target_type&quot;</span><span class="p">:</span><span class="s2">&quot;t2&quot;</span><span class="p">}</span>
+
+ <span class="n">A</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">simple_edge</span><span class="p">)</span>
+ <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Printing a single edge.&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">)))</span>
+
+ <span class="c1">## multiple edges are added by simply packing existing edges into a list.</span>
+ <span class="n">simple_attributed_edges</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span><span class="s2">&quot;node1&quot;</span><span class="p">,</span><span class="s2">&quot;target&quot;</span><span class="p">:</span><span class="s2">&quot;node6&quot;</span><span class="p">,</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;mention&quot;</span><span class="p">,</span><span class="s2">&quot;source_type&quot;</span><span class="p">:</span><span class="s2">&quot;t1&quot;</span><span class="p">,</span><span class="s2">&quot;target_type&quot;</span><span class="p">:</span><span class="s2">&quot;t5&quot;</span><span class="p">},{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span><span class="s2">&quot;node3&quot;</span><span class="p">,</span><span class="s2">&quot;target&quot;</span><span class="p">:</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;mention&quot;</span><span class="p">,</span><span class="s2">&quot;source_type&quot;</span><span class="p">:</span><span class="s2">&quot;t1&quot;</span><span class="p">,</span><span class="s2">&quot;target_type&quot;</span><span class="p">:</span><span class="s2">&quot;t3&quot;</span><span class="p">}]</span>
+ <span class="n">A</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">simple_attributed_edges</span><span class="p">)</span>
+ <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Printing multiple edges&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">)))</span>
+
+ <span class="c1">## Edges can also be added as lists: [n1,l1,n2,l2,w]</span>
+ <span class="n">example_list_edge</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;node3&quot;</span><span class="p">,</span><span class="s2">&quot;t2&quot;</span><span class="p">,</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span><span class="s2">&quot;t6&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="s2">&quot;node3&quot;</span><span class="p">,</span><span class="s2">&quot;t2&quot;</span><span class="p">,</span><span class="s2">&quot;node2&quot;</span><span class="p">,</span><span class="s2">&quot;t6&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+
+ <span class="c1">## specify that input is list, all else is recognized by Py3plex!</span>
+ <span class="n">A</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">example_list_edge</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
+</pre></div>
+</td></tr></table></div>
+<p>Hence, arbitrary data (structures) can be added to individual node-layer tuplets, offering additional flexibility. For example, adding temporal component is one of possibilities.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="basic_usage_analysis.html" class="btn btn-neutral float-right" title="Basic - analysis of multilayers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="core_idea.html" class="btn btn-neutral float-left" title="Core idea and principles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -328,12 +328,12 @@ class multi_layer_network:
             if target_network is None:            
                 print(nx.info(self.core_network))
                 nt, n = self.get_unique_entity_counts()
-                print("Number of unique nodes: {}".format(n))
+                print("Number of unique node IDs: {}".format(n))
 
             else:
                 print(nx.info(target_network))
                 nt, n = self.get_unique_entity_counts()                
-                print("Number of unique nodes: {}".format(n))
+                print("Number of unique node IDs: {}".format(n))
 
     def get_edges(self,data=False,multiplex_edges=False):
         """ A method for obtaining a network's edges """
@@ -407,28 +407,36 @@ class multi_layer_network:
 
         layer_object = defaultdict(list)
         edge_object = {}
-        layer_connectivity = {}
+
         for node in self.get_nodes():
-            layer_object[node[1]].append(node)            
+            layer_object[node[1]].append(node)
+            
         for layer, nodes in layer_object.items():
             layer_network = self.subnetwork(nodes)
+            
             if normalize_by  != "raw":
                 connectivity = np.mean([x[1] for x in eval("nx."+normalize_by+"(layer_network.core_network)")])
+                
             else:
                 connectivity = 1
-            layer_connectivity[layer] = connectivity
+                
             for edge in layer_network.get_edges():
-                if edge not in edge_object:
-                    edge_object[edge] = 1
+                edge_new = (edge[0][0],edge[1][0]) ## keep just the nids.
+                if not edge_new in edge_object:
+                    
+                    edge_object[edge_new] = 1/connectivity
+                    
                 else:
-                    edge_object[edge] += 1
+                    edge_object[edge_new] += 1/connectivity
+                    
         if self.directed:
             outgraph = nx.DiGraph()
+            
         else:
             outgraph = nx.Graph()
             
         for k,v in edge_object.items():
-            outgraph.add_edge(k[0][0],k[1][0],weight=v)
+            outgraph.add_edge(k[0],k[1],weight=v)
         return outgraph
 
 

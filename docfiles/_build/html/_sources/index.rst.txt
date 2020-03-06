@@ -10,11 +10,29 @@ The aim of this library is to:
 #. Provide extensive collection of network decomposition algorithms
 #. Provide python wrappers for highly efficient algorithm implementations
 
+
+.. code:: bash
+
+    pip install py3plex
+
+
+A quick overview is discussed next:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: User Guide / Tutorial:
+
+   core_idea.rst
+   basic_usage.rst
+   basic_usage_analysis.rst
+   basic_usage_analysis_multiplex.rst
+   visualization.rst
+
+All examples and tutorials are accessible here: _a link: https://github.com/SkBlaz/Py3Plex/tree/master/examples
+
 The documentation of all methods is given below:
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
 	      
    source/py3plex
-
-All examples and tutorial are accessible here: _a link: https://github.com/SkBlaz/Py3Plex/tree/master/examples

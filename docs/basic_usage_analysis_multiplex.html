@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Basic - analysis of multiplex networks &mdash; py3plex 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Network visualization" href="visualization.html" />
+    <link rel="prev" title="Basic - analysis of multilayers" href="basic_usage_analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py3plex
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide / Tutorial:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Basic - analysis of multilayers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic - analysis of multiplex networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#aggregations">Aggregations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#subsetting">Subsetting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="source/py3plex.html">py3plex package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Basic - analysis of multiplex networks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/basic_usage_analysis_multiplex.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="basic-analysis-of-multiplex-networks">
+<h1>Basic - analysis of multiplex networks<a class="headerlink" href="#basic-analysis-of-multiplex-networks" title="Permalink to this headline">¶</a></h1>
+<p>Multiplex networks are more convenient for analysis, hence many existing approaches can be considered, and were implemented as a part of py3plex. The main ones are discussed next:</p>
+<div class="section" id="aggregations">
+<h2>Aggregations<a class="headerlink" href="#aggregations" title="Permalink to this headline">¶</a></h2>
+<p>One of the most common way to approach multiplex network analysis is by aggregating information across layers. Let that be the information bound to nodes or edges, both can be aggregated into a single <em>homogeneous</em> network that can readily be analysed. An example of aggregation is given below, on a random multiplex ER (multiple ERs across same node set).</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">### aggregate a multiplex network</span>
+
+ <span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+ <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+ <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
+
+ <span class="c1">## initiate an instance of a random graph</span>
+ <span class="n">ER_multilayer</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multiplex_ER</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mf">0.0005</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+ <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+ <span class="c1">## simple networkx object</span>
+ <span class="n">aggregated_network1</span> <span class="o">=</span> <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">aggregate_edges</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s2">&quot;count&quot;</span><span class="p">,</span><span class="n">normalize_by</span><span class="o">=</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">aggregated_network1</span><span class="p">))</span>
+
+ <span class="c1">## unnormalized counts for edge weights</span>
+ <span class="n">aggregated_network2</span> <span class="o">=</span> <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">aggregate_edges</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s2">&quot;count&quot;</span><span class="p">,</span><span class="n">normalize_by</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">aggregated_network2</span><span class="p">))</span>
+
+ <span class="c1">## The two networks have the same number of links (all)</span>
+ <span class="c1">## However, the weights differ!</span>
+ <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">aggregated_network2</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+     <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+ <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">aggregated_network1</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+     <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>The first network divides the contribution of an individual edge with the average node degree in a given layer, and the second one simply sums them.</p>
+</div>
+<div class="section" id="subsetting">
+<h2>Subsetting<a class="headerlink" href="#subsetting" title="Permalink to this headline">¶</a></h2>
+<p>Subsetting operates in the same manner than for multilayers, hence:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">B</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">)</span>
+ <span class="n">B</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+ <span class="c1">## subset the network by layers</span>
+ <span class="n">C</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="mi">2</span><span class="p">],</span><span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+
+ <span class="n">C</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span><span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_names&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+
+ <span class="n">C</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)],</span><span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="visualization.html" class="btn btn-neutral float-right" title="Network visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="basic_usage_analysis.html" class="btn btn-neutral float-left" title="Basic - analysis of multilayers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
