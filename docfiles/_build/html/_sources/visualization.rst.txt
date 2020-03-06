@@ -25,16 +25,21 @@ The following example shows minimal usecase for obtaining both types of visualiz
     multilayer_network.visualize_network(style="hairball")
     plt.show()
 
-    ## going full py3plex (default 100 iterations, layout_parameters can carry additional parameters)
-    multilayer_network.visualize_network(style="diagonal")
-    plt.show()
-
 Yields the harball plot:
     
 .. image:: ../example_images/hairball.png
-   :width: 400
+   :width: 500
+		   
+.. code-block:: python
+   :linenos:
+		   
+    ## going full py3plex (default 100 iterations, layout_parameters can carry additional parameters)
+    multilayer_network.visualize_network(style="diagonal")
+    plt.show()
 	   
 And the *diagonal* multilayer layout:
 
 .. image:: ../example_images/multilayer.png
-   :width: 400
+   :width: 500
+
+For more custom visualizations, please consider ./examples/example_multilayer_visualization.py!

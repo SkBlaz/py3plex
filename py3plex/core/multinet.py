@@ -482,7 +482,7 @@ class multi_layer_network:
             layer_ed = layer_edges[layer]
             self.tmp_layers[enx].add_edges_from(layer_ed)
         
-    def split_to_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True,multiplex=False):
+    def split_to_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True,multiplex=False, convert_to_simple = False):
 
         """ A method for obtaining layerwise distributions """
         
@@ -499,7 +499,14 @@ class multi_layer_network:
             self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_visualization_hairball(self.core_network,compute_layouts=True)
 
         if style == "none":
+
             self.layer_names,self.separate_layers,self.multiedges = converters.prepare_for_parsing(self.core_network)
+
+            if convert_to_simple:
+                if self.directed:
+                    self.separate_layers = [nx.DiGraph(x) for x in self.separate_layers]
+                else:
+                    self.separate_layers = [nx.Graph(x) for x in self.separate_layers]
 
     
     def get_layers(self,style="diagonal",compute_layouts="force",layout_parameters=None,verbose=True):

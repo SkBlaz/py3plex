@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="&lt;no title&gt;" href="acknowledgements.html" />
-    <link rel="prev" title="Basic - analysis of multiplex networks" href="basic_usage_analysis_multiplex.html" /> 
+    <link rel="prev" title="Analysis of multiplex networks" href="basic_usage_analysis_multiplex.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,19 +87,16 @@
               
             
             
-              <p class="caption"><span class="caption-text">User Guide / Tutorial:</span></p>
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage.html">py3plex - key principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Basic - analysis of multilayers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Basic - analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Network visualization</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#from-hairball-to-multilayer-plots">From hairball to multilayer plots</a></li>
 </ul>
 </li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="source/py3plex.html">py3plex package</a></li>
 </ul>
 
             
@@ -183,11 +180,7 @@
 11
 12
 13
-14
-15
-16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">## visualization of a simple heterogeneous network</span>
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">## visualization of a simple heterogeneous network</span>
  <span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="o">*</span>
  <span class="kn">from</span> <span class="nn">py3plex.visualization.colors</span> <span class="kn">import</span> <span class="n">all_color_names</span><span class="p">,</span><span class="n">colors_default</span>
  <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
@@ -201,16 +194,20 @@
  <span class="c1">## a simple hairball plot</span>
  <span class="n">multilayer_network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;hairball&quot;</span><span class="p">)</span>
  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
- <span class="c1">## going full py3plex (default 100 iterations, layout_parameters can carry additional parameters)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Yields the harball plot:</p>
+<a class="reference internal image-reference" href="_images/hairball.png"><img alt="_images/hairball.png" src="_images/hairball.png" style="width: 500px;" /></a>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1">## going full py3plex (default 100 iterations, layout_parameters can carry additional parameters)</span>
  <span class="n">multilayer_network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;diagonal&quot;</span><span class="p">)</span>
  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
-<p>Yields the harball plot:</p>
-<a class="reference internal image-reference" href="_images/hairball.png"><img alt="_images/hairball.png" src="_images/hairball.png" style="width: 400px;" /></a>
 <p>And the <em>diagonal</em> multilayer layout:</p>
-<a class="reference internal image-reference" href="_images/multilayer.png"><img alt="_images/multilayer.png" src="_images/multilayer.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="_images/multilayer.png"><img alt="_images/multilayer.png" src="_images/multilayer.png" style="width: 500px;" /></a>
+<p>For more custom visualizations, please consider ./examples/example_multilayer_visualization.py!</p>
 </div>
 </div>
 
@@ -225,7 +222,7 @@
         <a href="acknowledgements.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="basic_usage_analysis_multiplex.html" class="btn btn-neutral float-left" title="Basic - analysis of multiplex networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="basic_usage_analysis_multiplex.html" class="btn btn-neutral float-left" title="Analysis of multiplex networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

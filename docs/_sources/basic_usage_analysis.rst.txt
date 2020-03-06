@@ -1,4 +1,4 @@
-Basic - analysis of multilayers
+Analysis of multilayers
 #########################
 Having discussed how the multilayer networks can be constructed, the next logical step is to discuss what analytics is offered by py3plex. In this chapter, we discuss the following functionality:
 

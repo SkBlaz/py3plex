@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Community detection (multiplex) &mdash; py3plex 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="acknowledgements.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Community detection (multiplex)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Community detection (multiplex)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/community_detection.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="community-detection-multiplex">
+<h1>Community detection (multiplex)<a class="headerlink" href="#community-detection-multiplex" title="Permalink to this headline">¶</a></h1>
+<p>Community detection is considered when a given network’s topology is considered at meso-scales.
+py3plex supports both the widely used InfoMap, for which it offers a wrapper:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span>     <span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_wrapper</span> <span class="k">as</span> <span class="n">cw</span>
+     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+     <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span> <span class="o">=</span> <span class="s2">&quot;multiplex&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;../datasets/simple_multiplex.edgelist&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiplex_edges&quot;</span><span class="p">)</span>
+     <span class="n">partition</span> <span class="o">=</span> <span class="n">cw</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="s2">&quot;../bin/Infomap&quot;</span><span class="p">,</span> <span class="n">multiplex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="nb">print</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>But also the multiplex Louvain (pip install louvain):</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre></div></td><td class="code"><div class="highlight"><pre><span></span>     <span class="c1">## multiplex community detection!</span>
+
+     <span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_wrapper</span> <span class="k">as</span> <span class="n">cw</span>
+     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+     <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span> <span class="o">=</span> <span class="s2">&quot;multiplex&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;../datasets/multiplex_example.edgelist&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiplex_edges&quot;</span><span class="p">)</span>
+     <span class="n">partition</span> <span class="o">=</span> <span class="n">cw</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="s2">&quot;../bin/Infomap&quot;</span><span class="p">,</span> <span class="n">multiplex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="nb">print</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
+
+     <span class="c1">## get communities with multiplex louvain</span>
+     <span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+     <span class="kn">import</span> <span class="nn">louvain</span>
+
+     <span class="c1">#optimiser = louvain.Optimiser()</span>
+     <span class="n">network</span><span class="o">.</span><span class="n">split_to_layers</span><span class="p">(</span><span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span>
+     <span class="n">network_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+     <span class="c1">## cast this to igraph</span>
+     <span class="n">unique_node_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
+     <span class="n">node_hash</span> <span class="o">=</span> <span class="p">{}</span>
+     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">separate_layers</span><span class="p">:</span>
+             <span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+             <span class="n">edges_all</span> <span class="o">=</span> <span class="p">[]</span>
+             <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">layer</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+                     <span class="n">first_node</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                     <span class="n">second_node</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                     <span class="n">g</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">first_node</span><span class="p">)</span>
+                     <span class="n">g</span><span class="o">.</span><span class="n">add_vertex</span><span class="p">(</span><span class="n">second_node</span><span class="p">)</span>
+                     <span class="n">edges_all</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">first_node</span><span class="p">,</span><span class="n">second_node</span><span class="p">))</span>
+             <span class="nb">print</span><span class="p">(</span><span class="n">edges_all</span><span class="p">)</span>
+             <span class="n">g</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">edges_all</span><span class="p">)</span>
+             <span class="n">network_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+     <span class="n">membership</span><span class="p">,</span> <span class="n">improv</span> <span class="o">=</span> <span class="n">louvain</span><span class="o">.</span><span class="n">find_partition_multiplex</span><span class="p">(</span><span class="n">network_list</span><span class="p">,</span> <span class="n">louvain</span><span class="o">.</span><span class="n">ModularityVertexPartition</span><span class="p">)</span>
+
+     <span class="c1">## for each node we get community assignment.</span>
+     <span class="n">network</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">membership</span><span class="p">)</span>
+     <span class="n">network</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">improv</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Simple, homogeneous community detection is also possible!</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;../datasets/cora.mat&quot;</span><span class="p">,</span>
+                                                   <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                   <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;sparse&quot;</span><span class="p">)</span>
+
+     <span class="n">partition</span> <span class="o">=</span> <span class="n">cw</span><span class="o">.</span><span class="n">louvain_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+     <span class="c1">#print(partition)</span>
+     <span class="c1"># select top n communities by size</span>
+     <span class="n">top_n</span> <span class="o">=</span> <span class="mi">10</span>
+     <span class="n">partition_counts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+     <span class="n">top_n_communities</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">partition_counts</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">:</span><span class="n">top_n</span><span class="p">]</span>
+
+     <span class="c1"># assign node colors</span>
+     <span class="n">color_mappings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">top_n_communities</span><span class="p">,[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colors_default</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;black&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">top_n</span><span class="p">]))</span>
+
+     <span class="n">network_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_mappings</span><span class="p">[</span><span class="n">partition</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span> <span class="k">if</span> <span class="n">partition</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="ow">in</span> <span class="n">top_n_communities</span> <span class="k">else</span> <span class="s2">&quot;black&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()]</span>
+     <span class="c1"># visualize the network&#39;s communities!</span>
+     <span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+                               <span class="n">color_list</span><span class="o">=</span><span class="n">network_colors</span><span class="p">,</span>
+                               <span class="n">layout_parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">iterations</span><span class="p">},</span>
+                               <span class="n">scale_by_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">,</span>
+                               <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<a class="reference internal image-reference" href="_images/communities2.png"><img alt="_images/communities2.png" src="_images/communities2.png" style="width: 500px;" /></a>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="acknowledgements.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-Basic - analysis of multiplex networks
+Analysis of multiplex networks
 #########################
 Multiplex networks are more convenient for analysis, hence many existing approaches can be considered, and were implemented as a part of py3plex. The main ones are discussed next:
 
