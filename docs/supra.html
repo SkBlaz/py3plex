@@ -96,6 +96,13 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Supra adjacency matrices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Learning - Node embeddings</a></li>
 </ul>
 
             
@@ -209,6 +216,50 @@
 </pre></div>
 </td></tr></table></div>
 <a class="reference internal image-reference" href="_images/supra.png"><img alt="_images/supra.png" src="_images/supra.png" style="width: 500px;" /></a>
+<p>Some additional tensor-like indexing:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span>     <span class="c1">## tensor-based operations examples</span>
+
+     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
+
+     <span class="c1">## initiate an instance of a random graph</span>
+     <span class="n">ER_multilayer</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+     <span class="c1">## some simple visualization</span>
+     <span class="n">visualization_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;display&quot;</span><span class="p">:</span><span class="kc">True</span><span class="p">}</span>
+     <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">visualize_matrix</span><span class="p">(</span><span class="n">visualization_params</span><span class="p">)</span>
+
+     <span class="n">some_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()][</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+     <span class="n">some_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()][</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+
+
+     <span class="c1">## random node is accessed as follows</span>
+     <span class="nb">print</span><span class="p">(</span><span class="n">ER_multilayer</span><span class="p">[</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+     <span class="c1">## and random edge as</span>
+     <span class="nb">print</span><span class="p">(</span><span class="n">ER_multilayer</span><span class="p">[</span><span class="n">some_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]][</span><span class="n">some_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span>
+</pre></div>
+</td></tr></table></div>
 </div>
 
 

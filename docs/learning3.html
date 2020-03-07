@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Learning - Node embeddings &mdash; py3plex 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Learning - label propagation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Learning - Node embeddings</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/learning3.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="learning-node-embeddings">
+<h1>Learning - Node embeddings<a class="headerlink" href="#learning-node-embeddings" title="Permalink to this headline">¶</a></h1>
+<p>Node embeddings are real-valued representations of nodes that capture the node’s neighborhood (and beyond).</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span>     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+     <span class="kn">from</span> <span class="nn">py3plex.wrappers</span> <span class="kn">import</span> <span class="n">train_node2vec_embedding</span>
+     <span class="kn">from</span> <span class="nn">py3plex.visualization.embedding_visualization</span> <span class="kn">import</span> <span class="n">embedding_visualization</span>
+     <span class="kn">from</span> <span class="nn">py3plex.visualization.embedding_visualization</span> <span class="kn">import</span> <span class="n">embedding_tools</span>
+     <span class="kn">import</span> <span class="nn">json</span>
+
+     <span class="c1">## load network in GML</span>
+     <span class="n">multilayer_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;../datasets/imdb_gml.gml&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gml&quot;</span><span class="p">)</span>
+
+     <span class="c1"># save this network as edgelist for node2vec</span>
+     <span class="n">multilayer_network</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">&quot;../datasets/test.edgelist&quot;</span><span class="p">)</span>
+
+     <span class="c1">## call a specific embedding binary --- this is not limited to n2v</span>
+     <span class="n">train_node2vec_embedding</span><span class="o">.</span><span class="n">call_node2vec_binary</span><span class="p">(</span><span class="s2">&quot;../datasets/test.edgelist&quot;</span><span class="p">,</span><span class="s2">&quot;../datasets/test_embedding.emb&quot;</span><span class="p">,</span><span class="n">binary</span><span class="o">=</span><span class="s2">&quot;../bin/node2vec&quot;</span><span class="p">,</span><span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+     <span class="c1">## preprocess and check embedding</span>
+     <span class="n">multilayer_network</span><span class="o">.</span><span class="n">load_embedding</span><span class="p">(</span><span class="s2">&quot;../datasets/test_embedding.emb&quot;</span><span class="p">)</span>
+
+     <span class="c1">## visualize embedding</span>
+     <span class="n">embedding_visualization</span><span class="o">.</span><span class="n">visualize_embedding</span><span class="p">(</span><span class="n">multilayer_network</span><span class="p">)</span>
+
+     <span class="c1">## output embedded coordinates as JSON</span>
+     <span class="n">output_json</span> <span class="o">=</span> <span class="n">embedding_tools</span><span class="o">.</span><span class="n">get_2d_coordinates_tsne</span><span class="p">(</span><span class="n">multilayer_network</span><span class="p">,</span><span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span>
+
+     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../datasets/embedding_coordinates.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">output_json</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<a class="reference internal image-reference" href="_images/embedding.png"><img alt="_images/embedding.png" src="_images/embedding.png" style="width: 500px;" /></a>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

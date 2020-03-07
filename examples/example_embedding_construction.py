@@ -7,7 +7,7 @@ import json
 ## load network in GML
 multilayer_network = multinet.multi_layer_network().load_network("../datasets/imdb_gml.gml",directed=True,input_type="gml")
 
-save this network as edgelist for node2vec
+# save this network as edgelist for node2vec
 multilayer_network.save_network("../datasets/test.edgelist")
 
 ## call a specific embedding binary --- this is not limited to n2v
