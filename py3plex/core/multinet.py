@@ -859,7 +859,7 @@ class multi_layer_network:
             if parameters_multiedges is None:                
                 enum = 1
                 for edge_type,edges in tqdm.tqdm(multilinks.items()):
-                    if edge_type == "mpx":
+                    if edge_type == "coupling":
                         if axis:
                             axis = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
                         else:
