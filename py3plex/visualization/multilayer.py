@@ -112,20 +112,12 @@ def draw_multilayer_default(network_list, display=True, node_size=10,alphalevel=
         if len(no_position) > 0:
             network = network.copy()
             network.remove_nodes_from(no_position)
-            
-       # print("No position for {}. Found position for {}.".format(cntr,cntr_all))
-        
+                    
         positions = nx.get_node_attributes(network, 'pos')
         cntr = 0
-
-        for position in positions:
-            if np.abs(positions[position][0]) > 0.5 or np.abs(positions[position][1]) > 0.5:
-                positions[position] = positions[position]/np.linalg.norm(positions[position])
-            try:
-                positions[position][0] = positions[position][0] + 0.5 + start_location_network
-                positions[position][1] = positions[position][1] + 0.5 + start_location_network
-            except Exception as es:
-                print(es,"err")
+        
+        for node, position in positions.items():
+            position += start_location_network
 
         ## this is the default delay for matplotlib canvas
         if labels != False:
@@ -146,10 +138,10 @@ def draw_multilayer_default(network_list, display=True, node_size=10,alphalevel=
         
         start_location_network += 1.5
         start_location_background += 1.5
-        if len(network.nodes()) > 10000:
-            correction=10
-        else:
-            correction = 1
+        # if len(network.nodes()) > 10000:
+        #     correction=10
+        # else:
+        #     correction = 1
 
         if scale_by_size:
             node_sizes = [vx*node_size for vx in degrees.values()]
@@ -172,25 +164,27 @@ def draw_multilayer_default(network_list, display=True, node_size=10,alphalevel=
     if display == True:
         plt.show()
 
-def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=2,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1):
+def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.001):
     # indices are correct network positions
     if input_type == "nodes":
 
         network_positions = [nx.get_node_attributes(network, 'pos') for network in network_list]
+        
         global_positions = {}
         for position in network_positions:
             for k,v in position.items():
                 global_positions[k]=v
-
+                
         for pair in multi_edge_tuple:
             try:
 
-                p1 = [global_positions[pair[0]][0],global_positions[pair[1]][0]]
-                p2 = [global_positions[pair[0]][1],global_positions[pair[1]][1]]
-                const = 0.04
+                coordinates_node_first = global_positions[pair[0]]
+                coordinates_node_second = global_positions[pair[1]]
                 
-                if p1[1] < const or p2[1] < const or p1[0] < const or p1[1] < const:
-                    continue
+                p1 = [coordinates_node_first[0], coordinates_node_second[0]]
+                #[coordinates_node_first[0], coordinates_node_first[1]]
+                p2 = [coordinates_node_first[1], coordinates_node_second[1]]#[]
+
                 
                 if style == "line":
 
@@ -221,6 +215,7 @@ def draw_multiedges(network_list,multi_edge_tuple,input_type="nodes",linepoints=
                     pass
                 
             except Exception as err:
+                print(err)
                 pass
             
 #                print(err,"test")

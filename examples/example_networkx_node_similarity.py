@@ -46,14 +46,21 @@ A.add_edges(inter_layer_edges,input_type="list")
 print(list(A.get_edges()))
 
 multilayer_network = A
-multilayer_network.visualize_network(style="diagonal")
+multilayer_network.visualize_network(style="diagonal", resolution = 0.001, linepoints = "-", linewidth = 3)
 plt.show()
+plt.clf()
+multilayer_network.visualize_network(style="diagonal", resolution = 0.001, linepoints = "-", linewidth = 0.2)
+plt.show()
+
+## other ad hoc options:
+# def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01, axis = None, fig = None, no_labels = False, linewidth = 1.7, alphachannel = 0.3, linepoints = "-."):
 
 A.basic_stats()
 
 centralities = A.monoplex_nx_wrapper("degree_centrality")
 A.monitor(centralities)
 
+## if it's not present in networkx, you cannot use it as part of py3plex!
 import networkx as nx
 G = nx.cycle_graph(4)
 sim = nx.simrank_similarity(G)

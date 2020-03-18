@@ -61,13 +61,30 @@ def prepare_for_visualization(multinet,compute_layouts="force",layout_parameters
             else:
                 break
 
+            keys = []
+            value_pairs = []
+            for k,v in tmp_pos.items():
+                value_pairs.append(v)
+                keys.append(k)
+
+            coordinate_matrix = np.matrix(value_pairs)
+            norm_x = (coordinate_matrix[:,0]-np.min(coordinate_matrix[:,0]))/(np.max(coordinate_matrix[:,0])-np.min(coordinate_matrix[:,0]))
+            
+            norm_y = (coordinate_matrix[:,1]-np.min(coordinate_matrix[:,1]))/(np.max(coordinate_matrix[:,1])-np.min(coordinate_matrix[:,1]))
+            
+            coordinate_matrix[:,0] = norm_x
+            coordinate_matrix[:,1] = norm_y
+            
+            tmp_pos = {}
+            for enx, j in enumerate(keys):
+                tmp_pos[j] = np.asarray(coordinate_matrix[enx])[0]
+                
             for node in network.nodes(data=True):
                 coordinates = tmp_pos[node[0]]
                 if network.degree(node[0]) == 0:
-                    coordinates = np.array(coordinates)/2
+                    coordinates = np.array(coordinates)/2                    
                 elif network.degree(node[0]) == 1:
                     coordinates = np.array(coordinates)/2
-
                 if np.abs(coordinates[0]) > 1 or np.abs(coordinates[1]) > 1:
                     coordinates = np.random.rand(1)*coordinates/np.linalg.norm(coordinates)
 
@@ -112,6 +129,7 @@ def prepare_for_visualization_hairball(multinet,compute_layouts=False):
     for node in multinet.nodes(data=True):
         try:
             layers[node[0][1]].append(node[0])
+            
         except:
             layers[1].append(node)
 
