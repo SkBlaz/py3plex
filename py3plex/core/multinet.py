@@ -829,7 +829,7 @@ class multi_layer_network:
         supra_adjacency_matrix_plot(adjmat,**kwargs)
 
     
-    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01, axis = None, fig = None, no_labels = False):
+    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01, axis = None, fig = None, no_labels = False, linewidth = 1.7, alphachannel = 0.3):
         if server_mode:
             return 0
 
@@ -861,14 +861,14 @@ class multi_layer_network:
                 for edge_type,edges in tqdm.tqdm(multilinks.items()):
                     if edge_type == "coupling":
                         if axis:
-                            axis = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
+                            axis = draw_multiedges(graphs,edges,alphachannel=alphachannel,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=linewidth,resolution=resolution)
                         else:
-                            ax = draw_multiedges(graphs,edges,alphachannel=0.2,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=1.7,resolution=resolution)
+                            ax = draw_multiedges(graphs,edges,alphachannel=alphachannel,linepoints="-",linecolor="red",curve_height=2,linmod="bottom",linewidth=linewidth,resolution=resolution)
                     else:
                         if axis:
-                            axis = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=0.5,resolution=resolution)
+                            axis = draw_multiedges(graphs,edges,alphachannel=alphachannel,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=linewidth,resolution=resolution)
                         else:
-                            ax = draw_multiedges(graphs,edges,alphachannel=0.05,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=0.5,resolution=resolution)                      
+                            ax = draw_multiedges(graphs,edges,alphachannel=alphachannel,linepoints="-.",linecolor="black",curve_height=2,linmod=orientation,linewidth=linewidth,resolution=resolution)                      
                     enum+=1
             else:
                 enum = 1
