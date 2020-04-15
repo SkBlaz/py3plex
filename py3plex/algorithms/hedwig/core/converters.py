@@ -22,18 +22,18 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
             if layer_type == None:
                 mapping_file[node] = v                
             if layer_type != False:
-                if layer == layer_type:
+                if layer == layer_type:                    
                     mapping_file[node.split(split_node_by)[keep_index]] = v
     else:
         for k,v in input_mapping_file.items():
             try:
                 node, layer = k
-            except:
+            except Exception as es:
                 parts = k.split(split_node_by) ## PSI-MI format
                 if layer_type in parts:
                     layer, node= k.split(split_node_by) ## PSI-MI format
                 else:                    
-                    continue
+                    continue                
             if layer_type == None:
                 mapping_file[node] = v                
             if layer_type != False:
@@ -49,7 +49,7 @@ def convert_mapping_to_rdf(input_mapping_file,extract_subnode_info=False,split_n
 
     ## iterate through community assignments and construct the trainset
     ## tukaj morda dodaj example name
-    
+
     for node, com in mapping_file.items():
         try:
             id_identifier += 1        

@@ -15,6 +15,8 @@ partition = cw.louvain_communities(network)
 
 ## convert examples to RDF mappings and check the validity, use gzipped gaf files..
 dataset_name = "../datasets/example_partition_inputs.n3"
+print(partition)
+
 rdf_partitions = hedwig.convert_mapping_to_rdf(partition,annotation_mapping_file="../datasets/goa_human.gaf.gz",layer_type="uniprotkb")
 rdf_partitions.serialize(destination = dataset_name, format="n3")
 

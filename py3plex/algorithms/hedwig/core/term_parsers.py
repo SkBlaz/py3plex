@@ -34,7 +34,7 @@ def parse_gaf_file(gaf_mappings,whole_list_counts=False):
                     if whole_list_counts:
                         whole_list.append(parts[4])
                 except Exception as es:
-                    print(es)
+                    pass
     else:
         with open(gaf_mappings,"r") as im:
             for line in im:
