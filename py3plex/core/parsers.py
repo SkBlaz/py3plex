@@ -520,7 +520,7 @@ def load_temporal_edge_information(input_network,input_type,layer_mapping=None):
         return None            
 
 def save_gpickle(input_network,output_file):
-    Nx.write_gpickle(input_network, output_file)
+    nx.write_gpickle(input_network, output_file)
 
 def save_multiedgelist(input_network,output_file,attributes=False,encode_with_ints=False):
 
