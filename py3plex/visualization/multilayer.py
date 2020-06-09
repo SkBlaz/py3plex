@@ -339,14 +339,19 @@ def hairball_plot(g, color_list=None,
             print("Assigning colors..")
             final_color_mapping = [1]*len(nodes)
     else:
-        print("Creating color mappings..")
-        unique_colors = np.unique(color_list)
-        color_mapping= dict(zip(list(unique_colors), colors.all_color_names))
-        final_color_mapping = color_list
-        # final_color_mapping = ["black"]*len(nodes)
-    
-    print("plotting..")
-
+        node_types = [x[1] for x in g.nodes()]
+        assert len(node_types) == len(color_list)
+        cols = list(colors.all_color_names.keys())
+        id_col_map = {}
+        for enx, j in enumerate(set(color_list)):
+            id_col_map[j] = cols[enx]
+        id_type_map = dict(zip(color_list, node_types))
+        final_color_mapping = [id_col_map[j] for j in color_list]
+        color_to_type_map = {}
+        for k,v in id_type_map.items():
+            actual_color = id_col_map[k]
+            color_to_type_map[actual_color] = id_type_map[k]
+                
     degrees = dict(nx.degree(nx.Graph(g)))
     
     if scale_by_size:
@@ -384,19 +389,16 @@ def hairball_plot(g, color_list=None,
 
     plt.axis('off')
 
-    #  add legend
+    #  add legend {"color":"string"}
     if legend is not None and legend:
-        # TODO: legacy code - to je stara legenda, ko bodo testi bi js to zbrisal.
-        if type(legend) == bool:
-            markers = [plt.Line2D([0, 0], [0, 0], color=color_mapping[item], marker='o', linestyle='') for item in
-                       list(unique_colors)]
-            plt.legend(markers, range(len(list(unique_colors))), numpoints=1,fontsize = 'medium')
-        # in bi ostal samo tale del:
+        legend_colors = set(id_col_map.values())
+        if len(legend_colors) > 6:
+            fs = "small"
         else:
-            # the assumption is that legend[color] is the name of the group, represented by the color
-            legend_colors = list(legend.keys())
-            markers = [plt.Line2D([0, 0], [0, 0], color=key, marker='o', linestyle='') for key in legend_colors]
-            plt.legend(markers, [legend[color] for color in legend_colors], numpoints=1, fontsize='medium')
+            fs = "medium"
+        markers = [plt.Line2D([0, 0], [0, 0], color=key, marker='o', linestyle='') for key in legend_colors]
+        plt.legend(markers, [color_to_type_map[color] for color in legend_colors], numpoints=1, fontsize=fs)
+        
     if display:
         plt.show()
 

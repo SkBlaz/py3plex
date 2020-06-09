@@ -829,7 +829,7 @@ class multi_layer_network:
         supra_adjacency_matrix_plot(adjmat,**kwargs)
 
     
-    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01, axis = None, fig = None, no_labels = False, linewidth = 1.7, alphachannel = 0.3, linepoints = "-."):
+    def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01, axis = None, fig = None, no_labels = False, linewidth = 1.7, alphachannel = 0.3, linepoints = "-.", legend = False):
         if server_mode:
             return 0
 
@@ -887,9 +887,9 @@ class multi_layer_network:
         elif style == "hairball":
             network_colors, graph = self.get_layers(style="hairball")
             if axis:
-                axis = hairball_plot(graph,network_colors,layout_algorithm="force")
+                axis = hairball_plot(graph,network_colors,layout_algorithm="force", legend = legend)
             else:
-                ax = hairball_plot(graph,network_colors,layout_algorithm="force")
+                ax = hairball_plot(graph,network_colors,layout_algorithm="force", legend = legend)
             if show:
                 plt.show()
             if axis:
