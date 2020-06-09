@@ -7,7 +7,6 @@ import itertools
 try:
     from .fa2 import ForceAtlas2
     forceImport = True
-    print("Imported BH algo")
 except:
     forceImport = False
 
