@@ -25,6 +25,13 @@ main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
 import numpy as np
 
+
+try:
+    import plotly.graph_objects as go
+    plotly_import = True
+except:
+    plotly_import = False
+
 def draw_multilayer_default(network_list, display=True, node_size=10,alphalevel=0.13,rectanglex = 1,rectangley = 1,background_shape="circle",background_color="rainbow",networks_color="rainbow",labels=False,arrowsize=0.5,label_position=1,verbose=False,remove_isolated_nodes=False,axis=None,edge_size=1,node_labels=False,node_font_size=5, scale_by_size=False):
 
     """Core multilayer drawing method
@@ -286,8 +293,12 @@ def supra_adjacency_matrix_plot(matrix,display=False):
     plt.imshow(matrix, interpolation='nearest', cmap=plt.cm.binary)
     if display:
         plt.show()
-    
 
+def onclick(event):
+    print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
+          ('double' if event.dblclick else 'single', event.button,
+           event.x, event.y, event.xdata, event.ydata))
+        
 def hairball_plot(g, color_list=None,
                   display=False,
                   node_size=1,
@@ -300,6 +311,7 @@ def hairball_plot(g, color_list=None,
                   edge_width=0.01,
                   alpha_channel=0.5,
                   labels=None,
+                  draw = True,
                   label_font_size=2):
 
 
@@ -319,11 +331,11 @@ def hairball_plot(g, color_list=None,
     Returns:
         None
     """
-    
+
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
     potlabs = []
-    
+#    fig, ax = plt.subplots()
     for node in nodes:
         try:
             potlabs.append(node[0][1])
@@ -341,7 +353,7 @@ def hairball_plot(g, color_list=None,
     else:
         node_types = [x[1] for x in g.nodes()]
         assert len(node_types) == len(color_list)
-        cols = list(colors.all_color_names.keys())
+        cols = colors.colors_default#list(colors.all_color_names.keys())
         id_col_map = {}
         for enx, j in enumerate(set(color_list)):
             id_col_map[j] = cols[enx]
@@ -378,12 +390,14 @@ def hairball_plot(g, color_list=None,
     else:
         raise ValueError('Uknown layout algorithm: ' + str(layout_algorithm))
 
-    nx.draw_networkx_edges(g, pos, alpha=alpha_channel, edge_color="black", width=edge_width, arrows=False)
-    nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping, node_size=nsizes,alpha=alpha_channel)
+    if draw:
+        nx.draw_networkx_edges(g, pos, alpha=alpha_channel, edge_color="black", width=edge_width, arrows=False)
+        scatter = nx.draw_networkx_nodes(g, pos, nodelist=[n1[0] for n1 in nodes], node_color=final_color_mapping, node_size=nsizes,alpha=alpha_channel)
     if labels is not None:
         for el in labels:
             pos_el = pos[el]
-            plt.text(pos_el[0],pos_el[1],el,fontsize=label_font_size,color=text_color)
+            if draw:
+                plt.text(pos_el[0],pos_el[1],el,fontsize=label_font_size,color=text_color)
             
 #        nx.draw_networkx_labels(g, pos, font_size=label_font_size)
 
@@ -397,19 +411,95 @@ def hairball_plot(g, color_list=None,
         else:
             fs = "medium"
         markers = [plt.Line2D([0, 0], [0, 0], color=key, marker='o', linestyle='') for key in legend_colors]
-        plt.legend(markers, [color_to_type_map[color] for color in legend_colors], numpoints=1, fontsize=fs)
-        
+        if draw:
+            plt.legend(markers, [color_to_type_map[color] for color in legend_colors], numpoints=1, fontsize=fs)        
+
     if display:
         plt.show()
 
+    if not draw:
+        return g, nsizes, final_color_mapping, pos
 
+
+def interactive_hairball_plot(G, nsizes, final_color_mapping, pos, colorscale = "Rainbow"):
+
+    if not plotly_import:
+        print("Please, install plotly!")
+        return False
+
+    edge_x = []
+    edge_y = []
+    for edge in G.edges():
+
+        x0, y0 = pos[edge[0]]
+        x1, y1 = pos[edge[1]]
+        edge_x.append(x0)
+        edge_x.append(x1)
+        edge_x.append(None)
+        edge_y.append(y0)
+        edge_y.append(y1)
+        edge_y.append(None)
+
+    edge_trace = go.Scatter(
+        x=edge_x, y=edge_y,
+        line=dict(width=0.5, color='#888'),
+        hoverinfo='text',
+        mode='lines')
+
+    node_x = []
+    node_y = []
+    for node in G.nodes():
+        x, y = pos[node]
+        node_x.append(x)
+        node_y.append(y)
+
+    node_trace = go.Scatter(
+        x=node_x, y=node_y,
+        mode='markers',
+        hovertext=list(G.nodes()),
+        hoverinfo='text',
+        marker=dict(
+            showscale=True,
+            # colorscale options
+            #'Greys' | 'YlGnBu' | 'Greens' | 'YlOrRd' | 'Bluered' | 'RdBu' |
+            #'Reds' | 'Blues' | 'Picnic' | 'Rainbow' | 'Portland' | 'Jet' |
+            #'Hot' | 'Blackbody' | 'Earth' | 'Electric' | 'Viridis' |
+            colorscale=colorscale,
+            reversescale=True,
+            color=[],
+            size=10,
+            colorbar=dict(
+                thickness=15,
+                title='Node Connections',
+                xanchor='left',
+                titleside='right'
+            ),
+            line_width=2))
+
+    node_trace.marker.color = nsizes
+    fig = go.Figure(data=[edge_trace, node_trace],
+                 layout=go.Layout(
+                    title='Interactive relation explorer',
+                    titlefont_size=16,
+                    showlegend=False,
+                    hovermode='closest',
+                    margin=dict(b=20,l=5,r=5,t=40),
+                    annotations=[ dict(
+                        text="By authors of the paper!",
+                        showarrow=False,
+                        xref="paper", yref="paper",
+                        x=0.005, y=-0.002 ) ],
+                    xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                    yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
+                    )
+    fig.show()    
 if __name__ == "__main__":
 
     x = generate_random_networks(4)
     draw_multilayer_default(x, display=False, background_shape="circle")
     # generate_random_multiedges(x, 12, style="piramidal")
     generate_random_multiedges(x, 12, style="curve2_bezier")
-    # network 1's 4 to network 6's 3 etc..    
+    # network 1's 4 to network 6's 3 etc..
     # mel = [((1,1),(5,1))]
     # draw_multiedges(x,mel,input_type="tuple")
     
