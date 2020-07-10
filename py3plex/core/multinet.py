@@ -729,11 +729,6 @@ class multi_layer_network:
 
     def _encode_to_numeric(self):
 
-
-        # Unique_layers = set(n[1] for n in self.core_network.nodes())
-        # individual_adj = defaultdict(list)
-
-        # for layer in unique_layers:
             
         if self.network_type != "multiplex":
             new_edges = []
@@ -788,16 +783,10 @@ class multi_layer_network:
                     if j == en:
                         one_row.append(adj_mat)
                 
-                whole_mat.append(np.hstack((x for x in one_row)))
-                vectors = np.vstack((x for x in whole_mat))
+                whole_mat.append(np.hstack([x for x in one_row]))
+                vectors = np.vstack([x for x in whole_mat])
             self.numeric_core_network = vectors
             self.node_order_in_matrix = all_nodes
-#            n1.append(nmap[node_first])
-#            n2.append(nmap[node_second])
-#            w.append(weight)
-
-        
-#        vectors = sp.coo_matrix((np.array(w), (np.array(n1).astype(int),np.array(n2).astype(int)))).tocsr()
     
     def get_supra_adjacency_matrix(self,mtype="sparse"):
 
