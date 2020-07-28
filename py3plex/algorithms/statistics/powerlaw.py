@@ -28,6 +28,7 @@ import sys
 
 __version__ = "1.4.1"
 
+
 class Fit(object):
     """
     A fit of a data set to various probability distributions, namely power
@@ -58,10 +59,11 @@ class Fit(object):
         dictionary of parameter names ('alpha' and/or 'sigma') and tuples
         of their lower and upper limits (ex. (1.5, 2.5), (None, .1)
     """
-
-    def __init__(self, data,
+    def __init__(self,
+                 data,
                  discrete=False,
-                 xmin=None, xmax=None,
+                 xmin=None,
+                 xmax=None,
                  fit_method='Likelihood',
                  estimate_discrete=True,
                  discrete_approximation='round',
@@ -92,25 +94,30 @@ class Fit(object):
         self.xmin_distance = xmin_distance
 
         if 0 in self.data:
-            print("Values less than or equal to 0 in data. Throwing out 0 or negative values", file=sys.stderr)
-            self.data = self.data[self.data>0]
+            print(
+                "Values less than or equal to 0 in data. Throwing out 0 or negative values",
+                file=sys.stderr)
+            self.data = self.data[self.data > 0]
 
         if self.xmax:
             self.xmax = float(self.xmax)
             self.fixed_xmax = True
-            n_above_max = sum(self.data>self.xmax)
-            self.data = self.data[self.data<=self.xmax]
+            n_above_max = sum(self.data > self.xmax)
+            self.data = self.data[self.data <= self.xmax]
         else:
             n_above_max = 0
             self.fixed_xmax = False
 
-        if not all(self.data[i] <= self.data[i+1] for i in range(len(self.data)-1)):
+        if not all(self.data[i] <= self.data[i + 1]
+                   for i in range(len(self.data) - 1)):
             from numpy import sort
             self.data = sort(self.data)
 
-        self.fitting_cdf_bins, self.fitting_cdf = cdf(self.data, xmin=None, xmax=self.xmax)
+        self.fitting_cdf_bins, self.fitting_cdf = cdf(self.data,
+                                                      xmin=None,
+                                                      xmax=self.xmax)
 
-        if xmin and type(xmin)!=tuple and type(xmin)!=list:
+        if xmin and type(xmin) != tuple and type(xmin) != list:
             self.fixed_xmin = True
             self.xmin = float(xmin)
             self.noise_flag = None
@@ -121,26 +128,27 @@ class Fit(object):
                            estimate_discrete=self.estimate_discrete,
                            data=self.data,
                            parameter_range=self.parameter_range)
-            setattr(self,self.xmin_distance, getattr(pl, self.xmin_distance))
+            setattr(self, self.xmin_distance, getattr(pl, self.xmin_distance))
             self.alpha = pl.alpha
             self.sigma = pl.sigma
             #self.power_law = pl
         else:
-            self.fixed_xmin=False
+            self.fixed_xmin = False
             self.find_xmin()
 
-        self.data = self.data[self.data>=self.xmin]
+        self.data = self.data[self.data >= self.xmin]
         self.n = float(len(self.data))
         self.n_tail = self.n + n_above_max
 
-        self.supported_distributions = {'power_law': Power_Law,
-                                        'lognormal': Lognormal,
-                                        'exponential': Exponential,
-                                        'truncated_power_law': Truncated_Power_Law,
-                                        'stretched_exponential': Stretched_Exponential,
-                                        'lognormal_positive': Lognormal_Positive,
-                                        }
-                                        #'gamma': None}
+        self.supported_distributions = {
+            'power_law': Power_Law,
+            'lognormal': Lognormal,
+            'exponential': Exponential,
+            'truncated_power_law': Truncated_Power_Law,
+            'stretched_exponential': Stretched_Exponential,
+            'lognormal_positive': Lognormal_Positive,
+        }
+        #'gamma': None}
 
     def __getattr__(self, name):
         if name in self.supported_distributions.keys():
@@ -152,17 +160,17 @@ class Fit(object):
                 parameter_range = self.parameter_range
             else:
                 parameter_range = None
-            setattr(self,
-                    name,
-                    dist(data=self.data,
-                         xmin=self.xmin,
-                         xmax=self.xmax,
-                         discrete=self.discrete,
-                         fit_method=self.fit_method,
-                         estimate_discrete=self.estimate_discrete,
-                         discrete_approximation=self.discrete_approximation,
-                         parameter_range=parameter_range,
-                         parent_Fit=self))
+            setattr(
+                self, name,
+                dist(data=self.data,
+                     xmin=self.xmin,
+                     xmax=self.xmax,
+                     discrete=self.discrete,
+                     fit_method=self.fit_method,
+                     estimate_discrete=self.estimate_discrete,
+                     discrete_approximation=self.discrete_approximation,
+                     parameter_range=parameter_range,
+                     parent_Fit=self))
             return getattr(self, name)
         else:
             raise AttributeError(name)
@@ -178,26 +186,28 @@ class Fit(object):
         This is the method of Clauset et al. 2007.
         """
         from numpy import unique, asarray, argmin
-#Much of the rest of this function was inspired by Adam Ginsburg's plfit code,
-#specifically the mapping and sigma threshold behavior:
-#http://code.google.com/p/agpy/source/browse/trunk/plfit/plfit.py?spec=svn359&r=357
+        #Much of the rest of this function was inspired by Adam Ginsburg's plfit code,
+        #specifically the mapping and sigma threshold behavior:
+        #http://code.google.com/p/agpy/source/browse/trunk/plfit/plfit.py?spec=svn359&r=357
         if not self.given_xmin:
             possible_xmins = self.data
         else:
-            possible_ind = min(self.given_xmin)<=self.data
-            possible_ind *= self.data<=max(self.given_xmin)
+            possible_ind = min(self.given_xmin) <= self.data
+            possible_ind *= self.data <= max(self.given_xmin)
             possible_xmins = self.data[possible_ind]
         xmins, xmin_indices = unique(possible_xmins, return_index=True)
-#Don't look at last xmin, as that's also the xmax, and we want to at least have TWO points to fit!
+        #Don't look at last xmin, as that's also the xmax, and we want to at least have TWO points to fit!
         xmins = xmins[:-1]
         xmin_indices = xmin_indices[:-1]
 
         if xmin_distance is None:
             xmin_distance = self.xmin_distance
 
-        if len(xmins)<=0:
-            print("Less than 2 unique data values left after xmin and xmax "
-                  "options! Cannot fit. Returning nans.", file=sys.stderr)
+        if len(xmins) <= 0:
+            print(
+                "Less than 2 unique data values left after xmin and xmax "
+                "options! Cannot fit. Returning nans.",
+                file=sys.stderr)
             from numpy import nan, array
             self.xmin = nan
             self.D = nan
@@ -207,7 +217,7 @@ class Fit(object):
             self.alpha = nan
             self.sigma = nan
             self.n_tail = nan
-            setattr(self, xmin_distance+'s', array([nan]))
+            setattr(self, xmin_distance + 's', array([nan]))
             self.alphas = array([nan])
             self.sigmas = array([nan])
             self.in_ranges = array([nan])
@@ -224,14 +234,15 @@ class Fit(object):
                            data=self.data,
                            parameter_range=self.parameter_range,
                            parent_Fit=self)
-            return getattr(pl, xmin_distance), pl.alpha, pl.sigma, pl.in_range()
+            return getattr(pl,
+                           xmin_distance), pl.alpha, pl.sigma, pl.in_range()
 
         fits = asarray(list(map(fit_function, xmins)))
         # logging.warning(fits.shape)
-        setattr(self, xmin_distance+'s', fits[:,0])
-        self.alphas = fits[:,1]
-        self.sigmas = fits[:,2]
-        self.in_ranges = fits[:,3].astype(bool)
+        setattr(self, xmin_distance + 's', fits[:, 0])
+        self.alphas = fits[:, 1]
+        self.sigmas = fits[:, 2]
+        self.in_ranges = fits[:, 3].astype(bool)
         self.xmins = xmins
 
         good_values = self.in_ranges
@@ -240,23 +251,25 @@ class Fit(object):
             good_values = good_values * (self.sigmas < self.sigma_threshold)
 
         if good_values.all():
-            min_D_index = argmin(getattr(self, xmin_distance+'s'))
+            min_D_index = argmin(getattr(self, xmin_distance + 's'))
             self.noise_flag = False
         elif not good_values.any():
-            min_D_index = argmin(getattr(self, xmin_distance+'s'))
+            min_D_index = argmin(getattr(self, xmin_distance + 's'))
             self.noise_flag = True
         else:
             from numpy.ma import masked_array
-            masked_Ds = masked_array(getattr(self, xmin_distance+'s'), mask=-good_values)
+            masked_Ds = masked_array(getattr(self, xmin_distance + 's'),
+                                     mask=-good_values)
             min_D_index = masked_Ds.argmin()
             self.noise_flag = False
 
         if self.noise_flag:
             print("No valid fits found.", file=sys.stderr)
-        
+
         #Set the Fit's xmin to the optimal xmin
         self.xmin = xmins[min_D_index]
-        setattr(self, xmin_distance, getattr(self, xmin_distance+'s')[min_D_index])
+        setattr(self, xmin_distance,
+                getattr(self, xmin_distance + 's')[min_D_index])
         self.alpha = self.alphas[min_D_index]
         self.sigma = self.sigmas[min_D_index]
 
@@ -265,7 +278,6 @@ class Fit(object):
         self.fitting_cdf_bins, self.fitting_cdf = self.cdf()
 
         return self.xmin
-
 
     def nested_distribution_compare(self, dist1, dist2, nested=True, **kwargs):
         """
@@ -329,10 +341,10 @@ class Fit(object):
         loglikelihoods1 = dist1.loglikelihoods(self.data)
         loglikelihoods2 = dist2.loglikelihoods(self.data)
 
-        return loglikelihood_ratio(
-            loglikelihoods1, loglikelihoods2,
-            nested=nested,
-            **kwargs)
+        return loglikelihood_ratio(loglikelihoods1,
+                                   loglikelihoods2,
+                                   nested=nested,
+                                   **kwargs)
 
     def loglikelihood_ratio(self, dist1, dist2, nested=None, **kwargs):
         """
@@ -369,8 +381,7 @@ class Fit(object):
             data = self.data
             xmin = self.xmin
             xmax = self.xmax
-        return cdf(data, xmin=xmin, xmax=xmax, survival=survival,
-                   **kwargs) 
+        return cdf(data, xmin=xmin, xmax=xmax, survival=survival, **kwargs)
 
     def ccdf(self, original_data=False, survival=True, **kwargs):
         """
@@ -402,8 +413,7 @@ class Fit(object):
             data = self.data
             xmin = self.xmin
             xmax = self.xmax
-        return cdf(data, xmin=xmin, xmax=xmax, survival=survival,
-                   **kwargs)
+        return cdf(data, xmin=xmin, xmax=xmax, survival=survival, **kwargs)
 
     def pdf(self, original_data=False, **kwargs):
         """
@@ -488,8 +498,11 @@ class Fit(object):
             data = self.data
         return plot_cdf(data, ax=ax, survival=survival, **kwargs)
 
-    def plot_pdf(self, ax=None, original_data=False,
-                 linear_bins=False, **kwargs):
+    def plot_pdf(self,
+                 ax=None,
+                 original_data=False,
+                 linear_bins=False,
+                 **kwargs):
         """
         Plots the probability density function (PDF) or the data to a new figure
         or to axis ax if provided.
@@ -516,6 +529,7 @@ class Fit(object):
         else:
             data = self.data
         return plot_pdf(data, ax=ax, linear_bins=linear_bins, **kwargs)
+
 
 class Distribution(object):
     """
@@ -561,9 +575,9 @@ class Distribution(object):
     parent_Fit : Fit object, optional
         A Fit object from which to use data, if it exists.
     """
-
     def __init__(self,
-                 xmin=1, xmax=None,
+                 xmin=1,
+                 xmax=None,
                  discrete=False,
                  fit_method='Likelihood',
                  data=None,
@@ -602,7 +616,6 @@ class Distribution(object):
         if (data is not None) and not (parameter_range and self.parent_Fit):
             self.fit(data)
 
-
     def fit(self, data=None, suppress_output=False):
         """
         Fits the parameters of the distribution to the data. Uses options set
@@ -612,15 +625,18 @@ class Distribution(object):
         if data is None and hasattr(self, 'parent_Fit'):
             data = self.parent_Fit.data
         data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
-        if self.fit_method=='Likelihood':
+        if self.fit_method == 'Likelihood':
+
             def fit_function(params):
                 self.parameters(params)
                 return -sum(self.loglikelihoods(data))
-        elif self.fit_method=='KS':
+        elif self.fit_method == 'KS':
+
             def fit_function(params):
                 self.parameters(params)
                 self.KS(data)
                 return self.D
+
         from scipy.optimize import fmin
         parameters, negative_loglikelihood, iter, funcalls, warnflag, = \
             fmin(
@@ -630,12 +646,12 @@ class Distribution(object):
                 disp=False)
         self.parameters(parameters)
         if not self.in_range():
-            self.noise_flag=True
+            self.noise_flag = True
         else:
-            self.noise_flag=False
+            self.noise_flag = False
         if self.noise_flag and not suppress_output:
             print("No valid fits found.", file=sys.stderr)
-        self.loglikelihood =-negative_loglikelihood
+        self.loglikelihood = -negative_loglikelihood
         self.KS(data)
 
     def KS(self, data=None):
@@ -654,7 +670,7 @@ class Distribution(object):
         if data is None and hasattr(self, 'parent_Fit'):
             data = self.parent_Fit.data
         data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
-        if len(data)<2:
+        if len(data) < 2:
             print("Not enough data. Returning nan", file=sys.stderr)
             from numpy import nan
             self.D = nan
@@ -665,15 +681,15 @@ class Distribution(object):
             self.Asquare = nan
             return self.D
 
-        if  hasattr(self, 'parent_Fit'):
+        if hasattr(self, 'parent_Fit'):
             bins = self.parent_Fit.fitting_cdf_bins
             Actual_CDF = self.parent_Fit.fitting_cdf
-            ind = bins>=self.xmin
+            ind = bins >= self.xmin
             bins = bins[ind]
             Actual_CDF = Actual_CDF[ind]
             dropped_probability = Actual_CDF[0]
             Actual_CDF -= dropped_probability
-            Actual_CDF /= 1-dropped_probability
+            Actual_CDF /= 1 - dropped_probability
         else:
             bins, Actual_CDF = cdf(data)
 
@@ -682,7 +698,7 @@ class Distribution(object):
         CDF_diff = Theoretical_CDF - Actual_CDF
 
         self.D_plus = CDF_diff.max()
-        self.D_minus = -1.0*CDF_diff.min()
+        self.D_minus = -1.0 * CDF_diff.min()
         from numpy import mean
         self.Kappa = 1 + mean(CDF_diff)
 
@@ -693,7 +709,7 @@ class Distribution(object):
         self.Asquare = sum(((CDF_diff**2) / denom)[1:])
         return self.D
 
-    def ccdf(self,data=None, survival=True):
+    def ccdf(self, data=None, survival=True):
         """
         The complementary cumulative distribution function (CCDF) of the
         theoretical distribution. Calculated for the values given in data
@@ -717,7 +733,7 @@ class Distribution(object):
         """
         return self.cdf(data=data, survival=survival)
 
-    def cdf(self,data=None, survival=False):
+    def cdf(self, data=None, survival=False):
         """
         The cumulative distribution function (CDF) of the theoretical
         distribution. Calculated for the values given in data within xmin and
@@ -748,8 +764,8 @@ class Distribution(object):
             from numpy import tile
             return tile(10**float_info.min_10_exp, n)
 
-        if self._cdf_xmin==1:
-#If cdf_xmin is 1, it means we don't have the numerical accuracy to
+        if self._cdf_xmin == 1:
+            #If cdf_xmin is 1, it means we don't have the numerical accuracy to
             #calculate this tail. So we make everything 1, indicating
             #we're at the end of the tail. Such an xmin should be thrown
             #out by the KS test.
@@ -763,7 +779,7 @@ class Distribution(object):
         if self.xmax:
             norm = norm - (1 - self._cdf_base_function(self.xmax))
 
-        CDF = CDF/norm
+        CDF = CDF / norm
 
         if survival:
             CDF = 1 - CDF
@@ -771,19 +787,21 @@ class Distribution(object):
         possible_numerical_error = False
         from numpy import isnan, min
         if isnan(min(CDF)):
-            print("'nan' in fit cumulative distribution values.", file=sys.stderr)
+            print("'nan' in fit cumulative distribution values.",
+                  file=sys.stderr)
             possible_numerical_error = True
         #if 0 in CDF or 1 in CDF:
         #    print("0 or 1 in fit cumulative distribution values.", file=sys.stderr)
         #    possible_numerical_error = True
         if possible_numerical_error:
-            print("Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.", file=sys.stderr)
+            print(
+                "Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.",
+                file=sys.stderr)
         return CDF
 
     @property
     def _cdf_xmin(self):
         return self._cdf_base_function(self.xmin)
-
 
     def pdf(self, data=None):
         """
@@ -813,24 +831,24 @@ class Distribution(object):
         if not self.discrete:
             f = self._pdf_base_function(data)
             C = self._pdf_continuous_normalizer
-            likelihoods = f*C
+            likelihoods = f * C
         else:
             if self._pdf_discrete_normalizer:
                 f = self._pdf_base_function(data)
                 C = self._pdf_discrete_normalizer
-                likelihoods = f*C
-            elif self.discrete_approximation=='round':
-                lower_data = data-.5
-                upper_data = data+.5
-#Temporarily expand xmin and xmax to be able to grab the extra bit of
-#probability mass beyond the (integer) values of xmin and xmax
-#Note this is a design decision. One could also say this extra 
-#probability "off the edge" of the distribution shouldn't be included,
-#and that implementation is retained below, commented out. Note, however,
-#that such a cliff means values right at xmin and xmax have half the width to
-#grab probability from, and thus are lower probability than they would otherwise
-#be. This is particularly concerning for values at xmin, which are typically 
-#the most likely and greatly influence the distribution's fit.
+                likelihoods = f * C
+            elif self.discrete_approximation == 'round':
+                lower_data = data - .5
+                upper_data = data + .5
+                #Temporarily expand xmin and xmax to be able to grab the extra bit of
+                #probability mass beyond the (integer) values of xmin and xmax
+                #Note this is a design decision. One could also say this extra
+                #probability "off the edge" of the distribution shouldn't be included,
+                #and that implementation is retained below, commented out. Note, however,
+                #that such a cliff means values right at xmin and xmax have half the width to
+                #grab probability from, and thus are lower probability than they would otherwise
+                #be. This is particularly concerning for values at xmin, which are typically
+                #the most likely and greatly influence the distribution's fit.
                 self.xmin -= .5
                 if self.xmax:
                     self.xmax += .5
@@ -838,30 +856,32 @@ class Distribution(object):
                 #lower_data[lower_data<self.xmin] +=.5
                 #if self.xmax:
                 #    upper_data[upper_data>self.xmax] -=.5
-                likelihoods = self.cdf(upper_data)-self.cdf(lower_data)
-                self.xmin +=.5
+                likelihoods = self.cdf(upper_data) - self.cdf(lower_data)
+                self.xmin += .5
                 if self.xmax:
                     self.xmax -= .5
             else:
-                if self.discrete_approximation=='xmax':
+                if self.discrete_approximation == 'xmax':
                     upper_limit = self.xmax
                 else:
                     upper_limit = self.discrete_approximation
+
+
 #            from mpmath import exp
                 from numpy import arange
-                X = arange(self.xmin, upper_limit+1)
+                X = arange(self.xmin, upper_limit + 1)
                 PDF = self._pdf_base_function(X)
-                PDF = (PDF/sum(PDF)).astype(float)
-                likelihoods = PDF[(data-self.xmin).astype(int)]
-        likelihoods[likelihoods==0] = 10**float_info.min_10_exp
+                PDF = (PDF / sum(PDF)).astype(float)
+                likelihoods = PDF[(data - self.xmin).astype(int)]
+        likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
         return likelihoods
 
     @property
     def _pdf_continuous_normalizer(self):
         C = 1 - self._cdf_xmin
         if self.xmax:
-            C -= 1 - self._cdf_base_function(self.xmax+1)
-        C = 1.0/C
+            C -= 1 - self._cdf_base_function(self.xmax + 1)
+        C = 1.0 / C
         return C
 
     @property
@@ -883,7 +903,7 @@ class Distribution(object):
             Initial parameter values to start the fitting search from.
         """
         from types import FunctionType
-        if type(r)==FunctionType:
+        if type(r) == FunctionType:
             self._in_given_parameter_range = r
         else:
             self._range_dict = r
@@ -903,8 +923,8 @@ class Distribution(object):
             r = self._range_dict
             result = True
             for k in r.keys():
-#For any attributes we've specificed, make sure we're above the lower bound
-#and below the lower bound (if they exist). This must be true of all of them.
+                #For any attributes we've specificed, make sure we're above the lower bound
+                #and below the lower bound (if they exist). This must be true of all of them.
                 lower_bound, upper_bound = r[k]
                 if upper_bound is not None:
                     result *= getattr(self, k) < upper_bound
@@ -934,7 +954,7 @@ class Distribution(object):
         The likelihoods of the observed data from the theoretical distribution.
         Another name for the probabilities or probability density function.
         """
-        return self.pdf(data) 
+        return self.pdf(data)
 
     def loglikelihoods(self, data):
         """
@@ -1026,7 +1046,7 @@ class Distribution(object):
         bins = unique(trim_to_range(data, xmin=self.xmin, xmax=self.xmax))
         PDF = self.pdf(bins)
         from numpy import nan
-        PDF[PDF==0] = nan
+        PDF[PDF == 0] = nan
         if not ax:
             import matplotlib.pyplot as plt
             plt.plot(bins, PDF, **kwargs)
@@ -1037,7 +1057,7 @@ class Distribution(object):
         ax.set_yscale("log")
         return ax
 
-    def generate_random(self,n=1, estimate_discrete=None):
+    def generate_random(self, n=1, estimate_discrete=None):
         """
         Generates random numbers from the theoretical probability distribution.
         If xmax is present, it is currently ignored.
@@ -1066,10 +1086,12 @@ class Distribution(object):
         if not self.discrete:
             x = self._generate_random_continuous(r)
         else:
-            if (estimate_discrete and not hasattr(self, '_generate_random_discrete_estimate') ):
-                raise AttributeError("This distribution does not have an "
-                                     "estimation of the discrete form for generating simulated "
-                                     "data. Try the exact form with estimate_discrete=False.")
+            if (estimate_discrete and
+                    not hasattr(self, '_generate_random_discrete_estimate')):
+                raise AttributeError(
+                    "This distribution does not have an "
+                    "estimation of the discrete form for generating simulated "
+                    "data. Try the exact form with estimate_discrete=False.")
             if estimate_discrete is None:
                 if not hasattr(self, '_generate_random_discrete_estimate'):
                     estimate_discrete = False
@@ -1091,14 +1113,14 @@ class Distribution(object):
         x2 = int(self.xmin)
         while self.ccdf(data=[x2]) >= (1 - r):
             x1 = x2
-            x2 = 2*x1
+            x2 = 2 * x1
         #Use binary search within that range to find the exact answer, up to
         #the limit of being between two integers.
-        x = bisect_map(x1, x2, self.ccdf, 1-r)
+        x = bisect_map(x1, x2, self.ccdf, 1 - r)
         return x
 
-class Power_Law(Distribution):
 
+class Power_Law(Distribution):
     def __init__(self, estimate_discrete=True, **kwargs):
         self.estimate_discrete = estimate_discrete
         Distribution.__init__(self, **kwargs)
@@ -1114,13 +1136,13 @@ class Power_Law(Distribution):
 
     @property
     def sigma(self):
-#Only is calculable after self.fit is started, when the number of data points is
-#established
+        #Only is calculable after self.fit is started, when the number of data points is
+        #established
         from numpy import sqrt
         return (self.alpha - 1) / sqrt(self.n)
 
     def _in_standard_parameter_range(self):
-        return self.alpha>1
+        return self.alpha > 1
 
     def fit(self, data=None):
         if data is None and hasattr(self, 'parent_Fit'):
@@ -1129,7 +1151,7 @@ class Power_Law(Distribution):
         self.n = len(data)
         from numpy import log, sum
         if not self.discrete and not self.xmax:
-            self.alpha = 1 + (self.n / sum(log(data/self.xmin)))
+            self.alpha = 1 + (self.n / sum(log(data / self.xmin)))
             if not self.in_range():
                 Distribution.fit(self, data, suppress_output=True)
             self.KS(data)
@@ -1142,23 +1164,23 @@ class Power_Law(Distribution):
             Distribution.fit(self, data, suppress_output=True)
 
         if not self.in_range():
-            self.noise_flag=True
+            self.noise_flag = True
         else:
-            self.noise_flag=False
+            self.noise_flag = False
 
     def _initial_parameters(self, data):
         from numpy import log, sum
-        return 1 + len(data)/sum(log(data / (self.xmin)))
+        return 1 + len(data) / sum(log(data / (self.xmin)))
 
     def _cdf_base_function(self, x):
         if self.discrete:
             from scipy.special import zeta
             CDF = 1 - zeta(self.alpha, x)
         else:
-#Can this be reformulated to not reference xmin? Removal of the probability
-#before xmin and after xmax is handled in Distribution.cdf(), so we don't
-#strictly need this element. It doesn't hurt, for the moment.
-            CDF = 1-(x/self.xmin)**(-self.alpha+1)
+            #Can this be reformulated to not reference xmin? Removal of the probability
+            #before xmin and after xmax is handled in Distribution.cdf(), so we don't
+            #strictly need this element. It doesn't hurt, for the moment.
+            CDF = 1 - (x / self.xmin)**(-self.alpha + 1)
         return CDF
 
     def _pdf_base_function(self, x):
@@ -1166,25 +1188,26 @@ class Power_Law(Distribution):
 
     @property
     def _pdf_continuous_normalizer(self):
-        return (self.alpha-1) * self.xmin**(self.alpha-1)
+        return (self.alpha - 1) * self.xmin**(self.alpha - 1)
 
     @property
     def _pdf_discrete_normalizer(self):
         C = 1.0 - self._cdf_xmin
         if self.xmax:
-            C -= 1 - self._cdf_base_function(self.xmax+1)
-        C = 1.0/C
+            C -= 1 - self._cdf_base_function(self.xmax + 1)
+        C = 1.0 / C
         return C
 
     def _generate_random_continuous(self, r):
-            return self.xmin * (1 - r) ** (-1/(self.alpha - 1))
+        return self.xmin * (1 - r)**(-1 / (self.alpha - 1))
+
     def _generate_random_discrete_estimate(self, r):
-            x = (self.xmin - 0.5) * (1 - r) ** (-1/(self.alpha - 1)) + 0.5
-            from numpy import around
-            return around(x)
+        x = (self.xmin - 0.5) * (1 - r)**(-1 / (self.alpha - 1)) + 0.5
+        from numpy import around
+        return around(x)
+
 
 class Exponential(Distribution):
-
     def parameters(self, params):
         self.Lambda = params[0]
         self.parameter1 = self.Lambda
@@ -1196,14 +1219,14 @@ class Exponential(Distribution):
 
     def _initial_parameters(self, data):
         from numpy import mean
-        return 1/mean(data)
+        return 1 / mean(data)
 
     def _in_standard_parameter_range(self):
-        return self.Lambda>0
+        return self.Lambda > 0
 
     def _cdf_base_function(self, x):
         from numpy import exp
-        CDF = 1 - exp(-self.Lambda*x)
+        CDF = 1 - exp(-self.Lambda * x)
         return CDF
 
     def _pdf_base_function(self, x):
@@ -1221,8 +1244,8 @@ class Exponential(Distribution):
         C = (1 - exp(-self.Lambda)) * exp(self.Lambda * self.xmin)
         if self.xmax:
             Cxmax = (1 - exp(-self.Lambda)) * exp(self.Lambda * self.xmax)
-            C = 1.0/C - 1.0/Cxmax
-            C = 1.0/C
+            C = 1.0 / C - 1.0 / Cxmax
+            C = 1.0 / C
         return C
 
     def pdf(self, data=None):
@@ -1231,12 +1254,12 @@ class Exponential(Distribution):
         if not self.discrete and self.in_range() and not self.xmax:
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import exp
-#        likelihoods = exp(-Lambda*data)*\
-#                Lambda*exp(Lambda*xmin)
-            likelihoods = self.Lambda*exp(self.Lambda*(self.xmin-data))
+            #        likelihoods = exp(-Lambda*data)*\
+            #                Lambda*exp(Lambda*xmin)
+            likelihoods = self.Lambda * exp(self.Lambda * (self.xmin - data))
             #Simplified so as not to throw a nan from infs being divided by each other
             from sys import float_info
-            likelihoods[likelihoods==0] = 10**float_info.min_10_exp
+            likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
         else:
             likelihoods = Distribution.pdf(self, data)
         return likelihoods
@@ -1247,22 +1270,24 @@ class Exponential(Distribution):
         if not self.discrete and self.in_range() and not self.xmax:
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import log
-#        likelihoods = exp(-Lambda*data)*\
-#                Lambda*exp(Lambda*xmin)
-            loglikelihoods = log(self.Lambda) + (self.Lambda*(self.xmin-data))
+            #        likelihoods = exp(-Lambda*data)*\
+            #                Lambda*exp(Lambda*xmin)
+            loglikelihoods = log(self.Lambda) + (self.Lambda *
+                                                 (self.xmin - data))
             #Simplified so as not to throw a nan from infs being divided by each other
             from sys import float_info
-            loglikelihoods[loglikelihoods==0] = log(10**float_info.min_10_exp)
+            loglikelihoods[loglikelihoods == 0] = log(
+                10**float_info.min_10_exp)
         else:
             loglikelihoods = Distribution.loglikelihoods(self, data)
         return loglikelihoods
 
     def _generate_random_continuous(self, r):
         from numpy import log
-        return self.xmin - (1/self.Lambda) * log(1-r)
+        return self.xmin - (1 / self.Lambda) * log(1 - r)
+
 
 class Stretched_Exponential(Distribution):
-
     def parameters(self, params):
         self.Lambda = params[0]
         self.parameter1 = self.Lambda
@@ -1277,25 +1302,25 @@ class Stretched_Exponential(Distribution):
 
     def _initial_parameters(self, data):
         from numpy import mean
-        return (1/mean(data), 1)
+        return (1 / mean(data), 1)
 
     def _in_standard_parameter_range(self):
-        return self.Lambda>0 and self.beta>0
+        return self.Lambda > 0 and self.beta > 0
 
     def _cdf_base_function(self, x):
         from numpy import exp
-        CDF = 1 - exp(-(self.Lambda*x)**self.beta)
+        CDF = 1 - exp(-(self.Lambda * x)**self.beta)
         return CDF
 
     def _pdf_base_function(self, x):
         from numpy import exp
-        return (((x*self.Lambda)**(self.beta-1)) *
-                exp(-((self.Lambda*x)**self.beta)))
+        return (((x * self.Lambda)**(self.beta - 1)) *
+                exp(-((self.Lambda * x)**self.beta)))
 
     @property
     def _pdf_continuous_normalizer(self):
         from numpy import exp
-        C = self.beta*self.Lambda*exp((self.Lambda*self.xmin)**self.beta)
+        C = self.beta * self.Lambda * exp((self.Lambda * self.xmin)**self.beta)
         return C
 
     @property
@@ -1308,13 +1333,13 @@ class Stretched_Exponential(Distribution):
         if not self.discrete and self.in_range() and not self.xmax:
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import exp
-            likelihoods = ((data*self.Lambda)**(self.beta-1) *
-                           self.beta * self.Lambda *
-                           exp((self.Lambda*self.xmin)**self.beta -
-                               (self.Lambda*data)**self.beta))
+            likelihoods = ((data * self.Lambda)**(self.beta - 1) * self.beta *
+                           self.Lambda *
+                           exp((self.Lambda * self.xmin)**self.beta -
+                               (self.Lambda * data)**self.beta))
             #Simplified so as not to throw a nan from infs being divided by each other
             from sys import float_info
-            likelihoods[likelihoods==0] = 10**float_info.min_10_exp
+            likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
         else:
             likelihoods = Distribution.pdf(self, data)
         return likelihoods
@@ -1325,28 +1350,28 @@ class Stretched_Exponential(Distribution):
         if not self.discrete and self.in_range() and not self.xmax:
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import log
-            loglikelihoods = ( 
-                    log((data*self.Lambda)**(self.beta-1) *
-                        self.beta * self. Lambda) + 
-                    (self.Lambda*self.xmin)**self.beta - 
-                        (self.Lambda*data)**self.beta)
+            loglikelihoods = (log(
+                (data * self.Lambda)**(self.beta - 1) * self.beta *
+                self.Lambda) + (self.Lambda * self.xmin)**self.beta -
+                              (self.Lambda * data)**self.beta)
             #Simplified so as not to throw a nan from infs being divided by each other
             from sys import float_info
             from numpy import inf
-            loglikelihoods[loglikelihoods==-inf] = log(10**float_info.min_10_exp)
+            loglikelihoods[loglikelihoods == -inf] = log(
+                10**float_info.min_10_exp)
         else:
             loglikelihoods = Distribution.loglikelihoods(self, data)
         return loglikelihoods
 
     def _generate_random_continuous(self, r):
         from numpy import log
-#        return ( (self.xmin**self.beta) -
-#            (1/self.Lambda) * log(1-r) )**(1/self.beta)
-        return (1/self.Lambda)* ( (self.Lambda*self.xmin)**self.beta -
-            log(1-r) )**(1/self.beta)
+        #        return ( (self.xmin**self.beta) -
+        #            (1/self.Lambda) * log(1-r) )**(1/self.beta)
+        return (1 / self.Lambda) * (
+            (self.Lambda * self.xmin)**self.beta - log(1 - r))**(1 / self.beta)
+
 
 class Truncated_Power_Law(Distribution):
-
     def parameters(self, params):
         self.alpha = params[0]
         self.parameter1 = self.alpha
@@ -1361,22 +1386,21 @@ class Truncated_Power_Law(Distribution):
 
     def _initial_parameters(self, data):
         from numpy import log, sum, mean
-        alpha = 1 + len(data)/sum( log( data / (self.xmin) ))
-        Lambda = 1/mean(data)
+        alpha = 1 + len(data) / sum(log(data / (self.xmin)))
+        Lambda = 1 / mean(data)
         return (alpha, Lambda)
 
     def _in_standard_parameter_range(self):
-        return self.Lambda>0 and self.alpha>1
+        return self.Lambda > 0 and self.alpha > 1
 
     def _cdf_base_function(self, x):
         from mpmath import gammainc
         from numpy import vectorize
         gammainc = vectorize(gammainc)
 
-        CDF = ( (gammainc(1-self.alpha,self.Lambda*x)).astype('float') /
-                self.Lambda**(1-self.alpha)
-                    )
-        CDF = 1 -CDF
+        CDF = ((gammainc(1 - self.alpha, self.Lambda * x)).astype('float') /
+               self.Lambda**(1 - self.alpha))
+        CDF = 1 - CDF
         return CDF
 
     def _pdf_base_function(self, x):
@@ -1386,8 +1410,8 @@ class Truncated_Power_Law(Distribution):
     @property
     def _pdf_continuous_normalizer(self):
         from mpmath import gammainc
-        C = ( self.Lambda**(1-self.alpha) /
-                float(gammainc(1-self.alpha,self.Lambda*self.xmin)))
+        C = (self.Lambda**(1 - self.alpha) /
+             float(gammainc(1 - self.alpha, self.Lambda * self.xmin)))
         return C
 
     @property
@@ -1395,14 +1419,16 @@ class Truncated_Power_Law(Distribution):
         if 0:
             return False
         from mpmath import lerchphi
-        from mpmath import exp # faster /here/ than numpy.exp
-        C = ( float(exp(self.xmin * self.Lambda) /
-            lerchphi(exp(-self.Lambda), self.alpha, self.xmin)) )
+        from mpmath import exp  # faster /here/ than numpy.exp
+        C = (float(
+            exp(self.xmin * self.Lambda) /
+            lerchphi(exp(-self.Lambda), self.alpha, self.xmin)))
         if self.xmax:
-            Cxmax = ( float(exp(self.xmax * self.Lambda) /
-                lerchphi(exp(-self.Lambda), self.alpha, self.xmax)) )
-            C = 1.0/C - 1.0/Cxmax
-            C = 1.0/C
+            Cxmax = (float(
+                exp(self.xmax * self.Lambda) /
+                lerchphi(exp(-self.Lambda), self.alpha, self.xmax)))
+            C = 1.0 / C - 1.0 / Cxmax
+            C = 1.0 / C
         return C
 
     def pdf(self, data=None):
@@ -1412,18 +1438,16 @@ class Truncated_Power_Law(Distribution):
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import exp
             from mpmath import gammainc
-#        likelihoods = (data**-alpha)*exp(-Lambda*data)*\
-#                (Lambda**(1-alpha))/\
-#                float(gammainc(1-alpha,Lambda*xmin))
-            likelihoods = ( self.Lambda**(1-self.alpha) /
-                    (data**self.alpha *
-                            exp(self.Lambda*data) *
-                            gammainc(1-self.alpha,self.Lambda*self.xmin)
-                            ).astype(float)
-                    )
+            #        likelihoods = (data**-alpha)*exp(-Lambda*data)*\
+            #                (Lambda**(1-alpha))/\
+            #                float(gammainc(1-alpha,Lambda*xmin))
+            likelihoods = (
+                self.Lambda**(1 - self.alpha) /
+                (data**self.alpha * exp(self.Lambda * data) * gammainc(
+                    1 - self.alpha, self.Lambda * self.xmin)).astype(float))
             #Simplified so as not to throw a nan from infs being divided by each other
             from sys import float_info
-            likelihoods[likelihoods==0] = 10**float_info.min_10_exp
+            likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
         else:
             likelihoods = Distribution.pdf(self, data)
         return likelihoods
@@ -1433,16 +1457,17 @@ class Truncated_Power_Law(Distribution):
             from numpy import log
             from numpy.random import rand
             while 1:
-                x = self.xmin - (1/self.Lambda) * log(1-r)
-                p = ( x/self.xmin )**-self.alpha
-                if rand()<p:
+                x = self.xmin - (1 / self.Lambda) * log(1 - r)
+                p = (x / self.xmin)**-self.alpha
+                if rand() < p:
                     return x
                 r = rand()
+
         from numpy import array
         return array(list(map(helper, r)))
 
-class Lognormal(Distribution):
 
+class Lognormal(Distribution):
     def parameters(self, params):
         self.mu = params[0]
         self.parameter1 = self.mu
@@ -1485,28 +1510,28 @@ class Lognormal(Distribution):
             f = self._pdf_base_function(data)
             C = self._pdf_continuous_normalizer
             if C > 0:
-                likelihoods = f/C
+                likelihoods = f / C
             else:
                 likelihoods = tile(10**float_info.min_10_exp, n)
         else:
             if self._pdf_discrete_normalizer:
                 f = self._pdf_base_function(data)
                 C = self._pdf_discrete_normalizer
-                likelihoods = f*C
-            elif self.discrete_approximation=='round':
+                likelihoods = f * C
+            elif self.discrete_approximation == 'round':
                 likelihoods = self._round_discrete_approx(data)
             else:
-                if self.discrete_approximation=='xmax':
+                if self.discrete_approximation == 'xmax':
                     upper_limit = self.xmax
                 else:
                     upper_limit = self.discrete_approximation
 #            from mpmath import exp
                 from numpy import arange
-                X = arange(self.xmin, upper_limit+1)
+                X = arange(self.xmin, upper_limit + 1)
                 PDF = self._pdf_base_function(X)
-                PDF = (PDF/sum(PDF)).astype(float)
-                likelihoods = PDF[(data-self.xmin).astype(int)]
-        likelihoods[likelihoods==0] = 10**float_info.min_10_exp
+                PDF = (PDF / sum(PDF)).astype(float)
+                likelihoods = PDF[(data - self.xmin).astype(int)]
+        likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
         return likelihoods
 
     def _round_discrete_approx(self, data):
@@ -1528,27 +1553,27 @@ class Lognormal(Distribution):
         be. This is particularly concerning for values at xmin, which are typically 
         the most likely and greatly influence the distribution's fit.
         """
-        lower_data = data-.5
-        upper_data = data+.5
+        lower_data = data - .5
+        upper_data = data + .5
         self.xmin -= .5
         if self.xmax:
             self.xmax += .5
 
-
         # revised calculation written to avoid underflow errors
-        arg1 = (np.log(lower_data)-self.mu) / (np.sqrt(2)*self.sigma)      
-        arg2 = (np.log(upper_data)-self.mu) / (np.sqrt(2)*self.sigma)      
-        likelihoods = 0.5*(ss.erfc(arg1) - ss.erfc(arg2))
+        arg1 = (np.log(lower_data) - self.mu) / (np.sqrt(2) * self.sigma)
+        arg2 = (np.log(upper_data) - self.mu) / (np.sqrt(2) * self.sigma)
+        likelihoods = 0.5 * (ss.erfc(arg1) - ss.erfc(arg2))
         if not self.xmax:
-            norm = 0.5*ss.erfc((np.log(self.xmin)-self.mu) / (np.sqrt(2)*self.sigma))
+            norm = 0.5 * ss.erfc(
+                (np.log(self.xmin) - self.mu) / (np.sqrt(2) * self.sigma))
         else:
             # may still need to be fixed
-            norm = - self._cdf_xmin + self._cdf_base_function(self.xmax)
-        self.xmin +=.5
+            norm = -self._cdf_xmin + self._cdf_base_function(self.xmax)
+        self.xmin += .5
         if self.xmax:
             self.xmax -= .5
 
-        return likelihoods/norm
+        return likelihoods / norm
 
     def cdf(self, data=None, survival=False):
         """
@@ -1584,8 +1609,8 @@ class Lognormal(Distribution):
             from numpy import tile
             return tile(10**float_info.min_10_exp, n)
 
-        val_data = (log(data)-self.mu) / (sqrt(2)*self.sigma)
-        val_xmin = (log(self.xmin)-self.mu) / (sqrt(2)*self.sigma)
+        val_data = (log(data) - self.mu) / (sqrt(2) * self.sigma)
+        val_xmin = (log(self.xmin) - self.mu) / (sqrt(2) * self.sigma)
         CDF = 0.5 * (ss.erfc(val_xmin) - ss.erfc(val_data))
 
         norm = 0.5 * ss.erfc(val_xmin)
@@ -1593,7 +1618,7 @@ class Lognormal(Distribution):
             # TO DO: Improve this line further for better numerical accuracy?
             norm = norm - (1 - self._cdf_base_function(self.xmax))
 
-        CDF = CDF/norm
+        CDF = CDF / norm
 
         if survival:
             CDF = 1 - CDF
@@ -1601,13 +1626,16 @@ class Lognormal(Distribution):
         possible_numerical_error = False
         from numpy import isnan, min
         if isnan(min(CDF)):
-            print("'nan' in fit cumulative distribution values.", file=sys.stderr)
+            print("'nan' in fit cumulative distribution values.",
+                  file=sys.stderr)
             possible_numerical_error = True
         #if 0 in CDF or 1 in CDF:
         #    print("0 or 1 in fit cumulative distribution values.", file=sys.stderr)
         #    possible_numerical_error = True
         if possible_numerical_error:
-            print("Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.", file=sys.stderr)
+            print(
+                "Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.",
+                file=sys.stderr)
         return CDF
 
     def _initial_parameters(self, data):
@@ -1616,28 +1644,27 @@ class Lognormal(Distribution):
         return (mean(logdata), std(logdata))
 
     def _in_standard_parameter_range(self):
-#The standard deviation can't be negative
-        return self.sigma>0
+        #The standard deviation can't be negative
+        return self.sigma > 0
 
     def _cdf_base_function(self, x):
         from numpy import sqrt, log
         from scipy.special import erf
-        return  0.5 + ( 0.5 * 
-                erf((log(x)-self.mu) / (sqrt(2)*self.sigma)))
+        return 0.5 + (0.5 * erf((log(x) - self.mu) / (sqrt(2) * self.sigma)))
 
     def _pdf_base_function(self, x):
         from numpy import exp, log
-        return ((1.0/x) *
-                exp(-( (log(x) - self.mu)**2 )/(2*self.sigma**2)))
+        return ((1.0 / x) * exp(-((log(x) - self.mu)**2) /
+                                (2 * self.sigma**2)))
 
     @property
     def _pdf_continuous_normalizer(self):
         from mpmath import erfc
-#        from scipy.special import erfc
+        #        from scipy.special import erfc
         from scipy.constants import pi
         from numpy import sqrt, log
         C = (erfc((log(self.xmin) - self.mu) / (sqrt(2) * self.sigma)) /
-             sqrt(2/(pi*self.sigma**2)))
+             sqrt(2 / (pi * self.sigma**2)))
         return float(C)
 
     @property
@@ -1652,11 +1679,12 @@ class Lognormal(Distribution):
         #erf and erfinv, until we get to more sane numbers. Thanks to
         #Wolfram Alpha for producing the appropriate inverse of the CCDF
         #for me, which is what we need to calculate these things.
-        erfinv = frompyfunc(erfinv,1,1)
-        Q = erf( ( log(self.xmin) - self.mu ) / (sqrt(2)*self.sigma))
-        Q = Q*r - r + 1.0
+        erfinv = frompyfunc(erfinv, 1, 1)
+        Q = erf((log(self.xmin) - self.mu) / (sqrt(2) * self.sigma))
+        Q = Q * r - r + 1.0
         Q = erfinv(Q).astype('float')
-        return exp(self.mu + sqrt(2)*self.sigma*Q)
+        return exp(self.mu + sqrt(2) * self.sigma * Q)
+
 
 #    def _generate_random_continuous(self, r1, r2=None):
 #        from numpy import log, sqrt, exp, sin, cos
@@ -1683,11 +1711,12 @@ class Lognormal_Positive(Lognormal):
     @property
     def name(self):
         return "lognormal_positive"
-    
+
     def _in_standard_parameter_range(self):
-#The standard deviation and mean can't be negative
-        return (self.sigma>0 and self.mu>0)
-        
+        #The standard deviation and mean can't be negative
+        return (self.sigma > 0 and self.mu > 0)
+
+
 def nested_loglikelihood_ratio(loglikelihoods1, loglikelihoods2, **kwargs):
     """
     Calculates a loglikelihood ratio and the p-value for testing which of two
@@ -1723,11 +1752,16 @@ def nested_loglikelihood_ratio(loglikelihoods1, loglikelihoods2, **kwargs):
         critical value the sign of R is taken to be due to statistical
         fluctuations.
     """
-    return loglikelihood_ratio(loglikelihoods1, loglikelihoods2,
-            nested=True, **kwargs)
+    return loglikelihood_ratio(loglikelihoods1,
+                               loglikelihoods2,
+                               nested=True,
+                               **kwargs)
 
-def loglikelihood_ratio(loglikelihoods1, loglikelihoods2,
-        nested=False, normalized_ratio=False):
+
+def loglikelihood_ratio(loglikelihoods1,
+                        loglikelihoods2,
+                        nested=False,
+                        normalized_ratio=False):
     """
     Calculates a loglikelihood ratio and the p-value for testing which of two
     probability distributions is more likely to have created a set of
@@ -1766,7 +1800,7 @@ def loglikelihood_ratio(loglikelihoods1, loglikelihoods2,
 
     n = float(len(loglikelihoods1))
 
-    if n==0:
+    if n == 0:
         R = 0
         p = 1
         return R, p
@@ -1778,27 +1812,26 @@ def loglikelihood_ratio(loglikelihoods1, loglikelihoods2,
     from numpy import inf, log
     from sys import float_info
     min_val = log(10**float_info.min_10_exp)
-    loglikelihoods1[loglikelihoods1==-inf] = min_val
-    loglikelihoods2[loglikelihoods2==-inf] = min_val
+    loglikelihoods1[loglikelihoods1 == -inf] = min_val
+    loglikelihoods2[loglikelihoods2 == -inf] = min_val
 
-    R = sum(loglikelihoods1-loglikelihoods2)
+    R = sum(loglikelihoods1 - loglikelihoods2)
 
     from numpy import mean
-    mean_diff = mean(loglikelihoods1)-mean(loglikelihoods2)
-    variance = sum(
-            ( (loglikelihoods1-loglikelihoods2) - mean_diff)**2
-            )/n
+    mean_diff = mean(loglikelihoods1) - mean(loglikelihoods2)
+    variance = sum(((loglikelihoods1 - loglikelihoods2) - mean_diff)**2) / n
 
     if nested:
         from scipy.stats import chi2
-        p = 1 - chi2.cdf(abs(2*R), 1)
+        p = 1 - chi2.cdf(abs(2 * R), 1)
     else:
-        p = erfc( abs(R) / sqrt(2*n*variance))
+        p = erfc(abs(R) / sqrt(2 * n * variance))
 
     if normalized_ratio:
-        R = R/sqrt(n*variance)
+        R = R / sqrt(n * variance)
 
     return R, p
+
 
 def cdf(data, survival=False, **kwargs):
     """
@@ -1819,6 +1852,7 @@ def cdf(data, survival=False, **kwargs):
     """
     return cumulative_distribution_function(data, survival=survival, **kwargs)
 
+
 def ccdf(data, survival=True, **kwargs):
     """
     The complementary cumulative distribution function (CCDF) of the data.
@@ -1838,9 +1872,12 @@ def ccdf(data, survival=True, **kwargs):
     """
     return cumulative_distribution_function(data, survival=survival, **kwargs)
 
+
 def cumulative_distribution_function(data,
-    xmin=None, xmax=None,
-    survival=False, **kwargs):
+                                     xmin=None,
+                                     xmax=None,
+                                     survival=False,
+                                     **kwargs):
     """
     The cumulative distribution function (CDF) of the data.
 
@@ -1874,29 +1911,31 @@ def cumulative_distribution_function(data,
     n = float(len(data))
     from numpy import sort
     data = sort(data)
-    all_unique = not( any( data[:-1]==data[1:] ) )
+    all_unique = not (any(data[:-1] == data[1:]))
 
     if all_unique:
         from numpy import arange
-        CDF = arange(n)/n
+        CDF = arange(n) / n
     else:
-#This clever bit is a way of using searchsorted to rapidly calculate the 
-#CDF of data with repeated values comes from Adam Ginsburg's plfit code,
-#specifically https://github.com/keflavich/plfit/commit/453edc36e4eb35f35a34b6c792a6d8c7e848d3b5#plfit/plfit.py
+        #This clever bit is a way of using searchsorted to rapidly calculate the
+        #CDF of data with repeated values comes from Adam Ginsburg's plfit code,
+        #specifically https://github.com/keflavich/plfit/commit/453edc36e4eb35f35a34b6c792a6d8c7e848d3b5#plfit/plfit.py
         from numpy import searchsorted, unique
-        CDF = searchsorted(data, data,side='left')/n
+        CDF = searchsorted(data, data, side='left') / n
         unique_data, unique_indices = unique(data, return_index=True)
-        data=unique_data
+        data = unique_data
         CDF = CDF[unique_indices]
 
     if survival:
-        CDF = 1-CDF
+        CDF = 1 - CDF
     return data, CDF
+
 
 def is_discrete(data):
     """Checks if every element of the array is an integer."""
     from numpy import floor
-    return (floor(data)==data.astype(float)).all()
+    return (floor(data) == data.astype(float)).all()
+
 
 def trim_to_range(data, xmin=None, xmax=None, **kwargs):
     """
@@ -1905,10 +1944,11 @@ def trim_to_range(data, xmin=None, xmax=None, **kwargs):
     from numpy import asarray
     data = asarray(data)
     if xmin:
-        data = data[data>=xmin]
+        data = data[data >= xmin]
     if xmax:
-        data = data[data<=xmax]
+        data = data[data <= xmax]
     return data
+
 
 def pdf(data, xmin=None, xmax=None, linear_bins=False, **kwargs):
     """
@@ -1945,20 +1985,20 @@ def pdf(data, xmin=None, xmax=None, linear_bins=False, **kwargs):
     else:
         log_min_size = log10(xmin)
         log_max_size = log10(xmax)
-        number_of_bins = ceil((log_max_size-log_min_size)*10)
-        bins=unique(
-                floor(
-                    logspace(
-                        log_min_size, log_max_size, num=number_of_bins)))
+        number_of_bins = ceil((log_max_size - log_min_size) * 10)
+        bins = unique(
+            floor(logspace(log_min_size, log_max_size, num=number_of_bins)))
     hist, edges = histogram(data, bins, density=True)
     return edges, hist
 
+
 def checkunique(data):
     """Quickly checks if a sorted array is all unique elements."""
-    for i in range(len(data)-1):
-        if data[i]==data[i+1]:
+    for i in range(len(data) - 1):
+        if data[i] == data[i + 1]:
             return False
     return True
+
 
 #def checksort(data):
 #    """
@@ -1974,6 +2014,7 @@ def checkunique(data):
 #        from numpy import sort
 #        data = sort(data)
 #    return data
+
 
 def plot_ccdf(data, ax=None, survival=False, **kwargs):
     return plot_cdf(data, ax=ax, survival=True, **kwargs)
@@ -1994,6 +2035,7 @@ def plot_ccdf(data, ax=None, survival=False, **kwargs):
     ax : matplotlib axis
         The axis to which the plot was made.
     """
+
 
 def plot_cdf(data, ax=None, survival=False, **kwargs):
     """
@@ -2024,6 +2066,7 @@ def plot_cdf(data, ax=None, survival=False, **kwargs):
     ax.set_yscale("log")
     return ax
 
+
 def plot_pdf(data, ax=None, linear_bins=False, **kwargs):
     """
     Plots the probability density function (PDF) to a new figure or to axis ax
@@ -2044,9 +2087,9 @@ def plot_pdf(data, ax=None, linear_bins=False, **kwargs):
         The axis to which the plot was made.
     """
     edges, hist = pdf(data, linear_bins=linear_bins, **kwargs)
-    bin_centers = (edges[1:]+edges[:-1])/2.0
+    bin_centers = (edges[1:] + edges[:-1]) / 2.0
     from numpy import nan
-    hist[hist==0] = nan
+    hist[hist == 0] = nan
     if not ax:
         import matplotlib.pyplot as plt
         plt.plot(bin_centers, hist, **kwargs)
@@ -2056,6 +2099,7 @@ def plot_pdf(data, ax=None, linear_bins=False, **kwargs):
     ax.set_xscale("log")
     ax.set_yscale("log")
     return ax
+
 
 def bisect_map(mn, mx, function, target):
     """
@@ -2080,7 +2124,7 @@ def bisect_map(mn, mx, function, target):
     if function([mn]) < target or function([mx]) > target:
         return -1
     while 1:
-        if mx==mn+1:
+        if mx == mn + 1:
             return mn
         m = (mn + mx) / 2
         value = function([m])[0]
@@ -2091,13 +2135,22 @@ def bisect_map(mn, mx, function, target):
         else:
             return m
 
+
 ######################
 #What follows are functional programming forms of the above code, which are more
 #clunky and have somewhat less functionality. However, they are here if your
 #really want them.
 
+
 class Distribution_Fit(object):
-    def __init__(self, data, name, xmin, discrete=False, xmax=None, method='Likelihood', estimate_discrete=True):
+    def __init__(self,
+                 data,
+                 name,
+                 xmin,
+                 discrete=False,
+                 xmax=None,
+                 method='Likelihood',
+                 estimate_discrete=True):
         self.data = data
         self.discrete = discrete
         self.xmin = xmin
@@ -2109,13 +2162,15 @@ class Distribution_Fit(object):
         return
 
     def __getattr__(self, name):
-        param_names = {'lognormal': ('mu', 'sigma', None),
-                       'exponential': ('Lambda', None, None),
-                       'truncated_power_law': ('alpha', 'Lambda', None),
-                       'power_law': ('alpha', None, None),
-                       'negative_binomial': ('r', 'p', None),
-                       'stretched_exponential': ('Lambda', 'beta', None),
-                       'gamma': ('k', 'theta', None)}
+        param_names = {
+            'lognormal': ('mu', 'sigma', None),
+            'exponential': ('Lambda', None, None),
+            'truncated_power_law': ('alpha', 'Lambda', None),
+            'power_law': ('alpha', None, None),
+            'negative_binomial': ('r', 'p', None),
+            'stretched_exponential': ('Lambda', 'beta', None),
+            'gamma': ('k', 'theta', None)
+        }
         param_names = param_names[self.name]
 
         if name in param_names:
@@ -2126,17 +2181,20 @@ class Distribution_Fit(object):
             elif name == param_names[2]:
                 setattr(self, name, self.parameter3)
             return getattr(self, name)
-        elif name in ['parameters',
-                      'parameter1_name',
-                      'parameter1',
-                      'parameter2_name',
-                      'parameter2',
-                      'parameter3_name',
-                      'parameter3',
-                      'loglikelihood']:
+        elif name in [
+                'parameters', 'parameter1_name', 'parameter1',
+                'parameter2_name', 'parameter2', 'parameter3_name',
+                'parameter3', 'loglikelihood'
+        ]:
 
-            self.parameters, self.loglikelihood = distribution_fit(self.data, distribution=self.name, discrete=self.discrete,
-                                                                   xmin=self.xmin, xmax=self.xmax, search_method=self.method, estimate_discrete=self.estimate_discrete)
+            self.parameters, self.loglikelihood = distribution_fit(
+                self.data,
+                distribution=self.name,
+                discrete=self.discrete,
+                xmin=self.xmin,
+                xmax=self.xmax,
+                search_method=self.method,
+                estimate_discrete=self.estimate_discrete)
             self.parameter1 = self.parameters[0]
             if len(self.parameters) < 2:
                 self.parameter2 = None
@@ -2171,18 +2229,26 @@ class Distribution_Fit(object):
             if self.name != 'power_law':
                 self.D = None
             else:
-                self.D = power_law_ks_distance(self.data, self.parameter1, xmin=self.xmin, xmax=self.xmax, discrete=self.discrete)
+                self.D = power_law_ks_distance(self.data,
+                                               self.parameter1,
+                                               xmin=self.xmin,
+                                               xmax=self.xmax,
+                                               discrete=self.discrete)
             return self.D
         if name == 'p':
-            print("A p value outside of a loglihood ratio comparison to another candidate distribution is not currently supported.\n \
+            print(
+                "A p value outside of a loglihood ratio comparison to another candidate distribution is not currently supported.\n \
                     If your data set is particularly large and has any noise in it at all, using such statistical tools as the Monte Carlo method\n\
                     can lead to erroneous results anyway; the presence of the noise means the distribution will obviously not perfectly fit the\n\
                     candidate distribution, and the very large number of samples will make the Monte Carlo simulations very close to a perfect\n\
                     fit. As such, such a test will always fail, unless your candidate distribution perfectly describes all elements of the\n\
                     system, including the noise. A more helpful analysis is the comparison between multiple, specific candidate distributions\n\
-                    (the loglikelihood ratio test), which tells you which is the best fit of these distributions.", file=sys.stderr)
+                    (the loglikelihood ratio test), which tells you which is the best fit of these distributions.",
+                file=sys.stderr)
             self.p = None
             return self.p
+
+
 #
 #        elif name in ['power_law_loglikelihood_ratio',
 #                'power_law_p']:
@@ -2211,17 +2277,25 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
     from numpy import log
 
     if distribution == 'negative_binomial' and not is_discrete(data):
-        print("Rounding to integer values for negative binomial fit.", file=sys.stderr)
+        print("Rounding to integer values for negative binomial fit.",
+              file=sys.stderr)
         from numpy import around
         data = around(data)
         discrete = True
 
     #If we aren't given an xmin, calculate the best possible one for a power law. This can take awhile!
-    if xmin is None or xmin == 'find' or type(xmin) == tuple or type(xmin) == list:
+    if xmin is None or xmin == 'find' or type(xmin) == tuple or type(
+            xmin) == list:
         if 0 in data:
             print("Value 0 in data. Throwing out 0 values", file=sys.stderr)
             data = data[data != 0]
-        xmin, D, alpha, loglikelihood, n_tail, noise_flag = find_xmin(data, discrete=discrete, xmax=xmax, search_method=search_method, estimate_discrete=estimate_discrete, xmin_range=xmin)
+        xmin, D, alpha, loglikelihood, n_tail, noise_flag = find_xmin(
+            data,
+            discrete=discrete,
+            xmax=xmax,
+            search_method=search_method,
+            estimate_discrete=estimate_discrete,
+            xmin_range=xmin)
     else:
         alpha = None
 
@@ -2242,7 +2316,14 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
         if alpha:
             pl_parameters = [alpha]
         else:
-            pl_parameters, loglikelihood = distribution_fit(data, 'power_law', discrete, xmin, xmax, search_method=search_method, estimate_discrete=estimate_discrete)
+            pl_parameters, loglikelihood = distribution_fit(
+                data,
+                'power_law',
+                discrete,
+                xmin,
+                xmax,
+                search_method=search_method,
+                estimate_discrete=estimate_discrete)
         results = {}
         results['xmin'] = xmin
         results['xmax'] = xmax
@@ -2251,21 +2332,42 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
         results['fits']['power_law'] = (pl_parameters, loglikelihood)
 
         print("Calculating truncated power law fit", file=sys.stderr)
-        tpl_parameters, loglikelihood, R, p = distribution_fit(data, 'truncated_power_law', discrete, xmin, xmax, comparison_alpha=pl_parameters[0], search_method=search_method, estimate_discrete=estimate_discrete)
-        results['fits']['truncated_power_law'] = (tpl_parameters, loglikelihood)
+        tpl_parameters, loglikelihood, R, p = distribution_fit(
+            data,
+            'truncated_power_law',
+            discrete,
+            xmin,
+            xmax,
+            comparison_alpha=pl_parameters[0],
+            search_method=search_method,
+            estimate_discrete=estimate_discrete)
+        results['fits']['truncated_power_law'] = (tpl_parameters,
+                                                  loglikelihood)
         results['power_law_comparison'] = {}
         results['power_law_comparison']['truncated_power_law'] = (R, p)
         results['truncated_power_law_comparison'] = {}
 
-        supported_distributions = ['exponential', 'lognormal', 'stretched_exponential', 'gamma']
+        supported_distributions = [
+            'exponential', 'lognormal', 'stretched_exponential', 'gamma'
+        ]
 
         for i in supported_distributions:
-            print("Calculating %s fit" % (i,), file=sys.stderr)
-            parameters, loglikelihood, R, p = distribution_fit(data, i, discrete, xmin, xmax, comparison_alpha=pl_parameters[0], search_method=search_method, estimate_discrete=estimate_discrete)
+            print("Calculating %s fit" % (i, ), file=sys.stderr)
+            parameters, loglikelihood, R, p = distribution_fit(
+                data,
+                i,
+                discrete,
+                xmin,
+                xmax,
+                comparison_alpha=pl_parameters[0],
+                search_method=search_method,
+                estimate_discrete=estimate_discrete)
             results['fits'][i] = (parameters, loglikelihood)
             results['power_law_comparison'][i] = (R, p)
 
-            R, p = distribution_compare(data, 'truncated_power_law', tpl_parameters, i, parameters, discrete, xmin, xmax)
+            R, p = distribution_compare(data, 'truncated_power_law',
+                                        tpl_parameters, i, parameters,
+                                        discrete, xmin, xmax)
             results['truncated_power_law_comparison'][i] = (R, p)
         return results
 
@@ -2283,19 +2385,19 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
         from sys import float_info
         parameters = array([0, 0, 0])
         if search_method == 'Likelihood':
-            loglikelihood = -10 ** float_info.max_10_exp
+            loglikelihood = -10**float_info.max_10_exp
         if search_method == 'KS':
             loglikelihood = 1
         if comparison_alpha is None:
             return parameters, loglikelihood
-        R = 10 ** float_info.max_10_exp
+        R = 10**float_info.max_10_exp
         p = 1
         return parameters, loglikelihood, R, p
 
     n = float(len(data))
 
     #Initial search parameters, estimated from the data
-#    print("Calculating initial parameters for search", file=sys.stderr)
+    #    print("Calculating initial parameters for search", file=sys.stderr)
     if distribution == 'power_law' and not alpha:
         initial_parameters = [1 + n / sum(log(data / (xmin)))]
     elif distribution == 'exponential':
@@ -2318,13 +2420,14 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
         initial_parameters = [n / sum(log(data / xmin)), mean(data)]
 
     if search_method == 'Likelihood':
-#        print("Searching using maximum likelihood method", file=sys.stderr)
+        #        print("Searching using maximum likelihood method", file=sys.stderr)
         #If the distribution is a continuous power law without an xmax, and we're using the maximum likelihood method, we can compute the parameters and likelihood directly
         if distribution == 'power_law' and not discrete and not xmax and not alpha:
             from numpy import array, nan
             alpha = 1 + n /\
                 sum(log(data / xmin))
-            loglikelihood = n * log(alpha - 1.0) - n * log(xmin) - alpha * sum(log(data / xmin))
+            loglikelihood = n * log(alpha - 1.0) - n * log(xmin) - alpha * sum(
+                log(data / xmin))
             if loglikelihood == nan:
                 loglikelihood = 0
             parameters = array([alpha])
@@ -2333,14 +2436,18 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
             from numpy import array, nan
             alpha = 1 + n /\
                 sum(log(data / (xmin - .5)))
-            loglikelihood = n * log(alpha - 1.0) - n * log(xmin) - alpha * sum(log(data / xmin))
+            loglikelihood = n * log(alpha - 1.0) - n * log(xmin) - alpha * sum(
+                log(data / xmin))
             if loglikelihood == nan:
                 loglikelihood = 0
             parameters = array([alpha])
             return parameters, loglikelihood
 
         #Otherwise, we set up a likelihood function
-        likelihood_function = likelihood_function_generator(distribution, discrete=discrete, xmin=xmin, xmax=xmax)
+        likelihood_function = likelihood_function_generator(distribution,
+                                                            discrete=discrete,
+                                                            xmin=xmin,
+                                                            xmax=xmax)
 
         #Search for the best fit parameters for the target distribution, on this data
         from scipy.optimize import fmin
@@ -2351,7 +2458,9 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
         loglikelihood = -negative_loglikelihood
 
         if comparison_alpha:
-            R, p = distribution_compare(data, 'power_law', [comparison_alpha], distribution, parameters, discrete, xmin, xmax)
+            R, p = distribution_compare(data, 'power_law', [comparison_alpha],
+                                        distribution, parameters, discrete,
+                                        xmin, xmax)
             return parameters, loglikelihood, R, p
         else:
             return parameters, loglikelihood
@@ -2359,6 +2468,8 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
     elif search_method == 'KS':
         print("Not yet supported. Sorry.", file=sys.stderr)
         return
+
+
 #        #Search for the best fit parameters for the target distribution, on this data
 #        from scipy.optimize import fmin
 #        parameters, KS, iter, funcalls, warnflag, = \
@@ -2374,9 +2485,16 @@ def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=N
 #            return parameters, loglikelihood
 
 
-def distribution_compare(data, distribution1, parameters1,
-                         distribution2, parameters2,
-                         discrete, xmin, xmax, nested=None, **kwargs):
+def distribution_compare(data,
+                         distribution1,
+                         parameters1,
+                         distribution2,
+                         parameters2,
+                         discrete,
+                         xmin,
+                         xmax,
+                         nested=None,
+                         **kwargs):
     no_data = False
     if xmax and all((data > xmax) + (data < xmin)):
         #Everything is beyond the bounds of the xmax and xmin
@@ -2389,26 +2507,32 @@ def distribution_compare(data, distribution1, parameters1,
         p = 1
         return R, p
 
-    likelihood_function1 = likelihood_function_generator(distribution1, discrete, xmin, xmax)
-    likelihood_function2 = likelihood_function_generator(distribution2, discrete, xmin, xmax)
+    likelihood_function1 = likelihood_function_generator(
+        distribution1, discrete, xmin, xmax)
+    likelihood_function2 = likelihood_function_generator(
+        distribution2, discrete, xmin, xmax)
 
     likelihoods1 = likelihood_function1(parameters1, data)
     likelihoods2 = likelihood_function2(parameters2, data)
 
-    if ((distribution1 in distribution2) or
-        (distribution2 in distribution1)
-            and nested is None):
+    if ((distribution1 in distribution2)
+            or (distribution2 in distribution1) and nested is None):
         print("Assuming nested distributions", file=sys.stderr)
         nested = True
 
     from numpy import log
-    R, p = loglikelihood_ratio(log(likelihoods1), log(likelihoods2),
-                               nested=nested, **kwargs)
+    R, p = loglikelihood_ratio(log(likelihoods1),
+                               log(likelihoods2),
+                               nested=nested,
+                               **kwargs)
 
     return R, p
 
 
-def likelihood_function_generator(distribution_name, discrete=False, xmin=1, xmax=None):
+def likelihood_function_generator(distribution_name,
+                                  discrete=False,
+                                  xmin=1,
+                                  xmax=None):
 
     if distribution_name == 'power_law':
         likelihood_function = lambda parameters, data:\
@@ -2447,13 +2571,22 @@ def likelihood_function_generator(distribution_name, discrete=False, xmin=1, xma
 
     return likelihood_function
 
-def find_xmin(data, discrete=False, xmax=None, search_method='Likelihood', return_all=False, estimate_discrete=True, xmin_range=None):
+
+def find_xmin(data,
+              discrete=False,
+              xmax=None,
+              search_method='Likelihood',
+              return_all=False,
+              estimate_discrete=True,
+              xmin_range=None):
     from numpy import sort, unique, asarray, argmin, vstack, arange, sqrt
     if 0 in data:
         print("Value 0 in data. Throwing out 0 values", file=sys.stderr)
         data = data[data != 0]
     if xmax:
         data = data[data <= xmax]
+
+
 #Much of the rest of this function was inspired by Adam Ginsburg's plfit code, specifically around lines 131-143 of this version: http://code.google.com/p/agpy/source/browse/trunk/plfit/plfit.py?spec=svn359&r=357
     if not all(data[i] <= data[i + 1] for i in range(len(data) - 1)):
         data = sort(data)
@@ -2469,7 +2602,7 @@ def find_xmin(data, discrete=False, xmax=None, search_method='Likelihood', retur
         xmin = 1
         D = 1
         alpha = 0
-        loglikelihood = -10 ** float_info.max_10_exp
+        loglikelihood = -10**float_info.max_10_exp
         n_tail = 1
         noise_flag = True
         Ds = 1
@@ -2481,20 +2614,36 @@ def find_xmin(data, discrete=False, xmax=None, search_method='Likelihood', retur
         else:
             return xmin, D, alpha, loglikelihood, n_tail, noise_flag, xmins, Ds, alphas, sigmas
 
-    xmin_indices = xmin_indices[:-1]  # Don't look at last xmin, as that's also the xmax, and we want to at least have TWO points to fit!
+    xmin_indices = xmin_indices[:
+                                -1]  # Don't look at last xmin, as that's also the xmax, and we want to at least have TWO points to fit!
 
     if search_method == 'Likelihood':
-        alpha_MLE_function = lambda xmin: distribution_fit(data, 'power_law', xmin=xmin, xmax=xmax, discrete=discrete, search_method='Likelihood', estimate_discrete=estimate_discrete)
+        alpha_MLE_function = lambda xmin: distribution_fit(
+            data,
+            'power_law',
+            xmin=xmin,
+            xmax=xmax,
+            discrete=discrete,
+            search_method='Likelihood',
+            estimate_discrete=estimate_discrete)
         fits = asarray(list(map(alpha_MLE_function, xmins)))
     elif search_method == 'KS':
-        alpha_KS_function = lambda xmin: distribution_fit(data, 'power_law', xmin=xmin, xmax=xmax, discrete=discrete, search_method='KS', estimate_discrete=estimate_discrete)[0]
+        alpha_KS_function = lambda xmin: distribution_fit(data,
+                                                          'power_law',
+                                                          xmin=xmin,
+                                                          xmax=xmax,
+                                                          discrete=discrete,
+                                                          search_method='KS',
+                                                          estimate_discrete=
+                                                          estimate_discrete)[0]
         fits = asarray(list(map(alpha_KS_function, xmins)))
 
     params = fits[:, 0]
     alphas = vstack(params)[:, 0]
     loglikelihoods = fits[:, 1]
 
-    ks_function = lambda index: power_law_ks_distance(data, alphas[index], xmins[index], xmax=xmax, discrete=discrete)
+    ks_function = lambda index: power_law_ks_distance(
+        data, alphas[index], xmins[index], xmax=xmax, discrete=discrete)
     Ds = asarray(list(map(ks_function, arange(len(xmins)))))
 
     sigmas = (alphas - 1) / sqrt(len(data) - xmin_indices + 1)
@@ -2523,7 +2672,12 @@ def find_xmin(data, discrete=False, xmax=None, search_method='Likelihood', retur
         return xmin, D, alpha, loglikelihood, n_tail, noise_flag, xmins, Ds, alphas, sigmas
 
 
-def power_law_ks_distance(data, alpha, xmin, xmax=None, discrete=False, kuiper=False):
+def power_law_ks_distance(data,
+                          alpha,
+                          xmin,
+                          xmax=None,
+                          discrete=False,
+                          kuiper=False):
     from numpy import arange, sort, mean
     data = data[data >= xmin]
     if xmax:
@@ -2539,16 +2693,19 @@ def power_law_ks_distance(data, alpha, xmin, xmax=None, discrete=False, kuiper=F
 
     if not discrete:
         Actual_CDF = arange(n) / n
-        Theoretical_CDF = 1 - (data / xmin) ** (-alpha + 1)
+        Theoretical_CDF = 1 - (data / xmin)**(-alpha + 1)
 
     if discrete:
         from scipy.special import zeta
         if xmax:
-            bins, Actual_CDF = cumulative_distribution_function(data,xmin=xmin,xmax=xmax)
+            bins, Actual_CDF = cumulative_distribution_function(data,
+                                                                xmin=xmin,
+                                                                xmax=xmax)
             Theoretical_CDF = 1 - ((zeta(alpha, bins) - zeta(alpha, xmax+1)) /\
                     (zeta(alpha, xmin)-zeta(alpha,xmax+1)))
         if not xmax:
-            bins, Actual_CDF = cumulative_distribution_function(data,xmin=xmin)
+            bins, Actual_CDF = cumulative_distribution_function(data,
+                                                                xmin=xmin)
             Theoretical_CDF = 1 - (zeta(alpha, bins) /\
                     zeta(alpha, xmin))
 
@@ -2568,7 +2725,7 @@ def power_law_likelihoods(data, alpha, xmin, xmax=False, discrete=False):
     if alpha < 0:
         from numpy import tile
         from sys import float_info
-        return tile(10 ** float_info.min_10_exp, len(data))
+        return tile(10**float_info.min_10_exp, len(data))
 
     xmin = float(xmin)
     data = data[data >= xmin]
@@ -2582,7 +2739,7 @@ def power_law_likelihoods(data, alpha, xmin, xmax=False, discrete=False):
         if alpha < 1:
             from numpy import tile
             from sys import float_info
-            return tile(10 ** float_info.min_10_exp, len(data))
+            return tile(10**float_info.min_10_exp, len(data))
         if not xmax:
             from scipy.special import zeta
             likelihoods = (data ** -alpha) /\
@@ -2592,7 +2749,7 @@ def power_law_likelihoods(data, alpha, xmin, xmax=False, discrete=False):
             likelihoods = (data ** -alpha) /\
                           (zeta(alpha, xmin) - zeta(alpha, xmax + 1))
     from sys import float_info
-    likelihoods[likelihoods == 0] = 10 ** float_info.min_10_exp
+    likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
     return likelihoods
 
 
@@ -2611,7 +2768,7 @@ def negative_binomial_likelihoods(data, r, p, xmin=0, xmax=False):
 
     from numpy import asarray
     from scipy.misc import comb
-    pmf = lambda k: comb(k + r - 1, k) * (1 - p) ** r * p ** k
+    pmf = lambda k: comb(k + r - 1, k) * (1 - p)**r * p**k
     likelihoods = asarray(list(map(pmf, data))).flatten()
 
     if xmin != 0 or xmax:
@@ -2621,7 +2778,7 @@ def negative_binomial_likelihoods(data, r, p, xmin=0, xmax=False):
         likelihoods = likelihoods / normalization_constant
 
     from sys import float_info
-    likelihoods[likelihoods == 0] = 10 ** float_info.min_10_exp
+    likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
     return likelihoods
 
 
@@ -2629,7 +2786,7 @@ def exponential_likelihoods(data, Lambda, xmin, xmax=False, discrete=False):
     if Lambda < 0:
         from numpy import tile
         from sys import float_info
-        return tile(10 ** float_info.min_10_exp, len(data))
+        return tile(10**float_info.min_10_exp, len(data))
 
     data = data[data >= xmin]
     if xmax:
@@ -2637,9 +2794,11 @@ def exponential_likelihoods(data, Lambda, xmin, xmax=False, discrete=False):
 
     from numpy import exp
     if not discrete:
-#        likelihoods = exp(-Lambda*data)*\
-#                Lambda*exp(Lambda*xmin)
-        likelihoods = Lambda * exp(Lambda * (xmin - data))  # Simplified so as not to throw a nan from infs being divided by each other
+        #        likelihoods = exp(-Lambda*data)*\
+        #                Lambda*exp(Lambda*xmin)
+        likelihoods = Lambda * exp(
+            Lambda * (xmin - data)
+        )  # Simplified so as not to throw a nan from infs being divided by each other
     if discrete:
         if not xmax:
             likelihoods = exp(-Lambda * data) *\
@@ -2648,15 +2807,20 @@ def exponential_likelihoods(data, Lambda, xmin, xmax=False, discrete=False):
             likelihoods = exp(-Lambda * data) * (1 - exp(-Lambda))\
                 / (exp(-Lambda * xmin) - exp(-Lambda * (xmax + 1)))
     from sys import float_info
-    likelihoods[likelihoods == 0] = 10 ** float_info.min_10_exp
+    likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
     return likelihoods
 
 
-def stretched_exponential_likelihoods(data, Lambda, beta, xmin, xmax=False, discrete=False):
+def stretched_exponential_likelihoods(data,
+                                      Lambda,
+                                      beta,
+                                      xmin,
+                                      xmax=False,
+                                      discrete=False):
     if Lambda < 0:
         from numpy import tile
         from sys import float_info
-        return tile(10 ** float_info.min_10_exp, len(data))
+        return tile(10**float_info.min_10_exp, len(data))
 
     data = data[data >= xmin]
     if xmax:
@@ -2664,20 +2828,24 @@ def stretched_exponential_likelihoods(data, Lambda, beta, xmin, xmax=False, disc
 
     from numpy import exp
     if not discrete:
-#        likelihoods = (data**(beta-1) * exp(-Lambda*(data**beta)))*\
-#            (beta*Lambda*exp(Lambda*(xmin**beta)))
-        likelihoods = data ** (beta - 1) * beta * Lambda * exp(Lambda * (xmin ** beta - data ** beta))  # Simplified so as not to throw a nan from infs being divided by each other
+        #        likelihoods = (data**(beta-1) * exp(-Lambda*(data**beta)))*\
+        #            (beta*Lambda*exp(Lambda*(xmin**beta)))
+        likelihoods = data**(beta - 1) * beta * Lambda * exp(
+            Lambda * (xmin**beta - data**beta)
+        )  # Simplified so as not to throw a nan from infs being divided by each other
     if discrete:
         if not xmax:
             xmax = max(data)
         if xmax:
             from numpy import arange
             X = arange(xmin, xmax + 1)
-            PDF = X ** (beta - 1) * beta * Lambda * exp(Lambda * (xmin ** beta - X ** beta))  # Simplified so as not to throw a nan from infs being divided by each other
+            PDF = X**(beta - 1) * beta * Lambda * exp(
+                Lambda * (xmin**beta - X**beta)
+            )  # Simplified so as not to throw a nan from infs being divided by each other
             PDF = PDF / sum(PDF)
             likelihoods = PDF[(data - xmin).astype(int)]
     from sys import float_info
-    likelihoods[likelihoods == 0] = 10 ** float_info.min_10_exp
+    likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
     return likelihoods
 
 
@@ -2685,7 +2853,7 @@ def gamma_likelihoods(data, k, theta, xmin, xmax=False, discrete=False):
     if k <= 0 or theta <= 0:
         from numpy import tile
         from sys import float_info
-        return tile(10 ** float_info.min_10_exp, len(data))
+        return tile(10**float_info.min_10_exp, len(data))
 
     data = data[data >= xmin]
     if xmax:
@@ -2693,11 +2861,14 @@ def gamma_likelihoods(data, k, theta, xmin, xmax=False, discrete=False):
 
     from numpy import exp
     from mpmath import gammainc
-#    from scipy.special import gamma, gammainc #Not NEARLY numerically accurate enough for the job
+    #    from scipy.special import gamma, gammainc #Not NEARLY numerically accurate enough for the job
     if not discrete:
-        likelihoods = (data ** (k - 1)) / (exp(data / theta) * (theta ** k) * float(gammainc(k)))
+        likelihoods = (data**(k - 1)) / (exp(data / theta) *
+                                         (theta**k) * float(gammainc(k)))
         #Calculate how much probability mass is beyond xmin, and normalize by it
-        normalization_constant = 1 - float(gammainc(k, 0, xmin / theta, regularized=True))  # Mpmath's regularized option divides by gamma(k)
+        normalization_constant = 1 - float(
+            gammainc(k, 0, xmin / theta, regularized=True)
+        )  # Mpmath's regularized option divides by gamma(k)
         likelihoods = likelihoods / normalization_constant
     if discrete:
         if not xmax:
@@ -2705,19 +2876,25 @@ def gamma_likelihoods(data, k, theta, xmin, xmax=False, discrete=False):
         if xmax:
             from numpy import arange
             X = arange(xmin, xmax + 1)
-            PDF = (X ** (k - 1)) / (exp(X / theta) * (theta ** k) * float(gammainc(k)))
+            PDF = (X**(k - 1)) / (exp(X / theta) *
+                                  (theta**k) * float(gammainc(k)))
             PDF = PDF / sum(PDF)
             likelihoods = PDF[(data - xmin).astype(int)]
     from sys import float_info
-    likelihoods[likelihoods == 0] = 10 ** float_info.min_10_exp
+    likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
     return likelihoods
 
 
-def truncated_power_law_likelihoods(data, alpha, Lambda, xmin, xmax=False, discrete=False):
+def truncated_power_law_likelihoods(data,
+                                    alpha,
+                                    Lambda,
+                                    xmin,
+                                    xmax=False,
+                                    discrete=False):
     if alpha < 0 or Lambda < 0:
         from numpy import tile
         from sys import float_info
-        return tile(10 ** float_info.min_10_exp, len(data))
+        return tile(10**float_info.min_10_exp, len(data))
 
     data = data[data >= xmin]
     if xmax:
@@ -2726,10 +2903,10 @@ def truncated_power_law_likelihoods(data, alpha, Lambda, xmin, xmax=False, discr
     from numpy import exp
     if not discrete:
         from mpmath import gammainc
-#        from scipy.special import gamma, gammaincc #Not NEARLY accurate enough to do the job
-#        likelihoods = (data**-alpha)*exp(-Lambda*data)*\
-#                (Lambda**(1-alpha))/\
-#                float(gammaincc(1-alpha,Lambda*xmin))
+        #        from scipy.special import gamma, gammaincc #Not NEARLY accurate enough to do the job
+        #        likelihoods = (data**-alpha)*exp(-Lambda*data)*\
+        #                (Lambda**(1-alpha))/\
+        #                float(gammaincc(1-alpha,Lambda*xmin))
         #Simplified so as not to throw a nan from infs being divided by each other
         likelihoods = (Lambda ** (1 - alpha)) /\
                       ((data ** alpha) * exp(Lambda * data) * gammainc(1 - alpha, Lambda * xmin)).astype(float)
@@ -2739,11 +2916,11 @@ def truncated_power_law_likelihoods(data, alpha, Lambda, xmin, xmax=False, discr
         if xmax:
             from numpy import arange
             X = arange(xmin, xmax + 1)
-            PDF = (X ** -alpha) * exp(-Lambda * X)
+            PDF = (X**-alpha) * exp(-Lambda * X)
             PDF = PDF / sum(PDF)
             likelihoods = PDF[(data - xmin).astype(int)]
     from sys import float_info
-    likelihoods[likelihoods == 0] = 10 ** float_info.min_10_exp
+    likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
     return likelihoods
 
 
@@ -2753,7 +2930,7 @@ def lognormal_likelihoods(data, mu, sigma, xmin, xmax=False, discrete=False):
         #The standard deviation can't be negative, and the mean of the logarithm of the distribution can't be smaller than the log of the smallest member of the distribution!
         from numpy import tile
         from sys import float_info
-        return tile(10 ** float_info.min_10_exp, len(data))
+        return tile(10**float_info.min_10_exp, len(data))
 
     data = data[data >= xmin]
     if xmax:
@@ -2761,25 +2938,26 @@ def lognormal_likelihoods(data, mu, sigma, xmin, xmax=False, discrete=False):
 
     if not discrete:
         from numpy import sqrt, exp
-#        from mpmath import erfc
+        #        from mpmath import erfc
         from scipy.special import erfc
         from scipy.constants import pi
         likelihoods = (1.0 / data) * exp(-((log(data) - mu) ** 2) / (2 * sigma ** 2)) *\
             sqrt(2 / (pi * sigma ** 2)) / erfc((log(xmin) - mu) / (sqrt(2) * sigma))
+
+
 #        likelihoods = likelihoods.astype(float)
     if discrete:
         if not xmax:
             xmax = max(data)
         if xmax:
             from numpy import arange, exp
-#            from mpmath import exp
+            #            from mpmath import exp
             X = arange(xmin, xmax + 1)
-#            PDF_function = lambda x: (1.0/x)*exp(-( (log(x) - mu)**2 ) / 2*sigma**2)
-#            PDF = asarray(list(map(PDF_function,X)))
-            PDF = (1.0 / X) * exp(-((log(X) - mu) ** 2) / (2 * (sigma ** 2)))
+            #            PDF_function = lambda x: (1.0/x)*exp(-( (log(x) - mu)**2 ) / 2*sigma**2)
+            #            PDF = asarray(list(map(PDF_function,X)))
+            PDF = (1.0 / X) * exp(-((log(X) - mu)**2) / (2 * (sigma**2)))
             PDF = (PDF / sum(PDF)).astype(float)
             likelihoods = PDF[(data - xmin).astype(int)]
     from sys import float_info
-    likelihoods[likelihoods == 0] = 10 ** float_info.min_10_exp
+    likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
     return likelihoods
-

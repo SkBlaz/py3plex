@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.metrics import silhouette_score
 from itertools import product
 
+
 def modularity(G, communities, weight='weight'):
 
     communities = list(communities.values())
@@ -35,10 +36,10 @@ def modularity(G, communities, weight='weight'):
     Q = np.sum(val(u, v) for c in communities for u, v in product(c, repeat=2))
     return Q * norm
 
+
 def size_distribution(network_partition):
     return np.array([len(x) for x in network_partition.values()])
 
+
 def number_of_communities(network_partition):
     return len(network_partition)
-
-

@@ -21,7 +21,6 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../py3plex'))
 
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -77,7 +76,6 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -115,12 +113,10 @@ html_sidebars = {
     ]
 }
 
-
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'py3plexdoc'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -146,20 +142,15 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'py3plex.tex', 'py3plex Documentation',
-     'Blaž Škrlj', 'manual'),
+    (master_doc, 'py3plex.tex', 'py3plex Documentation', 'Blaž Škrlj',
+     'manual'),
 ]
-
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'py3plex', 'py3plex Documentation',
-     [author], 1)
-]
-
+man_pages = [(master_doc, 'py3plex', 'py3plex Documentation', [author], 1)]
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -167,7 +158,6 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'py3plex', 'py3plex Documentation',
-     author, 'py3plex', 'One line description of project.',
-     'Miscellaneous'),
+    (master_doc, 'py3plex', 'py3plex Documentation', author, 'py3plex',
+     'One line description of project.', 'Miscellaneous'),
 ]

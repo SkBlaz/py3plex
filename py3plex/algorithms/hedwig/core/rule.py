@@ -224,7 +224,7 @@ class Rule:
         if union == 0:
             return 1
         else:
-            return intersection/float(union)
+            return intersection / float(union)
 
     def size(self):
         '''
@@ -271,7 +271,8 @@ class Rule:
             self._plain_statistics()
         return s
 
-    def _plain_conjunctions(self, show_uris=False,
+    def _plain_conjunctions(self,
+                            show_uris=False,
                             human=lambda label, rule: label):
         conjuncts = []
         for pred in self.predicates:
@@ -282,17 +283,16 @@ class Rule:
                 label = human(label, self)
 
             if isinstance(pred, UnaryPredicate):
-                anno_names = self.kb.annotation_name.get(pred.label, [DEFAULT_ANNOTATION_NAME])
+                anno_names = self.kb.annotation_name.get(
+                    pred.label, [DEFAULT_ANNOTATION_NAME])
                 predicate_label = '_and_'.join(anno_names)
-                
+
                 if pred.negated:
                     predicate_label = '~' + predicate_label
-                
+
                 conj = '%s(%s, %s)' % (predicate_label, pred.input_var, label)
             else:
-                conj = '%s(%s, %s)' % (label,
-                                       pred.input_var,
-                                       pred.output_var)
+                conj = '%s(%s, %s)' % (label, pred.input_var, pred.output_var)
             conjuncts.append(conj)
 
         s = ', '.join(conjuncts)
@@ -300,12 +300,8 @@ class Rule:
 
     def _plain_statistics(self):
         if self.target_type == Example.ClassLabeled:
-            stats = (self.coverage,
-                     self.positives,
-                     self.precision(),
-                     self.kb.score_fun.__name__,
-                     self.score,
-                     self.pval)
+            stats = (self.coverage, self.positives, self.precision(),
+                     self.kb.score_fun.__name__, self.score, self.pval)
             return '[cov=%d, pos=%d, prec=%.3f, %s=%.3f, pval=%.3f]' % stats
 
         else:
@@ -327,9 +323,7 @@ class Rule:
                     label = r'$\neg$' + label
                 conj = '%s(%s)' % (label, pred.input_var)
             else:
-                conj = '%s(%s, %s)' % (label,
-                                       pred.input_var,
-                                       pred.output_var)
+                conj = '%s(%s, %s)' % (label, pred.input_var, pred.output_var)
             conjuncts.append(conj)
 
         s = r' $\wedge$ '.join(conjuncts)
@@ -340,12 +334,15 @@ class Rule:
         return self.rule_report(show_uris=False)
 
     @staticmethod
-    def ruleset_report(rules, show_uris=False, latex=False,
+    def ruleset_report(rules,
+                       show_uris=False,
+                       latex=False,
                        human=lambda label, rule: label):
         if latex:
             return Rule._latex_ruleset_report(rules)
         else:
-            return Rule._plain_ruleset_report(rules, show_uris=show_uris,
+            return Rule._plain_ruleset_report(rules,
+                                              show_uris=show_uris,
                                               human=human)
 
     @staticmethod
@@ -360,15 +357,13 @@ class Rule:
             r'\begin{tabular}{clccccc}\hline' + '\n' \
             r'\textbf{\#} & \textbf{Rule} & \textbf{TP} & \textbf{FP} & \textbf{Precision} & \textbf{Lift} & \textbf{p-value}\\\hline' + '\n'
 
-        for i, rule in enumerate(sorted(rules, key=lambda r: r.score, reverse=True)):
+        for i, rule in enumerate(
+                sorted(rules, key=lambda r: r.score, reverse=True)):
             rule_report = rule._latex_report()
-            stats = (i+1,
-                     head + rule_report,
-                     rule.distribution[rule.target],
+            stats = (i + 1, head + rule_report, rule.distribution[rule.target],
                      rule.coverage - rule.distribution[rule.target],
-                     rule.distribution[rule.target]/float(rule.coverage),
-                     rule.score,
-                     rule.pval)
+                     rule.distribution[rule.target] / float(rule.coverage),
+                     rule.score, rule.pval)
             _tex_report += r'%d & \texttt{%s} & %d & %d & %.2f & %.2f & %.3f\\' % stats
             _tex_report += '\n'
 
@@ -379,7 +374,8 @@ class Rule:
         return _tex_report
 
     @staticmethod
-    def _plain_ruleset_report(rules, show_uris=False,
+    def _plain_ruleset_report(rules,
+                              show_uris=False,
                               human=lambda label, rule: label):
 
         target, var = list(rules)[0].target, list(rules)[0].head_var
@@ -400,11 +396,12 @@ class Rule:
         examples_output = []
         for target_class, rules in rules_per_target:
             class_examples = []
-            for _, rule in enumerate(sorted(rules, key=lambda r: r.score,
-                                            reverse=True)):
+            for _, rule in enumerate(
+                    sorted(rules, key=lambda r: r.score, reverse=True)):
                 examples = rule.examples()
-                class_examples.append((rule._plain_conjunctions(),
-                                       [ex.label for ex in examples]))
+                class_examples.append(
+                    (rule._plain_conjunctions(), [ex.label
+                                                  for ex in examples]))
             examples_output.append((target_class, class_examples))
         return examples_output
 

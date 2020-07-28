@@ -22,6 +22,7 @@ def fisher(rule):
     '''
     return _fisher(rule, 'two-sided')
 
+
 def _fisher(rule, alternative):
     '''
     Fisher's p-value for one rule.
@@ -36,7 +37,9 @@ def _fisher(rule, alternative):
     nXnotY = nX - nXY
     nnotXY = nY - nXY
     nnotXnotY = N - nXnotY - nnotXY
-    return st.fisher_exact([[nXY, nXnotY], [nnotXY, nnotXnotY]], alternative=alternative)[1]
+    return st.fisher_exact([[nXY, nXnotY], [nnotXY, nnotXnotY]],
+                           alternative=alternative)[1]
+
 
 def apply_fisher(ruleset):
     '''

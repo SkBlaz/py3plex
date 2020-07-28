@@ -8,7 +8,6 @@ from .significance import apply_fisher
 
 
 class Validate:
-
     def __init__(self, kb, significance_test=apply_fisher, adjustment=fdr):
         self.kb = kb
         self.significance_test = significance_test

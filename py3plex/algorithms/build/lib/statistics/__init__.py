@@ -1,1 +1,1 @@
-print ("Core statistics imported..")
+print("Core statistics imported..")

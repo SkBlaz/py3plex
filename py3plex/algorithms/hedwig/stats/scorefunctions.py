@@ -19,7 +19,7 @@ def enrichment_score(rule):
     if rule.coverage == rule.kb.n_examples():
         return 1.0
     if rule.coverage == 0:
-        return - 1 / float(rule.kb.n_examples())
+        return -1 / float(rule.kb.n_examples())
     increment = {}
     incr1 = 1 / float(rule.coverage)
     incr2 = 1 / float(rule.kb.n_examples() - rule.coverage)
@@ -43,7 +43,7 @@ def wracc(rule):
     nXY = rule.distribution[rule.target]
     nY = rule.kb.distribution[rule.target]
     if nX:
-        return nX / float(N) * (nXY/float(nX) - nY/float(N))
+        return nX / float(N) * (nXY / float(nX) - nY / float(N))
     else:
         return 0
 
@@ -52,18 +52,18 @@ def precision(rule):
     nX = rule.coverage
     nXY = rule.distribution[rule.target]
     if nX:
-        return nXY/float(nX)
+        return nXY / float(nX)
     else:
         return 0
 
 
 def chisq(rule):
     N = len(rule.kb.examples)
-    z = rule.distribution[rule.target]/float(N)
-    x = rule.coverage/float(N)
-    y = rule.kb.distribution[rule.target]/float(N)
+    z = rule.distribution[rule.target] / float(N)
+    x = rule.coverage / float(N)
+    y = rule.kb.distribution[rule.target] / float(N)
     if x not in [0, 1] and y not in [0, 1]:
-        return N*(z - x*y)**2 / float(x*y*(1 - x)*(1 - y))
+        return N * (z - x * y)**2 / float(x * y * (1 - x) * (1 - y))
     else:
         return 0
 
@@ -75,7 +75,7 @@ def lift(rule):
     nY = rule.kb.distribution[rule.target]
 
     if nX != 0 and N != 0:
-        return (nXY/nX)/(nY/N)
+        return (nXY / nX) / (nY / N)
     else:
         return 0
 
@@ -87,7 +87,7 @@ def leverage(rule):
     nY = rule.kb.distribution[rule.target]
 
     if N != 0:
-        return nXY/N - (nX/N)*(nY/N)
+        return nXY / N - (nX / N) * (nY / N)
     else:
         return 0
 
@@ -100,7 +100,6 @@ def kaplan_meier_AUC(rule):
         return 0.0
 
     def n_alive(examples, day):
-
         def is_alive(ex):
             return rule.kb.get_score(ex) > day
 
@@ -112,9 +111,9 @@ def kaplan_meier_AUC(rule):
         alive = n_alive(examples, day)
         day += 14
 
-        curr = alive/n_examples
+        curr = alive / n_examples
         if prev != -1:
-            auc += (prev + curr)/2.0
+            auc += (prev + curr) / 2.0
         prev = curr
 
         if alive == 0:
@@ -143,6 +142,7 @@ def interesting(rule):
     '''
     Checks if a given rule is interesting for the given score function
     '''
-    score_fun = rule.kb.score_fun    
-    filtered_bounds = _bounds[score_fun][0] < rule.score <= _bounds[score_fun][1]
+    score_fun = rule.kb.score_fun
+    filtered_bounds = _bounds[score_fun][0] < rule.score <= _bounds[score_fun][
+        1]
     return filtered_bounds

@@ -30,6 +30,7 @@ GENERIC_NAMESPACE = Namespace('http://kt.ijs.si/ontology/generic#')
 
 INPUT_FORMATS = ['n3', 'xml', 'ntriples', 'trix', 'csv']
 
+
 # Defaults
 class Defaults:
     FORMAT = INPUT_FORMATS[0]

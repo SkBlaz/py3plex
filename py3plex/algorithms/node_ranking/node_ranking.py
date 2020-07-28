@@ -18,6 +18,7 @@ from itertools import product
 #     matrix = (sp.diags(d, 0).tocsc().dot(matrix)).transpose()
 #     return matrix
 
+
 def stochastic_normalization(matrix):
     matrix = matrix.tolil()
     try:
@@ -27,9 +28,10 @@ def stochastic_normalization(matrix):
     matrix = matrix.tocsr()
     d = matrix.sum(axis=1).getA1()
     nzs = np.where(d > 0)
-    k = 1/d[nzs]
+    k = 1 / d[nzs]
     matrix = (sp.diags(k, 0).tocsc().dot(matrix)).transpose()
     return matrix
+
 
 def stochastic_normalization_hin(matrix):
     matrix = matrix.tolil()
@@ -43,6 +45,7 @@ def stochastic_normalization_hin(matrix):
     d[nzs] = 1 / d[nzs]
     matrix = (sp.diags(d, 0).tocsc().dot(matrix)).transpose()
     return matrix
+
 
 def modularity(G, communities, weight='weight'):
     return 1
@@ -77,6 +80,7 @@ def modularity(G, communities, weight='weight'):
     # Q = np.sum(val(u, v) for c in communities for u, v in product(c, repeat=2))
     # return Q * norm
 
+
 def page_rank_kernel(index_row):
 
     ## call as results = p.map(pr_kernel, batch)
@@ -87,24 +91,26 @@ def page_rank_kernel(index_row):
                           spread_step=spread_step_hyper,
                           spread_percent=spread_percent_hyper,
                           try_shrink=True)
-    
+
     norm = np.linalg.norm(pr, 2)
     if norm > 0:
         pr = pr / np.linalg.norm(pr, 2)
-        return (index_row,pr)
+        return (index_row, pr)
     else:
-        return (index_row,np.zeros(graph.shape[1]))
+        return (index_row, np.zeros(graph.shape[1]))
 
-def sparse_page_rank(matrix, start_nodes,
+
+def sparse_page_rank(matrix,
+                     start_nodes,
                      epsilon=1e-6,
                      max_steps=100000,
                      damping=0.5,
                      spread_step=10,
                      spread_percent=0.3,
                      try_shrink=False):
-    
-    assert(len(start_nodes)) > 0
-    
+
+    assert (len(start_nodes)) > 0
+
     # this method assumes that column sums are all equal to 1 (stochastic normalizaition!)
     size = matrix.shape[0]
     if start_nodes is None:
@@ -116,7 +122,7 @@ def sparse_page_rank(matrix, start_nodes,
     start_vec[start_nodes] = 1
     start_rank = start_vec / len(start_nodes)
     rank_vec = start_vec / len(start_nodes)
-    
+
     # calculate the max spread:
     shrink = False
     which = np.zeros(0)
@@ -150,8 +156,8 @@ def sparse_page_rank(matrix, start_nodes,
         diff = new_diff
         rank_vec = new_rank
     if try_shrink and shrink:
-        ret = np.zeros(size)        
-        rank_vec = rank_vec.T[0] ## this works for both python versions
+        ret = np.zeros(size)
+        rank_vec = rank_vec.T[0]  ## this works for both python versions
         ret[which] = rank_vec
         ret[start_nodes] = 0
         return ret.flatten()
@@ -159,13 +165,14 @@ def sparse_page_rank(matrix, start_nodes,
         rank_vec[start_nodes] = 0
         return rank_vec.flatten()
 
+
 def hubs_and_authorities(graph):
     return nx.hits_scipy(graph)
+
 
 def hub_matrix(graph):
     return nx.hub_matrix(graph)
 
+
 def authority_matrix(graph):
     return nx.authority_matrix(graph)
-
-

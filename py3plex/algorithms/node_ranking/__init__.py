@@ -5,8 +5,9 @@ import scipy.sparse as sp
 import multiprocessing as mp
 from itertools import product
 
+
 def stochastic_normalization(matrix):
-    matrix = matrix.tolil()    
+    matrix = matrix.tolil()
 
     try:
         matrix.setdiag(0)
@@ -17,11 +18,12 @@ def stochastic_normalization(matrix):
     d = matrix.sum(axis=1).getA1()
     nzs = np.where(d > 0)
     k = np.zeros(matrix.shape[1])
-    nz = 1/d[nzs]
+    nz = 1 / d[nzs]
     k[nzs] = nz
     a = sp.diags(k, 0).tocsc()
     matrix = (sp.diags(k, 0).tocsc().dot(matrix)).transpose()
     return matrix
+
 
 def page_rank_kernel(index_row):
 
@@ -33,24 +35,26 @@ def page_rank_kernel(index_row):
                           spread_step=spread_step_hyper,
                           spread_percent=spread_percent_hyper,
                           try_shrink=True)
-    
+
     norm = np.linalg.norm(pr, 2)
     if norm > 0:
         pr = pr / np.linalg.norm(pr, 2)
-        return (index_row,pr)
+        return (index_row, pr)
     else:
-        return (index_row,np.zeros(__graph_matrix.shape[1]))
+        return (index_row, np.zeros(__graph_matrix.shape[1]))
 
-def sparse_page_rank(matrix, start_nodes,
+
+def sparse_page_rank(matrix,
+                     start_nodes,
                      epsilon=1e-6,
                      max_steps=100000,
                      damping=0.5,
                      spread_step=10,
                      spread_percent=0.3,
                      try_shrink=True):
-    
-    assert(len(start_nodes)) > 0
-    
+
+    assert (len(start_nodes)) > 0
+
     # this method assumes that column sums are all equal to 1 (stochastic normalizaition!)
     size = matrix.shape[0]
     if start_nodes is None:
@@ -62,7 +66,7 @@ def sparse_page_rank(matrix, start_nodes,
     start_vec[start_nodes] = 1
     start_rank = start_vec / len(start_nodes)
     rank_vec = start_vec / len(start_nodes)
-    
+
     # calculate the max spread:
     shrink = False
     which = np.zeros(0)
@@ -96,8 +100,8 @@ def sparse_page_rank(matrix, start_nodes,
         diff = new_diff
         rank_vec = new_rank
     if try_shrink and shrink:
-        ret = np.zeros(size)        
-        rank_vec = rank_vec.T[0] ## this works for both python versions
+        ret = np.zeros(size)
+        rank_vec = rank_vec.T[0]  ## this works for both python versions
         ret[which] = rank_vec
         ret[start_nodes] = 0
         return ret.flatten()
@@ -105,7 +109,15 @@ def sparse_page_rank(matrix, start_nodes,
         rank_vec[start_nodes] = 0
         return rank_vec.flatten()
 
-def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_percent=0.3,targets=None,parallel=True):
+
+def run_PPR(network,
+            cores=None,
+            jobs=None,
+            damping=0.85,
+            spread_step=10,
+            spread_percent=0.3,
+            targets=None,
+            parallel=True):
 
     ## normalize the matrix
 
@@ -118,21 +130,22 @@ def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_perc
     damping_hyper = damping
     spread_step_hyper = spread_step
     spread_percent_hyper = spread_percent
-    
+
     __graph_matrix = network
     if cores is None:
         cores = mp.cpu_count()
 
     n = network.shape[1]
     step = cores
-    
+
     if jobs is None:
         if targets is None:
-            jobs = [range(n)[i:i + step] for i in range(0, n, step)] ## generate jobs
+            jobs = [range(n)[i:i + step]
+                    for i in range(0, n, step)]  ## generate jobs
         else:
-            jobs = [range(n)[i:i + step] for i in targets] ## generate jobs
+            jobs = [range(n)[i:i + step] for i in targets]  ## generate jobs
 
-    if parallel==False:
+    if parallel == False:
         for target in jobs:
             for x in target:
                 vector = page_rank_kernel(x)
@@ -140,14 +153,17 @@ def run_PPR(network,cores=None,jobs=None,damping=0.85,spread_step=10,spread_perc
     else:
         with mp.Pool(processes=cores) as p:
             for batch in jobs:
-                results = p.map(page_rank_kernel,batch)
+                results = p.map(page_rank_kernel, batch)
                 yield results
+
 
 def hubs_and_authorities(graph):
     return nx.hits_scipy(graph)
 
+
 def hub_matrix(graph):
     return nx.hub_matrix(graph)
+
 
 def authority_matrix(graph):
     return nx.authority_matrix(graph)

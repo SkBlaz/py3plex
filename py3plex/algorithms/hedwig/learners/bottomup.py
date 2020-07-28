@@ -19,10 +19,16 @@ class BottomUpLearner:
     Improvement = 'improvement'
     Default = 'default'
 
-    def __init__(self, kb, n=None, min_sup=1, sim=1, depth=4, target=None,
+    def __init__(self,
+                 kb,
+                 n=None,
+                 min_sup=1,
+                 sim=1,
+                 depth=4,
+                 target=None,
                  use_negations=False):
         self.kb = kb
-        self.n = n          # Beam length
+        self.n = n  # Beam length
         self.min_sup = min_sup
         self.sim = sim
         self.extending = Learner.Improvement
@@ -30,7 +36,8 @@ class BottomUpLearner:
         self.use_negations = use_negations
 
         if kb.is_discrete_target():
-            self.target = list(self.kb.class_values)[0] if not target else target
+            self.target = list(
+                self.kb.class_values)[0] if not target else target
         else:
             self.target = None
 

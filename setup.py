@@ -1,13 +1,11 @@
-
 ## Py3plex installation file. Cython code for fa2 is the courtesy of Bhargav Chippada.
 ## https://github.com/bhargavchippada/forceatlas2
 
 from os import path
 import sys
-from setuptools import setup,find_packages
+from setuptools import setup, find_packages
 from setuptools.extension import Extension
 import argparse
-
 
 here = path.abspath(path.dirname(__file__))
 
@@ -19,10 +17,11 @@ if "--cpp" in sys.argv:
         print("Using existing visualization engine..")
         # cython build locally and add fa2/fa2util.c to MANIFEST or fa2.egg-info/SOURCES.txt
         # run: python setup.py build_ext --inplace
-        ext_modules = [Extension('fa2.fa2util', ['py3plex/visualization/fa2/fa2util.c'])]
+        ext_modules = [
+            Extension('fa2.fa2util', ['py3plex/visualization/fa2/fa2util.c'])
+        ]
         cmdclass = {}
-        cythonopts = {"ext_modules": ext_modules,
-                      "cmdclass": cmdclass}
+        cythonopts = {"ext_modules": ext_modules, "cmdclass": cmdclass}
     else:
 
         print("Compiling the visualization engine..")
@@ -35,19 +34,25 @@ if "--cpp" in sys.argv:
             if cythonopts is None:
                 from Cython.Build import build_ext
 
-                ext_modules = [Extension('fa2.fa2util', ['py3plex/visualization/fa2/fa2util.py', 'py3plex/visualization/fa2/fa2util.pxd'])]
+                ext_modules = [
+                    Extension('fa2.fa2util', [
+                        'py3plex/visualization/fa2/fa2util.py',
+                        'py3plex/visualization/fa2/fa2util.pxd'
+                    ])
+                ]
                 cmdclass = {'build_ext': build_ext}
-                cythonopts = {"ext_modules": ext_modules,
-                              "cmdclass": cmdclass}
+                cythonopts = {"ext_modules": ext_modules, "cmdclass": cmdclass}
         except:
 
-            print("Installing without optimizations.. Please install gcc for better performance!")
+            print(
+                "Installing without optimizations.. Please install gcc for better performance!"
+            )
             cythonopts = {"py_modules": ["py3plex/visualization/fa2.fa2util"]}
 
     sys.argv.remove("--cpp")
 else:
     cythonopts = {"py_modules": ["py3plex/visualization/fa2.fa2util"]}
-    
+
 setup(name='py3plex',
       version='0.75',
       description="A Multilayer network analysis python3 library",
@@ -58,6 +63,6 @@ setup(name='py3plex',
       license='MIT',
       packages=find_packages(),
       zip_safe=False,
-      install_requires=['rdflib','numpy','networkx','scipy'],
+      install_requires=['rdflib', 'numpy', 'networkx', 'scipy'],
       include_package_data=True,
       **cythonopts)

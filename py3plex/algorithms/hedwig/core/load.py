@@ -7,7 +7,7 @@ import rdflib
 import json
 import hashlib
 import os
-import _pickle as  cPickle
+import _pickle as cPickle
 
 from .settings import logger, HEDWIG, GENERIC_NAMESPACE
 from .example import Example
@@ -25,10 +25,12 @@ def rdf(paths, def_format='n3'):
             try:
                 g.parse(path, format=def_format)
             except Exception as e:
-                errorMsg = errorMsg + 'Error parsing file: ' + path +'.\n' + str(e) + '\n\n'
+                errorMsg = errorMsg + 'Error parsing file: ' + path + '.\n' + str(
+                    e) + '\n\n'
                 errorCount += 1
     if errorCount > 0:
-        raise Exception(str(errorCount) + " errors loading files:\n" + errorMsg)
+        raise Exception(
+            str(errorCount) + " errors loading files:\n" + errorMsg)
     return g
 
 
@@ -41,7 +43,8 @@ def build_uri(class_string):
     if class_string.startswith('http://'):
         class_uri = rdflib.term.URIRef(class_string)
     else:
-        class_uri = rdflib.term.URIRef('%s%s' % (str(GENERIC_NAMESPACE), class_string))
+        class_uri = rdflib.term.URIRef('%s%s' %
+                                       (str(GENERIC_NAMESPACE), class_string))
 
     return class_uri
 
@@ -92,7 +95,9 @@ def csv_parse_data(g, data_file):
         for ex_i, example_line in enumerate(data_lines[1:]):
             values = [v.strip() for v in example_line.split(';')]
             if len(values) != len(attributes) + 1:
-                raise Exception('Whoa! The number of values %d != the number of attributes (%d) on line %d.' % (len(values), len(attributes) + 1, ex_i + 2))
+                raise Exception(
+                    'Whoa! The number of values %d != the number of attributes (%d) on line %d.'
+                    % (len(values), len(attributes) + 1, ex_i + 2))
 
             examples.append(values)
 
@@ -103,8 +108,8 @@ def csv_parse_data(g, data_file):
         g.add((u, HEDWIG.class_label, rdflib.Literal(example[-1])))
 
         for att_idx, att in enumerate(attributes):
-            
-            # Skip the label 
+
+            # Skip the label
             if att_idx == 0:
                 continue
 
@@ -112,7 +117,8 @@ def csv_parse_data(g, data_file):
             value_is_uri = attribute_value.startswith('http://')
             if not (value_is_uri or attribute_value == '1'):
                 continue
-            annotation_uri = build_uri(attribute_value) if value_is_uri else build_uri(att)
+            annotation_uri = build_uri(
+                attribute_value) if value_is_uri else build_uri(att)
             blank = rdflib.BNode()
             g.add((u, HEDWIG.annotated_with, blank))
             g.add((blank, HEDWIG.annotation, annotation_uri))
@@ -132,10 +138,12 @@ def csv(hierarchy_files, data):
             elif path.endswith('csv'):
                 csv_parse_data(g, data)
         except Exception as e:
-            errorMsg = errorMsg + 'Error parsing file: ' + path +'.\n' + str(e) + '\n\n'
+            errorMsg = errorMsg + 'Error parsing file: ' + path + '.\n' + str(
+                e) + '\n\n'
             errorCount += 1
     if errorCount > 0:
-        raise Exception(str(errorCount) + " errors loading files:\n" + errorMsg)
+        raise Exception(
+            str(errorCount) + " errors loading files:\n" + errorMsg)
     return g
 
 
@@ -157,7 +165,7 @@ def load_graph(ontology_list, data, def_format='n3', cache=True):
         g = _load_cached_graph(cached_fn)
     else:
         logger.info('Building graph structure')
-        
+
         if def_format == 'n3':
             g = rdf(paths, def_format=def_format)
         elif def_format == 'csv':
@@ -171,9 +179,9 @@ def load_graph(ontology_list, data, def_format='n3', cache=True):
 def _md5_checksum(paths):
     md5 = hashlib.md5()
     for path in paths:
-            with open(path, 'rb') as f:
-                for chunk in iter(lambda: f.read(2**20), b''):
-                    md5.update(chunk)
+        with open(path, 'rb') as f:
+            for chunk in iter(lambda: f.read(2**20), b''):
+                md5.update(chunk)
     return md5.hexdigest()
 
 

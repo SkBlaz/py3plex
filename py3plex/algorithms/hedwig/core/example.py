@@ -25,10 +25,8 @@ class Example:
 
     def __str__(self):
         if self.target_type == Example.Ranked:
-            return '<id=%d, score=%.5f, label=%s>' % (self.id,
-                                                      self.score,
+            return '<id=%d, score=%.5f, label=%s>' % (self.id, self.score,
                                                       self.label)
         else:
-            return '<id=%d, class=%s, label=%s>' % (self.id,
-                                                    self.score,
+            return '<id=%d, class=%s, label=%s>' % (self.id, self.score,
                                                     self.label)

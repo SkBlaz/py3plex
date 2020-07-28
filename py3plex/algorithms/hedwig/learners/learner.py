@@ -24,10 +24,17 @@ class Learner:
     Improvement = 'improvement'
     Default = 'default'
 
-    def __init__(self, kb, n=None, min_sup=1, sim=1, depth=4, target=None,
-                 use_negations=False, optimal_subclass=False):
+    def __init__(self,
+                 kb,
+                 n=None,
+                 min_sup=1,
+                 sim=1,
+                 depth=4,
+                 target=None,
+                 use_negations=False,
+                 optimal_subclass=False):
         self.kb = kb
-        self.n = n          # Beam length
+        self.n = n  # Beam length
         self.min_sup = min_sup
         self.sim = sim
         self.extending = Learner.Improvement
@@ -36,7 +43,8 @@ class Learner:
         self.optimal_subclass = optimal_subclass
 
         if kb.is_discrete_target():
-            self.target = list(self.kb.class_values)[0] if not target else target
+            self.target = list(
+                self.kb.class_values)[0] if not target else target
         else:
             self.target = None
 
@@ -89,7 +97,7 @@ class Learner:
         rules = [Rule(self.kb, predicates=[root_pred], target=self.target)]
 
         rules = self.__induce_level(rules)
-        
+
         interesting_rules = list(filter(interesting, rules))
 
         return interesting_rules
@@ -112,9 +120,10 @@ class Learner:
 
             new_score = self.group_score(rules)
 
-            logger.debug("Old score: %.3f, New score: %.3f" % (old_score, new_score))
+            logger.debug("Old score: %.3f, New score: %.3f" %
+                         (old_score, new_score))
 
-            if 1 - abs(old_score/(new_score+0.0001)) < 0.01:
+            if 1 - abs(old_score / (new_score + 0.0001)) < 0.01:
                 break
 
         return rules
@@ -139,7 +148,7 @@ class Learner:
             tmp_rules = rules[:]
             for rule in tmp_rules:
                 sim = rule.similarity(new_rule)
-                if sim >= self.sim and len(rules) > 0.5*self.n:
+                if sim >= self.sim and len(rules) > 0.5 * self.n:
                     break
             else:
                 rules.append(new_rule)
@@ -205,7 +214,7 @@ class Learner:
             specializations.extend(specialize_optimal_subclass(rule))
 
         if self.use_negations:
-            
+
             # Negate the last predicate
             for pred in filter(is_unary, eligible_preds):
                 logger.debug('Predicate to negate: %s' % pred.label)
@@ -216,8 +225,8 @@ class Learner:
         # This makes sure we are not specializing a default rule by appending,
         # this rule should instead be reached by the specialization step above.
         if not (len(eligible_preds) == 1 and
-           (eligible_preds[0].label == self.kb.get_root().label or
-           self.is_implicit_root(eligible_preds[0].label))):
+                (eligible_preds[0].label == self.kb.get_root().label
+                 or self.is_implicit_root(eligible_preds[0].label))):
 
             # Calculate the union of superclasses of each predicate
             supers = set()
@@ -250,8 +259,8 @@ class Learner:
         if isinstance(rule.predicates[-1], UnaryPredicate):
             specializations.extend(self.specialize_add_relation(rule))
 
-        logger.debug('All specializations %s'
-                     % [str(rule) for rule in specializations])
+        logger.debug('All specializations %s' %
+                     [str(rule) for rule in specializations])
 
         return specializations
 
@@ -263,7 +272,8 @@ class Learner:
         for pred in self.kb.binary_predicates:
 
             last_pred = rule.predicates[-1]
-            new_rule = rule.clone_append(pred, producer_pred=last_pred,
+            new_rule = rule.clone_append(pred,
+                                         producer_pred=last_pred,
                                          bin=True)
 
             if self.can_specialize(new_rule):

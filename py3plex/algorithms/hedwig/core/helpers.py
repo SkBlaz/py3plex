@@ -7,10 +7,11 @@ from math import sqrt
 
 from .settings import W3C, HEDWIG
 
+
 def avg(x):
     n = float(len(x))
     if n:
-        return sum(x)/n
+        return sum(x) / n
     else:
         return 0
 
@@ -18,7 +19,7 @@ def avg(x):
 def std(x):
     n = float(len(x))
     if n:
-        return sqrt((sum(i*i for i in x) - sum(x)**2/n)/n)
+        return sqrt((sum(i * i for i in x) - sum(x)**2 / n) / n)
     else:
         return 0
 

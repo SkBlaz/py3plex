@@ -17,8 +17,7 @@ class ExperimentKB:
     '''
     The knowledge base for one specific experiment.
     '''
-    def __init__(self, triplets, score_fun,
-                 instances_as_leaves=True):
+    def __init__(self, triplets, score_fun, instances_as_leaves=True):
         '''
         Initialize the knowledge base with the given triplet graph.
         The target class is given with 'target_class' - this is the
@@ -55,7 +54,6 @@ class ExperimentKB:
                 self.distribution[ex.score] += 1
             logger.debug('Class distribution: %s' % str(self.distribution))
 
-
     def _build_examples(self, g):
         g.parse(EXAMPLE_SCHEMA, format='n3')
 
@@ -70,23 +68,23 @@ class ExperimentKB:
 
             # Query for annotation link objects
             annot_objects = g.objects(subject=ex_uri,
-                                           predicate=HEDWIG.annotated_with)
+                                      predicate=HEDWIG.annotated_with)
 
             annotation_links = [annot for annot in annot_objects]
             annotations = []
             weights = {}
-#            to_uni = lambda s: str(s, 'utf-8').encode('ascii', 'ignore')
+            #            to_uni = lambda s: str(s, 'utf-8').encode('ascii', 'ignore')
 
             for link in annotation_links:
 
                 # Query for annotation objects via this link
                 annot_objects = g.objects(subject=link,
-                                               predicate=HEDWIG.annotation)
+                                          predicate=HEDWIG.annotation)
                 annotation = [one for one in annot_objects][0]
 
                 # Query for weights on this link
                 weight_objects = g.objects(subject=link,
-                                                predicate=HEDWIG.weight)
+                                           predicate=HEDWIG.weight)
                 weights_list = [one for one in weight_objects]
 
                 if weights_list:
@@ -103,29 +101,33 @@ class ExperimentKB:
                 score = float(score_list[0])
             else:
                 # Classes
-                score_list = list(g.objects(subject=ex_uri,
-                                            predicate=HEDWIG.class_label))
+                score_list = list(
+                    g.objects(subject=ex_uri, predicate=HEDWIG.class_label))
 
                 # If no scores or labels found at this stage
                 if not score_list:
-                    raise Exception("No example labels or scores found! Examples should be " +
-                                    "instances of %s, with %s or %s provided." % (HEDWIG.Example, HEDWIG.score, HEDWIG.class_label))
+                    raise Exception(
+                        "No example labels or scores found! Examples should be "
+                        + "instances of %s, with %s or %s provided." %
+                        (HEDWIG.Example, HEDWIG.score, HEDWIG.class_label))
 
                 score = str(score_list[0])
                 self.class_values.add(score)
 
             self.uri_to_idx[ex_uri] = i
 
-            examples.append(Example(i, str(ex_uri), score,
-                                    annotations=annotations,
-                                    weights=weights))
+            examples.append(
+                Example(i,
+                        str(ex_uri),
+                        score,
+                        annotations=annotations,
+                        weights=weights))
 
         if not examples:
             raise Exception("No examples provided! Examples should be " +
                             "instances of %s." % HEDWIG.Example)
-        
-        return examples, all_annotations
 
+        return examples, all_annotations
 
     def _build_subclassof(self, g):
 
@@ -150,16 +152,15 @@ class ExperimentKB:
                     self.add_sub_class(sub, obj)
 
         # Find the user-defined object predicates defined between examples
-        examples_as_domain = set(g.subjects(object=HEDWIG.Example,
-                                                 predicate=RDFS.domain))
+        examples_as_domain = set(
+            g.subjects(object=HEDWIG.Example, predicate=RDFS.domain))
 
-        examples_as_range = set(g.subjects(object=HEDWIG.Example,
-                                                predicate=RDFS.range))
+        examples_as_range = set(
+            g.subjects(object=HEDWIG.Example, predicate=RDFS.range))
 
         for pred in examples_as_domain.intersection(examples_as_range):
             if user_defined(pred):
                 self.binary_predicates.add(str(pred))
-
 
     def _calc_predicate_members(self, g):
         self.members = defaultdict(set)
@@ -169,23 +170,26 @@ class ExperimentKB:
                     self.members[inst].add(ex.id)
                 else:
                     # Query for 'parents' of a given instance
-                    inst_parents = list(g.objects(subject=URIRef(inst),
-                                                       predicate=RDF.type))
-                    inst_parents += list(g.objects(subject=URIRef(inst),
-                                                    predicate=RDFS.subClassOf))
+                    inst_parents = list(
+                        g.objects(subject=URIRef(inst), predicate=RDF.type))
+                    inst_parents += list(
+                        g.objects(subject=URIRef(inst),
+                                  predicate=RDFS.subClassOf))
                     for obj in inst_parents:
                         self.members[str(obj)].add(ex.id)
 
-
     def _find_roots(self, all_annotations):
-        roots = list(filter(lambda pred: not self.sub_class_of[pred],
-                       self.super_class_of.keys()))
+        roots = list(
+            filter(lambda pred: not self.sub_class_of[pred],
+                   self.super_class_of.keys()))
 
         # Check for annotations not in the ontology to add them as roots
         for annotation in all_annotations:
             if annotation not in self.predicates:
                 roots.append(annotation)
-                logger.debug('Adding leaf %s as root, as it is not specified in the ontology' % annotation)
+                logger.debug(
+                    'Adding leaf %s as root, as it is not specified in the ontology'
+                    % annotation)
 
         logger.debug('Detected root nodes: %s' % str(roots))
 
@@ -194,7 +198,6 @@ class ExperimentKB:
         self.predicates.add(self.dummy_root)
         for root in roots:
             self.add_sub_class(root, self.dummy_root)
-
 
     def _calc_members_closure(self):
         self.sub_class_of_closure = defaultdict(set)
@@ -205,7 +208,8 @@ class ExperimentKB:
         def closure(pred, lvl, visited=[]):
 
             if pred in visited:
-                raise Exception('Cycle detected in the hierarchy at predicate %s!' % pred)
+                raise Exception(
+                    'Cycle detected in the hierarchy at predicate %s!' % pred)
 
             children = self.super_class_of[pred]
             self.levels[lvl].add(pred)
@@ -229,7 +233,6 @@ class ExperimentKB:
 
         # Run the closure from root
         closure(self.dummy_root, 0)
-
 
     def _calc_binary_members(self):
         self.binary_members = defaultdict(dict)
@@ -256,8 +259,7 @@ class ExperimentKB:
         for pred in self.binary_predicates:
             self.binary_domains[pred] = (
                 self.indices_to_bits(self.binary_members[pred].keys()),
-                self.indices_to_bits(self.reverse_binary_members[pred].keys())
-            )
+                self.indices_to_bits(self.reverse_binary_members[pred].keys()))
 
         # Calc the corresponding bitsets
         self.bit_members = {}
@@ -318,7 +320,9 @@ class ExperimentKB:
         '''
         Root predicate, which covers all examples.
         '''
-        return UnaryPredicate(self.dummy_root, self.get_full_domain(), self,
+        return UnaryPredicate(self.dummy_root,
+                              self.get_full_domain(),
+                              self,
                               custom_var_name='X')
 
     def get_subclasses(self, predicate, producer_pred=None):

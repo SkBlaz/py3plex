@@ -36,6 +36,7 @@ class Edge:
 # Here are some functions from ForceFactory.java
 # =============================================
 
+
 # Repulsion function.  `n1` and `n2` should be nodes.  This will
 # adjust the dx and dy values of `n1`  `n2`
 def linRepulsion(n1, n2, coefficient=0):
@@ -131,17 +132,21 @@ def apply_gravity(nodes, gravity, useStrongGravity=False):
             strongGravity(n, gravity)
 
 
-def apply_attraction(nodes, edges, distributedAttraction, coefficient, edgeWeightInfluence):
+def apply_attraction(nodes, edges, distributedAttraction, coefficient,
+                     edgeWeightInfluence):
     # Optimization, since usually edgeWeightInfluence is 0 or 1, and pow is slow
     if edgeWeightInfluence == 0:
         for edge in edges:
-            linAttraction(nodes[edge.node1], nodes[edge.node2], 1, distributedAttraction, coefficient)
+            linAttraction(nodes[edge.node1], nodes[edge.node2], 1,
+                          distributedAttraction, coefficient)
     elif edgeWeightInfluence == 1:
         for edge in edges:
-            linAttraction(nodes[edge.node1], nodes[edge.node2], edge.weight, distributedAttraction, coefficient)
+            linAttraction(nodes[edge.node1], nodes[edge.node2], edge.weight,
+                          distributedAttraction, coefficient)
     else:
         for edge in edges:
-            linAttraction(nodes[edge.node1], nodes[edge.node2], pow(edge.weight, edgeWeightInfluence),
+            linAttraction(nodes[edge.node1], nodes[edge.node2],
+                          pow(edge.weight, edgeWeightInfluence),
                           distributedAttraction, coefficient)
 
 
@@ -170,7 +175,8 @@ class Region:
 
             self.size = 0.0
             for n in self.nodes:
-                distance = sqrt((n.x - self.massCenterX) ** 2 + (n.y - self.massCenterY) ** 2)
+                distance = sqrt((n.x - self.massCenterX)**2 +
+                                (n.y - self.massCenterY)**2)
                 self.size = max(self.size, 2 * distance)
 
     def buildSubRegions(self):
@@ -243,7 +249,8 @@ class Region:
         if len(self.nodes) < 2:
             linRepulsion(n, self.nodes[0], coefficient)
         else:
-            distance = sqrt((n.x - self.massCenterX) ** 2 + (n.y - self.massCenterY) ** 2)
+            distance = sqrt((n.x - self.massCenterX)**2 +
+                            (n.y - self.massCenterY)**2)
             if distance * theta > self.size:
                 linRepulsion_region(n, self, coefficient)
             else:
@@ -261,10 +268,13 @@ def adjustSpeedAndApplyForces(nodes, speed, speedEfficiency, jitterTolerance):
     totalSwinging = 0.0  # How much irregular movement
     totalEffectiveTraction = 0.0  # How much useful movement
     for n in nodes:
-        swinging = sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) + (n.old_dy - n.dy) * (n.old_dy - n.dy))
+        swinging = sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) +
+                        (n.old_dy - n.dy) * (n.old_dy - n.dy))
         totalSwinging += n.mass * swinging
-        totalEffectiveTraction += .5 * n.mass * sqrt(
-            (n.old_dx + n.dx) * (n.old_dx + n.dx) + (n.old_dy + n.dy) * (n.old_dy + n.dy))
+        totalEffectiveTraction += .5 * n.mass * sqrt((n.old_dx + n.dx) *
+                                                     (n.old_dx + n.dx) +
+                                                     (n.old_dy + n.dy) *
+                                                     (n.old_dy + n.dy))
 
     # Optimize jitter tolerance.  The 'right' jitter tolerance for
     # this network. Bigger networks need more tolerance. Denser
@@ -272,9 +282,11 @@ def adjustSpeedAndApplyForces(nodes, speed, speedEfficiency, jitterTolerance):
     estimatedOptimalJitterTolerance = .05 * sqrt(len(nodes))
     minJT = sqrt(estimatedOptimalJitterTolerance)
     maxJT = 10
-    jt = jitterTolerance * max(minJT,
-                               min(maxJT, estimatedOptimalJitterTolerance * totalEffectiveTraction / (
-                                   len(nodes) * len(nodes))))
+    jt = jitterTolerance * max(
+        minJT,
+        min(
+            maxJT, estimatedOptimalJitterTolerance * totalEffectiveTraction /
+            (len(nodes) * len(nodes))))
 
     minSpeedEfficiency = 0.05
 
@@ -305,7 +317,8 @@ def adjustSpeedAndApplyForces(nodes, speed, speedEfficiency, jitterTolerance):
     # Need to add a case if adjustSizes ("prevent overlap") is
     # implemented.
     for n in nodes:
-        swinging = n.mass * sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) + (n.old_dy - n.dy) * (n.old_dy - n.dy))
+        swinging = n.mass * sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) +
+                                 (n.old_dy - n.dy) * (n.old_dy - n.dy))
         factor = speed / (1.0 + sqrt(speed * swinging))
         n.x = n.x + (n.dx * factor)
         n.y = n.y + (n.dy * factor)
@@ -322,4 +335,6 @@ try:
     # if not cython.compiled:
     #     print("Warning: uncompiled fa2util module.  Compile with cython for a 10-100x speed boost.")
 except:
-    print("No cython detected.  Install cython and compile the fa2util module for a 10-100x speed boost.")
+    print(
+        "No cython detected.  Install cython and compile the fa2util module for a 10-100x speed boost."
+    )

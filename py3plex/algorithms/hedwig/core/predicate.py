@@ -4,6 +4,7 @@ Predicate-related classes.
 @author: anze.vavpetic@ijs.si
 '''
 
+
 class Predicate:
     '''
     Represents a predicate as a member of a certain rule.
@@ -35,7 +36,10 @@ class UnaryPredicate(Predicate):
     '''
     A unary predicate.
     '''
-    def __init__(self, label, members, kb,
+    def __init__(self,
+                 label,
+                 members,
+                 kb,
                  producer_pred=None,
                  custom_var_name=None,
                  negated=False):

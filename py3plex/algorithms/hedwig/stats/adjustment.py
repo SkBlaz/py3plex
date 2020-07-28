@@ -19,7 +19,7 @@ def fwer(ruleset, alpha=0.05):
     m = float(len(list(ruleset)))
     ruleset = sorted(ruleset, key=lambda r: r.pval)
     for k, rule in enumerate(ruleset):
-        if rule.pval > alpha/(m + 1 - (k + 1)):
+        if rule.pval > alpha / (m + 1 - (k + 1)):
             ruleset = ruleset[:k]
             break
 
@@ -34,11 +34,12 @@ def fdr(ruleset, q=0.05):
     m = float(len(list(ruleset)))
     ruleset = sorted(ruleset, key=lambda r: r.pval)
     for k, rule in enumerate(ruleset):
-        if rule.pval > ((k + 1)*q)/m:
+        if rule.pval > ((k + 1) * q) / m:
             ruleset = ruleset[:k]
             break
 
     return ruleset
+
 
 def none(ruleset):
     return ruleset

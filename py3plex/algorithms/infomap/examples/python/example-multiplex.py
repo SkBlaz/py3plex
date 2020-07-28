@@ -11,9 +11,9 @@ infomapWrapper.run()
 
 tree = infomapWrapper.tree
 
-print("Found %d modules with codelength: %f" % (tree.numTopModules(), tree.codelength()))
+print("Found %d modules with codelength: %f" %
+      (tree.numTopModules(), tree.codelength()))
 
 print("\n#layer node module:")
 for node in tree.leafIter():
-	print("%d %d %d" % (node.stateIndex, node.physIndex, node.moduleIndex()))
-
+    print("%d %d %d" % (node.stateIndex, node.physIndex, node.moduleIndex()))
