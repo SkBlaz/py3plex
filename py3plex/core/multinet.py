@@ -1076,7 +1076,7 @@ class multi_layer_network:
     def get_decomposition(self,
                           heuristic="all",
                           cycle=None,
-                          parallel=True,
+                          parallel=False,
                           alpha=1,
                           beta=1):
         """ Core method for obtaining a network's decomposition in terms of relations  """

@@ -20,5 +20,5 @@ multilayer_network.basic_stats()  ## check core imports
 triplet_set = list(set(multilayer_network.get_decomposition_cycles()))
 print("\n".join(triplet_set))
 for decomposition in multilayer_network.get_decomposition(
-        heuristic=["idf", "rf"], cycle=triplet_set, parallel=True):
+        heuristic=["idf", "tf", "chi", "ig", "gr", "delta", "rf", "okapi"], cycle=triplet_set):
     print(decomposition)

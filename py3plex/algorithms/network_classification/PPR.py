@@ -18,6 +18,7 @@ def construct_PPR_matrix(graph_matrix, parallel=False):
     """
 
     ## initialize the vectors
+    graph_matrix = graph_matrix
     n = graph_matrix.shape[1]
     vectors = np.zeros((n, n))
     results = run_PPR(graph_matrix, parallel=parallel)

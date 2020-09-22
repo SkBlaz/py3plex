@@ -251,7 +251,7 @@ class HeterogeneousInformationNetwork:
                                 summing,
                                 generator=None,
                                 degrees=None,
-                                parallel=True,
+                                parallel=False,
                                 pool=None):
         classes = [
             lab for lab in self.label_list
@@ -327,7 +327,6 @@ class HeterogeneousInformationNetwork:
 
             ## non-parallel
             for item in generator:
-
                 ## to za vsak class poracun importance
                 importances = importance_calculator(classes,
                                                     universal_set,
@@ -335,6 +334,7 @@ class HeterogeneousInformationNetwork:
                                                     n,
                                                     degrees=degrees,
                                                     avgdegree=avgdegree)
+
                 importance = np.sum(importances, axis=0)
                 i1 = [self.node_indices[x] for x in item]
                 i2 = [[x] for x in i1]

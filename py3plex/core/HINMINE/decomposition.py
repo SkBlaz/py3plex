@@ -356,7 +356,7 @@ def hinmine_get_cycles(network, cycle=None):
     return cycle
 
 
-def hinmine_decompose(network, heuristic, cycle=None, parallel=True):
+def hinmine_decompose(network, heuristic, cycle=None, parallel=False):
     if cycle is None:
         candidates = network.calculate_decomposition_candidates()
         cycle = []
@@ -400,7 +400,7 @@ def hinmine_decompose(network, heuristic, cycle=None, parallel=True):
         for item in hin.midpoint_generator(node_sequence, edge_sequence):
             for node in item:
                 degrees[node] += 1
-
+        
         hin.decompose_from_iterator('decomposition',
                                     heuristic,
                                     None,
