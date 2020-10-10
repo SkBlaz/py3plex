@@ -534,7 +534,10 @@ def draw_networkx_edges(G,
     # set edge positions
     edge_pos = np.asarray([(pos[e[0]], pos[e[1]]) for e in edgelist])
 
-    if not cb.iterable(width):
+    # if not cb.iterable(width):
+    #     lw = (width, )
+    # else:
+    if not type(width) == list or not type(width) == tuple:
         lw = (width, )
     else:
         lw = width
