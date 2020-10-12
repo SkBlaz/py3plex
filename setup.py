@@ -54,7 +54,7 @@ else:
     cythonopts = {"py_modules": ["py3plex/visualization/fa2.fa2util"]}
 
 setup(name='py3plex',
-      version='0.77',
+      version='0.79',
       description="A Multilayer network analysis python3 library",
       url='http://github.com/skblaz/py3plex',
       python_requires='>3.6.0',
@@ -62,7 +62,20 @@ setup(name='py3plex',
       author_email='blaz.skrlj@ijs.si',
       license='MIT',
       packages=find_packages(),
+      install_requires = [
+          "numpy>=0.8",
+          "rdflib>=0.1",
+          "scipy>=1.1.0",
+          "networkx>=2.1",
+          "plotnine",
+          "cython>=0.20",
+          "tqdm>0.0",
+          "matplotlib>=3.0",
+          "gensim",
+          "scikit-learn",
+          "bitarray==1.2.1",
+          "seaborn"
+      ],
       zip_safe=False,
-      install_requires=['rdflib', 'numpy', 'networkx', 'scipy'],
       include_package_data=True,
       **cythonopts)

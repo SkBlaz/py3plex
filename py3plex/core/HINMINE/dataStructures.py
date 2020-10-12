@@ -79,9 +79,9 @@ class HeterogeneousInformationNetwork:
         if label_name is None:
             label_name = str(label_id)
         if label_id in self.labels_by_id:
-            if self.labels_by_id[label_id] not in self.graph.node[node][
+            if self.labels_by_id[label_id] not in self.graph.nodes[node][
                     'labels']:
-                self.graph.node[node]['labels'].append(
+                self.graph.nodes[node]['labels'].append(
                     self.labels_by_id[label_id])
                 self.labels_by_id[label_id].members.append(node)
         else:
@@ -89,13 +89,13 @@ class HeterogeneousInformationNetwork:
             self.label_list.append(new_class)
             self.labels_by_id[label_id] = new_class
             new_class.index = len(self.label_list) - 1
-            self.graph.node[node]['labels'].append(new_class)
+            self.graph.nodes[node]['labels'].append(new_class)
 
     def process_network(self, label_delimiter):
         if self.target_tag:
             basic_types = set([
-                self.graph.node[x]['type'] for x in self.graph.node
-                if 'labels' in self.graph.node[x]
+                self.graph.nodes[x]['type'] for x in self.graph.nodes
+                if 'labels' in self.graph.nodes[x]
             ])
 
             print("Target type: {}".format(basic_types))
@@ -106,8 +106,8 @@ class HeterogeneousInformationNetwork:
 
             self.basic_type = basic_types.pop()
             self.node_list = [
-                x for x in self.graph.node
-                if self.graph.node[x]['type'] == self.basic_type
+                x for x in self.graph.nodes
+                if self.graph.nodes[x]['type'] == self.basic_type
             ]
             try:
                 self.node_list.sort(key=lambda x: float(x[0]))
@@ -118,11 +118,11 @@ class HeterogeneousInformationNetwork:
             ])
 
             for node_id in self.node_list:
-                if 'labels' in self.graph.node[node_id]:
-                    if len(self.graph.node[node_id]['labels']) > 0:
-                        labels = self.graph.node[node_id]['labels'].split(
+                if 'labels' in self.graph.nodes[node_id]:
+                    if len(self.graph.nodes[node_id]['labels']) > 0:
+                        labels = self.graph.nodes[node_id]['labels'].split(
                             label_delimiter)
-                        self.graph.node[node_id]['labels'] = []
+                        self.graph.nodes[node_id]['labels'] = []
                         for label in labels:
                             self.add_label(node_id, label, label_name=label)
                 else:
@@ -132,14 +132,14 @@ class HeterogeneousInformationNetwork:
                 if lab is not None:
                     temp_list = [
                         mem for mem in lab.members
-                        if self.graph.node[mem]['type'] == self.basic_type
+                        if self.graph.nodes[mem]['type'] == self.basic_type
                     ]
                     lab.basic_members = set(temp_list)
             self.label_array = -np.ones((max([
-                len(self.graph.node[node]['labels']) for node in self.node_list
+                len(self.graph.nodes[node]['labels']) for node in self.node_list
             ]), len(self.node_list)))
             for node in self.node_list:
-                tmp = self.graph.node[node]['labels']
+                tmp = self.graph.nodes[node]['labels']
                 self.label_array[:len(tmp), self.node_indices[node]] = [
                     label.index for label in tmp
                 ]
@@ -159,12 +159,12 @@ class HeterogeneousInformationNetwork:
 
     def calculate_schema(self):
         schema = nx.MultiDiGraph()
-        for node_start in self.graph.node:
+        for node_start in self.graph.nodes:
             for node_end in self.graph[node_start]:
                 for key in self.graph[node_start][node_end]:
                     #                    print(node_start,node_end,key,self.graph[node_start][node_end])
-                    start_type = self.graph.node[node_start]['type']
-                    end_type = self.graph.node[node_end]['type']
+                    start_type = self.graph.nodes[node_start]['type']
+                    end_type = self.graph.nodes[node_end]['type']
                     edge_type = self.graph[node_start][node_end][key]['type']
                     has_type = False
                     if schema.has_edge(start_type, end_type):
@@ -224,19 +224,19 @@ class HeterogeneousInformationNetwork:
         # calculate test representatives:
         for train_index in self.train_indices:
             train_node = self.node_list[train_index]
-            for label in self.graph.node[train_node]['labels']:
+            for label in self.graph.nodes[train_node]['labels']:
                 label.train_indices.append(train_index)
                 label.train_members.add(self.node_list[train_index])
                 label.not_test_members.add(self.node_list[train_index])
         for validate_index in self.validate_indices:
             validate_node = self.node_list[validate_index]
-            for label in self.graph.node[validate_node]['labels']:
+            for label in self.graph.nodes[validate_node]['labels']:
                 label.validate_indices.append(validate_index)
                 label.validate_members.add(self.node_list[validate_index])
                 label.not_test_members.add(self.node_list[validate_index])
         for test_index in self.test_indices:
             test_node = self.node_list[test_index]
-            for label in self.graph.node[test_node]['labels']:
+            for label in self.graph.nodes[test_node]['labels']:
                 label.test_indices.append(test_index)
                 label.test_members.add(self.node_list[test_index])
         for label in self.label_list:
@@ -356,7 +356,7 @@ class HeterogeneousInformationNetwork:
         middle_type = node_sequence[int(len(node_sequence) / 2)]
         # forward_sequence = %TODO: INVERSE SEQUENCES!!!!!!!!!
         for node in self.graph:
-            if self.graph.node[node]['type'] == middle_type:
+            if self.graph.nodes[node]['type'] == middle_type:
                 points = [node]
                 i = int(len(node_sequence) / 2 + 1)
                 while i < len(node_sequence):
@@ -365,7 +365,7 @@ class HeterogeneousInformationNetwork:
                     for point in points:
                         new_points += [
                             x for x in self.graph[point]
-                            if self.graph.node[x]['type'] == current_type
+                            if self.graph.nodes[x]['type'] == current_type
                         ]
                     points = new_points
                     i += 1

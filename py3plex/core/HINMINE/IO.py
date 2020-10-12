@@ -18,7 +18,7 @@ def load_hinmine_object(infile,
     train_indices = []
     test_indices = []
     for index, node in enumerate(hin.node_list):
-        if len(hin.graph.node[node]['labels']) > 0:
+        if len(hin.graph.nodes[node]['labels']) > 0:
             train_indices.append(index)
         else:
             test_indices.append(index)

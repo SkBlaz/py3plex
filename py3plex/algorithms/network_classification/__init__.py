@@ -9,7 +9,6 @@ import numpy as np
 import scipy.sparse as sp
 import time
 import multiprocessing as mp  ## initialize the MP part
-import mkl
 from sklearn.metrics import f1_score
 import numpy as np
 import scipy.sparse as sp
