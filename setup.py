@@ -55,7 +55,7 @@ else:
 
 def parse_requirements(file):
     required_packages = []
-    with open(os.path.join(os.path.dirname(__file__), file)) as req_file:
+    with open(path.join(path.dirname(__file__), file)) as req_file:
         for line in req_file:
             required_packages.append(line.strip())
     return required_packages
@@ -69,7 +69,7 @@ setup(name='py3plex',
       author_email='blaz.skrlj@ijs.si',
       license='MIT',
       packages=find_packages(),
-      install_requires = parse_requirements("requirements.txt")
+      install_requires = parse_requirements("requirements.txt"),
       zip_safe=False,
       include_package_data=True,
       **cythonopts)
