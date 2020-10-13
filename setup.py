@@ -53,6 +53,13 @@ if "--cpp" in sys.argv:
 else:
     cythonopts = {"py_modules": ["py3plex/visualization/fa2.fa2util"]}
 
+def parse_requirements(file):
+    required_packages = []
+    with open(os.path.join(os.path.dirname(__file__), file)) as req_file:
+        for line in req_file:
+            required_packages.append(line.strip())
+    return required_packages
+    
 setup(name='py3plex',
       version='0.79',
       description="A Multilayer network analysis python3 library",
@@ -62,20 +69,7 @@ setup(name='py3plex',
       author_email='blaz.skrlj@ijs.si',
       license='MIT',
       packages=find_packages(),
-      install_requires = [
-          "numpy>=0.8",
-          "rdflib>=0.1",
-          "scipy>=1.1.0",
-          "networkx>=2.1",
-          "plotnine",
-          "cython>=0.20",
-          "tqdm>0.0",
-          "matplotlib>=3.0",
-          "gensim",
-          "scikit-learn",
-          "bitarray==1.2.1",
-          "seaborn"
-      ],
+      install_requires = parse_requirements("requirements.txt")
       zip_safe=False,
       include_package_data=True,
       **cythonopts)
