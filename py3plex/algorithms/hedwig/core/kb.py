@@ -17,6 +17,7 @@ class ExperimentKB:
     '''
     The knowledge base for one specific experiment.
     '''
+
     def __init__(self, triplets, score_fun, instances_as_leaves=True):
         '''
         Initialize the knowledge base with the given triplet graph.
@@ -281,7 +282,7 @@ class ExperimentKB:
                 self.reverse_bit_binary_members[pred][el] = indices
 
     def _propagate_annotation_names(self, g):
-        #to_uni = lambda s:  s.decode('unicode-escape')#str(s, 'utf-8').encode('ascii', 'ignore')
+        # to_uni = lambda s:  s.decode('unicode-escape')#str(s, 'utf-8').encode('ascii', 'ignore')
 
         # Query for annotation names
         for sub, obj in g.subject_objects(predicate=HEDWIG.annotation_name):
@@ -301,7 +302,7 @@ class ExperimentKB:
         '''
         Adds the resource 'sub' as a subclass of 'obj'.
         '''
-        #to_uni = lambda s:  s.decode('unicode-escape')#str(s, 'utf-8').encode('ascii', 'ignore')
+        # to_uni = lambda s:  s.decode('unicode-escape')#str(s, 'utf-8').encode('ascii', 'ignore')
         sub, obj = sub, obj
 
         self.predicates.update([sub, obj])

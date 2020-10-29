@@ -7,12 +7,12 @@ from py3plex.visualization.colors import all_color_names, colors_default
 import networkx as nx
 from numpy import array
 
-## An example general multilayer network
+# An example general multilayer network
 A = multinet.multi_layer_network()
 
 B = multinet.multi_layer_network()
 
-## Edges can also be added as lists: [n1,l1,n2,l2,w]
+# Edges can also be added as lists: [n1,l1,n2,l2,w]
 layer_1 = [["1", "layer1", "2", "layer1", 0.18114714],
            ["1", "layer1", "4", "layer1", 0.02990695],
            ["1", "layer1", "5", "layer1", 0.03590235],
@@ -39,7 +39,7 @@ inter_layer_edges = [["1", "layer1", "1D", "layer2", 1],
                      ["4", "layer1", "4D", "layer2", 1],
                      ["5", "layer1", "5D", "layer2", 1]]
 
-## specify that input is list, all else is recognized by Py3plex!
+# specify that input is list, all else is recognized by Py3plex!
 A.add_edges(layer_1, input_type="list")
 A.add_edges(layer_2, input_type="list")
 A.add_edges(inter_layer_edges, input_type="list")
@@ -58,7 +58,7 @@ multilayer_network.visualize_network(style="diagonal",
                                      linewidth=0.2)
 plt.show()
 
-## other ad hoc options:
+# other ad hoc options:
 # def visualize_network(self,style="diagonal",parameters_layers=None,parameters_multiedges=None,show=False,compute_layouts="force",layouts_parameters=None,verbose=True,orientation="upper",resolution=0.01, axis = None, fig = None, no_labels = False, linewidth = 1.7, alphachannel = 0.3, linepoints = "-."):
 
 A.basic_stats()
@@ -66,8 +66,7 @@ A.basic_stats()
 centralities = A.monoplex_nx_wrapper("degree_centrality")
 A.monitor(centralities)
 
-## if it's not present in networkx, you cannot use it as part of py3plex!
-import networkx as nx
+# if it's not present in networkx, you cannot use it as part of py3plex!
 G = nx.cycle_graph(4)
 sim = nx.simrank_similarity(G)
 lol = [[sim[u][v] for v in sorted(sim[u])] for u in sorted(sim)]

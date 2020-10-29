@@ -1,8 +1,8 @@
-## modules directed towards enrichment of node partitions..
+# modules directed towards enrichment of node partitions..
 
-##### this pyton code enables enrichment calculation from graph results from previous step
+# this pyton code enables enrichment calculation from graph results from previous step
 
-## this is to calculate enrichment scores
+# this is to calculate enrichment scores
 
 from scipy.stats import fisher_exact
 import multiprocessing as mp
@@ -40,7 +40,7 @@ def calculate_pval(term, alternative="two-sided"):
         query_term_count_population = int(query_term_count_population /
                                           _number_of_communities)
 
-    ## EASE correction.
+    # EASE correction.
     if inside_local > 1:
         query_counts = [inside_local - 1, query_term_count_population]
     else:
@@ -77,7 +77,7 @@ def multiple_test_correction(input_dataset):
                                                         is_sorted=False,
                                                         returnsorted=False)
 
-        ## Holm Sidak
+        # Holm Sidak
         output = zip(termN, significant, pvals, tmpP)
         for term, significant, pval, tmp in output:
             if (significant == True):
@@ -128,9 +128,9 @@ def compute_enrichment(term_dataset,
     _number_of_all_annotated = all_counts
     _term_database = {en: x
                       for en, x in enumerate(term_database.items())
-                      }  ## database of all annotations
+                      }  # database of all annotations
 
-    _map_term_database = term_dataset  ## entry to acc mappings
+    _map_term_database = term_dataset  # entry to acc mappings
     _number_of_communities = len(topology_map)
     _normalize_by_comsize = intra_community
 
@@ -143,21 +143,21 @@ def compute_enrichment(term_dataset,
     for k, v in topology_map.items():
 
         logging.info("Computing enrichment for partition {}".format(k))
-        ## reassign for parallel usage
+        # reassign for parallel usage
         _partition_name = k
         _partition_entries = v
 
-        ## computational pool instantiation
-        ncpu = 2  #mp.cpu_count()
+        # computational pool instantiation
+        ncpu = 2  # mp.cpu_count()
         #        pool = mp.Pool(ncpu)
 
-        ## compute the results
+        # compute the results
         n = len(term_database)
-        step = ncpu  ## number of parallel processes
+        step = ncpu  # number of parallel processes
         jobs = [range(n)[i:i + step]
-                for i in range(0, n, step)]  ## generate jobs
+                for i in range(0, n, step)]  # generate jobs
 
-        ## result container
+        # result container
         tmpframe = pd.DataFrame(columns=['observation', 'term', 'pval'])
         results = [parallel_enrichment(x) for x in range(n)]
 
@@ -165,7 +165,7 @@ def compute_enrichment(term_dataset,
         #     results = pool.map(parallel_enrichment,batch)
         tmpframe = tmpframe.append(results, ignore_index=True)
 
-        ## multitest corrections on partition level
+        # multitest corrections on partition level
         if multitest_method == "raw":
             tmpframe = tmpframe[tmpframe['pval'] < pvalue]
         else:
@@ -185,7 +185,7 @@ def compute_enrichment(term_dataset,
     return finalFrame
 
 
-## specifiy how this is formatted..
+# specifiy how this is formatted..
 def fet_enrichment_generic(term_dataset, term_database, all_counts,
                            topology_map):
     """
@@ -196,7 +196,7 @@ def fet_enrichment_generic(term_dataset, term_database, all_counts,
     all_counts = number of all annotation occurences
 
     """
-    ## 3.) calculate p-vals.
+    # 3.) calculate p-vals.
     significant_results = compute_enrichment(term_dataset,
                                              term_database,
                                              topology_map,
@@ -215,14 +215,14 @@ def fet_enrichment_terms(partition_mappings,
     This is the most generic enrichment process.
     """
 
-    ## 1.) read the database.
+    # 1.) read the database.
     term_dataset, term_database, all_counts = read_uniprot_GO(
         annotation_mappings)
 
-    ## 2.) partition function dict.
+    # 2.) partition function dict.
     topology_map = read_topology_mappings(partition_mappings)
 
-    ## 3.) calculate p-vals.
+    # 3.) calculate p-vals.
     significant_results = compute_enrichment(term_dataset,
                                              term_database,
                                              topology_map,
@@ -236,20 +236,20 @@ def fet_enrichment_terms(partition_mappings,
     return significant_results
 
 
-## write this so it uses vanilla data structures
+# write this so it uses vanilla data structures
 def fet_enrichment_uniprot(partition_mappings, annotation_mappings):
     """
     This is a pre-designed wrapper for uniprot-like annotation.
     """
 
-    ## 1.) read the database.
+    # 1.) read the database.
     term_dataset, term_database, all_counts = read_uniprot_GO(
         annotation_mappings)
 
-    ## 2.) partition function dict.
+    # 2.) partition function dict.
     topology_map = read_topology_mappings(partition_mappings)
 
-    ## 3.) calculate p-vals.
+    # 3.) calculate p-vals.
     significant_results = compute_enrichment(term_dataset,
                                              term_database,
                                              topology_map,

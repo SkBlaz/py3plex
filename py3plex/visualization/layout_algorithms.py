@@ -1,4 +1,4 @@
-## set of layout wrappers and algorithms used for visualization.
+# set of layout wrappers and algorithms used for visualization.
 
 import networkx as nx
 import numpy as np
@@ -77,7 +77,7 @@ def compute_force_directed_layout(g,
         print(
             "Using standard layout algorithm, fa2 not present on the system.")
 
-    ## return positions
+    # return positions
 
     return pos
 

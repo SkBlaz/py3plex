@@ -1,4 +1,4 @@
-## embedding
+# embedding
 from sklearn.manifold import TSNE
 import pandas as pd
 import numpy as np
@@ -15,7 +15,7 @@ def visualize_embedding(multinet, labels=None, verbose=True):
         print("------ Starting embedding visualization -------")
 
     if labels:
-        ## optionally match indices to labels and add a column
+        # optionally match indices to labels and add a column
         label_vector = [labels[x] for x in indices]
         X_embedded = TSNE(n_components=2).fit_transform(X)
         dfr = pd.DataFrame(X_embedded, columns=['dim1', 'dim2'])

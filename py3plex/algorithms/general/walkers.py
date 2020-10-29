@@ -1,4 +1,4 @@
-## different random walk implementations
+# different random walk implementations
 import networkx as nx
 import numpy as np
 import random
@@ -13,7 +13,7 @@ def __random_number_set_generator(number):
 
 def general_random_walk(G, start_node, iterations=1000, teleportation_prob=0):
 
-    ## possibly create the transition bias, based on one of many possible approaches.
+    # possibly create the transition bias, based on one of many possible approaches.
     ## mean_degree = np.mean([y for x,y in G.degree()])
 
     random_number_generator = __random_number_set_generator(int(1e6))
@@ -47,7 +47,7 @@ def general_random_walk(G, start_node, iterations=1000, teleportation_prob=0):
 
 def layer_specific_random_walk(G, start_node, iterations=1000):
 
-    ## get the node's layer and walk there + cout possible exits
+    # get the node's layer and walk there + cout possible exits
 
     pass
 

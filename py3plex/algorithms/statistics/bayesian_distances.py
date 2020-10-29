@@ -1,4 +1,4 @@
-## tutorial
+# tutorial
 
 import argparse
 #import bayesiantests as bt
@@ -18,9 +18,9 @@ def generate_bayesian_diagram(result_matrices,
                               show_diagram=True,
                               save_diagram=None):
 
-    #rope=0.01 #we consider two classifers equivalent when the difference of accuracy is less that 1%
+    # rope=0.01 #we consider two classifers equivalent when the difference of accuracy is less that 1%
     print(rope, rho)
-    #rho=1/5 #we are performing 10 folds, 10 runs cross-validation
+    # rho=1/5 #we are performing 10 folds, 10 runs cross-validation
     pl, pe, pr = hierarchical(result_matrices,
                               rope,
                               rho,

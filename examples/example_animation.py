@@ -29,5 +29,5 @@ for p in imrange:
     myimages.append([imgplot])
 my_anim = animation.ArtistAnimation(fig, myimages, interval=1000, blit=True)
 
-## upload to gif maker or store as a video
+# upload to gif maker or store as a video
 my_anim.save('../example_images/animation.gif', writer='imagemagick', fps=1)

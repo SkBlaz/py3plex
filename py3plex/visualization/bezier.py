@@ -1,5 +1,5 @@
-## this class of functions defines bezier curve npecifications
-## each curve needs 4 points, each of those points is computed via Bernstein polynomials
+# this class of functions defines bezier curve npecifications
+# each curve needs 4 points, each of those points is computed via Bernstein polynomials
 
 import numpy as np  # this is used for vectorized bezier computation
 from scipy.interpolate import CubicSpline
@@ -44,7 +44,7 @@ def draw_bezier(total_size,
             x1, x0 = p1
             y1, y0 = p2
 
-        ## coordinate init phase
+        # coordinate init phase
         dfx = np.arange(x0, x1, resolution)
         midpoint_x = (x0 + x1) / 2
         mp_y = (y0 + y1) / 2

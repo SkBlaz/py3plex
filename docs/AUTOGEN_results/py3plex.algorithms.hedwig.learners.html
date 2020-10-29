@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3plex.algorithms.hedwig.learners package &mdash; py3plex 0.79 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="py3plex.algorithms.hedwig.stats package" href="py3plex.algorithms.hedwig.stats.html" />
+    <link rel="prev" title="py3plex.algorithms.hedwig.core package" href="py3plex.algorithms.hedwig.core.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3plex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="py3plex.html">py3plex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="py3plex.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.html#module-py3plex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3plex</a> &raquo;</li>
+        
+          <li><a href="py3plex.html">py3plex package</a> &raquo;</li>
+        
+          <li><a href="py3plex.algorithms.html">py3plex.algorithms package</a> &raquo;</li>
+        
+          <li><a href="py3plex.algorithms.hedwig.html">py3plex.algorithms.hedwig package</a> &raquo;</li>
+        
+      <li>py3plex.algorithms.hedwig.learners package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/AUTOGEN_results/py3plex.algorithms.hedwig.learners.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3plex-algorithms-hedwig-learners-package">
+<h1>py3plex.algorithms.hedwig.learners package<a class="headerlink" href="#py3plex-algorithms-hedwig-learners-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="py3plex-algorithms-hedwig-learners-bottomup-module">
+<h2>py3plex.algorithms.hedwig.learners.bottomup module<a class="headerlink" href="#py3plex-algorithms-hedwig-learners-bottomup-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.learners.learner">
+<span id="py3plex-algorithms-hedwig-learners-learner-module"></span><h2>py3plex.algorithms.hedwig.learners.learner module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.learners.learner" title="Permalink to this headline">¶</a></h2>
+<p>Main learner class.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.learners.learner.</code><code class="sig-name descname">Learner</code><span class="sig-paren">(</span><em class="sig-param">kb</em>, <em class="sig-param">n=None</em>, <em class="sig-param">min_sup=1</em>, <em class="sig-param">sim=1</em>, <em class="sig-param">depth=4</em>, <em class="sig-param">target=None</em>, <em class="sig-param">use_negations=False</em>, <em class="sig-param">optimal_subclass=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Learner class, supporting various types of induction
+from the knowledge base.</p>
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.Default">
+<code class="sig-name descname">Default</code><em class="property"> = 'default'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.Default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.Improvement">
+<code class="sig-name descname">Improvement</code><em class="property"> = 'improvement'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.Improvement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.Similarity">
+<code class="sig-name descname">Similarity</code><em class="property"> = 'similarity'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.Similarity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.can_specialize">
+<code class="sig-name descname">can_specialize</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.can_specialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the rule good enough to be further refined?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.extend">
+<code class="sig-name descname">extend</code><span class="sig-paren">(</span><em class="sig-param">rules</em>, <em class="sig-param">specializations</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends the ruleset in the given way.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.extend_replace_worst">
+<code class="sig-name descname">extend_replace_worst</code><span class="sig-paren">(</span><em class="sig-param">rules</em>, <em class="sig-param">specializations</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.extend_replace_worst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends the list by replacing the worst rules.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.extend_with_similarity">
+<code class="sig-name descname">extend_with_similarity</code><span class="sig-paren">(</span><em class="sig-param">rules</em>, <em class="sig-param">specializations</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.extend_with_similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends the list based on how similar is ‘new_rule’
+to the rules contained in ‘rules’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.get_subclasses">
+<code class="sig-name descname">get_subclasses</code><span class="sig-paren">(</span><em class="sig-param">pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.get_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.get_superclasses">
+<code class="sig-name descname">get_superclasses</code><span class="sig-paren">(</span><em class="sig-param">pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.get_superclasses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.group_score">
+<code class="sig-name descname">group_score</code><span class="sig-paren">(</span><em class="sig-param">rules</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.group_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the score of the whole list of rules.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.induce">
+<code class="sig-name descname">induce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.induce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Induces rules for the given knowledge base.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.is_implicit_root">
+<code class="sig-name descname">is_implicit_root</code><span class="sig-paren">(</span><em class="sig-param">pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.is_implicit_root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.non_redundant">
+<code class="sig-name descname">non_redundant</code><span class="sig-paren">(</span><em class="sig-param">rule</em>, <em class="sig-param">new_rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.non_redundant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the rule non-redundant compared to its immediate generalization?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.specialize">
+<code class="sig-name descname">specialize</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.specialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all specializations of ‘rule’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.learner.Learner.specialize_add_relation">
+<code class="sig-name descname">specialize_add_relation</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.learner.Learner.specialize_add_relation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specialize with new binary relation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.learners.optimal">
+<span id="py3plex-algorithms-hedwig-learners-optimal-module"></span><h2>py3plex.algorithms.hedwig.learners.optimal module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.learners.optimal" title="Permalink to this headline">¶</a></h2>
+<p>Main learner class.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.learners.optimal.OptimalLearner">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.learners.optimal.</code><code class="sig-name descname">OptimalLearner</code><span class="sig-paren">(</span><em class="sig-param">kb</em>, <em class="sig-param">n=None</em>, <em class="sig-param">min_sup=1</em>, <em class="sig-param">sim=1</em>, <em class="sig-param">depth=4</em>, <em class="sig-param">target=None</em>, <em class="sig-param">use_negations=False</em>, <em class="sig-param">optimal_subclass=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.optimal.OptimalLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.algorithms.hedwig.learners.learner.Learner" title="py3plex.algorithms.hedwig.learners.learner.Learner"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.hedwig.learners.learner.Learner</span></code></a></p>
+<p>Finds the optimal top-k rules.</p>
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.optimal.OptimalLearner.induce">
+<code class="sig-name descname">induce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.optimal.OptimalLearner.induce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Induces rules for the given knowledge base.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.learners">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.algorithms.hedwig.learners" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.learners.HeuristicLearner">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.learners.</code><code class="sig-name descname">HeuristicLearner</code><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.HeuristicLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#py3plex.algorithms.hedwig.learners.learner.Learner" title="py3plex.algorithms.hedwig.learners.learner.Learner"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.hedwig.learners.learner.Learner</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.learners.OptimalLearner">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.learners.</code><code class="sig-name descname">OptimalLearner</code><span class="sig-paren">(</span><em class="sig-param">kb</em>, <em class="sig-param">n=None</em>, <em class="sig-param">min_sup=1</em>, <em class="sig-param">sim=1</em>, <em class="sig-param">depth=4</em>, <em class="sig-param">target=None</em>, <em class="sig-param">use_negations=False</em>, <em class="sig-param">optimal_subclass=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.OptimalLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.algorithms.hedwig.learners.learner.Learner" title="py3plex.algorithms.hedwig.learners.learner.Learner"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.hedwig.learners.learner.Learner</span></code></a></p>
+<p>Finds the optimal top-k rules.</p>
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.OptimalLearner.induce">
+<code class="sig-name descname">induce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.OptimalLearner.induce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Induces rules for the given knowledge base.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="py3plex.algorithms.hedwig.stats.html" class="btn btn-neutral float-right" title="py3plex.algorithms.hedwig.stats package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="py3plex.algorithms.hedwig.core.html" class="btn btn-neutral float-left" title="py3plex.algorithms.hedwig.core package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

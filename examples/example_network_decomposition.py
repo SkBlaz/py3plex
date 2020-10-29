@@ -1,4 +1,4 @@
-## decompose a complex network into a simple, homogeneous network according to a heuristic
+# decompose a complex network into a simple, homogeneous network according to a heuristic
 
 #from py3plex.algorithms import *
 from py3plex.core import multinet
@@ -11,7 +11,7 @@ multilayer_network = multinet.multi_layer_network().load_network(
 
 ## import status
 result_frames = []
-multilayer_network.basic_stats()  ## check core imports
+multilayer_network.basic_stats()  # check core imports
 for decomposition in multilayer_network.get_decomposition():
 
     result_frames.append(
@@ -21,10 +21,10 @@ for decomposition in multilayer_network.get_decomposition():
                                    repetitions=5,
                                    normalization_scheme="freq"))
 
-    ## results frame
+    # results frame
     validation_results = pd.DataFrame()
 
-## construct a single dataframe
+# construct a single dataframe
 for x in result_frames:
     validation_results = validation_results.append(x, ignore_index=True)
 print(validation_results)

@@ -1,4 +1,4 @@
-## test scale-freenes of a network
+# test scale-freenes of a network
 
 import networkx as nx
 import numpy as np

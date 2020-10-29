@@ -1,4 +1,4 @@
-## Compute many possible network statistics
+# Compute many possible network statistics
 
 import networkx as nx
 import pandas as pd

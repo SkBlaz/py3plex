@@ -1,6 +1,6 @@
-## label propagation routines
+# label propagation routines
 
-## label propagation algorithms:
+# label propagation algorithms:
 import networkx as nx
 import pandas as pd
 from sklearn.model_selection import ShuffleSplit
@@ -8,7 +8,7 @@ from ..general.benchmark_classification import *
 import numpy as np
 import scipy.sparse as sp
 import time
-import multiprocessing as mp  ## initialize the MP part
+import multiprocessing as mp  # initialize the MP part
 from sklearn.metrics import f1_score
 import numpy as np
 import scipy.sparse as sp
@@ -27,7 +27,7 @@ def label_propagation_normalization(matrix):
     return dm.dot(matrix).dot(dm)
 
 
-## suggested as part of the hinmine..
+# suggested as part of the hinmine..
 def normalize_initial_matrix_freq(mat):
     sums = np.sum(mat, axis=0)
     mat = mat / sums
@@ -168,5 +168,5 @@ def validate_label_propagation(core_network,
 
 
 def label_propagation_tf():
-    ## todo..
+    # todo..
     pass

@@ -1,4 +1,4 @@
-## core IO operations
+# core IO operations
 
 from .dataStructures import HeterogeneousInformationNetwork
 import numpy as np
@@ -9,7 +9,7 @@ def load_hinmine_object(infile,
                         weight_tag=False,
                         targets=True):
 
-    ## load the network to the HINMINE framework (Kralj et al. 2018)
+    # load the network to the HINMINE framework (Kralj et al. 2018)
     net = infile
     hin = HeterogeneousInformationNetwork(net,
                                           label_delimiter,

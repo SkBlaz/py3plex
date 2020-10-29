@@ -1,4 +1,4 @@
-## high level interface for community detection algorithms
+# high level interface for community detection algorithms
 from .community_louvain import *
 
 

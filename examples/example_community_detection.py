@@ -1,4 +1,4 @@
-## a simple example demonstrating the community detection capabilities
+# a simple example demonstrating the community detection capabilities
 
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
@@ -29,7 +29,7 @@ network.basic_stats()  # check core imports
 ##################################
 
 partition = cw.louvain_communities(network)
-#print(partition)
+# print(partition)
 # select top n communities by size
 top_n = 10
 partition_counts = dict(Counter(partition.values()))

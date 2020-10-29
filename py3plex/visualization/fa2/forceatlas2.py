@@ -81,7 +81,8 @@ class ForceAtlas2:
 
     def init(
         self,
-        G,  # a graph in 2D numpy ndarray format (or) scipy sparse matrix format
+        # a graph in 2D numpy ndarray format (or) scipy sparse matrix format
+        G,
         pos=None  # Array of initial positions
     ):
         isSparse = False
@@ -127,7 +128,8 @@ class ForceAtlas2:
         edges = []
         es = numpy.asarray(G.nonzero()).T
         for e in es:  # Iterate through edges
-            if e[1] <= e[0]: continue  # Avoid duplicate edges
+            if e[1] <= e[0]:
+                continue  # Avoid duplicate edges
             edge = fa2util.Edge()
             edge.node1 = e[0]  # The index of the first node in `nodes`
             edge.node2 = e[1]  # The index of the second node in `nodes`
@@ -154,7 +156,8 @@ class ForceAtlas2:
     # should be symmetric.
     def forceatlas2(
         self,
-        G,  # a graph in 2D numpy ndarray format (or) scipy sparse matrix format
+        # a graph in 2D numpy ndarray format (or) scipy sparse matrix format
+        G,
         pos=None,  # Array of initial positions
         iterations=100  # Number of times to iterate the main loop
     ):

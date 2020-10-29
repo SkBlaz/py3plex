@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3plex.algorithms.hedwig.stats package &mdash; py3plex 0.79 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs.html">Automatically generated documentation (from docstrings)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>py3plex.algorithms.hedwig.stats package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/AUTOGEN_results/py3plex.algorithms.hedwig.stats.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3plex-algorithms-hedwig-stats-package">
+<h1>py3plex.algorithms.hedwig.stats package<a class="headerlink" href="#py3plex-algorithms-hedwig-stats-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.stats.adjustment">
+<span id="py3plex-algorithms-hedwig-stats-adjustment-module"></span><h2>py3plex.algorithms.hedwig.stats.adjustment module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.stats.adjustment" title="Permalink to this headline">¶</a></h2>
+<p>Multiple-testing adjustment methods.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.adjustment.fdr">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.adjustment.</code><code class="sig-name descname">fdr</code><span class="sig-paren">(</span><em class="sig-param">ruleset</em>, <em class="sig-param">q=0.05</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.adjustment.fdr" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Benjamini-Hochberg-Yekutieli direct adjustment
+method to control the FDR.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.adjustment.fwer">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.adjustment.</code><code class="sig-name descname">fwer</code><span class="sig-paren">(</span><em class="sig-param">ruleset</em>, <em class="sig-param">alpha=0.05</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.adjustment.fwer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Holm-Bonferroni direct adjustment method to control the FWER.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.adjustment.none">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.adjustment.</code><code class="sig-name descname">none</code><span class="sig-paren">(</span><em class="sig-param">ruleset</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.adjustment.none" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.stats.scorefunctions">
+<span id="py3plex-algorithms-hedwig-stats-scorefunctions-module"></span><h2>py3plex.algorithms.hedwig.stats.scorefunctions module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.stats.scorefunctions" title="Permalink to this headline">¶</a></h2>
+<p>Score function definitions.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.chisq">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">chisq</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.chisq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.enrichment_score">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">enrichment_score</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.enrichment_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.interesting">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">interesting</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.interesting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a given rule is interesting for the given score function</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.kaplan_meier_AUC">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">kaplan_meier_AUC</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.kaplan_meier_AUC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.leverage">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">leverage</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.leverage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.lift">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">lift</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.lift" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.precision">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">precision</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.precision" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.t_score">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">t_score</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.t_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.wracc">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">wracc</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.wracc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.scorefunctions.z_score">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.scorefunctions.</code><code class="sig-name descname">z_score</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.scorefunctions.z_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.stats.significance">
+<span id="py3plex-algorithms-hedwig-stats-significance-module"></span><h2>py3plex.algorithms.hedwig.stats.significance module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.stats.significance" title="Permalink to this headline">¶</a></h2>
+<p>Significance testing methods.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.significance.apply_fisher">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.significance.</code><code class="sig-name descname">apply_fisher</code><span class="sig-paren">(</span><em class="sig-param">ruleset</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.significance.apply_fisher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fisher’s exact test to test rule significance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.significance.fisher">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.significance.</code><code class="sig-name descname">fisher</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.significance.fisher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fisher’s p-value for one rule.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.stats.significance.is_redundant">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.significance.</code><code class="sig-name descname">is_redundant</code><span class="sig-paren">(</span><em class="sig-param">rule</em>, <em class="sig-param">new_rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.significance.is_redundant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the redundancy coefficient of a new rule compared to its
+immediate generalization.</p>
+<p>Rules with a coeff &gt; 1 are deemed non-redundant.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.stats.validate">
+<span id="py3plex-algorithms-hedwig-stats-validate-module"></span><h2>py3plex.algorithms.hedwig.stats.validate module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.stats.validate" title="Permalink to this headline">¶</a></h2>
+<p>Module for ruleset validation.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.stats.validate.Validate">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.validate.</code><code class="sig-name descname">Validate</code><span class="sig-paren">(</span><em class="sig-param">kb</em>, <em class="sig-param">significance_test=&lt;function apply_fisher&gt;</em>, <em class="sig-param">adjustment=&lt;function fdr&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.validate.Validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.stats.validate.Validate.test">
+<code class="sig-name descname">test</code><span class="sig-paren">(</span><em class="sig-param">ruleset</em>, <em class="sig-param">alpha=0.05</em>, <em class="sig-param">q=0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.validate.Validate.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the given ruleset and returns the significant rules.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.stats">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.algorithms.hedwig.stats" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.stats.Validate">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.stats.</code><code class="sig-name descname">Validate</code><span class="sig-paren">(</span><em class="sig-param">kb</em>, <em class="sig-param">significance_test=&lt;function apply_fisher&gt;</em>, <em class="sig-param">adjustment=&lt;function fdr&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.Validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.stats.Validate.test">
+<code class="sig-name descname">test</code><span class="sig-paren">(</span><em class="sig-param">ruleset</em>, <em class="sig-param">alpha=0.05</em>, <em class="sig-param">q=0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.stats.Validate.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the given ruleset and returns the significant rules.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

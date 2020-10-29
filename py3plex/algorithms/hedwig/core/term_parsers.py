@@ -1,6 +1,6 @@
-## parsers for working with semantic data..
+# parsers for working with semantic data..
 
-## some generic methods used at many places..
+# some generic methods used at many places..
 
 from collections import defaultdict, Counter
 import itertools
@@ -31,7 +31,7 @@ def parse_gaf_file(gaf_mappings, whole_list_counts=False):
                 parts = line.strip().split("\t")
                 try:
                     if parts[4] != "":
-                        uniGO[parts[1]].add(parts[4])  ## GO and ref both added
+                        uniGO[parts[1]].add(parts[4])  # GO and ref both added
 
                     if whole_list_counts:
                         whole_list.append(parts[4])
@@ -43,7 +43,7 @@ def parse_gaf_file(gaf_mappings, whole_list_counts=False):
                 parts = line.strip().split("\t")
                 try:
                     if parts[4] != "":
-                        uniGO[parts[1]].add(parts[4])  ## GO and ref both added
+                        uniGO[parts[1]].add(parts[4])  # GO and ref both added
 
                     if whole_list_counts:
                         whole_list.append(parts[4])
@@ -61,7 +61,7 @@ def parse_gaf_file(gaf_mappings, whole_list_counts=False):
 
 def read_topology_mappings(mapping):
 
-    ## read the mapping in for of n:term
+    # read the mapping in for of n:term
     if isinstance(mapping, dict):
         return mapping
     else:
@@ -74,7 +74,7 @@ def read_topology_mappings(mapping):
 
 
 def read_uniprot_GO(filename, verbose=True):
-    ## read the GAF file..
+    # read the GAF file..
     unigo_counts, whole_termlist = parse_gaf_file(filename,
                                                   whole_list_counts=True)
     term_counts = Counter(whole_termlist)

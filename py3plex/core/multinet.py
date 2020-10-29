@@ -1,11 +1,11 @@
-## This is the main data structure container
+# This is the main data structure container
 
 import networkx as nx
 import itertools
 from . import parsers
 from . import converters
-from .HINMINE.IO import *  ## parse the graph
-from .HINMINE.decomposition import *  ## decompose the graph
+from .HINMINE.IO import *  # parse the graph
+from .HINMINE.decomposition import *  # decompose the graph
 from .supporting import *
 import scipy.sparse as sp
 import pandas as pd
@@ -16,7 +16,7 @@ try:
 except:
     pass
 
-## visualization modules
+# visualization modules
 try:
     from ..visualization.multilayer import *
     from ..visualization.colors import all_color_names, colors_default
@@ -27,7 +27,7 @@ except:
 
 class multi_layer_network:
 
-    ## constructor
+    # constructor
     def __init__(self,
                  verbose=True,
                  network_type="multilayer",
@@ -36,11 +36,11 @@ class multi_layer_network:
                  label_delimiter="---",
                  coupling_weight=1):
         """Class initializer
-        
+
         This is the main class initializer method. User here specifies the type of the network, as well as other global parameters.
 
         """
-        ## initialize the class
+        # initialize the class
         self.coupling_weight = coupling_weight
         self.layer_name_map = {}
         self.layer_inverse_name_map = {}
@@ -52,7 +52,7 @@ class multi_layer_network:
         self.labels = None
         self.embedding = None
         self.verbose = verbose
-        self.network_type = network_type  ## assing network type
+        self.network_type = network_type  # assing network type
         self.sparse_enabled = False
         self.hinmine_network = None
         self.label_delimiter = label_delimiter
@@ -82,7 +82,7 @@ class multi_layer_network:
                 community_assignments[line[0]] = line[1]
 
         self.ground_truth_communities = {}
-        ## reorder the mampings appropriately
+        # reorder the mampings appropriately
         for node in self.get_nodes():
             com = community_assignments[node[0]]
             self.ground_truth_communities[node] = com
@@ -135,7 +135,7 @@ class multi_layer_network:
         #        for potential_node in itertools.product(unique_nodes,unique_layers):
         #            self.core_network.add_node(potential_node)
 
-        ## draw edges between same nodes accross layers
+        # draw edges between same nodes accross layers
         for node in unique_nodes:
             for layer_first in unique_layers:
                 for layer_second in unique_layers:
@@ -184,7 +184,7 @@ class multi_layer_network:
 
     def to_json(self):
         """A method for exporting the graph to a json file
-        
+
         Args:
         self
 
@@ -230,7 +230,7 @@ class multi_layer_network:
         invert the nodes to edges. Get the "edge graph". Each node is here an edge.
         """
 
-        ## default structure for a new graph
+        # default structure for a new graph
         G = nx.MultiGraph()
         new_edges = []
         for node in self.core_network.nodes():
@@ -246,14 +246,18 @@ class multi_layer_network:
         if override_core:
             self.core_network = G
         else:
-            self.core_network_inverse = G  #.add_edges_from(new_edges)
+            self.core_network_inverse = G  # .add_edges_from(new_edges)
 
     def save_network(self, output_file=None, output_type="edgelist"):
-        """ A method for saving the network 
-        :param output_type -- edgelist, multiedgelist or gpickle
+        """A method for saving the network
+
+        This method loads and prepares a given network.
+
+        Args:
+            param1: output file path
+            param2: output file type
 
         """
-
         if output_type == "edgelist":
             parsers.save_edgelist(self.core_network, output_file=output_file)
 
@@ -324,8 +328,8 @@ class multi_layer_network:
         }
 
     def get_unique_entity_counts(self):
-        """
-        :input: self object
+        """Main network loader
+        Count unique entities.
         """
 
         node_layer_tuples = set()
@@ -434,6 +438,18 @@ class multi_layer_network:
         return tmp_net
 
     def aggregate_edges(self, metric="count", normalize_by="degree"):
+        """Edge aggregation method
+
+        Count weights across layers and return a weighted network
+
+        Args:
+            param1: aggregation operator (count is default)
+            param2: normalization of the values
+
+        Returns:
+             A simplified network.
+
+        """
 
         layer_object = defaultdict(list)
         edge_object = {}
@@ -454,7 +470,7 @@ class multi_layer_network:
                 connectivity = 1
 
             for edge in layer_network.get_edges():
-                edge_new = (edge[0][0], edge[1][0])  ## keep just the nids.
+                edge_new = (edge[0][0], edge[1][0])  # keep just the nids.
                 if not edge_new in edge_object:
 
                     edge_object[edge_new] = 1 / connectivity
@@ -511,7 +527,7 @@ class multi_layer_network:
                     (str(node_second_names[enx]), str(layer_names[enx])))
             layer_edges[layer_names[enx]].append(edge)
 
-        ## fill layer by layer
+        # fill layer by layer
         for enx, layer in enumerate(self.layer_names):
             layer_ed = layer_edges[layer]
             self.tmp_layers[enx].add_edges_from(layer_ed)
@@ -528,7 +544,7 @@ class multi_layer_network:
         if self.verbose:
             self.monitor("Network splitting in progress")
 
-        ## multilayer visualization
+        # multilayer visualization
         if style == "diagonal":
             self.layer_names, self.separate_layers, self.multiedges = converters.prepare_for_visualization(
                 self.core_network,
@@ -540,7 +556,7 @@ class multi_layer_network:
                 self.layer_inverse_name_map[lid] for lid in self.layer_names
             ]
 
-        ## hairball visualization
+        # hairball visualization
         if style == "hairball":
             self.layer_names, self.separate_layers, self.multiedges = converters.prepare_for_visualization_hairball(
                 self.core_network, compute_layouts=True)
@@ -570,7 +586,7 @@ class multi_layer_network:
         if self.verbose:
             self.monitor("Network splitting in progress")
 
-        ## multilayer visualization
+        # multilayer visualization
         if style == "diagonal":
             return converters.prepare_for_visualization(
                 self.core_network,
@@ -578,7 +594,7 @@ class multi_layer_network:
                 layout_parameters=layout_parameters,
                 verbose=verbose)
 
-        ## hairball visualization
+        # hairball visualization
         if style == "hairball":
             return converters.prepare_for_visualization_hairball(
                 self.core_network, compute_layouts=True)
@@ -1084,7 +1100,7 @@ class multi_layer_network:
         if heuristic == "all":
             heuristic = [
                 "idf", "tf", "chi", "ig", "gr", "delta", "rf", "okapi"
-            ]  ## all available
+            ]  # all available
         if self.hinmine_network is None:
             if self.verbose:
                 print("Loading into a hinmine object..")
@@ -1110,7 +1126,7 @@ class multi_layer_network:
                                          parallel=parallel)
                 decomposition = dout.decomposed['decomposition']
 
-                ## use alpha and beta levels
+                # use alpha and beta levels
                 final_decomposition = alpha * decomposition + beta * induced_net
 
                 print("Successfully decomposed: {}".format(x))
@@ -1144,7 +1160,7 @@ class multi_layer_network:
         node_dict = {e: k for k, e in enumerate(list(self.get_nodes()))}
         outstruct = []
 
-        ## enumerated n l n l
+        # enumerated n l n l
         if multiplex:
             separate_layers = []
 
@@ -1154,7 +1170,7 @@ class multi_layer_network:
             layer_mappings = {e: k for k, e in enumerate(set(separate_layers))}
             node_mappings = {k[0]: v for k, v in node_dict.items()}
 
-            ## add encoded edges
+            # add encoded edges
             for edge in self.get_edges():
                 node_zero = node_mappings[edge[0][0]]
                 node_first = node_mappings[edge[1][0]]
@@ -1163,7 +1179,7 @@ class multi_layer_network:
                 el = [node_zero, layer_zero, node_first, layer_first, 1]
                 outstruct.append(el)
         else:
-            ## serialize as a simple edgelist
+            # serialize as a simple edgelist
             for edge in self.get_edges(data=True):
                 node_zero = node_dict[edge[0]]
                 node_first = node_dict[edge[1]]
@@ -1190,6 +1206,7 @@ class multi_layer_network:
         #        inverse_layers = {a:b for b,a in layer_mappings.items()}
 
         return (inverse_nodes)
+
 
 if __name__ == "__main__":
 

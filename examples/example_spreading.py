@@ -1,4 +1,4 @@
-## simple spreading process on multilayers
+# simple spreading process on multilayers
 
 from py3plex.core import multinet
 from py3plex.core import random_generators
@@ -7,17 +7,17 @@ import queue
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-## some random graph
+# some random graph
 ER_multilayer = random_generators.random_multilayer_ER(5000,
                                                        15,
                                                        0.05,
                                                        directed=False)
 
-## seed node
+# seed node
 all_nodes = list(ER_multilayer.get_nodes())
 all_nodes_indexed = {x: en for en, x in enumerate(all_nodes)}
 
-## spread from a random node
+# spread from a random node
 
 for j in range(5):
     random_init = np.random.randint(len(all_nodes))

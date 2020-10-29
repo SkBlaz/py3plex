@@ -14,7 +14,7 @@ def py3plex_visualization(network):
                                     directed=False,
                                     input_type="multiedge_tuple_list")
     network_labels, graphs, multilinks = multilayer_network.get_layers(
-    )  ## get layers for visualization
+    )  # get layers for visualization
 
     draw_multilayer_default(graphs,
                             display=False,

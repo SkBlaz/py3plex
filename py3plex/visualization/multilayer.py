@@ -1,9 +1,10 @@
 # This is the multiplex layer constructor class
 
-## draw multi layered network, takes .nx object list as input
+# draw multi layered network, takes .nx object list as input
 
-## imports first
+# imports first
 
+import numpy as np
 import networkx as nx
 try:
     from matplotlib.patches import Rectangle
@@ -23,7 +24,6 @@ from . import drawing_machinery
 
 main_figure = plt.figure()
 shape_subplot = main_figure.add_subplot(111)
-import numpy as np
 
 try:
     import plotly.graph_objects as go
@@ -143,7 +143,7 @@ def draw_multilayer_default(network_list,
         for node, position in positions.items():
             position += start_location_network
 
-        ## this is the default delay for matplotlib canvas
+        # this is the default delay for matplotlib canvas
         if labels != False:
             try:
                 shape_subplot.text(start_location_network + label_position,
@@ -244,7 +244,7 @@ def draw_multiedges(network_list,
                 p1 = [coordinates_node_first[0], coordinates_node_second[0]]
                 #[coordinates_node_first[0], coordinates_node_first[1]]
                 p2 = [coordinates_node_first[1],
-                      coordinates_node_second[1]]  #[]
+                      coordinates_node_second[1]]  # []
 
                 if style == "line":
 
@@ -320,7 +320,7 @@ def generate_random_multiedges(network_list,
     edge_subplot = main_figure.add_subplot(111)
     return_list = []
 
-    ## this needs to be in the form of:
+    # this needs to be in the form of:
     for k in range(random_edges):
         try:
             random_network1 = random.randint(0, upper_first)
@@ -410,7 +410,7 @@ def hairball_plot(
         display=False,
         node_size=1,
         text_color="black",
-        node_sizes=None,  ## for custom sizes
+        node_sizes=None,  # for custom sizes
         layout_parameters=None,
         legend=None,
         scale_by_size=True,
@@ -458,7 +458,7 @@ def hairball_plot(
     else:
         node_types = [x[1] for x in g.nodes()]
         assert len(node_types) == len(color_list)
-        cols = colors.colors_default  #list(colors.all_color_names.keys())
+        cols = colors.colors_default  # list(colors.all_color_names.keys())
         id_col_map = {}
         for enx, j in enumerate(set(color_list)):
             id_col_map[j] = cols[enx]
@@ -594,9 +594,9 @@ def interactive_hairball_plot(G,
         marker=dict(
             showscale=True,
             # colorscale options
-            #'Greys' | 'YlGnBu' | 'Greens' | 'YlOrRd' | 'Bluered' | 'RdBu' |
-            #'Reds' | 'Blues' | 'Picnic' | 'Rainbow' | 'Portland' | 'Jet' |
-            #'Hot' | 'Blackbody' | 'Earth' | 'Electric' | 'Viridis' |
+            # 'Greys' | 'YlGnBu' | 'Greens' | 'YlOrRd' | 'Bluered' | 'RdBu' |
+            # 'Reds' | 'Blues' | 'Picnic' | 'Rainbow' | 'Portland' | 'Jet' |
+            # 'Hot' | 'Blackbody' | 'Earth' | 'Electric' | 'Viridis' |
             colorscale=colorscale,
             reversescale=True,
             color=[],

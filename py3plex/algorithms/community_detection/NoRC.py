@@ -1,4 +1,4 @@
-### ncd
+# ncd
 
 import networkx as nx
 import numpy as np
@@ -23,7 +23,7 @@ global _RANK_GRAPH
 
 def page_rank_kernel(index_row):
 
-    ## call as results = p.map(pr_kernel, batch)
+    # call as results = p.map(pr_kernel, batch)
     pr = sparse_page_rank(_RANK_GRAPH, [index_row],
                           epsilon=1e-6,
                           max_steps=100000,
@@ -88,7 +88,7 @@ def NoRC_communities_main(
     _RANK_GRAPH = input_graph
     A = _RANK_GRAPH.copy()
     _RANK_GRAPH = nx.to_scipy_sparse_matrix(_RANK_GRAPH)
-    _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  ## normalize
+    _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  # normalize
     n = _RANK_GRAPH.shape[1]
     edgelist_triplets = []
     jobs = [range(n)[i:i + parallel_step] for i in range(0, n, parallel_step)]
@@ -141,7 +141,7 @@ def NoRC_communities_main(
                 if lag_num > lag_threshold:
                     break
 
-        ## fine grained search
+        # fine grained search
         if verbose:
             print("Fine graining around {}".format(nopt))
         for nclust in range(nopt - fine_range, nopt + fine_range, 1):

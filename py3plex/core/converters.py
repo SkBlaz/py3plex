@@ -1,4 +1,4 @@
-## converters
+# converters
 import networkx as nx
 from collections import defaultdict
 from ..visualization.layout_algorithms import *
@@ -114,7 +114,7 @@ def prepare_for_visualization(multinet,
     inverse_mapping = {}
     layouts = []
 
-    ## construct the inverse mapping
+    # construct the inverse mapping
     for k, v in layers.items():
         for x in v:
             inverse_mapping[x] = k
@@ -192,7 +192,7 @@ def prepare_for_parsing(multinet):
     inverse_mapping = {}
     layouts = []
 
-    ## construct the inverse mapping
+    # construct the inverse mapping
     for k, v in layers.items():
         for x in v:
             inverse_mapping[x] = k

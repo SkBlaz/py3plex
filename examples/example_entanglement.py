@@ -1,10 +1,10 @@
-## entanglement: By. Benjamin Renoust and Blaz Skrlj, 2019
-## load an example multilayer network
+# entanglement: By. Benjamin Renoust and Blaz Skrlj, 2019
+# load an example multilayer network
 
 from py3plex.core import multinet
 from py3plex.algorithms.multilayer_algorithms.entanglement import *
 
-## visualization from a simple file
+# visualization from a simple file
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/multiL.txt", directed=True, input_type="multiedgelist")
 multilayer_network.basic_stats()

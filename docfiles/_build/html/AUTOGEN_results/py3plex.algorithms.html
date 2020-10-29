@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3plex.algorithms package &mdash; py3plex 0.79 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="py3plex.algorithms.community_detection package" href="py3plex.algorithms.community_detection.html" />
+    <link rel="prev" title="py3plex package" href="py3plex.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3plex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="py3plex.html">py3plex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="py3plex.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.html#module-py3plex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3plex</a> &raquo;</li>
+        
+          <li><a href="py3plex.html">py3plex package</a> &raquo;</li>
+        
+      <li>py3plex.algorithms package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/AUTOGEN_results/py3plex.algorithms.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3plex-algorithms-package">
+<h1>py3plex.algorithms package<a class="headerlink" href="#py3plex-algorithms-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.community_detection.html">py3plex.algorithms.community_detection package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html">py3plex.algorithms.community_detection.community package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#module-py3plex.algorithms.community_detection.community.community_louvain">py3plex.algorithms.community_detection.community.community_louvain module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#module-py3plex.algorithms.community_detection.community.community_status">py3plex.algorithms.community_detection.community.community_status module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.community_detection.community.html#module-py3plex.algorithms.community_detection.community">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.algorithms.community_detection.infomap.html">py3plex.algorithms.community_detection.infomap package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.community_detection.infomap.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.community_detection.infomap.html#py3plex-algorithms-community-detection-infomap-infomap-module">py3plex.algorithms.community_detection.infomap.infomap module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.community_detection.infomap.html#module-py3plex.algorithms.community_detection.infomap">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#module-py3plex.algorithms.community_detection.NoRC">py3plex.algorithms.community_detection.NoRC module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#module-py3plex.algorithms.community_detection.community_louvain">py3plex.algorithms.community_detection.community_louvain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#module-py3plex.algorithms.community_detection.community_measures">py3plex.algorithms.community_detection.community_measures module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#py3plex-algorithms-community-detection-community-ranking-module">py3plex.algorithms.community_detection.community_ranking module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#module-py3plex.algorithms.community_detection.community_wrapper">py3plex.algorithms.community_detection.community_wrapper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#module-py3plex.algorithms.community_detection.node_ranking">py3plex.algorithms.community_detection.node_ranking module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.community_detection.html#module-py3plex.algorithms.community_detection">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.general.html">py3plex.algorithms.general package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.general.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.general.html#module-py3plex.algorithms.general.benchmark_classification">py3plex.algorithms.general.benchmark_classification module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.general.html#module-py3plex.algorithms.general.walkers">py3plex.algorithms.general.walkers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.general.html#module-py3plex.algorithms.general">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.hedwig.html">py3plex.algorithms.hedwig package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.hedwig.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html">py3plex.algorithms.hedwig.core package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.converters">py3plex.algorithms.hedwig.core.converters module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.example">py3plex.algorithms.hedwig.core.example module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.helpers">py3plex.algorithms.hedwig.core.helpers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.kb">py3plex.algorithms.hedwig.core.kb module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.load">py3plex.algorithms.hedwig.core.load module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.predicate">py3plex.algorithms.hedwig.core.predicate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.rule">py3plex.algorithms.hedwig.core.rule module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.settings">py3plex.algorithms.hedwig.core.settings module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core.term_parsers">py3plex.algorithms.hedwig.core.term_parsers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.core.html#module-py3plex.algorithms.hedwig.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.algorithms.hedwig.learners.html">py3plex.algorithms.hedwig.learners package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.learners.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.learners.html#py3plex-algorithms-hedwig-learners-bottomup-module">py3plex.algorithms.hedwig.learners.bottomup module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.learners.html#module-py3plex.algorithms.hedwig.learners.learner">py3plex.algorithms.hedwig.learners.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.learners.html#module-py3plex.algorithms.hedwig.learners.optimal">py3plex.algorithms.hedwig.learners.optimal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.learners.html#module-py3plex.algorithms.hedwig.learners">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.algorithms.hedwig.stats.html">py3plex.algorithms.hedwig.stats package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.stats.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.stats.html#module-py3plex.algorithms.hedwig.stats.adjustment">py3plex.algorithms.hedwig.stats.adjustment module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.stats.html#module-py3plex.algorithms.hedwig.stats.scorefunctions">py3plex.algorithms.hedwig.stats.scorefunctions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.stats.html#module-py3plex.algorithms.hedwig.stats.significance">py3plex.algorithms.hedwig.stats.significance module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.stats.html#module-py3plex.algorithms.hedwig.stats.validate">py3plex.algorithms.hedwig.stats.validate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="py3plex.algorithms.hedwig.stats.html#module-py3plex.algorithms.hedwig.stats">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.hedwig.html#module-py3plex.algorithms.hedwig">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.infomap.html">py3plex.algorithms.infomap package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.infomap.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.infomap.html#py3plex-algorithms-infomap-infomap-module">py3plex.algorithms.infomap.infomap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.infomap.html#module-py3plex.algorithms.infomap">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.multilayer_algorithms.html">py3plex.algorithms.multilayer_algorithms package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.multilayer_algorithms.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.multilayer_algorithms.html#module-py3plex.algorithms.multilayer_algorithms.entanglement">py3plex.algorithms.multilayer_algorithms.entanglement module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.multilayer_algorithms.html#module-py3plex.algorithms.multilayer_algorithms">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.network_classification.html">py3plex.algorithms.network_classification package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.network_classification.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.network_classification.html#module-py3plex.algorithms.network_classification.PPR">py3plex.algorithms.network_classification.PPR module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.network_classification.html#module-py3plex.algorithms.network_classification.label_propagation">py3plex.algorithms.network_classification.label_propagation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.network_classification.html#module-py3plex.algorithms.network_classification">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.node_ranking.html">py3plex.algorithms.node_ranking package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.node_ranking.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.node_ranking.html#module-py3plex.algorithms.node_ranking.node_ranking">py3plex.algorithms.node_ranking.node_ranking module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.node_ranking.html#module-py3plex.algorithms.node_ranking">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.statistics.html">py3plex.algorithms.statistics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.basic_statistics">py3plex.algorithms.statistics.basic_statistics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.bayesian_distances">py3plex.algorithms.statistics.bayesian_distances module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.bayesiantests">py3plex.algorithms.statistics.bayesiantests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.correlation_networks">py3plex.algorithms.statistics.correlation_networks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.critical_distances">py3plex.algorithms.statistics.critical_distances module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.enrichment">py3plex.algorithms.statistics.enrichment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.enrichment_modules">py3plex.algorithms.statistics.enrichment_modules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.powerlaw">py3plex.algorithms.statistics.powerlaw module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.statistics">py3plex.algorithms.statistics.statistics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics.topology">py3plex.algorithms.statistics.topology module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.statistics.html#module-py3plex.algorithms.statistics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.temporal_multiplex.html">py3plex.algorithms.temporal_multiplex package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.temporal_multiplex.html#module-py3plex.algorithms.temporal_multiplex">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.algorithms.term_parsers.html">py3plex.algorithms.term_parsers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.algorithms.term_parsers.html#module-py3plex.algorithms.term_parsers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-py3plex.algorithms">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.algorithms" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="py3plex.algorithms.community_detection.html" class="btn btn-neutral float-right" title="py3plex.algorithms.community_detection package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="py3plex.html" class="btn btn-neutral float-left" title="py3plex package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

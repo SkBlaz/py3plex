@@ -1,4 +1,4 @@
-## wrapper for the C++ version of the Node2Vec algorithm
+# wrapper for the C++ version of the Node2Vec algorithm
 import networkx as nx
 import ast
 import numpy as np
@@ -50,8 +50,8 @@ def n2v_embedding(G,
                   parameter_range=[0.25, 0.50, 1, 2, 4],
                   embedding_dimension=128):
 
-    ## construct the embedding and return the binary..
-    #./node2vec -i:graph/karate.edgelist -o:emb/karate.emb -l:3 -d:24 -p:0.3 -dr -v
+    # construct the embedding and return the binary..
+    # ./node2vec -i:graph/karate.edgelist -o:emb/karate.emb -l:3 -d:24 -p:0.3 -dr -v
 
     clf = OneVsRestClassifier(linear_model.LogisticRegression(),
                               n_jobs=mp.cpu_count())
@@ -60,7 +60,7 @@ def n2v_embedding(G,
 
     N = len(G.nodes())
 
-    ## get the graph..
+    # get the graph..
     if not os.path.exists("tmp"):
         os.makedirs("tmp")
 
@@ -102,7 +102,7 @@ def n2v_embedding(G,
 
     else:
 
-        ## commence the grid search
+        # commence the grid search
         for x in vals:
             for y in vals:
                 call_node2vec_binary(tmp_graph,
@@ -128,7 +128,7 @@ def n2v_embedding(G,
                     print("Current optimum {}".format(ma))
 
                 call(["rm", "-rf",
-                      outfile_name])  ## when updatedin delete the file
+                      outfile_name])  # when updatedin delete the file
 
         print("Final iteration phase..")
 

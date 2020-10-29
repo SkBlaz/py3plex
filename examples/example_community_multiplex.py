@@ -1,5 +1,7 @@
-## multiplex community detection!
+# multiplex community detection!
 
+import louvain
+import igraph as ig
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
 
@@ -13,15 +15,13 @@ partition = cw.infomap_communities(network,
                                    verbose=True)
 print(partition)
 
-## get communities with multiplex louvain
-import igraph as ig
-import louvain
+# get communities with multiplex louvain
 
 #optimiser = louvain.Optimiser()
 network.split_to_layers(style="none")
 network_list = []
 
-## cast this to igraph
+# cast this to igraph
 unique_node_id_counter = 0
 node_hash = {}
 for layer in network.separate_layers:
@@ -40,6 +40,6 @@ for layer in network.separate_layers:
 membership, improv = louvain.find_partition_multiplex(
     network_list, louvain.ModularityVertexPartition)
 
-## for each node we get community assignment.
+# for each node we get community assignment.
 network.monitor(membership)
 network.monitor(improv)

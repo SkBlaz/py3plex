@@ -553,7 +553,7 @@ def draw_networkx_edges(G,
         elif np.alltrue([not is_string_like(c) for c in edge_color]):
             # If color specs are given as (rgb) or (rgba) tuples, we're OK
             if np.alltrue(
-                [cb.iterable(c) and len(c) in (3, 4) for c in edge_color]):
+                    [cb.iterable(c) and len(c) in (3, 4) for c in edge_color]):
                 edge_colors = tuple(edge_color)
             else:
                 # numbers (which are going to be mapped with a colormap)

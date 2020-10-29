@@ -1,0 +1,1563 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3plex.algorithms.statistics package &mdash; py3plex 0.79 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs.html">Automatically generated documentation (from docstrings)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>py3plex.algorithms.statistics package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/AUTOGEN_results/py3plex.algorithms.statistics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3plex-algorithms-statistics-package">
+<h1>py3plex.algorithms.statistics package<a class="headerlink" href="#py3plex-algorithms-statistics-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.basic_statistics">
+<span id="py3plex-algorithms-statistics-basic-statistics-module"></span><h2>py3plex.algorithms.statistics.basic_statistics module<a class="headerlink" href="#module-py3plex.algorithms.statistics.basic_statistics" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.basic_statistics.core_network_statistics">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.basic_statistics.</code><code class="sig-name descname">core_network_statistics</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">name='example'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.basic_statistics.core_network_statistics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.basic_statistics.identify_n_hubs">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.basic_statistics.</code><code class="sig-name descname">identify_n_hubs</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">top_n=100</em>, <em class="sig-param">node_type=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.basic_statistics.identify_n_hubs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.bayesian_distances">
+<span id="py3plex-algorithms-statistics-bayesian-distances-module"></span><h2>py3plex.algorithms.statistics.bayesian_distances module<a class="headerlink" href="#module-py3plex.algorithms.statistics.bayesian_distances" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesian_distances.generate_bayesian_diagram">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesian_distances.</code><code class="sig-name descname">generate_bayesian_diagram</code><span class="sig-paren">(</span><em class="sig-param">result_matrices, algo_names=['algo1', 'algo2'], rope=0.01, rho=0.2, show_diagram=True, save_diagram=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesian_distances.generate_bayesian_diagram" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.bayesiantests">
+<span id="py3plex-algorithms-statistics-bayesiantests-module"></span><h2>py3plex.algorithms.statistics.bayesiantests module<a class="headerlink" href="#module-py3plex.algorithms.statistics.bayesiantests" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.correlated_ttest">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">correlated_ttest</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">rope</em>, <em class="sig-param">runs=1</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">names=('C1'</em>, <em class="sig-param">'C2')</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.correlated_ttest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.correlated_ttest_MC">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">correlated_ttest_MC</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">rope</em>, <em class="sig-param">runs=1</em>, <em class="sig-param">nsamples=50000</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.correlated_ttest_MC" title="Permalink to this definition">¶</a></dt>
+<dd><p>See correlated_ttest module for explanations</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.heaviside">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">heaviside</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.heaviside" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.hierarchical">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">hierarchical</code><span class="sig-paren">(</span><em class="sig-param">diff</em>, <em class="sig-param">rope</em>, <em class="sig-param">rho</em>, <em class="sig-param">upperAlpha=2</em>, <em class="sig-param">lowerAlpha=1</em>, <em class="sig-param">lowerBeta=0.01</em>, <em class="sig-param">upperBeta=0.1</em>, <em class="sig-param">std_upper_bound=1000</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">names=('C1'</em>, <em class="sig-param">'C2')</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.hierarchical" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.hierarchical_MC">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">hierarchical_MC</code><span class="sig-paren">(</span><em class="sig-param">diff</em>, <em class="sig-param">rope</em>, <em class="sig-param">rho</em>, <em class="sig-param">upperAlpha=2</em>, <em class="sig-param">lowerAlpha=1</em>, <em class="sig-param">lowerBeta=0.01</em>, <em class="sig-param">upperBeta=0.1</em>, <em class="sig-param">std_upper_bound=1000</em>, <em class="sig-param">names=('C1'</em>, <em class="sig-param">'C2')</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.hierarchical_MC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.plot_posterior">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">plot_posterior</code><span class="sig-paren">(</span><em class="sig-param">samples</em>, <em class="sig-param">names=('C1'</em>, <em class="sig-param">'C2')</em>, <em class="sig-param">proba_triplet=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.plot_posterior" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – a vector of differences or a 2d array with pairs of scores.</p></li>
+<li><p><strong>names</strong> (<em>pair of str</em>) – the names of the two classifiers</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>matplotlib.pyplot.figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.plot_simplex">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">plot_simplex</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">names=('C1'</em>, <em class="sig-param">'C2')</em>, <em class="sig-param">proba_triplet=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.plot_simplex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.signrank">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">signrank</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">rope</em>, <em class="sig-param">prior_strength=0.6</em>, <em class="sig-param">prior_place=1</em>, <em class="sig-param">nsamples=50000</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">names=('C1'</em>, <em class="sig-param">'C2')</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.signrank" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – a vector of differences or a 2d array with pairs of scores.</p></li>
+<li><p><strong>rope</strong> (<em>float</em>) – the width of the rope</p></li>
+<li><p><strong>prior_strength</strong> (<em>float</em>) – prior strength (default: 0.6)</p></li>
+<li><p><strong>prior_place</strong> (<em>LEFT</em><em>, </em><em>ROPE</em><em> or </em><em>RIGHT</em>) – the region to which the prior is
+assigned (default: ROPE)</p></li>
+<li><p><strong>nsamples</strong> (<em>int</em>) – the number of Monte Carlo samples</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – report the computed probabilities</p></li>
+<li><p><strong>names</strong> (<em>pair of str</em>) – the names of the two classifiers</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>p_left, p_rope, p_right</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.signrank_MC">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">signrank_MC</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">rope</em>, <em class="sig-param">prior_strength=0.6</em>, <em class="sig-param">prior_place=1</em>, <em class="sig-param">nsamples=50000</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.signrank_MC" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – a vector of differences or a 2d array with pairs of scores.</p></li>
+<li><p><strong>rope</strong> (<em>float</em>) – the width of the rope</p></li>
+<li><p><strong>prior_strength</strong> (<em>float</em>) – prior strength (default: 0.6)</p></li>
+<li><p><strong>prior_place</strong> (<em>LEFT</em><em>, </em><em>ROPE</em><em> or </em><em>RIGHT</em>) – the region to which the prior is
+assigned (default: ROPE)</p></li>
+<li><p><strong>nsamples</strong> (<em>int</em>) – the number of Monte Carlo samples</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2-d array with rows corresponding to samples and columns to
+probabilities <cite>[p_left, p_rope, p_right]</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.signtest">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">signtest</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">rope</em>, <em class="sig-param">prior_strength=1</em>, <em class="sig-param">prior_place=1</em>, <em class="sig-param">nsamples=50000</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">names=('C1'</em>, <em class="sig-param">'C2')</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.signtest" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – a vector of differences or a 2d array with pairs of scores.</p></li>
+<li><p><strong>rope</strong> (<em>float</em>) – the width of the rope</p></li>
+<li><p><strong>prior_strength</strong> (<em>float</em>) – prior strength (default: 1)</p></li>
+<li><p><strong>prior_place</strong> (<em>LEFT</em><em>, </em><em>ROPE</em><em> or </em><em>RIGHT</em>) – the region to which the prior is
+assigned (default: ROPE)</p></li>
+<li><p><strong>nsamples</strong> (<em>int</em>) – the number of Monte Carlo samples</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – report the computed probabilities</p></li>
+<li><p><strong>names</strong> (<em>pair of str</em>) – the names of the two classifiers</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>p_left, p_rope, p_right</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.bayesiantests.signtest_MC">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.bayesiantests.</code><code class="sig-name descname">signtest_MC</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">rope</em>, <em class="sig-param">prior_strength=1</em>, <em class="sig-param">prior_place=1</em>, <em class="sig-param">nsamples=50000</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.bayesiantests.signtest_MC" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – a vector of differences or a 2d array with pairs of scores.</p></li>
+<li><p><strong>rope</strong> (<em>float</em>) – the width of the rope</p></li>
+<li><p><strong>prior_strength</strong> (<em>float</em>) – prior strength (default: 1)</p></li>
+<li><p><strong>prior_place</strong> (<em>LEFT</em><em>, </em><em>ROPE</em><em> or </em><em>RIGHT</em>) – the region to which the prior is
+assigned (default: ROPE)</p></li>
+<li><p><strong>nsamples</strong> (<em>int</em>) – the number of Monte Carlo samples</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2-d array with rows corresponding to samples and columns to
+probabilities <cite>[p_left, p_rope, p_right]</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.correlation_networks">
+<span id="py3plex-algorithms-statistics-correlation-networks-module"></span><h2>py3plex.algorithms.statistics.correlation_networks module<a class="headerlink" href="#module-py3plex.algorithms.statistics.correlation_networks" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.correlation_networks.default_correlation_to_network">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.correlation_networks.</code><code class="sig-name descname">default_correlation_to_network</code><span class="sig-paren">(</span><em class="sig-param">matrix</em>, <em class="sig-param">input_type='matrix'</em>, <em class="sig-param">preprocess='standard'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.correlation_networks.default_correlation_to_network" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.correlation_networks.pick_threshold">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.correlation_networks.</code><code class="sig-name descname">pick_threshold</code><span class="sig-paren">(</span><em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.correlation_networks.pick_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.critical_distances">
+<span id="py3plex-algorithms-statistics-critical-distances-module"></span><h2>py3plex.algorithms.statistics.critical_distances module<a class="headerlink" href="#module-py3plex.algorithms.statistics.critical_distances" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.critical_distances.center">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.critical_distances.</code><code class="sig-name descname">center</code><span class="sig-paren">(</span><em class="sig-param">width</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.critical_distances.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes free space on the figure on both sides.
+:param width:
+:param n: number of algorithms
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.critical_distances.diagram">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.critical_distances.</code><code class="sig-name descname">diagram</code><span class="sig-paren">(</span><em class="sig-param">list_of_algorithms</em>, <em class="sig-param">the_algorithm_candidate</em>, <em class="sig-param">output_figure_file</em>, <em class="sig-param">fontsize=10</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.critical_distances.diagram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws critical distance diagram for Nemenyi or Bonferroni-Dunn post-hoc test.
+The diagram is shown if output_figure_file is None, and saved otherwise
+to the file.
+:param list_of_algorithms: [[(alg_name1, avg_rank1)], …]
+:param critical_distance:
+:param output_figure_file: If not none, the diagram produced is saved to the specified file.
+Otherwise, the diagram is shown.
+:param the_algorithm_candidate: If we were performing Bonferroni-Dunn post-hcc test (1 vs all),
+this is the algorithm  from the list list_of_algorithms, which the other algorithms are compared to.
+If we were performing Nemenyi post-hoc test (all vs all), this should be None.
+:return: output_figure_file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.critical_distances.plot_critical_distance">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.critical_distances.</code><code class="sig-name descname">plot_critical_distance</code><span class="sig-paren">(</span><em class="sig-param">fname, groupby=['dataset', 'setting'], groupby_target='macro_F', outfile='./micro_cd.pdf', aggregator='mean', fontsize=10</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.critical_distances.plot_critical_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.critical_distances.remove_backslash">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.critical_distances.</code><code class="sig-name descname">remove_backslash</code><span class="sig-paren">(</span><em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.critical_distances.remove_backslash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.enrichment">
+<span id="py3plex-algorithms-statistics-enrichment-module"></span><h2>py3plex.algorithms.statistics.enrichment module<a class="headerlink" href="#module-py3plex.algorithms.statistics.enrichment" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.enrichment_modules">
+<span id="py3plex-algorithms-statistics-enrichment-modules-module"></span><h2>py3plex.algorithms.statistics.enrichment_modules module<a class="headerlink" href="#module-py3plex.algorithms.statistics.enrichment_modules" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.enrichment_modules.calculate_pval">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.enrichment_modules.</code><code class="sig-name descname">calculate_pval</code><span class="sig-paren">(</span><em class="sig-param">term</em>, <em class="sig-param">alternative='two-sided'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.enrichment_modules.calculate_pval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parallel kernel for computation of p vals. All partitions are considered with respect to agiven GO term! Counts in a given partition are compared to population.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.enrichment_modules.compute_enrichment">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.enrichment_modules.</code><code class="sig-name descname">compute_enrichment</code><span class="sig-paren">(</span><em class="sig-param">term_dataset</em>, <em class="sig-param">term_database</em>, <em class="sig-param">topology_map</em>, <em class="sig-param">all_counts</em>, <em class="sig-param">whole_term_list=False</em>, <em class="sig-param">pvalue=0.05</em>, <em class="sig-param">multitest_method='fdr_bh'</em>, <em class="sig-param">alternative='two-sided'</em>, <em class="sig-param">intra_community=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.enrichment_modules.compute_enrichment" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main method for computing the enrichment of a subnetwork. This work in parallel and also offers methods for multiple test correction.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.enrichment_modules.fet_enrichment_generic">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.enrichment_modules.</code><code class="sig-name descname">fet_enrichment_generic</code><span class="sig-paren">(</span><em class="sig-param">term_dataset</em>, <em class="sig-param">term_database</em>, <em class="sig-param">all_counts</em>, <em class="sig-param">topology_map</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.enrichment_modules.fet_enrichment_generic" title="Permalink to this definition">¶</a></dt>
+<dd><p>A generic enrichment method useful for arbitrary partition enrichment (CBSSD baseline).</p>
+<p>term_dataset = defaultdict(list) of node:[a1..an] mappings
+term_datset = Counter object of individual annotation occurrences
+all_counts = number of all annotation occurences</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.enrichment_modules.fet_enrichment_terms">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.enrichment_modules.</code><code class="sig-name descname">fet_enrichment_terms</code><span class="sig-paren">(</span><em class="sig-param">partition_mappings</em>, <em class="sig-param">annotation_mappings</em>, <em class="sig-param">alternative='two-sided'</em>, <em class="sig-param">intra_community=False</em>, <em class="sig-param">pvalue=0.1</em>, <em class="sig-param">multitest_method='fdr_bh'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.enrichment_modules.fet_enrichment_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the most generic enrichment process.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.enrichment_modules.fet_enrichment_uniprot">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.enrichment_modules.</code><code class="sig-name descname">fet_enrichment_uniprot</code><span class="sig-paren">(</span><em class="sig-param">partition_mappings</em>, <em class="sig-param">annotation_mappings</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.enrichment_modules.fet_enrichment_uniprot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a pre-designed wrapper for uniprot-like annotation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.enrichment_modules.multiple_test_correction">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.enrichment_modules.</code><code class="sig-name descname">multiple_test_correction</code><span class="sig-paren">(</span><em class="sig-param">input_dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.enrichment_modules.multiple_test_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiple test correction. Given a dataset with corresponding significance levels, perform MTC.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.enrichment_modules.parallel_enrichment">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.enrichment_modules.</code><code class="sig-name descname">parallel_enrichment</code><span class="sig-paren">(</span><em class="sig-param">term</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.enrichment_modules.parallel_enrichment" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple kernel for parallel computation of p-values. (assuming independence of experiments)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.powerlaw">
+<span id="py3plex-algorithms-statistics-powerlaw-module"></span><h2>py3plex.algorithms.statistics.powerlaw module<a class="headerlink" href="#module-py3plex.algorithms.statistics.powerlaw" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Distribution</code><span class="sig-paren">(</span><em class="sig-param">xmin=1</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">fit_method='Likelihood'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">parameter_range=None</em>, <em class="sig-param">initial_parameters=None</em>, <em class="sig-param">discrete_approximation='round'</em>, <em class="sig-param">parent_Fit=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An abstract class for theoretical probability distributions. Can be created
+with particular parameter values, or fitted to a dataset. Fitting is
+by maximum likelihood estimation by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xmin</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – The data value beyond which distributions should be fitted. If
+None an optimal one will be calculated.</p></li>
+<li><p><strong>xmax</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – The maximum value of the fitted distributions.</p></li>
+<li><p><strong>discrete</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Whether the distribution is discrete (integers).</p></li>
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – The data to which to fit the distribution. If provided, the fit will
+be created at initialization.</p></li>
+<li><p><strong>fit_method</strong> (<em>&quot;Likelihood&quot;</em><em> or </em><em>&quot;KS&quot;</em><em>, </em><em>optional</em>) – Method for fitting the distribution. “Likelihood” is maximum Likelihood
+estimation. “KS” is minimial distance estimation using The
+Kolmogorov-Smirnov test.</p></li>
+<li><p><strong>parameters</strong> (<em>tuple</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – The parameters of the distribution. Will be overridden if data is
+given or the fit method is called.</p></li>
+<li><p><strong>parameter_range</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dictionary of valid parameter ranges for fitting. Formatted as a
+dictionary of parameter names (‘alpha’ and/or ‘sigma’) and tuples
+of their lower and upper limits (ex. (1.5, 2.5), (None, .1)</p></li>
+<li><p><strong>initial_parameters</strong> (<em>tuple</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – Initial values for the parameter in the fitting search.</p></li>
+<li><p><strong>discrete_approximation</strong> (<em>&quot;round&quot;</em><em>, </em><em>&quot;xmax&quot;</em><em> or </em><em>int</em><em>, </em><em>optional</em>) – If the discrete form of the theoeretical distribution is not known,
+it can be estimated. One estimation method is “round”, which sums
+the probability mass from x-.5 to x+.5 for each data point. The other
+option is to calculate the probability for each x from 1 to N and
+normalize by their sum. N can be “xmax” or an integer.</p></li>
+<li><p><strong>parent_Fit</strong> (<em>Fit object</em><em>, </em><em>optional</em>) – A Fit object from which to use data, if it exists.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.KS">
+<code class="sig-name descname">KS</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.KS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Kolmogorov-Smirnov distance D between the distribution and
+the data. Also sets the properties D+, D-, V (the Kuiper testing
+statistic), and Kappa (1 + the average difference between the
+theoretical and empirical distributions).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.ccdf">
+<code class="sig-name descname">ccdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">survival=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.ccdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>The complementary cumulative distribution function (CCDF) of the
+theoretical distribution. Calculated for the values given in data
+within xmin and xmax, if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate a CDF (False) or CCDF (True).
+True by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) – The sorted, unique values in the data.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is less than or equal to X.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.cdf">
+<code class="sig-name descname">cdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">survival=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cumulative distribution function (CDF) of the theoretical
+distribution. Calculated for the values given in data within xmin and
+xmax, if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate a CDF (False) or CCDF (True).
+False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) – The sorted, unique values in the data.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is less than or equal to X.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">suppress_output=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the parameters of the distribution to the data. Uses options set
+at initialization.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.generate_random">
+<code class="sig-name descname">generate_random</code><span class="sig-paren">(</span><em class="sig-param">n=1</em>, <em class="sig-param">estimate_discrete=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.generate_random" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates random numbers from the theoretical probability distribution.
+If xmax is present, it is currently ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em>) – The number of random numbers to generate</p></li>
+<li><p><strong>estimate_discrete</strong> (<em>boolean</em>) – For discrete distributions, whether to use a faster approximation of
+the random number generator. If None, attempts to inherit
+the estimate_discrete behavior used for fitting from the Distribution
+object or the parent Fit object, if present. Approximations only
+exist for some distributions (namely the power law). If an
+approximation does not exist an estimate_discrete setting of True
+will not be inherited.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>r</strong> – Random numbers drawn from the distribution</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.in_range">
+<code class="sig-name descname">in_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.in_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the current parameters of the distribution are within the range
+of valid parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.initial_parameters">
+<code class="sig-name descname">initial_parameters</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.initial_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return previously user-provided initial parameters or, if never
+provided,  calculate new ones. Default initial parameter estimates are
+unique to each theoretical distribution.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.likelihoods">
+<code class="sig-name descname">likelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.likelihoods" title="Permalink to this definition">¶</a></dt>
+<dd><p>The likelihoods of the observed data from the theoretical distribution.
+Another name for the probabilities or probability density function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.loglikelihoods">
+<code class="sig-name descname">loglikelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.loglikelihoods" title="Permalink to this definition">¶</a></dt>
+<dd><p>The logarithm of the likelihoods of the observed data from the
+theoretical distribution.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.parameter_range">
+<code class="sig-name descname">parameter_range</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">initial_parameters=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.parameter_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the limits on the range of valid parameters to be considered while
+fitting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>dict</em>) – A dictionary of the parameter range. Restricted parameter
+names are keys, and with tuples of the form (lower_bound,
+upper_bound) as values.</p></li>
+<li><p><strong>initial_parameters</strong> (<em>tuple</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – Initial parameter values to start the fitting search from.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.pdf">
+<code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability density function (normalized histogram) of the
+theoretical distribution for the values in data within xmin and xmax,
+if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>probabilities</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.plot_ccdf">
+<code class="sig-name descname">plot_ccdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">survival=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.plot_ccdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the complementary cumulative distribution function (CDF) of the
+theoretical distribution for the values given in data within xmin and
+xmax, if present. Plots to a new figure or to axis ax if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib axis</em><em>, </em><em>optional</em>) – The axis to which to plot. If None, a new figure is created.</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to plot a CDF (False) or CCDF (True). True by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – The axis to which the plot was made.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.plot_cdf">
+<code class="sig-name descname">plot_cdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">survival=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.plot_cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the cumulative distribution function (CDF) of the
+theoretical distribution for the values given in data within xmin and
+xmax, if present. Plots to a new figure or to axis ax if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib axis</em><em>, </em><em>optional</em>) – The axis to which to plot. If None, a new figure is created.</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to plot a CDF (False) or CCDF (True). False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – The axis to which the plot was made.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution.plot_pdf">
+<code class="sig-name descname">plot_pdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution.plot_pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the probability density function (PDF) of the
+theoretical distribution for the values given in data within xmin and
+xmax, if present. Plots to a new figure or to axis ax if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib axis</em><em>, </em><em>optional</em>) – The axis to which to plot. If None, a new figure is created.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – The axis to which the plot was made.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Distribution_Fit">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Distribution_Fit</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">name</em>, <em class="sig-param">xmin</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">method='Likelihood'</em>, <em class="sig-param">estimate_discrete=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Distribution_Fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Exponential">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Exponential</code><span class="sig-paren">(</span><em class="sig-param">xmin=1</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">fit_method='Likelihood'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">parameter_range=None</em>, <em class="sig-param">initial_parameters=None</em>, <em class="sig-param">discrete_approximation='round'</em>, <em class="sig-param">parent_Fit=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Exponential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../sources/py3plex.algorithms.statistics.html#py3plex.algorithms.statistics.powerlaw.Distribution" title="py3plex.algorithms.statistics.powerlaw.Distribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.powerlaw.Distribution</span></code></a></p>
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Exponential.loglikelihoods">
+<code class="sig-name descname">loglikelihoods</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Exponential.loglikelihoods" title="Permalink to this definition">¶</a></dt>
+<dd><p>The logarithm of the likelihoods of the observed data from the
+theoretical distribution.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Exponential.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Exponential.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Exponential.parameters">
+<code class="sig-name descname">parameters</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Exponential.parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Exponential.pdf">
+<code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Exponential.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability density function (normalized histogram) of the
+theoretical distribution for the values in data within xmin and xmax,
+if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>probabilities</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Fit</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">xmin=None</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">fit_method='Likelihood'</em>, <em class="sig-param">estimate_discrete=True</em>, <em class="sig-param">discrete_approximation='round'</em>, <em class="sig-param">sigma_threshold=None</em>, <em class="sig-param">parameter_range=None</em>, <em class="sig-param">fit_optimizer=None</em>, <em class="sig-param">xmin_distance='D'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A fit of a data set to various probability distributions, namely power
+laws. For fits to power laws, the methods of Clauset et al. 2007 are used.
+These methods identify the portion of the tail of the distribution that
+follows a power law, beyond a value xmin. If no xmin is
+provided, the optimal one is calculated and assigned at initialization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em>) – </p></li>
+<li><p><strong>discrete</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Whether the data is discrete (integers).</p></li>
+<li><p><strong>xmin</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – The data value beyond which distributions should be fitted. If
+None an optimal one will be calculated.</p></li>
+<li><p><strong>xmax</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – The maximum value of the fitted distributions.</p></li>
+<li><p><strong>estimate_discrete</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to estimate the fit of a discrete power law using fast
+analytical methods, instead of calculating the fit exactly with
+slow numerical methods. Very accurate with xmin&gt;6</p></li>
+<li><p><strong>sigma_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Upper limit on the standard error of the power law fit. Used after
+fitting, when identifying valid xmin values.</p></li>
+<li><p><strong>parameter_range</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dictionary of valid parameter ranges for fitting. Formatted as a
+dictionary of parameter names (‘alpha’ and/or ‘sigma’) and tuples
+of their lower and upper limits (ex. (1.5, 2.5), (None, .1)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.ccdf">
+<code class="sig-name descname">ccdf</code><span class="sig-paren">(</span><em class="sig-param">original_data=False</em>, <em class="sig-param">survival=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.ccdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the complementary cumulative distribution function of the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_data</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use all of the data initially passed to the Fit object.
+If False, uses only the data used for the fit (within xmin and
+xmax.)</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the complementary cumulative distribution
+function, also known as the survival function, or the cumulative
+distribution function, 1-CCDF.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) – The sorted, unique values in the data.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is greater than or equal to X.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.cdf">
+<code class="sig-name descname">cdf</code><span class="sig-paren">(</span><em class="sig-param">original_data=False</em>, <em class="sig-param">survival=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cumulative distribution function of the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_data</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use all of the data initially passed to the Fit object.
+If False, uses only the data used for the fit (within xmin and
+xmax.)</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the complementary cumulative distribution
+function, 1-CDF, also known as the survival function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) – The sorted, unique values in the data.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is less than or equal to X.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.distribution_compare">
+<code class="sig-name descname">distribution_compare</code><span class="sig-paren">(</span><em class="sig-param">dist1</em>, <em class="sig-param">dist2</em>, <em class="sig-param">nested=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.distribution_compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the loglikelihood ratio, and its p-value, between the two
+distribution fits, assuming the candidate distributions are nested.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dist1</strong> (<em>string</em>) – Name of the first candidate distribution (ex. ‘power_law’)</p></li>
+<li><p><strong>dist2</strong> (<em>string</em>) – Name of the second candidate distribution (ex. ‘exponential’)</p></li>
+<li><p><strong>nested</strong> (<em>bool</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Whether to assume the candidate distributions are nested versions
+of each other. None assumes not unless the name of one distribution
+is a substring of the other.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>R</strong> (<em>float</em>) – Loglikelihood ratio of the two distributions’ fit to the data. If
+greater than 0, the first distribution is preferred. If less than
+0, the second distribution is preferred.</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – Significance of R</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.find_xmin">
+<code class="sig-name descname">find_xmin</code><span class="sig-paren">(</span><em class="sig-param">xmin_distance=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.find_xmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the optimal xmin beyond which the scaling regime of the power
+law fits best. The attribute self.xmin of the Fit object is also set.</p>
+<p>The optimal xmin beyond which the scaling regime of the power law fits
+best is identified by minimizing the Kolmogorov-Smirnov distance
+between the data and the theoretical power law fit.
+This is the method of Clauset et al. 2007.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.loglikelihood_ratio">
+<code class="sig-name descname">loglikelihood_ratio</code><span class="sig-paren">(</span><em class="sig-param">dist1</em>, <em class="sig-param">dist2</em>, <em class="sig-param">nested=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.loglikelihood_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Another name for distribution_compare.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.nested_distribution_compare">
+<code class="sig-name descname">nested_distribution_compare</code><span class="sig-paren">(</span><em class="sig-param">dist1</em>, <em class="sig-param">dist2</em>, <em class="sig-param">nested=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.nested_distribution_compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the loglikelihood ratio, and its p-value, between the two
+distribution fits, assuming the candidate distributions are nested.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dist1</strong> (<em>string</em>) – Name of the first candidate distribution (ex. ‘power_law’)</p></li>
+<li><p><strong>dist2</strong> (<em>string</em>) – Name of the second candidate distribution (ex. ‘exponential’)</p></li>
+<li><p><strong>nested</strong> (<em>bool</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Whether to assume the candidate distributions are nested versions
+of each other. None assumes not unless the name of one distribution
+is a substring of the other. True by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>R</strong> (<em>float</em>) – Loglikelihood ratio of the two distributions’ fit to the data. If
+greater than 0, the first distribution is preferred. If less than
+0, the second distribution is preferred.</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – Significance of R</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.pdf">
+<code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param">original_data=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability density function (normalized histogram) of the
+data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>original_data</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use all of the data initially passed to the Fit object.
+If False, uses only the data used for the fit (within xmin and
+xmax.)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bin_edges</strong> (<em>array</em>) – The edges of the bins of the probability density function.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is within the bin. Length 1 less than
+bin_edges, as it corresponds to the spaces between them.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.plot_ccdf">
+<code class="sig-name descname">plot_ccdf</code><span class="sig-paren">(</span><em class="sig-param">ax=None</em>, <em class="sig-param">original_data=False</em>, <em class="sig-param">survival=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.plot_ccdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the CCDF to a new figure or to axis ax if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>matplotlib axis</em><em>, </em><em>optional</em>) – The axis to which to plot. If None, a new figure is created.</p></li>
+<li><p><strong>original_data</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use all of the data initially passed to the Fit object.
+If False, uses only the data used for the fit (within xmin and
+xmax.)</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to plot a CDF (False) or CCDF (True). True by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – The axis to which the plot was made.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.plot_cdf">
+<code class="sig-name descname">plot_cdf</code><span class="sig-paren">(</span><em class="sig-param">ax=None</em>, <em class="sig-param">original_data=False</em>, <em class="sig-param">survival=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.plot_cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the CDF to a new figure or to axis ax if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>matplotlib axis</em><em>, </em><em>optional</em>) – The axis to which to plot. If None, a new figure is created.</p></li>
+<li><p><strong>original_data</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use all of the data initially passed to the Fit object.
+If False, uses only the data used for the fit (within xmin and
+xmax.)</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to plot a CDF (False) or CCDF (True). False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – The axis to which the plot was made.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Fit.plot_pdf">
+<code class="sig-name descname">plot_pdf</code><span class="sig-paren">(</span><em class="sig-param">ax=None</em>, <em class="sig-param">original_data=False</em>, <em class="sig-param">linear_bins=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Fit.plot_pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the probability density function (PDF) or the data to a new figure
+or to axis ax if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>matplotlib axis</em><em>, </em><em>optional</em>) – The axis to which to plot. If None, a new figure is created.</p></li>
+<li><p><strong>original_data</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use all of the data initially passed to the Fit object.
+If False, uses only the data used for the fit (within xmin and
+xmax.)</p></li>
+<li><p><strong>linear_bins</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use linearly spaced bins (True) or logarithmically
+spaced bins (False). False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – The axis to which the plot was made.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Lognormal">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Lognormal</code><span class="sig-paren">(</span><em class="sig-param">xmin=1</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">fit_method='Likelihood'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">parameter_range=None</em>, <em class="sig-param">initial_parameters=None</em>, <em class="sig-param">discrete_approximation='round'</em>, <em class="sig-param">parent_Fit=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Lognormal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../sources/py3plex.algorithms.statistics.html#py3plex.algorithms.statistics.powerlaw.Distribution" title="py3plex.algorithms.statistics.powerlaw.Distribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.powerlaw.Distribution</span></code></a></p>
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Lognormal.cdf">
+<code class="sig-name descname">cdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">survival=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Lognormal.cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cumulative distribution function (CDF) of the lognormal
+distribution. Calculated for the values given in data within xmin and
+xmax, if present. Calculation was reformulated to avoid underflow
+errors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate a CDF (False) or CCDF (True).
+False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) – The sorted, unique values in the data.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is less than or equal to X.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Lognormal.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Lognormal.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Lognormal.parameters">
+<code class="sig-name descname">parameters</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Lognormal.parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Lognormal.pdf">
+<code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Lognormal.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability density function (normalized histogram) of the
+theoretical distribution for the values in data within xmin and xmax,
+if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>probabilities</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Lognormal_Positive">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Lognormal_Positive</code><span class="sig-paren">(</span><em class="sig-param">xmin=1</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">fit_method='Likelihood'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">parameter_range=None</em>, <em class="sig-param">initial_parameters=None</em>, <em class="sig-param">discrete_approximation='round'</em>, <em class="sig-param">parent_Fit=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Lognormal_Positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../sources/py3plex.algorithms.statistics.html#py3plex.algorithms.statistics.powerlaw.Lognormal" title="py3plex.algorithms.statistics.powerlaw.Lognormal"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.powerlaw.Lognormal</span></code></a></p>
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Lognormal_Positive.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Lognormal_Positive.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Power_Law">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Power_Law</code><span class="sig-paren">(</span><em class="sig-param">estimate_discrete=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Power_Law" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../sources/py3plex.algorithms.statistics.html#py3plex.algorithms.statistics.powerlaw.Distribution" title="py3plex.algorithms.statistics.powerlaw.Distribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.powerlaw.Distribution</span></code></a></p>
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Power_Law.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Power_Law.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the parameters of the distribution to the data. Uses options set
+at initialization.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Power_Law.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Power_Law.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Power_Law.parameters">
+<code class="sig-name descname">parameters</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Power_Law.parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Power_Law.sigma">
+<em class="property">property </em><code class="sig-name descname">sigma</code><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Power_Law.sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Stretched_Exponential">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Stretched_Exponential</code><span class="sig-paren">(</span><em class="sig-param">xmin=1</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">fit_method='Likelihood'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">parameter_range=None</em>, <em class="sig-param">initial_parameters=None</em>, <em class="sig-param">discrete_approximation='round'</em>, <em class="sig-param">parent_Fit=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Stretched_Exponential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../sources/py3plex.algorithms.statistics.html#py3plex.algorithms.statistics.powerlaw.Distribution" title="py3plex.algorithms.statistics.powerlaw.Distribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.powerlaw.Distribution</span></code></a></p>
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Stretched_Exponential.loglikelihoods">
+<code class="sig-name descname">loglikelihoods</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Stretched_Exponential.loglikelihoods" title="Permalink to this definition">¶</a></dt>
+<dd><p>The logarithm of the likelihoods of the observed data from the
+theoretical distribution.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Stretched_Exponential.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Stretched_Exponential.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Stretched_Exponential.parameters">
+<code class="sig-name descname">parameters</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Stretched_Exponential.parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Stretched_Exponential.pdf">
+<code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Stretched_Exponential.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability density function (normalized histogram) of the
+theoretical distribution for the values in data within xmin and xmax,
+if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>probabilities</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.statistics.powerlaw.Truncated_Power_Law">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">Truncated_Power_Law</code><span class="sig-paren">(</span><em class="sig-param">xmin=1</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">fit_method='Likelihood'</em>, <em class="sig-param">data=None</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">parameter_range=None</em>, <em class="sig-param">initial_parameters=None</em>, <em class="sig-param">discrete_approximation='round'</em>, <em class="sig-param">parent_Fit=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Truncated_Power_Law" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../sources/py3plex.algorithms.statistics.html#py3plex.algorithms.statistics.powerlaw.Distribution" title="py3plex.algorithms.statistics.powerlaw.Distribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.powerlaw.Distribution</span></code></a></p>
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Truncated_Power_Law.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Truncated_Power_Law.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Truncated_Power_Law.parameters">
+<code class="sig-name descname">parameters</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Truncated_Power_Law.parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.statistics.powerlaw.Truncated_Power_Law.pdf">
+<code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.Truncated_Power_Law.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability density function (normalized histogram) of the
+theoretical distribution for the values in data within xmin and xmax,
+if present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – If not provided, attempts to use the data from the Fit object in
+which the Distribution object is contained.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>probabilities</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.bisect_map">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">bisect_map</code><span class="sig-paren">(</span><em class="sig-param">mn</em>, <em class="sig-param">mx</em>, <em class="sig-param">function</em>, <em class="sig-param">target</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.bisect_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses binary search to find the target solution to a function, searching in
+a given ordered sequence of integer values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>monotonically increasing integers</em>) – </p></li>
+<li><p><strong>function</strong> (<em>a function that takes a single integer input</em><em>, </em><em>which monotonically</em>) – decreases over the range of seq.</p></li>
+<li><p><strong>target</strong> (<em>the target value of the function</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>value</strong> (<em>the input value that yields the target solution. If there is no</em>)</p></li>
+<li><p><em>exact solution in the input sequence, finds the nearest value k such that</em></p></li>
+<li><p><em>function(k) &lt;= target &lt; function(k+1). This is similar to the behavior of</em></p></li>
+<li><p><em>bisect_left in the bisect package. If even the first, leftmost value of seq</em></p></li>
+<li><p><em>does not satisfy this condition, -1 is returned.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.ccdf">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">ccdf</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">survival=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.ccdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>The complementary cumulative distribution function (CCDF) of the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate a CDF (False) or CCDF (True). True by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) – The sorted, unique values in the data.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is less than or equal to X.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.cdf">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">cdf</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">survival=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cumulative distribution function (CDF) of the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate a CDF (False) or CCDF (True). False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) – The sorted, unique values in the data.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is less than or equal to X.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.checkunique">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">checkunique</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.checkunique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quickly checks if a sorted array is all unique elements.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.cumulative_distribution_function">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">cumulative_distribution_function</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">xmin=None</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">survival=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.cumulative_distribution_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cumulative distribution function (CDF) of the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate a CDF (False) or CCDF (True). False by default.</p></li>
+<li><p><strong>xmin</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – The minimum data size to include. Values less than xmin are excluded.</p></li>
+<li><p><strong>xmax</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – The maximum data size to include. Values greater than xmin are
+excluded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) – The sorted, unique values in the data.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is less than or equal to X.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.distribution_compare">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">distribution_compare</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">distribution1</em>, <em class="sig-param">parameters1</em>, <em class="sig-param">distribution2</em>, <em class="sig-param">parameters2</em>, <em class="sig-param">discrete</em>, <em class="sig-param">xmin</em>, <em class="sig-param">xmax</em>, <em class="sig-param">nested=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.distribution_compare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.distribution_fit">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">distribution_fit</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">distribution='all'</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">xmin=None</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">comparison_alpha=None</em>, <em class="sig-param">search_method='Likelihood'</em>, <em class="sig-param">estimate_discrete=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.distribution_fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.exponential_likelihoods">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">exponential_likelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">Lambda</em>, <em class="sig-param">xmin</em>, <em class="sig-param">xmax=False</em>, <em class="sig-param">discrete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.exponential_likelihoods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.find_xmin">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">find_xmin</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">search_method='Likelihood'</em>, <em class="sig-param">return_all=False</em>, <em class="sig-param">estimate_discrete=True</em>, <em class="sig-param">xmin_range=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.find_xmin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.gamma_likelihoods">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">gamma_likelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">k</em>, <em class="sig-param">theta</em>, <em class="sig-param">xmin</em>, <em class="sig-param">xmax=False</em>, <em class="sig-param">discrete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.gamma_likelihoods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.is_discrete">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">is_discrete</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.is_discrete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if every element of the array is an integer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.likelihood_function_generator">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">likelihood_function_generator</code><span class="sig-paren">(</span><em class="sig-param">distribution_name</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">xmin=1</em>, <em class="sig-param">xmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.likelihood_function_generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.loglikelihood_ratio">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">loglikelihood_ratio</code><span class="sig-paren">(</span><em class="sig-param">loglikelihoods1</em>, <em class="sig-param">loglikelihoods2</em>, <em class="sig-param">nested=False</em>, <em class="sig-param">normalized_ratio=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.loglikelihood_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a loglikelihood ratio and the p-value for testing which of two
+probability distributions is more likely to have created a set of
+observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loglikelihoods1</strong> (<em>list</em><em> or </em><em>array</em>) – The logarithms of the likelihoods of each observation, calculated from
+a particular probability distribution.</p></li>
+<li><p><strong>loglikelihoods2</strong> (<em>list</em><em> or </em><em>array</em>) – The logarithms of the likelihoods of each observation, calculated from
+a particular probability distribution.</p></li>
+<li><p><strong>nested</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether one of the two probability distributions that generated the
+likelihoods is a nested version of the other. False by default.</p></li>
+<li><p><strong>normalized_ratio</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the loglikelihood ratio, R, or the normalized
+ratio R/sqrt(n*variance)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>R</strong> (<em>float</em>) – The loglikelihood ratio of the two sets of likelihoods. If positive,
+the first set of likelihoods is more likely (and so the probability
+distribution that produced them is a better fit to the data). If
+negative, the reverse is true.</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – The significance of the sign of R. If below a critical value
+(typically .05) the sign of R is taken to be significant. If above the
+critical value the sign of R is taken to be due to statistical
+fluctuations.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.lognormal_likelihoods">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">lognormal_likelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">mu</em>, <em class="sig-param">sigma</em>, <em class="sig-param">xmin</em>, <em class="sig-param">xmax=False</em>, <em class="sig-param">discrete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.lognormal_likelihoods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.negative_binomial_likelihoods">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">negative_binomial_likelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">r</em>, <em class="sig-param">p</em>, <em class="sig-param">xmin=0</em>, <em class="sig-param">xmax=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.negative_binomial_likelihoods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.nested_loglikelihood_ratio">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">nested_loglikelihood_ratio</code><span class="sig-paren">(</span><em class="sig-param">loglikelihoods1</em>, <em class="sig-param">loglikelihoods2</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.nested_loglikelihood_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a loglikelihood ratio and the p-value for testing which of two
+probability distributions is more likely to have created a set of
+observations. Assumes one of the probability distributions is a nested
+version of the other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loglikelihoods1</strong> (<em>list</em><em> or </em><em>array</em>) – The logarithms of the likelihoods of each observation, calculated from
+a particular probability distribution.</p></li>
+<li><p><strong>loglikelihoods2</strong> (<em>list</em><em> or </em><em>array</em>) – The logarithms of the likelihoods of each observation, calculated from
+a particular probability distribution.</p></li>
+<li><p><strong>nested</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether one of the two probability distributions that generated the
+likelihoods is a nested version of the other. True by default.</p></li>
+<li><p><strong>normalized_ratio</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the loglikelihood ratio, R, or the normalized
+ratio R/sqrt(n*variance)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>R</strong> (<em>float</em>) – The loglikelihood ratio of the two sets of likelihoods. If positive,
+the first set of likelihoods is more likely (and so the probability
+distribution that produced them is a better fit to the data). If
+negative, the reverse is true.</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – The significance of the sign of R. If below a critical value
+(typically .05) the sign of R is taken to be significant. If above the
+critical value the sign of R is taken to be due to statistical
+fluctuations.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.pdf">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">xmin=None</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">linear_bins=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability density function (normalized histogram) of the
+data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em>) – </p></li>
+<li><p><strong>xmin</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum value of the PDF. If None, uses the smallest value in the data.</p></li>
+<li><p><strong>xmax</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum value of the PDF. If None, uses the largest value in the data.</p></li>
+<li><p><strong>linear_bins</strong> (<em>float</em><em>, </em><em>optional</em>) – Whether to use linearly spaced bins, as opposed to logarithmically
+spaced bins (recommended for log-log plots).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bin_edges</strong> (<em>array</em>) – The edges of the bins of the probability density function.</p></li>
+<li><p><strong>probabilities</strong> (<em>array</em>) – The portion of the data that is within the bin. Length 1 less than
+bin_edges, as it corresponds to the spaces between them.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.plot_ccdf">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">plot_ccdf</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">survival=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.plot_ccdf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.plot_cdf">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">plot_cdf</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">survival=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.plot_cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the cumulative distribution function (CDF) of the data to a new
+figure or to axis ax if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>matplotlib axis</em><em>, </em><em>optional</em>) – The axis to which to plot. If None, a new figure is created.</p></li>
+<li><p><strong>survival</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to plot a CDF (False) or CCDF (True). False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – The axis to which the plot was made.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.plot_pdf">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">plot_pdf</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">linear_bins=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.plot_pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the probability density function (PDF) to a new figure or to axis ax
+if provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list</em><em> or </em><em>array</em>) – </p></li>
+<li><p><strong>ax</strong> (<em>matplotlib axis</em><em>, </em><em>optional</em>) – The axis to which to plot. If None, a new figure is created.</p></li>
+<li><p><strong>linear_bins</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use linearly spaced bins (True) or logarithmically
+spaced bins (False). False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – The axis to which the plot was made.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.power_law_ks_distance">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">power_law_ks_distance</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">alpha</em>, <em class="sig-param">xmin</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">discrete=False</em>, <em class="sig-param">kuiper=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.power_law_ks_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.power_law_likelihoods">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">power_law_likelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">alpha</em>, <em class="sig-param">xmin</em>, <em class="sig-param">xmax=False</em>, <em class="sig-param">discrete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.power_law_likelihoods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.stretched_exponential_likelihoods">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">stretched_exponential_likelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">Lambda</em>, <em class="sig-param">beta</em>, <em class="sig-param">xmin</em>, <em class="sig-param">xmax=False</em>, <em class="sig-param">discrete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.stretched_exponential_likelihoods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.trim_to_range">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">trim_to_range</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">xmin=None</em>, <em class="sig-param">xmax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.trim_to_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes elements of the data that are above xmin or below xmax (if present)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.powerlaw.truncated_power_law_likelihoods">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.powerlaw.</code><code class="sig-name descname">truncated_power_law_likelihoods</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">alpha</em>, <em class="sig-param">Lambda</em>, <em class="sig-param">xmin</em>, <em class="sig-param">xmax=False</em>, <em class="sig-param">discrete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.powerlaw.truncated_power_law_likelihoods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.statistics">
+<span id="py3plex-algorithms-statistics-statistics-module"></span><h2>py3plex.algorithms.statistics.statistics module<a class="headerlink" href="#module-py3plex.algorithms.statistics.statistics" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.statistics.core_network_statistics">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.statistics.</code><code class="sig-name descname">core_network_statistics</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">name='example'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.statistics.core_network_statistics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics.topology">
+<span id="py3plex-algorithms-statistics-topology-module"></span><h2>py3plex.algorithms.statistics.topology module<a class="headerlink" href="#module-py3plex.algorithms.statistics.topology" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.topology.basic_pl_stats">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.topology.</code><code class="sig-name descname">basic_pl_stats</code><span class="sig-paren">(</span><em class="sig-param">degree_sequence</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.topology.basic_pl_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>:param degree sequence of individual nodes</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.statistics.topology.plot_power_law">
+<code class="sig-prename descclassname">py3plex.algorithms.statistics.topology.</code><code class="sig-name descname">plot_power_law</code><span class="sig-paren">(</span><em class="sig-param">degree_sequence</em>, <em class="sig-param">title</em>, <em class="sig-param">xlabel</em>, <em class="sig-param">plabel</em>, <em class="sig-param">ylabel='Number of nodes'</em>, <em class="sig-param">formula_x=70</em>, <em class="sig-param">formula_y=0.05</em>, <em class="sig-param">show=True</em>, <em class="sig-param">use_normalization=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.topology.plot_power_law" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.statistics">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.algorithms.statistics" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

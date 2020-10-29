@@ -14,7 +14,7 @@ network.basic_stats()  # check core imports
 network.read_ground_truth_communities("../datasets/community.dat")
 
 partition = network.ground_truth_communities
-#print(partition)
+# print(partition)
 # select top n communities by size
 top_n = 100
 partition_counts = dict(Counter(partition.values()))

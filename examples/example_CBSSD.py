@@ -1,12 +1,12 @@
-## community-based semantic subgroup discovery (skrlj 2017) API. Note this does not include the biomine calls
+# community-based semantic subgroup discovery (skrlj 2017) API. Note this does not include the biomine calls
 
-## this works for UniProt identifiers TODO:generalize!
+# this works for UniProt identifiers TODO:generalize!
 
 from py3plex.core import multinet
 from py3plex.algorithms import hedwig
 from py3plex.algorithms.community_detection import community_wrapper as cw
 
-## load as undirected (simplified example)
+# load as undirected (simplified example)
 network = multinet.multi_layer_network().load_network(
     "../datasets/intact02.gpickle", directed=False, input_type="gpickle")
 
@@ -14,7 +14,7 @@ network.basic_stats()
 
 partition = cw.louvain_communities(network)
 
-## convert examples to RDF mappings and check the validity, use gzipped gaf files..
+# convert examples to RDF mappings and check the validity, use gzipped gaf files..
 dataset_name = "../datasets/example_partition_inputs.n3"
 print(partition)
 
@@ -24,11 +24,11 @@ rdf_partitions = hedwig.convert_mapping_to_rdf(
     layer_type="uniprotkb")
 rdf_partitions.serialize(destination=dataset_name, format="n3")
 
-## convert obo file to n3
+# convert obo file to n3
 hedwig.obo2n3("../datasets/go.obo.gz", "../background_knowledge/bk.n3",
               "../datasets/goa_human.gaf.gz")
 
-## some default input parameters
+# some default input parameters
 hedwig_input_parameters = {
     "bk_dir": "../background_knowledge",
     "data": "../datasets/example_partition_inputs.n3",
@@ -57,5 +57,5 @@ hedwig_input_parameters = {
 
 network.monitor("Starting rule learning")
 
-## initiate the learning part (TODO: export this as table of some sort)
+# initiate the learning part (TODO: export this as table of some sort)
 hedwig.run(hedwig_input_parameters)

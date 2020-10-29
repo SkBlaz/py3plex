@@ -1,6 +1,6 @@
-## added critical distance diagrams
+# added critical distance diagrams
 
-## plot the results of the run
+# plot the results of the run
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -69,7 +69,8 @@ def diagram(list_of_algorithms,
     link_length_bonus = 0.04
     names_lines_space = 0.12
     first_level_height = 0.2
-    critical_distance_offset = -0.9  # position of the critical distance under the main plot
+    # position of the critical distance under the main plot
+    critical_distance_offset = -0.9
     end_of_line_manipulator = 1  # shorten the horizontal part of the line by that much
     font_size = fontsize
     # latex fonts
@@ -133,7 +134,8 @@ def diagram(list_of_algorithms,
                   offset) * inter_lines_space + first_level_height
         line_ys = [0, height, height]
         plt.plot(line_xs, line_ys, 'k')
-        colour = 'k' if the_algorithm_candidate != algorithm else 'b'  # index does not work here ...
+        # index does not work here ...
+        colour = 'k' if the_algorithm_candidate != algorithm else 'b'
         text_x = x_end_of_line - sign * names_lines_space
         ax.text(text_x,
                 height + names_lines_space,

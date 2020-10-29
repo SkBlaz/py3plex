@@ -1,26 +1,32 @@
-## visualization of a simple heterogeneous network
+# visualization of a simple heterogeneous network
+from py3plex.visualization.embedding_visualization import embedding_visualization, embedding_tools
+from py3plex.wrappers import train_node2vec_embedding
+import argparse
+from collections import Counter
+from py3plex.visualization.colors import colors_default
+from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.visualization.multilayer import *
 from py3plex.visualization.colors import all_color_names, colors_default
 from py3plex.core import multinet
 
-## you can try the default visualization options --- this is the simplest option/
+# you can try the default visualization options --- this is the simplest option/
 
-## multilayer
+# multilayer
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/goslim_mirna.gpickle",
     directed=False,
     input_type="gpickle_biomine")
-multilayer_network.basic_stats()  ## check core imports
+multilayer_network.basic_stats()  # check core imports
 
-## a simple hairball plot
+# a simple hairball plot
 multilayer_network.visualize_network(style="hairball")
 plt.show()
 
-## going full py3plex (default 100 iterations, layout_parameters can carry additional parameters)
+# going full py3plex (default 100 iterations, layout_parameters can carry additional parameters)
 multilayer_network.visualize_network(style="diagonal")
 plt.show()
 
-## visualization from a simple file
+# visualization from a simple file
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/edgeList.txt", directed=False, input_type="multiedgelist")
 multilayer_network.basic_stats()
@@ -39,19 +45,19 @@ multilayer_network.basic_stats()
 multilayer_network.visualize_network()
 plt.show()
 
-## multilayer -----------------------------------
+# multilayer -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/epigenetics.gpickle",
     directed=True,
     input_type="gpickle_biomine")
-multilayer_network.basic_stats()  ## check core imports
-#multilayer_network.visualize_network() ## visualize
-#plt.show()
+multilayer_network.basic_stats()  # check core imports
+# multilayer_network.visualize_network() ## visualize
+# plt.show()
 
-## You can also access individual graphical elements separately!
+# You can also access individual graphical elements separately!
 
 network_labels, graphs, multilinks = multilayer_network.get_layers(
-)  ## get layers for visualizat# ion
+)  # get layers for visualizat# ion
 draw_multilayer_default(graphs,
                         display=False,
                         background_shape="circle",
@@ -112,7 +118,7 @@ for edge_type, edges in multilinks.items():
 plt.show()
 plt.clf()
 
-## monotone coloring
+# monotone coloring
 draw_multilayer_default(graphs,
                         display=False,
                         background_shape="rectangle",
@@ -135,7 +141,7 @@ for edge_type, edges in multilinks.items():
     enum += 1
 plt.show()
 
-## basic string layout ----------------------------------
+# basic string layout ----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/epigenetics.gpickle",
     directed=False,
@@ -143,13 +149,6 @@ multilayer_network = multinet.multi_layer_network().load_network(
     input_type="gpickle_biomine")
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 
-from py3plex.algorithms.community_detection import community_wrapper as cw
-from py3plex.core import multinet
-from py3plex.visualization.multilayer import *
-from py3plex.visualization.colors import colors_default
-from collections import Counter
-
-import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--input_network", default="../datasets/cora.mat")
@@ -158,18 +157,18 @@ args = parser.parse_args()
 
 network = multinet.multi_layer_network().load_network(
     input_file=args.input_network, directed=False, input_type=args.input_type
-)  ## network and group objects must be present within the .mat object
+)  # network and group objects must be present within the .mat object
 
-network.basic_stats()  ## check core imports
+network.basic_stats()  # check core imports
 
 partition = cw.louvain_communities(network.core_network)
 
-## select top n communities by size
+# select top n communities by size
 top_n = 10
 partition_counts = dict(Counter(partition.values()))
 top_n_communities = list(partition_counts.keys())[0:top_n]
 
-## assign node colors
+# assign node colors
 color_mappings = dict(zip(top_n_communities, colors_default[0:top_n]))
 
 network_colors = [
@@ -178,7 +177,7 @@ network_colors = [
     for x in network.get_nodes()
 ]
 
-## visualize the network's communities!
+# visualize the network's communities!
 hairball_plot(network.core_network,
               color_list=network_colors,
               layered=False,
@@ -190,7 +189,7 @@ plt.show()
 hairball_plot(graph, network_colors, legend=True)
 plt.show()
 
-## string layout for larger network -----------------------------------
+# string layout for larger network -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/soc-Epinions1.edgelist",
     label_delimiter="---",
@@ -200,9 +199,7 @@ hairball_plot(multilayer_network.core_network,
               layout_parameters={"iterations": 300})
 plt.show()
 
-## embedding-based layout (custom coordinates) -----------------------------------
-from py3plex.wrappers import train_node2vec_embedding
-from py3plex.visualization.embedding_visualization import embedding_visualization, embedding_tools
+# embedding-based layout (custom coordinates) -----------------------------------
 
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/goslim_mirna.gpickle",
@@ -211,20 +208,20 @@ multilayer_network = multinet.multi_layer_network().load_network(
 
 multilayer_network.save_network("../datasets/test.edgelist")
 
-## call a specific n2v compiled binary
+# call a specific n2v compiled binary
 train_node2vec_embedding.call_node2vec_binary("../datasets/test.edgelist",
                                               "../datasets/test_embedding.emb",
                                               binary="../bin/node2vec",
                                               weighted=False)
 
-## preprocess and check embedding
+# preprocess and check embedding
 multilayer_network.load_embedding("../datasets/test_embedding.emb")
 output_positions = embedding_tools.get_2d_coordinates_tsne(
     multilayer_network, output_format="pos_dict")
 
-## custom layouts are part of the custom coordinate option
+# custom layouts are part of the custom coordinate option
 layout_parameters = {}
-layout_parameters['pos'] = output_positions  ## assign parameters
+layout_parameters['pos'] = output_positions  # assign parameters
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 hairball_plot(graph,
               network_colors,

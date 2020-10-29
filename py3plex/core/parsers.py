@@ -1,4 +1,4 @@
-## set of parsers used in Py3plex.
+# set of parsers used in Py3plex.
 
 import networkx as nx
 import json
@@ -34,11 +34,11 @@ def parse_gml(file_name, directed):
         A = nx.MultiGraph()
 
     node_type_map = {}
-    ## initial type maps
+    # initial type maps
     for node in H.nodes(data=True):
         node_type_map[node[0]] = node[1]
 
-        ## read into structure
+        # read into structure
     for edge in H.edges(data=True):
         node_first = (edge[0], node_type_map[edge[0]]['type'])
         node_second = (edge[1], node_type_map[edge[1]]['type'])
@@ -48,7 +48,7 @@ def parse_gml(file_name, directed):
         A.add_node(node_second, **node_type_map[edge[1]])
         A.add_edge(node_first, node_second, **edge_props)
 
-    ## add labels
+    # add labels
     return (A, None)
 
 
@@ -112,7 +112,7 @@ def parse_gpickle_biomine(file_name, directed):
     :input: Gpickle containing BioMine data
     """
 
-    ## convert the biomine
+    # convert the biomine
     input_graph = nx.read_gpickle(file_name)
 
     if directed:
@@ -202,7 +202,7 @@ def parse_multi_edgelist(input_name, directed):
                            (node_second, layer_second),
                            weight=weight)
             else:
-                #default case
+                # default case
                 G.add_node((node_first, layer_first), type=layer_first)
                 G.add_node((node_second, layer_second), type=layer_second)
                 G.add_edge((node_first, layer_first),
@@ -340,9 +340,9 @@ def parse_multiedge_tuple_list(network, directed):
         G.add_edge((node_first, layer_first), (node_second, layer_second),
                    weight=weight)
 
-        #G.add_node(node_first,type=layer_first)
-        #G.add_node(node_second,type=layer_second)
-        #G.add_edge(node_first,node_second,weight=weight)
+        # G.add_node(node_first,type=layer_first)
+        # G.add_node(node_second,type=layer_second)
+        # G.add_edge(node_first,node_second,weight=weight)
 
     return (G, None)
     pass
@@ -397,7 +397,7 @@ def parse_multiplex_folder(input_folder, directed):
                 layer_dict[lname] = lid
 
     if len(activity_file) >= 1:
-        time_series_tuples = list()  #defaultdict(list)
+        time_series_tuples = list()  # defaultdict(list)
         for ac in activity_file:
             with open(ac) as acf:
                 for line in acf:
@@ -439,7 +439,7 @@ def parse_multiplex_folder(input_folder, directed):
     return (G, None, time_series_tuples)
 
 
-## main parser method
+# main parser method
 def parse_network(input_name,
                   f_type="gml",
                   directed=False,

@@ -29,7 +29,7 @@ def user_defined(uri):
     Is this resource user defined?
     '''
     return not uri.startswith(W3C) and not uri.startswith(HEDWIG) and \
-           not anonymous_uri(uri)
+        not anonymous_uri(uri)
 
 
 def anonymous_uri(uri):

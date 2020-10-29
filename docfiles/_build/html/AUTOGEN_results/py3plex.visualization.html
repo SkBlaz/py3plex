@@ -1,0 +1,903 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3plex.visualization package &mdash; py3plex 0.79 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs.html">Automatically generated documentation (from docstrings)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>py3plex.visualization package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/AUTOGEN_results/py3plex.visualization.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3plex-visualization-package">
+<h1>py3plex.visualization package<a class="headerlink" href="#py3plex-visualization-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.visualization.embedding_visualization.html">py3plex.visualization.embedding_visualization package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.visualization.embedding_visualization.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.visualization.embedding_visualization.html#module-py3plex.visualization.embedding_visualization.embedding_tools">py3plex.visualization.embedding_visualization.embedding_tools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.visualization.embedding_visualization.html#module-py3plex.visualization.embedding_visualization.embedding_visualization">py3plex.visualization.embedding_visualization.embedding_visualization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.visualization.embedding_visualization.html#module-py3plex.visualization.embedding_visualization">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex.visualization.fa2.html">py3plex.visualization.fa2 package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.visualization.fa2.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.visualization.fa2.html#module-py3plex.visualization.fa2.fa2util">py3plex.visualization.fa2.fa2util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.visualization.fa2.html#module-py3plex.visualization.fa2.forceatlas2">py3plex.visualization.fa2.forceatlas2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py3plex.visualization.fa2.html#module-py3plex.visualization.fa2">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.visualization.benchmark_visualizations">
+<span id="py3plex-visualization-benchmark-visualizations-module"></span><h2>py3plex.visualization.benchmark_visualizations module<a class="headerlink" href="#module-py3plex.visualization.benchmark_visualizations" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.generic_grouping">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">generic_grouping</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">score_name</em>, <em class="sig-param">threshold=1</em>, <em class="sig-param">percentages=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.generic_grouping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_macro">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_macro</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_macro" title="Permalink to this definition">¶</a></dt>
+<dd><p>A very simple visualization of the results..</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_macro_box">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_macro_box</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_macro_box" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_macro_gg">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_macro_gg</code><span class="sig-paren">(</span><em class="sig-param">fnamex</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_macro_gg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_micro">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_micro</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_micro" title="Permalink to this definition">¶</a></dt>
+<dd><p>A very simple visualization of the results..</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_micro_gg">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_micro_gg</code><span class="sig-paren">(</span><em class="sig-param">fnamex</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_micro_gg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_micro_grid">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_micro_grid</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_micro_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_time">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_time</code><span class="sig-paren">(</span><em class="sig-param">fnamex</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_time_gg">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_time_gg</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_time_gg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_core_variability">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_core_variability</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_core_variability" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_critical_distance">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_critical_distance</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">num_algo=14</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_critical_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_mean_times">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_mean_times</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_mean_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.plot_robustness">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">plot_robustness</code><span class="sig-paren">(</span><em class="sig-param">infile</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.plot_robustness" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.benchmark_visualizations.table_to_latex">
+<code class="sig-prename descclassname">py3plex.visualization.benchmark_visualizations.</code><code class="sig-name descname">table_to_latex</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">outfolder='../final_results/tables/'</em>, <em class="sig-param">threshold=1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.benchmark_visualizations.table_to_latex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.visualization.bezier">
+<span id="py3plex-visualization-bezier-module"></span><h2>py3plex.visualization.bezier module<a class="headerlink" href="#module-py3plex.visualization.bezier" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.visualization.bezier.bezier_calculate_dfy">
+<code class="sig-prename descclassname">py3plex.visualization.bezier.</code><code class="sig-name descname">bezier_calculate_dfy</code><span class="sig-paren">(</span><em class="sig-param">mp_y</em>, <em class="sig-param">path_height</em>, <em class="sig-param">x0</em>, <em class="sig-param">midpoint_x</em>, <em class="sig-param">x1</em>, <em class="sig-param">y0</em>, <em class="sig-param">y1</em>, <em class="sig-param">dfx</em>, <em class="sig-param">mode='upper'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.bezier.bezier_calculate_dfy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.bezier.draw_bezier">
+<code class="sig-prename descclassname">py3plex.visualization.bezier.</code><code class="sig-name descname">draw_bezier</code><span class="sig-paren">(</span><em class="sig-param">total_size</em>, <em class="sig-param">p1</em>, <em class="sig-param">p2</em>, <em class="sig-param">mode='quadratic'</em>, <em class="sig-param">inversion=False</em>, <em class="sig-param">path_height=2</em>, <em class="sig-param">linemode='both'</em>, <em class="sig-param">resolution=0.1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.bezier.draw_bezier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.visualization.colors">
+<span id="py3plex-visualization-colors-module"></span><h2>py3plex.visualization.colors module<a class="headerlink" href="#module-py3plex.visualization.colors" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.visualization.colors.RGB_to_hex">
+<code class="sig-prename descclassname">py3plex.visualization.colors.</code><code class="sig-name descname">RGB_to_hex</code><span class="sig-paren">(</span><em class="sig-param">RGB</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.colors.RGB_to_hex" title="Permalink to this definition">¶</a></dt>
+<dd><p>[255,255,255] -&gt; “#FFFFFF”</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.colors.color_dict">
+<code class="sig-prename descclassname">py3plex.visualization.colors.</code><code class="sig-name descname">color_dict</code><span class="sig-paren">(</span><em class="sig-param">gradient</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.colors.color_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in a list of RGB sub-lists and returns dictionary of
+colors in RGB and hex form for use in a graphing function
+defined later on</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.colors.hex_to_RGB">
+<code class="sig-prename descclassname">py3plex.visualization.colors.</code><code class="sig-name descname">hex_to_RGB</code><span class="sig-paren">(</span><em class="sig-param">hex</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.colors.hex_to_RGB" title="Permalink to this definition">¶</a></dt>
+<dd><p>“#FFFFFF” -&gt; [255,255,255]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.colors.linear_gradient">
+<code class="sig-prename descclassname">py3plex.visualization.colors.</code><code class="sig-name descname">linear_gradient</code><span class="sig-paren">(</span><em class="sig-param">start_hex</em>, <em class="sig-param">finish_hex='#FFFFFF'</em>, <em class="sig-param">n=10</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.colors.linear_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a gradient list of (n) colors between
+two hex colors. start_hex and finish_hex
+should be the full six-digit color string,
+inlcuding the number sign (“#FFFFFF”)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.visualization.drawing_machinery">
+<span id="py3plex-visualization-drawing-machinery-module"></span><h2>py3plex.visualization.drawing_machinery module<a class="headerlink" href="#module-py3plex.visualization.drawing_machinery" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">pos=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the graph G with Matplotlib.</p>
+<p>Draw the graph as a simple representation with no node
+labels or edge labels and using the full Matplotlib figure area
+and no axis labels by default.  See draw_networkx() for more
+full-featured drawing that allows title, axis labels etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>pos</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – A dictionary with nodes as keys and positions as values.
+If not specified a spring layout positioning will be computed.
+See <code class="xref py py-mod docutils literal notranslate"><span class="pre">networkx.drawing.layout</span></code> for functions that
+compute node positions.</p></li>
+<li><p><strong>ax</strong> (<em>Matplotlib Axes object</em><em>, </em><em>optional</em>) – Draw the graph in specified Matplotlib axes.</p></li>
+<li><p><strong>kwds</strong> (<em>optional keywords</em>) – See networkx.draw_networkx() for a description of optional keywords.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">dodecahedral_graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>  <span class="c1"># use spring layout</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx" title="py3plex.visualization.drawing_machinery.draw_networkx"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_nodes" title="py3plex.visualization.drawing_machinery.draw_networkx_nodes"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_nodes()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edges" title="py3plex.visualization.drawing_machinery.draw_networkx_edges"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edges()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_labels()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edge_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_edge_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edge_labels()</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<p>This function has the same name as pylab.draw and pyplot.draw
+so beware when using</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>since you might overwrite the pylab.draw function.</p>
+<p>With pyplot use</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">dodecahedral_graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>  <span class="c1"># networkx draw()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>  <span class="c1"># pyplot draw()</span>
+</pre></div>
+</div>
+<p>Also see the NetworkX drawing examples at
+<a class="reference external" href="https://networkx.github.io/documentation/latest/auto_examples/index.html">https://networkx.github.io/documentation/latest/auto_examples/index.html</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_networkx">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_networkx</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">pos=None</em>, <em class="sig-param">arrows=True</em>, <em class="sig-param">with_labels=True</em>, <em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_networkx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the graph G using Matplotlib.</p>
+<p>Draw the graph with Matplotlib with options for node positions,
+labeling, titles, and many other drawing features.
+See draw() for simple drawing without labels or axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>pos</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – A dictionary with nodes as keys and positions as values.
+If not specified a spring layout positioning will be computed.
+See <code class="xref py py-mod docutils literal notranslate"><span class="pre">networkx.drawing.layout</span></code> for functions that
+compute node positions.</p></li>
+<li><p><strong>arrows</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – For directed graphs, if True draw arrowheads.
+Note: Arrows will be the same color as edges.</p></li>
+<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id1"><span class="problematic" id="id2">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrowsheads.
+See :py:class: <cite>matplotlib.patches.ArrowStyle</cite> for more
+options.</p></li>
+<li><p><strong>arrowsize</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – For directed graphs, choose the size of the arrow head head’s length and
+width. See :py:class: <cite>matplotlib.patches.FancyArrowPatch</cite> for attribute
+<cite>mutation_scale</cite> for more info.</p></li>
+<li><p><strong>with_labels</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – Set to True to draw labels on the nodes.</p></li>
+<li><p><strong>ax</strong> (<em>Matplotlib Axes object</em><em>, </em><em>optional</em>) – Draw the graph in the specified Matplotlib axes.</p></li>
+<li><p><strong>nodelist</strong> (<em>list</em><em>, </em><em>optional</em><em> (</em><em>default G.nodes</em><em>(</em><em>)</em><em>)</em>) – Draw only specified nodes</p></li>
+<li><p><strong>edgelist</strong> (<em>list</em><em>, </em><em>optional</em><em> (</em><em>default=G.edges</em><em>(</em><em>)</em><em>)</em>) – Draw only specified edges</p></li>
+<li><p><strong>node_size</strong> (<em>scalar</em><em> or </em><em>array</em><em>, </em><em>optional</em><em> (</em><em>default=300</em><em>)</em>) – Size of nodes.  If an array is specified it must be the
+same length as nodelist.</p></li>
+<li><p><strong>node_color</strong> (<em>color string</em><em>, or </em><em>array of floats</em><em>, </em><em>(</em><em>default='r'</em><em>)</em>) – Node color. Can be a single color format string,
+or a  sequence of colors with the same length as nodelist.
+If numeric values are specified they will be mapped to
+colors using the cmap and vmin,vmax parameters.  See
+matplotlib.scatter for more details.</p></li>
+<li><p><strong>node_shape</strong> (<em>string</em><em>, </em><em>optional</em><em> (</em><em>default='o'</em><em>)</em>) – The shape of the node.  Specification is as matplotlib.scatter
+marker, one of ‘so^&gt;v&lt;dph8’.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default=1.0</em><em>)</em>) – The node and edge transparency</p></li>
+<li><p><strong>cmap</strong> (<em>Matplotlib colormap</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Colormap for mapping intensities of nodes</p></li>
+<li><p><strong>vmin</strong><strong>,</strong><strong>vmax</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Minimum and maximum for node colormap scaling</p></li>
+<li><p><strong>linewidths</strong> (<em>[</em><em>None | scalar | sequence</em><em>]</em>) – Line width of symbol border (default =1.0)</p></li>
+<li><p><strong>width</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default=1.0</em><em>)</em>) – Line width of edges</p></li>
+<li><p><strong>edge_color</strong> (<em>color string</em><em>, or </em><em>array of floats</em><em> (</em><em>default='r'</em><em>)</em>) – Edge color. Can be a single color format string,
+or a sequence of colors with the same length as edgelist.
+If numeric values are specified they will be mapped to
+colors using the edge_cmap and edge_vmin,edge_vmax parameters.</p></li>
+<li><p><strong>edge_cmap</strong> (<em>Matplotlib colormap</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Colormap for mapping intensities of edges</p></li>
+<li><p><strong>edge_vmin</strong><strong>,</strong><strong>edge_vmax</strong> (<em>floats</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Minimum and maximum for edge colormap scaling</p></li>
+<li><p><strong>style</strong> (<em>string</em><em>, </em><em>optional</em><em> (</em><em>default='solid'</em><em>)</em>) – Edge line style (solid|dashed|dotted,dashdot)</p></li>
+<li><p><strong>labels</strong> (<em>dictionary</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Node labels in a dictionary keyed by node of text labels</p></li>
+<li><p><strong>font_size</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=12</em><em>)</em>) – Font size for text labels</p></li>
+<li><p><strong>font_color</strong> (<em>string</em><em>, </em><em>optional</em><em> (</em><em>default='k' black</em><em>)</em>) – Font color string</p></li>
+<li><p><strong>font_weight</strong> (<em>string</em><em>, </em><em>optional</em><em> (</em><em>default='normal'</em><em>)</em>) – Font weight</p></li>
+<li><p><strong>font_family</strong> (<em>string</em><em>, </em><em>optional</em><em> (</em><em>default='sans-serif'</em><em>)</em>) – Font family</p></li>
+<li><p><strong>label</strong> (<em>string</em><em>, </em><em>optional</em>) – Label for graph legend</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>For directed graphs, arrows  are drawn at the head end.  Arrows can be
+turned off with keyword arrows=False.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">dodecahedral_graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>  <span class="c1"># use spring layout</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">limits</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  <span class="c1"># turn of axis</span>
+</pre></div>
+</div>
+<p>Also see the NetworkX drawing examples at
+<a class="reference external" href="https://networkx.github.io/documentation/latest/auto_examples/index.html">https://networkx.github.io/documentation/latest/auto_examples/index.html</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw" title="py3plex.visualization.drawing_machinery.draw"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_nodes" title="py3plex.visualization.drawing_machinery.draw_networkx_nodes"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_nodes()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edges" title="py3plex.visualization.drawing_machinery.draw_networkx_edges"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edges()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_labels()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edge_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_edge_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edge_labels()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_networkx_nodes">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_networkx_nodes</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">pos</em>, <em class="sig-param">nodelist=None</em>, <em class="sig-param">node_size=300</em>, <em class="sig-param">node_color='r'</em>, <em class="sig-param">node_shape='o'</em>, <em class="sig-param">alpha=1.0</em>, <em class="sig-param">cmap=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">linewidths=None</em>, <em class="sig-param">edgecolors=None</em>, <em class="sig-param">label=None</em>, <em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_networkx_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the nodes of the graph G.</p>
+<p>This draws only the nodes of the graph G.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>pos</strong> (<em>dictionary</em>) – A dictionary with nodes as keys and positions as values.
+Positions should be sequences of length 2.</p></li>
+<li><p><strong>ax</strong> (<em>Matplotlib Axes object</em><em>, </em><em>optional</em>) – Draw the graph in the specified Matplotlib axes.</p></li>
+<li><p><strong>nodelist</strong> (<em>list</em><em>, </em><em>optional</em>) – Draw only specified nodes (default G.nodes())</p></li>
+<li><p><strong>node_size</strong> (<em>scalar</em><em> or </em><em>array</em>) – Size of nodes (default=300).  If an array is specified it must be the
+same length as nodelist.</p></li>
+<li><p><strong>node_color</strong> (<em>color string</em><em>, or </em><em>array of floats</em>) – Node color. Can be a single color format string (default=’r’),
+or a  sequence of colors with the same length as nodelist.
+If numeric values are specified they will be mapped to
+colors using the cmap and vmin,vmax parameters.  See
+matplotlib.scatter for more details.</p></li>
+<li><p><strong>node_shape</strong> (<em>string</em>) – The shape of the node.  Specification is as matplotlib.scatter
+marker, one of ‘so^&gt;v&lt;dph8’ (default=’o’).</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em> or </em><em>array of floats</em>) – The node transparency.  This can be a single alpha value (default=1.0),
+in which case it will be applied to all the nodes of color. Otherwise,
+if it is an array, the elements of alpha will be applied to the colors
+in order (cycling through alpha multiple times if necessary).</p></li>
+<li><p><strong>cmap</strong> (<em>Matplotlib colormap</em>) – Colormap for mapping intensities of nodes (default=None)</p></li>
+<li><p><strong>vmin</strong><strong>,</strong><strong>vmax</strong> (<em>floats</em>) – Minimum and maximum for node colormap scaling (default=None)</p></li>
+<li><p><strong>linewidths</strong> (<em>[</em><em>None | scalar | sequence</em><em>]</em>) – Line width of symbol border (default =1.0)</p></li>
+<li><p><strong>edgecolors</strong> (<em>[</em><em>None | scalar | sequence</em><em>]</em>) – Colors of node borders (default = node_color)</p></li>
+<li><p><strong>label</strong> (<em>[</em><em>None| string</em><em>]</em>) – Label for legend</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>PathCollection</cite> of the nodes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matplotlib.collections.PathCollection</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">dodecahedral_graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Also see the NetworkX drawing examples at
+<a class="reference external" href="https://networkx.github.io/documentation/latest/auto_examples/index.html">https://networkx.github.io/documentation/latest/auto_examples/index.html</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw" title="py3plex.visualization.drawing_machinery.draw"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx" title="py3plex.visualization.drawing_machinery.draw_networkx"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edges" title="py3plex.visualization.drawing_machinery.draw_networkx_edges"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edges()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_labels()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edge_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_edge_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edge_labels()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_networkx_edges">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_networkx_edges</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">pos</em>, <em class="sig-param">edgelist=None</em>, <em class="sig-param">width=1.0</em>, <em class="sig-param">edge_color='k'</em>, <em class="sig-param">style='solid'</em>, <em class="sig-param">alpha=1.0</em>, <em class="sig-param">arrowstyle='-|&gt;'</em>, <em class="sig-param">arrowsize=10</em>, <em class="sig-param">edge_cmap=None</em>, <em class="sig-param">edge_vmin=None</em>, <em class="sig-param">edge_vmax=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">arrows=True</em>, <em class="sig-param">label=None</em>, <em class="sig-param">node_size=300</em>, <em class="sig-param">nodelist=None</em>, <em class="sig-param">node_shape='o'</em>, <em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_networkx_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the edges of the graph G.</p>
+<p>This draws only the edges of the graph G.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>pos</strong> (<em>dictionary</em>) – A dictionary with nodes as keys and positions as values.
+Positions should be sequences of length 2.</p></li>
+<li><p><strong>edgelist</strong> (<em>collection of edge tuples</em>) – Draw only specified edges(default=G.edges())</p></li>
+<li><p><strong>width</strong> (<em>float</em><em>, or </em><em>array of floats</em>) – Line width of edges (default=1.0)</p></li>
+<li><p><strong>edge_color</strong> (<em>color string</em><em>, or </em><em>array of floats</em>) – Edge color. Can be a single color format string (default=’r’),
+or a sequence of colors with the same length as edgelist.
+If numeric values are specified they will be mapped to
+colors using the edge_cmap and edge_vmin,edge_vmax parameters.</p></li>
+<li><p><strong>style</strong> (<em>string</em>) – Edge line style (default=’solid’) (solid|dashed|dotted,dashdot)</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – The edge transparency (default=1.0)</p></li>
+<li><p><strong>cmap</strong> (<em>edge</em>) – Colormap for mapping intensities of edges (default=None)</p></li>
+<li><p><strong>edge_vmin</strong><strong>,</strong><strong>edge_vmax</strong> (<em>floats</em>) – Minimum and maximum for edge colormap scaling (default=None)</p></li>
+<li><p><strong>ax</strong> (<em>Matplotlib Axes object</em><em>, </em><em>optional</em>) – Draw the graph in the specified Matplotlib axes.</p></li>
+<li><p><strong>arrows</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – For directed graphs, if True draw arrowheads.
+Note: Arrows will be the same color as edges.</p></li>
+<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id3"><span class="problematic" id="id4">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrow heads.
+See :py:class: <cite>matplotlib.patches.ArrowStyle</cite> for more
+options.</p></li>
+<li><p><strong>arrowsize</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – For directed graphs, choose the size of the arrow head head’s length and
+width. See :py:class: <cite>matplotlib.patches.FancyArrowPatch</cite> for attribute
+<cite>mutation_scale</cite> for more info.</p></li>
+<li><p><strong>label</strong> (<em>[</em><em>None| string</em><em>]</em>) – Label for legend</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>matplotlib.collection.LineCollection</em> – <cite>LineCollection</cite> of the edges</p></li>
+<li><p><em>list of matplotlib.patches.FancyArrowPatch</em> – <cite>FancyArrowPatch</cite> instances of the directed edges</p></li>
+<li><p><em>Depending whether the drawing includes arrows or not.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>For directed graphs, arrows are drawn at the head end.  Arrows can be
+turned off with keyword arrows=False. Be sure to include <cite>node_size</cite> as a
+keyword argument; arrows are drawn considering the size of nodes.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">dodecahedral_graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edges</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arcs</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alphas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">arc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arcs</span><span class="p">):</span>  <span class="c1"># change alpha values of arcs</span>
+<span class="gp">... </span>    <span class="n">arc</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="n">alphas</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Also see the NetworkX drawing examples at
+<a class="reference external" href="https://networkx.github.io/documentation/latest/auto_examples/index.html">https://networkx.github.io/documentation/latest/auto_examples/index.html</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw" title="py3plex.visualization.drawing_machinery.draw"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx" title="py3plex.visualization.drawing_machinery.draw_networkx"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_nodes" title="py3plex.visualization.drawing_machinery.draw_networkx_nodes"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_nodes()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_labels()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edge_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_edge_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edge_labels()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_networkx_labels">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_networkx_labels</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">pos</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">font_size=1</em>, <em class="sig-param">font_color='k'</em>, <em class="sig-param">font_family='sans-serif'</em>, <em class="sig-param">font_weight='normal'</em>, <em class="sig-param">alpha=1.0</em>, <em class="sig-param">bbox=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_networkx_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw node labels on the graph G.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>pos</strong> (<em>dictionary</em>) – A dictionary with nodes as keys and positions as values.
+Positions should be sequences of length 2.</p></li>
+<li><p><strong>labels</strong> (<em>dictionary</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Node labels in a dictionary keyed by node of text labels
+Node-keys in labels should appear as keys in <cite>pos</cite>.
+If needed use: <cite>{n:lab for n,lab in labels.items() if n in pos}</cite></p></li>
+<li><p><strong>font_size</strong> (<em>int</em>) – Font size for text labels (default=12)</p></li>
+<li><p><strong>font_color</strong> (<em>string</em>) – Font color string (default=’k’ black)</p></li>
+<li><p><strong>font_family</strong> (<em>string</em>) – Font family (default=’sans-serif’)</p></li>
+<li><p><strong>font_weight</strong> (<em>string</em>) – Font weight (default=’normal’)</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – The text transparency (default=1.0)</p></li>
+<li><p><strong>ax</strong> (<em>Matplotlib Axes object</em><em>, </em><em>optional</em>) – Draw the graph in the specified Matplotlib axes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>dict</cite> of labels keyed on the nodes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">dodecahedral_graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Also see the NetworkX drawing examples at
+<a class="reference external" href="https://networkx.github.io/documentation/latest/auto_examples/index.html">https://networkx.github.io/documentation/latest/auto_examples/index.html</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw" title="py3plex.visualization.drawing_machinery.draw"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx" title="py3plex.visualization.drawing_machinery.draw_networkx"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_nodes" title="py3plex.visualization.drawing_machinery.draw_networkx_nodes"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_nodes()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edges" title="py3plex.visualization.drawing_machinery.draw_networkx_edges"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edges()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edge_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_edge_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edge_labels()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_networkx_edge_labels">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_networkx_edge_labels</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">pos</em>, <em class="sig-param">edge_labels=None</em>, <em class="sig-param">label_pos=0.5</em>, <em class="sig-param">font_size=10</em>, <em class="sig-param">font_color='k'</em>, <em class="sig-param">font_family='sans-serif'</em>, <em class="sig-param">font_weight='normal'</em>, <em class="sig-param">alpha=1.0</em>, <em class="sig-param">bbox=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">rotate=True</em>, <em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_networkx_edge_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw edge labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>pos</strong> (<em>dictionary</em>) – A dictionary with nodes as keys and positions as values.
+Positions should be sequences of length 2.</p></li>
+<li><p><strong>ax</strong> (<em>Matplotlib Axes object</em><em>, </em><em>optional</em>) – Draw the graph in the specified Matplotlib axes.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – The text transparency (default=1.0)</p></li>
+<li><p><strong>edge_labels</strong> (<em>dictionary</em>) – Edge labels in a dictionary keyed by edge two-tuple of text
+labels (default=None). Only labels for the keys in the dictionary
+are drawn.</p></li>
+<li><p><strong>label_pos</strong> (<em>float</em>) – Position of edge label along edge (0=head, 0.5=center, 1=tail)</p></li>
+<li><p><strong>font_size</strong> (<em>int</em>) – Font size for text labels (default=12)</p></li>
+<li><p><strong>font_color</strong> (<em>string</em>) – Font color string (default=’k’ black)</p></li>
+<li><p><strong>font_weight</strong> (<em>string</em>) – Font weight (default=’normal’)</p></li>
+<li><p><strong>font_family</strong> (<em>string</em>) – Font family (default=’sans-serif’)</p></li>
+<li><p><strong>bbox</strong> (<em>Matplotlib bbox</em>) – Specify text box shape and colors.</p></li>
+<li><p><strong>clip_on</strong> (<em>bool</em>) – Turn on clipping at axis boundaries (default=True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>dict</cite> of labels keyed on the edges</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">dodecahedral_graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edge_labels</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edge_labels</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Also see the NetworkX drawing examples at
+<a class="reference external" href="https://networkx.github.io/documentation/latest/auto_examples/index.html">https://networkx.github.io/documentation/latest/auto_examples/index.html</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw" title="py3plex.visualization.drawing_machinery.draw"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx" title="py3plex.visualization.drawing_machinery.draw_networkx"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_nodes" title="py3plex.visualization.drawing_machinery.draw_networkx_nodes"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_nodes()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_edges" title="py3plex.visualization.drawing_machinery.draw_networkx_edges"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_edges()</span></code></a>, <a class="reference internal" href="#py3plex.visualization.drawing_machinery.draw_networkx_labels" title="py3plex.visualization.drawing_machinery.draw_networkx_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_networkx_labels()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_circular">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_circular</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_circular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the graph G with a circular layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>kwargs</strong> (<em>optional keywords</em>) – See networkx.draw_networkx() for a description of optional keywords,
+with the exception of the pos parameter which is not used by this
+function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_kamada_kawai">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_kamada_kawai</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_kamada_kawai" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the graph G with a Kamada-Kawai force-directed layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>kwargs</strong> (<em>optional keywords</em>) – See networkx.draw_networkx() for a description of optional keywords,
+with the exception of the pos parameter which is not used by this
+function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_random">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_random</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_random" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the graph G with a random layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>kwargs</strong> (<em>optional keywords</em>) – See networkx.draw_networkx() for a description of optional keywords,
+with the exception of the pos parameter which is not used by this
+function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_spectral">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_spectral</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_spectral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the graph G with a spectral layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>kwargs</strong> (<em>optional keywords</em>) – See networkx.draw_networkx() for a description of optional keywords,
+with the exception of the pos parameter which is not used by this
+function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_spring">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_spring</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_spring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the graph G with a spring layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>kwargs</strong> (<em>optional keywords</em>) – See networkx.draw_networkx() for a description of optional keywords,
+with the exception of the pos parameter which is not used by this
+function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.drawing_machinery.draw_shell">
+<code class="sig-prename descclassname">py3plex.visualization.drawing_machinery.</code><code class="sig-name descname">draw_shell</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.drawing_machinery.draw_shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw networkx graph with shell layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>G</strong> (<em>graph</em>) – A networkx graph</p></li>
+<li><p><strong>kwargs</strong> (<em>optional keywords</em>) – See networkx.draw_networkx() for a description of optional keywords,
+with the exception of the pos parameter which is not used by this
+function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.visualization.layout_algorithms">
+<span id="py3plex-visualization-layout-algorithms-module"></span><h2>py3plex.visualization.layout_algorithms module<a class="headerlink" href="#module-py3plex.visualization.layout_algorithms" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.visualization.layout_algorithms.compute_force_directed_layout">
+<code class="sig-prename descclassname">py3plex.visualization.layout_algorithms.</code><code class="sig-name descname">compute_force_directed_layout</code><span class="sig-paren">(</span><em class="sig-param">g</em>, <em class="sig-param">layout_parameters=None</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">gravity=0.2</em>, <em class="sig-param">strongGravityMode=False</em>, <em class="sig-param">barnesHutTheta=1.2</em>, <em class="sig-param">edgeWeightInfluence=1</em>, <em class="sig-param">scalingRatio=2.0</em>, <em class="sig-param">forceImport=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.layout_algorithms.compute_force_directed_layout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.layout_algorithms.compute_random_layout">
+<code class="sig-prename descclassname">py3plex.visualization.layout_algorithms.</code><code class="sig-name descname">compute_random_layout</code><span class="sig-paren">(</span><em class="sig-param">g</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.layout_algorithms.compute_random_layout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.visualization.misc_tools">
+<span id="py3plex-visualization-misc-tools-module"></span><h2>py3plex.visualization.misc_tools module<a class="headerlink" href="#module-py3plex.visualization.misc_tools" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.visualization.multilayer">
+<span id="py3plex-visualization-multilayer-module"></span><h2>py3plex.visualization.multilayer module<a class="headerlink" href="#module-py3plex.visualization.multilayer" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.draw_multiedges">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">draw_multiedges</code><span class="sig-paren">(</span><em class="sig-param">network_list</em>, <em class="sig-param">multi_edge_tuple</em>, <em class="sig-param">input_type='nodes'</em>, <em class="sig-param">linepoints='-.'</em>, <em class="sig-param">alphachannel=0.3</em>, <em class="sig-param">linecolor='black'</em>, <em class="sig-param">curve_height=1</em>, <em class="sig-param">style='curve2_bezier'</em>, <em class="sig-param">linewidth=1</em>, <em class="sig-param">invert=False</em>, <em class="sig-param">linmod='both'</em>, <em class="sig-param">resolution=0.001</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.draw_multiedges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.draw_multilayer_default">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">draw_multilayer_default</code><span class="sig-paren">(</span><em class="sig-param">network_list</em>, <em class="sig-param">display=True</em>, <em class="sig-param">node_size=10</em>, <em class="sig-param">alphalevel=0.13</em>, <em class="sig-param">rectanglex=1</em>, <em class="sig-param">rectangley=1</em>, <em class="sig-param">background_shape='circle'</em>, <em class="sig-param">background_color='rainbow'</em>, <em class="sig-param">networks_color='rainbow'</em>, <em class="sig-param">labels=False</em>, <em class="sig-param">arrowsize=0.5</em>, <em class="sig-param">label_position=1</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">remove_isolated_nodes=False</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">edge_size=1</em>, <em class="sig-param">node_labels=False</em>, <em class="sig-param">node_font_size=5</em>, <em class="sig-param">scale_by_size=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.draw_multilayer_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core multilayer drawing method</p>
+<p>Args:
+network_list (list): a list of networks
+display (bool): Whether to display or not (directly)
+node_size (int): size of the nodes
+alphalevel (float): transparency level
+rectanglex (float): size of rectangles (background) (horizontal part)
+rectangley (float): size of vertical parts of rectangles
+background_shape (string): Background shape, either circle or rectangle
+background_color (string): Background color
+networks_color (string): Color of individual networks
+labels (bool): Display labels?
+arrowsize (float): Sizes of individual arrows
+label_position (int): position of labels  (diagonal right)
+verbose (bool): Verbose printout?
+remove_isolated_nodes (bool): Remove isolated nodes?
+axis (bools): axis are displayed
+edge_size (float): Size of edges
+node_labels (bool): Display node labels?
+node_font_size (int): Size of the font
+scale_by_size (bool): Scale nodes according to their degrees?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.generate_random_multiedges">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">generate_random_multiedges</code><span class="sig-paren">(</span><em class="sig-param">network_list</em>, <em class="sig-param">random_edges</em>, <em class="sig-param">style='line'</em>, <em class="sig-param">linepoints='-.'</em>, <em class="sig-param">upper_first=2</em>, <em class="sig-param">lower_first=0</em>, <em class="sig-param">lower_second=2</em>, <em class="sig-param">inverse_tag=False</em>, <em class="sig-param">pheight=1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.generate_random_multiedges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.generate_random_networks">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">generate_random_networks</code><span class="sig-paren">(</span><em class="sig-param">number_of_networks</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.generate_random_networks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.hairball_plot">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">hairball_plot</code><span class="sig-paren">(</span><em class="sig-param">g</em>, <em class="sig-param">color_list=None</em>, <em class="sig-param">display=False</em>, <em class="sig-param">node_size=1</em>, <em class="sig-param">text_color='black'</em>, <em class="sig-param">node_sizes=None</em>, <em class="sig-param">layout_parameters=None</em>, <em class="sig-param">legend=None</em>, <em class="sig-param">scale_by_size=True</em>, <em class="sig-param">layout_algorithm='force'</em>, <em class="sig-param">edge_width=0.01</em>, <em class="sig-param">alpha_channel=0.5</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">draw=True</em>, <em class="sig-param">label_font_size=2</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.hairball_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method for drawing force-directed plots
+Args:
+network (networkx): A network to be visualized
+color_list (list): A list of colors for nodes
+node_size (float): Size of nodes
+layout_parameters (dict): A dictionary of label parameters
+legend (bool): Display legend?
+scale_by_size (bool): Rescale nodes?
+layout_algorithm (string): What type of layout algorithm is to be used?
+edge_width (float): Width of edges
+alpha_channel (float): Transparency level.
+labels (bool): Display labels?
+label_font_size (int): Sizes of labels
+:returns: None</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.interactive_hairball_plot">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">interactive_hairball_plot</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">nsizes</em>, <em class="sig-param">final_color_mapping</em>, <em class="sig-param">pos</em>, <em class="sig-param">colorscale='Rainbow'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.interactive_hairball_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.onclick">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">onclick</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.onclick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.supra_adjacency_matrix_plot">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">supra_adjacency_matrix_plot</code><span class="sig-paren">(</span><em class="sig-param">matrix</em>, <em class="sig-param">display=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.supra_adjacency_matrix_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.visualization.polyfit">
+<span id="py3plex-visualization-polyfit-module"></span><h2>py3plex.visualization.polyfit module<a class="headerlink" href="#module-py3plex.visualization.polyfit" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.visualization.polyfit.draw_order3">
+<code class="sig-prename descclassname">py3plex.visualization.polyfit.</code><code class="sig-name descname">draw_order3</code><span class="sig-paren">(</span><em class="sig-param">networks</em>, <em class="sig-param">p1</em>, <em class="sig-param">p2</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.polyfit.draw_order3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.polyfit.draw_piramidal">
+<code class="sig-prename descclassname">py3plex.visualization.polyfit.</code><code class="sig-name descname">draw_piramidal</code><span class="sig-paren">(</span><em class="sig-param">networks</em>, <em class="sig-param">p1</em>, <em class="sig-param">p2</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.polyfit.draw_piramidal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.visualization">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.visualization" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

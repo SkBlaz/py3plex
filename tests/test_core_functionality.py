@@ -1,16 +1,15 @@
-## reading different inputs
+# reading different inputs
+import matplotlib.image as mgimg
+from py3plex.core import random_generators
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+import numpy as np
+from py3plex.visualization.colors import all_color_names, colors_default
+from py3plex.visualization.multilayer import *
 from py3plex.core import multinet
 import logging
 logger = logging.getLogger()
 logger.level = logging.DEBUG
-from py3plex.visualization.multilayer import *
-from py3plex.visualization.colors import all_color_names, colors_default
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from py3plex.core import random_generators
-import matplotlib.image as mgimg
-import numpy as np
 
 
 def test_imports():
@@ -34,11 +33,11 @@ def test_imports():
         directed=False,
         input_type="multiedgelist")
 
-    #multilayer_network = multinet.multi_layer_network().load_network("datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TOD
+    # multilayer_network = multinet.multi_layer_network().load_network("datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TOD
     multilayer_network = multinet.multi_layer_network().load_network(
         "datasets/edgeList.txt", directed=False, input_type="multiedgelist")
 
-    ## save the network as a gpickle object
+    # save the network as a gpickle object
     multilayer_network.save_network(
         output_file="datasets/stored_network.gpickle", output_type="gpickle")
 
@@ -70,20 +69,20 @@ def test_basic_visualizatio3():
 
 
 def test_basic_visualizati4():
-    ## multilayer -----------------------------------
+    # multilayer -----------------------------------
     logging.info("Import viz test 4")
     multilayer_network = multinet.multi_layer_network().load_network(
         "datasets/epigenetics.gpickle",
         directed=True,
         input_type="gpickle_biomine")
-    multilayer_network.basic_stats()  ## check core imports
-    #multilayer_network.visualize_network() ## visualize
+    multilayer_network.basic_stats()  # check core imports
+    # multilayer_network.visualize_network() ## visualize
     #
 
-    ## You can also access individual graphical elements separately!
+    # You can also access individual graphical elements separately!
 
     network_labels, graphs, multilinks = multilayer_network.get_layers(
-    )  ## get layers for visualizat# ion
+    )  # get layers for visualizat# ion
     draw_multilayer_default(graphs,
                             display=False,
                             background_shape="circle",
@@ -144,7 +143,7 @@ def test_basic_visualizati4():
 
     plt.clf()
 
-    ## monotone coloring
+    # monotone coloring
     draw_multilayer_default(graphs,
                             display=False,
                             background_shape="rectangle",
@@ -169,7 +168,7 @@ def test_basic_visualizati4():
 
 def test_basic_visualizatio5():
     logging.info("Import viz test 6")
-    ## basic string layout ----------------------------------
+    # basic string layout ----------------------------------
     multilayer_network = multinet.multi_layer_network().load_network(
         "datasets/epigenetics.gpickle",
         directed=False,
@@ -184,7 +183,7 @@ def test_basic_visualizatio5():
 
 def test_basic_visualizatio6():
     logging.info("Import viz test 7")
-    ## string layout for larger network -----------------------------------
+    # string layout for larger network -----------------------------------
     multilayer_network = multinet.multi_layer_network().load_network(
         "datasets/soc-Epinions1.edgelist",
         label_delimiter="---",

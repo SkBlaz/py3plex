@@ -1,4 +1,4 @@
-## temporal multiplex analysis algorithms
+# temporal multiplex analysis algorithms
 
 import numpy as np
 from tqdm import tqdm

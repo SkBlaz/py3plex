@@ -48,7 +48,7 @@ def generate_rules_report(kwargs,
 
 def run(kwargs, cli=True, generator_tag=False, num_threads="all"):
 
-    ## change non-default settings. This is useful for func calls
+    # change non-default settings. This is useful for func calls
 
     if cli:
         logger.setLevel(logging.DEBUG if kwargs['verbose'] else logging.INFO)
@@ -59,7 +59,7 @@ def run(kwargs, cli=True, generator_tag=False, num_threads="all"):
     start = time.time()
     start_date = datetime.now().isoformat()
 
-    ## here comest the network reduction part.
+    # here comest the network reduction part.
     graph = build_graph(kwargs)
 
     logger.info('Building the knowledge base')
@@ -124,7 +124,7 @@ def build_graph(kwargs):
 
 def rule_kernel(target):
 
-    ## find exact rule map
+    # find exact rule map
     # if target:
     #     logger.info('Starting '+arguments['learner']+' learner for target \'%s\'' % target)
     # else:
@@ -178,11 +178,11 @@ def run_learner(kwargs, kb, validator, generator=False, num_threads="all"):
         knowledgebase = kb
         n = len(targets)
         if num_threads == "all":
-            step = mp.cpu_count()  ## number of parallel processes
+            step = mp.cpu_count()  # number of parallel processes
         else:
             step = num_threads
         jobs = [range(n)[i:i + step]
-                for i in range(0, n, step)]  ## generate jobs
+                for i in range(0, n, step)]  # generate jobs
 
         rules_per_target = []
         pbar = tqdm(total=len(targets))

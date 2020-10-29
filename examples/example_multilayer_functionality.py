@@ -1,6 +1,6 @@
 from py3plex.core import multinet
 
-## a multilayer object
+# a multilayer object
 A = multinet.multi_layer_network().load_network(
     "../datasets/multiedgelist.txt",
     input_type="multiedgelist",
@@ -8,16 +8,16 @@ A = multinet.multi_layer_network().load_network(
 
 A.basic_stats()
 
-## this is nicer printing.
+# this is nicer printing.
 A.monitor("Edge looping:")
 
-## looping through edges:
+# looping through edges:
 for edge in A.get_edges(data=True):
     print(edge)
 
 A.monitor("Node looping:")
 
-## what about nodes?
+# what about nodes?
 for node in A.get_nodes(data=True):
     print(node)
 

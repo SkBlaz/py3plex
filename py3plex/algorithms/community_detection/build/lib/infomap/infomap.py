@@ -99,17 +99,20 @@ except AttributeError:
 
 class SwigPyIterator(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+
+    def __setattr__(self, name, value): return _swig_setattr(
         self, SwigPyIterator, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, SwigPyIterator, name)
+
+    def __getattr__(self, name): return _swig_getattr(
+        self, SwigPyIterator, name)
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined - class is abstract")
 
     __repr__ = _swig_repr
     __swig_destroy__ = _infomap.delete_SwigPyIterator
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def value(self):
         return _infomap.SwigPyIterator_value(self)
@@ -169,10 +172,10 @@ SwigPyIterator_swigregister(SwigPyIterator)
 
 class StringVector(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, StringVector, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, StringVector, name)
+    def __getattr__(self, name): return _swig_getattr(self, StringVector, name)
     __repr__ = _swig_repr
 
     def iterator(self):
@@ -279,7 +282,7 @@ class StringVector(_object):
         return _infomap.StringVector_capacity(self)
 
     __swig_destroy__ = _infomap.delete_StringVector
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 StringVector_swigregister = _infomap.StringVector_swigregister
@@ -288,10 +291,10 @@ StringVector_swigregister(StringVector)
 
 class StateNodeMap(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, StateNodeMap, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, StateNodeMap, name)
+    def __getattr__(self, name): return _swig_getattr(self, StateNodeMap, name)
     __repr__ = _swig_repr
 
     def iterator(self):
@@ -404,7 +407,7 @@ class StateNodeMap(_object):
         return _infomap.StateNodeMap_upper_bound(self, x)
 
     __swig_destroy__ = _infomap.delete_StateNodeMap
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 StateNodeMap_swigregister = _infomap.StateNodeMap_swigregister
@@ -413,10 +416,10 @@ StateNodeMap_swigregister(StateNodeMap)
 
 class UIntDeque(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, UIntDeque, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, UIntDeque, name)
+    def __getattr__(self, name): return _swig_getattr(self, UIntDeque, name)
     __repr__ = _swig_repr
 
     def iterator(self):
@@ -523,7 +526,7 @@ class UIntDeque(_object):
         return _infomap.UIntDeque_push_front(self, x)
 
     __swig_destroy__ = _infomap.delete_UIntDeque
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 UIntDeque_swigregister = _infomap.UIntDeque_swigregister
@@ -546,10 +549,10 @@ run = _infomap.run
 
 class Infomap(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, Infomap, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Infomap, name)
+    def __getattr__(self, name): return _swig_getattr(self, Infomap, name)
     __repr__ = _swig_repr
 
     def __init__(self, flags):
@@ -588,7 +591,7 @@ class Infomap(_object):
         tree = _swig_property(_infomap.Infomap_tree_get,
                               _infomap.Infomap_tree_set)
     __swig_destroy__ = _infomap.delete_Infomap
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 Infomap_swigregister = _infomap.Infomap_swigregister
@@ -597,10 +600,10 @@ Infomap_swigregister(Infomap)
 
 class MemInfomap(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, MemInfomap, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, MemInfomap, name)
+    def __getattr__(self, name): return _swig_getattr(self, MemInfomap, name)
     __repr__ = _swig_repr
 
     def __init__(self, flags):
@@ -643,7 +646,7 @@ class MemInfomap(_object):
         tree = _swig_property(_infomap.MemInfomap_tree_get,
                               _infomap.MemInfomap_tree_set)
     __swig_destroy__ = _infomap.delete_MemInfomap
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 MemInfomap_swigregister = _infomap.MemInfomap_swigregister
@@ -652,10 +655,10 @@ MemInfomap_swigregister(MemInfomap)
 
 class ElapsedTime(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, ElapsedTime, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, ElapsedTime, name)
+    def __getattr__(self, name): return _swig_getattr(self, ElapsedTime, name)
     __repr__ = _swig_repr
     SECONDS_IN_A_MINUTE = _infomap.ElapsedTime_SECONDS_IN_A_MINUTE
     SECONDS_IN_AN_HOUR = _infomap.ElapsedTime_SECONDS_IN_AN_HOUR
@@ -669,7 +672,7 @@ class ElapsedTime(_object):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_ElapsedTime
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def getSeconds(self):
         return _infomap.ElapsedTime_getSeconds(self)
@@ -690,10 +693,10 @@ ElapsedTime_swigregister(ElapsedTime)
 
 class Date(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, Date, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Date, name)
+    def __getattr__(self, name): return _swig_getattr(self, Date, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -704,7 +707,7 @@ class Date(_object):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_Date
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def __sub__(self, date):
         return _infomap.Date___sub__(self, date)
@@ -716,10 +719,10 @@ Date_swigregister(Date)
 
 class Config(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, Config, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Config, name)
+    def __getattr__(self, name): return _swig_getattr(self, Config, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -1314,7 +1317,7 @@ class Config(_object):
         version = _swig_property(_infomap.Config_version_get,
                                  _infomap.Config_version_set)
     __swig_destroy__ = _infomap.delete_Config
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 Config_swigregister = _infomap.Config_swigregister
@@ -1323,10 +1326,10 @@ Config_swigregister(Config)
 
 class Network(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, Network, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Network, name)
+    def __getattr__(self, name): return _swig_getattr(self, Network, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -1337,7 +1340,7 @@ class Network(_object):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_Network
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def setConfig(self, config):
         return _infomap.Network_setConfig(self, config)
@@ -1443,10 +1446,10 @@ Network_swigregister(Network)
 
 class Bigram(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, Bigram, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Bigram, name)
+    def __getattr__(self, name): return _swig_getattr(self, Bigram, name)
     __repr__ = _swig_repr
     __swig_setmethods__["first"] = _infomap.Bigram_first_set
     __swig_getmethods__["first"] = _infomap.Bigram_first_get
@@ -1470,7 +1473,7 @@ class Bigram(_object):
         return _infomap.Bigram___lt__(self, other)
 
     __swig_destroy__ = _infomap.delete_Bigram
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 Bigram_swigregister = _infomap.Bigram_swigregister
@@ -1479,10 +1482,13 @@ Bigram_swigregister(Bigram)
 
 class BipartiteLink(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+
+    def __setattr__(self, name, value): return _swig_setattr(
         self, BipartiteLink, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, BipartiteLink, name)
+
+    def __getattr__(self, name): return _swig_getattr(
+        self, BipartiteLink, name)
     __repr__ = _swig_repr
     __swig_setmethods__["featureNode"] = _infomap.BipartiteLink_featureNode_set
     __swig_getmethods__["featureNode"] = _infomap.BipartiteLink_featureNode_get
@@ -1511,7 +1517,7 @@ class BipartiteLink(_object):
         return _infomap.BipartiteLink___lt__(self, other)
 
     __swig_destroy__ = _infomap.delete_BipartiteLink
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 BipartiteLink_swigregister = _infomap.BipartiteLink_swigregister
@@ -1520,10 +1526,10 @@ BipartiteLink_swigregister(BipartiteLink)
 
 class Weight(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, Weight, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Weight, name)
+    def __getattr__(self, name): return _swig_getattr(self, Weight, name)
     __repr__ = _swig_repr
     __swig_setmethods__["weight"] = _infomap.Weight_weight_set
     __swig_getmethods__["weight"] = _infomap.Weight_weight_get
@@ -1542,7 +1548,7 @@ class Weight(_object):
         return _infomap.Weight___iadd__(self, w)
 
     __swig_destroy__ = _infomap.delete_Weight
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 Weight_swigregister = _infomap.Weight_swigregister
@@ -1551,10 +1557,10 @@ Weight_swigregister(Weight)
 
 class Triple(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, Triple, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Triple, name)
+    def __getattr__(self, name): return _swig_getattr(self, Triple, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -1565,7 +1571,7 @@ class Triple(_object):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_Triple
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def __lt__(self, other):
         return _infomap.Triple___lt__(self, other)
@@ -1593,10 +1599,10 @@ Triple_swigregister(Triple)
 
 class Link(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, Link, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Link, name)
+    def __getattr__(self, name): return _swig_getattr(self, Link, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -1620,7 +1626,7 @@ class Link(_object):
         weight = _swig_property(_infomap.Link_weight_get,
                                 _infomap.Link_weight_set)
     __swig_destroy__ = _infomap.delete_Link
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 Link_swigregister = _infomap.Link_swigregister
@@ -1629,11 +1635,13 @@ Link_swigregister(Link)
 
 class ComplementaryData(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+
+    def __setattr__(self, name, value): return _swig_setattr(
         self, ComplementaryData, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, ComplementaryData,
-                                                   name)
+
+    def __getattr__(self, name): return _swig_getattr(self, ComplementaryData,
+                                                      name)
     __repr__ = _swig_repr
 
     def __init__(self, n1, n2, weight):
@@ -1710,7 +1718,7 @@ class ComplementaryData(_object):
             _infomap.ComplementaryData_sumWeightShiftedMatch_get,
             _infomap.ComplementaryData_sumWeightShiftedMatch_set)
     __swig_destroy__ = _infomap.delete_ComplementaryData
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 ComplementaryData_swigregister = _infomap.ComplementaryData_swigregister
@@ -1721,12 +1729,13 @@ class MemNetwork(Network):
     __swig_setmethods__ = {}
     for _s in [Network]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, MemNetwork, name, value)
     __swig_getmethods__ = {}
     for _s in [Network]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
-    __getattr__ = lambda self, name: _swig_getattr(self, MemNetwork, name)
+
+    def __getattr__(self, name): return _swig_getattr(self, MemNetwork, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -1737,7 +1746,7 @@ class MemNetwork(Network):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_MemNetwork
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def readInputData(self, *args):
         return _infomap.MemNetwork_readInputData(self, *args)
@@ -1803,13 +1812,15 @@ class MultiplexNetwork(MemNetwork):
     __swig_setmethods__ = {}
     for _s in [MemNetwork]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
-    __setattr__ = lambda self, name, value: _swig_setattr(
+
+    def __setattr__(self, name, value): return _swig_setattr(
         self, MultiplexNetwork, name, value)
     __swig_getmethods__ = {}
     for _s in [MemNetwork]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
-    __getattr__ = lambda self, name: _swig_getattr(self, MultiplexNetwork, name
-                                                   )
+
+    def __getattr__(self, name): return _swig_getattr(self, MultiplexNetwork, name
+                                                      )
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -1820,7 +1831,7 @@ class MultiplexNetwork(MemNetwork):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_MultiplexNetwork
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def readInputData(self, *args):
         return _infomap.MultiplexNetwork_readInputData(self, *args)
@@ -1853,10 +1864,10 @@ FULL = _infomap.FULL
 
 class NodeData(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, NodeData, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, NodeData, name)
+    def __getattr__(self, name): return _swig_getattr(self, NodeData, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -1912,7 +1923,7 @@ class NodeData(_object):
         name = _swig_property(_infomap.NodeData_name_get,
                               _infomap.NodeData_name_set)
     __swig_destroy__ = _infomap.delete_NodeData
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 NodeData_swigregister = _infomap.NodeData_swigregister
@@ -1921,10 +1932,10 @@ NodeData_swigregister(NodeData)
 
 class ChildEdge(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, ChildEdge, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, ChildEdge, name)
+    def __getattr__(self, name): return _swig_getattr(self, ChildEdge, name)
     __repr__ = _swig_repr
 
     def __init__(self, source, target, flow):
@@ -1950,7 +1961,7 @@ class ChildEdge(_object):
         flow = _swig_property(_infomap.ChildEdge_flow_get,
                               _infomap.ChildEdge_flow_set)
     __swig_destroy__ = _infomap.delete_ChildEdge
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 ChildEdge_swigregister = _infomap.ChildEdge_swigregister
@@ -1959,10 +1970,10 @@ ChildEdge_swigregister(ChildEdge)
 
 class EdgeComp(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, EdgeComp, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, EdgeComp, name)
+    def __getattr__(self, name): return _swig_getattr(self, EdgeComp, name)
     __repr__ = _swig_repr
 
     def __call__(self, lhs, rhs):
@@ -1976,7 +1987,7 @@ class EdgeComp(_object):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_EdgeComp
-    __del__ = lambda self: None
+    def __del__(self): return None
 
 
 EdgeComp_swigregister = _infomap.EdgeComp_swigregister
@@ -1985,10 +1996,10 @@ EdgeComp_swigregister(EdgeComp)
 
 class SNode(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, SNode, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, SNode, name)
+    def __getattr__(self, name): return _swig_getattr(self, SNode, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -1999,7 +2010,7 @@ class SNode(_object):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_SNode
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def childDegree(self):
         return _infomap.SNode_childDegree(self)
@@ -2126,10 +2137,10 @@ SNode_swigregister(SNode)
 
 class LeafIterator(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, LeafIterator, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, LeafIterator, name)
+    def __getattr__(self, name): return _swig_getattr(self, LeafIterator, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -2185,7 +2196,7 @@ class LeafIterator(_object):
         return self.next()
 
     __swig_destroy__ = _infomap.delete_LeafIterator
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def childDegree(self):
         return _infomap.LeafIterator_childDegree(self)
@@ -2314,10 +2325,10 @@ LeafIterator_swigregister(LeafIterator)
 
 class TreeIterator(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+    def __setattr__(self, name, value): return _swig_setattr(
         self, TreeIterator, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, TreeIterator, name)
+    def __getattr__(self, name): return _swig_getattr(self, TreeIterator, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -2376,7 +2387,7 @@ class TreeIterator(_object):
         return self.next()
 
     __swig_destroy__ = _infomap.delete_TreeIterator
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def childDegree(self):
         return _infomap.TreeIterator_childDegree(self)
@@ -2505,10 +2516,13 @@ TreeIterator_swigregister(TreeIterator)
 
 class ChildIterator(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+
+    def __setattr__(self, name, value): return _swig_setattr(
         self, ChildIterator, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, ChildIterator, name)
+
+    def __getattr__(self, name): return _swig_getattr(
+        self, ChildIterator, name)
     __repr__ = _swig_repr
 
     def __init__(self, *args):
@@ -2543,7 +2557,7 @@ class ChildIterator(_object):
         return _infomap.ChildIterator___ne__(self, rhs)
 
     __swig_destroy__ = _infomap.delete_ChildIterator
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def childDegree(self):
         return _infomap.ChildIterator_childDegree(self)
@@ -2677,11 +2691,13 @@ ChildIterator_swigregister(ChildIterator)
 
 class HierarchicalNetwork(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(
+
+    def __setattr__(self, name, value): return _swig_setattr(
         self, HierarchicalNetwork, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, HierarchicalNetwork,
-                                                   name)
+
+    def __getattr__(self, name): return _swig_getattr(self, HierarchicalNetwork,
+                                                      name)
     __repr__ = _swig_repr
 
     def __init__(self, conf):
@@ -2692,7 +2708,7 @@ class HierarchicalNetwork(_object):
             self.this = this
 
     __swig_destroy__ = _infomap.delete_HierarchicalNetwork
-    __del__ = lambda self: None
+    def __del__(self): return None
 
     def init(self, networkName, codelength, oneLevelCodelength):
         return _infomap.HierarchicalNetwork_init(self, networkName, codelength,
