@@ -1,6 +1,5 @@
 # high level interface for community detection algorithms
 from .community_louvain import *
-import os
 try:
     from .NoRC import *
 except:
@@ -59,7 +58,6 @@ def infomap_communities(graph,
 
     # check type of the network
     print("INFO: Infomap community detection in progress..")
-    outstruct = []
 
     # go through individual nodes first and enumerate them., also layers
     inverse_node_map = graph.serialize_to_edgelist(edgelist_file=edgelist_file,

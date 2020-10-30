@@ -10,7 +10,7 @@ from rdflib import RDF, RDFS, URIRef
 from .example import Example
 from .predicate import UnaryPredicate
 from .helpers import avg, std, user_defined
-from .settings import EXAMPLE_SCHEMA, logger, W3C, HEDWIG
+from .settings import EXAMPLE_SCHEMA, HEDWIG, logger
 
 
 class ExperimentKB:

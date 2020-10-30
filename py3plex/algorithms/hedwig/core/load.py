@@ -4,13 +4,11 @@ Reading input data.
 @author: anze.vavpetic@ijs.si
 '''
 import rdflib
-import json
 import hashlib
 import os
 import _pickle as cPickle
 
 from .settings import logger, HEDWIG, GENERIC_NAMESPACE
-from .example import Example
 
 
 def rdf(paths, def_format='n3'):
@@ -81,7 +79,6 @@ def csv_parse_data(g, data_file):
     Alternatively attribute values can be URIs themselves.
     '''
     attributes = []
-    class_labels = []
     examples = []
 
     with open(data_file) as f:

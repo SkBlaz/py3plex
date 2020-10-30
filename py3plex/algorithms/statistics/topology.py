@@ -1,12 +1,6 @@
 # test scale-freenes of a network
 
 import networkx as nx
-import numpy as np
-import random
-import argparse
-from itertools import groupby, chain
-from collections import defaultdict
-import pandas as pd
 from .powerlaw import *
 import matplotlib.pyplot as plt
 
@@ -96,8 +90,6 @@ def plot_power_law(degree_sequence,
     print(results.distribution_compare('exponential', 'lognormal'))
     print(results.distribution_compare('exponential', 'truncated_power_law'))
     print(results.distribution_compare('exponential', 'power_law'))
-    import matplotlib.ticker as mtick
-    from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
     plt.legend(numpoints=1, loc="lower left", bbox_to_anchor=(0.05, 0))
     vals = ax1.get_yticks()
     vals = [float(round(x * len(degree_sequence), 1)) for x in vals]
@@ -151,7 +143,6 @@ def plot_power_law(degree_sequence,
     #    ax1.set_xticks([20,30,40,65])
     #    plt.xticks(x, [1,10,100,1000], rotation='vertical')
 
-    import matplotlib.ticker as mtick
     plt.ylabel(r"$P(k) = Pr(K \geq k)$")
     #    plt.xlim(5,120)
 

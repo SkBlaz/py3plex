@@ -1,6 +1,5 @@
 # An example how nx functions can be used.
 
-from py3plex.core import multinet
 from py3plex.core import random_generators
 
 # generate a toy network

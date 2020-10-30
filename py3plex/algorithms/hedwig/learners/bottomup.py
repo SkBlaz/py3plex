@@ -3,12 +3,6 @@ Main learner class.
 
 @author: anze.vavpetic@ijs.si
 '''
-from collections import defaultdict
-
-from hedwig.core import UnaryPredicate, Rule, Example
-from hedwig.core.settings import logger
-from hedwig.stats.significance import is_redundant
-from hedwig.stats.scorefunctions import interesting
 
 
 class BottomUpLearner:
@@ -89,7 +83,6 @@ class BottomUpLearner:
         '''
         Induces rules for the given knowledge base.
         '''
-        pass
 
     def bottom_clause(self):
         pass

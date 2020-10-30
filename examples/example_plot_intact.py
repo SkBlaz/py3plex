@@ -1,10 +1,10 @@
 # simple plot of a larger file
 from collections import Counter
 from py3plex.algorithms.community_detection import community_wrapper as cw
-from py3plex.visualization.embedding_visualization import embedding_visualization, embedding_tools
+from py3plex.visualization.embedding_visualization import embedding_tools
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.multilayer import *
-from py3plex.visualization.colors import all_color_names, colors_default
+from py3plex.visualization.colors import colors_default
 from py3plex.core import multinet
 
 # string layout for larger network -----------------------------------

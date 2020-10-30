@@ -3,7 +3,6 @@
 # some generic methods used at many places..
 
 from collections import defaultdict, Counter
-import itertools
 import gzip
 
 

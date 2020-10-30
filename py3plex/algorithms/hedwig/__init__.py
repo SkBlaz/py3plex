@@ -104,7 +104,7 @@ def run(kwargs, cli=True, generator_tag=False, num_threads="all"):
 
 def build_graph(kwargs):
     data = kwargs['data']
-    base_name = data.split('.')[0]
+    data.split('.')[0]
 
     # Walk the dir to find BK files
     ontology_list = []
@@ -166,7 +166,6 @@ def run_learner(kwargs, kb, validator, generator=False, num_threads="all"):
     else:
         targets = [None]
 
-    rules_report = ''
     rules_per_target = []
 
     if num_threads != 0:

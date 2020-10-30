@@ -1,11 +1,6 @@
 from py3plex.core import multinet
-import pandas
-import tqdm
-from py3plex.core import random_generators
 from py3plex.visualization.multilayer import *
-from py3plex.visualization.colors import all_color_names, colors_default
 import networkx as nx
-from numpy import array
 
 # An example general multilayer network
 A = multinet.multi_layer_network()

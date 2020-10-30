@@ -1,6 +1,5 @@
 # a simple example for wrapping entworkx functions
 
-from py3plex.core import multinet
 from py3plex.core import random_generators
 
 multilayer_network = random_generators.random_multilayer_ER(300,

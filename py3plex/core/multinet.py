@@ -7,8 +7,6 @@ from . import converters
 from .HINMINE.IO import *  # parse the graph
 from .HINMINE.decomposition import *  # decompose the graph
 from .supporting import *
-import scipy.sparse as sp
-import pandas as pd
 import tqdm
 
 try:
@@ -19,7 +17,6 @@ except:
 # visualization modules
 try:
     from ..visualization.multilayer import *
-    from ..visualization.colors import all_color_names, colors_default
     server_mode = False
 except:
     server_mode = True
@@ -64,7 +61,6 @@ class multi_layer_network:
             return self.core_network[i]
         else:
             return self.core_network[i][j]
-        pass
 
     def read_ground_truth_communities(self, cfile):
         """
@@ -399,7 +395,7 @@ class multi_layer_network:
             n2_name = edge[1][0]
             n2_type = edge[1][1]
             edge_type = edge[2].get('type')
-            weight = edge[2].get('weight')
+            edge[2].get('weight')
             edge_obj = {
                 "source": n1_name,
                 "target": n2_name,
@@ -508,7 +504,7 @@ class multi_layer_network:
         node_first_names = edge_df.node_first.values
         node_second_names = edge_df.node_second.values
         layer_names = edge_df.layer_name.values
-        layer_edges = defaultdict(list)
+        defaultdict(list)
         edges = []
         for enx, en in enumerate(node_first_names):
             edge = (str(node_first_names[enx]), str(node_second_names[enx]),
@@ -825,17 +821,11 @@ class multi_layer_network:
         TODO
         """
 
-        pass
-
     def _encode_to_numeric(self):
 
         if self.network_type != "multiplex":
-            new_edges = []
             nmap = {}
             n_count = 0
-            n1 = []
-            n2 = []
-            w = []
 
             if self.directed:
                 simple_graph = nx.DiGraph()

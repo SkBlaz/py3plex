@@ -3,21 +3,14 @@
 import networkx as nx
 import numpy as np
 import tqdm
-from sklearn.cluster import AffinityPropagation
-import sklearn.metrics.pairwise
 import multiprocessing as mp
 from .node_ranking import sparse_page_rank, modularity, stochastic_normalization
-from scipy.cluster.hierarchy import dendrogram, linkage
-from scipy.spatial.distance import pdist
+from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
 import scipy.sparse as sp
 from collections import defaultdict
-from itertools import product
 #import community
-from networkx.algorithms.community import LFR_benchmark_graph
-from sklearn.cluster import AffinityPropagation, DBSCAN, MiniBatchKMeans
-from scipy import cluster
-from scipy.spatial.distance import pdist
+from sklearn.cluster import MiniBatchKMeans
 global _RANK_GRAPH
 
 

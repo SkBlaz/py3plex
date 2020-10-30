@@ -1,6 +1,4 @@
 # simple example for saving to multiedgelists
-from py3plex.visualization.multilayer import *
-from py3plex.visualization.colors import all_color_names, colors_default
 from py3plex.core import multinet
 
 multilayer_network = multinet.multi_layer_network().load_network(

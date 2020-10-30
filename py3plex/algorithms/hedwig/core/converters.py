@@ -1,7 +1,6 @@
 # a converter set of methods for obtaining  normal inputs
 import rdflib
 from .term_parsers import *
-import os
 from collections import defaultdict
 import gzip
 
@@ -20,7 +19,7 @@ def convert_mapping_to_rdf(input_mapping_file,
     KT = rdflib.Namespace('http://kt.ijs.si/hedwig#')
     amp_uri = 'http://kt.ijs.si/ontology/hedwig#'
     obo_uri = "http://purl.obolibrary.org/obo/"
-    AMP = rdflib.Namespace(amp_uri)
+    rdflib.Namespace(amp_uri)
 
     # include neighbors as instances or not..
     mapping_file = {}
@@ -36,7 +35,7 @@ def convert_mapping_to_rdf(input_mapping_file,
         for k, v in input_mapping_file.items():
             try:
                 node, layer = k
-            except Exception as es:
+            except Exception:
                 parts = k.split(split_node_by)  # PSI-MI format
                 if layer_type in parts:
                     layer, node = k.split(split_node_by)  # PSI-MI format
@@ -82,7 +81,7 @@ def convert_mapping_to_rdf(input_mapping_file,
                     g.add((u, KT.annotated_with, blank))
                     g.add((blank, KT.annotation, annotation_uri))
 
-        except Exception as err:
+        except Exception:
             # incorrect mappings are ignored..
             pass
 
@@ -95,7 +94,7 @@ def obo2n3(obofile, n3out, gaf_file):
     current_term = ""
     #obofile = obofile.replace("/","")
 
-    gaf_mappings = parse_gaf_file(gaf_file)
+    parse_gaf_file(gaf_file)
 
     # iterate through all files
     if ".gz" in obofile:
@@ -127,7 +126,7 @@ def obo2n3(obofile, n3out, gaf_file):
     KT = rdflib.Namespace('http://kt.ijs.si/hedwig#')
     amp_uri = 'http://kt.ijs.si/ontology/hedwig#'
     obo_uri = "http://purl.obolibrary.org/obo/"
-    AMP = rdflib.Namespace(amp_uri)
+    rdflib.Namespace(amp_uri)
 
     for k, v in ontology.items():
         u = rdflib.term.URIRef('%s%s' % (obo_uri, k))

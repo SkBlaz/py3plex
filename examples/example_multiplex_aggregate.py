@@ -1,7 +1,6 @@
 # aggregate a multiplex network
 
 import networkx as nx
-from py3plex.core import multinet
 from py3plex.core import random_generators
 
 # initiate an instance of a random graph

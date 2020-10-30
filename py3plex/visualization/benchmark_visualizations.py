@@ -230,7 +230,7 @@ def plot_mean_times(fn):
     # for each dataset, plot times.
     fx = fnamex.groupby(["setting"])['time'].mean().sort_values().index.values
     rkx = fn.groupby(['dataset', 'setting'])['time'].mean()
-    dx2 = rkx.reset_index()
+    rkx.reset_index()
 
     ax = sns.boxplot(x="setting",
                      y="time",

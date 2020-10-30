@@ -213,7 +213,7 @@ def calculate_importance_okapi(classes,
     b = 0.75
     predicted_pos = universal_set.intersection(linked_nodes)  #
     predicted_pos_num = len(predicted_pos)
-    idf = log((n - predicted_pos_num + 0.5) / (predicted_pos_num + 0.5))
+    log((n - predicted_pos_num + 0.5) / (predicted_pos_num + 0.5))
     return_vec = np.zeros((len(linked_nodes), 1))
     for i, linked_node in enumerate(linked_nodes):
         return_vec[i] = (k1 +

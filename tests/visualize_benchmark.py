@@ -48,5 +48,3 @@ if __name__ == "__main__":
 
     df = load_results("example_benchmark.csv")
     node_dependent_performance(df)
-
-    pass

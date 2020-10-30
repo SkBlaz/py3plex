@@ -4,7 +4,7 @@ from py3plex.core import random_generators
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-from py3plex.visualization.colors import all_color_names, colors_default
+from py3plex.visualization.colors import colors_default
 from py3plex.visualization.multilayer import *
 from py3plex.core import multinet
 import logging

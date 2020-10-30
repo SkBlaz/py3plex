@@ -3,7 +3,6 @@
 # some generic methods used at many places..
 
 from collections import defaultdict, Counter
-import itertools
 import gzip
 
 
@@ -35,7 +34,7 @@ def parse_gaf_file(gaf_mappings, whole_list_counts=False):
 
                     if whole_list_counts:
                         whole_list.append(parts[4])
-                except Exception as es:
+                except Exception:
                     pass
     else:
         with open(gaf_mappings, "r") as im:
@@ -47,7 +46,7 @@ def parse_gaf_file(gaf_mappings, whole_list_counts=False):
 
                     if whole_list_counts:
                         whole_list.append(parts[4])
-                except Exception as es:
+                except Exception:
                     pass
 
 

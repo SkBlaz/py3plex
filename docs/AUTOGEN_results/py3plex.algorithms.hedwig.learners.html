@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>py3plex.algorithms.hedwig.learners package &mdash; py3plex 0.79 documentation</title>
+  <title>py3plex.algorithms.hedwig.learners package &mdash; py3plex 0.80 documentation</title>
   
 
   
@@ -187,8 +187,58 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="py3plex-algorithms-hedwig-learners-bottomup-module">
-<h2>py3plex.algorithms.hedwig.learners.bottomup module<a class="headerlink" href="#py3plex-algorithms-hedwig-learners-bottomup-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-py3plex.algorithms.hedwig.learners.bottomup">
+<span id="py3plex-algorithms-hedwig-learners-bottomup-module"></span><h2>py3plex.algorithms.hedwig.learners.bottomup module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.learners.bottomup" title="Permalink to this headline">¶</a></h2>
+<p>Main learner class.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.learners.bottomup.</code><code class="sig-name descname">BottomUpLearner</code><span class="sig-paren">(</span><em class="sig-param">kb</em>, <em class="sig-param">n=None</em>, <em class="sig-param">min_sup=1</em>, <em class="sig-param">sim=1</em>, <em class="sig-param">depth=4</em>, <em class="sig-param">target=None</em>, <em class="sig-param">use_negations=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Bottom-up learner.</p>
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.Default">
+<code class="sig-name descname">Default</code><em class="property"> = 'default'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.Default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.Improvement">
+<code class="sig-name descname">Improvement</code><em class="property"> = 'improvement'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.Improvement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.Similarity">
+<code class="sig-name descname">Similarity</code><em class="property"> = 'similarity'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.Similarity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.bottom_clause">
+<code class="sig-name descname">bottom_clause</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.bottom_clause" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.get_subclasses">
+<code class="sig-name descname">get_subclasses</code><span class="sig-paren">(</span><em class="sig-param">pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.get_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.get_superclasses">
+<code class="sig-name descname">get_superclasses</code><span class="sig-paren">(</span><em class="sig-param">pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.get_superclasses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.induce">
+<code class="sig-name descname">induce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.induce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Induces rules for the given knowledge base.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.is_implicit_root">
+<code class="sig-name descname">is_implicit_root</code><span class="sig-paren">(</span><em class="sig-param">pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner.is_implicit_root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-py3plex.algorithms.hedwig.learners.learner">
 <span id="py3plex-algorithms-hedwig-learners-learner-module"></span><h2>py3plex.algorithms.hedwig.learners.learner module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.learners.learner" title="Permalink to this headline">¶</a></h2>

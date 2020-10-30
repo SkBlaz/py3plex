@@ -1,5 +1,4 @@
 # converters
-import networkx as nx
 from collections import defaultdict
 from ..visualization.layout_algorithms import *
 
@@ -112,7 +111,6 @@ def prepare_for_visualization(multinet,
     if verbose:
         print("Finished with layout..")
     inverse_mapping = {}
-    layouts = []
 
     # construct the inverse mapping
     for k, v in layers.items():
@@ -161,7 +159,7 @@ def prepare_for_visualization_hairball(multinet, compute_layouts=False):
         for x in v:
             inverse_mapping[x] = enumerated_layers[k]
     ordered_names = [inverse_mapping[x] for x in multinet.nodes()]
-    node_types = [x[1] for x in multinet.nodes()]
+    [x[1] for x in multinet.nodes()]
     return (ordered_names, multinet)
 
 
@@ -190,7 +188,6 @@ def prepare_for_parsing(multinet):
     }
 
     inverse_mapping = {}
-    layouts = []
 
     # construct the inverse mapping
     for k, v in layers.items():

@@ -1,14 +1,7 @@
 # decomposition with ground truth
 
 from py3plex.core import multinet
-from py3plex.algorithms.network_classification.PPR import *
-from py3plex.visualization.benchmark_visualizations import *
-from sklearn.svm import SVC
-from sklearn.ensemble import ExtraTreesClassifier
 #from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import f1_score
-from sklearn.multiclass import OneVsRestClassifier
 
 dataset = "../datasets/imdb.gpickle"
 

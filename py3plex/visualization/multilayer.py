@@ -301,7 +301,6 @@ def draw_multiedges(network_list,
 
             except Exception as err:
                 print(err)
-                pass
 
 
 #                print(err,"test")
@@ -317,8 +316,7 @@ def generate_random_multiedges(network_list,
                                inverse_tag=False,
                                pheight=1):
 
-    edge_subplot = main_figure.add_subplot(111)
-    return_list = []
+    main_figure.add_subplot(111)
 
     # this needs to be in the form of:
     for k in range(random_edges):

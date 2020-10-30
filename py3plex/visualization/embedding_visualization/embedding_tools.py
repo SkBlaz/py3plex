@@ -12,7 +12,6 @@ except ImportError:
         pass
 
 import pandas as pd
-import numpy as np
 
 
 def get_2d_coordinates_tsne(multinet, output_format="json", verbose=True):

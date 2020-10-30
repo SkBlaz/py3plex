@@ -3,7 +3,6 @@ import numpy as np
 import networkx as nx
 import scipy.sparse as sp
 import multiprocessing as mp
-from itertools import product
 
 
 def stochastic_normalization(matrix):
@@ -20,7 +19,7 @@ def stochastic_normalization(matrix):
     k = np.zeros(matrix.shape[1])
     nz = 1 / d[nzs]
     k[nzs] = nz
-    a = sp.diags(k, 0).tocsc()
+    sp.diags(k, 0).tocsc()
     matrix = (sp.diags(k, 0).tocsc().dot(matrix)).transpose()
     return matrix
 

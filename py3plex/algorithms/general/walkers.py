@@ -1,7 +1,6 @@
 # different random walk implementations
 import networkx as nx
 import numpy as np
-import random
 import itertools
 
 

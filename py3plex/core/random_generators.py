@@ -74,7 +74,6 @@ def random_multiplex_generator(n, m, d=0.9):
 
             edge_to_layers[e] = edge_to_layers.get(e, []) + [l]
 
-    edgelist = []
     for k, v in edge_to_layers.items():
         for l in v:
             G.add_edge((k[0], l), (k[1], l), type="default", weight=1)

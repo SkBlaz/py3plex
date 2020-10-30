@@ -3,7 +3,6 @@
 from py3plex.core import multinet
 from py3plex.algorithms.network_classification import *
 from py3plex.visualization.benchmark_visualizations import *
-import scipy
 import pandas as pd
 
 multilayer_network = multinet.multi_layer_network().load_network(

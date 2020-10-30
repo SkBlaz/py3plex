@@ -6,11 +6,8 @@ from sklearn.svm import SVC
 from sklearn.metrics import f1_score
 import time
 import numpy as np
-import multiprocessing as mp
 import pandas as pd
-from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn import preprocessing
+from sklearn.model_selection import StratifiedShuffleSplit
 import matplotlib.pyplot as plt
 import seaborn as sns
 

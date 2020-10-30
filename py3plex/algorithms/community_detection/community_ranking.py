@@ -2,12 +2,10 @@
 
 import networkx as nx
 import numpy as np
-from sklearn.cluster import AffinityPropagation
 import multiprocessing as mp
 from node_ranking import sparse_page_rank, modularity, stochastic_normalization
-from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
-import scipy.sparse as sp
 
 
 def page_rank_kernel(index_row):
@@ -71,13 +69,10 @@ def return_infomap_communities(network):
 if __name__ == "__main__":
     from infomap import infomap
     from collections import defaultdict
-    from itertools import product
     import community
     from networkx.algorithms.community import LFR_benchmark_graph
-    from sklearn.cluster import AffinityPropagation, DBSCAN, MiniBatchKMeans
-    from scipy import cluster
+    from sklearn.cluster import MiniBatchKMeans
     from scipy.cluster.hierarchy import fcluster
-    from scipy.spatial.distance import pdist
     global _RANK_GRAPH
 
     print("Generating communities..")

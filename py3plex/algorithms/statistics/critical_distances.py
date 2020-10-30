@@ -5,8 +5,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import rc, font_manager
-import sys
-import traceback
 from os import makedirs
 from os.path import exists
 
@@ -318,8 +316,6 @@ def plot_critical_distance(fname,
                            aggregator="mean",
                            fontsize=10):
 
-    import Orange
-    import matplotlib.pyplot as plt
     from collections import defaultdict
     import operator
 
@@ -340,7 +336,7 @@ def plot_critical_distance(fname,
             print(en, j[0])
             clf_ranks[j[0]].append(len(sorted_d) - en)
 
-    comparisons = fname[groupby[0]].nunique()
+    fname[groupby[0]].nunique()
     clf_score = {k: np.mean(v) for k, v in clf_ranks.items()}
     names = [x.replace("_", " ") for k, x in enumerate(list(clf_score.keys()))]
     avranks = list(clf_score.values())

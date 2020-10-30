@@ -1,7 +1,6 @@
 # core IO operations
 
 from .dataStructures import HeterogeneousInformationNetwork
-import numpy as np
 
 
 def load_hinmine_object(infile,

@@ -3,7 +3,6 @@ Main learner class.
 
 @author: anze.vavpetic@ijs.si
 '''
-from collections import defaultdict
 
 from ..core import UnaryPredicate, Rule, Example
 from ..core.settings import logger

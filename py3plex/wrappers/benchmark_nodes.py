@@ -5,7 +5,7 @@ import sys
 
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from collections import defaultdict
-from gensim.models import Word2Vec, KeyedVectors
+from gensim.models import KeyedVectors
 from six import iteritems
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.linear_model import LogisticRegression

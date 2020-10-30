@@ -1,14 +1,10 @@
 # tutorial
 
-import argparse
 #import bayesiantests as bt
 from .bayesiantests import *
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
-from collections import defaultdict
 
 
 def generate_bayesian_diagram(result_matrices,

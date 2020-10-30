@@ -5,13 +5,10 @@
 # this is to calculate enrichment scores
 
 from scipy.stats import fisher_exact
-import multiprocessing as mp
-import random
 from statsmodels.sandbox.stats.multicomp import multipletests
-from collections import defaultdict, Counter
-from ..term_parsers import parse_gaf_file, read_termlist, read_topology_mappings, read_uniprot_GO
+from collections import defaultdict
+from ..term_parsers import read_topology_mappings, read_uniprot_GO
 import pandas as pd
-import numpy as np
 import logging
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')

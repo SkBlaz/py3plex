@@ -1,13 +1,10 @@
 # visualize multiplex network dynamics
 
 from py3plex.visualization.multilayer import *
-from py3plex.visualization.colors import all_color_names, colors_default
 from py3plex.core import multinet
 from collections import defaultdict
-import time
 import matplotlib.pyplot as plt
 import seaborn as sns
-import copy
 
 # first parse the layer n1 n2 w edgelist
 multilayer_network = multinet.multi_layer_network().load_network(

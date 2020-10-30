@@ -1,15 +1,11 @@
 # wrapper for the C++ version of the Node2Vec algorithm
 import networkx as nx
 import ast
-import numpy as np
 from subprocess import call
-from scipy import optimize
 import os
 from sklearn import linear_model
-from sklearn.metrics import f1_score
 from sklearn.multiclass import OneVsRestClassifier
 import multiprocessing as mp
-from collections import OrderedDict
 from .benchmark_nodes import *
 import time
 
@@ -58,14 +54,13 @@ def n2v_embedding(G,
     if verbose:
         print(nx.info(G))
 
-    N = len(G.nodes())
+    len(G.nodes())
 
     # get the graph..
     if not os.path.exists("tmp"):
         os.makedirs("tmp")
 
     tmp_graph = "tmp/tmpgraph.edges"
-    out_graph = "tmp/tmpgraph.emb"
 
     number_of_nodes = len(G.nodes())
     number_of_edges = len(G.edges())
@@ -89,7 +84,6 @@ def n2v_embedding(G,
     vals = parameter_range
     copt = 0
     cset = [0, 0]
-    dim = embedding_dimension
 
     if float(p) > -100 and float(q) > -100:
         print("Runing specific config of N2V.")

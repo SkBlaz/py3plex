@@ -1,6 +1,5 @@
 # tensor-based operations examples
 
-from py3plex.core import multinet
 from py3plex.core import random_generators
 
 # initiate an instance of a random graph

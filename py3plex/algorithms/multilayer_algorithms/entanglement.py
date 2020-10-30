@@ -9,7 +9,6 @@ import itertools
 import numpy as np
 from scipy import spatial
 from scipy.sparse.csgraph import csgraph_from_dense, connected_components
-import networkx as nx
 import sys
 print(sys.version)
 

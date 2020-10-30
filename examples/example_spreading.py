@@ -1,6 +1,5 @@
 # simple spreading process on multilayers
 
-from py3plex.core import multinet
 from py3plex.core import random_generators
 import numpy as np
 import queue

@@ -1,10 +1,7 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from py3plex.core import multinet
 from py3plex.core import random_generators
 import matplotlib.image as mgimg
-import numpy as np
 
 fig = plt.figure()
 folder_tmp_files = "../datasets/animation"

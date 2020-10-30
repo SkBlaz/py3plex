@@ -7,9 +7,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import f1_score
 import time
 import numpy as np
-import multiprocessing as mp
-from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
-from sklearn import preprocessing
+from sklearn.model_selection import StratifiedShuffleSplit
 
 
 def construct_PPR_matrix(graph_matrix, parallel=False):
@@ -109,8 +107,8 @@ def validate_ppr(core_network,
                 train_x = vectors[X_train]
                 test_x = vectors[X_test]
 
-                train_labels = labels[X_train]
-                test_labels = labels[X_test]
+                labels[X_train]
+                labels[X_test]
 
                 train_labels_first = onedim_labels[X_train]
                 test_labels_second = onedim_labels[X_test]

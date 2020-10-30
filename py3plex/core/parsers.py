@@ -4,10 +4,8 @@ import networkx as nx
 import json
 import itertools
 import glob
-import operator
 import numpy as np
 import scipy.io
-from collections import defaultdict, Counter
 import pandas as pd
 import gzip
 from .supporting import *
@@ -55,7 +53,8 @@ def parse_gml(file_name, directed):
 def parse_nx(nx_object, directed):
     """
     Core parser for networkx objects
-    :input:  a networkx graph
+    Args:
+        a networkx graph
     """
 
     return (nx_object, None)
@@ -64,7 +63,8 @@ def parse_nx(nx_object, directed):
 def parse_matrix(file_name, directed):
     """
     Parser for matrices
-    :input: a SciPy sparse matrix
+    Args:
+        A SciPy sparse matrix
     """
 
     mat = scipy.io.loadmat(file_name)
@@ -74,7 +74,8 @@ def parse_matrix(file_name, directed):
 def parse_gpickle(file_name, directed=False, layer_separator=None):
     """
     A parser for generic Gpickle as stored by Py3plex.    
-    :input: gpickle object
+    Args:
+        A gpickle object
     """
 
     print("Parsing gpickle..")
@@ -109,7 +110,8 @@ def parse_gpickle(file_name, directed=False, layer_separator=None):
 def parse_gpickle_biomine(file_name, directed):
     """
     Gpickle parser for biomine graphs
-    :input: Gpickle containing BioMine data
+    Args:
+        Gpickle containing BioMine data
     """
 
     # convert the biomine
@@ -132,7 +134,8 @@ def parse_gpickle_biomine(file_name, directed):
 def parse_detangler_json(file_path):
     """
     Parser for generic Detangler files
-    :input: Detangler JSON
+    Args:
+        Detangler JSON
     """
 
     if directed:
@@ -168,7 +171,8 @@ def parse_multi_edgelist(input_name, directed):
     """
     A generic multiedgelist parser
     n l n l w
-    :input: a text file containing multiedges
+    Args:
+    A text file containing multiedges
     """
 
     if directed:
@@ -215,7 +219,8 @@ def parse_multi_edgelist(input_name, directed):
 def parse_simple_edgelist(input_name, directed):
     """
     Simple edgelist n n w
-    :input: a text file
+    Args:
+        A text file
     """
 
     if directed:
@@ -308,14 +313,13 @@ def parse_embedding(input_name):
     Loader for generic embedding as outputed by GenSim
     """
 
-    meta = None
     embedding_matrix = []
     embedding_indices = []
     with open(input_name) as IN:
         for line in IN:
             line = line.strip().split()
             if len(line) == 2:
-                meta = line
+                pass
             else:
                 embedding_matrix.append(line[1:])
                 embedding_indices.append(line[0])
@@ -345,7 +349,6 @@ def parse_multiedge_tuple_list(network, directed):
         # G.add_edge(node_first,node_second,weight=weight)
 
     return (G, None)
-    pass
 
 
 def parse_multiplex_edges(input_name, directed):
