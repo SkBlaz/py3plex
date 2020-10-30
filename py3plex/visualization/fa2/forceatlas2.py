@@ -80,10 +80,10 @@ class ForceAtlas2:
         self.verbose = verbose
 
     def init(
-        self,
-        # a graph in 2D numpy ndarray format (or) scipy sparse matrix format
-        G,
-        pos=None  # Array of initial positions
+            self,
+            # a graph in 2D numpy ndarray format (or) scipy sparse matrix format
+            G,
+            pos=None  # Array of initial positions
     ):
         isSparse = False
         if isinstance(G, numpy.ndarray):

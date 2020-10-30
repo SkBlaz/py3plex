@@ -149,7 +149,6 @@ multilayer_network = multinet.multi_layer_network().load_network(
     input_type="gpickle_biomine")
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--input_network", default="../datasets/cora.mat")
 parser.add_argument("--input_type", default="sparse")

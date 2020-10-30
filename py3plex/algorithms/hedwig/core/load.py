@@ -150,9 +150,14 @@ def csv(hierarchy_files, data):
 def load_graph(ontology_list, data, def_format='n3', cache=True):
     def filter_valid_files(paths):
         if def_format == 'csv':
-            def filter_fn(p): return p.endswith('.csv') or p.endswith('.tsv')
+
+            def filter_fn(p):
+                return p.endswith('.csv') or p.endswith('.tsv')
         else:
-            def filter_fn(p): return p.endswith(def_format)
+
+            def filter_fn(p):
+                return p.endswith(def_format)
+
         return filter(filter_fn, paths)
 
     logger.info('Calculating data checksum')

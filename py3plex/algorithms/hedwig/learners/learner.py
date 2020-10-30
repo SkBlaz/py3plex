@@ -53,7 +53,9 @@ class Learner:
         self.implicit_roots = self._implicit_roots()
 
     def _pruned_subclasses(self):
-        def min_sup(pred): return self.kb.n_members(pred) >= self.min_sup
+        def min_sup(pred):
+            return self.kb.n_members(pred) >= self.min_sup
+
         pruned_subclasses = {}
         for pred in self.kb.predicates:
             subclasses = self.kb.get_subclasses(pred)
@@ -62,7 +64,9 @@ class Learner:
         return pruned_subclasses
 
     def _pruned_superclasses(self):
-        def min_sup(pred): return self.kb.n_members(pred) >= self.min_sup
+        def min_sup(pred):
+            return self.kb.n_members(pred) >= self.min_sup
+
         pruned_superclasses = {}
         for pred in self.kb.predicates:
             superclasses = self.kb.super_classes(pred)
@@ -182,7 +186,8 @@ class Learner:
         '''
         Returns a list of all specializations of 'rule'.
         '''
-        def is_unary(p): return isinstance(p, UnaryPredicate)
+        def is_unary(p):
+            return isinstance(p, UnaryPredicate)
 
         def specialize_optimal_subclass(rule):
             rules = []

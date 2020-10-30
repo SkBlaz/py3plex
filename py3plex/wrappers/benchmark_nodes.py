@@ -137,7 +137,8 @@ def main():
     parser.add_argument(
         "--network",
         required=True,
-        help='A .mat file containing the adjacency matrix and node labels of the input network.'
+        help=
+        'A .mat file containing the adjacency matrix and node labels of the input network.'
     )
     parser.add_argument(
         "--adj-matrix-name",
@@ -155,7 +156,8 @@ def main():
         "--all",
         default=False,
         action='store_true',
-        help='The embeddings are evaluated on all training percents from 10 to 90 when this flag is set to true. '
+        help=
+        'The embeddings are evaluated on all training percents from 10 to 90 when this flag is set to true. '
         'By default, only training percents of 10, 50 and 90 are used.')
 
     args = parser.parse_args()

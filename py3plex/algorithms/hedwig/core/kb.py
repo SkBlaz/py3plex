@@ -17,7 +17,6 @@ class ExperimentKB:
     '''
     The knowledge base for one specific experiment.
     '''
-
     def __init__(self, triplets, score_fun, instances_as_leaves=True):
         '''
         Initialize the knowledge base with the given triplet graph.

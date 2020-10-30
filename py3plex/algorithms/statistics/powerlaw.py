@@ -59,7 +59,6 @@ class Fit(object):
         dictionary of parameter names ('alpha' and/or 'sigma') and tuples
         of their lower and upper limits (ex. (1.5, 2.5), (None, .1)
     """
-
     def __init__(self,
                  data,
                  discrete=False,
@@ -576,7 +575,6 @@ class Distribution(object):
     parent_Fit : Fit object, optional
         A Fit object from which to use data, if it exists.
     """
-
     def __init__(self,
                  xmin=1,
                  xmax=None,
@@ -1355,7 +1353,7 @@ class Stretched_Exponential(Distribution):
             loglikelihoods = (log(
                 (data * self.Lambda)**(self.beta - 1) * self.beta *
                 self.Lambda) + (self.Lambda * self.xmin)**self.beta -
-                (self.Lambda * data)**self.beta)
+                              (self.Lambda * data)**self.beta)
             # Simplified so as not to throw a nan from infs being divided by each other
             from sys import float_info
             from numpy import inf
@@ -2274,8 +2272,14 @@ class Distribution_Fit(object):
             raise AttributeError(name)
 
 
-def distribution_fit(data, distribution='all', discrete=False, xmin=None, xmax=None,
-                     comparison_alpha=None, search_method='Likelihood', estimate_discrete=True):
+def distribution_fit(data,
+                     distribution='all',
+                     discrete=False,
+                     xmin=None,
+                     xmax=None,
+                     comparison_alpha=None,
+                     search_method='Likelihood',
+                     estimate_discrete=True):
     from numpy import log
 
     if distribution == 'negative_binomial' and not is_discrete(data):
@@ -2537,38 +2541,45 @@ def likelihood_function_generator(distribution_name,
                                   xmax=None):
 
     if distribution_name == 'power_law':
-        def likelihood_function(parameters, data): return \
-            power_law_likelihoods(
+
+        def likelihood_function(parameters, data):            return \
+power_law_likelihoods(
                 data, parameters[0], xmin, xmax, discrete)
 
     elif distribution_name == 'exponential':
-        def likelihood_function(parameters, data): return \
-            exponential_likelihoods(
+
+        def likelihood_function(parameters, data):            return \
+exponential_likelihoods(
                 data, parameters[0], xmin, xmax, discrete)
 
     elif distribution_name == 'stretched_exponential':
-        def likelihood_function(parameters, data): return \
-            stretched_exponential_likelihoods(
+
+        def likelihood_function(parameters, data):            return \
+stretched_exponential_likelihoods(
                 data, parameters[0], parameters[1], xmin, xmax, discrete)
 
     elif distribution_name == 'truncated_power_law':
-        def likelihood_function(parameters, data): return \
-            truncated_power_law_likelihoods(
+
+        def likelihood_function(parameters, data):            return \
+truncated_power_law_likelihoods(
                 data, parameters[0], parameters[1], xmin, xmax, discrete)
 
     elif distribution_name == 'lognormal':
-        def likelihood_function(parameters, data): return \
-            lognormal_likelihoods(
+
+        def likelihood_function(parameters, data):            return \
+lognormal_likelihoods(
                 data, parameters[0], parameters[1], xmin, xmax, discrete)
 
     elif distribution_name == 'negative_binomial':
-        def likelihood_function(parameters, data): return \
-            negative_binomial_likelihoods(
+
+        def likelihood_function(parameters, data):            return \
+negative_binomial_likelihoods(
                 data, parameters[0], parameters[1], xmin, xmax)
 
     elif distribution_name == 'gamma':
-        def likelihood_function(parameters, data): return \
-            gamma_likelihoods(
+
+        def likelihood_function(parameters, data):            return \
+gamma_likelihoods(
                 data, parameters[0], parameters[1], xmin, xmax)
 
     return likelihood_function
@@ -2620,31 +2631,41 @@ def find_xmin(data,
                                 -1]  # Don't look at last xmin, as that's also the xmax, and we want to at least have TWO points to fit!
 
     if search_method == 'Likelihood':
-        def alpha_MLE_function(xmin): return distribution_fit(
-            data,
-            'power_law',
-            xmin=xmin,
-            xmax=xmax,
-            discrete=discrete,
-            search_method='Likelihood',
-            estimate_discrete=estimate_discrete)
+
+        def alpha_MLE_function(xmin):
+            return distribution_fit(data,
+                                    'power_law',
+                                    xmin=xmin,
+                                    xmax=xmax,
+                                    discrete=discrete,
+                                    search_method='Likelihood',
+                                    estimate_discrete=estimate_discrete)
+
         fits = asarray(list(map(alpha_MLE_function, xmins)))
     elif search_method == 'KS':
-        def alpha_KS_function(xmin): return distribution_fit(data,
-                                                             'power_law',
-                                                             xmin=xmin,
-                                                             xmax=xmax,
-                                                             discrete=discrete,
-                                                             search_method='KS',
-                                                             estimate_discrete=estimate_discrete)[0]
+
+        def alpha_KS_function(xmin):
+            return distribution_fit(data,
+                                    'power_law',
+                                    xmin=xmin,
+                                    xmax=xmax,
+                                    discrete=discrete,
+                                    search_method='KS',
+                                    estimate_discrete=estimate_discrete)[0]
+
         fits = asarray(list(map(alpha_KS_function, xmins)))
 
     params = fits[:, 0]
     alphas = vstack(params)[:, 0]
     loglikelihoods = fits[:, 1]
 
-    def ks_function(index): return power_law_ks_distance(
-        data, alphas[index], xmins[index], xmax=xmax, discrete=discrete)
+    def ks_function(index):
+        return power_law_ks_distance(data,
+                                     alphas[index],
+                                     xmins[index],
+                                     xmax=xmax,
+                                     discrete=discrete)
+
     Ds = asarray(list(map(ks_function, arange(len(xmins)))))
 
     sigmas = (alphas - 1) / sqrt(len(data) - xmin_indices + 1)
@@ -2702,13 +2723,13 @@ def power_law_ks_distance(data,
             bins, Actual_CDF = cumulative_distribution_function(data,
                                                                 xmin=xmin,
                                                                 xmax=xmax)
-            Theoretical_CDF = 1 - ((zeta(alpha, bins) - zeta(alpha, xmax+1)) /
-                                   (zeta(alpha, xmin)-zeta(alpha, xmax+1)))
+            Theoretical_CDF = 1 - (
+                (zeta(alpha, bins) - zeta(alpha, xmax + 1)) /
+                (zeta(alpha, xmin) - zeta(alpha, xmax + 1)))
         if not xmax:
             bins, Actual_CDF = cumulative_distribution_function(data,
                                                                 xmin=xmin)
-            Theoretical_CDF = 1 - (zeta(alpha, bins) /
-                                   zeta(alpha, xmin))
+            Theoretical_CDF = 1 - (zeta(alpha, bins) / zeta(alpha, xmin))
 
     D_plus = max(Theoretical_CDF - Actual_CDF)
     D_minus = max(Actual_CDF - Theoretical_CDF)
@@ -2769,7 +2790,10 @@ def negative_binomial_likelihoods(data, r, p, xmin=0, xmax=False):
 
     from numpy import asarray
     from scipy.misc import comb
-    def pmf(k): return comb(k + r - 1, k) * (1 - p)**r * p**k
+
+    def pmf(k):
+        return comb(k + r - 1, k) * (1 - p)**r * p**k
+
     likelihoods = asarray(list(map(pmf, data))).flatten()
 
     if xmin != 0 or xmax:

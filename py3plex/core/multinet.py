@@ -1207,7 +1207,6 @@ class multi_layer_network:
 
         return (inverse_nodes)
 
-
 if __name__ == "__main__":
 
     multinet = multilayerNet("../../datasets/imdb_gml.gml")

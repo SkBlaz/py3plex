@@ -18,7 +18,6 @@ class OptimalLearner(Learner):
     '''
     Finds the optimal top-k rules.
     '''
-
     def __init__(self,
                  kb,
                  n=None,
@@ -42,8 +41,10 @@ class OptimalLearner(Learner):
         Induces rules for the given knowledge base.
         '''
         kb = self.kb
-        def has_min_sup(pred): return kb.get_members(
-            pred).count() >= self.min_sup
+
+        def has_min_sup(pred):
+            return kb.get_members(pred).count() >= self.min_sup
+
         all_predicates = filter(has_min_sup, kb.predicates)
         rules = []
         for depth in range(1, self.depth + 1):

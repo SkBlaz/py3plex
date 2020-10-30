@@ -16,7 +16,6 @@ class Rule:
     '''
     Represents a rule, along with its description, examples and statistics.
     '''
-
     def __init__(self, kb, predicates=[], target=None):
         self.predicates = predicates
         self.kb = kb

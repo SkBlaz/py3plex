@@ -36,7 +36,6 @@ class UnaryPredicate(Predicate):
     '''
     A unary predicate.
     '''
-
     def __init__(self,
                  label,
                  members,
@@ -63,7 +62,6 @@ class BinaryPredicate(Predicate):
     '''
     A binary predicate.
     '''
-
     def __init__(self, label, pairs, kb, producer_pred=None):
         '''
         The predicate's name and the tuples satisfying it.
