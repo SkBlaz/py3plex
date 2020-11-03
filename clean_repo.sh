@@ -6,7 +6,7 @@ find . -name '*~' -type f -delete
 find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 
 ## import cleanup
-find . -name '*.py' | xargs autoflake --in-place --remove-unused-variables --remove-all-unused-imports 
+find . -name '*.py' | xargs autoflake --in-place --remove-unused-variables --remove-all-unused-imports --expand-star-imports
 
 ## formatting
 find . -name '*.py' -print0 | xargs -0 yapf -i

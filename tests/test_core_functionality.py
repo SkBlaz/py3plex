@@ -5,7 +5,7 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
 from py3plex.visualization.colors import colors_default
-from py3plex.visualization.multilayer import *
+from py3plex.visualization.multilayer import draw_multiedges, draw_multilayer_default, hairball_plot
 from py3plex.core import multinet
 import logging
 logger = logging.getLogger()

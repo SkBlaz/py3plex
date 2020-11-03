@@ -1,7 +1,7 @@
 # test scale-freenes of a network
 
 import networkx as nx
-from .powerlaw import *
+from .powerlaw import Fit
 import matplotlib.pyplot as plt
 
 

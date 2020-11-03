@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 from . import colors  # those are color ranges
 from . import bezier  # those are bezier curves
 from . import polyfit
-from .layout_algorithms import *
+from .layout_algorithms import compute_force_directed_layout, compute_random_layout
 from . import drawing_machinery
 
 main_figure = plt.figure()

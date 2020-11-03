@@ -1,7 +1,7 @@
 # compute and visualize powerlaw distributions (and other alternatives)
 
 import networkx as nx
-from py3plex.algorithms.statistics.topology import *
+from py3plex.algorithms.statistics.topology import plot_power_law
 from py3plex.core import multinet
 
 # examples use the node degrees, note that any node property applies.

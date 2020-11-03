@@ -1,6 +1,6 @@
 # visualize multiplex network dynamics
 
-from py3plex.visualization.multilayer import *
+from py3plex.visualization.multilayer import draw_multilayer_default
 from py3plex.core import multinet
 from collections import defaultdict
 import matplotlib.pyplot as plt

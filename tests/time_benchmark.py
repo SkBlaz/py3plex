@@ -1,5 +1,5 @@
 #from pymnet import *
-from py3plex.visualization.multilayer import *
+from py3plex.visualization.multilayer import draw, draw_multiedges, draw_multilayer_default, models
 from py3plex.visualization.colors import colors_default
 from py3plex.core import multinet
 import time

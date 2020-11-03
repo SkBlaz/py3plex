@@ -1,5 +1,5 @@
 from py3plex.core import multinet
-from py3plex.visualization.multilayer import *
+from py3plex.visualization.multilayer import hairball_plot, plt
 from py3plex.visualization.colors import colors_default
 from collections import Counter
 

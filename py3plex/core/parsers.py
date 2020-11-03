@@ -8,7 +8,7 @@ import numpy as np
 import scipy.io
 import pandas as pd
 import gzip
-from .supporting import *
+from .supporting import add_mpx_edges, directed
 
 
 def parse_gml(file_name, directed):

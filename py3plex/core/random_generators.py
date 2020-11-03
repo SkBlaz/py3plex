@@ -1,7 +1,7 @@
 # a class for random graph generation
 import networkx as nx
 import numpy as np
-from .multinet import *
+from .multinet import itertools, multi_layer_network, random
 
 
 def random_multilayer_ER(n, l, p, directed=False):

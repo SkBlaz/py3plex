@@ -1,5 +1,5 @@
 from py3plex.core import multinet
-from py3plex.visualization.multilayer import *
+from py3plex.visualization.multilayer import plt
 import networkx as nx
 
 # An example general multilayer network

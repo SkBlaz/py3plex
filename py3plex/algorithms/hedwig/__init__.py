@@ -10,7 +10,7 @@ from .learners import HeuristicLearner, OptimalLearner
 from .stats import scorefunctions, adjustment, significance, Validate
 from .core.load import load_graph
 from .core.settings import VERSION, DESCRIPTION, logger
-from .core.converters import *
+from .core.converters import arguments, knowledgebase, validator_object
 
 
 def _parameters_report(args, start, time_taken):

@@ -1,7 +1,7 @@
 # A simple example for extracting different layers based on subgraphs.
 
 from py3plex.core import multinet
-from py3plex.algorithms.statistics.basic_statistics import *
+from py3plex.algorithms.statistics.basic_statistics import core_network_statistics
 
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/epigenetics.gpickle",

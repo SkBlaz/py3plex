@@ -1,6 +1,6 @@
 # a converter set of methods for obtaining  normal inputs
 import rdflib
-from .term_parsers import *
+from .term_parsers import parse_gaf_file
 from collections import defaultdict
 import gzip
 

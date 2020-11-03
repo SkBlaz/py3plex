@@ -2,7 +2,7 @@
 from sklearn.manifold import TSNE
 import pandas as pd
 import matplotlib.pyplot as plt
-from plotnine import *
+from plotnine import aes, geom_point, ggplot, theme_bw
 
 
 def visualize_embedding(multinet, labels=None, verbose=True):
