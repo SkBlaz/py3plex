@@ -1,1 +1,2 @@
 include py3plex/algorithms/hedwig/assets/*
+include requirements.txt
