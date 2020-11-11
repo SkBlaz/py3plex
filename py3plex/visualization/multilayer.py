@@ -28,9 +28,9 @@ shape_subplot = main_figure.add_subplot(111)
 try:
     import plotly.graph_objects as go
     plotly_import = True
+    
 except:
     plotly_import = False
-
 
 def draw_multilayer_default(network_list,
                             display=True,
@@ -456,9 +456,11 @@ def hairball_plot(
     else:
         node_types = [x[1] for x in g.nodes()]
         assert len(node_types) == len(color_list)
+
         try:
             cols = color_list            
-        except:
+        except Exception as es:
+            print("Using default palette")
             cols = colors.colors_default            
         id_col_map = {}
         for enx, j in enumerate(set(color_list)):

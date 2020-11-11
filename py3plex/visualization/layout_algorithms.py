@@ -5,7 +5,7 @@ import numpy as np
 import itertools
 
 try:
-    from .fa2 import ForceAtlas2
+    from .fa2.forceatlas2 import ForceAtlas2
     forceImport = True
 except:
     forceImport = False
