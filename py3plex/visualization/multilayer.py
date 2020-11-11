@@ -458,7 +458,13 @@ def hairball_plot(
     else:
         node_types = [x[1] for x in g.nodes()]
         assert len(node_types) == len(color_list)
-        cols = colors.colors_default  #list(colors.all_color_names.keys())
+        
+        try:
+            cols = color_list
+            
+        except:
+            cols = colors.colors_default
+            
         id_col_map = {}
         for enx, j in enumerate(set(color_list)):
             id_col_map[j] = cols[enx]

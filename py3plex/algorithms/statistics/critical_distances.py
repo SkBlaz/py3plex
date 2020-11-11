@@ -314,6 +314,7 @@ def plot_critical_distance(fname,
                            groupby_target='macro_F',
                            outfile="./micro_cd.pdf",
                            aggregator="mean",
+                           crit_dist = False,
                            fontsize=10):
 
     import Orange
@@ -343,5 +344,8 @@ def plot_critical_distance(fname,
     names = [x.replace("_", " ") for k, x in enumerate(list(clf_score.keys()))]
     avranks = list(clf_score.values())
     pairs = list(zip(names, avranks))
-    #    cd = Orange.evaluation.compute_CD(avranks[0:(len(avranks)-1)], comparisons, alpha="0.05")
-    diagram(pairs, None, outfile, fontsize=fontsize)
+    if crit_dist:
+        cd = Orange.evaluation.compute_CD(avranks[0:(len(avranks)-1)], comparisons, alpha="0.05")
+    else:
+        cd = None
+    diagram(pairs, cd, outfile, fontsize=fontsize)
