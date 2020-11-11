@@ -455,7 +455,7 @@ def hairball_plot(
             final_color_mapping = [1] * len(nodes)
     else:
         node_types = [x[1] for x in g.nodes()]
-        assert len(node_types) == len(color_list)        
+        assert len(node_types) == len(color_list)
         try:
             cols = color_list            
         except:
