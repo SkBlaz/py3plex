@@ -119,7 +119,7 @@ def kaplan_meier_AUC(rule):
         if alive == 0:
             break
 
-    #print auc
+    # print auc
     return auc
 
 

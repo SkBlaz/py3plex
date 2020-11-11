@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>py3plex.core.HINMINE package &mdash; py3plex 0.1 documentation</title>
+  <title>py3plex.core.HINMINE package &mdash; py3plex 0.80 documentation</title>
   
 
   
@@ -60,10 +60,6 @@
           
             
             
-              <div class="version">
-                0.1
-              </div>
-            
           
 
           
@@ -91,7 +87,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../AUTOGEN_results/modules.html">py3plex</a></li>
 </ul>
 
             
@@ -203,7 +212,7 @@
 
 <dl class="method">
 <dt id="py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.decompose_from_iterator">
-<code class="sig-name descname">decompose_from_iterator</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">weighing</em>, <em class="sig-param">summing</em>, <em class="sig-param">generator=None</em>, <em class="sig-param">degrees=None</em>, <em class="sig-param">parallel=True</em>, <em class="sig-param">pool=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.decompose_from_iterator" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">decompose_from_iterator</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">weighing</em>, <em class="sig-param">summing</em>, <em class="sig-param">generator=None</em>, <em class="sig-param">degrees=None</em>, <em class="sig-param">parallel=False</em>, <em class="sig-param">pool=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.decompose_from_iterator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -355,7 +364,7 @@
 
 <dl class="function">
 <dt id="py3plex.core.HINMINE.decomposition.hinmine_decompose">
-<code class="sig-prename descclassname">py3plex.core.HINMINE.decomposition.</code><code class="sig-name descname">hinmine_decompose</code><span class="sig-paren">(</span><em class="sig-param">network</em>, <em class="sig-param">heuristic</em>, <em class="sig-param">cycle=None</em>, <em class="sig-param">parallel=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.HINMINE.decomposition.hinmine_decompose" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">py3plex.core.HINMINE.decomposition.</code><code class="sig-name descname">hinmine_decompose</code><span class="sig-paren">(</span><em class="sig-param">network</em>, <em class="sig-param">heuristic</em>, <em class="sig-param">cycle=None</em>, <em class="sig-param">parallel=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.HINMINE.decomposition.hinmine_decompose" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -400,7 +409,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Blaž Škrlj
+        &copy; Copyright 2020, Blaž Škrlj
 
     </p>
   </div>

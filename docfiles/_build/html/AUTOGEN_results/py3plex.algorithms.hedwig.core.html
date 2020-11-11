@@ -1,0 +1,933 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3plex.algorithms.hedwig.core package &mdash; py3plex 0.80 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="py3plex.algorithms.hedwig.learners package" href="py3plex.algorithms.hedwig.learners.html" />
+    <link rel="prev" title="py3plex.algorithms.hedwig package" href="py3plex.algorithms.hedwig.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3plex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="py3plex.html">py3plex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="py3plex.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.html#module-py3plex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3plex</a> &raquo;</li>
+        
+          <li><a href="py3plex.html">py3plex package</a> &raquo;</li>
+        
+          <li><a href="py3plex.algorithms.html">py3plex.algorithms package</a> &raquo;</li>
+        
+          <li><a href="py3plex.algorithms.hedwig.html">py3plex.algorithms.hedwig package</a> &raquo;</li>
+        
+      <li>py3plex.algorithms.hedwig.core package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/AUTOGEN_results/py3plex.algorithms.hedwig.core.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3plex-algorithms-hedwig-core-package">
+<h1>py3plex.algorithms.hedwig.core package<a class="headerlink" href="#py3plex-algorithms-hedwig-core-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.converters">
+<span id="py3plex-algorithms-hedwig-core-converters-module"></span><h2>py3plex.algorithms.hedwig.core.converters module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.converters" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.converters.convert_mapping_to_rdf">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.converters.</code><code class="sig-name descname">convert_mapping_to_rdf</code><span class="sig-paren">(</span><em class="sig-param">input_mapping_file</em>, <em class="sig-param">extract_subnode_info=False</em>, <em class="sig-param">split_node_by=':'</em>, <em class="sig-param">keep_index=1</em>, <em class="sig-param">layer_type='uniprotkb'</em>, <em class="sig-param">annotation_mapping_file='test.gaf'</em>, <em class="sig-param">go_identifier='GO:'</em>, <em class="sig-param">prepend_string=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.converters.convert_mapping_to_rdf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.converters.obo2n3">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.converters.</code><code class="sig-name descname">obo2n3</code><span class="sig-paren">(</span><em class="sig-param">obofile</em>, <em class="sig-param">n3out</em>, <em class="sig-param">gaf_file</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.converters.obo2n3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.example">
+<span id="py3plex-algorithms-hedwig-core-example-module"></span><h2>py3plex.algorithms.hedwig.core.example module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.example" title="Permalink to this headline">¶</a></h2>
+<p>Example-related classes.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.example.Example">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.example.</code><code class="sig-name descname">Example</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">label</em>, <em class="sig-param">score</em>, <em class="sig-param">annotations=[]</em>, <em class="sig-param">weights={}</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.example.Example" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents an example with its score, label, id and annotations.</p>
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.example.Example.ClassLabeled">
+<code class="sig-name descname">ClassLabeled</code><em class="property"> = 'class'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.example.Example.ClassLabeled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.example.Example.Ranked">
+<code class="sig-name descname">Ranked</code><em class="property"> = 'ranked'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.example.Example.Ranked" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.helpers">
+<span id="py3plex-algorithms-hedwig-core-helpers-module"></span><h2>py3plex.algorithms.hedwig.core.helpers module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.helpers" title="Permalink to this headline">¶</a></h2>
+<p>Helper functions.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.helpers.anonymous_uri">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.helpers.</code><code class="sig-name descname">anonymous_uri</code><span class="sig-paren">(</span><em class="sig-param">uri</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.helpers.anonymous_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.helpers.avg">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.helpers.</code><code class="sig-name descname">avg</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.helpers.avg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.helpers.std">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.helpers.</code><code class="sig-name descname">std</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.helpers.std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.helpers.user_defined">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.helpers.</code><code class="sig-name descname">user_defined</code><span class="sig-paren">(</span><em class="sig-param">uri</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.helpers.user_defined" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this resource user defined?</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.kb">
+<span id="py3plex-algorithms-hedwig-core-kb-module"></span><h2>py3plex.algorithms.hedwig.core.kb module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.kb" title="Permalink to this headline">¶</a></h2>
+<p>Knowledge-base class.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.kb.</code><code class="sig-name descname">ExperimentKB</code><span class="sig-paren">(</span><em class="sig-param">triplets</em>, <em class="sig-param">score_fun</em>, <em class="sig-param">instances_as_leaves=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The knowledge base for one specific experiment.</p>
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.add_sub_class">
+<code class="sig-name descname">add_sub_class</code><span class="sig-paren">(</span><em class="sig-param">sub</em>, <em class="sig-param">obj</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.add_sub_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the resource ‘sub’ as a subclass of ‘obj’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.bits_to_indices">
+<code class="sig-name descname">bits_to_indices</code><span class="sig-paren">(</span><em class="sig-param">bits</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.bits_to_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the bitset to a set of indices.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_domains">
+<code class="sig-name descname">get_domains</code><span class="sig-paren">(</span><em class="sig-param">predicate</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_domains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bitsets for input and outputexamples
+of the binary predicate ‘predicate’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_empty_domain">
+<code class="sig-name descname">get_empty_domain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_empty_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a bitset covering no examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_examples">
+<code class="sig-name descname">get_examples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_examples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all examples for this experiment.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_full_domain">
+<code class="sig-name descname">get_full_domain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_full_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a bitset covering all examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_members">
+<code class="sig-name descname">get_members</code><span class="sig-paren">(</span><em class="sig-param">predicate</em>, <em class="sig-param">bit=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the examples for this predicate,
+either as a bitset or a set of ids.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_reverse_members">
+<code class="sig-name descname">get_reverse_members</code><span class="sig-paren">(</span><em class="sig-param">predicate</em>, <em class="sig-param">bit=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_reverse_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the examples for this predicate,
+either as a bitset or a set of ids.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_root">
+<code class="sig-name descname">get_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Root predicate, which covers all examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_score">
+<code class="sig-name descname">get_score</code><span class="sig-paren">(</span><em class="sig-param">ex_idx</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the score for example id ‘ex_idx’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_subclasses">
+<code class="sig-name descname">get_subclasses</code><span class="sig-paren">(</span><em class="sig-param">predicate</em>, <em class="sig-param">producer_pred=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.get_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of subclasses (as predicate objects) for ‘predicate’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.indices_to_bits">
+<code class="sig-name descname">indices_to_bits</code><span class="sig-paren">(</span><em class="sig-param">indices</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.indices_to_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the indices to a bitset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.is_discrete_target">
+<code class="sig-name descname">is_discrete_target</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.is_discrete_target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.n_examples">
+<code class="sig-name descname">n_examples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.n_examples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.n_members">
+<code class="sig-name descname">n_members</code><span class="sig-paren">(</span><em class="sig-param">predicate</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.n_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.kb.ExperimentKB.super_classes">
+<code class="sig-name descname">super_classes</code><span class="sig-paren">(</span><em class="sig-param">pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.kb.ExperimentKB.super_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all super classes of pred (with transitivity).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.load">
+<span id="py3plex-algorithms-hedwig-core-load-module"></span><h2>py3plex.algorithms.hedwig.core.load module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.load" title="Permalink to this headline">¶</a></h2>
+<p>Reading input data.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.load.build_uri">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.load.</code><code class="sig-name descname">build_uri</code><span class="sig-paren">(</span><em class="sig-param">class_string</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.load.build_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the string is a proper URI, if not it builds an URI
+with the generic namespace.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.load.csv">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.load.</code><code class="sig-name descname">csv</code><span class="sig-paren">(</span><em class="sig-param">hierarchy_files</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.load.csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a simple hierarchy of features and data in csv format.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.load.csv_parse_data">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.load.</code><code class="sig-name descname">csv_parse_data</code><span class="sig-paren">(</span><em class="sig-param">g</em>, <em class="sig-param">data_file</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.load.csv_parse_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assumes the following csv format:</p>
+<p>example_uri_or_label; attr_uri_1; attr_uri_2; …; attr_uri_n
+<a class="reference external" href="http://example.org/uri_1">http://example.org/uri_1</a>; 0/1; 0/1; 0/1; 0/1; …
+<a class="reference external" href="http://example.org/uri_2">http://example.org/uri_2</a>; 0/1; 0/1; 0/1; 0/1; …
+…</p>
+<p>Alternatively attribute values can be URIs themselves.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.load.csv_parse_hierarchy">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.load.</code><code class="sig-name descname">csv_parse_hierarchy</code><span class="sig-paren">(</span><em class="sig-param">g</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.load.csv_parse_hierarchy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assumes a hierarchy file of the following format:</p>
+<p>class_1&lt;tab&gt;superclass_1_1; superclass_1_2; …; superclass_1_n
+class_2&lt;tab&gt;superclass_2_1; superclass_2_2; …; superclass_2_n
+…
+class_m&lt;tab&gt;superclass_m_1; superclass_m_2; …; superclass_m_n</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.load.load_graph">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.load.</code><code class="sig-name descname">load_graph</code><span class="sig-paren">(</span><em class="sig-param">ontology_list</em>, <em class="sig-param">data</em>, <em class="sig-param">def_format='n3'</em>, <em class="sig-param">cache=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.load.load_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.load.rdf">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.load.</code><code class="sig-name descname">rdf</code><span class="sig-paren">(</span><em class="sig-param">paths</em>, <em class="sig-param">def_format='n3'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.load.rdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the ontology into an rdf graph.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.predicate">
+<span id="py3plex-algorithms-hedwig-core-predicate-module"></span><h2>py3plex.algorithms.hedwig.core.predicate module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.predicate" title="Permalink to this headline">¶</a></h2>
+<p>Predicate-related classes.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.predicate.BinaryPredicate">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.predicate.</code><code class="sig-name descname">BinaryPredicate</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">pairs</em>, <em class="sig-param">kb</em>, <em class="sig-param">producer_pred=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.predicate.BinaryPredicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.algorithms.hedwig.core.predicate.Predicate" title="py3plex.algorithms.hedwig.core.predicate.Predicate"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.hedwig.core.predicate.Predicate</span></code></a></p>
+<p>A binary predicate.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.predicate.Predicate">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.predicate.</code><code class="sig-name descname">Predicate</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">kb</em>, <em class="sig-param">producer_pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.predicate.Predicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a predicate as a member of a certain rule.</p>
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.predicate.Predicate.i">
+<code class="sig-name descname">i</code><em class="property"> = -1</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.predicate.Predicate.i" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.predicate.UnaryPredicate">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.predicate.</code><code class="sig-name descname">UnaryPredicate</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">members</em>, <em class="sig-param">kb</em>, <em class="sig-param">producer_pred=None</em>, <em class="sig-param">custom_var_name=None</em>, <em class="sig-param">negated=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.predicate.UnaryPredicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.algorithms.hedwig.core.predicate.Predicate" title="py3plex.algorithms.hedwig.core.predicate.Predicate"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.hedwig.core.predicate.Predicate</span></code></a></p>
+<p>A unary predicate.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.rule">
+<span id="py3plex-algorithms-hedwig-core-rule-module"></span><h2>py3plex.algorithms.hedwig.core.rule module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.rule" title="Permalink to this headline">¶</a></h2>
+<p>The rule class.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.rule.</code><code class="sig-name descname">Rule</code><span class="sig-paren">(</span><em class="sig-param">kb</em>, <em class="sig-param">predicates=[]</em>, <em class="sig-param">target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a rule, along with its description, examples and statistics.</p>
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.clone">
+<code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a clone of this rule. The predicates themselves are NOT cloned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.clone_append">
+<code class="sig-name descname">clone_append</code><span class="sig-paren">(</span><em class="sig-param">predicate_label</em>, <em class="sig-param">producer_pred</em>, <em class="sig-param">bin=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.clone_append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of this rule where ‘predicate_label’
+is appended to the rule.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.clone_negate">
+<code class="sig-name descname">clone_negate</code><span class="sig-paren">(</span><em class="sig-param">target_pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.clone_negate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of this rule where ‘taget_pred’ is negated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.clone_swap_with_subclass">
+<code class="sig-name descname">clone_swap_with_subclass</code><span class="sig-paren">(</span><em class="sig-param">target_pred</em>, <em class="sig-param">child_pred_label</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.clone_swap_with_subclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of this rule where
+‘target_pred’ is swapped for ‘child_pred_label’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.examples">
+<code class="sig-name descname">examples</code><span class="sig-paren">(</span><em class="sig-param">positive_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.examples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the covered examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.positives">
+<em class="property">property </em><code class="sig-name descname">positives</code><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.positives" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.precision">
+<code class="sig-name descname">precision</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.precision" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.rule_report">
+<code class="sig-name descname">rule_report</code><span class="sig-paren">(</span><em class="sig-param">show_uris=False</em>, <em class="sig-param">latex=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.rule_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rule as string with some statistics.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.ruleset_examples_json">
+<em class="property">static </em><code class="sig-name descname">ruleset_examples_json</code><span class="sig-paren">(</span><em class="sig-param">rules_per_target</em>, <em class="sig-param">show_uris=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.ruleset_examples_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.ruleset_report">
+<em class="property">static </em><code class="sig-name descname">ruleset_report</code><span class="sig-paren">(</span><em class="sig-param">rules</em>, <em class="sig-param">show_uris=False</em>, <em class="sig-param">latex=False</em>, <em class="sig-param">human=&lt;function Rule.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.ruleset_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.similarity">
+<code class="sig-name descname">similarity</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the similarity between this rule and ‘rule’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.size">
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of conjunts.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.rule.Rule.to_json">
+<em class="property">static </em><code class="sig-name descname">to_json</code><span class="sig-paren">(</span><em class="sig-param">rules_per_target</em>, <em class="sig-param">show_uris=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.rule.Rule.to_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.settings">
+<span id="py3plex-algorithms-hedwig-core-settings-module"></span><h2>py3plex.algorithms.hedwig.core.settings module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.settings" title="Permalink to this headline">¶</a></h2>
+<p>Global settings file.</p>
+<p>&#64;author: <a class="reference external" href="mailto:anze&#46;vavpetic&#37;&#52;&#48;ijs&#46;si">anze<span>&#46;</span>vavpetic<span>&#64;</span>ijs<span>&#46;</span>si</a></p>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.settings.</code><code class="sig-name descname">Defaults</code><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.ADJUST">
+<code class="sig-name descname">ADJUST</code><em class="property"> = 'fwer'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.ADJUST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.ALPHA">
+<code class="sig-name descname">ALPHA</code><em class="property"> = 0.05</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.ALPHA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.BEAM_SIZE">
+<code class="sig-name descname">BEAM_SIZE</code><em class="property"> = 20</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.BEAM_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.COVERED">
+<code class="sig-name descname">COVERED</code><em class="property"> = None</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.COVERED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.DEPTH">
+<code class="sig-name descname">DEPTH</code><em class="property"> = 5</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.DEPTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.FDR_Q">
+<code class="sig-name descname">FDR_Q</code><em class="property"> = 0.05</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.FDR_Q" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.FORMAT">
+<code class="sig-name descname">FORMAT</code><em class="property"> = 'n3'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.FORMAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.LEARNER">
+<code class="sig-name descname">LEARNER</code><em class="property"> = 'heuristic'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.LEARNER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.LEAVES">
+<code class="sig-name descname">LEAVES</code><em class="property"> = False</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.LEAVES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.MODE">
+<code class="sig-name descname">MODE</code><em class="property"> = 'subgroups'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.MODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.NEGATIONS">
+<code class="sig-name descname">NEGATIONS</code><em class="property"> = False</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.NEGATIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.NO_CACHE">
+<code class="sig-name descname">NO_CACHE</code><em class="property"> = False</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.NO_CACHE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.OPTIMAL_SUBCLASS">
+<code class="sig-name descname">OPTIMAL_SUBCLASS</code><em class="property"> = False</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.OPTIMAL_SUBCLASS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.OUTPUT">
+<code class="sig-name descname">OUTPUT</code><em class="property"> = None</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.OUTPUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.SCORE">
+<code class="sig-name descname">SCORE</code><em class="property"> = 'lift'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.SCORE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.SUPPORT">
+<code class="sig-name descname">SUPPORT</code><em class="property"> = 0.1</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.SUPPORT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.TARGET">
+<code class="sig-name descname">TARGET</code><em class="property"> = None</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.TARGET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.URIS">
+<code class="sig-name descname">URIS</code><em class="property"> = False</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.URIS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.settings.Defaults.VERBOSE">
+<code class="sig-name descname">VERBOSE</code><em class="property"> = False</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.settings.Defaults.VERBOSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core.term_parsers">
+<span id="py3plex-algorithms-hedwig-core-term-parsers-module"></span><h2>py3plex.algorithms.hedwig.core.term_parsers module<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core.term_parsers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.term_parsers.parse_gaf_file">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.term_parsers.</code><code class="sig-name descname">parse_gaf_file</code><span class="sig-paren">(</span><em class="sig-param">gaf_mappings</em>, <em class="sig-param">whole_list_counts=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.term_parsers.parse_gaf_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.term_parsers.read_termlist">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.term_parsers.</code><code class="sig-name descname">read_termlist</code><span class="sig-paren">(</span><em class="sig-param">terms</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.term_parsers.read_termlist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.term_parsers.read_topology_mappings">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.term_parsers.</code><code class="sig-name descname">read_topology_mappings</code><span class="sig-paren">(</span><em class="sig-param">mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.term_parsers.read_topology_mappings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.term_parsers.read_uniprot_GO">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.term_parsers.</code><code class="sig-name descname">read_uniprot_GO</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.term_parsers.read_uniprot_GO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.hedwig.core">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.algorithms.hedwig.core" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.Example">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.</code><code class="sig-name descname">Example</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">label</em>, <em class="sig-param">score</em>, <em class="sig-param">annotations=[]</em>, <em class="sig-param">weights={}</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Example" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents an example with its score, label, id and annotations.</p>
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.Example.ClassLabeled">
+<code class="sig-name descname">ClassLabeled</code><em class="property"> = 'class'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Example.ClassLabeled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="py3plex.algorithms.hedwig.core.Example.Ranked">
+<code class="sig-name descname">Ranked</code><em class="property"> = 'ranked'</em><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Example.Ranked" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.UnaryPredicate">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.</code><code class="sig-name descname">UnaryPredicate</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">members</em>, <em class="sig-param">kb</em>, <em class="sig-param">producer_pred=None</em>, <em class="sig-param">custom_var_name=None</em>, <em class="sig-param">negated=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.UnaryPredicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.algorithms.hedwig.core.predicate.Predicate" title="py3plex.algorithms.hedwig.core.predicate.Predicate"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.hedwig.core.predicate.Predicate</span></code></a></p>
+<p>A unary predicate.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.BinaryPredicate">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.</code><code class="sig-name descname">BinaryPredicate</code><span class="sig-paren">(</span><em class="sig-param">label</em>, <em class="sig-param">pairs</em>, <em class="sig-param">kb</em>, <em class="sig-param">producer_pred=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.BinaryPredicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.algorithms.hedwig.core.predicate.Predicate" title="py3plex.algorithms.hedwig.core.predicate.Predicate"><code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.algorithms.hedwig.core.predicate.Predicate</span></code></a></p>
+<p>A binary predicate.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.Rule">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.</code><code class="sig-name descname">Rule</code><span class="sig-paren">(</span><em class="sig-param">kb</em>, <em class="sig-param">predicates=[]</em>, <em class="sig-param">target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a rule, along with its description, examples and statistics.</p>
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.clone">
+<code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a clone of this rule. The predicates themselves are NOT cloned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.clone_append">
+<code class="sig-name descname">clone_append</code><span class="sig-paren">(</span><em class="sig-param">predicate_label</em>, <em class="sig-param">producer_pred</em>, <em class="sig-param">bin=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.clone_append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of this rule where ‘predicate_label’
+is appended to the rule.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.clone_negate">
+<code class="sig-name descname">clone_negate</code><span class="sig-paren">(</span><em class="sig-param">target_pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.clone_negate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of this rule where ‘taget_pred’ is negated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.clone_swap_with_subclass">
+<code class="sig-name descname">clone_swap_with_subclass</code><span class="sig-paren">(</span><em class="sig-param">target_pred</em>, <em class="sig-param">child_pred_label</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.clone_swap_with_subclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of this rule where
+‘target_pred’ is swapped for ‘child_pred_label’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.examples">
+<code class="sig-name descname">examples</code><span class="sig-paren">(</span><em class="sig-param">positive_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.examples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the covered examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.positives">
+<em class="property">property </em><code class="sig-name descname">positives</code><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.positives" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.precision">
+<code class="sig-name descname">precision</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.precision" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.rule_report">
+<code class="sig-name descname">rule_report</code><span class="sig-paren">(</span><em class="sig-param">show_uris=False</em>, <em class="sig-param">latex=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.rule_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rule as string with some statistics.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.ruleset_examples_json">
+<em class="property">static </em><code class="sig-name descname">ruleset_examples_json</code><span class="sig-paren">(</span><em class="sig-param">rules_per_target</em>, <em class="sig-param">show_uris=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.ruleset_examples_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.ruleset_report">
+<em class="property">static </em><code class="sig-name descname">ruleset_report</code><span class="sig-paren">(</span><em class="sig-param">rules</em>, <em class="sig-param">show_uris=False</em>, <em class="sig-param">latex=False</em>, <em class="sig-param">human=&lt;function Rule.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.ruleset_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.similarity">
+<code class="sig-name descname">similarity</code><span class="sig-paren">(</span><em class="sig-param">rule</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the similarity between this rule and ‘rule’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.size">
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of conjunts.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.Rule.to_json">
+<em class="property">static </em><code class="sig-name descname">to_json</code><span class="sig-paren">(</span><em class="sig-param">rules_per_target</em>, <em class="sig-param">show_uris=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.Rule.to_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB">
+<em class="property">class </em><code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.</code><code class="sig-name descname">ExperimentKB</code><span class="sig-paren">(</span><em class="sig-param">triplets</em>, <em class="sig-param">score_fun</em>, <em class="sig-param">instances_as_leaves=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The knowledge base for one specific experiment.</p>
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.add_sub_class">
+<code class="sig-name descname">add_sub_class</code><span class="sig-paren">(</span><em class="sig-param">sub</em>, <em class="sig-param">obj</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.add_sub_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the resource ‘sub’ as a subclass of ‘obj’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.bits_to_indices">
+<code class="sig-name descname">bits_to_indices</code><span class="sig-paren">(</span><em class="sig-param">bits</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.bits_to_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the bitset to a set of indices.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_domains">
+<code class="sig-name descname">get_domains</code><span class="sig-paren">(</span><em class="sig-param">predicate</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_domains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bitsets for input and outputexamples
+of the binary predicate ‘predicate’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_empty_domain">
+<code class="sig-name descname">get_empty_domain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_empty_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a bitset covering no examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_examples">
+<code class="sig-name descname">get_examples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_examples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all examples for this experiment.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_full_domain">
+<code class="sig-name descname">get_full_domain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_full_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a bitset covering all examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_members">
+<code class="sig-name descname">get_members</code><span class="sig-paren">(</span><em class="sig-param">predicate</em>, <em class="sig-param">bit=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the examples for this predicate,
+either as a bitset or a set of ids.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_reverse_members">
+<code class="sig-name descname">get_reverse_members</code><span class="sig-paren">(</span><em class="sig-param">predicate</em>, <em class="sig-param">bit=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_reverse_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the examples for this predicate,
+either as a bitset or a set of ids.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_root">
+<code class="sig-name descname">get_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Root predicate, which covers all examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_score">
+<code class="sig-name descname">get_score</code><span class="sig-paren">(</span><em class="sig-param">ex_idx</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the score for example id ‘ex_idx’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.get_subclasses">
+<code class="sig-name descname">get_subclasses</code><span class="sig-paren">(</span><em class="sig-param">predicate</em>, <em class="sig-param">producer_pred=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.get_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of subclasses (as predicate objects) for ‘predicate’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.indices_to_bits">
+<code class="sig-name descname">indices_to_bits</code><span class="sig-paren">(</span><em class="sig-param">indices</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.indices_to_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the indices to a bitset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.is_discrete_target">
+<code class="sig-name descname">is_discrete_target</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.is_discrete_target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.n_examples">
+<code class="sig-name descname">n_examples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.n_examples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of examples.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.n_members">
+<code class="sig-name descname">n_members</code><span class="sig-paren">(</span><em class="sig-param">predicate</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.n_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3plex.algorithms.hedwig.core.ExperimentKB.super_classes">
+<code class="sig-name descname">super_classes</code><span class="sig-paren">(</span><em class="sig-param">pred</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.ExperimentKB.super_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all super classes of pred (with transitivity).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.hedwig.core.convert_mapping_to_rdf">
+<code class="sig-prename descclassname">py3plex.algorithms.hedwig.core.</code><code class="sig-name descname">convert_mapping_to_rdf</code><span class="sig-paren">(</span><em class="sig-param">input_mapping_file</em>, <em class="sig-param">extract_subnode_info=False</em>, <em class="sig-param">split_node_by=':'</em>, <em class="sig-param">keep_index=1</em>, <em class="sig-param">layer_type='uniprotkb'</em>, <em class="sig-param">annotation_mapping_file='test.gaf'</em>, <em class="sig-param">go_identifier='GO:'</em>, <em class="sig-param">prepend_string=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.hedwig.core.convert_mapping_to_rdf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="py3plex.algorithms.hedwig.learners.html" class="btn btn-neutral float-right" title="py3plex.algorithms.hedwig.learners package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="py3plex.algorithms.hedwig.html" class="btn btn-neutral float-left" title="py3plex.algorithms.hedwig package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

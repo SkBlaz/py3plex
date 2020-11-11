@@ -1,4 +1,4 @@
-## compute enrichment via FET
+# compute enrichment via FET
 
-## first for only simple terms,
-## continue with communities
+# first for only simple terms,
+# continue with communities

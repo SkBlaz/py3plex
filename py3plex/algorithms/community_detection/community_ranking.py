@@ -1,18 +1,16 @@
-## a framework for community-based node ranking
+# a framework for community-based node ranking
 
 import networkx as nx
 import numpy as np
-from sklearn.cluster import AffinityPropagation
 import multiprocessing as mp
 from node_ranking import sparse_page_rank, modularity, stochastic_normalization
-from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
-import scipy.sparse as sp
 
 
 def page_rank_kernel(index_row):
 
-    ## call as results = p.map(pr_kernel, batch)
+    # call as results = p.map(pr_kernel, batch)
     pr = sparse_page_rank(_RANK_GRAPH, [index_row],
                           epsilon=1e-6,
                           max_steps=100000,
@@ -71,13 +69,10 @@ def return_infomap_communities(network):
 if __name__ == "__main__":
     from infomap import infomap
     from collections import defaultdict
-    from itertools import product
     import community
     from networkx.algorithms.community import LFR_benchmark_graph
-    from sklearn.cluster import AffinityPropagation, DBSCAN, MiniBatchKMeans
-    from scipy import cluster
+    from sklearn.cluster import MiniBatchKMeans
     from scipy.cluster.hierarchy import fcluster
-    from scipy.spatial.distance import pdist
     global _RANK_GRAPH
 
     print("Generating communities..")
@@ -97,7 +92,7 @@ if __name__ == "__main__":
     print(nx.info(_RANK_GRAPH))
     A = _RANK_GRAPH.copy()
     _RANK_GRAPH = nx.to_scipy_sparse_matrix(_RANK_GRAPH)
-    _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  ## normalize
+    _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  # normalize
     n = _RANK_GRAPH.shape[1]
     with mp.Pool(processes=mp.cpu_count()) as p:
         results = p.map(page_rank_kernel, range(n))
@@ -144,7 +139,7 @@ if __name__ == "__main__":
 
         print("Hierarchical: {}".format(mod))
 
-    ## the louvain partition
+    # the louvain partition
     partition = community.best_partition(A)
     for a, b in partition.items():
         dx_lx[b].append(a)

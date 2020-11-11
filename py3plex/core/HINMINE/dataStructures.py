@@ -1,4 +1,4 @@
-## core data structures
+# core data structures
 
 import networkx as nx
 import numpy as np
@@ -56,7 +56,7 @@ class HeterogeneousInformationNetwork:
         self.validate_ids = set()
         self.test_ids = set()
 
-        self.weighted = weight_tag  ## include info on weighted edges
+        self.weighted = weight_tag  # include info on weighted edges
 
         self.decomposed = {
         }  # Dictionary of all performed decompositions (self.decomposed['PAP'] is one)
@@ -100,7 +100,7 @@ class HeterogeneousInformationNetwork:
 
             print("Target type: {}".format(basic_types))
             if len(basic_types) != 1:
-                ## tukej naredi, da enostavno sejvne grafek, to je uporabno za embedding
+                # tukej naredi, da enostavno sejvne grafek, to je uporabno za embedding
                 print(basic_types)
                 raise Exception('Unclear target type!')
 
@@ -136,7 +136,8 @@ class HeterogeneousInformationNetwork:
                     ]
                     lab.basic_members = set(temp_list)
             self.label_array = -np.ones((max([
-                len(self.graph.nodes[node]['labels']) for node in self.node_list
+                len(self.graph.nodes[node]['labels'])
+                for node in self.node_list
             ]), len(self.node_list)))
             for node in self.node_list:
                 tmp = self.graph.nodes[node]['labels']
@@ -285,7 +286,7 @@ class HeterogeneousInformationNetwork:
         bsize = 5
 
         if parallel:
-            ## parallel for edge type
+            # parallel for edge type
 
             while True:
                 tmp_container = list(next(generator) for _ in range(bsize))
@@ -299,7 +300,7 @@ class HeterogeneousInformationNetwork:
                     pinput.append((classes, universal_set, j, n))
                 results = pool.starmap(importance_calculator, pinput)
 
-                ## construct main matrix
+                # construct main matrix
                 for item, importances in zip(tmp_container, results):
                     importance = np.sum(importances, axis=0)
                     i1 = [self.node_indices[x] for x in item]
@@ -309,7 +310,7 @@ class HeterogeneousInformationNetwork:
 
                     if len(i1) > 1000:
 
-                        ## split to prevent memory leaks when doing hadamand products
+                        # split to prevent memory leaks when doing hadamand products
                         parts_first = self.split_to_parts(i1, 4)
                         parts_second = self.split_to_parts(i2, 4)
 
@@ -325,9 +326,9 @@ class HeterogeneousInformationNetwork:
 
         else:
 
-            ## non-parallel
+            # non-parallel
             for item in generator:
-                ## to za vsak class poracun importance
+                # to za vsak class poracun importance
                 importances = importance_calculator(classes,
                                                     universal_set,
                                                     item,
@@ -344,7 +345,7 @@ class HeterogeneousInformationNetwork:
                 to_add = to_add.tocsr()  # this prevents memory leaks
                 matrix += to_add
 
-        ## hadamand product
+        # hadamand product
 
         self.decomposed[name] = matrix
 

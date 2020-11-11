@@ -1,16 +1,14 @@
-## set of parsers used in Py3plex.
+# set of parsers used in Py3plex.
 
 import networkx as nx
 import json
 import itertools
 import glob
-import operator
 import numpy as np
 import scipy.io
-from collections import defaultdict, Counter
 import pandas as pd
 import gzip
-from .supporting import *
+from .supporting import add_mpx_edges, directed
 
 
 def parse_gml(file_name, directed):
@@ -34,11 +32,11 @@ def parse_gml(file_name, directed):
         A = nx.MultiGraph()
 
     node_type_map = {}
-    ## initial type maps
+    # initial type maps
     for node in H.nodes(data=True):
         node_type_map[node[0]] = node[1]
 
-        ## read into structure
+        # read into structure
     for edge in H.edges(data=True):
         node_first = (edge[0], node_type_map[edge[0]]['type'])
         node_second = (edge[1], node_type_map[edge[1]]['type'])
@@ -48,14 +46,15 @@ def parse_gml(file_name, directed):
         A.add_node(node_second, **node_type_map[edge[1]])
         A.add_edge(node_first, node_second, **edge_props)
 
-    ## add labels
+    # add labels
     return (A, None)
 
 
 def parse_nx(nx_object, directed):
     """
     Core parser for networkx objects
-    :input:  a networkx graph
+    Args:
+        a networkx graph
     """
 
     return (nx_object, None)
@@ -64,7 +63,8 @@ def parse_nx(nx_object, directed):
 def parse_matrix(file_name, directed):
     """
     Parser for matrices
-    :input: a SciPy sparse matrix
+    Args:
+        A SciPy sparse matrix
     """
 
     mat = scipy.io.loadmat(file_name)
@@ -74,7 +74,8 @@ def parse_matrix(file_name, directed):
 def parse_gpickle(file_name, directed=False, layer_separator=None):
     """
     A parser for generic Gpickle as stored by Py3plex.    
-    :input: gpickle object
+    Args:
+        A gpickle object
     """
 
     print("Parsing gpickle..")
@@ -109,10 +110,11 @@ def parse_gpickle(file_name, directed=False, layer_separator=None):
 def parse_gpickle_biomine(file_name, directed):
     """
     Gpickle parser for biomine graphs
-    :input: Gpickle containing BioMine data
+    Args:
+        Gpickle containing BioMine data
     """
 
-    ## convert the biomine
+    # convert the biomine
     input_graph = nx.read_gpickle(file_name)
 
     if directed:
@@ -132,7 +134,8 @@ def parse_gpickle_biomine(file_name, directed):
 def parse_detangler_json(file_path):
     """
     Parser for generic Detangler files
-    :input: Detangler JSON
+    Args:
+        Detangler JSON
     """
 
     if directed:
@@ -168,7 +171,8 @@ def parse_multi_edgelist(input_name, directed):
     """
     A generic multiedgelist parser
     n l n l w
-    :input: a text file containing multiedges
+    Args:
+    A text file containing multiedges
     """
 
     if directed:
@@ -202,7 +206,7 @@ def parse_multi_edgelist(input_name, directed):
                            (node_second, layer_second),
                            weight=weight)
             else:
-                #default case
+                # default case
                 G.add_node((node_first, layer_first), type=layer_first)
                 G.add_node((node_second, layer_second), type=layer_second)
                 G.add_edge((node_first, layer_first),
@@ -215,7 +219,8 @@ def parse_multi_edgelist(input_name, directed):
 def parse_simple_edgelist(input_name, directed):
     """
     Simple edgelist n n w
-    :input: a text file
+    Args:
+        A text file
     """
 
     if directed:
@@ -308,14 +313,13 @@ def parse_embedding(input_name):
     Loader for generic embedding as outputed by GenSim
     """
 
-    meta = None
     embedding_matrix = []
     embedding_indices = []
     with open(input_name) as IN:
         for line in IN:
             line = line.strip().split()
             if len(line) == 2:
-                meta = line
+                pass
             else:
                 embedding_matrix.append(line[1:])
                 embedding_indices.append(line[0])
@@ -340,12 +344,11 @@ def parse_multiedge_tuple_list(network, directed):
         G.add_edge((node_first, layer_first), (node_second, layer_second),
                    weight=weight)
 
-        #G.add_node(node_first,type=layer_first)
-        #G.add_node(node_second,type=layer_second)
-        #G.add_edge(node_first,node_second,weight=weight)
+        # G.add_node(node_first,type=layer_first)
+        # G.add_node(node_second,type=layer_second)
+        # G.add_edge(node_first,node_second,weight=weight)
 
     return (G, None)
-    pass
 
 
 def parse_multiplex_edges(input_name, directed):
@@ -397,7 +400,7 @@ def parse_multiplex_folder(input_folder, directed):
                 layer_dict[lname] = lid
 
     if len(activity_file) >= 1:
-        time_series_tuples = list()  #defaultdict(list)
+        time_series_tuples = list()  # defaultdict(list)
         for ac in activity_file:
             with open(ac) as acf:
                 for line in acf:
@@ -439,7 +442,7 @@ def parse_multiplex_folder(input_folder, directed):
     return (G, None, time_series_tuples)
 
 
-## main parser method
+# main parser method
 def parse_network(input_name,
                   f_type="gml",
                   directed=False,

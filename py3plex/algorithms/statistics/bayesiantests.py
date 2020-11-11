@@ -1,4 +1,4 @@
-## bayesian distance tests
+# bayesian distance tests
 
 import numpy as np
 import numpy.matlib
@@ -24,7 +24,7 @@ def correlated_ttest_MC(x, rope, runs=1, nsamples=50000):
     return x + np.sqrt(var) * np.random.standard_t(n - 1, nsamples)
 
 
-## Correlated t-test
+# Correlated t-test
 def correlated_ttest(x, rope, runs=1, verbose=False, names=('C1', 'C2')):
     import scipy.stats as stats
     """
@@ -73,7 +73,7 @@ def correlated_ttest(x, rope, runs=1, verbose=False, names=('C1', 'C2')):
     return pl, pe, pr
 
 
-## SIGN TEST
+# SIGN TEST
 def signtest_MC(x, rope, prior_strength=1, prior_place=ROPE, nsamples=50000):
     """
     Args:
@@ -83,7 +83,7 @@ def signtest_MC(x, rope, prior_strength=1, prior_place=ROPE, nsamples=50000):
         prior_place (LEFT, ROPE or RIGHT): the region to which the prior is
             assigned (default: ROPE)
         nsamples (int): the number of Monte Carlo samples
-    
+
     Returns:
         2-d array with rows corresponding to samples and columns to
         probabilities `[p_left, p_rope, p_right]`
@@ -137,12 +137,12 @@ def signtest(x,
     return pl, pe, pr
 
 
-## SIGNEDRANK
+# SIGNEDRANK
 def heaviside(X):
     Y = np.zeros(X.shape)
     Y[np.where(X > 0)] = 1
     Y[np.where(X == 0)] = 0.5
-    return Y  #1 * (x > 0)
+    return Y  # 1 * (x > 0)
 
 
 def signrank_MC(x, rope, prior_strength=0.6, prior_place=ROPE, nsamples=50000):
@@ -154,7 +154,7 @@ def signrank_MC(x, rope, prior_strength=0.6, prior_place=ROPE, nsamples=50000):
         prior_place (LEFT, ROPE or RIGHT): the region to which the prior is
             assigned (default: ROPE)
         nsamples (int): the number of Monte Carlo samples
-    
+
     Returns:
         2-d array with rows corresponding to samples and columns to
         probabilities `[p_left, p_rope, p_right]`
@@ -230,9 +230,9 @@ def hierarchical(diff,
                  verbose=False,
                  names=('C1', 'C2')):
     # upperAlpha, lowerAlpha, upperBeta, lowerBeta, are the upper and lower bound for alpha and beta, which are the parameters of
-    #the  Gamma distribution used as a prior for the degress of freedom.
-    #std_upper_bound is a constant which multiplies the sample standard deviation, to set the upper limit of the prior on the
-    #standard deviation.  Posterior inferences are insensitive to this value as this is large enough, such as 100 or 1000.
+    # the  Gamma distribution used as a prior for the degress of freedom.
+    # std_upper_bound is a constant which multiplies the sample standard deviation, to set the upper limit of the prior on the
+    # standard deviation.  Posterior inferences are insensitive to this value as this is large enough, such as 100 or 1000.
 
     samples = hierarchical_MC(diff, rope, rho, upperAlpha, lowerAlpha,
                               lowerBeta, upperBeta, std_upper_bound, names)
@@ -254,27 +254,27 @@ def hierarchical_MC(diff,
                     std_upper_bound=1000,
                     names=('C1', 'C2')):
     # upperAlpha, lowerAlpha, upperBeta, lowerBeta, are the upper and lower bound for alpha and beta, which are the parameters of
-    #the  Gamma distribution used as a prior for the degress of freedom.
-    #std_upper_bound is a constant which multiplies the sample standard deviation, to set the upper limit of the prior on the
-    #standard deviation.  Posterior inferences are insensitive to this value as this is large enough, such as 100 or 1000.
+    # the  Gamma distribution used as a prior for the degress of freedom.
+    # std_upper_bound is a constant which multiplies the sample standard deviation, to set the upper limit of the prior on the
+    # standard deviation.  Posterior inferences are insensitive to this value as this is large enough, such as 100 or 1000.
 
     import scipy.stats as stats
     import pystan
-    #data rescaling, to have homogenous scale among all dsets
+    # data rescaling, to have homogenous scale among all dsets
     stdX = np.mean(
         np.std(diff, 1)
-    )  #we scale all the data by the mean of the standard deviation of data sets
+    )  # we scale all the data by the mean of the standard deviation of data sets
     x = diff / stdX
     rope = rope / stdX
 
-    #to avoid numerical problems with zero variance
+    # to avoid numerical problems with zero variance
     for i in range(0, len(x)):
         if np.std(x[i, :]) == 0:
             x[i, :] = x[i, :] + np.random.normal(
                 0, np.min(1 / 1000000000, np.abs(
                     np.mean(x[i, :]) / 100000000)))
 
-    #This is the Hierarchical model written in Stan
+    # This is the Hierarchical model written in Stan
     hierarchical_code = """
     /*Hierarchical Bayesian model for the analysis of competing cross-validated classifiers on multiple data sets.
     */
@@ -430,7 +430,7 @@ def hierarchical_MC(diff,
     else:
         std_among = np.mean(np.std(datatable, 1))
 
-    #Hierarchical data in Stan
+    # Hierarchical data in Stan
     hierachical_dat = {
         'x': datatable,
         'deltaLow': -np.max(np.abs(datatable)),
@@ -448,7 +448,7 @@ def hierarchical_MC(diff,
         'lowerBeta': lowerBeta
     }
 
-    #Call to Stan code
+    # Call to Stan code
     fit = pystan.stan(model_code=hierarchical_code,
                       data=hierachical_dat,
                       iter=1000,

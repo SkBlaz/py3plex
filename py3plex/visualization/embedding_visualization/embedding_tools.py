@@ -1,6 +1,6 @@
-## some misc functions for embeddings
+# some misc functions for embeddings
 
-try:  ## try to import the parallel variation
+try:  # try to import the parallel variation
     from MulticoreTSNE import MulticoreTSNE as TSNE
     import multiprocessing as mp
     parallel_tsne = True
@@ -12,7 +12,6 @@ except ImportError:
         pass
 
 import pandas as pd
-import numpy as np
 
 
 def get_2d_coordinates_tsne(multinet, output_format="json", verbose=True):
@@ -36,7 +35,7 @@ def get_2d_coordinates_tsne(multinet, output_format="json", verbose=True):
         return dfr.to_json(orient='records')
 
     elif output_format == "dataframe":
-        ## pure pandas dataframe
+        # pure pandas dataframe
         return dfr
 
     elif output_format == "pos_dict":

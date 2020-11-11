@@ -245,7 +245,7 @@ def draw_networkx(G, pos=None, arrows=True, with_labels=True, **kwds):
     if pos is None:
         pos = nx.drawing.spring_layout(G)  # default to spring layout
 
-    node_collection = draw_networkx_nodes(G, pos, **kwds)
+    draw_networkx_nodes(G, pos, **kwds)
     edge_collection = draw_networkx_edges(G, pos, arrows=arrows, **kwds)
     if with_labels:
         draw_networkx_labels(G, pos, **kwds)
@@ -506,7 +506,6 @@ def draw_networkx_edges(G,
     draw_networkx_edge_labels()
     """
     try:
-        import matplotlib
         import matplotlib.pyplot as plt
         import matplotlib.cbook as cb
         from matplotlib.colors import colorConverter, Colormap, Normalize
@@ -751,7 +750,6 @@ def draw_networkx_labels(G,
     """
     try:
         import matplotlib.pyplot as plt
-        import matplotlib.cbook as cb
     except ImportError:
         raise ImportError("Matplotlib required for draw()")
     except RuntimeError:
@@ -1129,6 +1127,5 @@ def setup_module(module):
     try:
         import matplotlib as mpl
         mpl.use('PS', warn=False)
-        import matplotlib.pyplot as plt
     except:
         raise SkipTest("matplotlib not available")

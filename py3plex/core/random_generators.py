@@ -1,7 +1,7 @@
-## a class for random graph generation
+# a class for random graph generation
 import networkx as nx
 import numpy as np
-from .multinet import *
+from .multinet import itertools, multi_layer_network, random
 
 
 def random_multilayer_ER(n, l, p, directed=False):
@@ -18,7 +18,7 @@ def random_multilayer_ER(n, l, p, directed=False):
         G.add_edge((edge[0], layers[edge[0]]), (edge[1], layers[edge[1]]),
                    type="default")
 
-    ## construct the ppx object
+    # construct the ppx object
     no = multi_layer_network(network_type="multilayer").load_network(
         G, input_type="nx", directed=directed)
     return no
@@ -37,7 +37,7 @@ def random_multiplex_ER(n, l, p, directed=False):
         for edge in network.edges():
             G.add_edge((edge[0], lx), (edge[1], lx), type="default")
 
-    ## construct the ppx object
+    # construct the ppx object
     no = multi_layer_network(network_type="multiplex").load_network(
         G, input_type="nx", directed=directed)
     return no
@@ -45,10 +45,10 @@ def random_multiplex_ER(n, l, p, directed=False):
 
 def random_multiplex_generator(n, m, d=0.9):
 
-    #generate a multiplex network from a random bipartite graph
-    #n: number of nodes (int)
-    #m: number of layers (int)
-    #d: layer dropout (to avoid cliques) (float [0..1])
+    # generate a multiplex network from a random bipartite graph
+    # n: number of nodes (int)
+    # m: number of layers (int)
+    # d: layer dropout (to avoid cliques) (float [0..1])
 
     layers = range(m)
     node_to_layers = {}
@@ -74,7 +74,6 @@ def random_multiplex_generator(n, m, d=0.9):
 
             edge_to_layers[e] = edge_to_layers.get(e, []) + [l]
 
-    edgelist = []
     for k, v in edge_to_layers.items():
         for l in v:
             G.add_edge((k[0], l), (k[1], l), type="default", weight=1)

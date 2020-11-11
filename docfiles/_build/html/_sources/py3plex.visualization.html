@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>py3plex.visualization package &mdash; py3plex 0.1 documentation</title>
+  <title>py3plex.visualization package &mdash; py3plex 0.80 documentation</title>
   
 
   
@@ -60,10 +60,6 @@
           
             
             
-              <div class="version">
-                0.1
-              </div>
-            
           
 
           
@@ -91,7 +87,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../AUTOGEN_results/modules.html">py3plex</a></li>
 </ul>
 
             
@@ -247,7 +256,7 @@ inlcuding the number sign (“#FFFFFF”)</p>
 <span id="py3plex-visualization-multilayer-module"></span><h2>py3plex.visualization.multilayer module<a class="headerlink" href="#module-py3plex.visualization.multilayer" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="py3plex.visualization.multilayer.draw_multiedges">
-<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">draw_multiedges</code><span class="sig-paren">(</span><em class="sig-param">network_list</em>, <em class="sig-param">multi_edge_tuple</em>, <em class="sig-param">input_type='nodes'</em>, <em class="sig-param">linepoints='-.'</em>, <em class="sig-param">alphachannel=0.3</em>, <em class="sig-param">linecolor='black'</em>, <em class="sig-param">curve_height=2</em>, <em class="sig-param">style='curve2_bezier'</em>, <em class="sig-param">linewidth=1</em>, <em class="sig-param">invert=False</em>, <em class="sig-param">linmod='both'</em>, <em class="sig-param">resolution=0.1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.draw_multiedges" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">draw_multiedges</code><span class="sig-paren">(</span><em class="sig-param">network_list</em>, <em class="sig-param">multi_edge_tuple</em>, <em class="sig-param">input_type='nodes'</em>, <em class="sig-param">linepoints='-.'</em>, <em class="sig-param">alphachannel=0.3</em>, <em class="sig-param">linecolor='black'</em>, <em class="sig-param">curve_height=1</em>, <em class="sig-param">style='curve2_bezier'</em>, <em class="sig-param">linewidth=1</em>, <em class="sig-param">invert=False</em>, <em class="sig-param">linmod='both'</em>, <em class="sig-param">resolution=0.001</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.draw_multiedges" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -274,8 +283,9 @@ edge_size (float): Size of edges
 node_labels (bool): Display node labels?
 node_font_size (int): Size of the font
 scale_by_size (bool): Scale nodes according to their degrees?</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -292,7 +302,7 @@ scale_by_size (bool): Scale nodes according to their degrees?</p>
 
 <dl class="function">
 <dt id="py3plex.visualization.multilayer.hairball_plot">
-<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">hairball_plot</code><span class="sig-paren">(</span><em class="sig-param">g</em>, <em class="sig-param">color_list=None</em>, <em class="sig-param">display=False</em>, <em class="sig-param">node_size=1</em>, <em class="sig-param">text_color='black'</em>, <em class="sig-param">node_sizes=None</em>, <em class="sig-param">layout_parameters=None</em>, <em class="sig-param">legend=None</em>, <em class="sig-param">scale_by_size=True</em>, <em class="sig-param">layout_algorithm='force'</em>, <em class="sig-param">edge_width=0.01</em>, <em class="sig-param">alpha_channel=0.5</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">label_font_size=2</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.hairball_plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">hairball_plot</code><span class="sig-paren">(</span><em class="sig-param">g</em>, <em class="sig-param">color_list=None</em>, <em class="sig-param">display=False</em>, <em class="sig-param">node_size=1</em>, <em class="sig-param">text_color='black'</em>, <em class="sig-param">node_sizes=None</em>, <em class="sig-param">layout_parameters=None</em>, <em class="sig-param">legend=None</em>, <em class="sig-param">scale_by_size=True</em>, <em class="sig-param">layout_algorithm='force'</em>, <em class="sig-param">edge_width=0.01</em>, <em class="sig-param">alpha_channel=0.5</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">draw=True</em>, <em class="sig-param">label_font_size=2</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.hairball_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for drawing force-directed plots
 Args:
 network (networkx): A network to be visualized
@@ -306,11 +316,18 @@ edge_width (float): Width of edges
 alpha_channel (float): Transparency level.
 labels (bool): Display labels?
 label_font_size (int): Sizes of labels
-Returns:</p>
-<blockquote>
-<div><p>None</p>
-</div></blockquote>
+:returns: None</p>
 </dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.interactive_hairball_plot">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">interactive_hairball_plot</code><span class="sig-paren">(</span><em class="sig-param">G</em>, <em class="sig-param">nsizes</em>, <em class="sig-param">final_color_mapping</em>, <em class="sig-param">pos</em>, <em class="sig-param">colorscale='Rainbow'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.interactive_hairball_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.visualization.multilayer.onclick">
+<code class="sig-prename descclassname">py3plex.visualization.multilayer.</code><code class="sig-name descname">onclick</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.visualization.multilayer.onclick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="py3plex.visualization.multilayer.supra_adjacency_matrix_plot">
@@ -347,7 +364,7 @@ Returns:</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Blaž Škrlj
+        &copy; Copyright 2020, Blaž Škrlj
 
     </p>
   </div>

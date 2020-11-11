@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>py3plex.core package &mdash; py3plex 0.1 documentation</title>
+  <title>py3plex.core package &mdash; py3plex 0.80 documentation</title>
   
 
   
@@ -60,10 +60,6 @@
           
             
             
-              <div class="version">
-                0.1
-              </div>
-            
           
 
           
@@ -91,7 +87,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../AUTOGEN_results/modules.html">py3plex</a></li>
 </ul>
 
             
@@ -182,10 +191,15 @@
 <dt id="py3plex.core.converters.prepare_for_parsing">
 <code class="sig-prename descclassname">py3plex.core.converters.</code><code class="sig-name descname">prepare_for_parsing</code><span class="sig-paren">(</span><em class="sig-param">multinet</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.converters.prepare_for_parsing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute layout for a hairball visualization</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>param1 (obj): multilayer object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param1</strong> (<em>obj</em>) – multilayer object</p>
 </dd>
-<dt>Returns:</dt><dd><p>tuple: (names, prepared network)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(names, prepared network)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -194,12 +208,19 @@
 <dt id="py3plex.core.converters.prepare_for_visualization">
 <code class="sig-prename descclassname">py3plex.core.converters.</code><code class="sig-name descname">prepare_for_visualization</code><span class="sig-paren">(</span><em class="sig-param">multinet</em>, <em class="sig-param">compute_layouts='force'</em>, <em class="sig-param">layout_parameters=None</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">multiplex=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.converters.prepare_for_visualization" title="Permalink to this definition">¶</a></dt>
 <dd><p>This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>param1 (obj): multilayer object
-param2 (str): Layout algorithm
-param3 (dict): Optional layout parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param1</strong> (<em>obj</em>) – multilayer object</p></li>
+<li><p><strong>param2</strong> (<em>str</em>) – Layout algorithm</p></li>
+<li><p><strong>param3</strong> (<em>dict</em>) – Optional layout parameters</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>tuple: (names,networks,multiedges)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(names,networks,multiedges)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,10 +229,15 @@ param3 (dict): Optional layout parameters</p>
 <dt id="py3plex.core.converters.prepare_for_visualization_hairball">
 <code class="sig-prename descclassname">py3plex.core.converters.</code><code class="sig-name descname">prepare_for_visualization_hairball</code><span class="sig-paren">(</span><em class="sig-param">multinet</em>, <em class="sig-param">compute_layouts=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.converters.prepare_for_visualization_hairball" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute layout for a hairball visualization</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>param1 (obj): multilayer object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param1</strong> (<em>obj</em>) – multilayer object</p>
 </dd>
-<dt>Returns:</dt><dd><p>tuple: (names, prepared network)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(names, prepared network)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -268,7 +294,7 @@ dict,list or px_edge. See examples for further use.</p>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.get_decomposition">
-<code class="sig-name descname">get_decomposition</code><span class="sig-paren">(</span><em class="sig-param">heuristic='all'</em>, <em class="sig-param">cycle=None</em>, <em class="sig-param">parallel=True</em>, <em class="sig-param">alpha=1</em>, <em class="sig-param">beta=1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_decomposition" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_decomposition</code><span class="sig-paren">(</span><em class="sig-param">heuristic='all'</em>, <em class="sig-param">cycle=None</em>, <em class="sig-param">parallel=False</em>, <em class="sig-param">alpha=1</em>, <em class="sig-param">beta=1</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_decomposition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Core method for obtaining a network’s decomposition in terms of relations</p>
 </dd></dl>
 
@@ -357,10 +383,12 @@ dict,list or px_edge. See examples for further use.</p>
 <dt id="py3plex.core.multinet.multi_layer_network.load_layer_name_mapping">
 <code class="sig-name descname">load_layer_name_mapping</code><span class="sig-paren">(</span><em class="sig-param">mapping_name</em>, <em class="sig-param">header=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_layer_name_mapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Layer-node mapping loader method</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>param1: The name of the mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>param1</strong> – The name of the mapping file.</p>
 </dd>
-<dt>Returns:</dt><dd><p>self.layer_name_map is filled, returns nothing.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self.layer_name_map is filled, returns nothing.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -370,12 +398,16 @@ dict,list or px_edge. See examples for further use.</p>
 <code class="sig-name descname">load_network</code><span class="sig-paren">(</span><em class="sig-param">input_file=None</em>, <em class="sig-param">directed=False</em>, <em class="sig-param">input_type='gml'</em>, <em class="sig-param">label_delimiter='---'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_network" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main network loader</p>
 <p>This method loads and prepares a given network.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>param1: network name
-param2: direction
-param3: input_type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param1</strong> – network name</p></li>
+<li><p><strong>param2</strong> – direction</p></li>
+<li><p><strong>param3</strong> – input_type</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>self.core_network along with self.labels(optional), self.activity etc.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self.core_network along with self.labels(optional), self.activity etc.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -427,12 +459,10 @@ param3: input_type</p>
 <dt id="py3plex.core.multinet.multi_layer_network.read_ground_truth_communities">
 <code class="sig-name descname">read_ground_truth_communities</code><span class="sig-paren">(</span><em class="sig-param">cfile</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.read_ground_truth_communities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse ground truth community file and make mappings to the original nodes. This works based on node ID mappings, exact node,layer tuplets are to be added.
-Args:</p>
-<blockquote>
-<div><p>param1: ground truth communities.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>self.ground_truth_communities</p>
+:param param1: ground truth communities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>self.ground_truth_communities</p>
 </dd>
 </dl>
 </dd></dl>
@@ -457,7 +487,7 @@ Args:</p>
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.save_network">
 <code class="sig-name descname">save_network</code><span class="sig-paren">(</span><em class="sig-param">output_file=None</em>, <em class="sig-param">output_type='edgelist'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.save_network" title="Permalink to this definition">¶</a></dt>
-<dd><p>A method for saving the network 
+<dd><p>A method for saving the network
 :param output_type – edgelist, multiedgelist or gpickle</p>
 </dd></dl>
 
@@ -518,7 +548,7 @@ self</p>
 
 <dl class="method">
 <dt id="py3plex.core.multinet.multi_layer_network.visualize_network">
-<code class="sig-name descname">visualize_network</code><span class="sig-paren">(</span><em class="sig-param">style='diagonal'</em>, <em class="sig-param">parameters_layers=None</em>, <em class="sig-param">parameters_multiedges=None</em>, <em class="sig-param">show=False</em>, <em class="sig-param">compute_layouts='force'</em>, <em class="sig-param">layouts_parameters=None</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">orientation='upper'</em>, <em class="sig-param">resolution=0.01</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">fig=None</em>, <em class="sig-param">no_labels=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.visualize_network" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">visualize_network</code><span class="sig-paren">(</span><em class="sig-param">style='diagonal'</em>, <em class="sig-param">parameters_layers=None</em>, <em class="sig-param">parameters_multiedges=None</em>, <em class="sig-param">show=False</em>, <em class="sig-param">compute_layouts='force'</em>, <em class="sig-param">layouts_parameters=None</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">orientation='upper'</em>, <em class="sig-param">resolution=0.01</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">fig=None</em>, <em class="sig-param">no_labels=False</em>, <em class="sig-param">linewidth=1.7</em>, <em class="sig-param">alphachannel=0.3</em>, <em class="sig-param">linepoints='-.'</em>, <em class="sig-param">legend=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.visualize_network" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -564,9 +594,12 @@ self</p>
 <dt id="py3plex.core.parsers.parse_gml">
 <code class="sig-prename descclassname">py3plex.core.parsers.</code><code class="sig-name descname">parse_gml</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">directed</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.parse_gml" title="Permalink to this definition">¶</a></dt>
 <dd><p>parse a gml network</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>param1 (obj): file name
-param2 (obj): directed?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param1</strong> (<em>obj</em>) – file name</p></li>
+<li><p><strong>param2</strong> (<em>obj</em>) – directed?</p></li>
+</ul>
 </dd>
 </dl>
 <p>Returns:
@@ -576,7 +609,7 @@ param2 (obj): directed?</p>
 <dl class="function">
 <dt id="py3plex.core.parsers.parse_gpickle">
 <code class="sig-prename descclassname">py3plex.core.parsers.</code><code class="sig-name descname">parse_gpickle</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">directed=False</em>, <em class="sig-param">layer_separator=None</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.parsers.parse_gpickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>A parser for generic Gpickle as stored by Py3plex.    
+<dd><p>A parser for generic Gpickle as stored by Py3plex.
 :input: gpickle object</p>
 </dd></dl>
 
@@ -693,7 +726,7 @@ n l n l w
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Blaž Škrlj
+        &copy; Copyright 2020, Blaž Škrlj
 
     </p>
   </div>

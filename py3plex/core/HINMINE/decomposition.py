@@ -1,4 +1,4 @@
-## this is the code for the network decomposition
+# this is the code for the network decomposition
 
 from math import log
 import numpy as np
@@ -56,7 +56,7 @@ def get_calculation_method(method_name):
         return calculate_importance_rf
     elif method_name == 'okapi':
         return calculate_importance_okapi
-    elif method_name == "w2w":  ## TBA
+    elif method_name == "w2w":  # TBA
         return calculate_importance_w2w
     else:
         raise Exception('Unknown weighing method')
@@ -213,7 +213,7 @@ def calculate_importance_okapi(classes,
     b = 0.75
     predicted_pos = universal_set.intersection(linked_nodes)  #
     predicted_pos_num = len(predicted_pos)
-    idf = log((n - predicted_pos_num + 0.5) / (predicted_pos_num + 0.5))
+    log((n - predicted_pos_num + 0.5) / (predicted_pos_num + 0.5))
     return_vec = np.zeros((len(linked_nodes), 1))
     for i, linked_node in enumerate(linked_nodes):
         return_vec[i] = (k1 +
@@ -374,6 +374,7 @@ def hinmine_decompose(network, heuristic, cycle=None, parallel=False):
             'No decomposition cycle provided. Candidate cycles thus used are: %s'
             % cycle)
 
+
 #       cycle = cycle[0:2]
     try:
         cycles = cycle
@@ -400,7 +401,7 @@ def hinmine_decompose(network, heuristic, cycle=None, parallel=False):
         for item in hin.midpoint_generator(node_sequence, edge_sequence):
             for node in item:
                 degrees[node] += 1
-        
+
         hin.decompose_from_iterator('decomposition',
                                     heuristic,
                                     None,

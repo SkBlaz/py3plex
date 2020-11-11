@@ -4,13 +4,11 @@ Reading input data.
 @author: anze.vavpetic@ijs.si
 '''
 import rdflib
-import json
 import hashlib
 import os
 import _pickle as cPickle
 
 from .settings import logger, HEDWIG, GENERIC_NAMESPACE
-from .example import Example
 
 
 def rdf(paths, def_format='n3'):
@@ -81,7 +79,6 @@ def csv_parse_data(g, data_file):
     Alternatively attribute values can be URIs themselves.
     '''
     attributes = []
-    class_labels = []
     examples = []
 
     with open(data_file) as f:
@@ -150,9 +147,14 @@ def csv(hierarchy_files, data):
 def load_graph(ontology_list, data, def_format='n3', cache=True):
     def filter_valid_files(paths):
         if def_format == 'csv':
-            filter_fn = lambda p: p.endswith('.csv') or p.endswith('.tsv')
+
+            def filter_fn(p):
+                return p.endswith('.csv') or p.endswith('.tsv')
         else:
-            filter_fn = lambda p: p.endswith(def_format)
+
+            def filter_fn(p):
+                return p.endswith(def_format)
+
         return filter(filter_fn, paths)
 
     logger.info('Calculating data checksum')

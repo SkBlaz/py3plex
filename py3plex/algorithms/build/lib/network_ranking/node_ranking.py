@@ -1,9 +1,8 @@
-## node ranking algorithms
+# node ranking algorithms
 import numpy as np
 import networkx as nx
 import scipy.sparse as sp
 #from networkx.algorithms.community.community_utils import is_partition
-from itertools import product
 
 # def stochastic_normalization(matrix):
 #     matrix = matrix.tolil()
@@ -83,7 +82,7 @@ def modularity(G, communities, weight='weight'):
 
 def page_rank_kernel(index_row):
 
-    ## call as results = p.map(pr_kernel, batch)
+    # call as results = p.map(pr_kernel, batch)
     pr = sparse_page_rank(G, [index_row],
                           epsilon=1e-6,
                           max_steps=100000,
@@ -157,7 +156,7 @@ def sparse_page_rank(matrix,
         rank_vec = new_rank
     if try_shrink and shrink:
         ret = np.zeros(size)
-        rank_vec = rank_vec.T[0]  ## this works for both python versions
+        rank_vec = rank_vec.T[0]  # this works for both python versions
         ret[which] = rank_vec
         ret[start_nodes] = 0
         return ret.flatten()

@@ -4,15 +4,13 @@
    Date: 2018/02/13
    Description: Loads a Detangler JSON format graph and compute unweighted entanglement analysis with Py3Plex
 """
+import math
+import itertools
+import numpy as np
+from scipy import spatial
+from scipy.sparse.csgraph import csgraph_from_dense, connected_components
 import sys
 print(sys.version)
-
-import networkx as nx
-from scipy.sparse.csgraph import csgraph_from_dense, connected_components
-from scipy import spatial
-import numpy as np
-import itertools
-import math
 
 
 # Build the R and C matrix
@@ -105,7 +103,7 @@ def compute_entanglement(block_matrix):
     gamma_layers = []
     for i in range(nb_layers):
         gamma_layers.append(abs(
-            eigenvects[i][index_first_eigenvect].real))  #because of approx.
+            eigenvects[i][index_first_eigenvect].real))  # because of approx.
 
     # computes entanglement homogeneity, cosine distance with the [1...1] vector
     entanglement_homogeneity = 1 - spatial.distance.cosine(

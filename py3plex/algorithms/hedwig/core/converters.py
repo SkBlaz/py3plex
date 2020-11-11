@@ -1,7 +1,6 @@
-## a converter set of methods for obtaining  normal inputs
+# a converter set of methods for obtaining  normal inputs
 import rdflib
-from .term_parsers import *
-import os
+from .term_parsers import parse_gaf_file
 from collections import defaultdict
 import gzip
 
@@ -15,14 +14,14 @@ def convert_mapping_to_rdf(input_mapping_file,
                            go_identifier="GO:",
                            prepend_string=None):
 
-    ## generate input examples based on community assignment
+    # generate input examples based on community assignment
     g = rdflib.graph.Graph()
     KT = rdflib.Namespace('http://kt.ijs.si/hedwig#')
     amp_uri = 'http://kt.ijs.si/ontology/hedwig#'
     obo_uri = "http://purl.obolibrary.org/obo/"
-    AMP = rdflib.Namespace(amp_uri)
+    rdflib.Namespace(amp_uri)
 
-    ## include neighbors as instances or not..
+    # include neighbors as instances or not..
     mapping_file = {}
     if extract_subnode_info:
         for k, v in input_mapping_file.items():
@@ -36,10 +35,10 @@ def convert_mapping_to_rdf(input_mapping_file,
         for k, v in input_mapping_file.items():
             try:
                 node, layer = k
-            except Exception as es:
-                parts = k.split(split_node_by)  ## PSI-MI format
+            except Exception:
+                parts = k.split(split_node_by)  # PSI-MI format
                 if layer_type in parts:
-                    layer, node = k.split(split_node_by)  ## PSI-MI format
+                    layer, node = k.split(split_node_by)  # PSI-MI format
                 else:
                     continue
             if layer_type == None:
@@ -55,8 +54,8 @@ def convert_mapping_to_rdf(input_mapping_file,
     else:
         print("Please, provide gaf-based item-term mappings")
 
-    ## iterate through community assignments and construct the trainset
-    ## tukaj morda dodaj example name
+    # iterate through community assignments and construct the trainset
+    # tukaj morda dodaj example name
 
     for node, com in mapping_file.items():
         try:
@@ -82,8 +81,8 @@ def convert_mapping_to_rdf(input_mapping_file,
                     g.add((u, KT.annotated_with, blank))
                     g.add((blank, KT.annotation, annotation_uri))
 
-        except Exception as err:
-            ## incorrect mappings are ignored..
+        except Exception:
+            # incorrect mappings are ignored..
             pass
 
     return g
@@ -95,9 +94,9 @@ def obo2n3(obofile, n3out, gaf_file):
     current_term = ""
     #obofile = obofile.replace("/","")
 
-    gaf_mappings = parse_gaf_file(gaf_file)
+    parse_gaf_file(gaf_file)
 
-    ## iterate through all files
+    # iterate through all files
     if ".gz" in obofile:
         with gzip.open(obofile, "rt") as obo:
             for line in obo:
@@ -122,12 +121,12 @@ def obo2n3(obofile, n3out, gaf_file):
                     pass
 
     print("INFO: ontology terms added:", len(ontology.keys()))
-    ## construct an ontology graph
+    # construct an ontology graph
     g = rdflib.graph.Graph()
     KT = rdflib.Namespace('http://kt.ijs.si/hedwig#')
     amp_uri = 'http://kt.ijs.si/ontology/hedwig#'
     obo_uri = "http://purl.obolibrary.org/obo/"
-    AMP = rdflib.Namespace(amp_uri)
+    rdflib.Namespace(amp_uri)
 
     for k, v in ontology.items():
         u = rdflib.term.URIRef('%s%s' % (obo_uri, k))

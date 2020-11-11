@@ -1,4 +1,4 @@
-## reading different inputs
+# reading different inputs
 
 from py3plex.core import multinet
 
@@ -9,7 +9,7 @@ multilayer_network = multinet.multi_layer_network().load_network(
 
 multilayer_network.basic_stats()
 
-## Let's count node properties.
+# Let's count node properties.
 node_layer_tuples = set()
 unique_nodes = set()
 
@@ -39,10 +39,10 @@ multilayer_network = multinet.multi_layer_network().load_network(
     directed=False,
     input_type="multiedgelist")
 
-#multilayer_network = multinet.multi_layer_network().load_network("../datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TOD
+# multilayer_network = multinet.multi_layer_network().load_network("../datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TOD
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/edgeList.txt", directed=False, input_type="multiedgelist")
 
-## save the network as a gpickle object
+# save the network as a gpickle object
 multilayer_network.save_network(
     output_file="../datasets/stored_network.gpickle", output_type="gpickle")

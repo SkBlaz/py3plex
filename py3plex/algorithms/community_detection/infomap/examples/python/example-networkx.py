@@ -13,9 +13,9 @@ according to the community structure found by Infomap.
 
 def findCommunities(G):
     """
-	Partition network with the Infomap algorithm.
-	Annotates nodes with 'community' id and return number of communities found.
-	"""
+        Partition network with the Infomap algorithm.
+        Annotates nodes with 'community' id and return number of communities found.
+        """
 
     infomapWrapper = infomap.Infomap("--two-level")
 

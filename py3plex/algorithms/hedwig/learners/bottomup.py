@@ -3,12 +3,6 @@ Main learner class.
 
 @author: anze.vavpetic@ijs.si
 '''
-from collections import defaultdict
-
-from hedwig.core import UnaryPredicate, Rule, Example
-from hedwig.core.settings import logger
-from hedwig.stats.significance import is_redundant
-from hedwig.stats.scorefunctions import interesting
 
 
 class BottomUpLearner:
@@ -46,7 +40,9 @@ class BottomUpLearner:
         self.implicit_roots = self._implicit_roots()
 
     def _pruned_subclasses(self):
-        min_sup = lambda pred: self.kb.n_members(pred) >= self.min_sup
+        def min_sup(pred):
+            return self.kb.n_members(pred) >= self.min_sup
+
         pruned_subclasses = {}
         for pred in self.kb.predicates:
             subclasses = self.kb.get_subclasses(pred)
@@ -55,7 +51,9 @@ class BottomUpLearner:
         return pruned_subclasses
 
     def _pruned_superclasses(self):
-        min_sup = lambda pred: self.kb.n_members(pred) >= self.min_sup
+        def min_sup(pred):
+            return self.kb.n_members(pred) >= self.min_sup
+
         pruned_superclasses = {}
         for pred in self.kb.predicates:
             superclasses = self.kb.super_classes(pred)
@@ -85,7 +83,6 @@ class BottomUpLearner:
         '''
         Induces rules for the given knowledge base.
         '''
-        pass
 
     def bottom_clause(self):
         pass

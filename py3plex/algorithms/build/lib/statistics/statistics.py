@@ -1,6 +1,5 @@
-## Compute many possible network statistics
+# Compute many possible network statistics
 
-import scipy.io
 import networkx as nx
 import pandas as pd
 

@@ -1,7 +1,6 @@
-## a set of measures for assessing community quality
+# a set of measures for assessing community quality
 
 import numpy as np
-from sklearn.metrics import silhouette_score
 from itertools import product
 
 

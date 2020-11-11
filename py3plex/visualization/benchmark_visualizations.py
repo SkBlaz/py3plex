@@ -1,4 +1,4 @@
-## visualize benchmarks
+# visualize benchmarks
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -123,7 +123,7 @@ def plot_core_time_gg(fname):
 def plot_core_variability(fname):
 
     fname = pd.read_csv(fname, separator=" ")
-    ## for each dataset, take all variability and get it to a box plot
+    # for each dataset, take all variability and get it to a box plot
 
 
 def plot_core_time(fnamex):
@@ -227,10 +227,10 @@ def plot_critical_distance(fname, num_algo=14):
 
 def plot_mean_times(fn):
 
-    ## for each dataset, plot times.
+    # for each dataset, plot times.
     fx = fnamex.groupby(["setting"])['time'].mean().sort_values().index.values
     rkx = fn.groupby(['dataset', 'setting'])['time'].mean()
-    dx2 = rkx.reset_index()
+    rkx.reset_index()
 
     ax = sns.boxplot(x="setting",
                      y="time",

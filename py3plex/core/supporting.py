@@ -1,9 +1,7 @@
-## set of supporting methods for parsers and converters
+# set of supporting methods for parsers and converters
 
 from collections import defaultdict
-import networkx as nx
 import itertools
-import multiprocessing as mp
 
 
 def split_to_layers(input_network):
@@ -14,13 +12,13 @@ def split_to_layers(input_network):
     for node in input_network.nodes(data=True):
         try:
             layer_info[node[0][1]].append(node[0])
-        except Exception as err:
+        except Exception:
             layer_info[node[1]['type']].append(node[0])
 
     for layer, nodes in layer_info.items():
         subnetwork = input_network.subgraph(nodes)
         subgraph_dictionary[
-            layer] = subnetwork  #nx.relabel_nodes(subnetwork,mapping)
+            layer] = subnetwork  # nx.relabel_nodes(subnetwork,mapping)
     del layer_info
 
     return subgraph_dictionary
@@ -56,7 +54,7 @@ def parse_gaf_to_uniprot_GO(gaf_mappings, filter_terms=None):
             parts = line.split("\t")
             try:
                 if "GO:" in parts[4]:
-                    uniGO[parts[1]].append(parts[4])  ## GO and ref both added
+                    uniGO[parts[1]].append(parts[4])  # GO and ref both added
                 if "GO:" in parts[3]:
                     uniGO[parts[1]].append(parts[3])
             except:

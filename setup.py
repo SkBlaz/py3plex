@@ -1,11 +1,10 @@
-## Py3plex installation file. Cython code for fa2 is the courtesy of Bhargav Chippada.
-## https://github.com/bhargavchippada/forceatlas2
+# Py3plex installation file. Cython code for fa2 is the courtesy of Bhargav Chippada.
+# https://github.com/bhargavchippada/forceatlas2
 
 from os import path
 import sys
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
-import argparse
 
 here = path.abspath(path.dirname(__file__))
 
@@ -53,13 +52,15 @@ if "--cpp" in sys.argv:
 else:
     cythonopts = {"py_modules": ["py3plex/visualization/fa2.fa2util"]}
 
+
 def parse_requirements(file):
     required_packages = []
     with open(path.join(path.dirname(__file__), file)) as req_file:
         for line in req_file:
             required_packages.append(line.strip())
     return required_packages
-    
+
+
 setup(name='py3plex',
       version='0.80',
       description="A Multilayer network analysis python3 library",
@@ -69,7 +70,7 @@ setup(name='py3plex',
       author_email='blaz.skrlj@ijs.si',
       license='MIT',
       packages=find_packages(),
-      install_requires = parse_requirements("requirements.txt"),
+      install_requires=parse_requirements("requirements.txt"),
       zip_safe=False,
       include_package_data=True,
       **cythonopts)

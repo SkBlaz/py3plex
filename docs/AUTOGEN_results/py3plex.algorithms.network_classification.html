@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3plex.algorithms.network_classification package &mdash; py3plex 0.80 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="py3plex.algorithms.node_ranking package" href="py3plex.algorithms.node_ranking.html" />
+    <link rel="prev" title="py3plex.algorithms.multilayer_algorithms package" href="py3plex.algorithms.multilayer_algorithms.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core idea and principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">py3plex - key principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Analysis of multilayers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community detection (multiplex)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra adjacency matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random networks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Learning - label propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Learning - Node embeddings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3plex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="py3plex.html">py3plex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="py3plex.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="py3plex.html#module-py3plex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3plex</a> &raquo;</li>
+        
+          <li><a href="py3plex.html">py3plex package</a> &raquo;</li>
+        
+          <li><a href="py3plex.algorithms.html">py3plex.algorithms package</a> &raquo;</li>
+        
+      <li>py3plex.algorithms.network_classification package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/AUTOGEN_results/py3plex.algorithms.network_classification.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3plex-algorithms-network-classification-package">
+<h1>py3plex.algorithms.network_classification package<a class="headerlink" href="#py3plex-algorithms-network-classification-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3plex.algorithms.network_classification.PPR">
+<span id="py3plex-algorithms-network-classification-ppr-module"></span><h2>py3plex.algorithms.network_classification.PPR module<a class="headerlink" href="#module-py3plex.algorithms.network_classification.PPR" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.PPR.construct_PPR_matrix">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.PPR.</code><code class="sig-name descname">construct_PPR_matrix</code><span class="sig-paren">(</span><em class="sig-param">graph_matrix</em>, <em class="sig-param">parallel=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.PPR.construct_PPR_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>PPR matrix is the matrix of features used for classification — this is the spatially intense version of the classifier</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.PPR.construct_PPR_matrix_targets">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.PPR.</code><code class="sig-name descname">construct_PPR_matrix_targets</code><span class="sig-paren">(</span><em class="sig-param">graph_matrix</em>, <em class="sig-param">targets</em>, <em class="sig-param">parallel=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.PPR.construct_PPR_matrix_targets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.PPR.validate_ppr">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.PPR.</code><code class="sig-name descname">validate_ppr</code><span class="sig-paren">(</span><em class="sig-param">core_network</em>, <em class="sig-param">labels</em>, <em class="sig-param">dataset_name='test'</em>, <em class="sig-param">repetitions=5</em>, <em class="sig-param">random_seed=123</em>, <em class="sig-param">multiclass_classifier=None</em>, <em class="sig-param">target_nodes=None</em>, <em class="sig-param">parallel=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.PPR.validate_ppr" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main validation class — use this to obtain CV results!</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.network_classification.label_propagation">
+<span id="py3plex-algorithms-network-classification-label-propagation-module"></span><h2>py3plex.algorithms.network_classification.label_propagation module<a class="headerlink" href="#module-py3plex.algorithms.network_classification.label_propagation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation.label_propagation">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.label_propagation.</code><code class="sig-name descname">label_propagation</code><span class="sig-paren">(</span><em class="sig-param">graph_matrix</em>, <em class="sig-param">class_matrix</em>, <em class="sig-param">alpha=0.001</em>, <em class="sig-param">epsilon=1e-12</em>, <em class="sig-param">max_steps=100000</em>, <em class="sig-param">normalization='freq'</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation.label_propagation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation.label_propagation_normalization">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.label_propagation.</code><code class="sig-name descname">label_propagation_normalization</code><span class="sig-paren">(</span><em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation.label_propagation_normalization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation.label_propagation_tf">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.label_propagation.</code><code class="sig-name descname">label_propagation_tf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation.label_propagation_tf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation.normalize_amplify_freq">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.label_propagation.</code><code class="sig-name descname">normalize_amplify_freq</code><span class="sig-paren">(</span><em class="sig-param">mat</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation.normalize_amplify_freq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation.normalize_exp">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.label_propagation.</code><code class="sig-name descname">normalize_exp</code><span class="sig-paren">(</span><em class="sig-param">mat</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation.normalize_exp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation.normalize_initial_matrix_freq">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.label_propagation.</code><code class="sig-name descname">normalize_initial_matrix_freq</code><span class="sig-paren">(</span><em class="sig-param">mat</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation.normalize_initial_matrix_freq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation.normalize_none">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.label_propagation.</code><code class="sig-name descname">normalize_none</code><span class="sig-paren">(</span><em class="sig-param">mat</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation.normalize_none" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation.validate_label_propagation">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.label_propagation.</code><code class="sig-name descname">validate_label_propagation</code><span class="sig-paren">(</span><em class="sig-param">core_network</em>, <em class="sig-param">labels</em>, <em class="sig-param">dataset_name='test'</em>, <em class="sig-param">repetitions=5</em>, <em class="sig-param">normalization_scheme='basic'</em>, <em class="sig-param">alpha_value=0.001</em>, <em class="sig-param">random_seed=123</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation.validate_label_propagation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-py3plex.algorithms.network_classification">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3plex.algorithms.network_classification" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation_normalization">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.</code><code class="sig-name descname">label_propagation_normalization</code><span class="sig-paren">(</span><em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation_normalization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.label_propagation_tf">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.</code><code class="sig-name descname">label_propagation_tf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.label_propagation_tf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.normalize_amplify_freq">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.</code><code class="sig-name descname">normalize_amplify_freq</code><span class="sig-paren">(</span><em class="sig-param">mat</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.normalize_amplify_freq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.normalize_exp">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.</code><code class="sig-name descname">normalize_exp</code><span class="sig-paren">(</span><em class="sig-param">mat</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.normalize_exp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.normalize_initial_matrix_freq">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.</code><code class="sig-name descname">normalize_initial_matrix_freq</code><span class="sig-paren">(</span><em class="sig-param">mat</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.normalize_initial_matrix_freq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="py3plex.algorithms.network_classification.validate_label_propagation">
+<code class="sig-prename descclassname">py3plex.algorithms.network_classification.</code><code class="sig-name descname">validate_label_propagation</code><span class="sig-paren">(</span><em class="sig-param">core_network</em>, <em class="sig-param">labels</em>, <em class="sig-param">dataset_name='test'</em>, <em class="sig-param">repetitions=5</em>, <em class="sig-param">normalization_scheme='basic'</em>, <em class="sig-param">alpha_value=0.001</em>, <em class="sig-param">random_seed=123</em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.network_classification.validate_label_propagation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="py3plex.algorithms.node_ranking.html" class="btn btn-neutral float-right" title="py3plex.algorithms.node_ranking package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="py3plex.algorithms.multilayer_algorithms.html" class="btn btn-neutral float-left" title="py3plex.algorithms.multilayer_algorithms package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blaž Škrlj
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

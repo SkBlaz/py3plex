@@ -1,4 +1,4 @@
-## set of routines for validation of the PPR-based classification
+# set of routines for validation of the PPR-based classification
 
 from ..node_ranking import *
 from ..general.benchmark_classification import *
@@ -7,9 +7,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import f1_score
 import time
 import numpy as np
-import multiprocessing as mp
-from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
-from sklearn import preprocessing
+from sklearn.model_selection import StratifiedShuffleSplit
 
 
 def construct_PPR_matrix(graph_matrix, parallel=False):
@@ -17,17 +15,17 @@ def construct_PPR_matrix(graph_matrix, parallel=False):
     PPR matrix is the matrix of features used for classification --- this is the spatially intense version of the classifier
     """
 
-    ## initialize the vectors
+    # initialize the vectors
     graph_matrix = graph_matrix
     n = graph_matrix.shape[1]
     vectors = np.zeros((n, n))
     results = run_PPR(graph_matrix, parallel=parallel)
 
-    ## get the results in batches
+    # get the results in batches
     for result in results:
         if result != None:
 
-            ## individual batches
+            # individual batches
             if isinstance(result, list):
                 for ppr in result:
                     vectors[ppr[0], :] = ppr[1]
@@ -48,7 +46,7 @@ def construct_PPR_matrix_targets(graph_matrix, targets, parallel=False):
         vectors[tar_map[result[0]], :] = vectors[1]
 
     return vectors
-    ## deal with that now..
+    # deal with that now..
 
 
 def validate_ppr(core_network,
@@ -69,7 +67,7 @@ def validate_ppr(core_network,
     df = pd.DataFrame()
     for k in range(repetitions):
 
-        ## this is relevant for supra-adjacency-based tasks..
+        # this is relevant for supra-adjacency-based tasks..
         if target_nodes is not None:
             print("Subnetwork ranking in progress..")
             vectors = construct_PPR_matrix_targets(core_network,
@@ -80,14 +78,14 @@ def validate_ppr(core_network,
         else:
             vectors = construct_PPR_matrix(core_network, parallel=parallel)
 
-        ## remove single instance-single target!
+        # remove single instance-single target!
         nz = np.count_nonzero(labels, axis=0)
         wnz = np.argwhere(nz > 2).T[0]
         labels = labels[:, wnz]
 
         for j in np.arange(0.1, 0.5, 0.1):
 
-            ## run the training..
+            # run the training..
             print("Train size:{}, method {}".format(j, "PPR"))
             print(vectors.shape, labels.shape)
             rs = StratifiedShuffleSplit(n_splits=10,
@@ -109,8 +107,8 @@ def validate_ppr(core_network,
                 train_x = vectors[X_train]
                 test_x = vectors[X_test]
 
-                train_labels = labels[X_train]
-                test_labels = labels[X_test]
+                labels[X_train]
+                labels[X_test]
 
                 train_labels_first = onedim_labels[X_train]
                 test_labels_second = onedim_labels[X_test]
@@ -126,7 +124,7 @@ def validate_ppr(core_network,
                 # tmp_lab = test_labels[:,being_predicted]
                 #                mi,ma = evaluate_oracle_F1(probs,tmp_lab)
 
-                ## train the model
+                # train the model
                 end = time.time()
                 elapsed = end - start
                 micros.append(mi)

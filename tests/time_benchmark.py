@@ -1,6 +1,6 @@
 #from pymnet import *
-from py3plex.visualization.multilayer import *
-from py3plex.visualization.colors import all_color_names, colors_default
+from py3plex.visualization.multilayer import draw, draw_multiedges, draw_multilayer_default, models
+from py3plex.visualization.colors import colors_default
 from py3plex.core import multinet
 import time
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ def py3plex_visualization(network):
                                     directed=False,
                                     input_type="multiedge_tuple_list")
     network_labels, graphs, multilinks = multilayer_network.get_layers(
-    )  ## get layers for visualization
+    )  # get layers for visualization
 
     draw_multilayer_default(graphs,
                             display=False,
@@ -44,7 +44,7 @@ def py3plex_visualization(network):
 
 def pymnet_visualization(network):
     start = time.time()
-    fig = draw(network)
+    draw(network)
     plt.show()
     end = time.time()
     plt.clf()

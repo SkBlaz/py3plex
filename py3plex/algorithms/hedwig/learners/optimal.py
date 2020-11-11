@@ -3,13 +3,9 @@ Main learner class.
 
 @author: anze.vavpetic@ijs.si
 '''
-from collections import defaultdict
 from itertools import combinations
 
-from ..core import UnaryPredicate, Rule, Example
-from ..core.settings import logger
-from ..stats.significance import is_redundant
-from ..stats.scorefunctions import interesting
+from ..core import Rule, UnaryPredicate
 
 from .learner import Learner
 
@@ -41,7 +37,10 @@ class OptimalLearner(Learner):
         Induces rules for the given knowledge base.
         '''
         kb = self.kb
-        has_min_sup = lambda pred: kb.get_members(pred).count() >= self.min_sup
+
+        def has_min_sup(pred):
+            return kb.get_members(pred).count() >= self.min_sup
+
         all_predicates = filter(has_min_sup, kb.predicates)
         rules = []
         for depth in range(1, self.depth + 1):

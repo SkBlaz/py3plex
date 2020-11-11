@@ -1,6 +1,6 @@
 import numpy as np
 
-## this file contains functions for polynome fitting
+# this file contains functions for polynome fitting
 
 
 def draw_order3(networks, p1, p2):

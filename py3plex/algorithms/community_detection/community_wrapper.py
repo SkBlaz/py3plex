@@ -1,6 +1,5 @@
-## high level interface for community detection algorithms
+# high level interface for community detection algorithms
 from .community_louvain import *
-import os
 try:
     from .NoRC import *
 except:
@@ -57,14 +56,13 @@ def infomap_communities(graph,
                         iterations=200,
                         output="mapping"):
 
-    ## check type of the network
+    # check type of the network
     print("INFO: Infomap community detection in progress..")
-    outstruct = []
 
-    ### go through individual nodes first and enumerate them., also layers
+    # go through individual nodes first and enumerate them., also layers
     inverse_node_map = graph.serialize_to_edgelist(edgelist_file=edgelist_file,
                                                    multiplex=multiplex)
-    ## run infomap
+    # run infomap
     run_infomap(edgelist_file,
                 multiplex=multiplex,
                 binary=binary,
@@ -156,7 +154,7 @@ def NoRC_communities(
                                       fine_range=fine_range)
 
     if output == "mapping":
-        ## todo
+        # todo
         return None
     else:
         return partition

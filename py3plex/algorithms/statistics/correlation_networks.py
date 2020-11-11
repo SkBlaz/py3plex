@@ -1,5 +1,5 @@
-## implement scale free network estimation
-## do this according to the paper WCGA
+# implement scale free network estimation
+# do this according to the paper WCGA
 
 import numpy as np
 from collections import Counter
@@ -13,7 +13,7 @@ def pick_threshold(matrix):
         tmp_array = rho.copy()
         tmp_array[tmp_array > j] = 1
         tmp_array[tmp_array < j] = 0
-        np.fill_diagonal(tmp_array, 0)  ## self loops
+        np.fill_diagonal(tmp_array, 0)  # self loops
         rw_sum = np.sum(tmp_array, axis=0)
         counts = Counter(rw_sum)
         key_counts = np.log(list(counts.keys()))
