@@ -179,7 +179,6 @@ network_colors = [
 # visualize the network's communities!
 hairball_plot(network.core_network,
               color_list=network_colors,
-              layered=False,
               layout_parameters={"iterations": 50},
               scale_by_size=True,
               layout_algorithm="force",
