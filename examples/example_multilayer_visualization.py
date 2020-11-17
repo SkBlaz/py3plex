@@ -9,7 +9,22 @@ from py3plex.visualization.multilayer import draw_multiedges, draw_multilayer_de
 from py3plex.visualization.colors import colors_default
 from py3plex.core import multinet
 
-# you can try the default visualization options --- this is the simplest option/
+# Warm up - hairball plots
+dataset = "../datasets/imdb.gpickle"
+
+# Construct a heterogeneous information network object
+multilayer_network = multinet.multi_layer_network().load_network(
+    input_file=dataset, directed=True, input_type=dataset.split(".")[-1])
+
+# Show some basic statistics
+multilayer_network.basic_stats()
+hairball_plot(multilayer_network.core_network,
+              layout_parameters={"iterations": 5},
+              scale_by_size=True,
+              legend = True,
+              layout_algorithm="force")
+
+plt.show()
 
 # multilayer
 multilayer_network = multinet.multi_layer_network().load_network(

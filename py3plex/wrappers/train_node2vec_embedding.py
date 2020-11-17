@@ -6,7 +6,7 @@ import os
 from sklearn import linear_model
 from sklearn.multiclass import OneVsRestClassifier
 import multiprocessing as mp
-from .benchmark_nodes import benchmark_node_classification, graph, self
+from .benchmark_nodes import benchmark_node_classification
 import time
 
 

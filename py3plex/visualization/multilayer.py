@@ -449,28 +449,29 @@ def hairball_plot(
         unique_colors = np.unique(potlabs)
         color_mapping = dict(zip(list(unique_colors), colors.colors_default))
         try:
-            final_color_mapping = [color_mapping[n[1]['type']] for n in nodes]
+            color_list = [color_mapping[n[1]['type']] for n in nodes]
         except:
             print("Assigning colors..")
-            final_color_mapping = [1] * len(nodes)
-    else:
-        node_types = [x[1] for x in g.nodes()]
-        assert len(node_types) == len(color_list)
+            color_list = [1] * len(nodes)
 
-        try:
-            cols = color_list            
-        except Exception as es:
-            print("Using default palette")
-            cols = colors.colors_default            
-        id_col_map = {}
-        for enx, j in enumerate(set(color_list)):
-            id_col_map[j] = cols[enx]
-        id_type_map = dict(zip(color_list, node_types))
-        final_color_mapping = [id_col_map[j] for j in color_list]
-        color_to_type_map = {}
-        for k, v in id_type_map.items():
-            actual_color = id_col_map[k]
-            color_to_type_map[actual_color] = id_type_map[k]
+    
+    node_types = [x[1] for x in g.nodes()]
+    assert len(node_types) == len(color_list)
+
+    try:
+        cols = color_list            
+    except Exception as es:
+        print("Using default palette")
+        cols = colors.colors_default            
+    id_col_map = {}
+    for enx, j in enumerate(set(color_list)):
+        id_col_map[j] = cols[enx]
+    id_type_map = dict(zip(color_list, node_types))
+    final_color_mapping = [id_col_map[j] for j in color_list]
+    color_to_type_map = {}
+    for k, v in id_type_map.items():
+        actual_color = id_col_map[k]
+        color_to_type_map[actual_color] = id_type_map[k]
 
     degrees = dict(nx.degree(nx.Graph(g)))
 
