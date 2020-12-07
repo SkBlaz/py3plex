@@ -1,5 +1,0 @@
-supra adjacency matrix
-compute centrality measures
-multi communities---infomap wrapper
-
-
