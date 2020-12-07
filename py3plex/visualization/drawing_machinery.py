@@ -585,8 +585,8 @@ def draw_networkx_edges(G,
         # r7184 and r7189 (June 6 2009). We should then not set the alpha
         # value globally, since the user can instead provide per-edge alphas
         # now.  Only set it globally if provided as a scalar.
-        if cb.is_numlike(alpha):
-            edge_collection.set_alpha(alpha)
+        # if cb.is_numlike(alpha):
+        #     edge_collection.set_alpha(alpha)
 
         if edge_colors is None:
             if edge_cmap is not None:

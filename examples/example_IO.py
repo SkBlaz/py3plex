@@ -20,6 +20,10 @@ for edge in multilayer_network.get_nodes():
 print("Node layer tuples: ", len(node_layer_tuples))
 print("Unique nodes: ", len(unique_nodes))
 
+######################
+## Simple networks (monoplex)
+######################
+
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/epigenetics.gpickle",
     directed=True,
@@ -34,14 +38,19 @@ multilayer_network = multinet.multi_layer_network().load_network(
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/test.edgelist", directed=False, input_type="edgelist")
 
+######################
+## Two key multilayer/plex formats
+######################
+
+## N L N L w
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/multiedgelist.txt",
     directed=False,
     input_type="multiedgelist")
 
-# multilayer_network = multinet.multi_layer_network().load_network("../datasets/erdos_detangler.json",directed=False, input_type="detangler_json") ## TOD
-multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/edgeList.txt", directed=False, input_type="multiedgelist")
+# L N N w
+multilayer_network = multinet.multi_layer_network(network_type="multiplex").load_network(
+    "../datasets/test13.edges", directed=False, input_type="multiplex_edges")
 
 # save the network as a gpickle object
 multilayer_network.save_network(
