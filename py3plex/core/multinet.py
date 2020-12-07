@@ -587,6 +587,7 @@ class multi_layer_network:
             return converters.prepare_for_visualization(
                 self.core_network,
                 compute_layouts=compute_layouts,
+                network_type = self.network_type,
                 layout_parameters=layout_parameters,
                 verbose=verbose)
 

@@ -3,7 +3,54 @@ from collections import defaultdict
 from ..visualization.layout_algorithms import compute_force_directed_layout, compute_random_layout, np
 
 
+def compute_layout(network, compute_layouts, layout_parameters, verbose):
+    
+    if compute_layouts == "force":
+        tmp_pos = compute_force_directed_layout(network,
+                                                layout_parameters,
+                                                verbose=verbose)
+    elif compute_layouts == "random":
+        tmp_pos = compute_random_layout(network)
+        
+    elif compute_layouts == "custom_coordinates":
+        tmp_pos = layout_parameters['pos']
+
+    keys = []
+    value_pairs = []
+    for k, v in tmp_pos.items():
+        value_pairs.append(v)
+        keys.append(k)
+
+    coordinate_matrix = np.matrix(value_pairs)
+    norm_x = (coordinate_matrix[:, 0] - np.min(
+        coordinate_matrix[:, 0])) / (np.max(coordinate_matrix[:, 0]) -
+                                     np.min(coordinate_matrix[:, 0]))
+
+    norm_y = (coordinate_matrix[:, 1] - np.min(
+        coordinate_matrix[:, 1])) / (np.max(coordinate_matrix[:, 1]) -
+                                     np.min(coordinate_matrix[:, 1]))
+
+    coordinate_matrix[:, 0] = norm_x
+    coordinate_matrix[:, 1] = norm_y
+
+    tmp_pos = {}
+    for enx, j in enumerate(keys):
+        tmp_pos[j] = np.asarray(coordinate_matrix[enx])[0]
+
+    for node in network.nodes(data=True):
+        coordinates = tmp_pos[node[0]]
+        if network.degree(node[0]) == 0:
+            coordinates = np.array(coordinates) / 2
+        elif network.degree(node[0]) == 1:
+            coordinates = np.array(coordinates) / 2
+        if np.abs(coordinates[0]) > 1 or np.abs(coordinates[1]) > 1:
+            coordinates = np.random.rand(
+                1) * coordinates / np.linalg.norm(coordinates)
+
+        node[1]['pos'] = coordinates
+
 def prepare_for_visualization(multinet,
+                              network_type = "multilayer",
                               compute_layouts="force",
                               layout_parameters=None,
                               verbose=True,
@@ -13,14 +60,20 @@ def prepare_for_visualization(multinet,
 
     Args:
         param1 (obj): multilayer object
-        param2 (str): Layout algorithm
-        param3 (dict): Optional layout parameters
+        param2 (str): multilayer or multiplex?
+        param3 (str): Layout algorithm
+        param4 (dict): Optional layout parameters
 
     Returns:
         tuple: (names,networks,multiedges)
 
     """
 
+    if network_type == "multilayer":
+        multiplex = False
+    else:
+        multiplex = True
+    
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
         try:
@@ -33,80 +86,11 @@ def prepare_for_visualization(multinet,
         for layer_name, v in layers.items()
     }
 
-    if multiplex:
-        if compute_layouts == "force":
-            tmp_pos = compute_force_directed_layout(multinet,
-                                                    layout_parameters,
-                                                    verbose=verbose)
-
-        if compute_layouts == "force_nx":
-            tmp_pos = compute_force_directed_layout(multinet,
-                                                    layout_parameters,
-                                                    verbose=verbose,
-                                                    forceImport=False)
-
-        elif compute_layouts == "random":
-            tmp_pos = compute_random_layout(multinet)
-
-        elif compute_layouts == "custom_coordinates":
-            tmp_pos = layout_parameters['pos']
-
-        for node in multinet.nodes(data=True):
-            coordinates = tmp_pos[node[0]]
-            if np.abs(coordinates[0]) > 1 or np.abs(coordinates[1]) > 1:
-                coordinates = np.random.rand(2)
-            node[1]['pos'] = coordinates
-
+    if multiplex:        
+        compute_layout(multinet, compute_layouts, layout_parameters, verbose)
     else:
         for layer, network in networks.items():
-
-            if compute_layouts == "force":
-                tmp_pos = compute_force_directed_layout(network,
-                                                        layout_parameters,
-                                                        verbose=verbose)
-
-            elif compute_layouts == "random":
-                tmp_pos = compute_random_layout(network)
-
-            elif compute_layouts == "custom_coordinates":
-                tmp_pos = layout_parameters['pos']
-
-            else:
-                break
-
-            keys = []
-            value_pairs = []
-            for k, v in tmp_pos.items():
-                value_pairs.append(v)
-                keys.append(k)
-
-            coordinate_matrix = np.matrix(value_pairs)
-            norm_x = (coordinate_matrix[:, 0] - np.min(
-                coordinate_matrix[:, 0])) / (np.max(coordinate_matrix[:, 0]) -
-                                             np.min(coordinate_matrix[:, 0]))
-
-            norm_y = (coordinate_matrix[:, 1] - np.min(
-                coordinate_matrix[:, 1])) / (np.max(coordinate_matrix[:, 1]) -
-                                             np.min(coordinate_matrix[:, 1]))
-
-            coordinate_matrix[:, 0] = norm_x
-            coordinate_matrix[:, 1] = norm_y
-
-            tmp_pos = {}
-            for enx, j in enumerate(keys):
-                tmp_pos[j] = np.asarray(coordinate_matrix[enx])[0]
-
-            for node in network.nodes(data=True):
-                coordinates = tmp_pos[node[0]]
-                if network.degree(node[0]) == 0:
-                    coordinates = np.array(coordinates) / 2
-                elif network.degree(node[0]) == 1:
-                    coordinates = np.array(coordinates) / 2
-                if np.abs(coordinates[0]) > 1 or np.abs(coordinates[1]) > 1:
-                    coordinates = np.random.rand(
-                        1) * coordinates / np.linalg.norm(coordinates)
-
-                node[1]['pos'] = coordinates
+            compute_layout(network, compute_layouts, layout_parameters, verbose)
 
     if verbose:
         print("Finished with layout..")

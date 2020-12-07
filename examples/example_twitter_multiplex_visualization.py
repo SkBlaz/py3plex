@@ -15,7 +15,7 @@ with open("../datasets/twitterlayers.txt") as twl:
         layer_map[idx] = lname
         
 ## Loade the network first!
-multilayer_network = multinet.multi_layer_network(network_type = "multilayer").load_network("../datasets/test13.edges", directed=False, input_type="multiplex_edges")
+multilayer_network = multinet.multi_layer_network(network_type = "multiplex").load_network("../datasets/test13.edges", directed=False, input_type="multiplex_edges")
 
 ## Let's customize it a bit.
 network_labels, graphs, multilinks = multilayer_network.get_layers()
@@ -25,7 +25,7 @@ draw_multilayer_default(graphs,
                         display=False,
                         background_shape="circle",
                         labels=network_labels,
-                        node_size=3)
+                        node_size=1)
 
 
 plt.show()
