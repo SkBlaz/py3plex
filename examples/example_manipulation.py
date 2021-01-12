@@ -57,7 +57,7 @@ ER_multilayer = random_generators.random_multilayer_ER(300,
                                                        6,
                                                        0.05,
                                                        directed=False)
-ER_multilayer.visualize_network(show=True)
+# ER_multilayer.visualize_network(show=True)
 
 # dealing with multiplex networks
 B = multinet.multi_layer_network(network_type="multiplex")
@@ -91,4 +91,7 @@ B.remove_edges(
 print(list(B.get_edges()))
 
 B.remove_nodes([(1, 1), (3, 1)], input_type="list")
+print(list(B.get_nodes()))
+
+B.remove_nodes({"source":2,"type":1}, input_type="dict")
 print(list(B.get_nodes()))

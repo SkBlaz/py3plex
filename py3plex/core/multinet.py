@@ -700,7 +700,9 @@ class multi_layer_network:
                 node_dict["node_for_adding"] = (node_dict["source"],
                                                 self.dummy_layer)
             del node_dict["source"]
-            eval("self.core_network." + target_function + "(**node_dict)")
+            del node_dict["type"]
+            nname = node_dict['node_for_adding']
+            eval("self.core_network." + target_function + f"({nname})")
 
         else:
             for node_dict in node_dict_list:
@@ -710,8 +712,10 @@ class multi_layer_network:
                 else:
                     node_dict["node_for_adding"] = (node_dict["source"],
                                                     self.dummy_layer)
-                del node_dict["source"]
-                eval("self.core_network." + target_function + "(**node_dict)")
+            del node_dict["source"]
+            del node_dict["type"]
+            nname = node_dict['node_for_adding']
+            eval("self.core_network." + target_function + f"({nname})")
 
     def _generic_node_list_manipulator(self, node_list, target_function):
         """
