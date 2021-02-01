@@ -326,8 +326,9 @@ class HeterogeneousInformationNetwork:
 
         else:
 
-            # non-parallel
+            # non-parallel            
             for item in generator:
+                
                 # to za vsak class poracun importance
                 importances = importance_calculator(classes,
                                                     universal_set,
@@ -339,14 +340,13 @@ class HeterogeneousInformationNetwork:
                 importance = np.sum(importances, axis=0)
                 i1 = [self.node_indices[x] for x in item]
                 i2 = [[x] for x in i1]
-
                 to_add = sp.csr_matrix((nn, nn))
                 to_add[i2, i1] = importance
                 to_add = to_add.tocsr()  # this prevents memory leaks
                 matrix += to_add
 
         # hadamand product
-
+        
         self.decomposed[name] = matrix
 
     def midpoint_generator(self, node_sequence, edge_sequence):
@@ -355,20 +355,100 @@ class HeterogeneousInformationNetwork:
                 'In a split of length %i, a midpoint is not well defined!' %
                 len(node_sequence))
         middle_type = node_sequence[int(len(node_sequence) / 2)]
+
         # forward_sequence = %TODO: INVERSE SEQUENCES!!!!!!!!!
+
         for node in self.graph:
+
+            ## intermediary node type
             if self.graph.nodes[node]['type'] == middle_type:
-                points = [node]
-                i = int(len(node_sequence) / 2 + 1)
-                while i < len(node_sequence):
-                    current_type = node_sequence[i]
-                    new_points = []
-                    for point in points:
-                        new_points += [
-                            x for x in self.graph[point]
-                            if self.graph.nodes[x]['type'] == current_type
-                        ]
-                    points = new_points
-                    i += 1
+
+                ## get inbound connections
+                predecessors = list(self.graph.predecessors(node))
+
+                ## get the outbound connections
+                successors = list(self.graph.successors(node))
+
+                ## nodes that match the relation with the midpoint
+                inbound_valid_relations = []
+                outbound_valid_relations = []
+
+                ## traverse the predecessor space
+                for pred in predecessors:
+                    etype = self.graph.get_edge_data(pred, node)
+
+                    ## multilinks
+                    valid = False
+                    for k,v in etype.items():
+                        if v['type'] == edge_sequence[0]: # inbound relation
+                            valid = True                            
+                            break
+                        
+                    if valid:
+                        inbound_valid_relations.append(pred)
+
+                ## similar for successors
+                for suc in successors:
+                    etype = self.graph.get_edge_data(node, suc)
+
+                    ## multilinks
+                    valid = False
+                    for k,v in etype.items():
+                        if v['type'] == edge_sequence[1]: # outbound relation
+                            valid = True
+                            break
+                        
+                    if valid:
+                        outbound_valid_relations.append(suc)
+
+                ## INVERSE LINKS -> This is new (and required) compared to original hinmine. Comment the below two loops for one direction.
+                
+                ## traverse the predecessor space -> inverse
+                for pred in predecessors:
+                    etype = self.graph.get_edge_data(node, pred)
+
+                    ## multilinks
+                    valid = False
+                    for k,v in etype.items():
+                        if v['type'] == edge_sequence[1]: # inbound relation
+                            valid = True                            
+                            break
+                        
+                    if valid:
+                        inbound_valid_relations.append(pred)
+
+                ## similar for successors -> inverse
+                for suc in successors:
+                    etype = self.graph.get_edge_data(suc, node)
+
+                    ## multilinks
+                    valid = False
+                    for k,v in etype.items():
+                        if v['type'] == edge_sequence[0]: # outbound relation
+                            valid = True
+                            break
+                        
+                    if valid:
+                        outbound_valid_relations.append(suc)
+                        
+                points = list(set(inbound_valid_relations + outbound_valid_relations))
                 if len(points) > 1:
                     yield points
+        
+        ## old
+        # for node in self.graph:
+        #     if self.graph.nodes[node]['type'] == middle_type:
+        #         points = [node]
+        #         i = int(len(node_sequence) / 2 + 1)
+        #         while i < len(node_sequence):
+        #             current_type = node_sequence[i]
+        #             new_points = []
+        #             for point in points:
+        #                 new_points += [
+        #                     x for x in self.graph[point]
+        #                     if self.graph.nodes[x]['type'] == current_type
+        #                 ]
+        #             points = new_points
+        #             i += 1
+        #         if len(points) > 1:
+        #             yield points

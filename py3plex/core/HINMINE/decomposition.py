@@ -378,8 +378,10 @@ def hinmine_decompose(network, heuristic, cycle=None, parallel=False):
 #       cycle = cycle[0:2]
     try:
         cycles = cycle
+        
     except KeyError:
         raise Exception('No decomposition cycle selected')
+    
     hin = network
 
     if parallel:
@@ -388,7 +390,11 @@ def hinmine_decompose(network, heuristic, cycle=None, parallel=False):
     else:
         p = None
 
+    cytems = dict()
+    tx = 0
     for cycle in cycles:
+        cname = cycle
+        tx += 1
         cycle = cycle.split('_____')
         node_sequence = []
         edge_sequence = []
@@ -398,10 +404,12 @@ def hinmine_decompose(network, heuristic, cycle=None, parallel=False):
             else:
                 edge_sequence.append(cycle[i])
         degrees = defaultdict(int)
+        temps = []
         for item in hin.midpoint_generator(node_sequence, edge_sequence):
+            temps.append(item)
             for node in item:
                 degrees[node] += 1
-
+        cytems[cname] = len(temps)
         hin.decompose_from_iterator('decomposition',
                                     heuristic,
                                     None,

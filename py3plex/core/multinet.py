@@ -1089,7 +1089,7 @@ class multi_layer_network:
                           cycle=None,
                           parallel=False,
                           alpha=1,
-                          beta=1):
+                          beta=0):
         """ Core method for obtaining a network's decomposition in terms of relations  """
 
         if heuristic == "all":
@@ -1102,6 +1102,7 @@ class multi_layer_network:
             self.hinmine_network = load_hinmine_object(self.core_network,
                                                        self.label_delimiter)
 
+        induced_net = 1
         if beta > 0:
             subset_nodes = []
             for n in self.core_network.nodes(data=True):

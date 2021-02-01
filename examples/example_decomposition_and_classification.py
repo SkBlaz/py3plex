@@ -21,7 +21,7 @@ multilayer_network = multinet.multi_layer_network().load_network(
 print("Running optimization for {}".format(dataset))
 multilayer_network.basic_stats()  # check core imports
 triplet_set = list(set(multilayer_network.get_decomposition_cycles()))
-
+print(triplet_set)
 df = pd.DataFrame()
 heuristics = ["idf", "tf", "chi", "ig", "gr", "delta", "rf", "okapi"]
 for decomposition in multilayer_network.get_decomposition(heuristic=heuristics,
