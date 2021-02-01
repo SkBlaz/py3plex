@@ -22,9 +22,6 @@ from . import polyfit
 from .layout_algorithms import compute_force_directed_layout, compute_random_layout
 from . import drawing_machinery
 
-main_figure = plt.figure()
-shape_subplot = main_figure.add_subplot(111)
-
 try:
     import plotly.graph_objects as go
     plotly_import = True
@@ -51,6 +48,8 @@ def draw_multilayer_default(network_list,
                             node_labels=False,
                             node_font_size=5,
                             scale_by_size=False):
+
+    
     """Core multilayer drawing method
 
     Args:
@@ -78,6 +77,9 @@ def draw_multilayer_default(network_list,
         None
     """
 
+    main_figure = plt.figure()
+    shape_subplot = main_figure.add_subplot(111)
+    
     if background_color == "default":
 
         facecolor_list_background = colors.linear_gradient(
@@ -224,6 +226,9 @@ def draw_multiedges(network_list,
                     linmod="both",
                     resolution=0.001):
     # indices are correct network positions
+    main_figure = plt.figure()
+    shape_subplot = main_figure.add_subplot(111)
+    
     if input_type == "nodes":
 
         network_positions = [
@@ -316,6 +321,8 @@ def generate_random_multiedges(network_list,
                                inverse_tag=False,
                                pheight=1):
 
+    main_figure = plt.figure()
+    shape_subplot = main_figure.add_subplot(111)
     main_figure.add_subplot(111)
 
     # this needs to be in the form of:
@@ -434,6 +441,9 @@ def hairball_plot(
     Returns:
         None
     """
+    
+    main_figure = plt.figure()
+    shape_subplot = main_figure.add_subplot(111)
 
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
@@ -558,6 +568,10 @@ def interactive_hairball_plot(G,
                               final_color_mapping,
                               pos,
                               colorscale="Rainbow"):
+
+
+    main_figure = plt.figure()
+    shape_subplot = main_figure.add_subplot(111)
 
     if not plotly_import:
         print("Please, install plotly!")
