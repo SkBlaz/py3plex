@@ -345,9 +345,12 @@ class HeterogeneousInformationNetwork:
                 to_add = to_add.tocsr()  # this prevents memory leaks
                 matrix += to_add
 
-        # hadamand product
-        
-        self.decomposed[name] = matrix
+        if name in self.decomposed:
+            mat_tmp = self.decomposed[name] + matrix
+            self.decomposed[name] = mat_tmp
+            
+        else:
+            self.decomposed[name] = matrix
 
     def midpoint_generator(self, node_sequence, edge_sequence):
         if len(node_sequence) % 2 == 0:

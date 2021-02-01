@@ -28,3 +28,11 @@ for tcycle in triplet_set:
                                                               cycle=[tcycle]):
         network = decomposition[0]
         print(network.todense())
+        print(np.max(network))
+
+## HINMINE multipath -> sum across all paths.
+for decomposition in multilayer_network.get_decomposition(heuristic=["tf"],
+                                                          cycle=triplet_set):
+    network = decomposition[0]
+    print(network.todense())
+    print(np.max(network))
