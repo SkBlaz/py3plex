@@ -1125,7 +1125,7 @@ class multi_layer_network:
                 # use alpha and beta levels
                 final_decomposition = alpha * decomposition + beta * induced_net
 
-                print("Successfully decomposed: {}".format(x))
+#                print("Successfully decomposed: {}".format(x))
 
                 yield (final_decomposition, dout.label_matrix, x)
 
