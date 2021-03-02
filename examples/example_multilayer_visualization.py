@@ -8,6 +8,7 @@ from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.visualization.multilayer import draw_multiedges, draw_multilayer_default, hairball_plot, plt
 from py3plex.core import multinet
 
+
 # visualization from a simple file
 multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/edgeList.txt", directed=False, input_type="multiedgelist")
@@ -165,7 +166,7 @@ network_colors, graph = multilayer_network.get_layers(style="hairball")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--input_network", default="../datasets/cora.mat")
-parser.add_argument("--input_type", default="sparse")
+parser.add_argument("--input_type", default="sparse_network")
 args = parser.parse_args()
 
 network = multinet.multi_layer_network().load_network(
@@ -185,7 +186,7 @@ top_n_communities = list(partition_counts.keys())[0:top_n]
 color_mappings = dict(zip(top_n_communities, colors_default[0:top_n]))
 
 network_colors = [
-    color_mappings[partition[x]]
+    "green"
     if partition[x] in top_n_communities else "black"
     for x in network.get_nodes()
 ]
@@ -197,8 +198,6 @@ hairball_plot(network.core_network,
               scale_by_size=True,
               layout_algorithm="force",
               legend=False)
-plt.show()
-hairball_plot(graph, network_colors, legend=True)
 plt.show()
 
 # string layout for larger network -----------------------------------

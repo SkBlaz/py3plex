@@ -186,7 +186,7 @@ def modularity(partition, graph, weight='weight'):
     >>> part = best_partition(G)
     >>> modularity(part, G)
     """
-    if graph.is_directed():
+    if "Di" in str(type(graph)):
         raise TypeError("Bad graph type, use only non directed graph")
 
     inc = dict([])
@@ -357,11 +357,13 @@ def generate_dendrogram(graph,
     :param weight:
     :type weight:
     """
-    if graph.is_directed():
+
+    if "Di" in str(type(graph)):
         raise TypeError("Bad graph type, use only non directed graph")
 
     # special case, when there is no link
     # the best partition is everyone in its community
+
     if graph.number_of_edges() == 0:
         part = dict([])
         for node in graph.nodes():

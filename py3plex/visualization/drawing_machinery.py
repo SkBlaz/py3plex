@@ -634,13 +634,13 @@ def draw_networkx_edges(G,
             line_width = None
             shrink_source = 0  # space from source to tail
             shrink_target = 0  # space from  head to target
-            if cb.iterable(node_size):  # many node sizes
-                src_node, dst_node = edgelist[i]
-                index_node = nodelist.index(dst_node)
-                marker_size = node_size[index_node]
-                shrink_target = to_marker_edge(marker_size, node_shape)
-            else:
-                shrink_target = to_marker_edge(node_size, node_shape)
+            # if cb.iterable(node_size):  # many node sizes
+            #     src_node, dst_node = edgelist[i]
+            #     index_node = nodelist.index(dst_node)
+            #     marker_size = node_size[index_node]
+            #     shrink_target = to_marker_edge(marker_size, node_shape)
+            # else:
+            shrink_target = to_marker_edge(node_size, node_shape)
             if arrow_colors is None:
                 arrow_color = edge_cmap(color_normal(edge_color[i]))
             elif len(arrow_colors) > 1:
@@ -664,7 +664,10 @@ def draw_networkx_edges(G,
             # FancyArrowPatch instances. Until fixed, the patches are added
             # individually to the axes instance.
             arrow_collection.append(arrow)
-            ax.add_patch(arrow)
+            try:
+                ax.add_patch(arrow)
+            except:
+                pass
 
     # update view
     minx = np.amin(np.ravel(edge_pos[:, :, 0]))

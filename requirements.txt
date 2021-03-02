@@ -5,7 +5,7 @@ networkx>=2.1
 plotnine
 cython>=0.20
 tqdm>0.0
-matplotlib>=3.0
+matplotlib
 gensim
 scikit-learn
 bitarray==1.2.1

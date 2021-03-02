@@ -62,7 +62,7 @@ def parse_requirements(file):
 
 
 setup(name='py3plex',
-      version='0.92',
+      version='0.93',
       description="A Multilayer network analysis python3 library",
       url='http://github.com/skblaz/py3plex',
       python_requires='>3.6.0',

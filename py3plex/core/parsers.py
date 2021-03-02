@@ -70,6 +70,36 @@ def parse_matrix(file_name, directed):
     mat = scipy.io.loadmat(file_name)
     return (mat['network'], mat['group'])
 
+def parse_matrix_to_nx(file_name, directed):
+    """
+    Parser for matrices
+    Args:
+        A SciPy sparse matrix
+    """
+
+    mat = scipy.io.loadmat(file_name)
+    if directed:
+        create_using = nx.DiGraph()
+        
+    else:
+        create_using = nx.Graph()
+        
+    G = nx.from_scipy_sparse_matrix(mat['network'], create_using = create_using)
+    
+    if directed:
+        G_final = nx.DiGraph()
+        
+    else:
+        G_final = nx.Graph()
+
+        
+    for n in G.nodes():
+        G_final.add_node((n,"generic"))
+
+    for e in G.edges():
+        G_final.add_edge((e[0],"generic"),(e[1],"generic"))
+        
+    return (G_final, None)
 
 def parse_gpickle(file_name, directed=False, layer_separator=None):
     """
@@ -465,6 +495,9 @@ def parse_network(input_name,
 
     elif f_type == "sparse":
         parsed_network, labels = parse_matrix(input_name, directed)
+
+    elif f_type == "sparse_network":
+        parsed_network, labels = parse_matrix_to_nx(input_name, directed)
 
     elif f_type == "gpickle_biomine":
         parsed_network, labels = parse_gpickle_biomine(input_name, directed)

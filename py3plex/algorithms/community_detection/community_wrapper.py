@@ -119,7 +119,7 @@ def louvain_communities(network, output="mapping"):
         network = G
 
     except Exception as es:
-        print(es)
+        pass ## nx input directly.
 
     partition = best_partition(network)
     if output == "partition":
