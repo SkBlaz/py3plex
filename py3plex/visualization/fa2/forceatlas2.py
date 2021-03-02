@@ -159,7 +159,7 @@ class ForceAtlas2:
         # a graph in 2D numpy ndarray format (or) scipy sparse matrix format
         G,
         pos=None,  # Array of initial positions
-        iterations=100  # Number of times to iterate the main loop
+        iterations=30  # Number of times to iterate the main loop
     ):
         # Initializing, initAlgo()
         # ================================================================

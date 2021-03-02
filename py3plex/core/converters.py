@@ -108,7 +108,7 @@ def prepare_for_visualization(multinet,
                 multiedges[edge[2]['type']].append(edge)
         except Exception as err:
             multiedges['default_inter'].append(edge)
-            print(err, "test")
+            pass
 
     names, networks = zip(*networks.items())
     return (names, networks, multiedges)

@@ -28,9 +28,6 @@ try:
     
 except:
     plotly_import = False
-
-main_figure = plt.figure()
-shape_subplot = main_figure.add_subplot(111)
     
 def draw_multilayer_default(network_list,
                             display=True,
@@ -79,8 +76,10 @@ def draw_multilayer_default(network_list,
     Returns:
         None
     """
+#    main_figure = plt.figure()
+#    shape_subplot = main_figure.add_subplot(111)
 
-    
+    shape_subplot = plt.gca()
     if background_color == "default":
 
         facecolor_list_background = colors.linear_gradient(
@@ -149,10 +148,10 @@ def draw_multilayer_default(network_list,
         # this is the default delay for matplotlib canvas
         if labels != False:
             try:
-                shape_subplot.text(start_location_network + label_position,
+                plt.text(start_location_network + label_position,
                                    start_location_network - label_position,
                                    labels[color])
-            except Exception as es:
+            except Exception as es:                
                 print(es)
 
         if background_shape == "rectangle":
@@ -306,7 +305,7 @@ def draw_multiedges(network_list,
                     pass
 
             except Exception as err:
-                print(err)
+                pass
 
 
 #                print(err,"test")
