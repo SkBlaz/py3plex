@@ -8,12 +8,23 @@ from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.visualization.multilayer import draw_multiedges, draw_multilayer_default, hairball_plot, plt
 from py3plex.core import multinet
 
+# visualization from a simple file
+multilayer_network = multinet.multi_layer_network().load_network(
+    "../datasets/edgeList.txt", directed=False, input_type="multiedgelist")
+multilayer_network.basic_stats()
+multilayer_network.visualize_network()
+plt.show()
+
 # Warm up - hairball plots
 dataset = "../datasets/imdb.gpickle"
 
 # Construct a heterogeneous information network object
 multilayer_network = multinet.multi_layer_network().load_network(
     input_file=dataset, directed=True, input_type=dataset.split(".")[-1])
+
+# going full py3plex (default 100 iterations)
+multilayer_network.visualize_network(style="diagonal")
+plt.show()
 
 # Show some basic statistics
 multilayer_network.basic_stats()
@@ -34,17 +45,6 @@ multilayer_network.basic_stats()  # check core imports
 
 # a simple hairball plot
 multilayer_network.visualize_network(style="hairball")
-plt.show()
-
-# going full py3plex (default 100 iterations, layout_parameters can carry additional parameters)
-multilayer_network.visualize_network(style="diagonal")
-plt.show()
-
-# visualization from a simple file
-multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/edgeList.txt", directed=False, input_type="multiedgelist")
-multilayer_network.basic_stats()
-multilayer_network.visualize_network()
 plt.show()
 
 multilayer_network = multinet.multi_layer_network().load_network(

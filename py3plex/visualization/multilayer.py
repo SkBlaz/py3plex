@@ -29,6 +29,9 @@ try:
 except:
     plotly_import = False
 
+main_figure = plt.figure()
+shape_subplot = main_figure.add_subplot(111)
+    
 def draw_multilayer_default(network_list,
                             display=True,
                             node_size=10,
@@ -77,8 +80,6 @@ def draw_multilayer_default(network_list,
         None
     """
 
-    main_figure = plt.figure()
-    shape_subplot = main_figure.add_subplot(111)
     
     if background_color == "default":
 
@@ -226,8 +227,8 @@ def draw_multiedges(network_list,
                     linmod="both",
                     resolution=0.001):
     # indices are correct network positions
-    main_figure = plt.figure()
-    shape_subplot = main_figure.add_subplot(111)
+#    main_figure = plt.figure()
+#    shape_subplot = main_figure.add_subplot(111)
     
     if input_type == "nodes":
 
@@ -321,9 +322,9 @@ def generate_random_multiedges(network_list,
                                inverse_tag=False,
                                pheight=1):
 
-    main_figure = plt.figure()
-    shape_subplot = main_figure.add_subplot(111)
-    main_figure.add_subplot(111)
+#    main_figure = plt.figure()
+#    shape_subplot = main_figure.add_subplot(111)
+#    main_figure.add_subplot(111)
 
     # this needs to be in the form of:
     for k in range(random_edges):
@@ -442,8 +443,8 @@ def hairball_plot(
         None
     """
     
-    main_figure = plt.figure()
-    shape_subplot = main_figure.add_subplot(111)
+#    main_figure = plt.figure()
+#    shape_subplot = main_figure.add_subplot(111)
 
     print("Beginning parsing..")
     nodes = g.nodes(data=True)
@@ -570,8 +571,8 @@ def interactive_hairball_plot(G,
                               colorscale="Rainbow"):
 
 
-    main_figure = plt.figure()
-    shape_subplot = main_figure.add_subplot(111)
+#    main_figure = plt.figure()
+#    shape_subplot = main_figure.add_subplot(111)
 
     if not plotly_import:
         print("Please, install plotly!")

@@ -120,8 +120,11 @@ class HeterogeneousInformationNetwork:
             for node_id in self.node_list:
                 if 'labels' in self.graph.nodes[node_id]:
                     if len(self.graph.nodes[node_id]['labels']) > 0:
-                        labels = self.graph.nodes[node_id]['labels'].split(
-                            label_delimiter)
+                        if type(self.graph.nodes[node_id]['labels'] == list):
+                            labels = self.graph.nodes[node_id]['labels']
+                        else:
+                            labels = self.graph.nodes[node_id]['labels'].split(
+                                label_delimiter)
                         self.graph.nodes[node_id]['labels'] = []
                         for label in labels:
                             self.add_label(node_id, label, label_name=label)
