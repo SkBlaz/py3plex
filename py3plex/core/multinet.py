@@ -548,9 +548,14 @@ class multi_layer_network:
                 layout_parameters=layout_parameters,
                 verbose=verbose,
                 multiplex=multiplex)
-            self.real_layer_names = [
-                self.layer_inverse_name_map[lid] for lid in self.layer_names
-            ]
+
+            try:
+                self.real_layer_names = [
+                    self.layer_inverse_name_map[lid] for lid in self.layer_names
+                ]
+            except:
+                print("self.layer_inverse_name_map not defined (name layers), please define them explicitly to have proper names present.")
+                pass
 
         # hairball visualization
         if style == "hairball":
@@ -561,7 +566,7 @@ class multi_layer_network:
 
             self.layer_names, self.separate_layers, self.multiedges = converters.prepare_for_parsing(
                 self.core_network)
-
+            print(separate_layers)
             if convert_to_simple:
                 if self.directed:
                     self.separate_layers = [

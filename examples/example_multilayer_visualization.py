@@ -11,6 +11,15 @@ from py3plex.core import multinet
 
 # visualization from a simple file
 multilayer_network = multinet.multi_layer_network().load_network(
+    "../datasets/multinet_k100.txt", directed=False, input_type="multiedgelist")
+multilayer_network.basic_stats()
+multilayer_network.visualize_network()
+#multilayer_network.split_to_layers()
+#separate_layers = multilayer_network.separate_layers
+plt.show()
+
+# visualization from a simple file
+multilayer_network = multinet.multi_layer_network().load_network(
     "../datasets/edgeList.txt", directed=False, input_type="multiedgelist")
 multilayer_network.basic_stats()
 multilayer_network.visualize_network()

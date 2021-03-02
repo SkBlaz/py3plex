@@ -79,7 +79,7 @@ def prepare_for_visualization(multinet,
         try:
             layers[node[0][1]].append(node[0])
         except Exception as err:
-            print(err, "sth")
+            pass
 
     networks = {
         layer_name: multinet.subgraph(v)
