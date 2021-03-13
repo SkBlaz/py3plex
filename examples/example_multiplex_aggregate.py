@@ -9,6 +9,15 @@ ER_multilayer = random_generators.random_multiplex_ER(500,
                                                       0.0005,
                                                       directed=False)
 ER_multilayer.basic_stats()
+
+
+separate_layers = []
+layers_to_be_extracted = [1,2,3,4]
+for separate_layer in layers_to_be_extracted:
+    subnetwork_layer = ER_multilayer.subnetwork(input_list=[separate_layer], subset_by="layers")
+    separate_layers.append(subnetwork_layer)
+print("Extracted:", len(separate_layers), "separate layers")    
+
 # simple networkx object
 aggregated_network1 = ER_multilayer.aggregate_edges(metric="count",
                                                     normalize_by="degree")
