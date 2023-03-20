@@ -18,31 +18,31 @@ def run_infomap(infile,
         if multiplex:
             call([
                 binary, infile, "out/", "-i multiplex",
-                "-N " + str(iterations), "-z"
+                "-N " + str(iterations)
             ])
         else:
             if overlapping == True:
                 call([
                     binary, infile, "out/", "-N " + str(iterations),
-                    "--overlapping", "-z"
+                    "--overlapping"
                 ])
             else:
-                call([binary, infile, "out/", "-N " + str(iterations), "-z"])
+                call([binary, infile, "out/", "-N " + str(iterations)])
     else:
         if multiplex:
             call([
                 binary, infile, "out/", "-i multiplex",
-                "-N " + str(iterations), "-z", "--silent"
+                "-N " + str(iterations), "--silent"
             ])
         else:
             if overlapping == True:
                 call([
                     binary, infile, "out/", "-N " + str(iterations),
-                    "--overlapping", "-z", "--silent"
+                    "--overlapping",  "--silent"
                 ])
             else:
                 call([
-                    binary, infile, "out/", "-N " + str(iterations), "-z",
+                    binary, infile, "out/", "-N " + str(iterations),
                     "--silent"
                 ])
 
