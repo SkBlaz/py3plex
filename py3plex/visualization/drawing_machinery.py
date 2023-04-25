@@ -349,7 +349,7 @@ def draw_networkx_nodes(G,
     draw_networkx_labels()
     draw_networkx_edge_labels()
     """
-    import collections.abc import Iterable
+    from collections.abc import Iterable
     try:
         import matplotlib.pyplot as plt
         import numpy as np
