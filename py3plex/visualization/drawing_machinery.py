@@ -84,11 +84,17 @@ def draw(G, pos=None, ax=None, **kwds):
     else:
         cf = ax.get_figure()
     cf.set_facecolor('w')
+    #if ax is None:
+    #    if cf._axstack() is None:
+    #        ax = cf.add_axes((0, 0, 1, 1))
+    #    else:
+    #        ax = cf.gca()
     if ax is None:
-        if cf._axstack() is None:
-            ax = cf.add_axes((0, 0, 1, 1))
-        else:
+        if cf.axes:
             ax = cf.gca()
+        else:
+            ax = cf.add_axes((0, 0, 1, 1))        
+    
 
     if 'with_labels' not in kwds:
         kwds['with_labels'] = 'labels' in kwds
@@ -343,7 +349,7 @@ def draw_networkx_nodes(G,
     draw_networkx_labels()
     draw_networkx_edge_labels()
     """
-    import collections
+    from collections.abc import Iterable
     try:
         import matplotlib.pyplot as plt
         import numpy as np
@@ -369,7 +375,7 @@ def draw_networkx_nodes(G,
     except ValueError:
         raise nx.NetworkXError('Bad value in node positions.')
 
-    if isinstance(alpha, collections.Iterable):
+    if isinstance(alpha, Iterable):
         node_color = apply_alpha(node_color, alpha, nodelist, cmap, vmin, vmax)
         alpha = None
 
