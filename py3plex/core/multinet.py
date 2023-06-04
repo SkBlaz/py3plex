@@ -566,7 +566,7 @@ class multi_layer_network:
 
             self.layer_names, self.separate_layers, self.multiedges = converters.prepare_for_parsing(
                 self.core_network)
-            print(separate_layers)
+
             if convert_to_simple:
                 if self.directed:
                     self.separate_layers = [
