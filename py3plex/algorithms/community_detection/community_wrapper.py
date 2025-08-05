@@ -14,6 +14,10 @@ def run_infomap(infile,
                 iterations=1000):
 
     from subprocess import call
+    import os
+    
+    # Ensure output directory exists
+    os.makedirs("out", exist_ok=True)
     if verbose:
         if multiplex:
             call([
@@ -58,6 +62,12 @@ def infomap_communities(graph,
 
     # check type of the network
     print("INFO: Infomap community detection in progress..")
+
+    # Ensure tmp directory exists for edgelist file
+    import os
+    edgelist_dir = os.path.dirname(edgelist_file)
+    if edgelist_dir:
+        os.makedirs(edgelist_dir, exist_ok=True)
 
     # go through individual nodes first and enumerate them., also layers
     inverse_node_map = graph.serialize_to_edgelist(edgelist_file=edgelist_file,
