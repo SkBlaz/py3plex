@@ -542,7 +542,7 @@ def draw_networkx_edges(G,
     # if not cb.iterable(width):
     #     lw = (width, )
     # else:
-    if not type(width) == list or not type(width) == tuple:
+    if not (type(width) == list or type(width) == tuple):
         lw = (width, )
     else:
         lw = width
