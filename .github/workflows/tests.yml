@@ -39,12 +39,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel cython
-        # Install with minimal dependencies first for basic tests
-        pip install numpy scipy networkx tqdm bitarray rdflib
-        # Try to install visualization dependencies (may fail on some Python versions)
-        pip install matplotlib==3.6.0rc1 || pip install matplotlib
-        pip install plotnine seaborn || true
-        pip install gensim scikit-learn || true
+        # Install core dependencies first
+        pip install numpy scipy tqdm bitarray rdflib
+        # Install networkx with version flexibility for Python compatibility
+        pip install "networkx>=2.5" || pip install networkx
+        # Install visualization dependencies (graceful failure)
+        pip install matplotlib || echo "matplotlib installation failed"
+        pip install plotnine seaborn gensim scikit-learn || echo "Optional dependencies installation failed"
 
     - name: Install package
       run: |
@@ -52,6 +53,10 @@ jobs:
 
     - name: Run tests
       run: |
+        echo "🐍 Python version: $(python --version)"
+        echo "📦 Installed packages:"
+        pip list | grep -E "(networkx|matplotlib|numpy|scipy)"
+        echo "🧪 Running tests..."
         python run_tests.py
 
     - name: Upload test results
@@ -78,7 +83,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install setuptools wheel
         # Only install absolutely required dependencies
-        pip install numpy scipy networkx tqdm bitarray rdflib
+        pip install numpy scipy tqdm bitarray rdflib
+        # Try to install networkx with version flexibility
+        pip install "networkx>=2.5" || pip install networkx
 
     - name: Install package (minimal)
       run: |
@@ -86,6 +93,10 @@ jobs:
 
     - name: Run tests (minimal)
       run: |
+        echo "🐍 Python version: $(python --version)"
+        echo "📦 Installed packages:"
+        pip list | head -20
+        echo "🧪 Running tests with minimal dependencies..."
         python run_tests.py
         echo "✅ Minimal dependency tests completed"
         echo "Note: Some tests may be skipped due to missing optional dependencies"
