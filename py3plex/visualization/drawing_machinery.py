@@ -1,5 +1,5 @@
 import networkx as nx
-from networkx.utils import is_string_like
+from ..core.nx_compat import is_string_like
 from networkx.drawing.layout import shell_layout, \
     circular_layout, kamada_kawai_layout, spectral_layout, \
     spring_layout, random_layout

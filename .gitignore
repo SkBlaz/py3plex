@@ -23,3 +23,11 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Test artifacts and temporary files
+datasets/animation*.png
+datasets/stored_network.gpickle
+tests/out/
+tests/custom_dir/
+tests/*.txt
+tests/*.png

@@ -6,6 +6,7 @@
 
 import numpy as np
 import networkx as nx
+from ..core.nx_compat import nx_info
 try:
     from matplotlib.patches import Rectangle
     from matplotlib.patches import Circle
@@ -121,7 +122,7 @@ def draw_multilayer_default(network_list,
             network.remove_nodes_from(isolates)
 
         if verbose:
-            print(nx.info(network))
+            print(nx_info(network))
         degrees = dict(nx.degree(nx.Graph(network)))
         cntr = 0
         cntr_all = 0

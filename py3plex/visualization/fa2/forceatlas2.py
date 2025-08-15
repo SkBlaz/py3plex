@@ -26,6 +26,7 @@ import scipy
 from tqdm import tqdm
 
 from . import fa2util
+from ...core.nx_compat import nx_to_scipy_sparse_matrix
 
 
 class Timer:
@@ -257,7 +258,7 @@ class ForceAtlas2:
         assert isinstance(pos, dict) or (
             pos is
             None), "pos must be specified as a dictionary, as in networkx"
-        M = networkx.to_scipy_sparse_matrix(G, dtype='f', format='lil')
+        M = nx_to_scipy_sparse_matrix(G, dtype='f', format='lil')
         if pos is None:
             l = self.forceatlas2(M, pos=None, iterations=iterations)
         else:

@@ -1,6 +1,7 @@
 # set of parsers used in Py3plex.
 
 import networkx as nx
+from .nx_compat import nx_read_gpickle, nx_write_gpickle
 import json
 import itertools
 import glob
@@ -114,7 +115,7 @@ def parse_gpickle(file_name, directed=False, layer_separator=None):
     else:
         A = nx.MultiGraph()
 
-    G = nx.read_gpickle(file_name)
+    G = nx_read_gpickle(file_name)
 
     if layer_separator is not None:
         for edge in G.edges():
@@ -145,7 +146,7 @@ def parse_gpickle_biomine(file_name, directed):
     """
 
     # convert the biomine
-    input_graph = nx.read_gpickle(file_name)
+    input_graph = nx_read_gpickle(file_name)
 
     if directed:
         G = nx.MultiDiGraph()
