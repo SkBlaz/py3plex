@@ -470,7 +470,14 @@ def hairball_plot(
     assert len(node_types) == len(color_list)
 
     try:
-        cols = color_list            
+        # Check if color_list contains actual colors or numeric IDs
+        first_color = color_list[0] if color_list else None
+        if isinstance(first_color, (int, float)) or (isinstance(first_color, str) and first_color.isdigit()):
+            # color_list contains numeric IDs, map them to actual colors
+            cols = colors.colors_default
+        else:
+            # color_list contains actual color values
+            cols = color_list            
     except Exception as es:
         print("Using default palette")
         cols = colors.colors_default            
