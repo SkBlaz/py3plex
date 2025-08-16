@@ -112,3 +112,23 @@ def is_string_like(obj):
         bool: True if string-like
     """
     return isinstance(obj, str)
+
+def nx_from_scipy_sparse_matrix(A, parallel_edges=False, create_using=None, edge_attribute='weight'):
+    """
+    Create a graph from scipy sparse matrix (compatible with NetworkX < 3.0 and >= 3.0).
+    
+    Args:
+        A: scipy sparse matrix
+        parallel_edges: Whether to create parallel edges (ignored in NetworkX 3.0+)
+        create_using: Graph type to create
+        edge_attribute: Edge attribute name for weights
+        
+    Returns:
+        NetworkX graph
+    """
+    if hasattr(nx, 'from_scipy_sparse_matrix'):
+        # NetworkX < 3.0
+        return nx.from_scipy_sparse_matrix(A, parallel_edges=parallel_edges, create_using=create_using, edge_attribute=edge_attribute)
+    else:
+        # NetworkX >= 3.0 - use from_scipy_sparse_array
+        return nx.from_scipy_sparse_array(A, create_using=create_using, edge_attribute=edge_attribute)

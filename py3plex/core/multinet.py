@@ -1,7 +1,7 @@
 # This is the main data structure container
 
 import networkx as nx
-from .nx_compat import nx_info, nx_to_scipy_sparse_matrix
+from .nx_compat import nx_info, nx_to_scipy_sparse_matrix, nx_from_scipy_sparse_matrix
 import itertools
 from . import parsers
 from . import converters
@@ -299,8 +299,8 @@ class multi_layer_network:
         if directed is None:
             directed = self.directed
 
-        self.core_network = nx.from_scipy_sparse_matrix(
-            self.core_network, directed)
+        self.core_network = nx_from_scipy_sparse_matrix(
+            self.core_network, create_using=(nx.DiGraph() if directed else nx.Graph()))
         self.add_dummy_layers()
         self.sparse_enabled = False
 

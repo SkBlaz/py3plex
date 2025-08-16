@@ -3,6 +3,7 @@
 import networkx as nx
 import numpy as np
 import itertools
+from ..core.nx_compat import nx_info
 
 try:
     from .fa2.forceatlas2 import ForceAtlas2
@@ -94,6 +95,6 @@ def compute_random_layout(g):
 if __name__ == "__main__":
 
     G = nx.gaussian_random_partition_graph(1000, 10, 10, .25, .1)
-    print(nx.info(G))
+    print(nx_info(G))
     compute_force_directed_layout(G)
     print("Finished..")
