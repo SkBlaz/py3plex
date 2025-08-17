@@ -11,6 +11,7 @@ import scipy.sparse as sp
 from collections import defaultdict
 #import community
 from sklearn.cluster import MiniBatchKMeans
+from ...core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
 global _RANK_GRAPH
 
 
@@ -80,7 +81,7 @@ def NoRC_communities_main(
     global _RANK_GRAPH
     _RANK_GRAPH = input_graph
     A = _RANK_GRAPH.copy()
-    _RANK_GRAPH = nx.to_scipy_sparse_matrix(_RANK_GRAPH)
+    _RANK_GRAPH = nx_to_scipy_sparse_matrix(_RANK_GRAPH)
     _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  # normalize
     n = _RANK_GRAPH.shape[1]
     edgelist_triplets = []
@@ -199,7 +200,7 @@ if __name__ == "__main__":
     #                             seed=10)
 
     graph = nx.powerlaw_cluster_graph(1000, 5, 0.1)
-    print(nx.info(graph))
+    print(nx_info(graph))
     communities1 = NoRC_communities_main(graph,
                                          verbose=True,
                                          clustering_scheme="kmeans")

@@ -2,6 +2,7 @@
 import networkx as nx
 import numpy as np
 import itertools
+from ...core.nx_compat import nx_info
 
 
 def __random_number_set_generator(number):
@@ -54,7 +55,7 @@ def layer_specific_random_walk(G, start_node, iterations=1000):
 if __name__ == "__main__":
 
     graph = nx.erdos_renyi_graph(1000, 0.01)
-    print(nx.info(graph))
+    print(nx_info(graph))
 
     trace = general_random_walk(graph, 5)
     print(trace)

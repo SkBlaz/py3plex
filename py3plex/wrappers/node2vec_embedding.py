@@ -8,6 +8,7 @@ from sklearn.multiclass import OneVsRestClassifier
 import multiprocessing as mp
 from .benchmark_nodes import benchmark_node_classification, graph, self
 import time
+from ..core.nx_compat import nx_info
 
 
 def call_node2vec_binary(input_graph,
@@ -53,7 +54,7 @@ def n2v_embedding(G,
     clf = OneVsRestClassifier(linear_model.LogisticRegression(),
                               n_jobs=mp.cpu_count())
     if verbose:
-        print(nx.info(G))
+        print(nx_info(G))
 
     len(G.nodes())
 

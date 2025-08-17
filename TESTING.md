@@ -59,9 +59,24 @@ pip install numpy scipy networkx matplotlib plotnine cython tqdm gensim scikit-l
 
 ## Continuous Integration
 
-To set up automated testing, add a GitHub Actions workflow or configure your preferred CI system to:
+### GitHub Actions (Automated)
 
-1. Install Python 3.6+
+The repository is configured with GitHub Actions CI that automatically runs tests on:
+- Every push to `main`, `master`, or `develop` branches
+- Every pull request to these branches
+- Multiple Python versions (3.8, 3.9, 3.10, 3.11)
+
+The CI workflow:
+1. Installs Python and system dependencies
+2. Installs package dependencies (with graceful handling of optional deps)
+3. Runs the full test suite using `python run_tests.py`
+4. Reports results for each Python version
+
+### Manual CI Setup
+
+To set up automated testing on other CI systems:
+
+1. Install Python 3.8+
 2. Install dependencies: `pip install -e .`
 3. Run tests: `python run_tests.py`
 

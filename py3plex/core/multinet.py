@@ -1,6 +1,7 @@
 # This is the main data structure container
 
 import networkx as nx
+from .nx_compat import nx_info, nx_to_scipy_sparse_matrix, nx_from_scipy_sparse_matrix
 import itertools
 from . import parsers
 from . import converters
@@ -195,13 +196,13 @@ class multi_layer_network:
         Conver the matrix to scipy-sparse version. This is useful for classification.
         """
         if return_only:
-            return nx.to_scipy_sparse_matrix(self.core_network)
+            return nx_to_scipy_sparse_matrix(self.core_network)
 
         if replace_core:
-            self.core_network = nx.to_scipy_sparse_matrix(self.core_network)
+            self.core_network = nx_to_scipy_sparse_matrix(self.core_network)
             self.core_sparse = None
         else:
-            self.core_sparse = nx.to_scipy_sparse_matrix(self.core_network)
+            self.core_sparse = nx_to_scipy_sparse_matrix(self.core_network)
 
     def load_temporal_edge_information(self,
                                        input_file=None,
@@ -298,8 +299,8 @@ class multi_layer_network:
         if directed is None:
             directed = self.directed
 
-        self.core_network = nx.from_scipy_sparse_matrix(
-            self.core_network, directed)
+        self.core_network = nx_from_scipy_sparse_matrix(
+            self.core_network, create_using=(nx.DiGraph() if directed else nx.Graph()))
         self.add_dummy_layers()
         self.sparse_enabled = False
 
@@ -350,12 +351,12 @@ class multi_layer_network:
                 self.monitor("Computing core stats of the network")
 
             if target_network is None:
-                print(nx.info(self.core_network))
+                print(nx_info(self.core_network))
                 nt, n = self.get_unique_entity_counts()
                 print("Number of unique node IDs: {}".format(n))
 
             else:
-                print(nx.info(target_network))
+                print(nx_info(target_network))
                 nt, n = self.get_unique_entity_counts()
                 print("Number of unique node IDs: {}".format(n))
 
@@ -859,7 +860,7 @@ class multi_layer_network:
                 simple_graph.add_edge(nmap[node_first],
                                       nmap[node_second],
                                       weight=weight)
-            vectors = nx.to_scipy_sparse_matrix(simple_graph)
+            vectors = nx_to_scipy_sparse_matrix(simple_graph)
             self.numeric_core_network = vectors
             self.node_order_in_matrix = simple_graph.nodes()
 
@@ -1116,7 +1117,7 @@ class multi_layer_network:
             induced_net = self.core_network.subgraph(subset_nodes)
             for e in induced_net.edges(data=True):
                 e[2]['weight'] = float(e[2]['weight'])
-            induced_net = nx.to_scipy_sparse_matrix(induced_net)
+            induced_net = nx_to_scipy_sparse_matrix(induced_net)
 
         for x in heuristic:
             try:

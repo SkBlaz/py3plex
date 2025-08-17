@@ -1,6 +1,7 @@
 # set of parsers used in Py3plex.
 
 import networkx as nx
+from .nx_compat import nx_read_gpickle, nx_write_gpickle, nx_from_scipy_sparse_matrix
 import json
 import itertools
 import glob
@@ -84,7 +85,7 @@ def parse_matrix_to_nx(file_name, directed):
     else:
         create_using = nx.Graph()
         
-    G = nx.from_scipy_sparse_matrix(mat['network'], create_using = create_using)
+    G = nx_from_scipy_sparse_matrix(mat['network'], create_using = create_using)
     
     if directed:
         G_final = nx.DiGraph()
@@ -114,7 +115,7 @@ def parse_gpickle(file_name, directed=False, layer_separator=None):
     else:
         A = nx.MultiGraph()
 
-    G = nx.read_gpickle(file_name)
+    G = nx_read_gpickle(file_name)
 
     if layer_separator is not None:
         for edge in G.edges():
@@ -145,7 +146,7 @@ def parse_gpickle_biomine(file_name, directed):
     """
 
     # convert the biomine
-    input_graph = nx.read_gpickle(file_name)
+    input_graph = nx_read_gpickle(file_name)
 
     if directed:
         G = nx.MultiDiGraph()
@@ -600,7 +601,7 @@ def load_temporal_edge_information(input_network,
 
 
 def save_gpickle(input_network, output_file):
-    nx.write_gpickle(input_network, output_file)
+    nx_write_gpickle(input_network, output_file)
 
 
 def save_multiedgelist(input_network,

@@ -1,12 +1,12 @@
 numpy>=0.8
 rdflib>=0.1
 scipy>=1.1.0
-networkx>=2.5,<2.9
+networkx>=2.5
 plotnine
 cython>=0.20
 tqdm>0.0
-matplotlib==3.6.0rc1
+matplotlib
 gensim
 scikit-learn
-bitarray==1.2.1
+bitarray>=2.0.0
 seaborn

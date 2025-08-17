@@ -6,6 +6,7 @@ import multiprocessing as mp
 from node_ranking import sparse_page_rank, modularity, stochastic_normalization
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
+from ...core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
 
 
 def page_rank_kernel(index_row):
@@ -89,9 +90,9 @@ if __name__ == "__main__":
                                       average_degree=5,
                                       min_community=30,
                                       seed=10)
-    print(nx.info(_RANK_GRAPH))
+    print(nx_info(_RANK_GRAPH))
     A = _RANK_GRAPH.copy()
-    _RANK_GRAPH = nx.to_scipy_sparse_matrix(_RANK_GRAPH)
+    _RANK_GRAPH = nx_to_scipy_sparse_matrix(_RANK_GRAPH)
     _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  # normalize
     n = _RANK_GRAPH.shape[1]
     with mp.Pool(processes=mp.cpu_count()) as p:
