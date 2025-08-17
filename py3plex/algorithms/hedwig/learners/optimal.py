@@ -5,7 +5,7 @@ Main learner class.
 '''
 from itertools import combinations
 
-from ..core import Rule, UnaryPredicate
+from py3plex.algorithms.hedwig.core import Rule, UnaryPredicate
 
 from .learner import Learner
 

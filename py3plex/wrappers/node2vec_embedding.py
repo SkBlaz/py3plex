@@ -8,7 +8,7 @@ from sklearn.multiclass import OneVsRestClassifier
 import multiprocessing as mp
 from .benchmark_nodes import benchmark_node_classification, graph, self
 import time
-from ..core.nx_compat import nx_info
+from py3plex.core.nx_compat import nx_info
 
 
 def call_node2vec_binary(input_graph,

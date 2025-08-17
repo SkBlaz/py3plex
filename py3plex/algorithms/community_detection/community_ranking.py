@@ -3,10 +3,10 @@
 import networkx as nx
 import numpy as np
 import multiprocessing as mp
-from node_ranking import sparse_page_rank, modularity, stochastic_normalization
+from py3plex.algorithms.node_ranking.node_ranking import sparse_page_rank, modularity, stochastic_normalization
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
-from ...core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
+from py3plex.core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
 
 
 def page_rank_kernel(index_row):

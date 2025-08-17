@@ -26,7 +26,7 @@ import scipy
 from tqdm import tqdm
 
 from . import fa2util
-from ...core.nx_compat import nx_to_scipy_sparse_matrix
+from py3plex.core.nx_compat import nx_to_scipy_sparse_matrix
 
 
 class Timer:

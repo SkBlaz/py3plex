@@ -7,7 +7,7 @@
 from scipy.stats import fisher_exact
 from statsmodels.sandbox.stats.multicomp import multipletests
 from collections import defaultdict
-from ..term_parsers import read_topology_mappings, read_uniprot_GO
+from py3plex.algorithms.term_parsers import read_topology_mappings, read_uniprot_GO
 import pandas as pd
 import logging
 logging.basicConfig(format='%(asctime)s - %(message)s',

@@ -4,10 +4,10 @@ Main learner class.
 @author: anze.vavpetic@ijs.si
 '''
 
-from ..core import UnaryPredicate, Rule, Example
-from ..core.settings import logger
-from ..stats.significance import is_redundant
-from ..stats.scorefunctions import interesting
+from py3plex.algorithms.hedwig.core import UnaryPredicate, Rule, Example
+from py3plex.algorithms.hedwig.core.settings import logger
+from py3plex.algorithms.hedwig.stats.significance import is_redundant
+from py3plex.algorithms.hedwig.stats.scorefunctions import interesting
 
 
 class Learner:

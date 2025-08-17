@@ -2,7 +2,7 @@
 
 import numpy as np
 from tqdm import tqdm
-from ...core import multinet
+from py3plex.core import multinet
 
 
 def split_to_temporal_slices(network, slices=100, verbose=True):

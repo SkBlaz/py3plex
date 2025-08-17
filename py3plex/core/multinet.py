@@ -11,13 +11,13 @@ from .supporting import *
 import tqdm
 
 try:
-    from ..algorithms.statistics import topology
+    from py3plex.algorithms.statistics import topology
 except:
     pass
 
 # visualization modules
 try:
-    from ..visualization.multilayer import *
+    from py3plex.visualization.multilayer import *
     server_mode = False
 except:
     server_mode = True
