@@ -2,7 +2,7 @@
 import networkx as nx
 import numpy as np
 import itertools
-from ...core.nx_compat import nx_info
+from py3plex.core.nx_compat import nx_info
 
 
 def __random_number_set_generator(number):

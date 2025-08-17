@@ -6,7 +6,7 @@
 
 import numpy as np
 import networkx as nx
-from ..core.nx_compat import nx_info
+from py3plex.core.nx_compat import nx_info
 try:
     from matplotlib.patches import Rectangle
     from matplotlib.patches import Circle

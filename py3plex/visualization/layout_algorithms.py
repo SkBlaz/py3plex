@@ -3,7 +3,7 @@
 import networkx as nx
 import numpy as np
 import itertools
-from ..core.nx_compat import nx_info
+from py3plex.core.nx_compat import nx_info
 
 try:
     from .fa2.forceatlas2 import ForceAtlas2

@@ -1,7 +1,7 @@
 # set of routines for validation of the PPR-based classification
 
-from ..node_ranking import *
-from ..general.benchmark_classification import *
+from py3plex.algorithms.node_ranking import *
+from py3plex.algorithms.general.benchmark_classification import *
 import pandas as pd
 from sklearn.svm import SVC
 from sklearn.metrics import f1_score

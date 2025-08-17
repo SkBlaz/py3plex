@@ -11,7 +11,7 @@ import scipy.sparse as sp
 from collections import defaultdict
 #import community
 from sklearn.cluster import MiniBatchKMeans
-from ...core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
+from py3plex.core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
 global _RANK_GRAPH
 
 

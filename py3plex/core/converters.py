@@ -1,6 +1,6 @@
 # converters
 from collections import defaultdict
-from ..visualization.layout_algorithms import compute_force_directed_layout, compute_random_layout, np
+from py3plex.visualization.layout_algorithms import compute_force_directed_layout, compute_random_layout, np
 
 
 def compute_layout(network, compute_layouts, layout_parameters, verbose):
