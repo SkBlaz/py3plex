@@ -172,7 +172,7 @@ def main():
     mat = loadmat(matfile)
     A = mat[args.adj_matrix_name]
     nodelen = A.shape[0]
-    #graph = sparse2graph(A)
+    # graph = sparse2graph(A)
     labels_matrix = sparse.csr_matrix(mat[args.label_matrix_name])
     labels_count = labels_matrix.shape[1]
 

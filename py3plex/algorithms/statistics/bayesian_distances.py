@@ -1,6 +1,6 @@
 # tutorial
 
-#import bayesiantests as bt
+# import bayesiantests as bt
 from .bayesiantests import hierarchical, hierarchical_MC, plot_posterior
 import numpy as np
 import matplotlib.pyplot as plt

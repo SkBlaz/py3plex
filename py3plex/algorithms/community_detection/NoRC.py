@@ -9,7 +9,7 @@ from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
 import scipy.sparse as sp
 from collections import defaultdict
-#import community
+# import community
 from sklearn.cluster import MiniBatchKMeans
 from py3plex.core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
 global _RANK_GRAPH

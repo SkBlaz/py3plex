@@ -2,7 +2,7 @@
 import numpy as np
 import networkx as nx
 import scipy.sparse as sp
-#from networkx.algorithms.community.community_utils import is_partition
+# from networkx.algorithms.community.community_utils import is_partition
 
 # def stochastic_normalization(matrix):
 #     matrix = matrix.tolil()
