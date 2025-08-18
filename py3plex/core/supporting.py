@@ -1,7 +1,8 @@
 # set of supporting methods for parsers and converters
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 import itertools
+import operator
 
 
 def split_to_layers(input_network):
