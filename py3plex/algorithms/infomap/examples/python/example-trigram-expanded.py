@@ -24,12 +24,12 @@ tree = infomapWrapper.tree
 print("Found %d modules with codelength: %f" %
       (tree.numTopModules(), tree.codelength()))
 
-print("\n#previousNode node module")
+print("\n# previousNode node module")
 for node in tree.leafIter():
     print("%d %d %d" % (node.stateIndex, node.physIndex, node.moduleIndex()))
 """
 Output:
-#previousNode node module
+# previousNode node module
 2 3 0
 3 4 0
 2 4 0

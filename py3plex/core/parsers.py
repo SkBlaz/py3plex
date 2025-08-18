@@ -663,6 +663,6 @@ if __name__ == "__main__":
     print("Testing parser")
     #    print (nx.info(parse_gml("../../datasets/imdb_gml.gml",f_type="gml",directed=False)))
     #    print (nx.info(parse_network("../../datasets/epigenetics.gpickle",f_type="gpickle_biomine",directed=False)))
-    #print (nx.info(parse_network("../../datasets/multiedgelist.txt",f_type="multiedgelist",directed=False)))
+    # print (nx.info(parse_network("../../datasets/multiedgelist.txt",f_type="multiedgelist",directed=False)))
 
     parse_embedding("../../datasets/karate.emb")

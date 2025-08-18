@@ -72,7 +72,7 @@ def n2v_embedding(G,
 
     f = open(tmp_graph, "w+")
 
-    #f.write(str(number_of_nodes)+" "+str(number_of_edges)+"\n")
+    # f.write(str(number_of_nodes)+" "+str(number_of_edges)+"\n")
     for e in G.edges(data=True):
         f.write(
             str(e[0]) + " " + str(e[1]) + " " + str(float(e[2]['weight'])) +
