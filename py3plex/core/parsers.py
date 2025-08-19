@@ -7,9 +7,16 @@ import itertools
 import glob
 import numpy as np
 import scipy.io
-import pandas as pd
 import gzip
 from .supporting import add_mpx_edges
+
+# Handle pandas dependency gracefully
+try:
+    import pandas as pd
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    pd = None
 
 
 def parse_gml(file_name, directed):
@@ -443,9 +450,13 @@ def parse_multiplex_folder(input_folder, directed):
                         "timestamp": timestamp
                     })
 
-    time_series_tuples = pd.DataFrame()
-    time_series_tuples = time_series_tuples.append(time_series_tuples,
-                                                   ignore_index=True)
+    if PANDAS_AVAILABLE:
+        time_series_tuples = pd.DataFrame()
+        time_series_tuples = time_series_tuples.append(time_series_tuples,
+                                                       ignore_index=True)
+    else:
+        # Return empty list when pandas is not available
+        time_series_tuples = []
 
     #    nodes_file = [x for x in names if "nodes.txt" in x]
 
@@ -544,6 +555,9 @@ def load_edge_activity_raw(activity_file, layer_mappings):
     '''
     Basic parser for loading generic activity files. Here, temporal edges are given as tuples -> this can be easily transformed for example into a pandas dataframe!
     '''
+    
+    if not PANDAS_AVAILABLE:
+        raise ImportError("This function requires pandas. Please install pandas: pip install pandas")
 
     time_series_tuples = []
     outframe = pd.DataFrame()
@@ -564,6 +578,9 @@ def load_edge_activity_raw(activity_file, layer_mappings):
 def load_edge_activity_file(fname, layer_mapping=None):
 
     # Example edge looks like this: 11 11 1375695069 RE
+    
+    if not PANDAS_AVAILABLE:
+        raise ImportError("This function requires pandas. Please install pandas: pip install pandas")
 
     if layer_mapping is not None:
         lmap = {}

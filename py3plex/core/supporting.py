@@ -12,9 +12,19 @@ def split_to_layers(input_network):
 
     for node in input_network.nodes(data=True):
         try:
-            layer_info[node[0][1]].append(node[0])
-        except Exception:
-            layer_info[node[1]['type']].append(node[0])
+            # First try tuple format (node_id, layer_id)
+            if isinstance(node[0], tuple) and len(node[0]) >= 2:
+                layer_info[node[0][1]].append(node[0])
+            else:
+                # Fallback to attribute-based format
+                layer_info[node[1]['type']].append(node[0])
+        except (IndexError, KeyError, TypeError):
+            # Fallback to attribute-based format
+            try:
+                layer_info[node[1]['type']].append(node[0])
+            except KeyError:
+                # If no type attribute, put in default layer
+                layer_info['default'].append(node[0])
 
     for layer, nodes in layer_info.items():
         subnetwork = input_network.subgraph(nodes)
