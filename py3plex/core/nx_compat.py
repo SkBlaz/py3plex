@@ -3,11 +3,19 @@ NetworkX compatibility layer for py3plex.
 This module provides compatibility functions for different NetworkX versions.
 """
 
-import networkx as nx
-import pickle
-
-# NetworkX version check
-NX_VERSION = tuple(map(int, nx.__version__.split('.')[:2]))
+# Handle NetworkX dependency gracefully
+try:
+    import networkx as nx
+    import pickle
+    
+    # NetworkX version check
+    NX_VERSION = tuple(map(int, nx.__version__.split('.')[:2]))
+    NETWORKX_AVAILABLE = True
+    
+except ImportError:
+    NETWORKX_AVAILABLE = False
+    nx = None
+    NX_VERSION = None
 
 def nx_info(G):
     """
@@ -19,6 +27,9 @@ def nx_info(G):
     Returns:
         str: Network information
     """
+    if not NETWORKX_AVAILABLE:
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
+        
     if hasattr(nx, 'info'):
         # NetworkX < 3.0
         return nx.info(G)
@@ -52,6 +63,9 @@ def nx_read_gpickle(path):
     Returns:
         NetworkX graph
     """
+    if not NETWORKX_AVAILABLE:
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
+        
     if hasattr(nx, 'read_gpickle'):
         # NetworkX < 3.0
         return nx.read_gpickle(path)
@@ -68,6 +82,9 @@ def nx_write_gpickle(G, path):
         G: NetworkX graph
         path: File path
     """
+    if not NETWORKX_AVAILABLE:
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
+        
     if hasattr(nx, 'write_gpickle'):
         # NetworkX < 3.0
         nx.write_gpickle(G, path)
@@ -90,6 +107,9 @@ def nx_to_scipy_sparse_matrix(G, nodelist=None, dtype=None, weight='weight', for
     Returns:
         scipy sparse matrix
     """
+    if not NETWORKX_AVAILABLE:
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
+        
     if hasattr(nx, 'to_scipy_sparse_matrix'):
         # NetworkX < 3.0
         return nx.to_scipy_sparse_matrix(G, nodelist=nodelist, dtype=dtype, weight=weight, format=format)
@@ -126,6 +146,9 @@ def nx_from_scipy_sparse_matrix(A, parallel_edges=False, create_using=None, edge
     Returns:
         NetworkX graph
     """
+    if not NETWORKX_AVAILABLE:
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
+        
     if hasattr(nx, 'from_scipy_sparse_matrix'):
         # NetworkX < 3.0
         return nx.from_scipy_sparse_matrix(A, parallel_edges=parallel_edges, create_using=create_using, edge_attribute=edge_attribute)

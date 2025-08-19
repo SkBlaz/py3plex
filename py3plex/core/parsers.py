@@ -1,7 +1,21 @@
 # set of parsers used in Py3plex.
 
-import networkx as nx
-from .nx_compat import nx_read_gpickle, nx_write_gpickle, nx_from_scipy_sparse_matrix
+# Handle NetworkX dependency gracefully
+try:
+    import networkx as nx
+    from .nx_compat import nx_read_gpickle, nx_write_gpickle, nx_from_scipy_sparse_matrix
+    NETWORKX_AVAILABLE = True
+except ImportError:
+    NETWORKX_AVAILABLE = False
+    nx = None
+    # Create placeholder functions when NetworkX is not available
+    def nx_read_gpickle(*args, **kwargs):
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
+    def nx_write_gpickle(*args, **kwargs):
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
+    def nx_from_scipy_sparse_matrix(*args, **kwargs):
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
+
 import json
 import itertools
 import glob
