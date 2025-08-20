@@ -19,10 +19,30 @@ except ImportError:
 import json
 import itertools
 import glob
-import numpy as np
-import scipy.io
 import gzip
 from .supporting import add_mpx_edges
+
+# Handle numpy dependency gracefully
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    NUMPY_AVAILABLE = False
+    np = None
+
+# Handle scipy dependency gracefully
+try:
+    import scipy.io
+    SCIPY_AVAILABLE = True
+except ImportError:
+    SCIPY_AVAILABLE = False
+    # Create a mock scipy.io module
+    class MockSciPy:
+        class io:
+            @staticmethod
+            def loadmat(*args, **kwargs):
+                raise ImportError("This function requires scipy. Please install scipy: pip install scipy")
+    scipy = MockSciPy()
 
 # Handle pandas dependency gracefully
 try:
@@ -88,6 +108,8 @@ def parse_matrix(file_name, directed):
     Args:
         A SciPy sparse matrix
     """
+    if not SCIPY_AVAILABLE:
+        raise ImportError("This function requires scipy. Please install scipy: pip install scipy")
 
     mat = scipy.io.loadmat(file_name)
     return (mat['network'], mat['group'])
@@ -98,6 +120,10 @@ def parse_matrix_to_nx(file_name, directed):
     Args:
         A SciPy sparse matrix
     """
+    if not SCIPY_AVAILABLE:
+        raise ImportError("This function requires scipy. Please install scipy: pip install scipy")
+    if not NETWORKX_AVAILABLE:
+        raise ImportError("This function requires NetworkX. Please install networkx: pip install networkx")
 
     mat = scipy.io.loadmat(file_name)
     if directed:
@@ -364,6 +390,8 @@ def parse_embedding(input_name):
     """
     Loader for generic embedding as outputed by GenSim
     """
+    if not NUMPY_AVAILABLE:
+        raise ImportError("This function requires numpy. Please install numpy: pip install numpy")
 
     embedding_matrix = []
     embedding_indices = []
