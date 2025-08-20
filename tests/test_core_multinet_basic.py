@@ -21,6 +21,13 @@ try:
 except ImportError:
     pass
 
+# Check for NetworkX availability separately
+try:
+    import networkx as nx
+    NETWORKX_AVAILABLE = True
+except ImportError:
+    NETWORKX_AVAILABLE = False
+
 
 def test_multilayer_network_init():
     """Test multi_layer_network class initialization"""
@@ -79,6 +86,10 @@ def test_ground_truth_communities():
     """Test read_ground_truth_communities method"""
     if not MULTINET_AVAILABLE:
         print("⚠️ Skipping ground truth communities tests: Class not available")
+        return True
+        
+    if not NETWORKX_AVAILABLE:
+        print("⚠️ Skipping ground truth communities tests: NetworkX not available")
         return True
         
     print("Testing read_ground_truth_communities method...")

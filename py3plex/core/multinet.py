@@ -1,14 +1,41 @@
 # This is the main data structure container
 
-import networkx as nx
+# Handle NetworkX dependency gracefully
+try:
+    import networkx as nx
+    NETWORKX_AVAILABLE = True
+except ImportError:
+    NETWORKX_AVAILABLE = False
+    nx = None
+
 from .nx_compat import nx_info, nx_to_scipy_sparse_matrix, nx_from_scipy_sparse_matrix
 import itertools
 from . import parsers
-from . import converters
-from .HINMINE.IO import *  # parse the graph
-from .HINMINE.decomposition import *  # decompose the graph
+# Import converters conditionally since it depends on visualization modules with NetworkX
+try:
+    from . import converters
+    CONVERTERS_AVAILABLE = True
+except ImportError:
+    CONVERTERS_AVAILABLE = False
+    converters = None
+
+# Import HINMINE conditionally since it depends on NetworkX
+try:
+    from .HINMINE.IO import *  # parse the graph
+    from .HINMINE.decomposition import *  # decompose the graph
+    HINMINE_AVAILABLE = True
+except ImportError:
+    HINMINE_AVAILABLE = False
+
 from .supporting import *
-import tqdm
+
+# Import tqdm conditionally for progress bars
+try:
+    import tqdm
+    TQDM_AVAILABLE = True
+except ImportError:
+    TQDM_AVAILABLE = False
+    tqdm = None
 
 try:
     from py3plex.algorithms.statistics import topology
@@ -71,6 +98,8 @@ class multi_layer_network:
         Returns:
             self.ground_truth_communities
         """
+        if not NETWORKX_AVAILABLE:
+            raise ImportError("This method requires NetworkX to access network nodes. Please install networkx: pip install networkx")
 
         community_assignments = {}
         with open(cfile) as cf:
@@ -186,6 +215,8 @@ class multi_layer_network:
         self
 
         """
+        if not NETWORKX_AVAILABLE:
+            raise ImportError("This method requires NetworkX. Please install networkx: pip install networkx")
 
         from networkx.readwrite import json_graph
         data = json_graph.node_link_data(self.core_network)
@@ -226,6 +257,8 @@ class multi_layer_network:
         """
         invert the nodes to edges. Get the "edge graph". Each node is here an edge.
         """
+        if not NETWORKX_AVAILABLE:
+            raise ImportError("This method requires NetworkX. Please install networkx: pip install networkx")
 
         # default structure for a new graph
         G = nx.MultiGraph()
@@ -275,6 +308,8 @@ class multi_layer_network:
         """
         Internal function, for conversion between objects
         """
+        if not NETWORKX_AVAILABLE:
+            raise ImportError("This method requires NetworkX. Please install networkx: pip install networkx")
 
         self.tmp_core_network = self.core_network
 
@@ -295,6 +330,8 @@ class multi_layer_network:
 
     def sparse_to_px(self, directed=None):
         """ convert to px format """
+        if not NETWORKX_AVAILABLE:
+            raise ImportError("This method requires NetworkX. Please install networkx: pip install networkx")
 
         if directed is None:
             directed = self.directed
@@ -543,6 +580,9 @@ class multi_layer_network:
 
         # multilayer visualization
         if style == "diagonal":
+            if not CONVERTERS_AVAILABLE:
+                raise ImportError("Visualization methods require additional dependencies. Please install networkx and matplotlib: pip install networkx matplotlib")
+                
             self.layer_names, self.separate_layers, self.multiedges = converters.prepare_for_visualization(
                 self.core_network,
                 compute_layouts=compute_layouts,
@@ -560,10 +600,15 @@ class multi_layer_network:
 
         # hairball visualization
         if style == "hairball":
+            if not CONVERTERS_AVAILABLE:
+                raise ImportError("Visualization methods require additional dependencies. Please install networkx and matplotlib: pip install networkx matplotlib")
+                
             self.layer_names, self.separate_layers, self.multiedges = converters.prepare_for_visualization_hairball(
                 self.core_network, compute_layouts=True)
 
         if style == "none":
+            if not CONVERTERS_AVAILABLE:
+                raise ImportError("Parsing methods require additional dependencies. Please install networkx: pip install networkx")
 
             self.layer_names, self.separate_layers, self.multiedges = converters.prepare_for_parsing(
                 self.core_network)
@@ -590,6 +635,9 @@ class multi_layer_network:
 
         # multilayer visualization
         if style == "diagonal":
+            if not CONVERTERS_AVAILABLE:
+                raise ImportError("Visualization methods require additional dependencies. Please install networkx and matplotlib: pip install networkx matplotlib")
+                
             return converters.prepare_for_visualization(
                 self.core_network,
                 compute_layouts=compute_layouts,
@@ -599,10 +647,16 @@ class multi_layer_network:
 
         # hairball visualization
         if style == "hairball":
+            if not CONVERTERS_AVAILABLE:
+                raise ImportError("Visualization methods require additional dependencies. Please install networkx and matplotlib: pip install networkx matplotlib")
+                
             return converters.prepare_for_visualization_hairball(
                 self.core_network, compute_layouts=True)
 
     def _initiate_network(self):
+        if not NETWORKX_AVAILABLE:
+            raise ImportError("This method requires NetworkX. Please install networkx: pip install networkx")
+            
         if self.core_network is None:
             if self.directed:
                 self.core_network = nx.MultiDiGraph()
@@ -611,6 +665,8 @@ class multi_layer_network:
 
     def monoplex_nx_wrapper(self, method, kwargs=None):
         ''' a generic networkx function wrapper '''
+        if not NETWORKX_AVAILABLE:
+            raise ImportError("This method requires NetworkX. Please install networkx: pip install networkx")
 
         result = eval("nx." + method + "(self.core_network)")
         return result
@@ -738,6 +794,9 @@ class multi_layer_network:
             eval("self.core_network." + target_function + "((n1,l1))")
 
     def _unfreeze(self):
+        if not NETWORKX_AVAILABLE:
+            raise ImportError("This method requires NetworkX. Please install networkx: pip install networkx")
+            
         if self.directed:
             self.core_network = nx.MultiDiGraph(self.core_network)
         else:
@@ -973,7 +1032,9 @@ class multi_layer_network:
 
             if parameters_multiedges is None:
                 enum = 1
-                for edge_type, edges in tqdm.tqdm(multilinks.items()):
+                # Use tqdm for progress bar if available, otherwise use regular iteration
+                edge_items = multilinks.items() if not TQDM_AVAILABLE else tqdm.tqdm(multilinks.items())
+                for edge_type, edges in edge_items:
                     if edge_type == "coupling":
                         if axis:
                             axis = draw_multiedges(graphs,
