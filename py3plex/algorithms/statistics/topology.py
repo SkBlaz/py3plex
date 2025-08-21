@@ -103,7 +103,7 @@ def plot_power_law(degree_sequence,
 
     ax1.text(formula_x,
              formula_y,
-             r"$f(k) = " + norm + " \cdot k^{-" +
+             r"$f(k) = " + norm + r" \cdot k^{-" +
              str(round(results.alpha, 3)) + "}$",
              fontsize=13)
 

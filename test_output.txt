@@ -1,0 +1,329 @@
+Traceback (most recent call last):
+  File "/home/runner/work/py3plex/py3plex/tests/test_networkx_compatibility.py", line 22, in test_networkx_compatibility
+    import networkx as nx
+ModuleNotFoundError: No module named 'networkx'
+🧪 Py3plex Test Runner
+============================================================
+Found 10 test files:
+  📄 test_infomap_fix.py
+  📄 test_issue_19_fix.py
+  📄 test_networkx_compatibility.py
+  📄 test_multilayer_edge_fix.py
+  📄 test_core_random_generators.py
+  📄 test_core_multinet_basic.py
+  📄 test_core_parsers.py
+  📄 test_core_supporting.py
+  📄 test_core_utilities.py
+  📄 test_core_functionality.py
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_infomap_fix.py
+============================================================
+
+➤ Running test_infomap_integration...
+🧪 Testing infomap integration fix...
+✅ Created test edgelist: test_network.txt
+📂 Testing directory creation...
+✅ Created output directory: out
+✅ Created edgelist directory: ./custom_dir
+🔧 Testing infomap binary execution...
+✅ Infomap executed successfully
+✅ Expected output file created: out/test_network.tree
+✅ Output file readable with 6 lines
+
+🎉 Integration test completed!
+
+📋 Files and directories created:
+./
+  test_network.txt
+  out/
+    test_network.tree
+  custom_dir/
+✅ test_infomap_integration PASSED
+
+🎉 All 1 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_issue_19_fix.py
+============================================================
+
+➤ Running test_edge_width_logic...
+Testing edge width logic fix...
+✅ PASS: scalar float should become tuple
+✅ PASS: scalar int should become tuple
+✅ PASS: list should stay list
+✅ PASS: tuple should stay tuple
+✅ PASS: single-element list should stay list
+✅ PASS: single-element tuple should stay tuple
+
+🎉 All edge width logic tests PASSED!
+✅ test_edge_width_logic PASSED
+
+➤ Running test_old_vs_new_logic...
+
+Testing old vs new logic comparison...
+Comparing old vs new logic:
+Input: 1.0 (type: float)
+  Old logic: (1.0,)
+  New logic: (1.0,)
+  ✅ Both handle scalar correctly
+
+Input: [1, 2] (type: list)
+  Old logic: ([1, 2],)
+  New logic: [1, 2]
+  ✅ Fix confirmed: preserves list correctly
+
+Input: (1, 2) (type: tuple)
+  Old logic: ((1, 2),)
+  New logic: (1, 2)
+  ✅ Fix confirmed: preserves tuple correctly
+
+Input: 5 (type: int)
+  Old logic: (5,)
+  New logic: (5,)
+  ✅ Both handle scalar correctly
+
+✅ test_old_vs_new_logic PASSED
+
+🎉 All 2 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_networkx_compatibility.py
+============================================================
+
+➤ Running test_networkx_compatibility...
+Testing NetworkX compatibility fixes...
+✅ NetworkX compatibility imports successful
+❌ NetworkX compatibility test failed: No module named 'networkx'
+✅ test_networkx_compatibility PASSED
+
+🎉 All 1 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_multilayer_edge_fix.py
+============================================================
+
+➤ Running test_edge_width_processing...
+Testing edge width processing logic...
+
+🔍 Single edge width (scalar)
+   Description: Single width for all edges
+   Input: 1.5 (type: float)
+   Result: (1.5,) (type: tuple)
+   ✅ PASS: Correct type tuple
+   ✅ PASS: Correctly wrapped scalar
+
+🔍 Multiple edge widths (list)
+   Description: Different width for each edge
+   Input: [0.5, 1.0, 1.5, 2.0] (type: list)
+   Result: [0.5, 1.0, 1.5, 2.0] (type: list)
+   ✅ PASS: Correct type list
+   ✅ PASS: Preserved original object
+
+🔍 Multiple edge widths (tuple)
+   Description: Different width for each edge (tuple)
+   Input: (0.8, 1.2, 0.6) (type: tuple)
+   Result: (0.8, 1.2, 0.6) (type: tuple)
+   ✅ PASS: Correct type tuple
+   ✅ PASS: Preserved original object
+
+🔍 Default width (int)
+   Description: Default integer width
+   Input: 1 (type: int)
+   Result: (1,) (type: tuple)
+   ✅ PASS: Correct type tuple
+   ✅ PASS: Correctly wrapped scalar
+✅ test_edge_width_processing PASSED
+
+➤ Running test_multilayer_scenario...
+
+============================================================
+TESTING REALISTIC MULTILAYER SCENARIO
+============================================================
+Processing multilayer network edge widths...
+
+🔶 Layer 1 (Social)
+   Edges: 5
+   Width spec: 0.8 (type: float)
+   Processed: (0.8,) (type: tuple)
+   ✅ Correct: Scalar width wrapped for uniform edges
+
+🔶 Layer 2 (Professional)
+   Edges: 3
+   Width spec: [1.0, 1.5, 0.5] (type: list)
+   Processed: [1.0, 1.5, 0.5] (type: list)
+   ✅ Correct: Multi-width preserved for 3 edges
+
+🔶 Layer 3 (Family)
+   Edges: 4
+   Width spec: (1.2, 0.9, 1.1, 0.7) (type: tuple)
+   Processed: (1.2, 0.9, 1.1, 0.7) (type: tuple)
+   ✅ Correct: Multi-width preserved for 4 edges
+
+🔗 Inter-layer connections
+   Width spec: [2.0, 1.8, 2.2] (type: list)
+   Processed: [2.0, 1.8, 2.2] (type: list)
+   ✅ Correct: Inter-layer widths preserved
+
+✅ test_multilayer_scenario PASSED
+
+🎉 All 2 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_core_random_generators.py
+============================================================
+
+➤ Running test_random_generator_consistency...
+⚠️ Skipping random generator consistency tests: NetworkX not available
+✅ test_random_generator_consistency PASSED
+
+➤ Running test_random_multilayer_ER...
+⚠️ Skipping random_multilayer_ER tests: NetworkX not available
+✅ test_random_multilayer_ER PASSED
+
+➤ Running test_random_multiplex_ER...
+⚠️ Skipping random_multiplex_ER tests: NetworkX not available
+✅ test_random_multiplex_ER PASSED
+
+➤ Running test_random_multiplex_generator...
+⚠️ Skipping random_multiplex_generator tests: NetworkX not available
+✅ test_random_multiplex_generator PASSED
+
+🎉 All 4 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_core_multinet_basic.py
+============================================================
+
+➤ Running test_attribute_access...
+Testing attribute access and modification...
+✅ Attribute access test PASSED
+✅ test_attribute_access PASSED
+
+➤ Running test_ground_truth_communities...
+⚠️ Skipping ground truth communities tests: NetworkX not available
+✅ test_ground_truth_communities PASSED
+
+➤ Running test_multilayer_network_init...
+Testing multi_layer_network initialization...
+✅ Default initialization test PASSED
+✅ Custom initialization test PASSED
+✅ multi_layer_network initialization tests PASSED
+✅ test_multilayer_network_init PASSED
+
+➤ Running test_network_types...
+Testing different network types...
+✅ Network types test PASSED
+✅ test_network_types PASSED
+
+➤ Running test_special_methods...
+Testing special methods...
+✅ __getitem__ properly handles None core_network
+✅ Special methods test PASSED
+✅ test_special_methods PASSED
+
+🎉 All 5 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_core_parsers.py
+============================================================
+
+➤ Running test_parse_embedding...
+Testing parse_embedding function...
+⚠️ Skipping parse_embedding tests: numpy not available
+✅ test_parse_embedding PASSED
+
+➤ Running test_parse_multiedge_tuple_list...
+⚠️ Skipping parse_multiedge_tuple_list tests: NetworkX not available
+✅ test_parse_multiedge_tuple_list PASSED
+
+➤ Running test_parse_nx...
+⚠️ Skipping parse_nx tests: NetworkX not available
+✅ test_parse_nx PASSED
+
+➤ Running test_parse_simple_edgelist...
+⚠️ Skipping parse_simple_edgelist tests: NetworkX not available
+✅ test_parse_simple_edgelist PASSED
+
+➤ Running test_save_edgelist...
+⚠️ Skipping save_edgelist tests: NetworkX not available
+✅ test_save_edgelist PASSED
+
+🎉 All 5 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_core_supporting.py
+============================================================
+
+➤ Running test_add_mpx_edges...
+⚠️ Skipping add_mpx_edges tests: NetworkX not available
+✅ test_add_mpx_edges PASSED
+
+➤ Running test_parse_gaf_to_uniprot_GO...
+Testing parse_gaf_to_uniprot_GO function...
+✅ parse_gaf_to_uniprot_GO function tests PASSED
+✅ test_parse_gaf_to_uniprot_GO PASSED
+
+➤ Running test_split_to_layers...
+⚠️ Skipping split_to_layers tests: NetworkX not available
+✅ test_split_to_layers PASSED
+
+➤ Running test_split_to_layers_fallback...
+⚠️ Skipping split_to_layers fallback tests: NetworkX not available
+✅ test_split_to_layers_fallback PASSED
+
+🎉 All 4 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_core_utilities.py
+============================================================
+
+➤ Running test_data_structures...
+Testing data structures...
+✅ Data structures test PASSED
+✅ test_data_structures PASSED
+
+➤ Running test_file_operations...
+Testing file operations...
+✅ File operations test PASSED
+✅ test_file_operations PASSED
+
+➤ Running test_itertools_operations...
+Testing itertools operations...
+✅ Itertools operations test PASSED
+✅ test_itertools_operations PASSED
+
+➤ Running test_set_operations...
+Testing set operations...
+✅ Set operations test PASSED
+✅ test_set_operations PASSED
+
+➤ Running test_string_operations...
+Testing string operations...
+✅ String operations test PASSED
+✅ test_string_operations PASSED
+
+➤ Running test_tuple_operations...
+Testing tuple operations...
+✅ Tuple operations test PASSED
+✅ test_tuple_operations PASSED
+
+🎉 All 6 tests PASSED!
+
+============================================================
+Running: /home/runner/work/py3plex/py3plex/tests/test_core_functionality.py
+============================================================
+⚠️  Dependency missing: No module named 'matplotlib'
+   This test requires additional dependencies to be installed.
+   Run: pip install -e . to install all dependencies
+
+============================================================
+📊 TEST SUMMARY
+============================================================
+Test files found: 10
+✅ Passed: 9
+❌ Failed: 0
+⚠️  Skipped (deps missing): 1
+
+🎉 All runnable tests completed successfully!
+💡 1 test(s) skipped due to missing dependencies
