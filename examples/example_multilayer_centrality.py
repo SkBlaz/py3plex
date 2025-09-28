@@ -119,8 +119,34 @@ def main():
     betweenness_centrality = calc.multilayer_betweenness_centrality()
     print_centrality_results(betweenness_centrality, "Multilayer Betweenness Centrality")
     
+    # ==================== ADVANCED MEASURES ====================
+    print("\n\n4. ADVANCED MEASURES")
+    print("-" * 20)
+    
+    # HITS centrality
+    hits_centrality = calc.hits_centrality()
+    print_centrality_results(hits_centrality, "HITS Centrality")
+    
+    # Current-flow centrality measures
+    current_flow_closeness = calc.current_flow_closeness_centrality()
+    print_centrality_results(current_flow_closeness, "Current-Flow Closeness Centrality")
+    
+    current_flow_betweenness = calc.current_flow_betweenness_centrality()
+    print_centrality_results(current_flow_betweenness, "Current-Flow Betweenness Centrality")
+    
+    # Communicability-based measures
+    subgraph_centrality = calc.subgraph_centrality()
+    print_centrality_results(subgraph_centrality, "Subgraph Centrality")
+    
+    total_communicability = calc.total_communicability()
+    print_centrality_results(total_communicability, "Total Communicability")
+    
+    # K-core decomposition
+    k_core = calc.multiplex_k_core()
+    print_centrality_results(k_core, "Multiplex K-Core")
+    
     # ==================== AGGREGATION EXAMPLES ====================
-    print("\n\n4. AGGREGATION EXAMPLES")
+    print("\n\n5. AGGREGATION EXAMPLES")
     print("-" * 25)
     
     # Different ways to aggregate node-layer centralities to node level
@@ -140,19 +166,25 @@ def main():
     print_centrality_results(weighted_agg, "Weighted Sum Aggregation")
     
     # ==================== COMPUTE ALL CENTRALITIES ====================
-    print("\n\n5. COMPREHENSIVE ANALYSIS")
+    print("\n\n6. COMPREHENSIVE ANALYSIS")
     print("-" * 28)
     
-    # Compute all available centralities at once (including path-based)
-    all_centralities = compute_all_centralities(network, include_path_based=True)
+    # Compute all available centralities at once (including advanced measures)
+    all_centralities = compute_all_centralities(network, 
+                                               include_path_based=True, 
+                                               include_advanced=True)
     
     print("\nAvailable centrality measures:")
     for measure_name in sorted(all_centralities.keys()):
-        num_values = len(all_centralities[measure_name])
-        print(f"  - {measure_name:35} ({num_values} values)")
+        if isinstance(all_centralities[measure_name], dict):
+            num_values = len(all_centralities[measure_name])
+            print(f"  - {measure_name:35} ({num_values} values)")
+        else:
+            # Handle HITS which might return nested dict for directed networks
+            print(f"  - {measure_name:35} (complex structure)")
     
     # ==================== INSIGHTS ====================
-    print("\n\n6. NETWORK INSIGHTS")
+    print("\n\n7. NETWORK INSIGHTS")
     print("-" * 20)
     
     # Find most central nodes by different measures
@@ -164,7 +196,9 @@ def main():
         'Eigenvector Versatility': versatility,
         'PageRank (aggregated)': calc.aggregate_to_node_level(pagerank_centrality, method='sum'),
         'Closeness (aggregated)': calc.aggregate_to_node_level(closeness_centrality, method='sum'),
-        'Betweenness (aggregated)': calc.aggregate_to_node_level(betweenness_centrality, method='sum')
+        'Betweenness (aggregated)': calc.aggregate_to_node_level(betweenness_centrality, method='sum'),
+        'Subgraph (aggregated)': calc.aggregate_to_node_level(subgraph_centrality, method='sum'),
+        'K-Core (aggregated)': calc.aggregate_to_node_level(k_core, method='max')
     }
     
     for measure_name, centralities in measures_to_check.items():

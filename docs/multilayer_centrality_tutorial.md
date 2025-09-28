@@ -27,6 +27,14 @@ The `py3plex.algorithms.multilayer_algorithms.centrality` module provides compre
 - **Multilayer closeness centrality**: Based on shortest paths in the supra-graph
 - **Multilayer betweenness centrality**: Fraction of shortest paths passing through each node-layer
 
+### 4. Advanced Measures
+
+- **HITS centrality**: Hubs and authorities (equals eigenvector for undirected networks)
+- **Current-flow closeness/betweenness**: Based on electrical current flow through the network
+- **Subgraph centrality**: Counts closed walks via matrix exponential
+- **Total communicability**: Sum of matrix exponential entries
+- **Multiplex k-core**: Core decomposition of the multilayer network
+
 ## Basic Usage
 
 ```python
@@ -50,6 +58,9 @@ overlapping_degrees = calc.overlapping_degree_centrality(weighted=False)
 participation = calc.participation_coefficient(weighted=False)
 eigenvector = calc.multiplex_eigenvector_centrality()
 pagerank = calc.pagerank_centrality()
+hits = calc.hits_centrality()
+subgraph = calc.subgraph_centrality()
+k_core = calc.multiplex_k_core()
 ```
 
 ## Computing All Centralities
@@ -59,11 +70,16 @@ For convenience, you can compute all available centrality measures at once:
 ```python
 from py3plex.algorithms.multilayer_algorithms.centrality import compute_all_centralities
 
-# Compute all centralities (excluding path-based for performance)
-all_centralities = compute_all_centralities(network)
+# Compute basic centralities
+basic_centralities = compute_all_centralities(network)
 
 # Include path-based measures (computationally expensive)
-all_centralities_with_paths = compute_all_centralities(network, include_path_based=True)
+with_paths = compute_all_centralities(network, include_path_based=True)
+
+# Include all advanced measures (most comprehensive but computationally intensive)
+all_centralities = compute_all_centralities(network, 
+                                          include_path_based=True, 
+                                          include_advanced=True)
 ```
 
 ## Aggregation Methods
@@ -121,11 +137,28 @@ node_centralities = calc.aggregate_to_node_level(layer_centralities,
 **PageRank centrality**
 - Standard PageRank algorithm applied to the supra-adjacency matrix
 
+### Advanced Measures
+
+**HITS centrality**
+- For undirected networks: equivalent to eigenvector centrality
+- For directed networks: separate hub and authority scores
+
+**Subgraph centrality**
+- $SC_i = (e^A)_{ii}$ where $A$ is the adjacency matrix
+
+**Total communicability**
+- $TC_i = \sum_j (e^A)_{ij}$ (row sum of matrix exponential)
+
+**Multiplex k-core**
+- Core number: maximum $k$ such that node has at least $k$ neighbors in the multilayer network
+
 ## Performance Considerations
 
 - **Path-based measures** (closeness, betweenness) are computationally expensive as they require shortest path computations on the entire supra-graph
+- **Advanced measures** (current-flow, communicability, k-core) involve matrix operations that can be costly for large networks
+- **Matrix exponential** computations (subgraph centrality, communicability) are particularly expensive
 - For large networks, consider using only degree-based and eigenvector-based measures
-- Use `include_path_based=False` (default) in `compute_all_centralities()` for better performance
+- Use `include_path_based=False` and `include_advanced=False` (defaults) in `compute_all_centralities()` for better performance
 
 ## Example Applications
 

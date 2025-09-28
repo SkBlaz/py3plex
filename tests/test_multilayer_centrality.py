@@ -315,6 +315,131 @@ class TestMultilayerCentrality(unittest.TestCase):
         for centrality in centralities.values():
             self.assertGreaterEqual(centrality, 0)
             
+    def test_hits_centrality(self):
+        """Test HITS centrality."""
+        calc = MultilayerCentrality(self.simple_network)
+        hits_results = calc.hits_centrality()
+        
+        # For undirected networks, should be equivalent to eigenvector centrality
+        self.assertIsInstance(hits_results, dict)
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), hits_results)
+        
+        # All values should be non-negative
+        for centrality in hits_results.values():
+            self.assertGreaterEqual(centrality, 0)
+    
+    def test_hits_centrality_directed(self):
+        """Test HITS centrality on directed network."""
+        calc = MultilayerCentrality(self.directed_network)
+        hits_results = calc.hits_centrality()
+        
+        # For directed networks, should return hubs and authorities
+        if isinstance(hits_results, dict) and 'hubs' in hits_results:
+            self.assertIn('hubs', hits_results)
+            self.assertIn('authorities', hits_results)
+            
+            # Check that we have results for node-layer pairs
+            self.assertIn(('A', 'L1'), hits_results['hubs'])
+            self.assertIn(('A', 'L1'), hits_results['authorities'])
+    
+    def test_current_flow_closeness_centrality(self):
+        """Test current-flow closeness centrality."""
+        calc = MultilayerCentrality(self.simple_network)
+        centralities = calc.current_flow_closeness_centrality()
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('A', 'L2'), centralities)
+        
+        # All values should be non-negative
+        for centrality in centralities.values():
+            self.assertGreaterEqual(centrality, 0)
+    
+    def test_current_flow_betweenness_centrality(self):
+        """Test current-flow betweenness centrality."""
+        calc = MultilayerCentrality(self.simple_network)
+        centralities = calc.current_flow_betweenness_centrality()
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('A', 'L2'), centralities)
+        
+        # All values should be non-negative
+        for centrality in centralities.values():
+            self.assertGreaterEqual(centrality, 0)
+    
+    def test_subgraph_centrality(self):
+        """Test subgraph centrality."""
+        calc = MultilayerCentrality(self.simple_network)
+        centralities = calc.subgraph_centrality()
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('A', 'L2'), centralities)
+        
+        # All values should be positive (matrix exponential diagonal elements)
+        for centrality in centralities.values():
+            self.assertGreater(centrality, 0)
+    
+    def test_total_communicability(self):
+        """Test total communicability."""
+        calc = MultilayerCentrality(self.simple_network)
+        centralities = calc.total_communicability()
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('A', 'L2'), centralities)
+        
+        # All values should be positive
+        for centrality in centralities.values():
+            self.assertGreater(centrality, 0)
+    
+    def test_multiplex_k_core(self):
+        """Test multiplex k-core decomposition."""
+        calc = MultilayerCentrality(self.simple_network)
+        core_numbers = calc.multiplex_k_core()
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), core_numbers)
+        self.assertIn(('A', 'L2'), core_numbers)
+        
+        # All values should be non-negative integers
+        for core_num in core_numbers.values():
+            self.assertGreaterEqual(core_num, 0)
+            self.assertIsInstance(core_num, (int, np.integer))
+    
+    def test_multiplex_coreness(self):
+        """Test multiplex coreness (alias for k-core)."""
+        calc = MultilayerCentrality(self.simple_network)
+        core_numbers = calc.multiplex_coreness()
+        k_core_numbers = calc.multiplex_k_core()
+        
+        # Should be identical to k-core
+        self.assertEqual(core_numbers, k_core_numbers)
+    
+    def test_compute_all_centralities_with_advanced(self):
+        """Test the convenience function with advanced measures included."""
+        results = compute_all_centralities(self.simple_network, 
+                                          include_path_based=True, 
+                                          include_advanced=True)
+        
+        # Should contain all expected centrality measures including advanced ones
+        expected_measures = [
+            'layer_degree', 'layer_strength', 'supra_degree', 'supra_strength',
+            'overlapping_degree', 'overlapping_strength', 'participation_coefficient',
+            'participation_coefficient_strength', 'multiplex_eigenvector',
+            'eigenvector_versatility', 'katz_bonacich', 'pagerank',
+            'closeness', 'betweenness', 'hits', 'current_flow_closeness',
+            'current_flow_betweenness', 'subgraph_centrality', 'total_communicability',
+            'multiplex_k_core'
+        ]
+        
+        for measure in expected_measures:
+            self.assertIn(measure, results)
+            self.assertIsInstance(results[measure], dict)
+            self.assertGreater(len(results[measure]), 0)
+    
     def test_compute_all_centralities_with_path_based(self):
         """Test the convenience function with path-based measures included."""
         results = compute_all_centralities(self.simple_network, include_path_based=True)

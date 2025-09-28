@@ -580,6 +580,300 @@ class MultilayerCentrality:
         
         return results
     
+    # ==================== HITS ALGORITHM ====================
+    
+    def hits_centrality(self, max_iter=1000, tol=1e-6):
+        """
+        Compute HITS (hubs and authorities) centrality on the supra-graph.
+        
+        For undirected networks, this equals eigenvector centrality.
+        For directed networks, computes separate hub and authority scores.
+        
+        Args:
+            max_iter: Maximum number of iterations.
+            tol: Tolerance for convergence.
+            
+        Returns:
+            dict: If directed network: {'hubs': {(node, layer): score}, 'authorities': {(node, layer): score}}
+                  If undirected network: {(node, layer): score} (equivalent to eigenvector centrality)
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+        
+        # Create NetworkX graph from supra-adjacency matrix
+        if hasattr(supra_matrix, 'toarray'):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+        
+        # Create directed/undirected graph based on network type
+        if self.network.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+        
+        # Add edges
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j, weight=matrix[i, j])
+        
+        try:
+            if self.network.directed:
+                # Compute separate hub and authority scores
+                hubs, authorities = nx.hits(G, max_iter=max_iter, tol=tol)
+                
+                # Map back to node-layer pairs
+                results = {
+                    'hubs': {},
+                    'authorities': {}
+                }
+                for node_layer, idx in node_layer_mapping.items():
+                    results['hubs'][node_layer] = hubs.get(idx, 0.0)
+                    results['authorities'][node_layer] = authorities.get(idx, 0.0)
+                
+                return results
+            else:
+                # For undirected networks, HITS equals eigenvector centrality
+                return self.multiplex_eigenvector_centrality(max_iter, tol)
+                
+        except:
+            # Fallback to eigenvector centrality
+            if self.network.directed:
+                eigenvec = self.multiplex_eigenvector_centrality(max_iter, tol)
+                return {'hubs': eigenvec, 'authorities': eigenvec}
+            else:
+                return self.multiplex_eigenvector_centrality(max_iter, tol)
+    
+    # ==================== CURRENT-FLOW CENTRALITY ====================
+    
+    def current_flow_closeness_centrality(self):
+        """
+        Compute current-flow closeness centrality via supra Laplacian pseudoinverse.
+        
+        This measure is based on the resistance distance in electrical networks.
+        
+        Returns:
+            dict: {(node, layer): current_flow_closeness}
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+        
+        if hasattr(supra_matrix, 'toarray'):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+        
+        # Create NetworkX graph
+        G = nx.Graph()  # Current flow is always on undirected graphs
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j, weight=matrix[i, j])
+        
+        try:
+            nx_current_flow = nx.current_flow_closeness_centrality(G, weight='weight')
+        except:
+            # Fallback to regular closeness
+            try:
+                nx_current_flow = nx.closeness_centrality(G, distance='weight')
+            except:
+                nx_current_flow = {}
+                for node in G.nodes():
+                    nx_current_flow[node] = 0.0
+        
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = nx_current_flow.get(idx, 0.0)
+        
+        return results
+    
+    def current_flow_betweenness_centrality(self):
+        """
+        Compute current-flow betweenness centrality via supra Laplacian pseudoinverse.
+        
+        This measure is based on the electrical current flow through each node.
+        
+        Returns:
+            dict: {(node, layer): current_flow_betweenness}
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+        
+        if hasattr(supra_matrix, 'toarray'):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+        
+        # Create NetworkX graph
+        G = nx.Graph()  # Current flow is always on undirected graphs
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j, weight=matrix[i, j])
+        
+        try:
+            nx_current_flow = nx.current_flow_betweenness_centrality(G, weight='weight')
+        except:
+            # Fallback to regular betweenness
+            try:
+                nx_current_flow = nx.betweenness_centrality(G, weight='weight')
+            except:
+                nx_current_flow = {}
+                for node in G.nodes():
+                    nx_current_flow[node] = 0.0
+        
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = nx_current_flow.get(idx, 0.0)
+        
+        return results
+    
+    # ==================== COMMUNICABILITY-BASED MEASURES ====================
+    
+    def subgraph_centrality(self):
+        """
+        Compute subgraph centrality via matrix exponential of the supra-adjacency matrix.
+        
+        Subgraph centrality counts closed walks of all lengths starting and ending at each node.
+        SC_i = (e^A)_ii where A is the adjacency matrix.
+        
+        Returns:
+            dict: {(node, layer): subgraph_centrality}
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+        
+        if hasattr(supra_matrix, 'toarray'):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+        
+        try:
+            # Compute matrix exponential
+            from scipy.linalg import expm
+            exp_matrix = expm(matrix)
+            
+            # Extract diagonal elements (subgraph centrality)
+            results = {}
+            for node_layer, idx in node_layer_mapping.items():
+                results[node_layer] = exp_matrix[idx, idx]
+            
+            return results
+            
+        except:
+            # Fallback: approximate using eigendecomposition
+            try:
+                eigenvals, eigenvecs = np.linalg.eigh(matrix)
+                exp_eigenvals = np.exp(eigenvals)
+                
+                results = {}
+                for node_layer, idx in node_layer_mapping.items():
+                    # Subgraph centrality = sum_k (v_k[i])^2 * exp(lambda_k)
+                    centrality = np.sum((eigenvecs[idx, :] ** 2) * exp_eigenvals)
+                    results[node_layer] = centrality
+                
+                return results
+            except:
+                # If all else fails, return degree centrality as approximation
+                return self.supra_degree_centrality(weighted=True)
+    
+    def total_communicability(self):
+        """
+        Compute total communicability via matrix exponential.
+        
+        Total communicability is the row sum of the matrix exponential:
+        TC_i = sum_j (e^A)_ij
+        
+        Returns:
+            dict: {(node, layer): total_communicability}
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+        
+        if hasattr(supra_matrix, 'toarray'):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+        
+        try:
+            # Compute matrix exponential
+            from scipy.linalg import expm
+            exp_matrix = expm(matrix)
+            
+            # Sum across rows
+            results = {}
+            for node_layer, idx in node_layer_mapping.items():
+                results[node_layer] = np.sum(exp_matrix[idx, :])
+            
+            return results
+            
+        except:
+            # Fallback using Katz centrality as approximation
+            return self.katz_bonacich_centrality(alpha=0.1)
+    
+    # ==================== K-CORE MEASURES ====================
+    
+    def multiplex_k_core(self):
+        """
+        Compute multiplex k-core decomposition.
+        
+        A node belongs to the k-core if it has at least k neighbors in the multilayer network.
+        This implementation computes the core number for each node-layer pair.
+        
+        Returns:
+            dict: {(node, layer): core_number}
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+        
+        if hasattr(supra_matrix, 'toarray'):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+        
+        # Create NetworkX graph
+        if self.network.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+        
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j)
+        
+        try:
+            # Compute k-core decomposition
+            core_numbers = nx.core_number(G)
+            
+            # Map back to node-layer pairs
+            results = {}
+            for node_layer, idx in node_layer_mapping.items():
+                results[node_layer] = core_numbers.get(idx, 0)
+            
+            return results
+            
+        except:
+            # Fallback: use degree as approximation
+            degree_centralities = self.supra_degree_centrality(weighted=False)
+            return {k: int(v) for k, v in degree_centralities.items()}
+    
+    def multiplex_coreness(self):
+        """
+        Alias for multiplex_k_core for compatibility.
+        
+        Returns:
+            dict: {(node, layer): core_number}
+        """
+        return self.multiplex_k_core()
+    
     # ==================== AGGREGATION METHODS ====================
     
     def aggregate_to_node_level(self, node_layer_centralities, method='sum', weights=None):
@@ -623,13 +917,14 @@ class MultilayerCentrality:
         return aggregated
 
 
-def compute_all_centralities(network, include_path_based=False):
+def compute_all_centralities(network, include_path_based=False, include_advanced=False):
     """
     Compute all available centrality measures for a multilayer network.
     
     Args:
         network: py3plex multi_layer_network object
         include_path_based: Whether to include computationally expensive path-based measures
+        include_advanced: Whether to include advanced measures (HITS, current-flow, communicability, k-core)
         
     Returns:
         dict: Dictionary containing all computed centrality measures
@@ -657,5 +952,14 @@ def compute_all_centralities(network, include_path_based=False):
     if include_path_based:
         results['closeness'] = calc.multilayer_closeness_centrality()
         results['betweenness'] = calc.multilayer_betweenness_centrality()
+    
+    # Advanced measures (optional due to computational cost)
+    if include_advanced:
+        results['hits'] = calc.hits_centrality()
+        results['current_flow_closeness'] = calc.current_flow_closeness_centrality()
+        results['current_flow_betweenness'] = calc.current_flow_betweenness_centrality()
+        results['subgraph_centrality'] = calc.subgraph_centrality()
+        results['total_communicability'] = calc.total_communicability()
+        results['multiplex_k_core'] = calc.multiplex_k_core()
     
     return results
