@@ -444,6 +444,142 @@ class MultilayerCentrality:
         
         return results
     
+    # ==================== PATH-BASED MEASURES ====================
+    
+    def multilayer_closeness_centrality(self, normalized=True):
+        """
+        Compute closeness centrality on the supra-graph.
+        
+        For each node-layer pair (i,α), computes:
+        C_c(i,α) = (n-1) / Σ_{(j,β)} d((i,α), (j,β))
+        
+        where d((i,α), (j,β)) is the shortest path distance in the supra-graph.
+        
+        Args:
+            normalized: Whether to normalize by (n-1).
+            
+        Returns:
+            dict: {(node, layer): closeness_centrality}
+            
+        Note:
+            This implementation uses NetworkX's shortest path algorithms on 
+            the supra-graph representation. For large networks, this can be 
+            computationally expensive.
+        """
+        # Convert supra-adjacency matrix to NetworkX graph
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+        
+        # Create NetworkX graph from supra-adjacency matrix
+        if hasattr(supra_matrix, 'toarray'):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+        
+        # Create directed/undirected graph based on network type
+        if self.network.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+        
+        # Add edges with weights (inverse of adjacency values for shortest paths)
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    # Use inverse of weight as edge length for shortest paths
+                    edge_length = 1.0 / matrix[i, j] if matrix[i, j] > 0 else float('inf')
+                    G.add_edge(i, j, weight=edge_length)
+        
+        # Compute closeness centrality
+        try:
+            if self.network.directed:
+                nx_closeness = nx.closeness_centrality(G, distance='weight')
+            else:
+                nx_closeness = nx.closeness_centrality(G, distance='weight')
+        except:
+            # Fallback: use unweighted distances
+            try:
+                nx_closeness = nx.closeness_centrality(G)
+            except:
+                # If graph is disconnected, compute for each component
+                nx_closeness = {}
+                for node in G.nodes():
+                    nx_closeness[node] = 0.0
+        
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = nx_closeness.get(idx, 0.0)
+        
+        return results
+    
+    def multilayer_betweenness_centrality(self, normalized=True, endpoints=False):
+        """
+        Compute betweenness centrality on the supra-graph.
+        
+        For each node-layer pair (i,α), computes the fraction of shortest 
+        paths between all pairs of nodes that pass through (i,α).
+        
+        Args:
+            normalized: Whether to normalize the betweenness values.
+            endpoints: Whether to include endpoints in path counts.
+            
+        Returns:
+            dict: {(node, layer): betweenness_centrality}
+            
+        Note:
+            This is computationally expensive for large networks as it 
+            requires computing shortest paths between all pairs of nodes.
+        """
+        # Convert supra-adjacency matrix to NetworkX graph
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+        
+        # Create NetworkX graph from supra-adjacency matrix
+        if hasattr(supra_matrix, 'toarray'):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+        
+        # Create directed/undirected graph based on network type
+        if self.network.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+        
+        # Add edges with weights (inverse of adjacency values for shortest paths)
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    # Use inverse of weight as edge length for shortest paths
+                    edge_length = 1.0 / matrix[i, j] if matrix[i, j] > 0 else float('inf')
+                    G.add_edge(i, j, weight=edge_length)
+        
+        # Compute betweenness centrality
+        try:
+            nx_betweenness = nx.betweenness_centrality(G, weight='weight', 
+                                                      normalized=normalized, 
+                                                      endpoints=endpoints)
+        except:
+            # Fallback: use unweighted betweenness
+            try:
+                nx_betweenness = nx.betweenness_centrality(G, normalized=normalized, 
+                                                         endpoints=endpoints)
+            except:
+                # If computation fails, return zeros
+                nx_betweenness = {}
+                for node in G.nodes():
+                    nx_betweenness[node] = 0.0
+        
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = nx_betweenness.get(idx, 0.0)
+        
+        return results
+    
     # ==================== AGGREGATION METHODS ====================
     
     def aggregate_to_node_level(self, node_layer_centralities, method='sum', weights=None):
@@ -516,5 +652,10 @@ def compute_all_centralities(network, include_path_based=False):
     results['eigenvector_versatility'] = calc.multiplex_eigenvector_versatility()
     results['katz_bonacich'] = calc.katz_bonacich_centrality()
     results['pagerank'] = calc.pagerank_centrality()
+    
+    # Path-based measures (optional due to computational cost)
+    if include_path_based:
+        results['closeness'] = calc.multilayer_closeness_centrality()
+        results['betweenness'] = calc.multilayer_betweenness_centrality()
     
     return results

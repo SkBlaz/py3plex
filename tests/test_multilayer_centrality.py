@@ -289,6 +289,50 @@ class TestMultilayerCentrality(unittest.TestCase):
         self.assertIsInstance(supra_centralities, dict)
         self.assertIsInstance(participation, dict)
         
+    def test_multilayer_closeness_centrality(self):
+        """Test multilayer closeness centrality."""
+        calc = MultilayerCentrality(self.simple_network)
+        centralities = calc.multilayer_closeness_centrality()
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('A', 'L2'), centralities)
+        
+        # All values should be non-negative
+        for centrality in centralities.values():
+            self.assertGreaterEqual(centrality, 0)
+        
+    def test_multilayer_betweenness_centrality(self):
+        """Test multilayer betweenness centrality."""
+        calc = MultilayerCentrality(self.simple_network)
+        centralities = calc.multilayer_betweenness_centrality()
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('A', 'L2'), centralities)
+        
+        # All values should be non-negative
+        for centrality in centralities.values():
+            self.assertGreaterEqual(centrality, 0)
+            
+    def test_compute_all_centralities_with_path_based(self):
+        """Test the convenience function with path-based measures included."""
+        results = compute_all_centralities(self.simple_network, include_path_based=True)
+        
+        # Should contain all expected centrality measures including path-based
+        expected_measures = [
+            'layer_degree', 'layer_strength', 'supra_degree', 'supra_strength',
+            'overlapping_degree', 'overlapping_strength', 'participation_coefficient',
+            'participation_coefficient_strength', 'multiplex_eigenvector',
+            'eigenvector_versatility', 'katz_bonacich', 'pagerank',
+            'closeness', 'betweenness'
+        ]
+        
+        for measure in expected_measures:
+            self.assertIn(measure, results)
+            self.assertIsInstance(results[measure], dict)
+            self.assertGreater(len(results[measure]), 0)
+    
     def test_compute_all_centralities(self):
         """Test the convenience function to compute all centralities."""
         results = compute_all_centralities(self.simple_network)

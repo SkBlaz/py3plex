@@ -107,8 +107,20 @@ def main():
     pagerank_centrality = calc.pagerank_centrality(damping=0.85)
     print_centrality_results(pagerank_centrality, "PageRank Centrality")
     
+    # ==================== PATH-BASED MEASURES ====================
+    print("\n\n3. PATH-BASED MEASURES")
+    print("-" * 25)
+    
+    # Closeness centrality
+    closeness_centrality = calc.multilayer_closeness_centrality()
+    print_centrality_results(closeness_centrality, "Multilayer Closeness Centrality")
+    
+    # Betweenness centrality
+    betweenness_centrality = calc.multilayer_betweenness_centrality()
+    print_centrality_results(betweenness_centrality, "Multilayer Betweenness Centrality")
+    
     # ==================== AGGREGATION EXAMPLES ====================
-    print("\n\n3. AGGREGATION EXAMPLES")
+    print("\n\n4. AGGREGATION EXAMPLES")
     print("-" * 25)
     
     # Different ways to aggregate node-layer centralities to node level
@@ -128,11 +140,11 @@ def main():
     print_centrality_results(weighted_agg, "Weighted Sum Aggregation")
     
     # ==================== COMPUTE ALL CENTRALITIES ====================
-    print("\n\n4. COMPREHENSIVE ANALYSIS")
+    print("\n\n5. COMPREHENSIVE ANALYSIS")
     print("-" * 28)
     
-    # Compute all available centralities at once
-    all_centralities = compute_all_centralities(network)
+    # Compute all available centralities at once (including path-based)
+    all_centralities = compute_all_centralities(network, include_path_based=True)
     
     print("\nAvailable centrality measures:")
     for measure_name in sorted(all_centralities.keys()):
@@ -140,7 +152,7 @@ def main():
         print(f"  - {measure_name:35} ({num_values} values)")
     
     # ==================== INSIGHTS ====================
-    print("\n\n5. NETWORK INSIGHTS")
+    print("\n\n6. NETWORK INSIGHTS")
     print("-" * 20)
     
     # Find most central nodes by different measures
@@ -150,7 +162,9 @@ def main():
         'Overlapping Degree': overlapping_degrees,
         'Participation Coeff': participation,
         'Eigenvector Versatility': versatility,
-        'PageRank (aggregated)': calc.aggregate_to_node_level(pagerank_centrality, method='sum')
+        'PageRank (aggregated)': calc.aggregate_to_node_level(pagerank_centrality, method='sum'),
+        'Closeness (aggregated)': calc.aggregate_to_node_level(closeness_centrality, method='sum'),
+        'Betweenness (aggregated)': calc.aggregate_to_node_level(betweenness_centrality, method='sum')
     }
     
     for measure_name, centralities in measures_to_check.items():
