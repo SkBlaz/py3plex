@@ -178,7 +178,7 @@ def test_basic_visualizatio5():
     hairball_plot(graph,
                   network_colors,
                   legend=True,
-                  layout_parameters={"iterations": 30})
+                  layout_parameters={"iterations": 4})
 
 
 def test_basic_visualizatio6():
@@ -190,7 +190,7 @@ def test_basic_visualizatio6():
         input_type="edgelist",
         directed=True)
     hairball_plot(multilayer_network.core_network,
-                  layout_parameters={"iterations": 30})
+                  layout_parameters={"iterations": 4})
 
 
 def test_basic_animation():
