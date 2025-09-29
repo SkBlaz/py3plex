@@ -35,7 +35,26 @@ except ImportError as e:
 
 DEPENDENCIES_AVAILABLE = MATPLOTLIB_AVAILABLE and NUMPY_AVAILABLE and VISUALIZATION_AVAILABLE
 
-import pytest
+# Try to import pytest, but make it optional for custom test runner
+try:
+    import pytest
+    PYTEST_AVAILABLE = True
+except ImportError:
+    # Create a mock pytest module for when pytest is not available
+    class MockPytest:
+        class mark:
+            @staticmethod 
+            def skipif(condition, reason=None):
+                def decorator(func):
+                    if condition:
+                        def skipped_func(*args, **kwargs):
+                            print(f"Skipping {func.__name__}: {reason}")
+                            return
+                        return skipped_func
+                    return func
+                return decorator
+    pytest = MockPytest()
+    PYTEST_AVAILABLE = False
 
 
 def test_imports():
