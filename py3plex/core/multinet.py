@@ -8,7 +8,15 @@ from . import converters
 from .HINMINE.IO import *  # parse the graph
 from .HINMINE.decomposition import *  # decompose the graph
 from .supporting import *
-import tqdm
+try:
+    import tqdm
+except ImportError:
+    # Create a simple mock for tqdm when it's not available
+    class MockTqdm:
+        @staticmethod
+        def tqdm(iterable, *args, **kwargs):
+            return iterable
+    tqdm = MockTqdm()
 
 try:
     from py3plex.algorithms.statistics import topology
