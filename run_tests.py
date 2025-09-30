@@ -34,21 +34,52 @@ def run_test_file(test_file_path):
         # Execute the test module
         spec.loader.exec_module(test_module)
         
-        # Find and run all test functions
-        test_functions = [getattr(test_module, name) for name in dir(test_module) 
-                         if name.startswith('test_') and callable(getattr(test_module, name))]
+        # Check for unittest TestCase classes
+        import unittest
+        test_classes = []
+        test_functions = []
         
-        if not test_functions:
-            # If no test functions found, try running main() if it exists
-            if hasattr(test_module, '__name__') and test_module.__name__ == "__main__":
-                # The file has a main section, let's run it by executing as script
-                print("No test functions found, executing as script...")
-                exec(open(test_file_path).read())
+        for name in dir(test_module):
+            obj = getattr(test_module, name)
+            if isinstance(obj, type) and issubclass(obj, unittest.TestCase) and obj != unittest.TestCase:
+                test_classes.append(obj)
+            elif name.startswith('test_') and callable(obj):
+                test_functions.append(obj)
+        
+        if test_classes:
+            # Run unittest-based tests
+            print(f"Found {len(test_classes)} test class(es)")
+            loader = unittest.TestLoader()
+            suite = unittest.TestSuite()
+            
+            for test_class in test_classes:
+                class_tests = loader.loadTestsFromTestCase(test_class)
+                suite.addTests(class_tests)
+            
+            # Custom test result to capture output
+            class CustomTestResult(unittest.TextTestResult):
+                def __init__(self, stream, verbosity):
+                    super().__init__(stream, verbosity)
+                    self.success_count = 0
+                    
+                def addSuccess(self, test):
+                    super().addSuccess(test)
+                    self.success_count += 1
+                    
+            # Run the tests
+            runner = unittest.TextTestRunner(resultclass=CustomTestResult, verbosity=1)
+            result = runner.run(suite)
+            
+            if result.wasSuccessful():
+                print(f"\n🎉 All {result.testsRun} unittest tests PASSED!")
+                return True
             else:
-                print("No test functions found and no main execution block")
+                print(f"\n💥 {len(result.failures + result.errors)}/{result.testsRun} unittest tests FAILED!")
                 return False
-        else:
-            # Run each test function
+                
+        elif test_functions:
+            # Run simple function-based tests
+            print(f"Found {len(test_functions)} test function(s)")
             failed_tests = 0
             for test_func in test_functions:
                 try:
@@ -65,6 +96,15 @@ def run_test_file(test_file_path):
                 return True
             else:
                 print(f"\n💥 {failed_tests}/{len(test_functions)} tests FAILED!")
+                return False
+        else:
+            # If no test functions found, try running main() if it exists
+            if hasattr(test_module, '__name__') and test_module.__name__ == "__main__":
+                # The file has a main section, let's run it by executing as script
+                print("No test functions found, executing as script...")
+                exec(open(test_file_path).read())
+            else:
+                print("No test functions found and no main execution block")
                 return False
         
         return True
