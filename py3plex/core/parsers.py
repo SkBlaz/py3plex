@@ -10,6 +10,9 @@ import scipy.io
 import pandas as pd
 import gzip
 from .supporting import add_mpx_edges
+from py3plex.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 def parse_gml(file_name, directed):
@@ -109,7 +112,7 @@ def parse_gpickle(file_name, directed=False, layer_separator=None):
         A gpickle object
     """
 
-    print("Parsing gpickle..")
+    logger.info("Parsing gpickle..")
     if directed:
         A = nx.MultiDiGraph()
     else:
@@ -656,11 +659,11 @@ def save_edgelist(input_network, output_file, attributes=False):
         pass
     else:
         nx.write_edgelist(input_network, fh, data=False)
-    print("Finished writing the network..")
+    logger.info("Finished writing the network..")
 
 
 if __name__ == "__main__":
-    print("Testing parser")
+    logger.info("Testing parser")
     #    print (nx.info(parse_gml("../../datasets/imdb_gml.gml",f_type="gml",directed=False)))
     #    print (nx.info(parse_network("../../datasets/epigenetics.gpickle",f_type="gpickle_biomine",directed=False)))
     # print (nx.info(parse_network("../../datasets/multiedgelist.txt",f_type="multiedgelist",directed=False)))

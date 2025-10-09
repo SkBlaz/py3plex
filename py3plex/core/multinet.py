@@ -8,6 +8,9 @@ from . import converters
 from .HINMINE.IO import load_hinmine_object  # parse the graph
 from .HINMINE.decomposition import hinmine_decompose, hinmine_get_cycles  # decompose the graph
 from .supporting import split_to_layers as supporting_split_to_layers
+from py3plex.logging_config import get_logger
+
+logger = get_logger(__name__)
 try:
     import tqdm
 except ImportError:
@@ -230,7 +233,9 @@ class multi_layer_network:
     def monitor(self, message):
         """ A simple monithor method """
 
-        print("-" * 20, "\n", message, "\n", "-" * 20)
+        logger.info("-" * 20)
+        logger.info(message)
+        logger.info("-" * 20)
 
     def get_neighbors(self, node_id, layer_id=None):
         return self.core_network.neighbors((node_id, layer_id))
@@ -364,14 +369,14 @@ class multi_layer_network:
                 self.monitor("Computing core stats of the network")
 
             if target_network is None:
-                print(nx_info(self.core_network))
+                logger.info(nx_info(self.core_network))
                 nt, n = self.get_unique_entity_counts()
-                print("Number of unique node IDs: {}".format(n))
+                logger.info("Number of unique node IDs: {}".format(n))
 
             else:
-                print(nx_info(target_network))
+                logger.info(nx_info(target_network))
                 nt, n = self.get_unique_entity_counts()
-                print("Number of unique node IDs: {}".format(n))
+                logger.info("Number of unique node IDs: {}".format(n))
 
     def get_edges(self, data=False, multiplex_edges=False):
         """ A method for obtaining a network's edges """
@@ -568,7 +573,7 @@ class multi_layer_network:
                     self.layer_inverse_name_map[lid] for lid in self.layer_names
                 ]
             except (KeyError, AttributeError):
-                print("self.layer_inverse_name_map not defined (name layers), please define them explicitly to have proper names present.")
+                logger.warning("self.layer_inverse_name_map not defined (name layers), please define them explicitly to have proper names present.")
                 pass
 
         # hairball visualization
@@ -1117,7 +1122,7 @@ class multi_layer_network:
             ]  # all available
         if self.hinmine_network is None:
             if self.verbose:
-                print("Loading into a hinmine object..")
+                logger.info("Loading into a hinmine object..")
             self.hinmine_network = load_hinmine_object(self.core_network,
                                                        self.label_delimiter)
 
@@ -1149,8 +1154,8 @@ class multi_layer_network:
                 yield (final_decomposition, dout.label_matrix, x)
 
             except Exception as es:
-                print("No decomposition found for:", x)
-                print(es)
+                logger.error("No decomposition found for: %s", x)
+                logger.error(str(es))
 
     def load_embedding(self, embedding_file):
         """ Embedding loading method  """
