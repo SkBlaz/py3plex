@@ -2,7 +2,7 @@
 from .community_louvain import *
 try:
     from .NoRC import *
-except:
+except ImportError:
     pass
 
 
@@ -114,7 +114,7 @@ def parse_infomap(outfile):
                 module = parts[0].split(":")[0]
                 node = parts[3]
                 outmap[int(node)] = int(module)
-            except:
+            except (IndexError, ValueError, AttributeError):
                 pass
 
     return outmap
@@ -152,7 +152,7 @@ def NoRC_communities(
 
     try:
         network = network.core_network
-    except:
+    except AttributeError:
         pass
 
     partition = NoRC_communities_main(network,

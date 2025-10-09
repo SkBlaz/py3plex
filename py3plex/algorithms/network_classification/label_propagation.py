@@ -92,7 +92,7 @@ def validate_label_propagation(core_network,
 
     try:
         labels = labels.todense()
-    except:
+    except AttributeError:
         pass
 
     matrix = label_propagation_normalization(core_network)

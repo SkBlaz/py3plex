@@ -16,12 +16,12 @@ def core_network_statistics(G, labels=None, name="example"):
 
     try:
         cc = nx.average_clustering(G.to_undirected())
-    except:
+    except (nx.NetworkXError, ValueError, ZeroDivisionError):
         cc = None
 
     try:
         dx = nx.density(G)
-    except:
+    except (nx.NetworkXError, ZeroDivisionError):
         dx = None
 
     clustering = None

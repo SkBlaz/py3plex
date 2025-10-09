@@ -124,7 +124,7 @@ def parse_gpickle(file_name, directed=False, layer_separator=None):
                 layer1, n1 = e1.split(layer_separator)
                 layer2, n2 = e2.split(layer_separator)
                 A.add_edge((n1, layer1), (n2, layer2))
-            except:
+            except (ValueError, AttributeError):
                 pass
     else:
         A = G

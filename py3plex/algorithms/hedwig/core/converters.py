@@ -106,7 +106,7 @@ def obo2n3(obofile, n3out, gaf_file):
                         current_term = parts[1]
                     if parts[0] == "is_a:":
                         ontology[current_term].append(parts[1])
-                except:
+                except (IndexError, KeyError):
                     pass
     else:
         with open(obofile, "rt") as obo:
@@ -117,7 +117,7 @@ def obo2n3(obofile, n3out, gaf_file):
                         current_term = parts[1]
                     if parts[0] == "is_a:":
                         ontology[current_term].append(parts[1])
-                except:
+                except (IndexError, KeyError):
                     pass
 
     print("INFO: ontology terms added:", len(ontology.keys()))

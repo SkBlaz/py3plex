@@ -50,7 +50,7 @@ def benchmark_node_classification(path,
     try:
         ## just in case
         labels_matrix = sparse.csr_matrix(labels_matrix)
-    except:
+    except (TypeError, ValueError):
         pass
 
     # Map nodes to their features (note:  assumes nodes are labeled as integers 1:N)

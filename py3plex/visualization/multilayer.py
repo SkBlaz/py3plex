@@ -10,7 +10,7 @@ from py3plex.core.nx_compat import nx_info
 try:
     from matplotlib.patches import Rectangle
     from matplotlib.patches import Circle
-except:
+except ImportError:
     pass
 
 import random
@@ -27,7 +27,7 @@ try:
     import plotly.graph_objects as go
     plotly_import = True
     
-except:
+except ImportError:
     plotly_import = False
     
 def draw_multilayer_default(network_list,
@@ -382,7 +382,7 @@ def generate_random_multiedges(network_list,
 
             else:
                 pass
-        except:
+        except (IndexError, KeyError, ValueError):
             pass
 
 
@@ -453,7 +453,7 @@ def hairball_plot(
     for node in nodes:
         try:
             potlabs.append(node[0][1])
-        except:
+        except (IndexError, TypeError):
             potlabs.append("unlabeled")
 
     if color_list is None:
@@ -461,7 +461,7 @@ def hairball_plot(
         color_mapping = dict(zip(list(unique_colors), colors.colors_default))
         try:
             color_list = [color_mapping[n[1]['type']] for n in nodes]
-        except:
+        except (KeyError, IndexError, TypeError):
             print("Assigning colors..")
             color_list = [1] * len(nodes)
 

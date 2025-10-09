@@ -135,7 +135,7 @@ if __name__ == "__main__":
                 mod = modularity(A, partition_hi, weight='weight')
                 if mod > mod_hc_opt:
                     mod_hc_opt = mod
-            except:
+            except (ValueError, IndexError):
                 pass
 
         print("Hierarchical: {}".format(mod))
