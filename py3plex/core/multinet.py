@@ -20,14 +20,14 @@ except ImportError:
 
 try:
     from py3plex.algorithms.statistics import topology
-except:
+except ImportError:
     pass
 
 # visualization modules
 try:
     from py3plex.visualization.multilayer import *
     server_mode = False
-except:
+except ImportError:
     server_mode = True
 
 
@@ -562,7 +562,7 @@ class multi_layer_network:
                 self.real_layer_names = [
                     self.layer_inverse_name_map[lid] for lid in self.layer_names
                 ]
-            except:
+            except (KeyError, AttributeError):
                 print("self.layer_inverse_name_map not defined (name layers), please define them explicitly to have proper names present.")
                 pass
 
@@ -862,7 +862,7 @@ class multi_layer_network:
                     n_count += 1
                 try:
                     weight = float(edge[2]['weight'])
-                except:
+                except (KeyError, IndexError, ValueError, TypeError):
                     weight = 1
 
                 simple_graph.add_edge(nmap[node_first],
@@ -915,7 +915,7 @@ class multi_layer_network:
         else:
             try:
                 return self.numeric_core_network.todense()
-            except:
+            except AttributeError:
                 return self.numeric_core_network
 
     def visualize_matrix(self, kwargs={}):
