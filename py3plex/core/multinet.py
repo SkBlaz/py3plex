@@ -5,9 +5,9 @@ from .nx_compat import nx_info, nx_to_scipy_sparse_matrix, nx_from_scipy_sparse_
 import itertools
 from . import parsers
 from . import converters
-from .HINMINE.IO import *  # parse the graph
-from .HINMINE.decomposition import *  # decompose the graph
-from .supporting import *
+from .HINMINE.IO import load_hinmine_object  # parse the graph
+from .HINMINE.decomposition import hinmine_decompose, hinmine_get_cycles  # decompose the graph
+from .supporting import split_to_layers as supporting_split_to_layers
 try:
     import tqdm
 except ImportError:
@@ -25,7 +25,12 @@ except ImportError:
 
 # visualization modules
 try:
-    from py3plex.visualization.multilayer import *
+    from py3plex.visualization.multilayer import (
+        draw_multilayer_default,
+        draw_multiedges,
+        hairball_plot,
+        supra_adjacency_matrix_plot
+    )
     server_mode = False
 except ImportError:
     server_mode = True
