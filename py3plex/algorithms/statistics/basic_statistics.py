@@ -1,13 +1,28 @@
 # Compute many possible network statistics
 
+from typing import Dict, Any, Optional, Union
 import networkx as nx
 import pandas as pd
 import numpy as np
 from operator import itemgetter
 
 
-def identify_n_hubs(G, top_n=100, node_type=None):
-
+def identify_n_hubs(
+    G: nx.Graph,
+    top_n: int = 100,
+    node_type: Optional[str] = None
+) -> Dict[Any, int]:
+    """
+    Identify the top N hub nodes in a network based on degree centrality.
+    
+    Args:
+        G: NetworkX graph to analyze
+        top_n: Number of top hubs to return (default: 100)
+        node_type: Optional filter for specific node type
+        
+    Returns:
+        Dictionary mapping node identifiers to their degree values
+    """
     if node_type is not None:
         target_nodes = []
         for n in G.nodes(data=True):
@@ -29,7 +44,22 @@ def identify_n_hubs(G, top_n=100, node_type=None):
     return top_n_id
 
 
-def core_network_statistics(G, labels=None, name="example"):
+def core_network_statistics(
+    G: nx.Graph,
+    labels: Optional[Any] = None,
+    name: str = "example"
+) -> pd.DataFrame:
+    """
+    Compute core statistics for a network.
+    
+    Args:
+        G: NetworkX graph to analyze
+        labels: Optional label matrix with shape attribute
+        name: Name identifier for the network (default: "example")
+        
+    Returns:
+        DataFrame containing network statistics
+    """
     rframe = pd.DataFrame(columns=[
         "Name", "classes", "nodes", "edges", "degree", "diameter",
         "connected components", "clustering coefficient", "density",
