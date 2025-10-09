@@ -14,7 +14,7 @@ def identify_n_hubs(G, top_n=100, node_type=None):
             try:
                 if n[0][1] == node_type:
                     target_nodes.append(n[0])
-            except:
+            except (IndexError, TypeError, KeyError):
                 pass
     else:
         target_nodes = G.nodes()
@@ -41,12 +41,12 @@ def core_network_statistics(G, labels=None, name="example"):
 
     try:
         cc = nx.average_clustering(G.to_undirected())
-    except:
+    except (nx.NetworkXError, ValueError, ZeroDivisionError):
         cc = None
 
     try:
         dx = nx.density(G)
-    except:
+    except (nx.NetworkXError, ZeroDivisionError):
         dx = None
 
     clustering = None
@@ -61,12 +61,12 @@ def core_network_statistics(G, labels=None, name="example"):
 
     try:
         diameter = nx.diameter(G)
-    except:
+    except (nx.NetworkXError, ValueError):
         diameter = "intractable"
 
     try:
         flow_hierarchy = nx.flow_hierarchy(G)
-    except:
+    except (nx.NetworkXError, ValueError, AttributeError):
         flow_hierarchy = "intractable"
 
     point = {

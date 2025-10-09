@@ -62,7 +62,8 @@ def multiple_test_correction(input_dataset):
             try:
                 component, term, pval = line.split()
                 pvals[component].append((term, pval))
-            except:
+            except ValueError as e:
+                logging.debug(f"Skipping malformed line: {line.strip()} - {e}")
                 pass
 
     logging.info("Component_by_size PFAM_term pvalue")

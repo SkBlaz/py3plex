@@ -41,10 +41,10 @@ if "--cpp" in sys.argv:
                 ]
                 cmdclass = {'build_ext': build_ext}
                 cythonopts = {"ext_modules": ext_modules, "cmdclass": cmdclass}
-        except:
+        except (ImportError, Exception) as e:
 
             print(
-                "Installing without optimizations.. Please install gcc for better performance!"
+                f"Installing without optimizations.. Please install gcc for better performance! ({e})"
             )
             cythonopts = {"py_modules": ["py3plex/visualization/fa2.fa2util"]}
 
@@ -65,7 +65,7 @@ setup(name='py3plex',
       version='0.95a',
       description="A Multilayer network analysis python3 library",
       url='http://github.com/skblaz/py3plex',
-      python_requires='>3.6.0',
+      python_requires='>=3.8',
       author='Blaž Škrlj',
       author_email='blaz.skrlj@ijs.si',
       license='MIT',

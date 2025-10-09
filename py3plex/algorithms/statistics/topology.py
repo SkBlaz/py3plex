@@ -74,7 +74,7 @@ def plot_power_law(degree_sequence,
         norm = int(
             round(start * len(degree_sequence) * 100 / pow(k, -results.alpha),
                   0))
-    except:
+    except (IndexError, KeyError, ValueError, ZeroDivisionError):
         norm = "C"
 
     # print ("Xm: ",results.fitting_cdf)
