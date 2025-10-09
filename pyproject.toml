@@ -1,0 +1,166 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "cython>=0.20"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py3plex"
+version = "0.95a"
+description = "A Multilayer network analysis python3 library"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Blaž Škrlj", email = "blaz.skrlj@ijs.si"}
+]
+keywords = [
+    "network analysis",
+    "multilayer networks",
+    "heterogeneous networks",
+    "graph visualization",
+    "network science"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "numpy>=0.8",
+    "rdflib>=0.1",
+    "scipy>=1.1.0",
+    "networkx>=2.5",
+    "plotnine",
+    "cython>=0.20",
+    "tqdm>0.0",
+    "matplotlib",
+    "gensim",
+    "scikit-learn",
+    "bitarray>=2.0.0",
+    "seaborn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/SkBlaz/py3plex"
+Documentation = "https://py3plex.readthedocs.io"
+Repository = "https://github.com/SkBlaz/py3plex"
+"Bug Tracker" = "https://github.com/SkBlaz/py3plex/issues"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["py3plex*"]
+exclude = ["tests*", "docs*", "examples*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | examples
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex (we have legacy code)
+    "W191",  # indentation contains tabs (legacy code)
+]
+extend-exclude = [
+    "examples",
+    "build",
+    "dist",
+    ".eggs",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_defs = false  # Set to true when type hints are complete
+strict_optional = false
+warn_redundant_casts = true
+warn_unused_ignores = true
+check_untyped_defs = false  # Set to true when type hints are complete
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+timeout = 300
+
+[tool.coverage.run]
+source = ["py3plex"]
+omit = [
+    "*/tests/*",
+    "*/examples/*",
+    "*/build/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "if verbose:",
+    "@abstractmethod",
+]
