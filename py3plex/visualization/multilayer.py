@@ -7,6 +7,10 @@
 import numpy as np
 import networkx as nx
 from py3plex.core.nx_compat import nx_info
+from py3plex.logging_config import get_logger
+
+logger = get_logger(__name__)
+
 try:
     from matplotlib.patches import Rectangle
     from matplotlib.patches import Circle
@@ -122,7 +126,7 @@ def draw_multilayer_default(network_list,
             network.remove_nodes_from(isolates)
 
         if verbose:
-            print(nx_info(network))
+            logger.info(nx_info(network))
         degrees = dict(nx.degree(nx.Graph(network)))
         cntr = 0
         cntr_all = 0
@@ -153,7 +157,7 @@ def draw_multilayer_default(network_list,
                                    start_location_network - label_position,
                                    labels[color])
             except Exception as es:                
-                print(es)
+                logger.error("Error setting label: %s", es)
 
         if background_shape == "rectangle":
             shape_subplot.add_patch(
@@ -405,9 +409,9 @@ def supra_adjacency_matrix_plot(matrix, display=False):
 
 
 def onclick(event):
-    print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
-          ('double' if event.dblclick else 'single', event.button, event.x,
-           event.y, event.xdata, event.ydata))
+    logger.debug('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f',
+          'double' if event.dblclick else 'single', event.button, event.x,
+           event.y, event.xdata, event.ydata)
 
 
 def hairball_plot(
@@ -446,7 +450,7 @@ def hairball_plot(
 #    main_figure = plt.figure()
 #    shape_subplot = main_figure.add_subplot(111)
 
-    print("Beginning parsing..")
+    logger.info("Beginning parsing..")
     nodes = g.nodes(data=True)
     potlabs = []
     #    fig, ax = plt.subplots()
@@ -462,7 +466,7 @@ def hairball_plot(
         try:
             color_list = [color_mapping[n[1]['type']] for n in nodes]
         except (KeyError, IndexError, TypeError):
-            print("Assigning colors..")
+            logger.info("Assigning colors..")
             color_list = [1] * len(nodes)
 
     
@@ -479,7 +483,7 @@ def hairball_plot(
             # color_list contains actual color values
             cols = color_list            
     except Exception as es:
-        print("Using default palette")
+        logger.info("Using default palette")
         cols = colors.colors_default            
     id_col_map = {}
     for enx, j in enumerate(set(color_list)):
@@ -582,7 +586,7 @@ def interactive_hairball_plot(G,
 #    shape_subplot = main_figure.add_subplot(111)
 
     if not plotly_import:
-        print("Please, install plotly!")
+        logger.error("Please, install plotly!")
         return False
 
     edge_x = []

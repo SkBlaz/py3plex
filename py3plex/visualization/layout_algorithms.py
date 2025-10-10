@@ -8,7 +8,7 @@ from py3plex.core.nx_compat import nx_info
 try:
     from .fa2.forceatlas2 import ForceAtlas2
     forceImport = True
-except:
+except ImportError:
     forceImport = False
 
 

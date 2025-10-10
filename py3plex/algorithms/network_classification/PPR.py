@@ -1,7 +1,8 @@
 # set of routines for validation of the PPR-based classification
 
-from py3plex.algorithms.node_ranking import *
-from py3plex.algorithms.general.benchmark_classification import *
+from py3plex.algorithms.node_ranking import run_PPR
+# evaluate_oracle_F1 from benchmark_classification is only used in commented code
+# from py3plex.algorithms.general.benchmark_classification import evaluate_oracle_F1
 import pandas as pd
 from sklearn.svm import SVC
 from sklearn.metrics import f1_score

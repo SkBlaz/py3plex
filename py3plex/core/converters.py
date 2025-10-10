@@ -1,9 +1,31 @@
 # converters
+from typing import Dict, Tuple, Optional, Any, List
 from collections import defaultdict
 from py3plex.visualization.layout_algorithms import compute_force_directed_layout, compute_random_layout, np
+from py3plex.logging_config import get_logger
+import networkx as nx
+
+logger = get_logger(__name__)
 
 
-def compute_layout(network, compute_layouts, layout_parameters, verbose):
+def compute_layout(
+    network: nx.Graph,
+    compute_layouts: str,
+    layout_parameters: Optional[Dict[str, Any]],
+    verbose: bool
+) -> nx.Graph:
+    """
+    Compute and normalize layout for a network.
+    
+    Args:
+        network: NetworkX graph to compute layout for
+        compute_layouts: Layout algorithm to use ('force', 'random', 'custom_coordinates')
+        layout_parameters: Optional parameters for layout algorithms
+        verbose: Whether to print verbose output
+        
+    Returns:
+        Network with 'pos' attribute added to nodes
+    """
     
     if compute_layouts == "force":
         tmp_pos = compute_force_directed_layout(network,
@@ -49,23 +71,27 @@ def compute_layout(network, compute_layouts, layout_parameters, verbose):
 
         node[1]['pos'] = coordinates
 
-def prepare_for_visualization(multinet,
-                              network_type = "multilayer",
-                              compute_layouts="force",
-                              layout_parameters=None,
-                              verbose=True,
-                              multiplex=False):
+def prepare_for_visualization(
+    multinet: nx.Graph,
+    network_type: str = "multilayer",
+    compute_layouts: str = "force",
+    layout_parameters: Optional[Dict[str, Any]] = None,
+    verbose: bool = True,
+    multiplex: bool = False
+) -> Tuple[List[Any], Dict[Any, nx.Graph], List[Tuple]]:
     """ 
     This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.
 
     Args:
-        param1 (obj): multilayer object
-        param2 (str): multilayer or multiplex?
-        param3 (str): Layout algorithm
-        param4 (dict): Optional layout parameters
+        multinet: multilayer network object
+        network_type: "multilayer" or "multiplex"
+        compute_layouts: Layout algorithm ('force', 'random', etc.)
+        layout_parameters: Optional layout parameters
+        verbose: Whether to print progress information
+        multiplex: Whether to treat as multiplex network
 
     Returns:
-        tuple: (names,networks,multiedges)
+        tuple: (layer_names, layer_networks, multiedges)
 
     """
 
@@ -93,7 +119,7 @@ def prepare_for_visualization(multinet,
             compute_layout(network, compute_layouts, layout_parameters, verbose)
 
     if verbose:
-        print("Finished with layout..")
+        logger.info("Finished with layout..")
     inverse_mapping = {}
 
     # construct the inverse mapping
@@ -164,7 +190,7 @@ def prepare_for_parsing(multinet):
         try:
             layers[node[0][1]].append(node[0])
         except Exception as err:
-            print(err, "sth")
+            logger.debug("Layer parsing error: %s", err)
 
     networks = {
         layer_name: multinet.subgraph(v)
@@ -185,7 +211,7 @@ def prepare_for_parsing(multinet):
                 multiedges[edge[2]['type']].append(edge)
         except Exception as err:
             multiedges['default_inter'].append(edge)
-            print(err, "test")
+            logger.debug("Multiedge parsing error: %s", err)
 
     names, networks = zip(*networks.items())
     return (names, networks, multiedges)

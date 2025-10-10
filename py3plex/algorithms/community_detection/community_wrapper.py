@@ -1,7 +1,7 @@
 # high level interface for community detection algorithms
-from .community_louvain import *
+from .community_louvain import best_partition
 try:
-    from .NoRC import *
+    from .NoRC import NoRC_communities_main
 except ImportError:
     pass
 
