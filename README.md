@@ -13,6 +13,19 @@ Extensive documentation and quickstart tutorials are available at: [DOCS](https:
 
 For any errors, please open an issue!
 
+## 📊 Code Quality Status
+
+This project is actively being modernized! See [STATUS.md](./STATUS.md) for current progress:
+- ✅ All bare except clauses fixed (50+ → 0)
+- ✅ All wildcard imports removed (9 → 0)
+- ✅ Modern Python packaging (pyproject.toml)
+- 🔄 Print→logging conversion in progress
+- 🔄 Type hints being added
+
+**Current Grade**: B- (improved from C+) | **Phase 1**: ~80% complete
+
+For detailed information, see [REVIEW_SUMMARY.md](./REVIEW_SUMMARY.md) and [REPOSITORY_REVIEW.md](./REPOSITORY_REVIEW.md).
+
 ### Contributions
 If you are interested in contributing please:
 - Either open a pull request
