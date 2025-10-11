@@ -1,30 +1,37 @@
 *py3plex* - documentation
 #########################
 
-Found at: https://github.com/SkBlaz/Py3Plex
+**py3plex** is a Python library for multilayer and heterogeneous network analysis.
 
-Welcome to the *py3plex* library's documentation! Here, user can learn more about how *py3plex* can be used to solve problems related to complex networks!
+GitHub: https://github.com/SkBlaz/Py3Plex
 
-The aim of this library is to:
-
-#. Provide primitives for working with multilayer (and multiplex) complex networks
-#. Provide a core set of algorithm for statistical analysis of such networks
-#. Provide extensive collection of network decomposition algorithms
-#. Provide python wrappers for highly efficient algorithm implementations
-
+Installation
+============
 
 .. code:: bash
 
-    pip install py3plex
+    pip install git+https://github.com/SkBlaz/py3plex.git
 
+Quick Start
+===========
+
+See comprehensive examples in the `examples/ directory <https://github.com/SkBlaz/Py3Plex/tree/master/examples>`_.
+
+Basic usage:
+
+.. code:: python
+
+    from py3plex.core import multinet
     
-To test whether the core library functionality works well, you can run the test suite from the ./tests folder as::
-  
-  python3 -m pytest test_core_functionality.py
+    # Load a network
+    network = multinet.multi_layer_network().load_network(
+        "data.edgelist", input_type="edgelist", directed=False)
     
-That's almost it. For full functionality, one needs node2vec and InfoMap binary files, which need to be put into the ./bin folder. This project offers pre-compiled versions, however was tested only on Ubuntu linux > 15.
-    
-A quick overview is discussed next:
+    # Visualize
+    network.visualize_network()
+
+Documentation Structure
+=======================
 
 .. toctree::
    :maxdepth: 2
@@ -54,17 +61,24 @@ A quick overview is discussed next:
 			 
    AUTOGEN_results/modules.rst
    
-All examples and tutorials are accessible in https://github.com/SkBlaz/Py3Plex/tree/master/examples
+Examples & Tutorials
+====================
 
-**In progress: We are adding more involved examples, which are for now found in ./examples folder!**
+**The best way to learn py3plex is through examples!**
 
-The documentation of all methods is given below:
+All examples are available at: https://github.com/SkBlaz/Py3Plex/tree/master/examples
 
-Method list
-==================
+Key examples:
+
+- ``example_multilayer_visualization.py`` - Network visualization
+- ``example_community_detection.py`` - Community detection with Louvain and Infomap
+- ``example_network_decomposition.py`` - Meta-path feature extraction
+- ``example_n2v_embedding.py`` - Node2Vec embeddings
+- ``example_label_propagation.py`` - Semi-supervised learning
+- ``example_multiplex_dynamics.py`` - Temporal analysis
+
+References
+==========
  
 * :ref:`genindex`
 * :ref:`modindex`
-
-.. toctree::
-   :maxdepth: 2

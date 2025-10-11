@@ -10,7 +10,7 @@ Installation
 
 .. code:: bash
 
-    pip install py3plex
+    pip install git+https://github.com/SkBlaz/py3plex.git
 
 Quick Start
 ===========
