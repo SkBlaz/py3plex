@@ -7,6 +7,7 @@ import networkx as nx
 import numpy as np
 import scipy.sparse as sp
 import tqdm
+from numpy.lib.stride_tricks import as_strided
 from scipy.cluster.hierarchy import fcluster, linkage
 
 # import community
@@ -38,7 +39,7 @@ def page_rank_kernel(index_row):
         pr = pr / np.linalg.norm(pr, 2)
         return (index_row, pr)
     else:
-        return (index_row, np.zeros(G.shape[1]))
+        return (index_row, np.zeros(_RANK_GRAPH.shape[1]))
 
 
 def create_tree(centers):

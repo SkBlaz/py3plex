@@ -12,6 +12,8 @@ from py3plex.algorithms.node_ranking.node_ranking import (
 )
 from py3plex.core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
 
+global _RANK_GRAPH
+
 
 def page_rank_kernel(index_row):
 
@@ -32,7 +34,7 @@ def page_rank_kernel(index_row):
         pr = pr / np.linalg.norm(pr, 2)
         return (index_row, pr)
     else:
-        return (index_row, np.zeros(G.shape[1]))
+        return (index_row, np.zeros(_RANK_GRAPH.shape[1]))
 
 
 def create_tree(centers):

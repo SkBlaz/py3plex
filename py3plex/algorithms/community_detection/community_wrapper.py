@@ -1,4 +1,8 @@
 # high level interface for community detection algorithms
+from collections import defaultdict
+
+import networkx as nx
+
 from .community_louvain import best_partition
 
 try:

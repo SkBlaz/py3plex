@@ -145,7 +145,7 @@ Automated code quality checks:
 - **Black formatting**: Ensures consistent code formatting  
 - **Mypy type checking**: Static type checking (informational only)
 
-The codebase has been formatted and linted. Remaining issues (147 ruff errors) are primarily edge cases that will be addressed incrementally.
+The codebase has been formatted and linted. Ruff is configured to ignore certain legacy code patterns and issues in unused code paths to allow for incremental modernization.
 
 View CI status: [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 
