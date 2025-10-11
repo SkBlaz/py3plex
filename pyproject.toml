@@ -54,6 +54,7 @@ dev = [
     "black>=23.0",
     "ruff>=0.1.0",
     "mypy>=1.0",
+    "pre-commit>=3.0",
 ]
 
 [project.urls]
@@ -119,7 +120,6 @@ ignore = [
     "W191",  # indentation contains tabs (legacy code)
     "F821",  # undefined name (pre-existing bugs in unused code paths)
     "F811",  # redefined-while-unused (generated code in infomap bindings)
-    "E722",  # bare-except (being addressed incrementally, see Phase 1A)
     "E741",  # ambiguous-variable-name (subjective, legacy code)
     "B904",  # raise-without-from-inside-except (Python 2 compatibility)
     "E721",  # type-comparison (legacy pattern, works correctly)

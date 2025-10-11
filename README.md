@@ -92,10 +92,17 @@ The `pyproject.toml` includes configurations for:
 - **Ruff**: Fast linting (`ruff check py3plex/ --fix`)
 - **Mypy**: Type checking (`mypy py3plex/ --ignore-missing-imports`)
 - **Pytest**: Testing with coverage
+- **Pre-commit hooks**: Automated quality checks before commits
 
 ```bash
 # Install dev dependencies
 pip install -e ".[dev]"
+
+# Setup pre-commit hooks (optional but recommended)
+pre-commit install
+
+# Run pre-commit manually on all files
+pre-commit run --all-files
 ```
 
 
