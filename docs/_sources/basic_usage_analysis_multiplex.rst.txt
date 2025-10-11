@@ -1,33 +1,35 @@
-Analysis of multiplex networks
-#########################
-Multiplex networks are more convenient for analysis, hence many existing approaches can be considered, and were implemented as a part of py3plex. The main ones are discussed next:
+Multiplex Network Analysis
+==========================
 
+Multiplex networks have the same nodes across different layers, enabling specialized analysis techniques.
 
-Aggregations
-*******
-One of the most common way to approach multiplex network analysis is by aggregating information across layers. Let that be the information bound to nodes or edges, both can be aggregated into a single *homogeneous* network that can readily be analysed. An example of aggregation is given below, on a random multiplex ER (multiple ERs across same node set).
+Network Aggregation
+-------------------
+
+Combine information across layers into a single network:
 
 .. code-block:: python
-   :linenos:
 
-    ### aggregate a multiplex network
-
-    import networkx as nx
-    from py3plex.core import multinet
     from py3plex.core import random_generators
+    
+    # Generate random multiplex network
+    network = random_generators.random_multiplex_ER(
+        num_nodes=500, num_layers=8, probability=0.0005, directed=False)
+    
+    # Aggregate edges with different metrics
+    aggregated1 = network.aggregate_edges(metric="count", normalize_by="degree")
+    aggregated2 = network.aggregate_edges(metric="count", normalize_by="raw")
 
-    ## initiate an instance of a random graph
-    ER_multilayer = random_generators.random_multiplex_ER(500,8,0.0005,directed=False)
-    ER_multilayer.basic_stats()
-    ## simple networkx object
-    aggregated_network1 = ER_multilayer.aggregate_edges(metric="count",normalize_by="degree")
-    print(nx.info(aggregated_network1))
+Examples
+--------
 
-    ## unnormalized counts for edge weights
-    aggregated_network2 = ER_multilayer.aggregate_edges(metric="count",normalize_by="raw")
-    print(nx.info(aggregated_network2))
+See:
 
-    ## The two networks have the same number of links (all)
+- ``example_multiplex_aggregate.py`` - Network aggregation
+- ``example_multiplex_dynamics.py`` - Temporal dynamics
+- ``example_multiplex_community_detection.py`` - Community detection
+
+Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples
     ## However, the weights differ!
     for e in aggregated_network2.edges(data=True):
 	print(e)

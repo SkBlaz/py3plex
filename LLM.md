@@ -258,7 +258,7 @@ The repository uses `pytest` as its primary testing framework, with tests organi
 
 **Documentation Philosophy**: The documentation has been streamlined to be minimalistic and example-focused. Instead of verbose explanations, the docs point users directly to practical examples in the `examples/` directory.
 
-**Primary documentation**: Sphinx-generated documentation hosted at [py3plex.readthedocs.io](https://py3plex.readthedocs.io). The `docs/` directory contains pre-built HTML documentation. The `docfiles/` directory contains source ReStructuredText files that have been refined to be concise and reference-oriented.
+**Primary documentation**: Sphinx-generated documentation hosted on GitHub Pages at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/). The `docs/` directory contains pre-built HTML documentation. The `docfiles/` directory contains source ReStructuredText files that have been refined to be concise and reference-oriented.
 
 **Documentation structure** (in `docfiles/`):
 - `index.rst`: Quick start and navigation hub pointing to examples
@@ -363,9 +363,9 @@ draw_multilayer_default([network], display=True)
 
 **Repository**: [https://github.com/SkBlaz/py3plex](https://github.com/SkBlaz/py3plex)
 
-**Documentation**: [https://py3plex.readthedocs.io](https://py3plex.readthedocs.io)
+**Documentation**: [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
-**Package index**: Available on PyPI as `py3plex` (`pip install py3plex`)
+**Installation**: Install from GitHub using `pip install git+https://github.com/SkBlaz/py3plex.git`
 
 **Related publications**:
 1. Škrlj, B., Kralj, J., & Lavrač, N. (2019). "Py3plex toolkit for visualization and analysis of multilayer networks." *Applied Network Science*, 4(1), 94. DOI: [10.1007/s41109-019-0203-7](https://doi.org/10.1007/s41109-019-0203-7)

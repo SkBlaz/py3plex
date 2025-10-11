@@ -10,10 +10,10 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 ### Installation
 
-Install py3plex using pip:
+Install py3plex from GitHub:
 
 ```bash
-pip install py3plex
+pip install git+https://github.com/SkBlaz/py3plex.git
 ```
 
 Or install from source for development:
@@ -27,7 +27,7 @@ pip install -e .
 ### Quick Start
 
 To get started, please view the **examples** folder.
-Extensive documentation and quickstart tutorials are available at: [DOCS](https://py3plex.readthedocs.io/en/latest/)
+Extensive documentation and quickstart tutorials are available at: [DOCS](https://skblaz.github.io/py3plex/)
 
 ### Requirements
 
