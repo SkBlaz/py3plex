@@ -93,6 +93,14 @@ extend-exclude = '''
 [tool.ruff]
 line-length = 88
 target-version = "py38"
+extend-exclude = [
+    "examples",
+    "build",
+    "dist",
+    ".eggs",
+]
+
+[tool.ruff.lint]
 select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
@@ -108,14 +116,8 @@ ignore = [
     "C901",  # too complex (we have legacy code)
     "W191",  # indentation contains tabs (legacy code)
 ]
-extend-exclude = [
-    "examples",
-    "build",
-    "dist",
-    ".eggs",
-]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Allow unused imports in __init__.py
 
 [tool.mypy]
