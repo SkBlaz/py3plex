@@ -3,6 +3,10 @@
 import numpy as np
 import numpy.matlib
 
+from ...logging_config import get_logger
+
+logger = get_logger(__name__)
+
 LEFT, ROPE, RIGHT = range(3)
 
 
@@ -69,9 +73,7 @@ def correlated_ttest(x, rope, runs=1, verbose=False, names=("C1", "C2")):
     pl = stats.t.cdf(-rope, n - 1, x, np.sqrt(var))
     pe = 1 - pl - pr
     if verbose:
-        print(
-            f"P({names[0]} > {names[1]}) = {pl}, P(rope) = {pe}, P({names[1]} > {names[0]}) = {pr}"
-        )
+        logger.info("P(%s > %s) = %s, P(rope) = %s, P(%s > %s) = %s", names[0], names[1], pl, pe, names[1], names[0], pr)
     return pl, pe, pr
 
 
@@ -136,9 +138,7 @@ def signtest(
     winners = np.argmax(samples, axis=1)
     pl, pe, pr = np.bincount(winners, minlength=3) / len(winners)
     if verbose:
-        print(
-            f"P({names[0]} > {names[1]}) = {pl}, P(rope) = {pe}, P({names[1]} > {names[0]}) = {pr}"
-        )
+        logger.info("P(%s > %s) = %s, P(rope) = %s, P(%s > %s) = %s", names[0], names[1], pl, pe, names[1], names[0], pr)
     return pl, pe, pr
 
 
@@ -221,9 +221,7 @@ def signrank(
     winners = np.argmax(samples, axis=1)
     pl, pe, pr = np.bincount(winners, minlength=3) / len(winners)
     if verbose:
-        print(
-            f"P({names[0]} > {names[1]}) = {pl}, P(rope) = {pe}, P({names[1]} > {names[0]}) = {pr}"
-        )
+        logger.info("P(%s > %s) = %s, P(rope) = %s, P(%s > %s) = %s", names[0], names[1], pl, pe, names[1], names[0], pr)
     return pl, pe, pr
 
 
@@ -258,9 +256,7 @@ def hierarchical(
     winners = np.argmax(samples, axis=1)
     pl, pe, pr = np.bincount(winners, minlength=3) / len(winners)
     if verbose:
-        print(
-            f"P({names[0]} > {names[1]}) = {pl}, P(rope) = {pe}, P({names[1]} > {names[0]}) = {pr}"
-        )
+        logger.info("P(%s > %s) = %s, P(rope) = %s, P(%s > %s) = %s", names[0], names[1], pl, pe, names[1], names[0], pr)
     return pl, pe, pr
 
 

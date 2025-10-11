@@ -103,8 +103,8 @@ def run(kwargs, cli=True, generator_tag=False, num_threads="all"):
                 f.write(parameters_report)
                 f.write(rules_report)
     else:
-        print(parameters_report)
-        print(rules_report)
+        logger.info(parameters_report)
+        logger.info(rules_report)
 
     return rules_per_target
 
@@ -126,7 +126,7 @@ def build_graph(kwargs):
             cache=not kwargs["nocache"],
         )
     except Exception as e:
-        print(e, "Could not load the graph..")
+        logger.error("Could not load the graph: %s", e)
         exit(1)
     return graph
 
