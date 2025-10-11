@@ -2,11 +2,12 @@
 
 # plot the results of the run
 
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib import rc, font_manager
 from os import makedirs
 from os.path import exists
+
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import font_manager, rc
 
 
 def center(width, n):
@@ -24,10 +25,9 @@ def center(width, n):
     return free_left, free_right
 
 
-def diagram(list_of_algorithms,
-            the_algorithm_candidate,
-            output_figure_file,
-            fontsize=10):
+def diagram(
+    list_of_algorithms, the_algorithm_candidate, output_figure_file, fontsize=10
+):
     """
     Draws critical distance diagram for Nemenyi or Bonferroni-Dunn post-hoc test.
     The diagram is shown if output_figure_file is None, and saved otherwise
@@ -52,16 +52,18 @@ def diagram(list_of_algorithms,
                 break
         if the_index is None:
             print(
-                "{} not found among the results. We will draw Nemenyi style diagram."
-                .format(the_algorithm_candidate))
+                f"{the_algorithm_candidate} not found among the results. We will draw Nemenyi style diagram."
+            )
     inf = float("inf")
-    deltas = [inf] + [
-        sorted_algorithms[i + 1][1] - sorted_algorithms[i][1]
-        for i in range(n - 1)
-    ] + [inf]
+    deltas = (
+        [inf]
+        + [sorted_algorithms[i + 1][1] - sorted_algorithms[i][1] for i in range(n - 1)]
+        + [inf]
+    )
     sorted_algos_copy = sorted(list_of_algorithms, key=lambda t: t[1])
-    sorted_algos_copy = sorted_algos_copy[:n // 2] + sorted_algos_copy[
-        n // 2:][::-1]  # for easier drawing
+    sorted_algos_copy = (
+        sorted_algos_copy[: n // 2] + sorted_algos_copy[n // 2 :][::-1]
+    )  # for easier drawing
     # some plot parameters:
     inter_lines_space = 0.32
     link_length_bonus = 0.04
@@ -73,18 +75,20 @@ def diagram(list_of_algorithms,
     font_size = fontsize
     # latex fonts
     fontProperties = {
-        'family': 'serif',
-        'serif': ['Computer Modern Roman'],
-        'weight': 'normal',
-        'size': font_size
+        "family": "serif",
+        "serif": ["Computer Modern Roman"],
+        "weight": "normal",
+        "size": font_size,
     }
-    ticks_font = font_manager.FontProperties(family='Computer Modern Roman',
-                                             style='normal',
-                                             size=font_size,
-                                             weight='normal',
-                                             stretch='normal')
-    rc('text', usetex=True)
-    rc('font', **fontProperties)
+    font_manager.FontProperties(
+        family="Computer Modern Roman",
+        style="normal",
+        size=font_size,
+        weight="normal",
+        stretch="normal",
+    )
+    rc("text", usetex=True)
+    rc("font", **fontProperties)
 
     def name_length(name):
         length_converter = 2
@@ -93,8 +97,7 @@ def diagram(list_of_algorithms,
     # figure dimensions
     x_min, x_max = inf, -inf
     for i, [alg_description, alg_rank] in enumerate(sorted_algos_copy):
-        m = alg_rank + (2 * int(i >= n // 2) -
-                        1) * name_length(alg_description)
+        m = alg_rank + (2 * int(i >= n // 2) - 1) * name_length(alg_description)
         x_max = max(x_max, m)
         x_min = min(x_min, m)
     x_left = x_min
@@ -105,59 +108,66 @@ def diagram(list_of_algorithms,
     y_min = -1
     y_max = first_level_height + inter_lines_space * (1 + n // 2)
     absolute_width, absolute_height = 16, 0.5 * n
-    plt.rcParams['figure.figsize'] = absolute_width, max(absolute_height, 5)
+    plt.rcParams["figure.figsize"] = absolute_width, max(absolute_height, 5)
     left_bonus, right_bonus = center(absolute_width, n)
     # plotting
     fig = plt.figure()
-    ax = fig.add_subplot(111,
-                         autoscale_on=False,
-                         xlim=(x_min - 0.2 - left_bonus,
-                               x_max + 0.2 + right_bonus),
-                         ylim=(y_min, max(y_max, 3)))
+    ax = fig.add_subplot(
+        111,
+        autoscale_on=False,
+        xlim=(x_min - 0.2 - left_bonus, x_max + 0.2 + right_bonus),
+        ylim=(y_min, max(y_max, 3)),
+    )
 
     def plot_algorithm(algorithm_index, algorithm, avg_rank):
         if algorithm_index < n // 2:
             # go left
             sign = -1
             offset = 0
-            alignment = 'left'
+            alignment = "left"
             x_end_of_line = x_left + end_of_line_manipulator
         else:
             sign = 1
             offset = n // 2
-            alignment = 'right'
+            alignment = "right"
             x_end_of_line = x_right - end_of_line_manipulator
         line_xs = [avg_rank, avg_rank, x_end_of_line]
-        height = (algorithm_index + 1 -
-                  offset) * inter_lines_space + first_level_height
+        height = (algorithm_index + 1 - offset) * inter_lines_space + first_level_height
         line_ys = [0, height, height]
-        plt.plot(line_xs, line_ys, 'k')
+        plt.plot(line_xs, line_ys, "k")
         # index does not work here ...
-        colour = 'k' if the_algorithm_candidate != algorithm else 'b'
+        colour = "k" if the_algorithm_candidate != algorithm else "b"
         text_x = x_end_of_line - sign * names_lines_space
-        ax.text(text_x,
-                height + names_lines_space,
-                algorithm,
-                horizontalalignment=alignment,
-                verticalalignment='center',
-                color=colour,
-                fontsize=font_size)
+        ax.text(
+            text_x,
+            height + names_lines_space,
+            algorithm,
+            horizontalalignment=alignment,
+            verticalalignment="center",
+            color=colour,
+            fontsize=font_size,
+        )
 
     def plot_critical_distance():
         y = critical_distance_offset
         x0 = 1
-        plt.plot([x0, critical_distance + x0], [y, y],
-                 '|r',
-                 markersize=12,
-                 markeredgecolor='r',
-                 markeredgewidth=2)
-        plt.plot([x0, critical_distance + x0], [y, y], 'r', linewidth=2)
-        ax.text(x0,
-                y + names_lines_space,
-                "{}: {:.4f}".format("critical distance", critical_distance),
-                horizontalalignment='left',
-                color='r',
-                fontsize=font_size)
+        plt.plot(
+            [x0, critical_distance + x0],
+            [y, y],
+            "|r",
+            markersize=12,
+            markeredgecolor="r",
+            markeredgewidth=2,
+        )
+        plt.plot([x0, critical_distance + x0], [y, y], "r", linewidth=2)
+        ax.text(
+            x0,
+            y + names_lines_space,
+            "{}: {:.4f}".format("critical distance", critical_distance),
+            horizontalalignment="left",
+            color="r",
+            fontsize=font_size,
+        )
 
     def algorithm_groups():
         sorted_ranks = [t[1] for t in sorted_algorithms]  # only ranks
@@ -190,53 +200,53 @@ def diagram(list_of_algorithms,
         k = len(intervals)
         start, end = 0, inter_lines_space + first_level_height
         heights = [
-            start * (1 - t / (k + 1)) + end * t / (k + 1)
-            for t in range(1, k + 1)
+            start * (1 - t / (k + 1)) + end * t / (k + 1) for t in range(1, k + 1)
         ]
-        colours = ['|r', 'r'] if the_index is None else ['|b', 'b']
+        colours = ["|r", "r"] if the_index is None else ["|b", "b"]
         for ind, [ind1, ind2] in enumerate(intervals):
             y = heights[ind]
-            start = sorted_algorithms[ind1][1] - min(deltas[ind1],
-                                                     link_length_bonus)
-            end = sorted_algorithms[ind2][1] + min(deltas[ind2 + 1],
-                                                   link_length_bonus)
-            plt.plot([start, end], [y, y],
-                     colours[0],
-                     markersize=12,
-                     markeredgecolor=colours[1],
-                     markeredgewidth=2)
+            start = sorted_algorithms[ind1][1] - min(deltas[ind1], link_length_bonus)
+            end = sorted_algorithms[ind2][1] + min(deltas[ind2 + 1], link_length_bonus)
+            plt.plot(
+                [start, end],
+                [y, y],
+                colours[0],
+                markersize=12,
+                markeredgecolor=colours[1],
+                markeredgewidth=2,
+            )
             plt.plot([start, end], [y, y], colours[1], linewidth=1)
 
     # hide 'axes box'
-    ax.spines['right'].set_color('none')
-    ax.spines['left'].set_color('none')
-    ax.spines['top'].set_color('none')
-    ax.spines['bottom'].set_color('none')
+    ax.spines["right"].set_color("none")
+    ax.spines["left"].set_color("none")
+    ax.spines["top"].set_color("none")
+    ax.spines["bottom"].set_color("none")
     # change ticks
     plt.tick_params(
-        axis='y',  # changes apply to the alg_rank-axis
-        which='both',  # both major and minor ticks are affected
-        left='off',  # ticks along the bottom edge are off
-        right='off',  # ticks along the top edge are off
-        labelleft='off')  # labels along the bottom edge are off
-    plt.tick_params(axis='x', which='both', top='off')
-    plt.tick_params('both', length=15, width=1, which='major')
+        axis="y",  # changes apply to the alg_rank-axis
+        which="both",  # both major and minor ticks are affected
+        left="off",  # ticks along the bottom edge are off
+        right="off",  # ticks along the top edge are off
+        labelleft="off",
+    )  # labels along the bottom edge are off
+    plt.tick_params(axis="x", which="both", top="off")
+    plt.tick_params("both", length=15, width=1, which="major")
     # line of algorithm ranks at y = 0
-    ax.spines['bottom'].set_position('zero')
+    ax.spines["bottom"].set_position("zero")
     # draw ticks
     plt.xticks(range(1, 1 + n), range(1, 1 + n), size=20)
     # algorithm ranks line
-    plt.plot([1, n], [0, 0], 'k')
+    plt.plot([1, n], [0, 0], "k")
     # algorithm descriptions
     for i, alg_rank in enumerate(sorted_algos_copy):
         plot_algorithm(i, alg_rank[0], alg_rank[1])
     # critical distance
 
-
-#    plot_critical_distance()
-# algorithm groups
-#    plot_groups(algorithm_groups())
-# save / show the results
+    #    plot_critical_distance()
+    # algorithm groups
+    #    plot_groups(algorithm_groups())
+    # save / show the results
     if output_figure_file is not None:
         folder_end = output_figure_file.rfind("/")
         if folder_end >= 0:
@@ -244,10 +254,7 @@ def diagram(list_of_algorithms,
             if not exists(fig_folder):
                 makedirs(fig_folder)
         fig.tight_layout()
-        fig.savefig(output_figure_file,
-                    bbox_inches='tight',
-                    pad_inches=0,
-                    dpi=1200)
+        fig.savefig(output_figure_file, bbox_inches="tight", pad_inches=0, dpi=1200)
         plt.clf()
         print("Plot saved to", output_figure_file)
     else:
@@ -309,17 +316,21 @@ results = []
 #     print(message)
 
 
-def plot_critical_distance(fname,
-                           groupby=['dataset', 'setting'],
-                           groupby_target='macro_F',
-                           outfile="./micro_cd.pdf",
-                           aggregator="mean",
-                           crit_dist = False,
-                           fontsize=10):
+def plot_critical_distance(
+    fname,
+    groupby=None,
+    groupby_target="macro_F",
+    outfile="./micro_cd.pdf",
+    aggregator="mean",
+    crit_dist=False,
+    fontsize=10,
+):
 
-    from collections import defaultdict
     import operator
+    from collections import defaultdict
 
+    if groupby is None:
+        groupby = ["dataset", "setting"]
     if aggregator == "mean":
         rkx = fname.groupby(groupby)[groupby_target].mean()
     else:
@@ -330,7 +341,7 @@ def plot_critical_distance(fname,
     for df, clf in rkx.index:
         ranks[df].append((clf, rkx[(df, clf)]))
 
-    for k, v in ranks.items():
+    for _k, v in ranks.items():
         a = dict(v)
         sorted_d = sorted(a.items(), key=operator.itemgetter(1))
         for en, j in enumerate(sorted_d):
@@ -343,7 +354,9 @@ def plot_critical_distance(fname,
     avranks = list(clf_score.values())
     pairs = list(zip(names, avranks))
     if crit_dist:
-        cd = Orange.evaluation.compute_CD(avranks[0:(len(avranks)-1)], comparisons, alpha="0.05")
+        cd = Orange.evaluation.compute_CD(
+            avranks[0 : (len(avranks) - 1)], comparisons, alpha="0.05"
+        )
     else:
         cd = None
     diagram(pairs, cd, outfile, fontsize=fontsize)

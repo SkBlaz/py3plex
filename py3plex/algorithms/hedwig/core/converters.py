@@ -1,23 +1,27 @@
 # a converter set of methods for obtaining  normal inputs
-import rdflib
-from .term_parsers import parse_gaf_file
-from collections import defaultdict
 import gzip
+from collections import defaultdict
+
+import rdflib
+
+from .term_parsers import parse_gaf_file
 
 
-def convert_mapping_to_rdf(input_mapping_file,
-                           extract_subnode_info=False,
-                           split_node_by=":",
-                           keep_index=1,
-                           layer_type="uniprotkb",
-                           annotation_mapping_file="test.gaf",
-                           go_identifier="GO:",
-                           prepend_string=None):
+def convert_mapping_to_rdf(
+    input_mapping_file,
+    extract_subnode_info=False,
+    split_node_by=":",
+    keep_index=1,
+    layer_type="uniprotkb",
+    annotation_mapping_file="test.gaf",
+    go_identifier="GO:",
+    prepend_string=None,
+):
 
     # generate input examples based on community assignment
     g = rdflib.graph.Graph()
-    KT = rdflib.Namespace('http://kt.ijs.si/hedwig#')
-    amp_uri = 'http://kt.ijs.si/ontology/hedwig#'
+    KT = rdflib.Namespace("http://kt.ijs.si/hedwig#")
+    amp_uri = "http://kt.ijs.si/ontology/hedwig#"
     obo_uri = "http://purl.obolibrary.org/obo/"
     rdflib.Namespace(amp_uri)
 
@@ -26,9 +30,9 @@ def convert_mapping_to_rdf(input_mapping_file,
     if extract_subnode_info:
         for k, v in input_mapping_file.items():
             node, layer = k
-            if layer_type == None:
+            if layer_type is None:
                 mapping_file[node] = v
-            if layer_type != False:
+            if layer_type:
                 if layer == layer_type:
                     mapping_file[node.split(split_node_by)[keep_index]] = v
     else:
@@ -41,9 +45,9 @@ def convert_mapping_to_rdf(input_mapping_file,
                     layer, node = k.split(split_node_by)  # PSI-MI format
                 else:
                     continue
-            if layer_type == None:
+            if layer_type is None:
                 mapping_file[node] = v
-            if layer_type != False:
+            if layer_type:
                 if layer == layer_type:
                     mapping_file[node] = v
 
@@ -60,8 +64,7 @@ def convert_mapping_to_rdf(input_mapping_file,
     for node, com in mapping_file.items():
         try:
             id_identifier += 1
-            u = rdflib.term.URIRef('%sexample#%s%s' %
-                                   (amp_uri, node, str(id_identifier)))
+            u = rdflib.term.URIRef(f"{amp_uri}example#{node}{str(id_identifier)}")
             g.add((u, rdflib.RDF.type, KT.Example))
             g.add((u, KT.class_label, rdflib.Literal(str(com) + "_community")))
             for goterm in uniGO[node]:
@@ -70,13 +73,15 @@ def convert_mapping_to_rdf(input_mapping_file,
                 if go_identifier is not None:
                     if go_identifier in goterm:
                         annotation_uri = rdflib.term.URIRef(
-                            '%s%s' % (obo_uri, rdflib.Literal(goterm)))
+                            f"{obo_uri}{rdflib.Literal(goterm)}"
+                        )
                         blank = rdflib.BNode()
                         g.add((u, KT.annotated_with, blank))
                         g.add((blank, KT.annotation, annotation_uri))
                 else:
                     annotation_uri = rdflib.term.URIRef(
-                        '%s%s' % (obo_uri, rdflib.Literal(goterm)))
+                        f"{obo_uri}{rdflib.Literal(goterm)}"
+                    )
                     blank = rdflib.BNode()
                     g.add((u, KT.annotated_with, blank))
                     g.add((blank, KT.annotation, annotation_uri))
@@ -92,7 +97,7 @@ def obo2n3(obofile, n3out, gaf_file):
 
     ontology = defaultdict(list)
     current_term = ""
-    #obofile = obofile.replace("/","")
+    # obofile = obofile.replace("/","")
 
     parse_gaf_file(gaf_file)
 
@@ -109,7 +114,7 @@ def obo2n3(obofile, n3out, gaf_file):
                 except (IndexError, KeyError):
                     pass
     else:
-        with open(obofile, "rt") as obo:
+        with open(obofile) as obo:
             for line in obo:
                 parts = line.split()
                 try:
@@ -123,16 +128,15 @@ def obo2n3(obofile, n3out, gaf_file):
     print("INFO: ontology terms added:", len(ontology.keys()))
     # construct an ontology graph
     g = rdflib.graph.Graph()
-    KT = rdflib.Namespace('http://kt.ijs.si/hedwig#')
-    amp_uri = 'http://kt.ijs.si/ontology/hedwig#'
+    rdflib.Namespace("http://kt.ijs.si/hedwig#")
+    amp_uri = "http://kt.ijs.si/ontology/hedwig#"
     obo_uri = "http://purl.obolibrary.org/obo/"
     rdflib.Namespace(amp_uri)
 
     for k, v in ontology.items():
-        u = rdflib.term.URIRef('%s%s' % (obo_uri, k))
+        u = rdflib.term.URIRef(f"{obo_uri}{k}")
         for item in v:
-            annotation_uri = rdflib.term.URIRef(
-                '%s%s' % (obo_uri, rdflib.Literal(item)))
+            annotation_uri = rdflib.term.URIRef(f"{obo_uri}{rdflib.Literal(item)}")
             g.add((annotation_uri, rdflib.RDFS.subClassOf, u))
 
     g.serialize(destination=n3out, format="n3")

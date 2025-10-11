@@ -1,14 +1,15 @@
-'''
+"""
 Predicate-related classes.
 
 @author: anze.vavpetic@ijs.si
-'''
+"""
 
 
 class Predicate:
-    '''
+    """
     Represents a predicate as a member of a certain rule.
-    '''
+    """
+
     i = -1
 
     def __init__(self, label, kb, producer_pred):
@@ -25,24 +26,27 @@ class Predicate:
 
     @staticmethod
     def _avar():
-        '''
+        """
         Anonymous var name generator.
-        '''
+        """
         Predicate.i = Predicate.i + 1
-        return 'X%d' % Predicate.i
+        return "X%d" % Predicate.i
 
 
 class UnaryPredicate(Predicate):
-    '''
+    """
     A unary predicate.
-    '''
-    def __init__(self,
-                 label,
-                 members,
-                 kb,
-                 producer_pred=None,
-                 custom_var_name=None,
-                 negated=False):
+    """
+
+    def __init__(
+        self,
+        label,
+        members,
+        kb,
+        producer_pred=None,
+        custom_var_name=None,
+        negated=False,
+    ):
         Predicate.__init__(self, label, kb, producer_pred)
 
         if not producer_pred:
@@ -59,13 +63,14 @@ class UnaryPredicate(Predicate):
 
 
 class BinaryPredicate(Predicate):
-    '''
+    """
     A binary predicate.
-    '''
+    """
+
     def __init__(self, label, pairs, kb, producer_pred=None):
-        '''
+        """
         The predicate's name and the tuples satisfying it.
-        '''
+        """
         Predicate.__init__(self, label, kb, producer_pred)
 
         # The input var should match with the producers output var

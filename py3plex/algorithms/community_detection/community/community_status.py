@@ -1,12 +1,10 @@
-# coding=utf-8
-
-
-class Status(object):
+class Status:
     """
     To handle several data in one struct.
 
     Could be replaced by named tuple, but don't want to depend on python 2.6
     """
+
     node2com = {}
     total_weight = 0
     internals = {}
@@ -14,17 +12,24 @@ class Status(object):
     gdegrees = {}
 
     def __init__(self):
-        self.node2com = dict([])
+        self.node2com = {}
         self.total_weight = 0
-        self.degrees = dict([])
-        self.gdegrees = dict([])
-        self.internals = dict([])
-        self.loops = dict([])
+        self.degrees = {}
+        self.gdegrees = {}
+        self.internals = {}
+        self.loops = {}
 
     def __str__(self):
-        return ("node2com : " + str(self.node2com) + " degrees : " +
-                str(self.degrees) + " internals : " + str(self.internals) +
-                " total_weight : " + str(self.total_weight))
+        return (
+            "node2com : "
+            + str(self.node2com)
+            + " degrees : "
+            + str(self.degrees)
+            + " internals : "
+            + str(self.internals)
+            + " total_weight : "
+            + str(self.total_weight)
+        )
 
     def copy(self):
         """Perform a deep copy of status"""
@@ -38,24 +43,22 @@ class Status(object):
     def init(self, graph, weight, part=None):
         """Initialize the status of a graph with every node in one community"""
         count = 0
-        self.node2com = dict([])
+        self.node2com = {}
         self.total_weight = 0
-        self.degrees = dict([])
-        self.gdegrees = dict([])
-        self.internals = dict([])
+        self.degrees = {}
+        self.gdegrees = {}
+        self.internals = {}
         self.total_weight = graph.size(weight=weight)
         if part is None:
             for node in graph.nodes():
                 self.node2com[node] = count
                 deg = float(graph.degree(node, weight=weight))
                 if deg < 0:
-                    error = "Bad node degree ({})".format(deg)
+                    error = f"Bad node degree ({deg})"
                     raise ValueError(error)
                 self.degrees[count] = deg
                 self.gdegrees[node] = deg
-                edge_data = graph.get_edge_data(node,
-                                                node,
-                                                default={weight: 0})
+                edge_data = graph.get_edge_data(node, node, default={weight: 0})
                 self.loops[node] = float(edge_data.get(weight, 1))
                 self.internals[count] = self.loops[node]
                 count += 1
@@ -66,15 +69,15 @@ class Status(object):
                 deg = float(graph.degree(node, weight=weight))
                 self.degrees[com] = self.degrees.get(com, 0) + deg
                 self.gdegrees[node] = deg
-                inc = 0.
+                inc = 0.0
                 for neighbor, datas in graph[node].items():
                     edge_weight = datas.get(weight, 1)
                     if edge_weight <= 0:
-                        error = "Bad graph type ({})".format(type(graph))
+                        error = f"Bad graph type ({type(graph)})"
                         raise ValueError(error)
                     if part[neighbor] == com:
                         if neighbor == node:
                             inc += float(edge_weight)
                         else:
-                            inc += float(edge_weight) / 2.
+                            inc += float(edge_weight) / 2.0
                 self.internals[com] = self.internals.get(com, 0) + inc

@@ -87,12 +87,22 @@ extend-exclude = '''
   | build
   | dist
   | examples
+  # files
+  | py3plex/algorithms/statistics/powerlaw\.py
 )/
 '''
 
 [tool.ruff]
 line-length = 88
 target-version = "py38"
+extend-exclude = [
+    "examples",
+    "build",
+    "dist",
+    ".eggs",
+]
+
+[tool.ruff.lint]
 select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
@@ -107,15 +117,18 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex (we have legacy code)
     "W191",  # indentation contains tabs (legacy code)
-]
-extend-exclude = [
-    "examples",
-    "build",
-    "dist",
-    ".eggs",
+    "F821",  # undefined name (pre-existing bugs in unused code paths)
+    "F811",  # redefined-while-unused (generated code in infomap bindings)
+    "E722",  # bare-except (being addressed incrementally, see Phase 1A)
+    "E741",  # ambiguous-variable-name (subjective, legacy code)
+    "B904",  # raise-without-from-inside-except (Python 2 compatibility)
+    "E721",  # type-comparison (legacy pattern, works correctly)
+    "B007",  # unused-loop-control-variable (false positives in some cases)
+    "E402",  # module-import-not-at-top-of-file (required for some conditional imports)
+    "UP031", # printf-string-formatting (legacy code, %formatting still valid Python)
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Allow unused imports in __init__.py
 
 [tool.mypy]

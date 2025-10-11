@@ -1,9 +1,10 @@
 # visualize benchmarks
 
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
+
 sns.set_style("whitegrid")
 
 palette = "Set3"
@@ -13,13 +14,15 @@ def plot_core_macro(fname):
     """
     A very simple visualization of the results..
     """
-    p1 = sns.pointplot('percent_train',
-                       'macro_F',
-                       hue='setting',
-                       data=fname,
-                       markers=["p"] * 10,
-                       ci="sd",
-                       linestyles=['-', '--', '-.', ':'] * 5)
+    sns.pointplot(
+        "percent_train",
+        "macro_F",
+        hue="setting",
+        data=fname,
+        markers=["p"] * 10,
+        ci="sd",
+        linestyles=["-", "--", "-.", ":"] * 5,
+    )
     plt.show()
 
     return 1
@@ -29,7 +32,7 @@ def plot_core_micro(fname):
     """
     A very simple visualization of the results..
     """
-    p1 = sns.lineplot('percent_train', 'micro_F', hue='setting', data=fname)
+    sns.lineplot("percent_train", "micro_F", hue="setting", data=fname)
     plt.show()
 
     return 1
@@ -46,7 +49,7 @@ def plot_core_macro_box(fname):
     fnamex.columns = cnames
     print(fnamex.head())
 
-    p1 = sns.boxplot('percent_train', 'macro_F', hue='setting', data=fnamex)
+    sns.boxplot("percent_train", "macro_F", hue="setting", data=fnamex)
     plt.show()
     return 1
 
@@ -62,20 +65,16 @@ def plot_core_micro_grid(fname):
 
 def plot_core_macro_gg(fnamex):
     print(fnamex.columns)
-    fx = fnamex.groupby(["setting"
-                         ])['macro_F'].mean().sort_values().index.values
+    fx = fnamex.groupby(["setting"])["macro_F"].mean().sort_values().index.values
     g = sns.FacetGrid(fnamex, col="dataset", hue="setting", col_wrap=3)
-    g = (g.map(plt.plot, "percent_train", "macro_F", marker="o",
-               linewidth=1).add_legend())
+    g = g.map(
+        plt.plot, "percent_train", "macro_F", marker="o", linewidth=1
+    ).add_legend()
     g.set_xlabels("Train percentage (%)")
     g.set_ylabels("Average Macro F1")
     plt.show()
 
-    ax = sns.boxplot(x="setting",
-                     y="macro_F",
-                     data=fnamex,
-                     color="white",
-                     order=fx)
+    sns.boxplot(x="setting", y="macro_F", data=fnamex, color="white", order=fx)
     plt.xticks(rotation=45)
     plt.xlabel("Algorithm")
     plt.ylabel("Average Macro F1")
@@ -84,21 +83,17 @@ def plot_core_macro_gg(fnamex):
 
 def plot_core_micro_gg(fnamex):
 
-    fx = fnamex.groupby(["setting"
-                         ])['micro_F'].mean().sort_values().index.values
+    fx = fnamex.groupby(["setting"])["micro_F"].mean().sort_values().index.values
     print(fnamex.columns)
     g = sns.FacetGrid(fnamex, col="dataset", hue="setting", col_wrap=3)
-    g = (g.map(plt.plot, "percent_train", "micro_F", marker="o",
-               linewidth=1).add_legend())
+    g = g.map(
+        plt.plot, "percent_train", "micro_F", marker="o", linewidth=1
+    ).add_legend()
     g.set_xlabels("Train percentage (%)")
     g.set_ylabels("Average Micro F1")
     plt.show()
 
-    ax = sns.boxplot(x="setting",
-                     y="micro_F",
-                     data=fnamex,
-                     color="white",
-                     order=fx)
+    sns.boxplot(x="setting", y="micro_F", data=fnamex, color="white", order=fx)
     plt.xticks(rotation=45)
     plt.xlabel("Algorithm")
     plt.ylabel("Average Micro F1")
@@ -130,28 +125,29 @@ def plot_core_time(fnamex):
 
     fnamex.columns = cnames
     print(fnamex.head())
-    px = sns.boxplot("setting", "time", data=fnamex)
+    sns.boxplot("setting", "time", data=fnamex)
     plt.show()
     return 1
 
 
 def plot_critical_distance(fname, num_algo=14):
 
-    import Orange
-    import matplotlib.pyplot as plt
-    from collections import defaultdict
     import operator
+    from collections import defaultdict
+
+    import matplotlib.pyplot as plt
+    import Orange
 
     #    print(fname.head())
 
     names = fname.setting.unique()
-    rkx = fname.groupby(['dataset', 'setting'])['macro_F'].mean()
+    rkx = fname.groupby(["dataset", "setting"])["macro_F"].mean()
     ranks = defaultdict(list)
     clf_ranks = defaultdict(list)
     for df, clf in rkx.index:
         ranks[df].append((clf, rkx[(df, clf)]))
 
-    for k, v in ranks.items():
+    for _k, v in ranks.items():
         a = dict(v)
         sorted_d = sorted(a.items(), key=operator.itemgetter(1))
         for en, j in enumerate(sorted_d):
@@ -163,21 +159,18 @@ def plot_critical_distance(fname, num_algo=14):
     names = list(clf_score.keys())
     avranks = list(clf_score.values())
     cd = Orange.evaluation.compute_CD(avranks, num_algo, alpha="0.05")
-    Orange.evaluation.graph_ranks(avranks,
-                                  names,
-                                  cd=cd,
-                                  width=6,
-                                  textspace=1.5,
-                                  reverse=True)
+    Orange.evaluation.graph_ranks(
+        avranks, names, cd=cd, width=6, textspace=1.5, reverse=True
+    )
     plt.show()
 
-    rkx = fname.groupby(['dataset', 'setting'])['micro_F'].mean()
+    rkx = fname.groupby(["dataset", "setting"])["micro_F"].mean()
     ranks = defaultdict(list)
     clf_ranks = defaultdict(list)
     for df, clf in rkx.index:
         ranks[df].append((clf, rkx[(df, clf)]))
 
-    for k, v in ranks.items():
+    for _k, v in ranks.items():
         a = dict(v)
         sorted_d = sorted(a.items(), key=operator.itemgetter(1))
         for en, j in enumerate(sorted_d):
@@ -189,22 +182,19 @@ def plot_critical_distance(fname, num_algo=14):
     names = list(clf_score.keys())
     avranks = list(clf_score.values())
     cd = Orange.evaluation.compute_CD(avranks, num_algo, alpha="0.05")
-    Orange.evaluation.graph_ranks(avranks,
-                                  names,
-                                  cd=cd,
-                                  width=6,
-                                  textspace=1.5,
-                                  reverse=True)
+    Orange.evaluation.graph_ranks(
+        avranks, names, cd=cd, width=6, textspace=1.5, reverse=True
+    )
     plt.show()
 
-    fname['time'] = 1 / fname['time']
-    rkx = fname.groupby(['dataset', 'setting'])['time'].mean()
+    fname["time"] = 1 / fname["time"]
+    rkx = fname.groupby(["dataset", "setting"])["time"].mean()
     ranks = defaultdict(list)
     clf_ranks = defaultdict(list)
     for df, clf in rkx.index:
         ranks[df].append((clf, rkx[(df, clf)]))
 
-    for k, v in ranks.items():
+    for _k, v in ranks.items():
         a = dict(v)
         sorted_d = sorted(a.items(), key=operator.itemgetter(1))
         for en, j in enumerate(sorted_d):
@@ -216,31 +206,24 @@ def plot_critical_distance(fname, num_algo=14):
     names = list(clf_score.keys())
     avranks = list(clf_score.values())
     cd = Orange.evaluation.compute_CD(avranks, 54, alpha="0.05")
-    Orange.evaluation.graph_ranks(avranks,
-                                  names,
-                                  cd=cd,
-                                  width=6,
-                                  textspace=1.5,
-                                  reverse=True)
+    Orange.evaluation.graph_ranks(
+        avranks, names, cd=cd, width=6, textspace=1.5, reverse=True
+    )
     plt.show()
 
 
 def plot_mean_times(fn):
 
     # for each dataset, plot times.
-    fx = fnamex.groupby(["setting"])['time'].mean().sort_values().index.values
-    rkx = fn.groupby(['dataset', 'setting'])['time'].mean()
+    fx = fnamex.groupby(["setting"])["time"].mean().sort_values().index.values
+    rkx = fn.groupby(["dataset", "setting"])["time"].mean()
     rkx.reset_index()
 
-    ax = sns.boxplot(x="setting",
-                     y="time",
-                     data=fnamex,
-                     color="white",
-                     order=fx)
+    ax = sns.boxplot(x="setting", y="time", data=fnamex, color="white", order=fx)
     plt.xticks(rotation=45)
     ax.set_xlabel("Algorithm", fontsize=20)
     ax.set_ylabel("Average execution time (s)", fontsize=20)
-    ax.set_yscale('log')
+    ax.set_yscale("log")
     ax.tick_params(labelsize=15)
     plt.show()
 
@@ -249,13 +232,13 @@ def plot_robustness(infile):
 
     print(infile.head())
     #    infile['percent_train'] = pd.to_numeric(infile['percent_train'])
-    infile = infile[infile['percent_train'] < 0.6]
-    p1 = sns.boxplot('percent_train', 'macro_F', data=infile)
+    infile = infile[infile["percent_train"] < 0.6]
+    p1 = sns.boxplot("percent_train", "macro_F", data=infile)
     p1.set_xlabel("Train percent", fontsize=20)
     p1.set_ylabel("Macro F score", fontsize=20)
     plt.show()
 
-    p1 = sns.boxplot('percent_train', 'micro_F', data=infile)
+    p1 = sns.boxplot("percent_train", "micro_F", data=infile)
     p1.set_xlabel("Train percent", fontsize=20)
     p1.set_ylabel("Micro F score", fontsize=20)
     plt.show()
@@ -273,40 +256,39 @@ def plot_robustness(infile):
 
 
 def generic_grouping(fname, score_name, threshold=1, percentages=True):
-    fname = fname[fname['percent_train'] < threshold]
-    sub1 = fname[['percent_train', score_name, 'setting', 'dataset']]
+    fname = fname[fname["percent_train"] < threshold]
+    sub1 = fname[["percent_train", score_name, "setting", "dataset"]]
     if percentages:
-        sub1['dataset'] = sub1['dataset'] + "_" + sub1['percent_train'].astype(
-            str)
-    grouped = sub1.groupby(['dataset', 'setting']).agg(['mean', 'std'])
+        sub1["dataset"] = sub1["dataset"] + "_" + sub1["percent_train"].astype(str)
+    grouped = sub1.groupby(["dataset", "setting"]).agg(["mean", "std"])
     grouped.score_name = np.round(grouped[score_name], 3)
-    stdacc = np.round(grouped[score_name, 'std'], 2)
-    meanacc = np.round(grouped[score_name, 'mean'], 2)
+    stdacc = np.round(grouped[score_name, "std"], 2)
+    meanacc = np.round(grouped[score_name, "mean"], 2)
     acc_agg = meanacc.map(str) + " (" + stdacc.map(str) + ")"
 
-    grouped = grouped.drop([('percent_train', 'mean')],
-                           axis=1).drop([('percent_train', 'std')],
-                                        axis=1).drop([(score_name, 'std')],
-                                                     axis=1)
-    grouped[(score_name, 'mean')] = acc_agg
+    grouped = (
+        grouped.drop([("percent_train", "mean")], axis=1)
+        .drop([("percent_train", "std")], axis=1)
+        .drop([(score_name, "std")], axis=1)
+    )
+    grouped[(score_name, "mean")] = acc_agg
     grouped = grouped.reset_index()
-    grouped.columns = ['dataset', 'setting', 'score']
+    grouped.columns = ["dataset", "setting", "score"]
 
     if percentages:
-        df0 = grouped.pivot(index='dataset', columns='setting', values='score')
+        df0 = grouped.pivot(index="dataset", columns="setting", values="score")
     else:
-        df0 = grouped.pivot(index='dataset', columns='setting',
-                            values='score').T
+        df0 = grouped.pivot(index="dataset", columns="setting", values="score").T
     return df0
 
 
 def table_to_latex(fname, outfolder="../final_results/tables/", threshold=1):
 
-    df0 = generic_grouping(fname, 'micro_F', threshold)
+    df0 = generic_grouping(fname, "micro_F", threshold)
     df0.to_latex(outfolder + "micro_F.tex", index=True)
 
-    df1 = generic_grouping(fname, 'macro_F', threshold)
+    df1 = generic_grouping(fname, "macro_F", threshold)
     df1.to_latex(outfolder + "macro_F.tex", index=True)
 
-    df2 = generic_grouping(fname, 'time', threshold)
+    df2 = generic_grouping(fname, "time", threshold)
     df2.to_latex(outfolder + "time.tex", index=True)

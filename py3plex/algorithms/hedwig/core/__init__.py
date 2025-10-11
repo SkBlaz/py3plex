@@ -1,12 +1,17 @@
-from .example import Example
-from .predicate import UnaryPredicate, BinaryPredicate
-from .rule import Rule
-from .kb import ExperimentKB
-from . import settings
-from . import load
+from . import load, settings
 from .converters import convert_mapping_to_rdf
+from .example import Example
+from .kb import ExperimentKB
+from .predicate import BinaryPredicate, UnaryPredicate
+from .rule import Rule
 
 __all__ = [
-    'Example', 'UnaryPredicate', 'BinaryPredicate', 'Rule', 'ExperimentKB',
-    'settings', 'load', 'convert_mapping_to_rdf'
+    "Example",
+    "UnaryPredicate",
+    "BinaryPredicate",
+    "Rule",
+    "ExperimentKB",
+    "settings",
+    "load",
+    "convert_mapping_to_rdf",
 ]

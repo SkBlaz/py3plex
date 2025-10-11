@@ -4,16 +4,16 @@
 
 # imports first
 
-import numpy as np
 import networkx as nx
+import numpy as np
+
 from py3plex.core.nx_compat import nx_info
 from py3plex.logging_config import get_logger
 
 logger = get_logger(__name__)
 
 try:
-    from matplotlib.patches import Rectangle
-    from matplotlib.patches import Circle
+    from matplotlib.patches import Circle, Rectangle
 except ImportError:
     pass
 
@@ -21,40 +21,44 @@ import random
 
 import matplotlib.pyplot as plt
 
-from . import colors  # those are color ranges
-from . import bezier  # those are bezier curves
-from . import polyfit
+from . import (
+    bezier,  # those are bezier curves
+    colors,  # those are color ranges
+    drawing_machinery,
+    polyfit,
+)
 from .layout_algorithms import compute_force_directed_layout, compute_random_layout
-from . import drawing_machinery
 
 try:
     import plotly.graph_objects as go
+
     plotly_import = True
-    
+
 except ImportError:
     plotly_import = False
-    
-def draw_multilayer_default(network_list,
-                            display=True,
-                            node_size=10,
-                            alphalevel=0.13,
-                            rectanglex=1,
-                            rectangley=1,
-                            background_shape="circle",
-                            background_color="rainbow",
-                            networks_color="rainbow",
-                            labels=False,
-                            arrowsize=0.5,
-                            label_position=1,
-                            verbose=False,
-                            remove_isolated_nodes=False,
-                            axis=None,
-                            edge_size=1,
-                            node_labels=False,
-                            node_font_size=5,
-                            scale_by_size=False):
 
-    
+
+def draw_multilayer_default(
+    network_list,
+    display=True,
+    node_size=10,
+    alphalevel=0.13,
+    rectanglex=1,
+    rectangley=1,
+    background_shape="circle",
+    background_color="rainbow",
+    networks_color="rainbow",
+    labels=False,
+    arrowsize=0.5,
+    label_position=1,
+    verbose=False,
+    remove_isolated_nodes=False,
+    axis=None,
+    edge_size=1,
+    node_labels=False,
+    node_font_size=5,
+    scale_by_size=False,
+):
     """Core multilayer drawing method
 
     Args:
@@ -81,20 +85,21 @@ def draw_multilayer_default(network_list,
     Returns:
         None
     """
-#    main_figure = plt.figure()
-#    shape_subplot = main_figure.add_subplot(111)
+    #    main_figure = plt.figure()
+    #    shape_subplot = main_figure.add_subplot(111)
 
     shape_subplot = plt.gca()
     if background_color == "default":
 
         facecolor_list_background = colors.linear_gradient(
-            "#4286f4", n=len(network_list))['hex']
+            "#4286f4", n=len(network_list)
+        )["hex"]
 
     elif background_color == "rainbow":
 
         facecolor_list_background = colors.colors_default
 
-    elif background_color == None:
+    elif background_color is None:
 
         facecolor_list_background = colors.colors_default
         alphalevel = 0
@@ -133,30 +138,32 @@ def draw_multilayer_default(network_list,
         no_position = []
         all_positions = []
         for node in network.nodes(data=True):
-            if 'pos' not in node[1]:
+            if "pos" not in node[1]:
                 no_position.append(node[0])
                 cntr += 1
             else:
-                all_positions.append(node[1]['pos'])
+                all_positions.append(node[1]["pos"])
                 cntr_all += 1
 
         if len(no_position) > 0:
             network = network.copy()
             network.remove_nodes_from(no_position)
 
-        positions = nx.get_node_attributes(network, 'pos')
+        positions = nx.get_node_attributes(network, "pos")
         cntr = 0
 
         for node, position in positions.items():
             position += start_location_network
 
         # this is the default delay for matplotlib canvas
-        if labels != False:
+        if labels:
             try:
-                plt.text(start_location_network + label_position,
-                                   start_location_network - label_position,
-                                   labels[color])
-            except Exception as es:                
+                plt.text(
+                    start_location_network + label_position,
+                    start_location_network - label_position,
+                    labels[color],
+                )
+            except Exception as es:
                 logger.error("Error setting label: %s", es)
 
         if background_shape == "rectangle":
@@ -168,15 +175,22 @@ def draw_multilayer_default(network_list,
                     alpha=alphalevel,
                     linestyle="dotted",
                     fill=True,
-                    facecolor=facecolor_list_background[color]))
+                    facecolor=facecolor_list_background[color],
+                )
+            )
 
         elif background_shape == "circle":
             shape_subplot.add_patch(
-                Circle((start_location_background + shadow_size,
-                        start_location_background + shadow_size),
-                       circle_size,
-                       color=facecolor_list_background[color],
-                       alpha=alphalevel))
+                Circle(
+                    (
+                        start_location_background + shadow_size,
+                        start_location_background + shadow_size,
+                    ),
+                    circle_size,
+                    color=facecolor_list_background[color],
+                    alpha=alphalevel,
+                )
+            )
         else:
             pass
 
@@ -195,49 +209,52 @@ def draw_multilayer_default(network_list,
         if np.sum(node_sizes) == 0:
             node_sizes = [node_size for vx in degrees.values()]
 
+        #        node_sizes = [(np.log(v) * node_size)/correction if v > 400 else node_size/correction for v in degrees.values()]
 
-#        node_sizes = [(np.log(v) * node_size)/correction if v > 400 else node_size/correction for v in degrees.values()]
+        # cntr+=1
+        # for position in positions:
+        #     if cntr<15:
+        #         print(positions[position][0], positions[position][1])
 
-# cntr+=1
-# for position in positions:
-#     if cntr<15:
-#         print(positions[position][0], positions[position][1])
-
-        drawing_machinery.draw(network,
-                               positions,
-                               node_color=facecolor_list[color],
-                               with_labels=node_labels,
-                               edge_size=edge_size,
-                               node_size=node_sizes,
-                               arrowsize=arrowsize,
-                               ax=axis,
-                               font_size=node_font_size)
+        drawing_machinery.draw(
+            network,
+            positions,
+            node_color=facecolor_list[color],
+            with_labels=node_labels,
+            edge_size=edge_size,
+            node_size=node_sizes,
+            arrowsize=arrowsize,
+            ax=axis,
+            font_size=node_font_size,
+        )
         color += 1
 
-    if display == True:
+    if display:
         plt.show()
 
 
-def draw_multiedges(network_list,
-                    multi_edge_tuple,
-                    input_type="nodes",
-                    linepoints="-.",
-                    alphachannel=0.3,
-                    linecolor="black",
-                    curve_height=1,
-                    style="curve2_bezier",
-                    linewidth=1,
-                    invert=False,
-                    linmod="both",
-                    resolution=0.001):
+def draw_multiedges(
+    network_list,
+    multi_edge_tuple,
+    input_type="nodes",
+    linepoints="-.",
+    alphachannel=0.3,
+    linecolor="black",
+    curve_height=1,
+    style="curve2_bezier",
+    linewidth=1,
+    invert=False,
+    linmod="both",
+    resolution=0.001,
+):
     # indices are correct network positions
-#    main_figure = plt.figure()
-#    shape_subplot = main_figure.add_subplot(111)
-    
+    #    main_figure = plt.figure()
+    #    shape_subplot = main_figure.add_subplot(111)
+
     if input_type == "nodes":
 
         network_positions = [
-            nx.get_node_attributes(network, 'pos') for network in network_list
+            nx.get_node_attributes(network, "pos") for network in network_list
         ]
 
         global_positions = {}
@@ -252,43 +269,46 @@ def draw_multiedges(network_list,
                 coordinates_node_second = global_positions[pair[1]]
 
                 p1 = [coordinates_node_first[0], coordinates_node_second[0]]
-                #[coordinates_node_first[0], coordinates_node_first[1]]
-                p2 = [coordinates_node_first[1],
-                      coordinates_node_second[1]]  # []
+                # [coordinates_node_first[0], coordinates_node_first[1]]
+                p2 = [coordinates_node_first[1], coordinates_node_second[1]]  # []
 
                 if style == "line":
 
-                    plt.plot(p1,
-                             p2,
-                             linestyle=linepoints,
-                             lw=1,
-                             alpha=alphachannel,
-                             color=linecolor)
+                    plt.plot(
+                        p1,
+                        p2,
+                        linestyle=linepoints,
+                        lw=1,
+                        alpha=alphachannel,
+                        color=linecolor,
+                    )
 
                 elif style == "curve2_bezier":
 
-                    x, y = bezier.draw_bezier(len(network_list),
-                                              p1,
-                                              p2,
-                                              path_height=curve_height,
-                                              inversion=invert,
-                                              linemode=linmod,
-                                              resolution=resolution)
+                    x, y = bezier.draw_bezier(
+                        len(network_list),
+                        p1,
+                        p2,
+                        path_height=curve_height,
+                        inversion=invert,
+                        linemode=linmod,
+                        resolution=resolution,
+                    )
 
-                    plt.plot(x,
-                             y,
-                             linestyle=linepoints,
-                             lw=linewidth,
-                             alpha=alphachannel,
-                             color=linecolor)
+                    plt.plot(
+                        x,
+                        y,
+                        linestyle=linepoints,
+                        lw=linewidth,
+                        alpha=alphachannel,
+                        color=linecolor,
+                    )
 
                 elif style == "curve3_bezier":
 
-                    x, y = bezier.draw_bezier(len(network_list),
-                                              p1,
-                                              p2,
-                                              mode="cubic",
-                                              resolution=resolution)
+                    x, y = bezier.draw_bezier(
+                        len(network_list), p1, p2, mode="cubic", resolution=resolution
+                    )
 
                 elif style == "curve3_fit":
 
@@ -299,39 +319,43 @@ def draw_multiedges(network_list,
                 elif style == "piramidal":
 
                     x, y = polyfit.draw_piramidal(len(network_list), p1, p2)
-                    plt.plot(x,
-                             y,
-                             linestyle=linepoints,
-                             lw=1,
-                             alpha=alphachannel,
-                             color=linecolor)
+                    plt.plot(
+                        x,
+                        y,
+                        linestyle=linepoints,
+                        lw=1,
+                        alpha=alphachannel,
+                        color=linecolor,
+                    )
 
                 else:
                     pass
 
-            except Exception as err:
+            except Exception:
                 pass
 
 
 #                print(err,"test")
 
 
-def generate_random_multiedges(network_list,
-                               random_edges,
-                               style="line",
-                               linepoints="-.",
-                               upper_first=2,
-                               lower_first=0,
-                               lower_second=2,
-                               inverse_tag=False,
-                               pheight=1):
+def generate_random_multiedges(
+    network_list,
+    random_edges,
+    style="line",
+    linepoints="-.",
+    upper_first=2,
+    lower_first=0,
+    lower_second=2,
+    inverse_tag=False,
+    pheight=1,
+):
 
-#    main_figure = plt.figure()
-#    shape_subplot = main_figure.add_subplot(111)
-#    main_figure.add_subplot(111)
+    #    main_figure = plt.figure()
+    #    shape_subplot = main_figure.add_subplot(111)
+    #    main_figure.add_subplot(111)
 
     # this needs to be in the form of:
-    for k in range(random_edges):
+    for _k in range(random_edges):
         try:
             random_network1 = random.randint(0, upper_first)
             random_network2 = random.randint(lower_second, len(network_list))
@@ -340,38 +364,39 @@ def generate_random_multiedges(network_list,
             node_second = random.randint(1, 3)
 
             positions_first_net = nx.get_node_attributes(
-                network_list[random_network1], 'pos')
+                network_list[random_network1], "pos"
+            )
             positions_second_net = nx.get_node_attributes(
-                network_list[random_network2], 'pos')
+                network_list[random_network2], "pos"
+            )
 
             p1 = [
                 positions_first_net[node_first][0],
-                positions_second_net[node_second][0]
+                positions_second_net[node_second][0],
             ]
             p2 = [
                 positions_first_net[node_first][1],
-                positions_second_net[node_second][1]
+                positions_second_net[node_second][1],
             ]
 
             if style == "line":
 
-                plt.plot(p1, p2, 'k-', lw=1, color="black", linestyle="dotted")
+                plt.plot(p1, p2, "k-", lw=1, color="black", linestyle="dotted")
 
             elif style == "curve2_bezier":
 
-                x, y = bezier.draw_bezier(len(network_list),
-                                          p1,
-                                          p2,
-                                          inversion=inverse_tag,
-                                          path_height=pheight)
+                x, y = bezier.draw_bezier(
+                    len(network_list),
+                    p1,
+                    p2,
+                    inversion=inverse_tag,
+                    path_height=pheight,
+                )
                 plt.plot(x, y, linestyle=linepoints, lw=1, alpha=0.3)
 
             elif style == "curve3_bezier":
 
-                x, y = bezier.draw_bezier(len(network_list),
-                                          p1,
-                                          p2,
-                                          mode="cubic")
+                x, y = bezier.draw_bezier(len(network_list), p1, p2, mode="cubic")
 
             elif style == "curve3_fit":
 
@@ -393,43 +418,49 @@ def generate_random_multiedges(network_list,
 def generate_random_networks(number_of_networks):
 
     network_list = []
-    for j in range(number_of_networks):
-        tmp_graph = nx.gnm_random_graph(random.randint(60, 300),
-                                        random.randint(5, 300))
+    for _j in range(number_of_networks):
+        tmp_graph = nx.gnm_random_graph(random.randint(60, 300), random.randint(5, 300))
         tmp_pos = nx.spring_layout(tmp_graph)
-        nx.set_node_attributes(tmp_graph, 'pos', tmp_pos)
+        nx.set_node_attributes(tmp_graph, "pos", tmp_pos)
         network_list.append(tmp_graph)
     return network_list
 
 
 def supra_adjacency_matrix_plot(matrix, display=False):
-    plt.imshow(matrix, interpolation='nearest', cmap=plt.cm.binary)
+    plt.imshow(matrix, interpolation="nearest", cmap=plt.cm.binary)
     if display:
         plt.show()
 
 
 def onclick(event):
-    logger.debug('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f',
-          'double' if event.dblclick else 'single', event.button, event.x,
-           event.y, event.xdata, event.ydata)
+    logger.debug(
+        "%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f",
+        "double" if event.dblclick else "single",
+        event.button,
+        event.x,
+        event.y,
+        event.xdata,
+        event.ydata,
+    )
 
 
 def hairball_plot(
-        g,
-        color_list=None,
-        display=False,
-        node_size=1,
-        text_color="black",
-        node_sizes=None,  # for custom sizes
-        layout_parameters=None,
-        legend=None,
-        scale_by_size=True,
-        layout_algorithm="force",
-        edge_width=0.01,
-        alpha_channel=0.5,
-        labels=None,
-        draw=True,
-        label_font_size=2):
+    g,
+    color_list=None,
+    display=False,
+    node_size=1,
+    text_color="black",
+    node_sizes=None,  # for custom sizes
+    layout_parameters=None,
+    legend=None,
+    scale_by_size=True,
+    layout_algorithm="force",
+    edge_width=0.01,
+    alpha_channel=0.5,
+    labels=None,
+    draw=True,
+    label_font_size=2,
+):
     """A method for drawing force-directed plots
     Args:
     network (networkx): A network to be visualized
@@ -446,9 +477,9 @@ def hairball_plot(
     Returns:
         None
     """
-    
-#    main_figure = plt.figure()
-#    shape_subplot = main_figure.add_subplot(111)
+
+    #    main_figure = plt.figure()
+    #    shape_subplot = main_figure.add_subplot(111)
 
     logger.info("Beginning parsing..")
     nodes = g.nodes(data=True)
@@ -464,47 +495,46 @@ def hairball_plot(
         unique_colors = np.unique(potlabs)
         color_mapping = dict(zip(list(unique_colors), colors.colors_default))
         try:
-            color_list = [color_mapping[n[1]['type']] for n in nodes]
+            color_list = [color_mapping[n[1]["type"]] for n in nodes]
         except (KeyError, IndexError, TypeError):
             logger.info("Assigning colors..")
             color_list = [1] * len(nodes)
 
-    
     node_types = [x[1] for x in g.nodes()]
     assert len(node_types) == len(color_list)
 
     try:
         # Check if color_list contains actual colors or numeric IDs
         first_color = color_list[0] if color_list else None
-        if isinstance(first_color, (int, float)) or (isinstance(first_color, str) and first_color.isdigit()):
+        if isinstance(first_color, (int, float)) or (
+            isinstance(first_color, str) and first_color.isdigit()
+        ):
             # color_list contains numeric IDs, map them to actual colors
             cols = colors.colors_default
         else:
             # color_list contains actual color values
-            cols = color_list            
-    except Exception as es:
+            cols = color_list
+    except Exception:
         logger.info("Using default palette")
-        cols = colors.colors_default            
+        cols = colors.colors_default
     id_col_map = {}
     for enx, j in enumerate(set(color_list)):
         id_col_map[j] = cols[enx]
     id_type_map = dict(zip(color_list, node_types))
     final_color_mapping = [id_col_map[j] for j in color_list]
     color_to_type_map = {}
-    for k, v in id_type_map.items():
+    for k, _v in id_type_map.items():
         actual_color = id_col_map[k]
         color_to_type_map[actual_color] = id_type_map[k]
 
     degrees = dict(nx.degree(nx.Graph(g)))
 
     if scale_by_size:
-        nsizes = [
-            np.log(v) * node_size if v > 10 else v for v in degrees.values()
-        ]
+        nsizes = [np.log(v) * node_size if v > 10 else v for v in degrees.values()]
     else:
         nsizes = [node_size for x in g.nodes()]
 
-    if not node_sizes is None:
+    if node_sizes is not None:
         nsizes = node_sizes
 
     # standard force -- directed layout
@@ -516,40 +546,41 @@ def hairball_plot(
         pos = compute_random_layout(g)
 
     elif layout_algorithm == "custom_coordinates":
-        pos = layout_parameters['pos']
+        pos = layout_parameters["pos"]
 
     elif layout_algorithm == "custom_coordinates_initial_force":
         pos = compute_force_directed_layout(g, layout_parameters)
     else:
-        raise ValueError('Uknown layout algorithm: ' + str(layout_algorithm))
+        raise ValueError("Uknown layout algorithm: " + str(layout_algorithm))
 
     if draw:
-        nx.draw_networkx_edges(g,
-                               pos,
-                               alpha=alpha_channel,
-                               edge_color="black",
-                               width=edge_width,
-                               arrows=False)
-        scatter = nx.draw_networkx_nodes(g,
-                                         pos,
-                                         nodelist=[n1[0] for n1 in nodes],
-                                         node_color=final_color_mapping,
-                                         node_size=nsizes,
-                                         alpha=alpha_channel)
+        nx.draw_networkx_edges(
+            g,
+            pos,
+            alpha=alpha_channel,
+            edge_color="black",
+            width=edge_width,
+            arrows=False,
+        )
+        nx.draw_networkx_nodes(
+            g,
+            pos,
+            nodelist=[n1[0] for n1 in nodes],
+            node_color=final_color_mapping,
+            node_size=nsizes,
+            alpha=alpha_channel,
+        )
     if labels is not None:
         for el in labels:
             pos_el = pos[el]
             if draw:
-                plt.text(pos_el[0],
-                         pos_el[1],
-                         el,
-                         fontsize=label_font_size,
-                         color=text_color)
+                plt.text(
+                    pos_el[0], pos_el[1], el, fontsize=label_font_size, color=text_color
+                )
 
+    #        nx.draw_networkx_labels(g, pos, font_size=label_font_size)
 
-#        nx.draw_networkx_labels(g, pos, font_size=label_font_size)
-
-    plt.axis('off')
+    plt.axis("off")
 
     #  add legend {"color":"string"}
     if legend is not None and legend:
@@ -559,14 +590,16 @@ def hairball_plot(
         else:
             fs = "medium"
         markers = [
-            plt.Line2D([0, 0], [0, 0], color=key, marker='o', linestyle='')
+            plt.Line2D([0, 0], [0, 0], color=key, marker="o", linestyle="")
             for key in legend_colors
         ]
         if draw:
-            plt.legend(markers,
-                       [color_to_type_map[color] for color in legend_colors],
-                       numpoints=1,
-                       fontsize=fs)
+            plt.legend(
+                markers,
+                [color_to_type_map[color] for color in legend_colors],
+                numpoints=1,
+                fontsize=fs,
+            )
 
     if display:
         plt.show()
@@ -575,15 +608,12 @@ def hairball_plot(
         return g, nsizes, final_color_mapping, pos
 
 
-def interactive_hairball_plot(G,
-                              nsizes,
-                              final_color_mapping,
-                              pos,
-                              colorscale="Rainbow"):
+def interactive_hairball_plot(
+    G, nsizes, final_color_mapping, pos, colorscale="Rainbow"
+):
 
-
-#    main_figure = plt.figure()
-#    shape_subplot = main_figure.add_subplot(111)
+    #    main_figure = plt.figure()
+    #    shape_subplot = main_figure.add_subplot(111)
 
     if not plotly_import:
         logger.error("Please, install plotly!")
@@ -602,11 +632,13 @@ def interactive_hairball_plot(G,
         edge_y.append(y1)
         edge_y.append(None)
 
-    edge_trace = go.Scatter(x=edge_x,
-                            y=edge_y,
-                            line=dict(width=0.5, color='#888'),
-                            hoverinfo='text',
-                            mode='lines')
+    edge_trace = go.Scatter(
+        x=edge_x,
+        y=edge_y,
+        line={"width": 0.5, "color": "#888"},
+        hoverinfo="text",
+        mode="lines",
+    )
 
     node_x = []
     node_y = []
@@ -618,46 +650,52 @@ def interactive_hairball_plot(G,
     node_trace = go.Scatter(
         x=node_x,
         y=node_y,
-        mode='markers',
+        mode="markers",
         hovertext=list(G.nodes()),
-        hoverinfo='text',
-        marker=dict(
-            showscale=True,
+        hoverinfo="text",
+        marker={
+            "showscale": True,
             # colorscale options
             # 'Greys' | 'YlGnBu' | 'Greens' | 'YlOrRd' | 'Bluered' | 'RdBu' |
             # 'Reds' | 'Blues' | 'Picnic' | 'Rainbow' | 'Portland' | 'Jet' |
             # 'Hot' | 'Blackbody' | 'Earth' | 'Electric' | 'Viridis' |
-            colorscale=colorscale,
-            reversescale=True,
-            color=[],
-            size=10,
-            colorbar=dict(thickness=15,
-                          title='Node Connections',
-                          xanchor='left',
-                          titleside='right'),
-            line_width=2))
+            "colorscale": colorscale,
+            "reversescale": True,
+            "color": [],
+            "size": 10,
+            "colorbar": {
+                "thickness": 15,
+                "title": "Node Connections",
+                "xanchor": "left",
+                "titleside": "right",
+            },
+            "line_width": 2,
+        },
+    )
 
     node_trace.marker.color = nsizes
-    fig = go.Figure(data=[edge_trace, node_trace],
-                    layout=go.Layout(title='Interactive relation explorer',
-                                     titlefont_size=16,
-                                     showlegend=False,
-                                     hovermode='closest',
-                                     margin=dict(b=20, l=5, r=5, t=40),
-                                     annotations=[
-                                         dict(text="By authors of the paper!",
-                                              showarrow=False,
-                                              xref="paper",
-                                              yref="paper",
-                                              x=0.005,
-                                              y=-0.002)
-                                     ],
-                                     xaxis=dict(showgrid=False,
-                                                zeroline=False,
-                                                showticklabels=False),
-                                     yaxis=dict(showgrid=False,
-                                                zeroline=False,
-                                                showticklabels=False)))
+    fig = go.Figure(
+        data=[edge_trace, node_trace],
+        layout=go.Layout(
+            title="Interactive relation explorer",
+            titlefont_size=16,
+            showlegend=False,
+            hovermode="closest",
+            margin={"b": 20, "l": 5, "r": 5, "t": 40},
+            annotations=[
+                {
+                    "text": "By authors of the paper!",
+                    "showarrow": False,
+                    "xref": "paper",
+                    "yref": "paper",
+                    "x": 0.005,
+                    "y": -0.002,
+                }
+            ],
+            xaxis={"showgrid": False, "zeroline": False, "showticklabels": False},
+            yaxis={"showgrid": False, "zeroline": False, "showticklabels": False},
+        ),
+    )
     fig.show()
 
 

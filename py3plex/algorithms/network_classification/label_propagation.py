@@ -1,15 +1,13 @@
 # label propagation routines
 
 # label propagation algorithms:
-import pandas as pd
-from sklearn.model_selection import ShuffleSplit
-import numpy as np
-import scipy.sparse as sp
 import time
-import multiprocessing as mp  # initialize the MP part
-from sklearn.metrics import f1_score
+
 import numpy as np
+import pandas as pd
 import scipy.sparse as sp
+from sklearn.metrics import f1_score
+from sklearn.model_selection import ShuffleSplit
 
 
 def label_propagation_normalization(matrix):
@@ -46,12 +44,14 @@ def normalize_none(mat):
     return mat
 
 
-def label_propagation(graph_matrix,
-                      class_matrix,
-                      alpha=0.001,
-                      epsilon=1e-12,
-                      max_steps=100000,
-                      normalization="freq"):
+def label_propagation(
+    graph_matrix,
+    class_matrix,
+    alpha=0.001,
+    epsilon=1e-12,
+    max_steps=100000,
+    normalization="freq",
+):
 
     # This method assumes the label-propagation normalization and a symmetric matrix with no rank sinks.
 
@@ -59,7 +59,7 @@ def label_propagation(graph_matrix,
         "freq": "normalize_initial_matrix_freq",
         "freqAmplify": "normalize_amplify_freq",
         "exp": "normalize_exp",
-        "basic": "normalize_none"
+        "basic": "normalize_none",
     }
 
     diff = np.inf
@@ -72,23 +72,25 @@ def label_propagation(graph_matrix,
 
     while diff > epsilon and steps < max_steps:
         steps += 1
-        new_labels = alpha * graph_matrix.dot(current_labels) + (
-            1 - alpha) * class_matrix
-        diff = np.linalg.norm(new_labels -
-                              current_labels) / np.linalg.norm(new_labels)
+        new_labels = (
+            alpha * graph_matrix.dot(current_labels) + (1 - alpha) * class_matrix
+        )
+        diff = np.linalg.norm(new_labels - current_labels) / np.linalg.norm(new_labels)
         current_labels = new_labels
 
     return current_labels
 
 
-def validate_label_propagation(core_network,
-                               labels,
-                               dataset_name="test",
-                               repetitions=5,
-                               normalization_scheme="basic",
-                               alpha_value=0.001,
-                               random_seed=123,
-                               verbose=False):
+def validate_label_propagation(
+    core_network,
+    labels,
+    dataset_name="test",
+    repetitions=5,
+    normalization_scheme="basic",
+    alpha_value=0.001,
+    random_seed=123,
+    verbose=False,
+):
 
     try:
         labels = labels.todense()
@@ -103,23 +105,22 @@ def validate_label_propagation(core_network,
     for k in range(repetitions):
         for j in np.arange(0.1, 1, 0.1):
             if verbose:
-                print("Train size:{}, method {}".format(
-                    np.round(j, 2), normalization_scheme))
-            rs = ShuffleSplit(n_splits=10,
-                              test_size=j,
-                              random_state=random_seed)
+                print(f"Train size:{np.round(j, 2)}, method {normalization_scheme}")
+            rs = ShuffleSplit(n_splits=10, test_size=j, random_state=random_seed)
             micros = []
             macros = []
             times = []
-            for X_train, X_test in rs.split(labels):
+            for _X_train, X_test in rs.split(labels):
                 start = time.time()
                 tmp_labels = labels.copy()
                 true_labels = tmp_labels[X_test].copy()
                 tmp_labels[X_test] = 0
-                probs = label_propagation(matrix,
-                                          tmp_labels,
-                                          alpha=alpha_value,
-                                          normalization=normalization_scheme)
+                probs = label_propagation(
+                    matrix,
+                    tmp_labels,
+                    alpha=alpha_value,
+                    normalization=normalization_scheme,
+                )
 
                 y_test = [[] for _ in range(labels.shape[0])]
                 cy = sp.csr_matrix(labels).tocoo()
@@ -136,12 +137,8 @@ def validate_label_propagation(core_network,
                     predictions.append(a)
 
                 predicted_labels = np.matrix(predictions)[X_test]
-                micro = f1_score(true_labels,
-                                 predicted_labels,
-                                 average='micro')
-                macro = f1_score(true_labels,
-                                 predicted_labels,
-                                 average='macro')
+                micro = f1_score(true_labels, predicted_labels, average="micro")
+                macro = f1_score(true_labels, predicted_labels, average="macro")
                 end = time.time()
                 elapsed = end - start
                 micros.append(micro)
@@ -155,7 +152,7 @@ def validate_label_propagation(core_network,
                 "setting": "LP_" + "_".join(normalization_scheme),
                 "dataset": dataset_name,
                 "time": np.mean(times),
-                "alpha": alpha_value
+                "alpha": alpha_value,
             }
             results.append(outarray)
             df = df.append(outarray, ignore_index=True)

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 This module implements community detection.
 """
-from __future__ import print_function
 
 import array
 import random
@@ -12,12 +10,13 @@ import networkx as nx
 # coding=utf-8
 
 
-class Status(object):
+class Status:
     """
     To handle several data in one struct.
 
     Could be replaced by named tuple, but don't want to depend on python 2.6
     """
+
     node2com = {}
     total_weight = 0
     internals = {}
@@ -25,17 +24,24 @@ class Status(object):
     gdegrees = {}
 
     def __init__(self):
-        self.node2com = dict([])
+        self.node2com = {}
         self.total_weight = 0
-        self.degrees = dict([])
-        self.gdegrees = dict([])
-        self.internals = dict([])
-        self.loops = dict([])
+        self.degrees = {}
+        self.gdegrees = {}
+        self.internals = {}
+        self.loops = {}
 
     def __str__(self):
-        return ("node2com : " + str(self.node2com) + " degrees : " +
-                str(self.degrees) + " internals : " + str(self.internals) +
-                " total_weight : " + str(self.total_weight))
+        return (
+            "node2com : "
+            + str(self.node2com)
+            + " degrees : "
+            + str(self.degrees)
+            + " internals : "
+            + str(self.internals)
+            + " total_weight : "
+            + str(self.total_weight)
+        )
 
     def copy(self):
         """Perform a deep copy of status"""
@@ -49,24 +55,22 @@ class Status(object):
     def init(self, graph, weight, part=None):
         """Initialize the status of a graph with every node in one community"""
         count = 0
-        self.node2com = dict([])
+        self.node2com = {}
         self.total_weight = 0
-        self.degrees = dict([])
-        self.gdegrees = dict([])
-        self.internals = dict([])
+        self.degrees = {}
+        self.gdegrees = {}
+        self.internals = {}
         self.total_weight = graph.size(weight=weight)
         if part is None:
             for node in graph.nodes():
                 self.node2com[node] = count
                 deg = float(graph.degree(node, weight=weight))
                 if deg < 0:
-                    error = "Bad node degree ({})".format(deg)
+                    error = f"Bad node degree ({deg})"
                     raise ValueError(error)
                 self.degrees[count] = deg
                 self.gdegrees[node] = deg
-                edge_data = graph.get_edge_data(node,
-                                                node,
-                                                default={weight: 0})
+                edge_data = graph.get_edge_data(node, node, default={weight: 0})
                 self.loops[node] = float(edge_data.get(weight, 1))
                 self.internals[count] = self.loops[node]
                 count += 1
@@ -77,17 +81,17 @@ class Status(object):
                 deg = float(graph.degree(node, weight=weight))
                 self.degrees[com] = self.degrees.get(com, 0) + deg
                 self.gdegrees[node] = deg
-                inc = 0.
+                inc = 0.0
                 for neighbor, datas in graph[node].items():
                     edge_weight = datas.get(weight, 1)
                     if edge_weight <= 0:
-                        error = "Bad graph type ({})".format(type(graph))
+                        error = f"Bad graph type ({type(graph)})"
                         raise ValueError(error)
                     if part[neighbor] == com:
                         if neighbor == node:
                             inc += float(edge_weight)
                         else:
-                            inc += float(edge_weight) / 2.
+                            inc += float(edge_weight) / 2.0
                 self.internals[com] = self.internals.get(com, 0) + inc
 
 
@@ -147,7 +151,7 @@ def partition_at_level(dendrogram, level):
     return partition
 
 
-def modularity(partition, graph, weight='weight'):
+def modularity(partition, graph, weight="weight"):
     """Compute the modularity of a partition of a graph
 
     Parameters
@@ -189,35 +193,32 @@ def modularity(partition, graph, weight='weight'):
     if "Di" in str(type(graph)):
         raise TypeError("Bad graph type, use only non directed graph")
 
-    inc = dict([])
-    deg = dict([])
+    inc = {}
+    deg = {}
     links = graph.size(weight=weight)
     if links == 0:
         raise ValueError("A graph without link has an undefined modularity")
 
     for node in graph:
         com = partition[node]
-        deg[com] = deg.get(com, 0.) + graph.degree(node, weight=weight)
+        deg[com] = deg.get(com, 0.0) + graph.degree(node, weight=weight)
         for neighbor, datas in graph[node].items():
             edge_weight = datas.get(weight, 1)
             if partition[neighbor] == com:
                 if neighbor == node:
-                    inc[com] = inc.get(com, 0.) + float(edge_weight)
+                    inc[com] = inc.get(com, 0.0) + float(edge_weight)
                 else:
-                    inc[com] = inc.get(com, 0.) + float(edge_weight) / 2.
+                    inc[com] = inc.get(com, 0.0) + float(edge_weight) / 2.0
 
-    res = 0.
+    res = 0.0
     for com in set(partition.values()):
-        res += (inc.get(com, 0.) / links) - \
-               (deg.get(com, 0.) / (2. * links)) ** 2
+        res += (inc.get(com, 0.0) / links) - (deg.get(com, 0.0) / (2.0 * links)) ** 2
     return res
 
 
-def best_partition(graph,
-                   partition=None,
-                   weight='weight',
-                   resolution=1.,
-                   randomize=False):
+def best_partition(
+    graph, partition=None, weight="weight", resolution=1.0, randomize=False
+):
     """Compute the partition of the graph nodes which maximises the modularity
     (or try..) using the Louvain heuristices
 
@@ -290,16 +291,13 @@ def best_partition(graph,
     >>> nx.draw_networkx_edges(G, pos, alpha=0.5)
     >>> plt.show()
     """
-    dendo = generate_dendrogram(graph, partition, weight, resolution,
-                                randomize)
+    dendo = generate_dendrogram(graph, partition, weight, resolution, randomize)
     return partition_at_level(dendo, len(dendo) - 1)
 
 
-def generate_dendrogram(graph,
-                        part_init=None,
-                        weight='weight',
-                        resolution=1.,
-                        randomize=False):
+def generate_dendrogram(
+    graph, part_init=None, weight="weight", resolution=1.0, randomize=False
+):
     """Find communities in the graph and return the associated dendrogram
 
     A dendrogram is a tree and each level is a partition of the graph nodes.
@@ -365,7 +363,7 @@ def generate_dendrogram(graph,
     # the best partition is everyone in its community
 
     if graph.number_of_edges() == 0:
-        part = dict([])
+        part = {}
         for node in graph.nodes():
             part[node] = node
         return [part]
@@ -373,7 +371,7 @@ def generate_dendrogram(graph,
     current_graph = graph.copy()
     status = Status()
     status.init(current_graph, weight, part_init)
-    status_list = list()
+    status_list = []
     __one_level(current_graph, status, weight, resolution, randomize)
     new_mod = __modularity(status)
     partition = __renumber(status.node2com)
@@ -444,11 +442,10 @@ def induced_graph(partition, graph, weight="weight"):
 
 
 def __renumber(dictionary):
-    """Renumber the values of the dictionary from 0 to n
-    """
+    """Renumber the values of the dictionary from 0 to n"""
     count = 0
     ret = dictionary.copy()
-    new_values = dict([])
+    new_values = {}
 
     for key in dictionary.keys():
         value = dictionary[key]
@@ -463,8 +460,7 @@ def __renumber(dictionary):
 
 
 def load_binary(data):
-    """Load binary graph as used by the cpp implementation of this algorithm
-    """
+    """Load binary graph as used by the cpp implementation of this algorithm"""
     data = open(data, "rb")
 
     reader = array.array("I")
@@ -491,8 +487,8 @@ def load_binary(data):
 
 
 def __randomly(seq, randomize):
-    """ Convert sequence or iterable to an iterable in random order if
-    randomize """
+    """Convert sequence or iterable to an iterable in random order if
+    randomize"""
     if randomize:
         shuffled = list(seq)
         random.shuffle(shuffled)
@@ -501,8 +497,7 @@ def __randomly(seq, randomize):
 
 
 def __one_level(graph, status, weight_key, resolution, randomize):
-    """Compute one level of communities
-    """
+    """Compute one level of communities"""
     modified = True
     nb_pass_done = 0
     cur_mod = __modularity(status)
@@ -515,24 +510,28 @@ def __one_level(graph, status, weight_key, resolution, randomize):
 
         for node in __randomly(graph.nodes(), randomize):
             com_node = status.node2com[node]
-            degc_totw = status.gdegrees.get(node, 0.) / (
-                status.total_weight * 2.)  # NOQA
+            degc_totw = status.gdegrees.get(node, 0.0) / (
+                status.total_weight * 2.0
+            )  # NOQA
             neigh_communities = __neighcom(node, graph, status, weight_key)
-            remove_cost = - resolution * neigh_communities.get(com_node, 0) + \
-                (status.degrees.get(com_node, 0.) -
-                 status.gdegrees.get(node, 0.)) * degc_totw
-            __remove(node, com_node, neigh_communities.get(com_node, 0.),
-                     status)
+            remove_cost = (
+                -resolution * neigh_communities.get(com_node, 0)
+                + (status.degrees.get(com_node, 0.0) - status.gdegrees.get(node, 0.0))
+                * degc_totw
+            )
+            __remove(node, com_node, neigh_communities.get(com_node, 0.0), status)
             best_com = com_node
             best_increase = 0
             for com, dnc in __randomly(neigh_communities.items(), randomize):
-                incr = remove_cost + resolution * dnc - \
-                    status.degrees.get(com, 0.) * degc_totw
+                incr = (
+                    remove_cost
+                    + resolution * dnc
+                    - status.degrees.get(com, 0.0) * degc_totw
+                )
                 if incr > best_increase:
                     best_increase = incr
                     best_com = com
-            __insert(node, best_com, neigh_communities.get(best_com, 0.),
-                     status)
+            __insert(node, best_com, neigh_communities.get(best_com, 0.0), status)
             if best_com != com_node:
                 modified = True
         new_mod = __modularity(status)
@@ -556,21 +555,21 @@ def __neighcom(node, graph, status, weight_key):
 
 
 def __remove(node, com, weight, status):
-    """ Remove node from community com and modify status"""
-    status.degrees[com] = (status.degrees.get(com, 0.) -
-                           status.gdegrees.get(node, 0.))
+    """Remove node from community com and modify status"""
+    status.degrees[com] = status.degrees.get(com, 0.0) - status.gdegrees.get(node, 0.0)
     status.internals[com] = float(
-        status.internals.get(com, 0.) - weight - status.loops.get(node, 0.))
+        status.internals.get(com, 0.0) - weight - status.loops.get(node, 0.0)
+    )
     status.node2com[node] = -1
 
 
 def __insert(node, com, weight, status):
-    """ Insert node into community and modify status"""
+    """Insert node into community and modify status"""
     status.node2com[node] = com
-    status.degrees[com] = (status.degrees.get(com, 0.) +
-                           status.gdegrees.get(node, 0.))
+    status.degrees[com] = status.degrees.get(com, 0.0) + status.gdegrees.get(node, 0.0)
     status.internals[com] = float(
-        status.internals.get(com, 0.) + weight + status.loops.get(node, 0.))
+        status.internals.get(com, 0.0) + weight + status.loops.get(node, 0.0)
+    )
 
 
 def __modularity(status):
@@ -579,10 +578,10 @@ def __modularity(status):
     status precomputed
     """
     links = float(status.total_weight)
-    result = 0.
+    result = 0.0
     for community in set(status.node2com.values()):
-        in_degree = status.internals.get(community, 0.)
-        degree = status.degrees.get(community, 0.)
+        in_degree = status.internals.get(community, 0.0)
+        degree = status.degrees.get(community, 0.0)
         if links > 0:
-            result += in_degree / links - ((degree / (2. * links))**2)
+            result += in_degree / links - ((degree / (2.0 * links)) ** 2)
     return result

@@ -1,8 +1,9 @@
 # node ranking algorithms
-import numpy as np
-import networkx as nx
-import scipy.sparse as sp
 import multiprocessing as mp
+
+import networkx as nx
+import numpy as np
+import scipy.sparse as sp
 
 
 def stochastic_normalization(matrix):
@@ -27,13 +28,16 @@ def stochastic_normalization(matrix):
 def page_rank_kernel(index_row):
 
     # call as results = p.map(pr_kernel, batch)
-    pr = sparse_page_rank(__graph_matrix, [index_row],
-                          epsilon=1e-6,
-                          max_steps=100000,
-                          damping=damping_hyper,
-                          spread_step=spread_step_hyper,
-                          spread_percent=spread_percent_hyper,
-                          try_shrink=True)
+    pr = sparse_page_rank(
+        __graph_matrix,
+        [index_row],
+        epsilon=1e-6,
+        max_steps=100000,
+        damping=damping_hyper,
+        spread_step=spread_step_hyper,
+        spread_percent=spread_percent_hyper,
+        try_shrink=True,
+    )
 
     norm = np.linalg.norm(pr, 2)
     if norm > 0:
@@ -43,14 +47,16 @@ def page_rank_kernel(index_row):
         return (index_row, np.zeros(__graph_matrix.shape[1]))
 
 
-def sparse_page_rank(matrix,
-                     start_nodes,
-                     epsilon=1e-6,
-                     max_steps=100000,
-                     damping=0.5,
-                     spread_step=10,
-                     spread_percent=0.3,
-                     try_shrink=True):
+def sparse_page_rank(
+    matrix,
+    start_nodes,
+    epsilon=1e-6,
+    max_steps=100000,
+    damping=0.5,
+    spread_step=10,
+    spread_percent=0.3,
+    try_shrink=True,
+):
 
     assert (len(start_nodes)) > 0
 
@@ -109,14 +115,16 @@ def sparse_page_rank(matrix,
         return rank_vec.flatten()
 
 
-def run_PPR(network,
-            cores=None,
-            jobs=None,
-            damping=0.85,
-            spread_step=10,
-            spread_percent=0.3,
-            targets=None,
-            parallel=True):
+def run_PPR(
+    network,
+    cores=None,
+    jobs=None,
+    damping=0.85,
+    spread_step=10,
+    spread_percent=0.3,
+    targets=None,
+    parallel=True,
+):
 
     # normalize the matrix
 
@@ -139,12 +147,11 @@ def run_PPR(network,
 
     if jobs is None:
         if targets is None:
-            jobs = [range(n)[i:i + step]
-                    for i in range(0, n, step)]  # generate jobs
+            jobs = [range(n)[i : i + step] for i in range(0, n, step)]  # generate jobs
         else:
-            jobs = [range(n)[i:i + step] for i in targets]  # generate jobs
+            jobs = [range(n)[i : i + step] for i in targets]  # generate jobs
 
-    if parallel == False:
+    if not parallel:
         for target in jobs:
             for x in target:
                 vector = page_rank_kernel(x)

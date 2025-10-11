@@ -64,7 +64,7 @@ See [IMPROVEMENTS_PHASE_1B.md](./IMPROVEMENTS_PHASE_1B.md) for details:
 - [ ] Refactor global state in `enrichment_modules.py`
 - [ ] Update dependency versions
 - [ ] Add pre-commit hooks
-- [ ] Set up CI linting
+- [x] Set up CI linting ✅ (code-quality.yml workflow added)
 
 ### Phase 3: Modernization (Month 3) - Not Started
 - [ ] Complete type hint coverage
@@ -124,7 +124,7 @@ See [IMPROVEMENTS_PHASE_1B.md](./IMPROVEMENTS_PHASE_1B.md) for details:
 2. **Check** the "Remaining Phase 1 Items" in the roadmap above
 3. **Pick** a task (print→logging or type hints are good starting points)
 4. **Follow** the examples in [IMPROVEMENTS_PHASE_1B.md](./IMPROVEMENTS_PHASE_1B.md)
-5. **Test** your changes with existing test suite
+5. **Test** your changes with existing test suite (see [TESTING.md](./TESTING.md) for instructions)
 6. **Submit** PR referencing the improvements you made
 
 ### Development Tools (Ready to Use)
@@ -146,10 +146,9 @@ ruff check py3plex/ --fix
 
 # Type check
 mypy py3plex/ --ignore-missing-imports
-
-# Run tests
-pytest
 ```
+
+See [TESTING.md](./TESTING.md) for detailed testing instructions.
 
 ---
 

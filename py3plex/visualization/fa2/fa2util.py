@@ -132,22 +132,37 @@ def apply_gravity(nodes, gravity, useStrongGravity=False):
             strongGravity(n, gravity)
 
 
-def apply_attraction(nodes, edges, distributedAttraction, coefficient,
-                     edgeWeightInfluence):
+def apply_attraction(
+    nodes, edges, distributedAttraction, coefficient, edgeWeightInfluence
+):
     # Optimization, since usually edgeWeightInfluence is 0 or 1, and pow is slow
     if edgeWeightInfluence == 0:
         for edge in edges:
-            linAttraction(nodes[edge.node1], nodes[edge.node2], 1,
-                          distributedAttraction, coefficient)
+            linAttraction(
+                nodes[edge.node1],
+                nodes[edge.node2],
+                1,
+                distributedAttraction,
+                coefficient,
+            )
     elif edgeWeightInfluence == 1:
         for edge in edges:
-            linAttraction(nodes[edge.node1], nodes[edge.node2], edge.weight,
-                          distributedAttraction, coefficient)
+            linAttraction(
+                nodes[edge.node1],
+                nodes[edge.node2],
+                edge.weight,
+                distributedAttraction,
+                coefficient,
+            )
     else:
         for edge in edges:
-            linAttraction(nodes[edge.node1], nodes[edge.node2],
-                          pow(edge.weight, edgeWeightInfluence),
-                          distributedAttraction, coefficient)
+            linAttraction(
+                nodes[edge.node1],
+                nodes[edge.node2],
+                pow(edge.weight, edgeWeightInfluence),
+                distributedAttraction,
+                coefficient,
+            )
 
 
 # For Barnes Hut Optimization
@@ -175,8 +190,9 @@ class Region:
 
             self.size = 0.0
             for n in self.nodes:
-                distance = sqrt((n.x - self.massCenterX)**2 +
-                                (n.y - self.massCenterY)**2)
+                distance = sqrt(
+                    (n.x - self.massCenterX) ** 2 + (n.y - self.massCenterY) ** 2
+                )
                 self.size = max(self.size, 2 * distance)
 
     def buildSubRegions(self):
@@ -249,8 +265,9 @@ class Region:
         if len(self.nodes) < 2:
             linRepulsion(n, self.nodes[0], coefficient)
         else:
-            distance = sqrt((n.x - self.massCenterX)**2 +
-                            (n.y - self.massCenterY)**2)
+            distance = sqrt(
+                (n.x - self.massCenterX) ** 2 + (n.y - self.massCenterY) ** 2
+            )
             if distance * theta > self.size:
                 linRepulsion_region(n, self, coefficient)
             else:
@@ -268,48 +285,58 @@ def adjustSpeedAndApplyForces(nodes, speed, speedEfficiency, jitterTolerance):
     totalSwinging = 0.0  # How much irregular movement
     totalEffectiveTraction = 0.0  # How much useful movement
     for n in nodes:
-        swinging = sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) +
-                        (n.old_dy - n.dy) * (n.old_dy - n.dy))
+        swinging = sqrt(
+            (n.old_dx - n.dx) * (n.old_dx - n.dx)
+            + (n.old_dy - n.dy) * (n.old_dy - n.dy)
+        )
         totalSwinging += n.mass * swinging
-        totalEffectiveTraction += .5 * n.mass * sqrt((n.old_dx + n.dx) *
-                                                     (n.old_dx + n.dx) +
-                                                     (n.old_dy + n.dy) *
-                                                     (n.old_dy + n.dy))
+        totalEffectiveTraction += (
+            0.5
+            * n.mass
+            * sqrt(
+                (n.old_dx + n.dx) * (n.old_dx + n.dx)
+                + (n.old_dy + n.dy) * (n.old_dy + n.dy)
+            )
+        )
 
     # Optimize jitter tolerance.  The 'right' jitter tolerance for
     # this network. Bigger networks need more tolerance. Denser
     # networks need less tolerance. Totally empiric.
-    estimatedOptimalJitterTolerance = .05 * sqrt(len(nodes))
+    estimatedOptimalJitterTolerance = 0.05 * sqrt(len(nodes))
     minJT = sqrt(estimatedOptimalJitterTolerance)
     maxJT = 10
     jt = jitterTolerance * max(
         minJT,
         min(
-            maxJT, estimatedOptimalJitterTolerance * totalEffectiveTraction /
-            (len(nodes) * len(nodes))))
+            maxJT,
+            estimatedOptimalJitterTolerance
+            * totalEffectiveTraction
+            / (len(nodes) * len(nodes)),
+        ),
+    )
 
     minSpeedEfficiency = 0.05
 
     # Protective against erratic behavior
     if totalSwinging / totalEffectiveTraction > 2.0:
         if speedEfficiency > minSpeedEfficiency:
-            speedEfficiency *= .5
+            speedEfficiency *= 0.5
         jt = max(jt, jitterTolerance)
 
     if totalSwinging == 0:
-        targetSpeed = float('inf')
+        targetSpeed = float("inf")
     else:
         targetSpeed = jt * speedEfficiency * totalEffectiveTraction / totalSwinging
 
     if totalSwinging > jt * totalEffectiveTraction:
         if speedEfficiency > minSpeedEfficiency:
-            speedEfficiency *= .7
+            speedEfficiency *= 0.7
     elif speed < 1000:
         speedEfficiency *= 1.3
 
     # But the speed shoudn't rise too much too quickly, since it would
     # make the convergence drop dramatically.
-    maxRise = .5
+    maxRise = 0.5
     speed = speed + min(targetSpeed - speed, maxRise * speed)
 
     # Apply forces.
@@ -317,15 +344,17 @@ def adjustSpeedAndApplyForces(nodes, speed, speedEfficiency, jitterTolerance):
     # Need to add a case if adjustSizes ("prevent overlap") is
     # implemented.
     for n in nodes:
-        swinging = n.mass * sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) +
-                                 (n.old_dy - n.dy) * (n.old_dy - n.dy))
+        swinging = n.mass * sqrt(
+            (n.old_dx - n.dx) * (n.old_dx - n.dx)
+            + (n.old_dy - n.dy) * (n.old_dy - n.dy)
+        )
         factor = speed / (1.0 + sqrt(speed * swinging))
         n.x = n.x + (n.dx * factor)
         n.y = n.y + (n.dy * factor)
 
     values = {}
-    values['speed'] = speed
-    values['speedEfficiency'] = speedEfficiency
+    values["speed"] = speed
+    values["speedEfficiency"] = speedEfficiency
 
     return values
 

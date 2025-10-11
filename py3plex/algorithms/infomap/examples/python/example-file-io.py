@@ -11,8 +11,10 @@ infomapWrapper.run()
 
 tree = infomapWrapper.tree
 
-print("Found %d top modules with codelength: %f" %
-      (tree.numTopModules(), tree.codelength()))
+print(
+    "Found %d top modules with codelength: %f"
+    % (tree.numTopModules(), tree.codelength())
+)
 
 print("Writing top level modules to %s_level1.clu..." % name)
 tree.writeClu("%s_level1.clu" % name, 1)

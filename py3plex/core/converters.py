@@ -1,9 +1,15 @@
 # converters
-from typing import Dict, Tuple, Optional, Any, List
 from collections import defaultdict
-from py3plex.visualization.layout_algorithms import compute_force_directed_layout, compute_random_layout, np
-from py3plex.logging_config import get_logger
+from typing import Any, Dict, List, Optional, Tuple
+
 import networkx as nx
+
+from py3plex.logging_config import get_logger
+from py3plex.visualization.layout_algorithms import (
+    compute_force_directed_layout,
+    compute_random_layout,
+    np,
+)
 
 logger = get_logger(__name__)
 
@@ -12,30 +18,30 @@ def compute_layout(
     network: nx.Graph,
     compute_layouts: str,
     layout_parameters: Optional[Dict[str, Any]],
-    verbose: bool
+    verbose: bool,
 ) -> nx.Graph:
     """
     Compute and normalize layout for a network.
-    
+
     Args:
         network: NetworkX graph to compute layout for
         compute_layouts: Layout algorithm to use ('force', 'random', 'custom_coordinates')
         layout_parameters: Optional parameters for layout algorithms
         verbose: Whether to print verbose output
-        
+
     Returns:
         Network with 'pos' attribute added to nodes
     """
-    
+
     if compute_layouts == "force":
-        tmp_pos = compute_force_directed_layout(network,
-                                                layout_parameters,
-                                                verbose=verbose)
+        tmp_pos = compute_force_directed_layout(
+            network, layout_parameters, verbose=verbose
+        )
     elif compute_layouts == "random":
         tmp_pos = compute_random_layout(network)
-        
+
     elif compute_layouts == "custom_coordinates":
-        tmp_pos = layout_parameters['pos']
+        tmp_pos = layout_parameters["pos"]
 
     keys = []
     value_pairs = []
@@ -44,13 +50,13 @@ def compute_layout(
         keys.append(k)
 
     coordinate_matrix = np.matrix(value_pairs)
-    norm_x = (coordinate_matrix[:, 0] - np.min(
-        coordinate_matrix[:, 0])) / (np.max(coordinate_matrix[:, 0]) -
-                                     np.min(coordinate_matrix[:, 0]))
+    norm_x = (coordinate_matrix[:, 0] - np.min(coordinate_matrix[:, 0])) / (
+        np.max(coordinate_matrix[:, 0]) - np.min(coordinate_matrix[:, 0])
+    )
 
-    norm_y = (coordinate_matrix[:, 1] - np.min(
-        coordinate_matrix[:, 1])) / (np.max(coordinate_matrix[:, 1]) -
-                                     np.min(coordinate_matrix[:, 1]))
+    norm_y = (coordinate_matrix[:, 1] - np.min(coordinate_matrix[:, 1])) / (
+        np.max(coordinate_matrix[:, 1]) - np.min(coordinate_matrix[:, 1])
+    )
 
     coordinate_matrix[:, 0] = norm_x
     coordinate_matrix[:, 1] = norm_y
@@ -66,10 +72,10 @@ def compute_layout(
         elif network.degree(node[0]) == 1:
             coordinates = np.array(coordinates) / 2
         if np.abs(coordinates[0]) > 1 or np.abs(coordinates[1]) > 1:
-            coordinates = np.random.rand(
-                1) * coordinates / np.linalg.norm(coordinates)
+            coordinates = np.random.rand(1) * coordinates / np.linalg.norm(coordinates)
 
-        node[1]['pos'] = coordinates
+        node[1]["pos"] = coordinates
+
 
 def prepare_for_visualization(
     multinet: nx.Graph,
@@ -77,9 +83,9 @@ def prepare_for_visualization(
     compute_layouts: str = "force",
     layout_parameters: Optional[Dict[str, Any]] = None,
     verbose: bool = True,
-    multiplex: bool = False
+    multiplex: bool = False,
 ) -> Tuple[List[Any], Dict[Any, nx.Graph], List[Tuple]]:
-    """ 
+    """
     This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.
 
     Args:
@@ -99,23 +105,20 @@ def prepare_for_visualization(
         multiplex = False
     else:
         multiplex = True
-    
+
     layers = defaultdict(list)
     for node in multinet.nodes(data=True):
         try:
             layers[node[0][1]].append(node[0])
-        except Exception as err:
+        except Exception:
             pass
 
-    networks = {
-        layer_name: multinet.subgraph(v)
-        for layer_name, v in layers.items()
-    }
+    networks = {layer_name: multinet.subgraph(v) for layer_name, v in layers.items()}
 
-    if multiplex:        
+    if multiplex:
         compute_layout(multinet, compute_layouts, layout_parameters, verbose)
     else:
-        for layer, network in networks.items():
+        for _layer, network in networks.items():
             compute_layout(network, compute_layouts, layout_parameters, verbose)
 
     if verbose:
@@ -131,9 +134,9 @@ def prepare_for_visualization(
     for edge in multinet.edges(data=True):
         try:
             if edge[0][1] != edge[1][1]:
-                multiedges[edge[2]['type']].append(edge)
-        except Exception as err:
-            multiedges['default_inter'].append(edge)
+                multiedges[edge[2]["type"]].append(edge)
+        except Exception:
+            multiedges["default_inter"].append(edge)
             pass
 
     names, networks = zip(*networks.items())
@@ -141,7 +144,7 @@ def prepare_for_visualization(
 
 
 def prepare_for_visualization_hairball(multinet, compute_layouts=False):
-    """ 
+    """
     Compute layout for a hairball visualization
 
     Args:
@@ -161,10 +164,7 @@ def prepare_for_visualization_hairball(multinet, compute_layouts=False):
             layers[1].append(node)
 
     inverse_mapping = {}
-    enumerated_layers = {
-        name: ind
-        for ind, name in enumerate(set(list(layers.keys())))
-    }
+    enumerated_layers = {name: ind for ind, name in enumerate(set(layers.keys()))}
     for k, v in layers.items():
         for x in v:
             inverse_mapping[x] = enumerated_layers[k]
@@ -174,7 +174,7 @@ def prepare_for_visualization_hairball(multinet, compute_layouts=False):
 
 
 def prepare_for_parsing(multinet):
-    """ 
+    """
     Compute layout for a hairball visualization
 
     Args:
@@ -192,10 +192,7 @@ def prepare_for_parsing(multinet):
         except Exception as err:
             logger.debug("Layer parsing error: %s", err)
 
-    networks = {
-        layer_name: multinet.subgraph(v)
-        for layer_name, v in layers.items()
-    }
+    networks = {layer_name: multinet.subgraph(v) for layer_name, v in layers.items()}
 
     inverse_mapping = {}
 
@@ -208,9 +205,9 @@ def prepare_for_parsing(multinet):
     for edge in multinet.edges(data=True):
         try:
             if edge[0][1] != edge[1][1]:
-                multiedges[edge[2]['type']].append(edge)
+                multiedges[edge[2]["type"]].append(edge)
         except Exception as err:
-            multiedges['default_inter'].append(edge)
+            multiedges["default_inter"].append(edge)
             logger.debug("Multiedge parsing error: %s", err)
 
     names, networks = zip(*networks.items())

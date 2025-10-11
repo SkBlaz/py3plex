@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Authors: Benjamin Renoust (github.com/renoust)
-   Date: 2018/02/13
-   Description: Loads a Detangler JSON format graph and compute unweighted entanglement analysis with Py3Plex
+Date: 2018/02/13
+Description: Loads a Detangler JSON format graph and compute unweighted entanglement analysis with Py3Plex
 """
-import math
 import itertools
+import math
+import sys
+
 import numpy as np
 from scipy import spatial
-from scipy.sparse.csgraph import csgraph_from_dense, connected_components
-import sys
+from scipy.sparse.csgraph import connected_components, csgraph_from_dense
+
 print(sys.version)
 
 
@@ -73,9 +74,9 @@ def build_occurrence_matrix(network):
 # proceeds with block decomposition
 def compute_blocks(c_matrix):
     c_sparse = csgraph_from_dense(c_matrix)
-    nb_components, labels = connected_components(c_sparse,
-                                                 directed=False,
-                                                 return_labels=True)
+    nb_components, labels = connected_components(
+        c_sparse, directed=False, return_labels=True
+    )
 
     v2i = {}
     for i, v in enumerate(labels):
@@ -102,19 +103,23 @@ def compute_entanglement(block_matrix):
 
     gamma_layers = []
     for i in range(nb_layers):
-        gamma_layers.append(abs(
-            eigenvects[i][index_first_eigenvect].real))  # because of approx.
+        gamma_layers.append(
+            abs(eigenvects[i][index_first_eigenvect].real)
+        )  # because of approx.
 
     # computes entanglement homogeneity, cosine distance with the [1...1] vector
     entanglement_homogeneity = 1 - spatial.distance.cosine(
-        gamma_layers, np.ones(nb_layers))
+        gamma_layers, np.ones(nb_layers)
+    )
     # normalizes within the top right quadrant (sorts of flatten the [0-1] value distribution)
-    normalized_entanglement_homogeneity = 1 - math.acos(
-        entanglement_homogeneity) / (math.pi / 2)
+    normalized_entanglement_homogeneity = 1 - math.acos(entanglement_homogeneity) / (
+        math.pi / 2
+    )
 
     return [
-        entanglement_intensity, entanglement_homogeneity,
-        normalized_entanglement_homogeneity
+        entanglement_intensity,
+        entanglement_homogeneity,
+        normalized_entanglement_homogeneity,
     ], gamma_layers
 
 
@@ -128,28 +133,28 @@ def compute_entanglement_analysis(network):
         layer_labels = [layers[x] for x in indices[i]]
         [I, H, H_norm], gamma = compute_entanglement(b)
         block_analysis = {
-            'Entanglement intensity': I,
-            'Layer entanglement':
-            {layer_labels[x]: gamma[x]
-             for x in range(len(gamma))},
-            'Entanglement homogeneity': H,
-            'Normalized homogeneity': H_norm
+            "Entanglement intensity": I,
+            "Layer entanglement": {
+                layer_labels[x]: gamma[x] for x in range(len(gamma))
+            },
+            "Entanglement homogeneity": H,
+            "Normalized homogeneity": H_norm,
         }
         analysis.append(block_analysis)
     return analysis
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     analysis = compute_entanglement_analysis(net)
 
     print("%d connected components of layers" % len(analysis))
     for i, b in enumerate(analysis):
-        print('--- block %d' % i)
-        layer_labels = b['Layer entanglement'].keys()
-        print('Covering layers: %s' % layer_labels)
+        print("--- block %d" % i)
+        layer_labels = b["Layer entanglement"].keys()
+        print(f"Covering layers: {layer_labels}")
 
-        print('Entanglement intensity: %f' % b['Entanglement intensity'])
-        print('Layer entanglement: %s' % b['Layer entanglement'])
-        print('Entanglement homogeneity: %f' % b['Entanglement homogeneity'])
-        print('Normalized homogeneity: %f' % b['Normalized homogeneity'])
+        print("Entanglement intensity: {:f}".format(b["Entanglement intensity"]))
+        print("Layer entanglement: {}".format(b["Layer entanglement"]))
+        print("Entanglement homogeneity: {:f}".format(b["Entanglement homogeneity"]))
+        print("Normalized homogeneity: {:f}".format(b["Normalized homogeneity"]))

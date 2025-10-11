@@ -1,14 +1,17 @@
 # set of routines for validation of the PPR-based classification
 
-from py3plex.algorithms.node_ranking import run_PPR
+import time
+
+import numpy as np
+
 # evaluate_oracle_F1 from benchmark_classification is only used in commented code
 # from py3plex.algorithms.general.benchmark_classification import evaluate_oracle_F1
 import pandas as pd
-from sklearn.svm import SVC
 from sklearn.metrics import f1_score
-import time
-import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.svm import SVC
+
+from py3plex.algorithms.node_ranking import run_PPR
 
 
 def construct_PPR_matrix(graph_matrix, parallel=False):
@@ -24,7 +27,7 @@ def construct_PPR_matrix(graph_matrix, parallel=False):
 
     # get the results in batches
     for result in results:
-        if result != None:
+        if result is not None:
 
             # individual batches
             if isinstance(result, list):
@@ -50,30 +53,32 @@ def construct_PPR_matrix_targets(graph_matrix, targets, parallel=False):
     # deal with that now..
 
 
-def validate_ppr(core_network,
-                 labels,
-                 dataset_name="test",
-                 repetitions=5,
-                 random_seed=123,
-                 multiclass_classifier=None,
-                 target_nodes=None,
-                 parallel=False):
+def validate_ppr(
+    core_network,
+    labels,
+    dataset_name="test",
+    repetitions=5,
+    random_seed=123,
+    multiclass_classifier=None,
+    target_nodes=None,
+    parallel=False,
+):
     """
     The main validation class --- use this to obtain CV results!
     """
 
     if multiclass_classifier is None:
-        multiclass_classifier = SVC(kernel='linear', C=1, probability=True)
+        multiclass_classifier = SVC(kernel="linear", C=1, probability=True)
 
     df = pd.DataFrame()
-    for k in range(repetitions):
+    for _k in range(repetitions):
 
         # this is relevant for supra-adjacency-based tasks..
         if target_nodes is not None:
             print("Subnetwork ranking in progress..")
-            vectors = construct_PPR_matrix_targets(core_network,
-                                                   target_nodes,
-                                                   parallel=parallel)
+            vectors = construct_PPR_matrix_targets(
+                core_network, target_nodes, parallel=parallel
+            )
             labels = labels[target_nodes]
 
         else:
@@ -89,9 +94,9 @@ def validate_ppr(core_network,
             # run the training..
             print("Train size:{}, method {}".format(j, "PPR"))
             print(vectors.shape, labels.shape)
-            rs = StratifiedShuffleSplit(n_splits=10,
-                                        test_size=0.5,
-                                        random_state=random_seed)
+            rs = StratifiedShuffleSplit(
+                n_splits=10, test_size=0.5, random_state=random_seed
+            )
 
             micros = []
             macros = []
@@ -118,8 +123,8 @@ def validate_ppr(core_network,
                 clf.fit(train_x, train_labels_first)
                 preds = clf.predict(test_x)
 
-                mi = f1_score(test_labels_second, preds, average='micro')
-                ma = f1_score(test_labels_second, preds, average='macro')
+                mi = f1_score(test_labels_second, preds, average="micro")
+                ma = f1_score(test_labels_second, preds, average="macro")
 
                 # being_predicted = np.unique(train_labels_first)
                 # tmp_lab = test_labels[:,being_predicted]
@@ -137,7 +142,7 @@ def validate_ppr(core_network,
                 "macro_F": np.mean(macros),
                 "setting": "PPR",
                 "dataset": dataset_name,
-                "time": np.mean(times)
+                "time": np.mean(times),
             }
             df = df.append(outarray, ignore_index=True)
 

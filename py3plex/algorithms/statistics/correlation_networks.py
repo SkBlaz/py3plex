@@ -1,8 +1,9 @@
 # implement scale free network estimation
 # do this according to the paper WCGA
 
-import numpy as np
 from collections import Counter
+
+import numpy as np
 from scipy import stats
 
 
@@ -19,37 +20,37 @@ def pick_threshold(matrix):
         key_counts = np.log(list(counts.keys()))
         counts = np.log(list(counts.values()))
         slope, intercept, r_value, p_value, std_err = stats.linregress(
-            key_counts, counts)
+            key_counts, counts
+        )
         if r_value > current_r_opt:
-            print("Updating R^2: {}".format(r_value))
+            print(f"Updating R^2: {r_value}")
             current_r_opt = r_value
         if r_value > 0.80:
             return j
     return current_r_opt
 
 
-def default_correlation_to_network(matrix,
-                                   input_type="matrix",
-                                   preprocess="standard"):
+def default_correlation_to_network(matrix, input_type="matrix", preprocess="standard"):
     if preprocess == "standard":
         matrix = (matrix - np.mean(matrix, axis=0)) / np.std(matrix, axis=0)
 
     optimal_threshold = pick_threshold(matrix)
-    print("Rsq threshold {}".format(optimal_threshold))
+    print(f"Rsq threshold {optimal_threshold}")
     matrix[matrix > optimal_threshold] = 1
     matrix[matrix < optimal_threshold] = 0
     return matrix
 
 
 if __name__ == "__main__":
-    from numpy import genfromtxt
     import argparse
+
+    from numpy import genfromtxt
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("--filename",
-                        default="/home/skblaz/Downloads/expression.tsv")
+    parser.add_argument("--filename", default="/home/skblaz/Downloads/expression.tsv")
     args = parser.parse_args()
     datta = args.filename
-    a = genfromtxt(datta, delimiter='\t', skip_header=4)
+    a = genfromtxt(datta, delimiter="\t", skip_header=4)
     a = np.nan_to_num(a)
     print("Read the data..")
     #    idx = np.random.randint(1000,size=5000)
