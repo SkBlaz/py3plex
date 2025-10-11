@@ -237,9 +237,21 @@ The repository uses `pytest` as its primary testing framework, with tests organi
 - **Test workflow** (`.github/workflows/tests.yml`): Tests on Python 3.8-3.11 with both full and minimal dependencies, includes timeout protection
 - **Code quality workflow** (`.github/workflows/code-quality.yml`): Ruff linting, Black formatting checks, Mypy type checking
 
-**Coverage status**: Current test coverage is approximately 15-20%. The modernization roadmap (see `STATUS.md`) targets 30% coverage in Phase 2, 50% in Phase 3, and 70% in Phase 4. Priority areas for expanded testing include algorithm correctness, edge case handling, and user-facing API stability.
+**Coverage status**: Current test coverage is approximately 15-20%. The modernization roadmap targets 30% coverage in Phase 2, 50% in Phase 3, and 70% in Phase 4. Priority areas for expanded testing include algorithm correctness, edge case handling, and user-facing API stability.
 
-**Code quality initiatives**: Phase 1A/1B improvements (documented in `IMPROVEMENTS_PHASE_1A.md` and `IMPROVEMENTS_PHASE_1B.md`) eliminated all bare except clauses, removed wildcard imports, added structured logging, and introduced modern packaging. Ongoing efforts focus on print-to-logging conversion (7% complete) and type hints (2.3% complete).
+**Code quality initiatives**: Recent improvements (Phase 1A/1B) eliminated all bare except clauses (50+ instances), removed all wildcard imports (9 instances), added structured logging infrastructure (`py3plex/logging_config.py`), and introduced modern packaging with `pyproject.toml` (PEP 517/518/621). The Python requirement was updated from 3.6+ to 3.8+. Ongoing efforts focus on print-to-logging conversion (7% complete, 20/286 statements) and type hints (2.3% complete, 3/128 modules).
+
+**Recent fixes and improvements**:
+- **Phase 1A**: Fixed 29 bare except clauses (58% of total), added logging infrastructure, updated Python requirement to 3.8+, started type hints in 2 modules, added build artifacts to .gitignore
+- **Phase 1B**: Fixed remaining 21 bare except clauses (100% total), removed all 9 wildcard imports, added modern packaging with pyproject.toml, converted 20 print statements to logging, all changes backward compatible with comprehensive test coverage
+- **Code Quality Review**: Enhanced README.md with installation and requirements, removed redundant testing content from various files, fixed ruff configuration deprecation warnings, added code-quality.yml CI workflow (ruff, black, mypy), fixed unused imports and variables in 10 Python source files
+- **Issue #19 Fix**: Corrected boolean logic in `py3plex/visualization/drawing_machinery.py` line 545 for edge rendering in multilayer networks. The fix changed `if not type(width) == list or not type(width) == tuple:` to `if not (type(width) == list or type(width) == tuple):` which now correctly preserves lists/tuples of edge widths instead of always wrapping them
+
+**Modernization roadmap**:
+- **Phase 1** (~80% complete): Fix bare except clauses ✅, convert print() to logging (in progress), remove wildcard imports ✅, update Python requirement ✅, set up pytest infrastructure (in progress), add type hints (in progress)
+- **Phase 2** (planned): Expand test coverage to 30%+, add custom exception types, refactor global state, update dependencies, add pre-commit hooks, set up CI linting ✅
+- **Phase 3** (planned): Complete type hint coverage, expand test coverage to 50%+, refactor large modules, add comprehensive docstrings, generate API documentation
+- **Phase 4** (planned): Full type hint coverage (100%), achieve 70%+ test coverage, performance optimization, comprehensive documentation and tutorials
 
 ## Documentation and Examples
 
@@ -273,9 +285,7 @@ Each example is self-contained, includes inline comments explaining key concepts
 **Recent changes**: Documentation was refined in 2025 to reduce verbosity and emphasize examples over lengthy explanations. The docs now serve as navigation aids pointing users to relevant example scripts.
 
 **Maintenance notes**: Documentation references key meta-documents:
-- `README.md`: High-level introduction, installation, quick start, citations
-- `STATUS.md`: Modernization roadmap, progress metrics, contributor guidelines
-- `TESTING.md`: Testing procedures, CI setup, development workflow
+- `README.md`: High-level introduction, installation, quick start, testing, development status, citations
 - `LLM.md` (this file): Comprehensive context for LLMs and maintainers - the anchor document
 
 ## For LLMs
@@ -394,10 +404,10 @@ Py3plex is designed with three core principles: **readability**, **modularity**,
 
 **Readability**: Code prioritizes clarity over cleverness. Algorithms are expressed as composable functions with descriptive names. The `multi_layer_network` class provides an intuitive API mirroring natural language (e.g., `add_layer()`, `aggregate_layers()`, `get_community()`). Documentation emphasizes conceptual explanations alongside technical specifications.
 
-**Modularity**: Each component (`core`, `algorithms`, `visualization`, `wrappers`) operates independently with minimal coupling. New algorithms can be added without modifying existing code. Visualization functions accept standard NetworkX graphs, enabling use outside Py3plex workflows. The library avoids global state (with a few legacy exceptions noted in `STATUS.md`) to support concurrent usage.
+**Modularity**: Each component (`core`, `algorithms`, `visualization`, `wrappers`) operates independently with minimal coupling. New algorithms can be added without modifying existing code. Visualization functions accept standard NetworkX graphs, enabling use outside Py3plex workflows. The library avoids global state (with a few legacy exceptions being addressed in ongoing modernization efforts) to support concurrent usage.
 
 **Interoperability**: The library embraces NetworkX as the ecosystem standard, exposing `.core_network` for direct access. Input/output functions support common formats (GraphML, GEXF, CSV) used by other tools (Gephi, Cytoscape, igraph). Computed metrics return standard Python types (dicts, lists, DataFrames) for easy integration with pandas, scikit-learn, and plotting libraries.
 
-The goal is to balance **usability with analytical depth**—enabling researchers to explore multilayer network properties quickly through high-level functions while allowing advanced users to extend or customize functionality through low-level access to underlying data structures. The ongoing modernization effort (Phases 1-4 documented in `STATUS.md`) aims to bring the codebase to contemporary Python standards without sacrificing backward compatibility or breaking existing workflows.
+The goal is to balance **usability with analytical depth**—enabling researchers to explore multilayer network properties quickly through high-level functions while allowing advanced users to extend or customize functionality through low-level access to underlying data structures. The ongoing modernization effort (Phases 1-4 as described in the "Tests and Quality Assurance" section above) aims to bring the codebase to contemporary Python standards without sacrificing backward compatibility or breaking existing workflows.
 
 Py3plex treats heterogeneous networks as first-class objects, not afterthoughts. This philosophical commitment distinguishes it from general-purpose graph libraries and makes it a natural choice for complex network analysis in research and applied settings.
