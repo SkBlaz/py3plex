@@ -24,7 +24,7 @@ This project is actively being modernized! See [STATUS.md](./STATUS.md) for curr
 
 **Current Grade**: B- (improved from C+) | **Phase 1**: ~80% complete
 
-For detailed information, see [REVIEW_SUMMARY.md](./REVIEW_SUMMARY.md) and [REPOSITORY_REVIEW.md](./REPOSITORY_REVIEW.md).
+For detailed information, see [IMPROVEMENTS_PHASE_1A.md](./IMPROVEMENTS_PHASE_1A.md) and [IMPROVEMENTS_PHASE_1B.md](./IMPROVEMENTS_PHASE_1B.md) for completed work.
 
 ### Contributions
 If you are interested in contributing please:
