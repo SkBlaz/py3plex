@@ -76,8 +76,6 @@ Recent improvements include:
 - Refactor global state
 - Update dependencies
 - Add pre-commit hooks
-- ✅ Set up CI linting (completed)
-- ✅ Expand type hints (65.4% complete)
 - Complete bare except and wildcard import cleanup
 - Complete print→logging conversion
 
