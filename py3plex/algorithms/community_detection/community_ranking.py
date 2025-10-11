@@ -1,6 +1,7 @@
 # a framework for community-based node ranking
 
 import multiprocessing as mp
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 from scipy.cluster.hierarchy import fcluster, linkage
@@ -15,7 +16,7 @@ from py3plex.core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
 global _RANK_GRAPH
 
 
-def page_rank_kernel(index_row):
+def page_rank_kernel(index_row: int) -> Tuple[int, np.ndarray]:
 
     # call as results = p.map(pr_kernel, batch)
     pr = sparse_page_rank(
@@ -37,7 +38,7 @@ def page_rank_kernel(index_row):
         return (index_row, np.zeros(_RANK_GRAPH.shape[1]))
 
 
-def create_tree(centers):
+def create_tree(centers: np.ndarray) -> Dict[int, Dict[str, List]]:
     clusters = {}
     to_merge = linkage(centers, method="single")
     for i, merge in enumerate(to_merge):
@@ -58,7 +59,7 @@ def create_tree(centers):
     return clusters
 
 
-def return_infomap_communities(network):
+def return_infomap_communities(network: Any) -> List[List[int]]:
 
     infomapWrapper = infomap.Infomap("--two-level --silent")
 

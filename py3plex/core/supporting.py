@@ -2,9 +2,12 @@
 
 import itertools
 from collections import defaultdict
+from typing import Any, Dict, List, Optional
+
+import networkx as nx
 
 
-def split_to_layers(input_network):
+def split_to_layers(input_network: nx.Graph) -> Dict[Any, nx.Graph]:
 
     layer_info = defaultdict(list)
     subgraph_dictionary = {}
@@ -23,7 +26,7 @@ def split_to_layers(input_network):
     return subgraph_dictionary
 
 
-def add_mpx_edges(input_network):
+def add_mpx_edges(input_network: nx.Graph) -> nx.Graph:
 
     _layerwise_nodes = split_to_layers(input_network)
 
@@ -46,7 +49,9 @@ def add_mpx_edges(input_network):
     return input_network
 
 
-def parse_gaf_to_uniprot_GO(gaf_mappings, filter_terms=None):
+def parse_gaf_to_uniprot_GO(
+    gaf_mappings: str, filter_terms: Optional[int] = None
+) -> Dict[str, List[str]]:
     uniGO = defaultdict(list)
     with open(gaf_mappings) as im:
         for line in im:
