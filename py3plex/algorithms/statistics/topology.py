@@ -99,7 +99,7 @@ def plot_power_law(
     # print ("n: ",results.n)
 
     logger.info("Fixed xmax: %s", results.fixed_xmax)
-    logger.info("Distribution compare (truncated_power_law vs lognormal): %s", 
+    logger.info("Distribution compare (truncated_power_law vs lognormal): %s",
                 results.distribution_compare("truncated_power_law", "lognormal"))
     logger.info("Distribution compare (lognormal vs power_law): %s",
                 results.distribution_compare("lognormal", "power_law"))

@@ -6,13 +6,14 @@ from typing import Any, Dict, List, Tuple
 import numpy as np
 from scipy.cluster.hierarchy import fcluster, linkage
 
-from ...logging_config import get_logger
 from py3plex.algorithms.node_ranking.node_ranking import (
     modularity,
     sparse_page_rank,
     stochastic_normalization,
 )
 from py3plex.core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
+
+from ...logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -6,8 +6,9 @@ from typing import Any, Dict, Optional
 import networkx as nx
 import numpy as np
 
-from ..logging_config import get_logger
 from py3plex.core.nx_compat import nx_info
+
+from ..logging_config import get_logger
 
 logger = get_logger(__name__)
 

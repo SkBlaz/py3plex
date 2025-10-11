@@ -9,9 +9,9 @@ from typing import Any, List, Optional
 from sklearn import linear_model
 from sklearn.multiclass import OneVsRestClassifier
 
-from ..logging_config import get_logger
 from py3plex.core.nx_compat import nx_info
 
+from ..logging_config import get_logger
 from .benchmark_nodes import benchmark_node_classification, graph, self
 
 logger = get_logger(__name__)

@@ -8,8 +8,9 @@ from networkx.drawing.layout import (
     spring_layout,
 )
 
-from ..logging_config import get_logger
 from py3plex.core.nx_compat import is_string_like
+
+from ..logging_config import get_logger
 
 logger = get_logger(__name__)
 
