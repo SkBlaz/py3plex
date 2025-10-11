@@ -9,3 +9,6 @@ make html;
 
 ## copy to the core folder
 cp -rvf _build/html/* ../docs/
+
+## create .nojekyll file to prevent GitHub Pages from ignoring underscore directories
+touch ../docs/.nojekyll
