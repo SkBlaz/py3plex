@@ -1,6 +1,8 @@
 # tutorial
 
 # import bayesiantests as bt
+from typing import Any, List, Optional, Tuple
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -8,13 +10,27 @@ from .bayesiantests import hierarchical, hierarchical_MC, plot_posterior
 
 
 def generate_bayesian_diagram(
-    result_matrices,
-    algo_names=None,
-    rope=0.01,
-    rho=1 / 5,
-    show_diagram=True,
-    save_diagram=None,
-):
+    result_matrices: np.ndarray,
+    algo_names: Optional[List[str]] = None,
+    rope: float = 0.01,
+    rho: float = 1 / 5,
+    show_diagram: bool = True,
+    save_diagram: Optional[str] = None,
+) -> Tuple[float, float, float]:
+    """
+    Generate Bayesian comparison diagram for algorithm results.
+
+    Args:
+        result_matrices: Results matrices from cross-validation
+        algo_names: Names of algorithms being compared
+        rope: Region of practical equivalence (default: 0.01)
+        rho: Correlation parameter (default: 1/5)
+        show_diagram: Whether to display the diagram (default: True)
+        save_diagram: Path to save diagram (optional)
+
+    Returns:
+        Tuple of (left probability, equivalence probability, right probability)
+    """
 
     # rope=0.01 #we consider two classifers equivalent when the difference of accuracy is less that 1%
     if algo_names is None:
