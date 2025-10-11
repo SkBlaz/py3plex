@@ -239,19 +239,20 @@ The repository uses `pytest` as its primary testing framework, with tests organi
 
 **Coverage status**: Current test coverage is approximately 15-20%. The modernization roadmap targets 30% coverage in Phase 2, 50% in Phase 3, and 70% in Phase 4. Priority areas for expanded testing include algorithm correctness, edge case handling, and user-facing API stability.
 
-**Code quality initiatives**: Recent improvements (Phase 1A/1B/2A) significantly improved code quality through bare except clause reduction (50+ to 23 instances), wildcard import reduction (9 to 1 instance), structured logging infrastructure (`py3plex/logging_config.py`), and modern packaging with `pyproject.toml` (PEP 517/518/621). The Python requirement was updated from 3.6+ to 3.8+. Ongoing efforts focus on print-to-logging conversion (15% complete, 44/286 statements) and type hints (65.4% complete, 70/107 maintainable modules).
+**Code quality initiatives**: Recent improvements (Phase 1A/1B/2A/2B) significantly improved code quality through complete bare except clause elimination (50+ to 0 instances), wildcard import reduction (9 to 1 instance), structured logging infrastructure (`py3plex/logging_config.py`), and modern packaging with `pyproject.toml` (PEP 517/518/621). The Python requirement was updated from 3.6+ to 3.8+. Ongoing efforts focus on print-to-logging conversion (15% complete, 44/286 statements) and type hints (65.4% complete, 70/107 maintainable modules).
 
 **Recent fixes and improvements**:
 - **Phase 1A**: Fixed 29 bare except clauses (58% of total), added logging infrastructure, updated Python requirement to 3.8+, started type hints in 2 modules, added build artifacts to .gitignore
 - **Phase 1B**: Fixed 21 additional bare except clauses (reducing total from 50 to 23), removed 8 wildcard imports (reducing from 9 to 1), added modern packaging with pyproject.toml, converted 20 print statements to logging, all changes backward compatible with comprehensive test coverage
 - **Phase 2A**: Added type hints to 68 additional modules across core, visualization, algorithms, and wrappers. Type hint coverage increased from 2.3% to 65.4% (70/107 maintainable modules). All changes maintain backward compatibility with comprehensive docstrings
+- **Phase 2B**: Completed bare except clause cleanup - eliminated all remaining 23 instances (100% completion). Fixed 6 modules: embedding_tools.py, supporting.py, converters.py, decomposition.py, drawing_machinery.py, and centrality.py (15 instances). All bare except clauses replaced with specific exception types (ImportError, IndexError, KeyError, TypeError, np.linalg.LinAlgError, nx.NetworkXError, RuntimeError, ValueError, MemoryError) while preserving fallback behaviors
 - **Code Quality Review**: Enhanced README.md with installation and requirements, removed redundant testing content from various files, fixed ruff configuration deprecation warnings, added code-quality.yml CI workflow (ruff, black, mypy), fixed unused imports and variables in 10 Python source files
 - **Issue #19 Fix**: Corrected boolean logic in `py3plex/visualization/drawing_machinery.py` line 545 for edge rendering in multilayer networks. The fix changed `if not type(width) == list or not type(width) == tuple:` to `if not (type(width) == list or type(width) == tuple):` which now correctly preserves lists/tuples of edge widths instead of always wrapping them
 
 **Modernization roadmap**:
-- **Phase 1** (~85% complete): Fix bare except clauses (in progress: 50→23), convert print() to logging (in progress: 15% complete), remove wildcard imports (in progress: 9→1), update Python requirement ✅, set up pytest infrastructure ✅, add type hints (65.4% complete)
-- **Phase 2** (in progress): Expand test coverage to 30%+, add custom exception types, refactor global state, update dependencies, add pre-commit hooks, set up CI linting ✅, expand type hints ✅
-- **Phase 3** (planned): Complete bare except and wildcard import cleanup, expand test coverage to 50%+, refactor large modules, add comprehensive docstrings, generate API documentation
+- **Phase 1** (✅ complete): Fix bare except clauses ✅, convert print() to logging (in progress: 15% complete), remove wildcard imports (in progress: 9→1), update Python requirement ✅, set up pytest infrastructure ✅, add type hints (65.4% complete)
+- **Phase 2** (in progress): Expand test coverage to 30%+, add custom exception types, refactor global state, update dependencies, add pre-commit hooks, set up CI linting ✅, expand type hints ✅, complete bare except cleanup ✅
+- **Phase 3** (planned): Complete wildcard import cleanup, expand test coverage to 50%+, refactor large modules, add comprehensive docstrings, generate API documentation
 - **Phase 4** (planned): Full type hint coverage (100%), achieve 70%+ test coverage, performance optimization, comprehensive documentation and tutorials
 
 ## Documentation and Examples
