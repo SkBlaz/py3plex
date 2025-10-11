@@ -1,5 +1,4 @@
 # wrapper for the C++ version of the Node2Vec algorithm
-import networkx as nx
 import ast
 from subprocess import call
 import os

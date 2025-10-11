@@ -64,7 +64,7 @@ See [IMPROVEMENTS_PHASE_1B.md](./IMPROVEMENTS_PHASE_1B.md) for details:
 - [ ] Refactor global state in `enrichment_modules.py`
 - [ ] Update dependency versions
 - [ ] Add pre-commit hooks
-- [ ] Set up CI linting
+- [x] Set up CI linting ✅ (code-quality.yml workflow added)
 
 ### Phase 3: Modernization (Month 3) - Not Started
 - [ ] Complete type hint coverage

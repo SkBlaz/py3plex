@@ -309,7 +309,7 @@ def draw_multiedges(network_list,
                 else:
                     pass
 
-            except Exception as err:
+            except Exception:
                 pass
 
 
@@ -482,7 +482,7 @@ def hairball_plot(
         else:
             # color_list contains actual color values
             cols = color_list            
-    except Exception as es:
+    except Exception:
         logger.info("Using default palette")
         cols = colors.colors_default            
     id_col_map = {}

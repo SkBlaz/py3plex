@@ -1,6 +1,5 @@
 # a framework for community-based node ranking
 
-import networkx as nx
 import numpy as np
 import multiprocessing as mp
 from py3plex.algorithms.node_ranking.node_ranking import sparse_page_rank, modularity, stochastic_normalization

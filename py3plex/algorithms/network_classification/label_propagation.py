@@ -6,7 +6,6 @@ from sklearn.model_selection import ShuffleSplit
 import numpy as np
 import scipy.sparse as sp
 import time
-import multiprocessing as mp  # initialize the MP part
 from sklearn.metrics import f1_score
 import numpy as np
 import scipy.sparse as sp

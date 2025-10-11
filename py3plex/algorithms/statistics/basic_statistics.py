@@ -1,6 +1,6 @@
 # Compute many possible network statistics
 
-from typing import Dict, Any, Optional, Union
+from typing import Dict, Any, Optional
 import networkx as nx
 import pandas as pd
 import numpy as np

@@ -104,7 +104,7 @@ def prepare_for_visualization(
     for node in multinet.nodes(data=True):
         try:
             layers[node[0][1]].append(node[0])
-        except Exception as err:
+        except Exception:
             pass
 
     networks = {
@@ -132,7 +132,7 @@ def prepare_for_visualization(
         try:
             if edge[0][1] != edge[1][1]:
                 multiedges[edge[2]['type']].append(edge)
-        except Exception as err:
+        except Exception:
             multiedges['default_inter'].append(edge)
             pass
 

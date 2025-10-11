@@ -128,7 +128,7 @@ def louvain_communities(network, output="mapping"):
             G.add_edge(edge[0], edge[1])
         network = G
 
-    except Exception as es:
+    except Exception:
         pass ## nx input directly.
 
     partition = best_partition(network)

@@ -7,7 +7,6 @@ from . import parsers
 from . import converters
 from .HINMINE.IO import load_hinmine_object  # parse the graph
 from .HINMINE.decomposition import hinmine_decompose, hinmine_get_cycles  # decompose the graph
-from .supporting import split_to_layers as supporting_split_to_layers
 from py3plex.logging_config import get_logger
 
 logger = get_logger(__name__)

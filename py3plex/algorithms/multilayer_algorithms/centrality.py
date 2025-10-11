@@ -14,9 +14,8 @@ import numpy as np
 import networkx as nx
 from collections import defaultdict
 import scipy.sparse as sp
-from scipy.sparse.linalg import eigsh, eigs
-from scipy.linalg import norm
-from scipy.sparse import diags, identity
+from scipy.sparse.linalg import eigs
+from scipy.sparse import identity
 
 
 class MultilayerCentrality:

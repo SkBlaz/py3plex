@@ -130,16 +130,22 @@ pip install numpy scipy networkx matplotlib plotnine cython tqdm gensim scikit-l
 
 ### GitHub Actions (Automated)
 
-The repository is configured with GitHub Actions CI that automatically runs tests on:
-- Every push to `main`, `master`, or `develop` branches
-- Every pull request to these branches
-- Multiple Python versions (3.8, 3.9, 3.10, 3.11)
+The repository uses GitHub Actions for automated testing and code quality checks:
 
-The CI workflow:
-1. Installs Python and system dependencies
-2. Installs package dependencies (with graceful handling of optional deps)
-3. Runs the full test suite using `python run_tests.py`
-4. Reports results for each Python version
+#### Test Workflow
+Runs on every push and pull request to `main`, `master`, or `develop` branches:
+- **Multiple Python versions**: Tests on Python 3.8, 3.9, 3.10, and 3.11
+- **Full test suite**: Runs all tests using `python run_tests.py`
+- **Minimal dependencies test**: Ensures core functionality works with minimal deps
+- **Test timeout protection**: Prevents hanging tests
+
+#### Code Quality Workflow
+Automated code quality checks include:
+- **Ruff linting**: Fast Python linter checking PEP 8 compliance and common issues
+- **Black formatting**: Ensures consistent code formatting
+- **Mypy type checking**: Static type checking (informational, non-blocking)
+
+View CI status: [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 
 ### Manual CI Setup
 
