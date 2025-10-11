@@ -110,7 +110,9 @@ def n2v_embedding(
     number_of_edges = len(G.edges())
 
     if verbose:
-        logger.info("Graph has %d edges and %d nodes.", number_of_edges, number_of_nodes)
+        logger.info(
+            "Graph has %d edges and %d nodes.", number_of_edges, number_of_nodes
+        )
 
     f = open(tmp_graph, "w+")
 

@@ -77,13 +77,13 @@ def plot_power_law(
         "percent of non PL coverage: %s",
         len([x for x in degree_sequence if x < results.xmin])
         * 100
-        / len(degree_sequence)
+        / len(degree_sequence),
     )
     logger.info(
         "Percentage of PL coverage: %s",
         len([x for x in degree_sequence if x > results.xmin])
         * 100
-        / len(degree_sequence)
+        / len(degree_sequence),
     )
 
     try:
@@ -99,21 +99,33 @@ def plot_power_law(
     # print ("n: ",results.n)
 
     logger.info("Fixed xmax: %s", results.fixed_xmax)
-    logger.info("Distribution compare (truncated_power_law vs lognormal): %s",
-                results.distribution_compare("truncated_power_law", "lognormal"))
-    logger.info("Distribution compare (lognormal vs power_law): %s",
-                results.distribution_compare("lognormal", "power_law"))
-    logger.info("Distribution compare (truncated_power_law vs power_law): %s",
-                results.distribution_compare("truncated_power_law", "power_law"))
+    logger.info(
+        "Distribution compare (truncated_power_law vs lognormal): %s",
+        results.distribution_compare("truncated_power_law", "lognormal"),
+    )
+    logger.info(
+        "Distribution compare (lognormal vs power_law): %s",
+        results.distribution_compare("lognormal", "power_law"),
+    )
+    logger.info(
+        "Distribution compare (truncated_power_law vs power_law): %s",
+        results.distribution_compare("truncated_power_law", "power_law"),
+    )
 
     logger.info("............")
 
-    logger.info("Distribution compare (exponential vs lognormal): %s",
-                results.distribution_compare("exponential", "lognormal"))
-    logger.info("Distribution compare (exponential vs truncated_power_law): %s",
-                results.distribution_compare("exponential", "truncated_power_law"))
-    logger.info("Distribution compare (exponential vs power_law): %s",
-                results.distribution_compare("exponential", "power_law"))
+    logger.info(
+        "Distribution compare (exponential vs lognormal): %s",
+        results.distribution_compare("exponential", "lognormal"),
+    )
+    logger.info(
+        "Distribution compare (exponential vs truncated_power_law): %s",
+        results.distribution_compare("exponential", "truncated_power_law"),
+    )
+    logger.info(
+        "Distribution compare (exponential vs power_law): %s",
+        results.distribution_compare("exponential", "power_law"),
+    )
     plt.legend(numpoints=1, loc="lower left", bbox_to_anchor=(0.05, 0))
     vals = ax1.get_yticks()
     vals = [float(round(x * len(degree_sequence), 1)) for x in vals]

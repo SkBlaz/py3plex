@@ -57,7 +57,7 @@ def diagram(
         if the_index is None:
             logger.warning(
                 "%s not found among the results. We will draw Nemenyi style diagram.",
-                the_algorithm_candidate
+                the_algorithm_candidate,
             )
     inf = float("inf")
     deltas = (

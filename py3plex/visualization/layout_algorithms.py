@@ -70,14 +70,18 @@ def compute_force_directed_layout(
                 pos = nx.spring_layout(g, **layout_parameters)
             else:
                 pos = nx.spring_layout(g)
-            logger.warning("Using standard layout algorithm, fa2 not present on the system.")
+            logger.warning(
+                "Using standard layout algorithm, fa2 not present on the system."
+            )
 
     else:
         if layout_parameters is not None:
             pos = nx.spring_layout(g, **layout_parameters)
         else:
             pos = nx.spring_layout(g)
-        logger.warning("Using standard layout algorithm, fa2 not present on the system.")
+        logger.warning(
+            "Using standard layout algorithm, fa2 not present on the system."
+        )
 
     # return positions
 

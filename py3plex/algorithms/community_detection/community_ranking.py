@@ -73,8 +73,7 @@ def return_infomap_communities(network: Any) -> List[List[int]]:
     infomapWrapper.run()
     tree = infomapWrapper.tree
     logger.info(
-        "Found %d modules with codelength: %f",
-        tree.numTopModules(), tree.codelength()
+        "Found %d modules with codelength: %f", tree.numTopModules(), tree.codelength()
     )
     logger.info("#node module")
     part = defaultdict(list)

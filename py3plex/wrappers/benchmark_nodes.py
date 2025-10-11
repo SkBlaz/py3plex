@@ -243,7 +243,9 @@ def main():
 
             X_train = X[:training_size, :]
             y_train_ = y[:training_size]
-            logger.debug("X_train shape: %s, y_train shape: %s", X_train.shape, y_train_.shape)
+            logger.debug(
+                "X_train shape: %s, y_train shape: %s", X_train.shape, y_train_.shape
+            )
             y_train = [[] for x in range(y_train_.shape[0])]
 
             cy = y_train_.tocoo()
