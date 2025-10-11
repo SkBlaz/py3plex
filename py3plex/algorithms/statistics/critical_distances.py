@@ -9,6 +9,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import font_manager, rc
 
+from ...logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 def center(width, n):
     """
@@ -51,8 +55,9 @@ def diagram(
                 the_index = i
                 break
         if the_index is None:
-            print(
-                f"{the_algorithm_candidate} not found among the results. We will draw Nemenyi style diagram."
+            logger.warning(
+                "%s not found among the results. We will draw Nemenyi style diagram.",
+                the_algorithm_candidate,
             )
     inf = float("inf")
     deltas = (
@@ -256,7 +261,7 @@ def diagram(
         fig.tight_layout()
         fig.savefig(output_figure_file, bbox_inches="tight", pad_inches=0, dpi=1200)
         plt.clf()
-        print("Plot saved to", output_figure_file)
+        logger.info("Plot saved to %s", output_figure_file)
     else:
         plt.show()
 
@@ -345,7 +350,7 @@ def plot_critical_distance(
         a = dict(v)
         sorted_d = sorted(a.items(), key=operator.itemgetter(1))
         for en, j in enumerate(sorted_d):
-            print(en, j[0])
+            logger.debug("Rank %d: %s", en, j[0])
             clf_ranks[j[0]].append(len(sorted_d) - en)
 
     fname[groupby[0]].nunique()

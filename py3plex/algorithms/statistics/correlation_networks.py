@@ -6,6 +6,10 @@ from collections import Counter
 import numpy as np
 from scipy import stats
 
+from ...logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 def pick_threshold(matrix: np.ndarray) -> float:
     """
@@ -32,7 +36,7 @@ def pick_threshold(matrix: np.ndarray) -> float:
             key_counts, counts
         )
         if r_value > current_r_opt:
-            print(f"Updating R^2: {r_value}")
+            logger.debug("Updating R^2: %s", r_value)
             current_r_opt = r_value
         if r_value > 0.80:
             return j
@@ -57,7 +61,7 @@ def default_correlation_to_network(
         matrix = (matrix - np.mean(matrix, axis=0)) / np.std(matrix, axis=0)
 
     optimal_threshold = pick_threshold(matrix)
-    print(f"Rsq threshold {optimal_threshold}")
+    logger.info("Rsq threshold %s", optimal_threshold)
     matrix[matrix > optimal_threshold] = 1
     matrix[matrix < optimal_threshold] = 0
     return matrix
@@ -74,7 +78,7 @@ if __name__ == "__main__":
     datta = args.filename
     a = genfromtxt(datta, delimiter="\t", skip_header=4)
     a = np.nan_to_num(a)
-    print("Read the data..")
+    logger.info("Read the data..")
     #    idx = np.random.randint(1000,size=5000)
     #    a = a[:,idx]
-    print(default_correlation_to_network(a).shape)
+    logger.info("Network shape: %s", default_correlation_to_network(a).shape)

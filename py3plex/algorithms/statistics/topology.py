@@ -5,7 +5,10 @@ from typing import Any, List, Tuple
 import matplotlib.pyplot as plt
 import networkx as nx
 
+from ...logging_config import get_logger
 from .powerlaw import Fit
+
+logger = get_logger(__name__)
 
 
 def basic_pl_stats(degree_sequence: List[int]) -> Tuple[float, float]:
@@ -66,23 +69,21 @@ def plot_power_law(
         linewidth=0.5, ax=fig1, color="red", linestyle="-", label="Exponential"
     )
 
-    print("ALPHA: ", results.alpha)
-    print("SIGMA: ", results.sigma)
-    print("xmin: ", results.xmin)
+    logger.info("ALPHA: %s", results.alpha)
+    logger.info("SIGMA: %s", results.sigma)
+    logger.info("xmin: %s", results.xmin)
 
-    print(
-        "percent of non PL coverage: {}".format(
-            len([x for x in degree_sequence if x < results.xmin])
-            * 100
-            / len(degree_sequence)
-        )
+    logger.info(
+        "percent of non PL coverage: %s",
+        len([x for x in degree_sequence if x < results.xmin])
+        * 100
+        / len(degree_sequence),
     )
-    print(
-        "Percentage of PL coverage: {}".format(
-            len([x for x in degree_sequence if x > results.xmin])
-            * 100
-            / len(degree_sequence)
-        )
+    logger.info(
+        "Percentage of PL coverage: %s",
+        len([x for x in degree_sequence if x > results.xmin])
+        * 100
+        / len(degree_sequence),
     )
 
     try:
@@ -97,16 +98,34 @@ def plot_power_law(
     # print ("Xm: ",results.fitting_cdf)
     # print ("n: ",results.n)
 
-    print("Fixed xmax: ", results.fixed_xmax)
-    print(results.distribution_compare("truncated_power_law", "lognormal"))
-    print(results.distribution_compare("lognormal", "power_law"))
-    print(results.distribution_compare("truncated_power_law", "power_law"))
+    logger.info("Fixed xmax: %s", results.fixed_xmax)
+    logger.info(
+        "Distribution compare (truncated_power_law vs lognormal): %s",
+        results.distribution_compare("truncated_power_law", "lognormal"),
+    )
+    logger.info(
+        "Distribution compare (lognormal vs power_law): %s",
+        results.distribution_compare("lognormal", "power_law"),
+    )
+    logger.info(
+        "Distribution compare (truncated_power_law vs power_law): %s",
+        results.distribution_compare("truncated_power_law", "power_law"),
+    )
 
-    print("............")
+    logger.info("............")
 
-    print(results.distribution_compare("exponential", "lognormal"))
-    print(results.distribution_compare("exponential", "truncated_power_law"))
-    print(results.distribution_compare("exponential", "power_law"))
+    logger.info(
+        "Distribution compare (exponential vs lognormal): %s",
+        results.distribution_compare("exponential", "lognormal"),
+    )
+    logger.info(
+        "Distribution compare (exponential vs truncated_power_law): %s",
+        results.distribution_compare("exponential", "truncated_power_law"),
+    )
+    logger.info(
+        "Distribution compare (exponential vs power_law): %s",
+        results.distribution_compare("exponential", "power_law"),
+    )
     plt.legend(numpoints=1, loc="lower left", bbox_to_anchor=(0.05, 0))
     vals = ax1.get_yticks()
     vals = [float(round(x * len(degree_sequence), 1)) for x in vals]

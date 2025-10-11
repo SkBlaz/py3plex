@@ -10,6 +10,10 @@ from networkx.drawing.layout import (
 
 from py3plex.core.nx_compat import is_string_like
 
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
+
 __all__ = [
     "draw",
     "draw_networkx",
@@ -90,7 +94,7 @@ def draw(G, pos=None, ax=None, **kwds):
     except ImportError:
         raise ImportError("Matplotlib required for draw()")
     except RuntimeError:
-        print("Matplotlib unable to open display")
+        logger.error("Matplotlib unable to open display")
         raise
 
     if ax is None:
@@ -255,7 +259,7 @@ def draw_networkx(G, pos=None, arrows=True, with_labels=True, **kwds):
     except ImportError:
         raise ImportError("Matplotlib required for draw()")
     except RuntimeError:
-        print("Matplotlib unable to open display")
+        logger.error("Matplotlib unable to open display")
         raise
 
     if pos is None:
@@ -369,7 +373,7 @@ def draw_networkx_nodes(
     except ImportError:
         raise ImportError("Matplotlib required for draw()")
     except RuntimeError:
-        print("Matplotlib unable to open display")
+        logger.error("Matplotlib unable to open display")
         raise
 
     if ax is None:
@@ -538,7 +542,7 @@ def draw_networkx_edges(
     except ImportError:
         raise ImportError("Matplotlib required for draw()")
     except RuntimeError:
-        print("Matplotlib unable to open display")
+        logger.error("Matplotlib unable to open display")
         raise
 
     if ax is None:
@@ -785,7 +789,7 @@ def draw_networkx_labels(
     except ImportError:
         raise ImportError("Matplotlib required for draw()")
     except RuntimeError:
-        print("Matplotlib unable to open display")
+        logger.error("Matplotlib unable to open display")
         raise
 
     if ax is None:
@@ -908,7 +912,7 @@ def draw_networkx_edge_labels(
     except ImportError:
         raise ImportError("Matplotlib required for draw()")
     except RuntimeError:
-        print("Matplotlib unable to open display")
+        logger.error("Matplotlib unable to open display")
         raise
 
     if ax is None:
