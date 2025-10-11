@@ -59,7 +59,7 @@ pytest --cov=py3plex --cov-report=html
 
 ### Development Status
 
-**Current Status**: Phase 2 In Progress (Phase 1 ~85% complete)
+**Current Status**: Phase 2 In Progress (~75% complete)
 
 Recent improvements include:
 - ✅ Modern packaging added (pyproject.toml)
@@ -67,13 +67,13 @@ Recent improvements include:
 - ✅ Python requirement updated to 3.8+
 - ✅ Bare except clauses: eliminated (50+ → 0, 100% reduction)
 - 🔄 Wildcard imports: reduced from 9 → 1 (89% reduction)
-- 🔄 Print → Logging conversion: 15% complete (44/286)
+- 🔄 Print → Logging conversion: 62% complete (143/229 statements)
 - ✅ Type hints: 65.4% complete (70/107 maintainable modules)
 
-**Next Steps (Phase 2)**:
-- Expand test coverage to 30%+
-- Refactor global state
-- Complete print→logging conversion
+**Ongoing Phase 2 Tasks**:
+- Expand test coverage (currently 15-20%, targeting 30%+)
+- Complete print→logging conversion (62% done)
+- Refactor global state (limited to 2 instances in test code)
 
 For comprehensive context for LLMs and maintainers, see [LLM.md](./LLM.md).
 
