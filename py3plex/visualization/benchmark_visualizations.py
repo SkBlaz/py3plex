@@ -5,6 +5,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
+
 sns.set_style("whitegrid")
 
 palette = "Set3"
@@ -45,9 +49,9 @@ cnames = ["percent_train", "micro_F", "macro_F", "setting", "dataset", "time"]
 def plot_core_macro_box(fname):
 
     fnamex = pd.read_csv(fname, sep=" ")
-    print(fnamex)
+    logger.debug("DataFrame loaded:\n%s", fnamex)
     fnamex.columns = cnames
-    print(fnamex.head())
+    logger.debug("DataFrame head:\n%s", fnamex.head())
 
     sns.boxplot("percent_train", "macro_F", hue="setting", data=fnamex)
     plt.show()
@@ -64,7 +68,7 @@ def plot_core_micro_grid(fname):
 
 
 def plot_core_macro_gg(fnamex):
-    print(fnamex.columns)
+    logger.debug("DataFrame columns: %s", fnamex.columns)
     fx = fnamex.groupby(["setting"])["macro_F"].mean().sort_values().index.values
     g = sns.FacetGrid(fnamex, col="dataset", hue="setting", col_wrap=3)
     g = g.map(
@@ -84,7 +88,7 @@ def plot_core_macro_gg(fnamex):
 def plot_core_micro_gg(fnamex):
 
     fx = fnamex.groupby(["setting"])["micro_F"].mean().sort_values().index.values
-    print(fnamex.columns)
+    logger.debug("DataFrame columns: %s", fnamex.columns)
     g = sns.FacetGrid(fnamex, col="dataset", hue="setting", col_wrap=3)
     g = g.map(
         plt.plot, "percent_train", "micro_F", marker="o", linewidth=1
@@ -124,7 +128,7 @@ def plot_core_variability(fname):
 def plot_core_time(fnamex):
 
     fnamex.columns = cnames
-    print(fnamex.head())
+    logger.debug("DataFrame head:\n%s", fnamex.head())
     sns.boxplot("setting", "time", data=fnamex)
     plt.show()
     return 1
@@ -151,10 +155,10 @@ def plot_critical_distance(fname, num_algo=14):
         a = dict(v)
         sorted_d = sorted(a.items(), key=operator.itemgetter(1))
         for en, j in enumerate(sorted_d):
-            print(en, j[0])
+            logger.debug("Rank %d: %s", en, j[0])
             clf_ranks[j[0]].append(len(sorted_d) - en)
 
-    print(clf_ranks)
+    logger.info("Classifier ranks: %s", clf_ranks)
     clf_score = {k: np.mean(v) for k, v in clf_ranks.items()}
     names = list(clf_score.keys())
     avranks = list(clf_score.values())
@@ -174,10 +178,10 @@ def plot_critical_distance(fname, num_algo=14):
         a = dict(v)
         sorted_d = sorted(a.items(), key=operator.itemgetter(1))
         for en, j in enumerate(sorted_d):
-            print(en, j[0])
+            logger.debug("Rank %d: %s", en, j[0])
             clf_ranks[j[0]].append(len(sorted_d) - en)
 
-    print(clf_ranks)
+    logger.info("Classifier ranks: %s", clf_ranks)
     clf_score = {k: np.mean(v) for k, v in clf_ranks.items()}
     names = list(clf_score.keys())
     avranks = list(clf_score.values())
@@ -198,10 +202,10 @@ def plot_critical_distance(fname, num_algo=14):
         a = dict(v)
         sorted_d = sorted(a.items(), key=operator.itemgetter(1))
         for en, j in enumerate(sorted_d):
-            print(en, j[0])
+            logger.debug("Rank %d: %s", en, j[0])
             clf_ranks[j[0]].append(len(sorted_d) - en)
 
-    print(clf_ranks)
+    logger.info("Classifier ranks: %s", clf_ranks)
     clf_score = {k: np.mean(v) for k, v in clf_ranks.items()}
     names = list(clf_score.keys())
     avranks = list(clf_score.values())
@@ -230,7 +234,7 @@ def plot_mean_times(fn):
 
 def plot_robustness(infile):
 
-    print(infile.head())
+    logger.debug("Input DataFrame head:\n%s", infile.head())
     #    infile['percent_train'] = pd.to_numeric(infile['percent_train'])
     infile = infile[infile["percent_train"] < 0.6]
     p1 = sns.boxplot("percent_train", "macro_F", data=infile)
