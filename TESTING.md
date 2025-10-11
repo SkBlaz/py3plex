@@ -140,10 +140,12 @@ Runs on every push and pull request to `main`, `master`, or `develop` branches:
 - **Test timeout protection**: Prevents hanging tests
 
 #### Code Quality Workflow
-Automated code quality checks include:
+Automated code quality checks (informational, non-blocking):
 - **Ruff linting**: Fast Python linter checking PEP 8 compliance and common issues
 - **Black formatting**: Ensures consistent code formatting
-- **Mypy type checking**: Static type checking (informational, non-blocking)
+- **Mypy type checking**: Static type checking
+
+These checks provide visibility into code quality issues but don't block CI. They help track progress on the modernization roadmap.
 
 View CI status: [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 

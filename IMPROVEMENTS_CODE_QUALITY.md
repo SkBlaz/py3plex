@@ -111,16 +111,20 @@ Created comprehensive code quality checks that run on every push and PR:
 - Checks PEP 8 compliance
 - Identifies common code issues
 - Provides GitHub annotations for issues
+- **Informational only** (non-blocking)
 
 **Format Job** (using Black):
 - Ensures consistent code formatting
 - Checks for formatting violations
 - Provides diff output
+- **Informational only** (non-blocking)
 
 **Type Check Job** (using Mypy):
 - Static type checking
-- Informational only (non-blocking)
+- **Informational only** (non-blocking)
 - Helps track type hint coverage progress
+
+All checks are informational and do not block CI, allowing incremental improvement as part of the modernization roadmap.
 
 ### Existing CI Workflow: tests.yml
 Documented the existing comprehensive test workflow:
