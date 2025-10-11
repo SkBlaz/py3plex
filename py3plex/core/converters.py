@@ -159,8 +159,8 @@ def prepare_for_visualization_hairball(multinet, compute_layouts=False):
     for node in multinet.nodes(data=True):
         try:
             layers[node[0][1]].append(node[0])
-
-        except:
+        except (IndexError, TypeError, KeyError):
+            # Node format doesn't match expected multilayer format
             layers[1].append(node)
 
     inverse_mapping = {}

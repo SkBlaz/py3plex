@@ -65,20 +65,14 @@ Recent improvements include:
 - ✅ Modern packaging added (pyproject.toml)
 - ✅ Logging infrastructure created
 - ✅ Python requirement updated to 3.8+
-- 🔄 Bare except clauses: reduced from 50+ → 23 (54% reduction)
+- ✅ Bare except clauses: eliminated (50+ → 0, 100% reduction)
 - 🔄 Wildcard imports: reduced from 9 → 1 (89% reduction)
 - 🔄 Print → Logging conversion: 15% complete (44/286)
 - ✅ Type hints: 65.4% complete (70/107 maintainable modules)
 
 **Next Steps (Phase 2)**:
 - Expand test coverage to 30%+
-- Add custom exception types
 - Refactor global state
-- Update dependencies
-- Add pre-commit hooks
-- ✅ Set up CI linting (completed)
-- ✅ Expand type hints (65.4% complete)
-- Complete bare except and wildcard import cleanup
 - Complete print→logging conversion
 
 For comprehensive context for LLMs and maintainers, see [LLM.md](./LLM.md).
@@ -95,10 +89,17 @@ The `pyproject.toml` includes configurations for:
 - **Ruff**: Fast linting (`ruff check py3plex/ --fix`)
 - **Mypy**: Type checking (`mypy py3plex/ --ignore-missing-imports`)
 - **Pytest**: Testing with coverage
+- **Pre-commit hooks**: Automated quality checks before commits
 
 ```bash
 # Install dev dependencies
 pip install -e ".[dev]"
+
+# Setup pre-commit hooks (optional but recommended)
+pre-commit install
+
+# Run pre-commit manually on all files
+pre-commit run --all-files
 ```
 
 
