@@ -1,91 +1,52 @@
-Network construction and manipulation
-====================================
+Network Construction
+====================
 
-This section includes some basic information about the core multilayer data structure used in the py3plex library.
- 
-The multinet
-------------
+The ``multi_layer_network`` class is the core data structure in py3plex.
 
-The multinet class is the main data structure used. Its functionality can be described in three simple points:
+Basic Usage
+-----------
 
-#. Network parsing
-#. Network conversion
-#. Network decomposition
-
-
-Every time a new network is used, it needs to be packed into a simple object-line interface, as done below:
-   
 .. code-block:: python
-   :linenos:
 
    from py3plex.core import multinet
    
-   # initialize the network object
-   multilayer_network = multinet.multi_layer_network()
+   # Initialize network
+   network = multinet.multi_layer_network()
+   
+   # Load network
+   network.load_network("data.gml", directed=False, input_type="gml")
+   
+   # Basic statistics
+   network.basic_stats()
 
-   # load the file
-   multilayer_network.load_network("imdb_gml.gml",directed=False,label_delimiter="---")
+Supported Input Formats
+-----------------------
 
-   # compute some basic statistics
-   multilayer_network.basic_stats()
+py3plex supports all NetworkX formats plus multilayer-specific formats:
 
-Network parsers
----------------
+- **edgelist** - Simple edge lists
+- **multiedgelist** - Multilayer edge lists (node1 layer1 node2 layer2 weight)
+- **multiplex_edges** - Multiplex format (layer node1 node2 weight)
+- **gml** - GML format
+- **gpickle** - Compressed NetworkX format
+- **graphml** - GraphML format
+- **nx** - Direct NetworkX object
 
-Network parsers lie at the core of every network library. As py3plex is build on top of NetworkX package, it supports all parsers present there, for example:
+Multilayer Conventions
+-----------------------
 
-* edgelist parsing (edgelist)
-* gpickle compressed network parsing (gpickle)
-* GML format (gml)
-* networkx objects (nx)
-* ...
-
-The user must simply take care of the input file ending, or in the case of a raw networkx file, simply pass it as input.
-
-The input type is specified using the *input_type* flag when using the *load_network* method.
-
-
-Working with multilayer networks
---------------------------------
-
-Having introduced some basic concepts, we continue with conventions, adopted to successfully work with multilayer networks.
-
-#. Each not and edge can have a *type* flag assigned.
-#. Each edge can have a *weight*.
-#. Target node class (if specified), must have the *label* flag, where the value is a string representing different delimiter-separated classes. For example: class1---class2---class3 represent a node with 3 classes assigned (multiclass-multilabel problem.
-
-The *label_delimiter* is specified when inputting the network
-
-.. code-block:: python
-   :linenos:
-      
-   load_network(input_file="example.gpickle", directed=False, input_type="gpickle",label_delimiter="---"):
-
+- Nodes and edges can have a **type** flag
+- Edges can have **weights**
+- Node labels use delimiter-separated classes (e.g., ``class1---class2``)
+- Specify delimiter with: ``load_network(..., label_delimiter="---")``
 
 Examples
 --------
 
-Load a gml file:
+For detailed examples, see:
 
-.. code-block:: python
-   :linenos:
-      
-   multilayer_network.load_network(input_file="example.gml", directed=False, input_type="gml"):
+- ``example_IO.py`` - Loading and saving networks
+- ``example_manipulation.py`` - Network construction
+- ``example_multilayer_functionality.py`` - Core operations
 
-
-Load a gpickle file:
-
-.. code-block:: python
-   :linenos:
-      
-   multilayer_network.load_network(input_file="example.gpickle", directed=False, input_type="gpickle"):
-
-
-Load a gpickle file, with one type of nodes labeled:
-
-.. code-block:: python
-   :linenos:
-      
-   multilayer_network.load_network(input_file="example.gpickle", directed=False, input_type="gpickle",label_delimiter="---"):
-
-etc.
+Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples
