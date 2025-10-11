@@ -698,5 +698,247 @@ class TestCSVFormat:
             Path(tmp2_path).unlink()
 
 
+class TestNetworkXConverter:
+    """Test NetworkX converter (Task Set 4, task 23)."""
+
+    def test_to_networkx_union_mode(self):
+        """Test conversion to NetworkX in union mode."""
+        # Skip if NetworkX not available
+        try:
+            import networkx as nx
+            from py3plex.io import from_networkx, to_networkx
+        except ImportError:
+            pytest.skip("NetworkX not available")
+
+        # Create a simple multilayer graph
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n1", attributes={"label": "Node 1"}))
+        graph.add_node(Node(id="n2", attributes={"label": "Node 2"}))
+        graph.add_layer(Layer(id="l1"))
+        graph.add_layer(Layer(id="l2"))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1"))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l2", dst_layer="l2"))
+
+        # Convert to NetworkX
+        G = to_networkx(graph, mode="union")
+
+        # Verify structure
+        assert G.number_of_nodes() == 2
+        assert G.number_of_edges() == 2  # Both layer edges merged
+        assert "n1" in G.nodes()
+        assert "n2" in G.nodes()
+
+    def test_to_networkx_multiplex_mode(self):
+        """Test conversion to NetworkX in multiplex mode."""
+        try:
+            import networkx as nx
+            from py3plex.io import to_networkx
+        except ImportError:
+            pytest.skip("NetworkX not available")
+
+        # Create a multilayer graph
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n1"))
+        graph.add_node(Node(id="n2"))
+        graph.add_layer(Layer(id="l1"))
+        graph.add_layer(Layer(id="l2"))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1"))
+
+        # Convert to NetworkX with multiplex mode
+        G = to_networkx(graph, mode="multiplex")
+
+        # Verify structure - should have (node, layer) tuples
+        assert G.number_of_nodes() == 4  # 2 nodes x 2 layers
+        assert ("n1", "l1") in G.nodes()
+        assert ("n1", "l2") in G.nodes()
+        assert ("n2", "l1") in G.nodes()
+        assert ("n2", "l2") in G.nodes()
+
+    def test_from_networkx_union_mode(self):
+        """Test conversion from NetworkX in union mode."""
+        try:
+            import networkx as nx
+            from py3plex.io import from_networkx
+        except ImportError:
+            pytest.skip("NetworkX not available")
+
+        # Create a NetworkX graph
+        G = nx.MultiDiGraph()
+        G.add_node("n1", label="Node 1")
+        G.add_node("n2", label="Node 2")
+        G.add_edge("n1", "n2", weight=1.5)
+
+        # Convert to MultiLayerGraph
+        graph = from_networkx(G, mode="union", default_layer="layer1")
+
+        # Verify structure
+        assert len(graph.nodes) == 2
+        assert len(graph.layers) == 1
+        assert "layer1" in graph.layers
+        assert len(graph.edges) == 1
+        assert graph.nodes["n1"].attributes["label"] == "Node 1"
+
+    def test_from_networkx_multiplex_mode(self):
+        """Test conversion from NetworkX in multiplex mode."""
+        try:
+            import networkx as nx
+            from py3plex.io import from_networkx
+        except ImportError:
+            pytest.skip("NetworkX not available")
+
+        # Create a NetworkX graph with (node, layer) tuples
+        G = nx.MultiDiGraph()
+        G.add_node(("n1", "l1"))
+        G.add_node(("n2", "l1"))
+        G.add_edge(("n1", "l1"), ("n2", "l1"), weight=1.0)
+
+        # Convert to MultiLayerGraph
+        graph = from_networkx(G, mode="multiplex")
+
+        # Verify structure
+        assert len(graph.nodes) == 2
+        assert len(graph.layers) == 1
+        assert "l1" in graph.layers
+        assert len(graph.edges) == 1
+
+    def test_networkx_round_trip(self):
+        """Test round-trip conversion: MLG -> NX -> MLG."""
+        try:
+            import networkx as nx
+            from py3plex.io import from_networkx, to_networkx
+        except ImportError:
+            pytest.skip("NetworkX not available")
+
+        # Create original graph
+        graph1 = MultiLayerGraph()
+        graph1.add_node(Node(id="n1", attributes={"value": 10}))
+        graph1.add_node(Node(id="n2", attributes={"value": 20}))
+        graph1.add_layer(Layer(id="l1", attributes={"type": "social"}))
+        graph1.add_edge(
+            Edge(
+                src="n1",
+                dst="n2",
+                src_layer="l1",
+                dst_layer="l1",
+                attributes={"weight": 2.5},
+            )
+        )
+
+        # Convert to NetworkX and back
+        G = to_networkx(graph1, mode="multiplex")
+        graph2 = from_networkx(G, mode="multiplex")
+
+        # Verify preservation
+        assert len(graph2.nodes) == len(graph1.nodes)
+        assert len(graph2.layers) == len(graph1.layers)
+        assert len(graph2.edges) == len(graph1.edges)
+        assert graph2.nodes["n1"].attributes["value"] == 10
+
+
+class TestIGraphConverter:
+    """Test igraph converter (Task Set 4, task 24)."""
+
+    def test_to_igraph_multiplex_mode(self):
+        """Test conversion to igraph in multiplex mode."""
+        try:
+            import igraph as ig
+            from py3plex.io import to_igraph
+        except ImportError:
+            pytest.skip("igraph not available")
+
+        # Create a multilayer graph
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n1", attributes={"label": "Node 1"}))
+        graph.add_node(Node(id="n2", attributes={"label": "Node 2"}))
+        graph.add_layer(Layer(id="l1"))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1"))
+
+        # Convert to igraph
+        g = to_igraph(graph, mode="multiplex")
+
+        # Verify structure
+        assert g.vcount() == 2  # 2 nodes x 1 layer
+        assert g.ecount() == 1
+
+    def test_to_igraph_union_mode(self):
+        """Test conversion to igraph in union mode."""
+        try:
+            import igraph as ig
+            from py3plex.io import to_igraph
+        except ImportError:
+            pytest.skip("igraph not available")
+
+        # Create a multilayer graph
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n1"))
+        graph.add_node(Node(id="n2"))
+        graph.add_layer(Layer(id="l1"))
+        graph.add_layer(Layer(id="l2"))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1"))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l2", dst_layer="l2"))
+
+        # Convert to igraph
+        g = to_igraph(graph, mode="union")
+
+        # Verify structure
+        assert g.vcount() == 2
+        assert g.ecount() == 2  # Both layer edges
+
+    def test_from_igraph_union_mode(self):
+        """Test conversion from igraph in union mode."""
+        try:
+            import igraph as ig
+            from py3plex.io import from_igraph
+        except ImportError:
+            pytest.skip("igraph not available")
+
+        # Create an igraph graph
+        g = ig.Graph(directed=True)
+        g.add_vertices(2)
+        g.vs[0]["node_id"] = "n1"
+        g.vs[1]["node_id"] = "n2"
+        g.add_edge(0, 1, weight=1.5)
+
+        # Convert to MultiLayerGraph
+        graph = from_igraph(g, mode="union", default_layer="layer1")
+
+        # Verify structure
+        assert len(graph.nodes) == 2
+        assert len(graph.layers) == 1
+        assert len(graph.edges) == 1
+
+    def test_igraph_round_trip(self):
+        """Test round-trip conversion: MLG -> igraph -> MLG."""
+        try:
+            import igraph as ig
+            from py3plex.io import from_igraph, to_igraph
+        except ImportError:
+            pytest.skip("igraph not available")
+
+        # Create original graph
+        graph1 = MultiLayerGraph()
+        graph1.add_node(Node(id="n1", attributes={"value": 10}))
+        graph1.add_node(Node(id="n2", attributes={"value": 20}))
+        graph1.add_layer(Layer(id="l1"))
+        graph1.add_edge(
+            Edge(
+                src="n1",
+                dst="n2",
+                src_layer="l1",
+                dst_layer="l1",
+                attributes={"weight": 2.5},
+            )
+        )
+
+        # Convert to igraph and back
+        g = to_igraph(graph1, mode="multiplex")
+        graph2 = from_igraph(g, mode="multiplex")
+
+        # Verify preservation
+        assert len(graph2.nodes) == len(graph1.nodes)
+        assert len(graph2.layers) == len(graph1.layers)
+        assert len(graph2.edges) == len(graph1.edges)
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
