@@ -8,8 +8,33 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 ![Customization](example_images/part1.png)
 ## Getting Started
 
-To get started, please view **examples** folder.
+### Installation
+
+Install py3plex using pip:
+
+```bash
+pip install py3plex
+```
+
+Or install from source for development:
+
+```bash
+git clone https://github.com/SkBlaz/py3plex.git
+cd py3plex
+pip install -e .
+```
+
+### Quick Start
+
+To get started, please view the **examples** folder.
 Extensive documentation and quickstart tutorials are available at: [DOCS](https://py3plex.readthedocs.io/en/latest/)
+
+For testing instructions, see [TESTING.md](./TESTING.md).
+
+### Requirements
+
+- Python 3.8 or higher
+- NetworkX, NumPy, SciPy, and other dependencies (automatically installed)
 
 For any errors, please open an issue!
 
@@ -17,9 +42,9 @@ For any errors, please open an issue!
 If you are interested in contributing please:
 - Either open a pull request
 - Or write with your idea
-
- information, see [IMPROVEMENTS_PHASE_1A.md](./IMPROVEMENTS_PHASE_1A.md) and [IMPROVEMENTS_PHASE_1B.md](./IMPROVEMENTS_PHASE_1B.md) for completed work.
 - Or open an issue with your suggestion (feature requests welcome)
+
+For current project status and modernization roadmap, see [STATUS.md](./STATUS.md). For completed work details, see [IMPROVEMENTS_PHASE_1A.md](./IMPROVEMENTS_PHASE_1A.md) and [IMPROVEMENTS_PHASE_1B.md](./IMPROVEMENTS_PHASE_1B.md).
 
 
 # Citations
