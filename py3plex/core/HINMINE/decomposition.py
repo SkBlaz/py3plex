@@ -355,8 +355,9 @@ def hinmine_get_cycles(network, cycle=None):
                         + spr
                         + node[2]
                     )
-            except:
-                pass
+            except (IndexError, KeyError, TypeError) as e:
+                # Skip malformed cycle candidates
+                continue
 
     return cycle
 
@@ -381,8 +382,9 @@ def hinmine_decompose(network, heuristic, cycle=None, parallel=False):
                     + spr
                     + node[2]
                 )
-            except:
-                pass
+            except (IndexError, KeyError, TypeError) as e:
+                # Skip malformed cycle candidates
+                continue
 
         print(
             f"No decomposition cycle provided. Candidate cycles thus used are: {cycle}"

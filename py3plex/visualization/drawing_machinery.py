@@ -112,12 +112,9 @@ def draw(G, pos=None, ax=None, **kwds):
     if "with_labels" not in kwds:
         kwds["with_labels"] = "labels" in kwds
 
-    try:
-        draw_networkx(G, pos=pos, ax=ax, **kwds)
-        ax.set_axis_off()
-        plt.draw_if_interactive()
-    except:
-        raise
+    draw_networkx(G, pos=pos, ax=ax, **kwds)
+    ax.set_axis_off()
+    plt.draw_if_interactive()
     return
 
 
@@ -695,8 +692,9 @@ def draw_networkx_edges(
             arrow_collection.append(arrow)
             try:
                 ax.add_patch(arrow)
-            except:
-                pass
+            except (AttributeError, ValueError) as e:
+                # Skip patches that cannot be added to the axes
+                continue
 
     # update view
     minx = np.amin(np.ravel(edge_pos[:, :, 0]))
@@ -1167,5 +1165,5 @@ def setup_module(module):
         import matplotlib as mpl
 
         mpl.use("PS", warn=False)
-    except:
+    except ImportError:
         raise SkipTest("matplotlib not available")

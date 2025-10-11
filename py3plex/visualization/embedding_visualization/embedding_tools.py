@@ -11,8 +11,10 @@ except ImportError:
         from sklearn.manifold import TSNE
 
         parallel_tsne = False
-    except:
-        pass
+    except ImportError:
+        # Neither TSNE implementation is available
+        parallel_tsne = False
+        TSNE = None
 
 import pandas as pd
 

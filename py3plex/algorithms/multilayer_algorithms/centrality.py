@@ -307,8 +307,8 @@ class MultilayerCentrality:
             # Normalize
             eigenvec = eigenvec / np.linalg.norm(eigenvec)
 
-        except:
-            # Fallback to power iteration
+        except (np.linalg.LinAlgError, ArithmeticError, RuntimeError) as e:
+            # Fallback to power iteration if eigenvalue computation fails
             n = matrix.shape[0]
             x = np.random.rand(n)
             x = x / np.linalg.norm(x)
@@ -383,8 +383,8 @@ class MultilayerCentrality:
         identity_matrix = identity(n, format="csr")
         try:
             centralities = sp.linalg.spsolve(identity_matrix - alpha * matrix, beta)
-        except:
-            # Fallback: use series approximation
+        except (np.linalg.LinAlgError, RuntimeError, ValueError) as e:
+            # Fallback: use series approximation if sparse solve fails
             centralities = beta.copy()
             current_term = beta.copy()
             for _ in range(100):  # Limit iterations
@@ -504,11 +504,11 @@ class MultilayerCentrality:
                 nx_closeness = nx.closeness_centrality(G, distance="weight")
             else:
                 nx_closeness = nx.closeness_centrality(G, distance="weight")
-        except:
+        except (nx.NetworkXError, KeyError, ZeroDivisionError) as e:
             # Fallback: use unweighted distances
             try:
                 nx_closeness = nx.closeness_centrality(G)
-            except:
+            except (nx.NetworkXError, ZeroDivisionError) as e:
                 # If graph is disconnected, compute for each component
                 nx_closeness = {}
                 for node in G.nodes():
@@ -571,13 +571,13 @@ class MultilayerCentrality:
             nx_betweenness = nx.betweenness_centrality(
                 G, weight="weight", normalized=normalized, endpoints=endpoints
             )
-        except:
+        except (nx.NetworkXError, KeyError, ValueError) as e:
             # Fallback: use unweighted betweenness
             try:
                 nx_betweenness = nx.betweenness_centrality(
                     G, normalized=normalized, endpoints=endpoints
                 )
-            except:
+            except (nx.NetworkXError, RuntimeError) as e:
                 # If computation fails, return zeros
                 nx_betweenness = {}
                 for node in G.nodes():
@@ -645,8 +645,8 @@ class MultilayerCentrality:
                 # For undirected networks, HITS equals eigenvector centrality
                 return self.multiplex_eigenvector_centrality(max_iter, tol)
 
-        except:
-            # Fallback to eigenvector centrality
+        except (nx.PowerIterationFailedConvergence, nx.NetworkXError, RuntimeError) as e:
+            # Fallback to eigenvector centrality if HITS fails
             if self.network.directed:
                 eigenvec = self.multiplex_eigenvector_centrality(max_iter, tol)
                 return {"hubs": eigenvec, "authorities": eigenvec}
@@ -682,11 +682,11 @@ class MultilayerCentrality:
 
         try:
             nx_current_flow = nx.current_flow_closeness_centrality(G, weight="weight")
-        except:
-            # Fallback to regular closeness
+        except (nx.NetworkXError, np.linalg.LinAlgError, RuntimeError) as e:
+            # Fallback to regular closeness if current flow computation fails
             try:
                 nx_current_flow = nx.closeness_centrality(G, distance="weight")
-            except:
+            except (nx.NetworkXError, ZeroDivisionError) as e:
                 nx_current_flow = {}
                 for node in G.nodes():
                     nx_current_flow[node] = 0.0
@@ -725,11 +725,11 @@ class MultilayerCentrality:
 
         try:
             nx_current_flow = nx.current_flow_betweenness_centrality(G, weight="weight")
-        except:
-            # Fallback to regular betweenness
+        except (nx.NetworkXError, np.linalg.LinAlgError, RuntimeError) as e:
+            # Fallback to regular betweenness if current flow computation fails
             try:
                 nx_current_flow = nx.betweenness_centrality(G, weight="weight")
-            except:
+            except (nx.NetworkXError, RuntimeError) as e:
                 nx_current_flow = {}
                 for node in G.nodes():
                     nx_current_flow[node] = 0.0
@@ -774,8 +774,8 @@ class MultilayerCentrality:
 
             return results
 
-        except:
-            # Fallback: approximate using eigendecomposition
+        except (ImportError, np.linalg.LinAlgError, RuntimeError, MemoryError) as e:
+            # Fallback: approximate using eigendecomposition if matrix exponential fails
             try:
                 eigenvals, eigenvecs = np.linalg.eigh(matrix)
                 exp_eigenvals = np.exp(eigenvals)
@@ -787,7 +787,7 @@ class MultilayerCentrality:
                     results[node_layer] = centrality
 
                 return results
-            except:
+            except (np.linalg.LinAlgError, MemoryError) as e:
                 # If all else fails, return degree centrality as approximation
                 return self.supra_degree_centrality(weighted=True)
 
@@ -822,8 +822,8 @@ class MultilayerCentrality:
 
             return results
 
-        except:
-            # Fallback using Katz centrality as approximation
+        except (ImportError, np.linalg.LinAlgError, RuntimeError, MemoryError) as e:
+            # Fallback using Katz centrality as approximation if matrix exponential fails
             return self.katz_bonacich_centrality(alpha=0.1)
 
     # ==================== K-CORE MEASURES ====================
@@ -869,8 +869,8 @@ class MultilayerCentrality:
 
             return results
 
-        except:
-            # Fallback: use degree as approximation
+        except (nx.NetworkXError, RuntimeError) as e:
+            # Fallback: use degree as approximation if k-core computation fails
             degree_centralities = self.supra_degree_centrality(weighted=False)
             return {k: int(v) for k, v in degree_centralities.items()}
 
