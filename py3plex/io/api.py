@@ -203,6 +203,7 @@ def write(
 def _register_builtin_formats():
     """Register built-in format readers and writers."""
     # Import here to avoid circular imports
+    from .formats.csv_format import read_csv, write_csv
     from .formats.json_format import read_json, read_jsonl, write_json, write_jsonl
 
     # Register JSON formats
@@ -210,6 +211,10 @@ def _register_builtin_formats():
     register_writer("json", write_json)
     register_reader("jsonl", read_jsonl)
     register_writer("jsonl", write_jsonl)
+
+    # Register CSV format
+    register_reader("csv", read_csv)
+    register_writer("csv", write_csv)
 
 
 # Register built-in formats on module load

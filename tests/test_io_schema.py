@@ -533,3 +533,170 @@ class TestJSONFormat:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+class TestCSVFormat:
+    """Test CSV format implementation (Task Set 3, tasks 12-15)."""
+
+    def test_csv_basic_round_trip(self):
+        """Test basic CSV format round-trip."""
+        # Create a sample graph
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n1"))
+        graph.add_node(Node(id="n2"))
+        graph.add_layer(Layer(id="l1"))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1"))
+
+        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as tmp:
+            tmp_path = tmp.name
+
+        try:
+            # Write and read back
+            write(graph, tmp_path, format="csv")
+            graph2 = read(tmp_path, format="csv")
+
+            # Verify
+            assert len(graph2.nodes) == 2
+            assert len(graph2.layers) == 1
+            assert len(graph2.edges) == 1
+        finally:
+            Path(tmp_path).unlink()
+
+    def test_csv_with_edge_attributes(self):
+        """Test CSV with edge attributes."""
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n1"))
+        graph.add_node(Node(id="n2"))
+        graph.add_layer(Layer(id="l1"))
+        graph.add_edge(
+            Edge(
+                src="n1",
+                dst="n2",
+                src_layer="l1",
+                dst_layer="l1",
+                attributes={"weight": 2.5, "label": "test"},
+            )
+        )
+
+        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as tmp:
+            tmp_path = tmp.name
+
+        try:
+            # Write and read back
+            write(graph, tmp_path, format="csv")
+            graph2 = read(tmp_path, format="csv")
+
+            # Verify attributes
+            assert len(graph2.edges) == 1
+            assert graph2.edges[0].attributes["weight"] == 2.5
+            assert graph2.edges[0].attributes["label"] == "test"
+        finally:
+            Path(tmp_path).unlink()
+
+    def test_csv_with_multiple_edges(self):
+        """Test CSV with multiple edges (multigraph)."""
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n1"))
+        graph.add_node(Node(id="n2"))
+        graph.add_layer(Layer(id="l1"))
+        graph.add_edge(
+            Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1", key=0)
+        )
+        graph.add_edge(
+            Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1", key=1)
+        )
+
+        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as tmp:
+            tmp_path = tmp.name
+
+        try:
+            # Write and read back
+            write(graph, tmp_path, format="csv")
+            graph2 = read(tmp_path, format="csv")
+
+            # Verify both edges are preserved
+            assert len(graph2.edges) == 2
+            keys = {e.key for e in graph2.edges}
+            assert keys == {0, 1}
+        finally:
+            Path(tmp_path).unlink()
+
+    def test_csv_sidecar_files(self):
+        """Test CSV with sidecar node and layer files."""
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n1", attributes={"name": "Node 1", "value": 10}))
+        graph.add_node(Node(id="n2", attributes={"name": "Node 2", "value": 20}))
+        graph.add_layer(Layer(id="l1", attributes={"type": "social"}))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1"))
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            edges_path = Path(tmpdir) / "edges.csv"
+            nodes_path = Path(tmpdir) / "nodes.csv"
+            layers_path = Path(tmpdir) / "layers.csv"
+
+            # Write with sidecars
+            write(graph, edges_path, format="csv", write_sidecars=True)
+
+            # Verify sidecar files exist
+            assert nodes_path.exists()
+            assert layers_path.exists()
+
+            # Read back with sidecars
+            graph2 = read(
+                edges_path, format="csv", nodes_file=nodes_path, layers_file=layers_path
+            )
+
+            # Verify node attributes preserved
+            assert graph2.nodes["n1"].attributes["name"] == "Node 1"
+            assert graph2.nodes["n1"].attributes["value"] == "10"  # CSV reads as string
+            assert graph2.layers["l1"].attributes["type"] == "social"
+
+    def test_csv_missing_required_columns(self):
+        """Test CSV with missing required columns raises error."""
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".csv", delete=False
+        ) as tmp:
+            # Write CSV with missing columns
+            tmp.write("src,dst\n")
+            tmp.write("n1,n2\n")
+            tmp_path = tmp.name
+
+        try:
+            with pytest.raises(SchemaValidationError, match="missing required columns"):
+                read(tmp_path, format="csv")
+        finally:
+            Path(tmp_path).unlink()
+
+    def test_csv_deterministic_output(self):
+        """Test CSV deterministic flag produces consistent output."""
+        graph = MultiLayerGraph()
+        graph.add_node(Node(id="n2"))
+        graph.add_node(Node(id="n1"))
+        graph.add_layer(Layer(id="l1"))
+        graph.add_edge(Edge(src="n2", dst="n1", src_layer="l1", dst_layer="l1"))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1"))
+
+        with tempfile.NamedTemporaryFile(
+            suffix=".csv", delete=False
+        ) as tmp1, tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as tmp2:
+            tmp1_path = tmp1.name
+            tmp2_path = tmp2.name
+
+        try:
+            # Write twice with deterministic=True
+            write(graph, tmp1_path, format="csv", deterministic=True)
+            write(graph, tmp2_path, format="csv", deterministic=True)
+
+            # Read both files and compare
+            with open(tmp1_path) as f1, open(tmp2_path) as f2:
+                content1 = f1.read()
+                content2 = f2.read()
+
+            assert content1 == content2
+        finally:
+            Path(tmp1_path).unlink()
+            Path(tmp2_path).unlink()
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
