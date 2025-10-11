@@ -2,7 +2,6 @@
 # do this according to the paper WCGA
 
 from collections import Counter
-from typing import Union
 
 import numpy as np
 from scipy import stats

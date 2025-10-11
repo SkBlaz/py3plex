@@ -6,7 +6,7 @@
 
 import logging
 from collections import defaultdict
-from typing import Any, Dict, List, Tuple
+from typing import Tuple
 
 import pandas as pd
 from scipy.stats import fisher_exact

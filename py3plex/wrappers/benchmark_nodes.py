@@ -4,7 +4,7 @@ import multiprocessing as mp
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from collections import defaultdict
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List
 
 import numpy
 from gensim.models import KeyedVectors

@@ -4,7 +4,7 @@ import glob
 import gzip
 import itertools
 import json
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -19,7 +19,9 @@ from .supporting import add_mpx_edges
 logger = get_logger(__name__)
 
 
-def parse_gml(file_name: str, directed: bool) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
+def parse_gml(
+    file_name: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     Parse a gml network.
 

@@ -7,7 +7,9 @@ import networkx as nx
 import numpy as np
 
 
-def modularity(G: nx.Graph, communities: Dict[Any, List[Any]], weight: str = "weight") -> float:
+def modularity(
+    G: nx.Graph, communities: Dict[Any, List[Any]], weight: str = "weight"
+) -> float:
     """
     Calculate modularity of a graph partition.
 

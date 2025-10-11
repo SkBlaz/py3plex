@@ -67,7 +67,9 @@ def stochastic_normalization_hin(matrix: sp.spmatrix) -> sp.spmatrix:
     return matrix
 
 
-def modularity(G: nx.Graph, communities: List[List[Any]], weight: str = "weight") -> float:
+def modularity(
+    G: nx.Graph, communities: List[List[Any]], weight: str = "weight"
+) -> float:
     """
     Calculate modularity of a graph partition.
 

@@ -1,7 +1,7 @@
 # tutorial
 
 # import bayesiantests as bt
-from typing import Any, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
