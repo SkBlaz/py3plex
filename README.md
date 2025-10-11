@@ -72,10 +72,7 @@ Recent improvements include:
 
 **Next Steps (Phase 2)**:
 - Expand test coverage to 30%+
-- Add custom exception types
 - Refactor global state
-- Update dependencies
-- Add pre-commit hooks
 - Complete print→logging conversion
 
 For comprehensive context for LLMs and maintainers, see [LLM.md](./LLM.md).
