@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: py3plex.algorithms.term_parsers
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

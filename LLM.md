@@ -243,14 +243,21 @@ The repository uses `pytest` as its primary testing framework, with tests organi
 
 ## Documentation and Examples
 
-**Primary documentation**: Comprehensive Sphinx-generated documentation hosted at [py3plex.readthedocs.io](https://py3plex.readthedocs.io). The `docs/` directory contains pre-built HTML documentation covering:
-- Getting started tutorials
-- API reference with module, class, and function documentation
-- Conceptual guides on multilayer networks and heterogeneous graph analysis
-- Visualization gallery with example outputs
-- Community detection and classification workflows
+**Documentation Philosophy**: The documentation has been streamlined to be minimalistic and example-focused. Instead of verbose explanations, the docs point users directly to practical examples in the `examples/` directory.
 
-**Example scripts**: The `examples/` directory contains 43 Python scripts demonstrating practical use cases:
+**Primary documentation**: Sphinx-generated documentation hosted at [py3plex.readthedocs.io](https://py3plex.readthedocs.io). The `docs/` directory contains pre-built HTML documentation. The `docfiles/` directory contains source ReStructuredText files that have been refined to be concise and reference-oriented.
+
+**Documentation structure** (in `docfiles/`):
+- `index.rst`: Quick start and navigation hub pointing to examples
+- `core_idea.rst`: Brief overview of core principles
+- `basic_usage.rst`: Minimal quick start guide with example links
+- `basic_usage_analysis.rst`: Core operations with example references
+- `visualization.rst`: Basic visualization patterns pointing to examples
+- `community_detection.rst`: Community detection guide with example links
+- `learning*.rst`: Machine learning functionality with example references
+- `AUTOGEN_results/`: Auto-generated API documentation from docstrings
+
+**Example scripts**: The `examples/` directory contains 43 Python scripts demonstrating practical use cases. These are the primary learning resource:
 - `example_multilayer_visualization.py`: Basic multilayer network rendering
 - `example_community_detection.py`: Community detection with Louvain and Infomap
 - `example_network_decomposition.py`: Meta-path-based feature extraction
@@ -261,12 +268,15 @@ The repository uses `pytest` as its primary testing framework, with tests organi
 
 Each example is self-contained, includes inline comments explaining key concepts, and produces either visualizations or printed output demonstrating results.
 
-**Build system**: Documentation is built using Sphinx with autodoc for API reference generation. The `docfiles/` directory contains source ReStructuredText files and Sphinx configuration. To rebuild documentation: `cd docs && sphinx-build -b html . _build/`.
+**Build system**: Documentation is built using Sphinx with autodoc for API reference generation. The `docfiles/` directory contains source ReStructuredText files and Sphinx configuration. To rebuild documentation: `cd docfiles && sphinx-build -b html . _build/`.
 
-**Maintenance notes**: Documentation references two key meta-documents:
+**Recent changes**: Documentation was refined in 2025 to reduce verbosity and emphasize examples over lengthy explanations. The docs now serve as navigation aids pointing users to relevant example scripts.
+
+**Maintenance notes**: Documentation references key meta-documents:
 - `README.md`: High-level introduction, installation, quick start, citations
 - `STATUS.md`: Modernization roadmap, progress metrics, contributor guidelines
 - `TESTING.md`: Testing procedures, CI setup, development workflow
+- `LLM.md` (this file): Comprehensive context for LLMs and maintainers - the anchor document
 
 ## For LLMs
 

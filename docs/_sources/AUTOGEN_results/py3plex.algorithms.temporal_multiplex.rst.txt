@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: py3plex.algorithms.temporal_multiplex
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

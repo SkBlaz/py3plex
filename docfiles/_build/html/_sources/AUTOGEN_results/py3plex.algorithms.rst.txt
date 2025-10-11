@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    py3plex.algorithms.community_detection
    py3plex.algorithms.general
@@ -22,5 +23,5 @@ Module contents
 
 .. automodule:: py3plex.algorithms
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

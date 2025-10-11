@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Analysis of multilayers &mdash; py3plex 0.80 documentation</title>
+  <title>Network Analysis &mdash; py3plex 0.80 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Analysis of multiplex networks" href="basic_usage_analysis_multiplex.html" />
-    <link rel="prev" title="py3plex - key principles" href="basic_usage.html" /> 
+    <link rel="next" title="Multiplex Network Analysis" href="basic_usage_analysis_multiplex.html" />
+    <link rel="prev" title="Quick Start Guide" href="basic_usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,26 +45,29 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">py3plex - key principles</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis of multilayers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#some-useful-constructs">Some useful constructs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#network-traversal">Network traversal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#extending-functionality-with-networkx">Extending functionality with networkX?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#a-technical-note">A technical note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Network Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core-operations">Core Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-iteration">Basic Iteration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#subnetworks">Subnetworks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#networkx-integration">NetworkX Integration</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra adjacency matrices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community detection (multiplex)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra adjacency matrices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning.html">Random networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#for-more-examples">For More Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Further steps: learning:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="learning2.html">Learning - label propagation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning3.html">Learning - Node embeddings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API documentation:</span></p>
 <ul>
@@ -85,7 +88,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Analysis of multilayers</li>
+      <li class="breadcrumb-item active">Network Analysis</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/basic_usage_analysis.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,115 +98,62 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="analysis-of-multilayers">
-<h1>Analysis of multilayers<a class="headerlink" href="#analysis-of-multilayers" title="Link to this heading"></a></h1>
-<p>Having discussed how the multilayer networks can be constructed, the next logical step is to discuss what analytics is offered by py3plex. In this chapter, we discuss the following functionality:</p>
-<ol class="arabic simple">
-<li><p>Looping constructs and iteration (multilayer networks)</p></li>
-<li><p>Traversal (multilayer networks).</p></li>
-<li><p>Bindings to NetworkX for arbitrary monolayer functinality.</p></li>
-</ol>
-<section id="some-useful-constructs">
-<h2>Some useful constructs<a class="headerlink" href="#some-useful-constructs" title="Link to this heading"></a></h2>
-<p>Analysis of multilayer networks can be often tricky, as these structures need to be first simplified to more algorithm-friendly inputs. We next discuss some functionality supported by py3plex that potentially facilitates such endeavours. The <em>multinet</em> object is the core class around everything more or less evolves.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span> <span class="c1">## a multilayer object</span>
-<span class="linenos"> 4</span> <span class="n">A</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;../datasets/multiedgelist.txt&quot;</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="linenos"> 5</span>
-<span class="linenos"> 6</span> <span class="n">A</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
-<span class="linenos"> 7</span>
-<span class="linenos"> 8</span> <span class="c1">## this is nicer printing.</span>
-<span class="linenos"> 9</span> <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Edge looping:&quot;</span><span class="p">)</span>
-<span class="linenos">10</span>
-<span class="linenos">11</span> <span class="c1">## looping through edges:</span>
-<span class="linenos">12</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="linenos">13</span>     <span class="nb">print</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
-<span class="linenos">14</span>
-<span class="linenos">15</span> <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s2">&quot;Node looping:&quot;</span><span class="p">)</span>
-<span class="linenos">16</span>
-<span class="linenos">17</span> <span class="c1">## what about nodes?</span>
-<span class="linenos">18</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="linenos">19</span>     <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-<span class="linenos">20</span>
-<span class="linenos">21</span> <span class="n">C1</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">],</span><span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
-<span class="linenos">22</span> <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C1</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
-<span class="linenos">23</span>
-<span class="linenos">24</span> <span class="n">C2</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">],</span><span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_names&quot;</span><span class="p">)</span>
-<span class="linenos">25</span> <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C2</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
-<span class="linenos">26</span>
-<span class="linenos">27</span> <span class="n">C3</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">),(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">)],</span><span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span><span class="p">)</span>
-<span class="linenos">28</span> <span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">C3</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+  <section id="network-analysis">
+<h1>Network Analysis<a class="headerlink" href="#network-analysis" title="Link to this heading"></a></h1>
+<section id="core-operations">
+<h2>Core Operations<a class="headerlink" href="#core-operations" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> object provides methods for network analysis and manipulation.</p>
+<section id="basic-iteration">
+<h3>Basic Iteration<a class="headerlink" href="#basic-iteration" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;../datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Iterate edges</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+
+<span class="c1"># Iterate nodes</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="network-traversal">
-<h2>Network traversal<a class="headerlink" href="#network-traversal" title="Link to this heading"></a></h2>
-<p>One of the simplest examples that leads to understanding what one can do with a given multilayer entwork is the notion of network traversal. We next present an example where a multilayer network is first generated and next traversed, where the locations of the random walkers traversing across intra- as well as inter-layer edges are considered.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="linenos"> 2</span> <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
-<span class="linenos"> 3</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos"> 4</span> <span class="kn">import</span> <span class="nn">queue</span>
-<span class="linenos"> 5</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="linenos"> 6</span> <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-<span class="linenos"> 7</span>
-<span class="linenos"> 8</span> <span class="c1">## some random graph</span>
-<span class="linenos"> 9</span> <span class="n">ER_multilayer</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="linenos">10</span>
-<span class="linenos">11</span> <span class="c1">## seed node</span>
-<span class="linenos">12</span> <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ER_multilayer</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
-<span class="linenos">13</span> <span class="n">all_nodes_indexed</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">en</span> <span class="k">for</span> <span class="n">en</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">)}</span>
-<span class="linenos">14</span>
-<span class="linenos">15</span> <span class="c1">## spread from a random node</span>
-<span class="linenos">16</span> <span class="n">random_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">))</span>
-<span class="linenos">17</span> <span class="n">random_node</span> <span class="o">=</span> <span class="n">all_nodes</span><span class="p">[</span><span class="n">random_init</span><span class="p">]</span>
-<span class="linenos">18</span> <span class="n">spread_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ER_multilayer</span><span class="o">.</span><span class="n">core_network</span><span class="p">))</span>
-<span class="linenos">19</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">3000</span><span class="p">)</span>
-<span class="linenos">20</span> <span class="n">Q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">random_node</span><span class="p">)</span>
-<span class="linenos">21</span>
-<span class="linenos">22</span> <span class="n">layer_visit_sequence</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="linenos">23</span> <span class="n">node_visit_sequence</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="linenos">24</span> <span class="n">iterations</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="linenos">25</span> <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-<span class="linenos">26</span>     <span class="k">if</span> <span class="ow">not</span> <span class="n">Q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
-<span class="linenos">27</span>         <span class="n">candidate</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-<span class="linenos">28</span>         <span class="n">iterations</span><span class="o">+=</span><span class="mi">1</span>
-<span class="linenos">29</span>         <span class="k">if</span> <span class="n">iterations</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<span class="linenos">30</span>             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterations: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iterations</span><span class="p">))</span>
-<span class="linenos">31</span>         <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="n">candidate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">candidate</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-<span class="linenos">32</span>             <span class="n">idx</span> <span class="o">=</span> <span class="n">all_nodes_indexed</span><span class="p">[</span><span class="n">neighbor</span><span class="p">]</span>
-<span class="linenos">33</span>             <span class="k">if</span> <span class="n">spread_vector</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-<span class="linenos">34</span>                 <span class="n">layer_visit_sequence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="linenos">35</span>                 <span class="n">node_visit_sequence</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">neighbor</span><span class="p">,</span><span class="n">iterations</span><span class="p">))</span>
-<span class="linenos">36</span>                 <span class="n">Q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">neighbor</span><span class="p">)</span>
-<span class="linenos">37</span>                 <span class="n">spread_vector</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="linenos">38</span>     <span class="k">else</span><span class="p">:</span>
-<span class="linenos">39</span>         <span class="k">break</span>
-<span class="linenos">40</span>
-<span class="linenos">41</span> <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">layer_visit_sequence</span><span class="p">)</span>
-<span class="linenos">42</span> <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Layer&quot;</span><span class="p">)</span>
-<span class="linenos">43</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Visit density&quot;</span><span class="p">)</span>
-<span class="linenos">44</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<a class="reference internal image-reference" href="_images/spreading.png"><img alt="_images/spreading.png" src="_images/spreading.png" style="width: 400px;" />
-</a>
-</section>
-<section id="extending-functionality-with-networkx">
-<h2>Extending functionality with networkX?<a class="headerlink" href="#extending-functionality-with-networkx" title="Link to this heading"></a></h2>
-<p>As, under the hood, most of the py3plex objects are some form of multigraphs, with some simplification, many <em>ad hoc</em> functionality is readily available! Assuming you still have the C1 network from the first example, simply call the <em>monoplex_nx_wrapper</em> method with corresponding function name:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">centralities</span> <span class="o">=</span> <span class="n">C1</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
-<span class="linenos">2</span><span class="n">A</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="n">centralities</span><span class="p">)</span>
+<section id="subnetworks">
+<h3>Subnetworks<a class="headerlink" href="#subnetworks" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract by layer</span>
+<span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract by node names</span>
+<span class="n">node_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_names&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract by node-layer pairs</span>
+<span class="n">specific_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">)],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="a-technical-note">
-<h2>A technical note<a class="headerlink" href="#a-technical-note" title="Link to this heading"></a></h2>
-<p>If you have a network without layer information, however would like to start from there, the:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">add_dummy_layers</span><span class="p">()</span>
+<section id="networkx-integration">
+<h3>NetworkX Integration<a class="headerlink" href="#networkx-integration" title="Link to this heading"></a></h3>
+<p>py3plex networks are compatible with NetworkX:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use any NetworkX function</span>
+<span class="n">centralities</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">centralities</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Will equip each node with a dummy layer (hence all nodes are in the same layer).</p>
+</section>
+</section>
+<section id="for-more-examples">
+<h2>For More Examples<a class="headerlink" href="#for-more-examples" title="Link to this heading"></a></h2>
+<p>See detailed examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_functionality.py</span></code> - Core operations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_networkx_wrapper.py</span></code> - NetworkX integration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_spreading.py</span></code> - Network traversal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_manipulation.py</span></code> - Network manipulation</p></li>
+</ul>
+<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
 </section>
 </section>
 
@@ -211,8 +161,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="basic_usage.html" class="btn btn-neutral float-left" title="py3plex - key principles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="basic_usage_analysis_multiplex.html" class="btn btn-neutral float-right" title="Analysis of multiplex networks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="basic_usage.html" class="btn btn-neutral float-left" title="Quick Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="basic_usage_analysis_multiplex.html" class="btn btn-neutral float-right" title="Multiplex Network Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
