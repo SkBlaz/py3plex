@@ -1,5 +1,6 @@
 # high level interface for community detection algorithms
 from collections import defaultdict
+from typing import Any, Dict, List, Union
 
 import networkx as nx
 
@@ -12,13 +13,13 @@ except ImportError:
 
 
 def run_infomap(
-    infile,
-    multiplex=True,
-    overlapping=False,
-    binary="./infomap",
-    verbose=True,
-    iterations=1000,
-):
+    infile: str,
+    multiplex: bool = True,
+    overlapping: bool = False,
+    binary: str = "./infomap",
+    verbose: bool = True,
+    iterations: int = 1000,
+) -> None:
 
     import os
     from subprocess import call
@@ -62,15 +63,15 @@ def run_infomap(
 
 
 def infomap_communities(
-    graph,
-    binary="./infomap",
-    edgelist_file="./tmp/tmpedgelist.txt",
-    multiplex=False,
-    verbose=False,
-    overlapping=False,
-    iterations=200,
-    output="mapping",
-):
+    graph: nx.Graph,
+    binary: str = "./infomap",
+    edgelist_file: str = "./tmp/tmpedgelist.txt",
+    multiplex: bool = False,
+    verbose: bool = False,
+    overlapping: bool = False,
+    iterations: int = 200,
+    output: str = "mapping",
+) -> Union[Dict[Any, int], Dict[Any, List[int]]]:
 
     # check type of the network
     print("INFO: Infomap community detection in progress..")

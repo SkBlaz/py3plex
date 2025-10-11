@@ -1,6 +1,7 @@
 # node ranking algorithms
 # from networkx.algorithms.community.community_utils import is_partition
 from itertools import product
+from typing import Any, List
 
 import networkx as nx
 import numpy as np
@@ -20,7 +21,16 @@ import scipy.sparse as sp
 #     return matrix
 
 
-def stochastic_normalization(matrix):
+def stochastic_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
+    """
+    Apply stochastic normalization to a sparse matrix.
+
+    Args:
+        matrix: Sparse matrix to normalize
+
+    Returns:
+        Stochastically normalized sparse matrix
+    """
     matrix = matrix.tolil()
     try:
         matrix.setdiag(0)
@@ -34,7 +44,16 @@ def stochastic_normalization(matrix):
     return matrix
 
 
-def stochastic_normalization_hin(matrix):
+def stochastic_normalization_hin(matrix: sp.spmatrix) -> sp.spmatrix:
+    """
+    Apply stochastic normalization to a heterogeneous information network matrix.
+
+    Args:
+        matrix: Sparse matrix to normalize
+
+    Returns:
+        Stochastically normalized sparse matrix
+    """
     matrix = matrix.tolil()
     try:
         matrix.setdiag(0)
@@ -48,7 +67,20 @@ def stochastic_normalization_hin(matrix):
     return matrix
 
 
-def modularity(G, communities, weight="weight"):
+def modularity(
+    G: nx.Graph, communities: List[List[Any]], weight: str = "weight"
+) -> float:
+    """
+    Calculate modularity of a graph partition.
+
+    Args:
+        G: NetworkX graph
+        communities: List of communities (each community is a list of nodes)
+        weight: Edge weight attribute name
+
+    Returns:
+        Modularity value
+    """
 
     multigraph = G.is_multigraph()
     directed = G.is_directed()

@@ -1,5 +1,6 @@
 # a class for random graph generation
 import random
+from typing import Any
 
 import networkx as nx
 import numpy as np
@@ -7,7 +8,9 @@ import numpy as np
 from .multinet import itertools, multi_layer_network
 
 
-def random_multilayer_ER(n, l, p, directed=False):
+def random_multilayer_ER(
+    n: int, l: int, p: float, directed: bool = False
+) -> Any:  # Returns multi_layer_network
     """random multilayer ER"""
 
     if directed:
@@ -29,7 +32,9 @@ def random_multilayer_ER(n, l, p, directed=False):
     return no
 
 
-def random_multiplex_ER(n, l, p, directed=False):
+def random_multiplex_ER(
+    n: int, l: int, p: float, directed: bool = False
+) -> Any:  # Returns multi_layer_network
     """random multilayer ER"""
 
     if directed:
@@ -49,12 +54,18 @@ def random_multiplex_ER(n, l, p, directed=False):
     return no
 
 
-def random_multiplex_generator(n, m, d=0.9):
+def random_multiplex_generator(n: int, m: int, d: float = 0.9) -> nx.MultiGraph:
+    """
+    Generate a multiplex network from a random bipartite graph.
 
-    # generate a multiplex network from a random bipartite graph
-    # n: number of nodes (int)
-    # m: number of layers (int)
-    # d: layer dropout (to avoid cliques) (float [0..1])
+    Args:
+        n: number of nodes
+        m: number of layers
+        d: layer dropout (to avoid cliques), range [0..1]
+
+    Returns:
+        Generated multiplex network as a MultiGraph
+    """
 
     layers = range(m)
     node_to_layers = {}

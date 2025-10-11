@@ -1,6 +1,7 @@
 # set of layout wrappers and algorithms used for visualization.
 
 import itertools
+from typing import Any, Dict, Optional
 
 import networkx as nx
 import numpy as np
@@ -16,16 +17,16 @@ except ImportError:
 
 
 def compute_force_directed_layout(
-    g,
-    layout_parameters=None,
-    verbose=True,
-    gravity=0.2,
-    strongGravityMode=False,
-    barnesHutTheta=1.2,
-    edgeWeightInfluence=1,
-    scalingRatio=2.0,
-    forceImport=True,
-):
+    g: nx.Graph,
+    layout_parameters: Optional[Dict[str, Any]] = None,
+    verbose: bool = True,
+    gravity: float = 0.2,
+    strongGravityMode: bool = False,
+    barnesHutTheta: float = 1.2,
+    edgeWeightInfluence: float = 1,
+    scalingRatio: float = 2.0,
+    forceImport: bool = True,
+) -> Dict[Any, np.ndarray]:
 
     if forceImport:
         try:
@@ -79,7 +80,7 @@ def compute_force_directed_layout(
     return pos
 
 
-def compute_random_layout(g):
+def compute_random_layout(g: nx.Graph) -> Dict[Any, np.ndarray]:
     tuple(np.random.rand(1, 2))
     pos = {n: np.array(tuple(np.random.rand(1, 2).tolist()[0])) for n in g.nodes()}
     return pos

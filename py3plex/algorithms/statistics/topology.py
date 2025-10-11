@@ -1,14 +1,22 @@
 # test scale-freenes of a network
 
+from typing import Any, List, Tuple
+
 import matplotlib.pyplot as plt
 import networkx as nx
 
 from .powerlaw import Fit
 
 
-def basic_pl_stats(degree_sequence):
+def basic_pl_stats(degree_sequence: List[int]) -> Tuple[float, float]:
     """
-    :param degree sequence of individual nodes
+    Calculate basic power law statistics for a degree sequence.
+
+    Args:
+        degree_sequence: Degree sequence of individual nodes
+
+    Returns:
+        Tuple of (alpha, sigma) values
     """
 
     results = Fit(degree_sequence, discrete=True)
@@ -16,16 +24,16 @@ def basic_pl_stats(degree_sequence):
 
 
 def plot_power_law(
-    degree_sequence,
-    title,
-    xlabel,
-    plabel,
-    ylabel="Number of nodes",
-    formula_x=70,
-    formula_y=0.05,
-    show=True,
-    use_normalization=False,
-):
+    degree_sequence: List[int],
+    title: str,
+    xlabel: str,
+    plabel: str,
+    ylabel: str = "Number of nodes",
+    formula_x: int = 70,
+    formula_y: float = 0.05,
+    show: bool = True,
+    use_normalization: bool = False,
+) -> Any:
 
     plt.figure(2)
     ax1 = plt.subplot(211)

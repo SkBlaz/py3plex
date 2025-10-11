@@ -1,3 +1,7 @@
+"""Color utilities for py3plex visualization."""
+
+from typing import Dict, List
+
 colors_default = [
     "red",
     "green",
@@ -154,26 +158,47 @@ all_color_names = {
     "yellowgreen": "#9ACD32",
 }
 
-colors_blue = []
+colors_blue: List[str] = []
 
 
-def hex_to_RGB(hex):
-    """ "#FFFFFF" -> [255,255,255]"""
+def hex_to_RGB(hex: str) -> List[int]:
+    """Convert hex color to RGB list.
+
+    Args:
+        hex: Hex color string like "#FFFFFF"
+
+    Returns:
+        RGB values as [R, G, B] list
+    """
     # Pass 16 to the integer function for change of base
     return [int(hex[i : i + 2], 16) for i in range(1, 6, 2)]
 
 
-def RGB_to_hex(RGB):
-    """[255,255,255] -> "#FFFFFF" """
+def RGB_to_hex(RGB: List[int]) -> str:
+    """Convert RGB list to hex color.
+
+    Args:
+        RGB: RGB values as [R, G, B] list
+
+    Returns:
+        Hex color string like "#FFFFFF"
+    """
     # Components need to be integers for hex to make sense
     RGB = [int(x) for x in RGB]
     return "#" + "".join([f"0{v:x}" if v < 16 else f"{v:x}" for v in RGB])
 
 
-def color_dict(gradient):
+def color_dict(gradient: List[List[int]]) -> Dict[str, List]:
     """Takes in a list of RGB sub-lists and returns dictionary of
     colors in RGB and hex form for use in a graphing function
-    defined later on"""
+    defined later on.
+
+    Args:
+        gradient: List of RGB color values
+
+    Returns:
+        Dictionary with 'hex', 'r', 'g', 'b' keys
+    """
     return {
         "hex": [RGB_to_hex(RGB) for RGB in gradient],
         "r": [RGB[0] for RGB in gradient],
@@ -182,11 +207,19 @@ def color_dict(gradient):
     }
 
 
-def linear_gradient(start_hex, finish_hex="#FFFFFF", n=10):
-    """returns a gradient list of (n) colors between
-    two hex colors. start_hex and finish_hex
-    should be the full six-digit color string,
-    inlcuding the number sign ("#FFFFFF")"""
+def linear_gradient(
+    start_hex: str, finish_hex: str = "#FFFFFF", n: int = 10
+) -> Dict[str, List]:
+    """Returns a gradient list of (n) colors between two hex colors.
+
+    Args:
+        start_hex: Starting color as six-digit hex string (e.g., "#FFFFFF")
+        finish_hex: Ending color as six-digit hex string (default: "#FFFFFF")
+        n: Number of colors in gradient (default: 10)
+
+    Returns:
+        Dictionary with 'hex', 'r', 'g', 'b' keys containing gradient colors
+    """
     # Starting and ending colors in RGB form
     s = hex_to_RGB(start_hex)
     f = hex_to_RGB(finish_hex)

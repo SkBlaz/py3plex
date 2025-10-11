@@ -1,11 +1,26 @@
 # a set of measures for assessing community quality
 
 from itertools import product
+from typing import Any, Dict, List
 
+import networkx as nx
 import numpy as np
 
 
-def modularity(G, communities, weight="weight"):
+def modularity(
+    G: nx.Graph, communities: Dict[Any, List[Any]], weight: str = "weight"
+) -> float:
+    """
+    Calculate modularity of a graph partition.
+
+    Args:
+        G: NetworkX graph
+        communities: Dictionary mapping community IDs to node lists
+        weight: Edge weight attribute (default: "weight")
+
+    Returns:
+        Modularity value
+    """
 
     communities = list(communities.values())
     multigraph = G.is_multigraph()
@@ -37,9 +52,27 @@ def modularity(G, communities, weight="weight"):
     return Q * norm
 
 
-def size_distribution(network_partition):
+def size_distribution(network_partition: Dict[Any, List[Any]]) -> np.ndarray:
+    """
+    Calculate size distribution of communities.
+
+    Args:
+        network_partition: Dictionary mapping community IDs to node lists
+
+    Returns:
+        Array of community sizes
+    """
     return np.array([len(x) for x in network_partition.values()])
 
 
-def number_of_communities(network_partition):
+def number_of_communities(network_partition: Dict[Any, List[Any]]) -> int:
+    """
+    Count number of communities in a partition.
+
+    Args:
+        network_partition: Dictionary mapping community IDs to node lists
+
+    Returns:
+        Number of communities
+    """
     return len(network_partition)

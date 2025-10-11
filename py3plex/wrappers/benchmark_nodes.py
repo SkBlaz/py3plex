@@ -4,6 +4,7 @@ import multiprocessing as mp
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from collections import defaultdict
+from typing import Any, Dict, List
 
 import numpy
 from gensim.models import KeyedVectors
@@ -18,7 +19,17 @@ from sklearn.utils import shuffle as skshuffle
 
 
 class TopKRanker(OneVsRestClassifier):
-    def predict(self, X, top_k_list):
+    def predict(self, X: numpy.ndarray, top_k_list: List[int]) -> List[List]:
+        """
+        Predict top K labels for each sample.
+
+        Args:
+            X: Feature matrix
+            top_k_list: List of K values for each sample
+
+        Returns:
+            List of predicted labels for each sample
+        """
         assert X.shape[0] == len(top_k_list)
         probs = numpy.asarray(super().predict_proba(X))
         all_labels = []
@@ -29,7 +40,16 @@ class TopKRanker(OneVsRestClassifier):
         return all_labels
 
 
-def sparse2graph(x):
+def sparse2graph(x: sparse.spmatrix) -> Dict[str, List[str]]:
+    """
+    Convert sparse matrix to graph dictionary.
+
+    Args:
+        x: Sparse matrix representation of graph
+
+    Returns:
+        Dictionary mapping node IDs to lists of neighbor IDs
+    """
     G = defaultdict(lambda: set())
     cx = x.tocoo()
     for i, j, _v in zip(cx.row, cx.col, cx.data):
@@ -37,7 +57,21 @@ def sparse2graph(x):
     return {str(k): [str(x) for x in v] for k, v in iteritems(G)}
 
 
-def benchmark_node_classification(path, core_network, labels_matrix, percent="all"):
+def benchmark_node_classification(
+    path: str, core_network: Any, labels_matrix: Any, percent: Any = "all"
+) -> Dict[str, Any]:
+    """
+    Benchmark node classification using embeddings.
+
+    Args:
+        path: Path to embeddings file
+        core_network: Network adjacency matrix
+        labels_matrix: Labels for nodes
+        percent: Training percentage or "all" for multiple percentages
+
+    Returns:
+        Dictionary of classification results
+    """
 
     model = KeyedVectors.load_word2vec_format(path, binary=False)
     nodelen = core_network.shape[0]

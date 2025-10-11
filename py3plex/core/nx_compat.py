@@ -4,6 +4,7 @@ This module provides compatibility functions for different NetworkX versions.
 """
 
 import pickle
+from typing import Any, Optional
 
 import networkx as nx
 
@@ -11,7 +12,7 @@ import networkx as nx
 NX_VERSION = tuple(map(int, nx.__version__.split(".")[:2]))
 
 
-def nx_info(G):
+def nx_info(G: nx.Graph) -> str:
     """
     Get network information (compatible with NetworkX < 3.0 and >= 3.0).
 
@@ -45,7 +46,7 @@ def nx_info(G):
         return "\n".join(info_lines)
 
 
-def nx_read_gpickle(path):
+def nx_read_gpickle(path: str) -> nx.Graph:
     """
     Read a graph from a pickle file (compatible with NetworkX < 3.0 and >= 3.0).
 
@@ -64,7 +65,7 @@ def nx_read_gpickle(path):
             return pickle.load(f)
 
 
-def nx_write_gpickle(G, path):
+def nx_write_gpickle(G: nx.Graph, path: str) -> None:
     """
     Write a graph to a pickle file (compatible with NetworkX < 3.0 and >= 3.0).
 
@@ -82,8 +83,12 @@ def nx_write_gpickle(G, path):
 
 
 def nx_to_scipy_sparse_matrix(
-    G, nodelist=None, dtype=None, weight="weight", format="csr"
-):
+    G: nx.Graph,
+    nodelist: Optional[list] = None,
+    dtype: Optional[Any] = None,
+    weight: str = "weight",
+    format: str = "csr",
+) -> Any:  # Returns scipy sparse matrix
     """
     Convert graph to scipy sparse matrix (compatible with NetworkX < 3.0 and >= 3.0).
 
@@ -111,7 +116,7 @@ def nx_to_scipy_sparse_matrix(
         return matrix
 
 
-def is_string_like(obj):
+def is_string_like(obj: Any) -> bool:
     """
     Check if obj is string-like (compatible with NetworkX < 3.0).
 
@@ -125,8 +130,11 @@ def is_string_like(obj):
 
 
 def nx_from_scipy_sparse_matrix(
-    A, parallel_edges=False, create_using=None, edge_attribute="weight"
-):
+    A: Any,  # scipy sparse matrix
+    parallel_edges: bool = False,
+    create_using: Optional[nx.Graph] = None,
+    edge_attribute: str = "weight",
+) -> nx.Graph:
     """
     Create a graph from scipy sparse matrix (compatible with NetworkX < 3.0 and >= 3.0).
 

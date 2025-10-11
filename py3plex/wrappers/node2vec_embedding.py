@@ -4,6 +4,7 @@ import multiprocessing as mp
 import os
 import time
 from subprocess import call
+from typing import Any, List, Optional
 
 from sklearn import linear_model
 from sklearn.multiclass import OneVsRestClassifier
@@ -14,15 +15,28 @@ from .benchmark_nodes import benchmark_node_classification, graph, self
 
 
 def call_node2vec_binary(
-    input_graph,
-    output_graph,
-    p=1,
-    q=1,
-    dimension=128,
-    directed=False,
-    weighted=True,
-    binary="./node2vec",
-):
+    input_graph: str,
+    output_graph: str,
+    p: float = 1,
+    q: float = 1,
+    dimension: int = 128,
+    directed: bool = False,
+    weighted: bool = True,
+    binary: str = "./node2vec",
+) -> None:
+    """
+    Call the node2vec binary to generate embeddings.
+
+    Args:
+        input_graph: Path to input graph file
+        output_graph: Path to output embedding file
+        p: Return parameter (default: 1)
+        q: In-out parameter (default: 1)
+        dimension: Embedding dimension (default: 128)
+        directed: Whether graph is directed (default: False)
+        weighted: Whether graph is weighted (default: True)
+        binary: Path to node2vec binary (default: "./node2vec")
+    """
 
     input_params = []
     input_params.append(binary)
@@ -42,17 +56,35 @@ def call_node2vec_binary(
 
 
 def n2v_embedding(
-    G,
-    targets,
-    verbose=False,
-    sample_size=0.5,
-    outfile_name="test.emb",
-    p=-100,
-    q=-100,
-    binary_path="./node2vec",
-    parameter_range=None,
-    embedding_dimension=128,
-):
+    G: Any,
+    targets: Any,
+    verbose: bool = False,
+    sample_size: float = 0.5,
+    outfile_name: str = "test.emb",
+    p: float = -100,
+    q: float = -100,
+    binary_path: str = "./node2vec",
+    parameter_range: Optional[List[float]] = None,
+    embedding_dimension: int = 128,
+) -> Any:
+    """
+    Generate node2vec embeddings and benchmark them.
+
+    Args:
+        G: NetworkX graph
+        targets: Target labels for nodes
+        verbose: Whether to print verbose output (default: False)
+        sample_size: Sample size for training (default: 0.5)
+        outfile_name: Output file name (default: "test.emb")
+        p: Return parameter (default: -100, will be auto-tuned)
+        q: In-out parameter (default: -100, will be auto-tuned)
+        binary_path: Path to node2vec binary (default: "./node2vec")
+        parameter_range: Range of parameters to try (optional)
+        embedding_dimension: Dimension of embeddings (default: 128)
+
+    Returns:
+        Benchmark results
+    """
 
     # construct the embedding and return the binary..
     # ./node2vec -i:graph/karate.edgelist -o:emb/karate.emb -l:3 -d:24 -p:0.3 -dr -v

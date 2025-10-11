@@ -6,6 +6,7 @@
 
 import logging
 from collections import defaultdict
+from typing import Tuple
 
 import pandas as pd
 from scipy.stats import fisher_exact
@@ -17,10 +18,16 @@ logging.basicConfig(format="%(asctime)s - %(message)s", datefmt="%d-%b-%y %H:%M:
 logging.getLogger().setLevel(logging.INFO)
 
 
-def calculate_pval(term, alternative="two-sided"):
+def calculate_pval(term: Tuple[str, int], alternative: str = "two-sided") -> float:
     """
     Parallel kernel for computation of p vals. All partitions are considered with respect to agiven GO term! Counts in a given partition are compared to population.
 
+    Args:
+        term: Tuple of (query_term, query_term_count_population)
+        alternative: Alternative hypothesis for Fisher's exact test
+
+    Returns:
+        p-value from Fisher's exact test
     """
 
     query_term = term[0]
@@ -50,9 +57,12 @@ def calculate_pval(term, alternative="two-sided"):
     return p_value
 
 
-def multiple_test_correction(input_dataset):
+def multiple_test_correction(input_dataset: str) -> None:
     """
     Multiple test correction. Given a dataset with corresponding significance levels, perform MTC.
+
+    Args:
+        input_dataset: Path to input file with test results
     """
 
     from statsmodels.sandbox.stats.multicomp import multipletests

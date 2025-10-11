@@ -1,10 +1,25 @@
 # Compute many possible network statistics
 
+from typing import Any, Optional
+
 import networkx as nx
 import pandas as pd
 
 
-def core_network_statistics(G, labels=None, name="example"):
+def core_network_statistics(
+    G: nx.Graph, labels: Optional[Any] = None, name: str = "example"
+) -> pd.DataFrame:
+    """
+    Compute core network statistics.
+
+    Args:
+        G: NetworkX graph
+        labels: Optional labels matrix
+        name: Name for the network
+
+    Returns:
+        DataFrame with network statistics
+    """
     rframe = pd.DataFrame(
         columns=[
             "Name",

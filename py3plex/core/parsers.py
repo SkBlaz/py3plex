@@ -4,6 +4,7 @@ import glob
 import gzip
 import itertools
 import json
+from typing import Any, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -18,17 +19,18 @@ from .supporting import add_mpx_edges
 logger = get_logger(__name__)
 
 
-def parse_gml(file_name, directed):
+def parse_gml(
+    file_name: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
-    parse a gml network
+    Parse a gml network.
 
     Args:
-        param1 (obj): file name
-        param2 (obj): directed?
+        file_name: Path to GML file
+        directed: Whether to create directed graph
 
     Returns:
-    (multigraph, possible labels)
-
+        Tuple of (multigraph, possible labels)
     """
 
     H = nx.read_gml(file_name)
@@ -57,32 +59,47 @@ def parse_gml(file_name, directed):
     return (A, None)
 
 
-def parse_nx(nx_object, directed):
+def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
     """
-    Core parser for networkx objects
+    Core parser for networkx objects.
+
     Args:
-        a networkx graph
+        nx_object: A networkx graph
+        directed: Whether the graph is directed
+
+    Returns:
+        Tuple of (graph, None)
     """
 
     return (nx_object, None)
 
 
-def parse_matrix(file_name, directed):
+def parse_matrix(file_name: str, directed: bool) -> Tuple[Any, Any]:
     """
-    Parser for matrices
+    Parser for matrices.
+
     Args:
-        A SciPy sparse matrix
+        file_name: Path to .mat file
+        directed: Whether the graph is directed
+
+    Returns:
+        Tuple of (network, group) from the .mat file
     """
 
     mat = scipy.io.loadmat(file_name)
     return (mat["network"], mat["group"])
 
 
-def parse_matrix_to_nx(file_name, directed):
+def parse_matrix_to_nx(file_name: str, directed: bool) -> Union[nx.Graph, nx.DiGraph]:
     """
-    Parser for matrices
+    Parser for matrices to NetworkX graph.
+
     Args:
-        A SciPy sparse matrix
+        file_name: Path to .mat file
+        directed: Whether to create directed graph
+
+    Returns:
+        NetworkX Graph or DiGraph
     """
 
     mat = scipy.io.loadmat(file_name)

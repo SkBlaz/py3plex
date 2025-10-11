@@ -7,7 +7,16 @@ import numpy as np
 from scipy import stats
 
 
-def pick_threshold(matrix):
+def pick_threshold(matrix: np.ndarray) -> float:
+    """
+    Pick optimal threshold for correlation network construction.
+
+    Args:
+        matrix: Input data matrix
+
+    Returns:
+        Optimal threshold value
+    """
     current_r_opt = 0
     rho, pval = stats.spearmanr(matrix)
     for j in np.linspace(0, 1, 50):
@@ -30,7 +39,20 @@ def pick_threshold(matrix):
     return current_r_opt
 
 
-def default_correlation_to_network(matrix, input_type="matrix", preprocess="standard"):
+def default_correlation_to_network(
+    matrix: np.ndarray, input_type: str = "matrix", preprocess: str = "standard"
+) -> np.ndarray:
+    """
+    Convert correlation matrix to network using optimal thresholding.
+
+    Args:
+        matrix: Input data matrix
+        input_type: Type of input (default: "matrix")
+        preprocess: Preprocessing method (default: "standard")
+
+    Returns:
+        Binary adjacency matrix
+    """
     if preprocess == "standard":
         matrix = (matrix - np.mean(matrix, axis=0)) / np.std(matrix, axis=0)
 
