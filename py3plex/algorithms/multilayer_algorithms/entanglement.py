@@ -11,7 +11,10 @@ import numpy as np
 from scipy import spatial
 from scipy.sparse.csgraph import connected_components, csgraph_from_dense
 
-print(sys.version)
+from ...logging_config import get_logger
+
+logger = get_logger(__name__)
+logger.info("Python version: %s", sys.version)
 
 
 # Build the R and C matrix
@@ -148,13 +151,13 @@ if __name__ == "__main__":
 
     analysis = compute_entanglement_analysis(net)
 
-    print("%d connected components of layers" % len(analysis))
+    logger.info("%d connected components of layers", len(analysis))
     for i, b in enumerate(analysis):
-        print("--- block %d" % i)
+        logger.info("--- block %d", i)
         layer_labels = b["Layer entanglement"].keys()
-        print(f"Covering layers: {layer_labels}")
+        logger.info("Covering layers: %s", layer_labels)
 
-        print("Entanglement intensity: {:f}".format(b["Entanglement intensity"]))
-        print("Layer entanglement: {}".format(b["Layer entanglement"]))
-        print("Entanglement homogeneity: {:f}".format(b["Entanglement homogeneity"]))
-        print("Normalized homogeneity: {:f}".format(b["Normalized homogeneity"]))
+        logger.info("Entanglement intensity: %f", b["Entanglement intensity"])
+        logger.info("Layer entanglement: %s", b["Layer entanglement"])
+        logger.info("Entanglement homogeneity: %f", b["Entanglement homogeneity"])
+        logger.info("Normalized homogeneity: %f", b["Normalized homogeneity"])

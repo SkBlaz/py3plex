@@ -6,12 +6,15 @@ from typing import Any, Dict, List, Tuple
 import numpy as np
 from scipy.cluster.hierarchy import fcluster, linkage
 
+from ...logging_config import get_logger
 from py3plex.algorithms.node_ranking.node_ranking import (
     modularity,
     sparse_page_rank,
     stochastic_normalization,
 )
 from py3plex.core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
+
+logger = get_logger(__name__)
 
 global _RANK_GRAPH
 
@@ -68,11 +71,11 @@ def return_infomap_communities(network: Any) -> List[List[int]]:
         infomapWrapper.addLink(e[0], e[1])
     infomapWrapper.run()
     tree = infomapWrapper.tree
-    print(
-        "Found %d modules with codelength: %f"
-        % (tree.numTopModules(), tree.codelength())
+    logger.info(
+        "Found %d modules with codelength: %f",
+        tree.numTopModules(), tree.codelength()
     )
-    print("\n#node module")
+    logger.info("#node module")
     part = defaultdict(list)
     for node in tree.leafIter():
         part[node.moduleIndex()].append(node.physIndex)
@@ -90,7 +93,7 @@ if __name__ == "__main__":
 
     global _RANK_GRAPH
 
-    print("Generating communities..")
+    logger.info("Generating communities..")
 
     n = 500
     tau1 = 4
@@ -100,7 +103,7 @@ if __name__ == "__main__":
     _RANK_GRAPH = LFR_benchmark_graph(
         n, tau1, tau2, mu, average_degree=5, min_community=30, seed=10
     )
-    print(nx_info(_RANK_GRAPH))
+    logger.info("Graph info:\n%s", nx_info(_RANK_GRAPH))
     A = _RANK_GRAPH.copy()
     _RANK_GRAPH = nx_to_scipy_sparse_matrix(_RANK_GRAPH)
     _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  # normalize
@@ -132,7 +135,7 @@ if __name__ == "__main__":
                 mx_opt = mx
             dx_rc = defaultdict(list)
 
-        print(f"KM: {mx_opt}")
+        logger.info("KM: %s", mx_opt)
         Z = linkage(vectors, "ward")
         mod_hc_opt = 0
         for nclust in range(3, _RANK_GRAPH.shape[0]):
@@ -148,14 +151,14 @@ if __name__ == "__main__":
             except (ValueError, IndexError):
                 pass
 
-        print(f"Hierarchical: {mod}")
+        logger.info("Hierarchical: %s", mod)
 
     # the louvain partition
     partition = community.best_partition(A)
     for a, b in partition.items():
         dx_lx[b].append(a)
     partition_louvain = dx_lx.values()
-    print("Louvain: {}".format(modularity(A, partition_louvain, weight="weight")))
+    logger.info("Louvain: %s", modularity(A, partition_louvain, weight="weight"))
 
     parts_im = return_infomap_communities(A)
-    print("Infomap: {}".format(modularity(A, parts_im, weight="weight")))
+    logger.info("Infomap: %s", modularity(A, parts_im, weight="weight"))

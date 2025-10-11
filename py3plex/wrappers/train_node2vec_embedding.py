@@ -8,9 +8,12 @@ from subprocess import call
 from sklearn import linear_model
 from sklearn.multiclass import OneVsRestClassifier
 
+from ..logging_config import get_logger
 from py3plex.core.nx_compat import nx_info
 
 from .benchmark_nodes import benchmark_node_classification
+
+logger = get_logger(__name__)
 
 
 def call_node2vec_binary(
@@ -32,7 +35,7 @@ def call_node2vec_binary(
     input_params.append("-p:" + str(p))
     input_params.append("-q:" + str(q))
     input_params.append("-v")
-    print(" ".join(input_params))
+    logger.info("Node2vec parameters: %s", " ".join(input_params))
     if directed:
         input_params.append("-d")
     if weighted:
@@ -60,7 +63,7 @@ def n2v_embedding(
         parameter_range = [0.25, 0.5, 1, 2, 4]
     OneVsRestClassifier(linear_model.LogisticRegression(), n_jobs=mp.cpu_count())
     if verbose:
-        print(nx_info(G))
+        logger.info("Graph info:\n%s", nx_info(G))
 
     len(G.nodes())
 
@@ -74,7 +77,7 @@ def n2v_embedding(
     number_of_edges = len(G.edges())
 
     if verbose:
-        print(f"Graph has {number_of_edges} edges and {number_of_nodes} nodes.")
+        logger.info("Graph has %d edges and %d nodes.", number_of_edges, number_of_nodes)
 
     f = open(tmp_graph, "w+")
 
@@ -84,14 +87,14 @@ def n2v_embedding(
     f.close()
 
     if verbose:
-        print("N2V training phase..")
+        logger.info("N2V training phase..")
 
     vals = parameter_range
     copt = 0
     cset = [0, 0]
 
     if float(p) > -100 and float(q) > -100:
-        print("Runing specific config of N2V.")
+        logger.info("Running specific config of N2V.")
         call_node2vec_binary(
             tmp_graph, outfile_name, p=p, q=q, directed=False, weighted=True
         )
@@ -110,7 +113,7 @@ def n2v_embedding(
                     weighted=True,
                     binary=binary_path,
                 )
-                print(f"parsing {outfile_name}")
+                logger.debug("Parsing %s", outfile_name)
                 rdict = benchmark_node_classification(
                     outfile_name, graph, targets, percent=float(sample_size)
                 )
@@ -118,16 +121,16 @@ def n2v_embedding(
                 mi, ma, misd, masd = rdict[float(sample_size)]
                 if ma > copt:
                     if verbose:
-                        print(f"Updating the parameters: {ma} {cset}")
+                        logger.info("Updating the parameters: %s %s", ma, cset)
 
                     cset = [x, y]
                     copt = ma
                 else:
-                    print(f"Current optimum {ma}")
+                    logger.debug("Current optimum %s", ma)
 
                 call(["rm", "-rf", outfile_name])  # when updatedin delete the file
 
-        print("Final iteration phase..")
+        logger.info("Final iteration phase..")
 
         call_node2vec_binary(
             tmp_graph,
@@ -141,7 +144,7 @@ def n2v_embedding(
 
         with open(outfile_name) as f:
             fl = f.readline()
-            print(f"Resulting dimensions:{fl}")
+            logger.info("Resulting dimensions: %s", fl)
 
         call(["rm", "-rf", "tmp"])
 
