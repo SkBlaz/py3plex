@@ -61,7 +61,7 @@ def parse_gaf_to_uniprot_GO(
                     uniGO[parts[1]].append(parts[4])  # GO and ref both added
                 if "GO:" in parts[3]:
                     uniGO[parts[1]].append(parts[3])
-            except (IndexError, KeyError) as e:
+            except (IndexError, KeyError):
                 # Skip malformed lines with missing fields
                 continue
 

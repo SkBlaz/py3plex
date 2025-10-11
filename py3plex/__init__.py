@@ -2,20 +2,20 @@
 
 # Import custom exceptions for easy access
 from py3plex.exceptions import (
-    Py3plexException,
-    NetworkConstructionError,
-    InvalidLayerError,
-    InvalidNodeError,
-    InvalidEdgeError,
-    ParsingError,
-    VisualizationError,
     AlgorithmError,
-    CommunityDetectionError,
     CentralityComputationError,
+    CommunityDetectionError,
+    ConversionError,
     DecompositionError,
     EmbeddingError,
-    ConversionError,
     IncompatibleNetworkError,
+    InvalidEdgeError,
+    InvalidLayerError,
+    InvalidNodeError,
+    NetworkConstructionError,
+    ParsingError,
+    Py3plexException,
+    VisualizationError,
 )
 
 __all__ = [
@@ -34,4 +34,3 @@ __all__ = [
     "ConversionError",
     "IncompatibleNetworkError",
 ]
-

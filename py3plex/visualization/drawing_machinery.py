@@ -692,7 +692,7 @@ def draw_networkx_edges(
             arrow_collection.append(arrow)
             try:
                 ax.add_patch(arrow)
-            except (AttributeError, ValueError) as e:
+            except (AttributeError, ValueError):
                 # Skip patches that cannot be added to the axes
                 continue
 
