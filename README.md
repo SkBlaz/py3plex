@@ -29,8 +29,6 @@ pip install -e .
 To get started, please view the **examples** folder.
 Extensive documentation and quickstart tutorials are available at: [DOCS](https://py3plex.readthedocs.io/en/latest/)
 
-For testing instructions, see [TESTING.md](./TESTING.md).
-
 ### Requirements
 
 - Python 3.8 or higher
@@ -38,13 +36,64 @@ For testing instructions, see [TESTING.md](./TESTING.md).
 
 For any errors, please open an issue!
 
+### Testing
+
+The simplest way to run tests:
+
+```bash
+python run_tests.py
+```
+
+For development with pytest:
+
+```bash
+# Install dev dependencies
+pip install -e ".[dev]"
+
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=py3plex --cov-report=html
+```
+
+### Development Status
+
+**Current Status**: Phase 1 Nearly Complete (~80%)
+
+Recent improvements include:
+- ✅ All bare except clauses fixed (50+ → 0)
+- ✅ All wildcard imports removed (9 → 0)
+- ✅ Modern packaging added (pyproject.toml)
+- ✅ Logging infrastructure created
+- 🔄 Print → Logging conversion: 7% complete
+- 🔄 Type hints: 2.3% complete
+
+**Next Steps (Phase 2)**:
+- Expand test coverage to 30%+
+- Complete print→logging conversion
+- Add more type hints
+- Refactor global state
+
+For comprehensive context for LLMs and maintainers, see [LLM.md](./LLM.md).
+
 ### Contributions
 If you are interested in contributing please:
 - Either open a pull request
 - Or write with your idea
 - Or open an issue with your suggestion (feature requests welcome)
 
-For current project status and modernization roadmap, see [STATUS.md](./STATUS.md). For completed work details, see [IMPROVEMENTS_PHASE_1A.md](./IMPROVEMENTS_PHASE_1A.md) and [IMPROVEMENTS_PHASE_1B.md](./IMPROVEMENTS_PHASE_1B.md).
+**Development Tools**:
+The `pyproject.toml` includes configurations for:
+- **Black**: Code formatting (`black py3plex/`)
+- **Ruff**: Fast linting (`ruff check py3plex/ --fix`)
+- **Mypy**: Type checking (`mypy py3plex/ --ignore-missing-imports`)
+- **Pytest**: Testing with coverage
+
+```bash
+# Install dev dependencies
+pip install -e ".[dev]"
+```
 
 
 # Citations
