@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 
-import numpy
+import multiprocessing as mp
 import sys
-
-from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from collections import defaultdict
+
+import numpy
 from gensim.models import KeyedVectors
+from scipy import sparse
+from scipy.io import loadmat
 from six import iteritems
-from sklearn.multiclass import OneVsRestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
-from scipy.io import loadmat
-from sklearn.utils import shuffle as skshuffle
+from sklearn.multiclass import OneVsRestClassifier
 from sklearn.preprocessing import MultiLabelBinarizer
-import multiprocessing as mp
-from scipy import sparse
+from sklearn.utils import shuffle as skshuffle
 
 
 class TopKRanker(OneVsRestClassifier):
     def predict(self, X, top_k_list):
         assert X.shape[0] == len(top_k_list)
-        probs = numpy.asarray(super(TopKRanker, self).predict_proba(X))
+        probs = numpy.asarray(super().predict_proba(X))
         all_labels = []
         for i, k in enumerate(top_k_list):
             probs_ = probs[i, :]
@@ -32,15 +32,12 @@ class TopKRanker(OneVsRestClassifier):
 def sparse2graph(x):
     G = defaultdict(lambda: set())
     cx = x.tocoo()
-    for i, j, v in zip(cx.row, cx.col, cx.data):
+    for i, j, _v in zip(cx.row, cx.col, cx.data):
         G[i].add(j)
     return {str(k): [str(x) for x in v] for k, v in iteritems(G)}
 
 
-def benchmark_node_classification(path,
-                                  core_network,
-                                  labels_matrix,
-                                  percent="all"):
+def benchmark_node_classification(path, core_network, labels_matrix, percent="all"):
 
     model = KeyedVectors.load_word2vec_format(path, binary=False)
     nodelen = core_network.shape[0]
@@ -54,13 +51,12 @@ def benchmark_node_classification(path,
         pass
 
     # Map nodes to their features (note:  assumes nodes are labeled as integers 1:N)
-    features_matrix = numpy.asarray(
-        [model[str(node)] for node in range(nodelen)])
+    features_matrix = numpy.asarray([model[str(node)] for node in range(nodelen)])
 
     # 2. Shuffle, to create train/test groups
     shuffles = []
 
-    for x in range(10):
+    for _x in range(10):
         shuffles.append(skshuffle(features_matrix, labels_matrix))
 
     # 3. to score each train/test group
@@ -109,9 +105,9 @@ def benchmark_node_classification(path,
             results = {}
             averages = ["micro", "macro"]
             for average in averages:
-                results[average] = f1_score(mlb.fit_transform(y_test),
-                                            mlb.fit_transform(preds),
-                                            average=average)
+                results[average] = f1_score(
+                    mlb.fit_transform(y_test), mlb.fit_transform(preds), average=average
+                )
 
             all_results[train_percent].append(results)
 
@@ -121,44 +117,50 @@ def benchmark_node_classification(path,
         micros = []
         macros = []
         for result in all_results[train_percent]:
-            micros.append(result['micro'])
-            macros.append(result['macro'])
-        rdict[train_percent] = (numpy.mean(micros), numpy.mean(macros),
-                                numpy.std(micros), numpy.std(macros))
+            micros.append(result["micro"])
+            macros.append(result["macro"])
+        rdict[train_percent] = (
+            numpy.mean(micros),
+            numpy.mean(macros),
+            numpy.std(micros),
+            numpy.std(macros),
+        )
 
     return rdict
 
 
 def main():
-    parser = ArgumentParser("scoring",
-                            formatter_class=ArgumentDefaultsHelpFormatter,
-                            conflict_handler='resolve')
-    parser.add_argument("--emb", required=True, help='Embeddings file')
+    parser = ArgumentParser(
+        "scoring",
+        formatter_class=ArgumentDefaultsHelpFormatter,
+        conflict_handler="resolve",
+    )
+    parser.add_argument("--emb", required=True, help="Embeddings file")
     parser.add_argument(
         "--network",
         required=True,
-        help=
-        'A .mat file containing the adjacency matrix and node labels of the input network.'
+        help="A .mat file containing the adjacency matrix and node labels of the input network.",
     )
     parser.add_argument(
         "--adj-matrix-name",
-        default='network',
-        help='Variable name of the adjacency matrix inside the .mat file.')
+        default="network",
+        help="Variable name of the adjacency matrix inside the .mat file.",
+    )
     parser.add_argument(
         "--label-matrix-name",
-        default='group',
-        help='Variable name of the labels matrix inside the .mat file.')
-    parser.add_argument("--num-shuffles",
-                        default=10,
-                        type=int,
-                        help='Number of shuffles.')
+        default="group",
+        help="Variable name of the labels matrix inside the .mat file.",
+    )
+    parser.add_argument(
+        "--num-shuffles", default=10, type=int, help="Number of shuffles."
+    )
     parser.add_argument(
         "--all",
         default=False,
-        action='store_true',
-        help=
-        'The embeddings are evaluated on all training percents from 10 to 90 when this flag is set to true. '
-        'By default, only training percents of 10, 50 and 90 are used.')
+        action="store_true",
+        help="The embeddings are evaluated on all training percents from 10 to 90 when this flag is set to true. "
+        "By default, only training percents of 10, 50 and 90 are used.",
+    )
 
     args = parser.parse_args()
     # 0. Files
@@ -180,19 +182,18 @@ def main():
 
     # Map nodes to their features (note:  assumes nodes are labeled as integers 1:N)
 
-    features_matrix = numpy.asarray(
-        [model[str(node)] for node in range(nodelen)])
+    features_matrix = numpy.asarray([model[str(node)] for node in range(nodelen)])
 
     # 2. Shuffle, to create train/test groups
     shuffles = []
-    for x in range(args.num_shuffles):
+    for _x in range(args.num_shuffles):
         shuffles.append(skshuffle(features_matrix, labels_matrix))
 
     # 3. to score each train/test group
     all_results = defaultdict(list)
 
     if args.all:
-        training_percents = numpy.asarray(range(1, 10)) * .1
+        training_percents = numpy.asarray(range(1, 10)) * 0.1
     else:
         training_percents = [0.5]
     for train_percent in training_percents:
@@ -232,26 +233,26 @@ def main():
             results = {}
             averages = ["micro", "macro"]
             for average in averages:
-                results[average] = f1_score(mlb.fit_transform(y_test),
-                                            mlb.fit_transform(preds),
-                                            average=average)
+                results[average] = f1_score(
+                    mlb.fit_transform(y_test), mlb.fit_transform(preds), average=average
+                )
 
             all_results[train_percent].append(results)
 
-    print('Results, using embeddings of dimensionality', X.shape[1])
-    print('-------------------')
+    print("Results, using embeddings of dimensionality", X.shape[1])
+    print("-------------------")
     for train_percent in sorted(all_results.keys()):
-        print('Train percent:', train_percent)
+        print("Train percent:", train_percent)
         for index, result in enumerate(all_results[train_percent]):
-            print('Shuffle #%d:   ' % (index + 1), result)
+            print("Shuffle #%d:   " % (index + 1), result)
         avg_score = defaultdict(float)
         for score_dict in all_results[train_percent]:
             for metric, score in iteritems(score_dict):
                 avg_score[metric] += score
         for metric in avg_score:
             avg_score[metric] /= len(all_results[train_percent])
-        print('Average score:', dict(avg_score))
-        print('-------------------')
+        print("Average score:", dict(avg_score))
+        print("-------------------")
 
 
 if __name__ == "__main__":

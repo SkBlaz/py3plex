@@ -2,8 +2,8 @@
 
 # some generic methods used at many places..
 
-from collections import defaultdict, Counter
 import gzip
+from collections import Counter, defaultdict
 
 
 def read_termlist(terms):
@@ -23,8 +23,7 @@ def parse_gaf_file(gaf_mappings, whole_list_counts=False):
     if whole_list_counts:
         whole_list = []
 
-
-#    print("parsing GAF file.. {}".format(gaf_mappings))
+    #    print("parsing GAF file.. {}".format(gaf_mappings))
     if ".gz" in gaf_mappings:
         with gzip.open(gaf_mappings, "rb") as im:
             for line in im:
@@ -39,7 +38,7 @@ def parse_gaf_file(gaf_mappings, whole_list_counts=False):
                 except Exception as es:
                     print(es)
     else:
-        with open(gaf_mappings, "r") as im:
+        with open(gaf_mappings) as im:
             for line in im:
                 parts = line.strip().split("\t")
                 try:
@@ -73,10 +72,9 @@ def read_topology_mappings(mapping):
 
 def read_uniprot_GO(filename, verbose=True):
     # read the GAF file..
-    unigo_counts, whole_termlist = parse_gaf_file(filename,
-                                                  whole_list_counts=True)
+    unigo_counts, whole_termlist = parse_gaf_file(filename, whole_list_counts=True)
     term_counts = Counter(whole_termlist)
     all_terms = sum(list(term_counts.values()))
     if verbose:
-        print("All annotations {}".format(all_terms))
+        print(f"All annotations {all_terms}")
     return (unigo_counts, term_counts, all_terms)

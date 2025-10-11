@@ -1,37 +1,40 @@
-'''
+"""
 Main learner class.
 
 @author: anze.vavpetic@ijs.si
-'''
+"""
 
-from py3plex.algorithms.hedwig.core import UnaryPredicate, Rule, Example
+from py3plex.algorithms.hedwig.core import Example, Rule, UnaryPredicate
 from py3plex.algorithms.hedwig.core.settings import logger
-from py3plex.algorithms.hedwig.stats.significance import is_redundant
 from py3plex.algorithms.hedwig.stats.scorefunctions import interesting
+from py3plex.algorithms.hedwig.stats.significance import is_redundant
 
 
 class Learner:
-    '''
+    """
     Learner class, supporting various types of induction
     from the knowledge base.
 
     TODO:
         - bottom clause approach
         - feature construction
-    '''
-    Similarity = 'similarity'
-    Improvement = 'improvement'
-    Default = 'default'
+    """
 
-    def __init__(self,
-                 kb,
-                 n=None,
-                 min_sup=1,
-                 sim=1,
-                 depth=4,
-                 target=None,
-                 use_negations=False,
-                 optimal_subclass=False):
+    Similarity = "similarity"
+    Improvement = "improvement"
+    Default = "default"
+
+    def __init__(
+        self,
+        kb,
+        n=None,
+        min_sup=1,
+        sim=1,
+        depth=4,
+        target=None,
+        use_negations=False,
+        optimal_subclass=False,
+    ):
         self.kb = kb
         self.n = n  # Beam length
         self.min_sup = min_sup
@@ -42,8 +45,7 @@ class Learner:
         self.optimal_subclass = optimal_subclass
 
         if kb.is_discrete_target():
-            self.target = list(
-                self.kb.class_values)[0] if not target else target
+            self.target = list(self.kb.class_values)[0] if not target else target
         else:
             self.target = None
 
@@ -92,9 +94,9 @@ class Learner:
         return pred in self.implicit_roots
 
     def induce(self):
-        '''
+        """
         Induces rules for the given knowledge base.
-        '''
+        """
         root_pred = self.kb.get_root()
 
         rules = [Rule(self.kb, predicates=[root_pred], target=self.target)]
@@ -106,25 +108,24 @@ class Learner:
         return interesting_rules
 
     def __induce_level(self, rules):
-        '''
+        """
         Specializes the rules for the last level with unary predicates.
-        '''
+        """
         while True:
             old_score = self.group_score(rules)
             new_rules = rules[:]
-            for i, rule in enumerate(rules):
+            for _i, rule in enumerate(rules):
                 specializations = self.specialize(rule)
                 self.extend(new_rules, specializations)
 
             # Take the first N rules
-            rules = sorted(new_rules,
-                           key=lambda rule: rule.score,
-                           reverse=True)[:self.n]
+            rules = sorted(new_rules, key=lambda rule: rule.score, reverse=True)[
+                : self.n
+            ]
 
             new_score = self.group_score(rules)
 
-            logger.debug("Old score: %.3f, New score: %.3f" %
-                         (old_score, new_score))
+            logger.debug(f"Old score: {old_score:.3f}, New score: {new_score:.3f}")
 
             if 1 - abs(old_score / (new_score + 0.0001)) < 0.01:
                 break
@@ -132,9 +133,9 @@ class Learner:
         return rules
 
     def extend(self, rules, specializations):
-        '''
+        """
         Extends the ruleset in the given way.
-        '''
+        """
         if self.extending == Learner.Default:
             return rules.extend(specializations)
         elif self.extending == Learner.Improvement:
@@ -143,10 +144,10 @@ class Learner:
             return self.extend_with_similarity(rules, specializations)
 
     def extend_with_similarity(self, rules, specializations):
-        '''
+        """
         Extends the list based on how similar is 'new_rule'
         to the rules contained in 'rules'.
-        '''
+        """
         for new_rule in specializations:
             tmp_rules = rules[:]
             for rule in tmp_rules:
@@ -157,9 +158,10 @@ class Learner:
                 rules.append(new_rule)
 
     def extend_replace_worst(self, rules, specializations):
-        '''
+        """
         Extends the list by replacing the worst rules.
-        '''
+        """
+
         def is_similar(new_rule):
             for rule in rules[:]:
                 if rule.similarity(new_rule) == 1:
@@ -182,9 +184,10 @@ class Learner:
         rules[idx] = new_rule
 
     def specialize(self, rule):
-        '''
+        """
         Returns a list of all specializations of 'rule'.
-        '''
+        """
+
         def is_unary(p):
             return isinstance(p, UnaryPredicate)
 
@@ -193,14 +196,14 @@ class Learner:
             eligible_preds = rule.shared_var[rule.latest_var]
             for pred in filter(is_unary, eligible_preds):
                 for sub_class in self.get_subclasses(pred):
-                    logger.debug('Swapping with %s' % sub_class)
+                    logger.debug(f"Swapping with {sub_class}")
                     new_rule = rule.clone_swap_with_subclass(pred, sub_class)
                     if self.can_specialize(new_rule):
                         rules.append(new_rule)
                         rules.extend(specialize_optimal_subclass(new_rule))
             return rules
 
-        logger.debug('Specializing rule: %s' % rule)
+        logger.debug(f"Specializing rule: {rule}")
         specializations = []
         eligible_preds = rule.shared_var[rule.latest_var]
 
@@ -208,9 +211,9 @@ class Learner:
         # the predicates with the latest variable
         if not self.optimal_subclass:
             for pred in filter(is_unary, eligible_preds):
-                logger.debug('Predicate to swap: %s' % pred.label)
+                logger.debug(f"Predicate to swap: {pred.label}")
                 for sub_class in self.get_subclasses(pred):
-                    logger.debug('Swapping with %s' % sub_class)
+                    logger.debug(f"Swapping with {sub_class}")
                     new_rule = rule.clone_swap_with_subclass(pred, sub_class)
                     if self.can_specialize(new_rule):
                         specializations.append(new_rule)
@@ -221,16 +224,20 @@ class Learner:
 
             # Negate the last predicate
             for pred in filter(is_unary, eligible_preds):
-                logger.debug('Predicate to negate: %s' % pred.label)
+                logger.debug(f"Predicate to negate: {pred.label}")
                 new_rule = rule.clone_negate(pred)
                 if self.can_specialize(new_rule):
                     specializations.append(new_rule)
 
         # This makes sure we are not specializing a default rule by appending,
         # this rule should instead be reached by the specialization step above.
-        if not (len(eligible_preds) == 1 and
-                (eligible_preds[0].label == self.kb.get_root().label
-                 or self.is_implicit_root(eligible_preds[0].label))):
+        if not (
+            len(eligible_preds) == 1
+            and (
+                eligible_preds[0].label == self.kb.get_root().label
+                or self.is_implicit_root(eligible_preds[0].label)
+            )
+        ):
 
             # Calculate the union of superclasses of each predicate
             supers = set()
@@ -247,15 +254,15 @@ class Learner:
                 if diff:
 
                     # The next predicate to specialize with is the left-most
-                    for pred in sorted(list(diff)):
+                    for pred in sorted(diff):
 
                         # Appending a new predicate, the last predicate
                         # is always the producer
                         last_pred = rule.predicates[-1]
-                        new_rule = rule.clone_append(pred,
-                                                     producer_pred=last_pred)
-                        if self.can_specialize(new_rule) and \
-                           self.non_redundant(rule, new_rule):
+                        new_rule = rule.clone_append(pred, producer_pred=last_pred)
+                        if self.can_specialize(new_rule) and self.non_redundant(
+                            rule, new_rule
+                        ):
                             specializations.append(new_rule)
                             break
 
@@ -263,37 +270,34 @@ class Learner:
         if isinstance(rule.predicates[-1], UnaryPredicate):
             specializations.extend(self.specialize_add_relation(rule))
 
-        logger.debug('All specializations %s' %
-                     [str(rule) for rule in specializations])
+        logger.debug("All specializations %s" % [str(rule) for rule in specializations])
 
         return specializations
 
     def specialize_add_relation(self, rule):
-        '''
+        """
         Specialize with new binary relation.
-        '''
+        """
         specializations = []
         for pred in self.kb.binary_predicates:
 
             last_pred = rule.predicates[-1]
-            new_rule = rule.clone_append(pred,
-                                         producer_pred=last_pred,
-                                         bin=True)
+            new_rule = rule.clone_append(pred, producer_pred=last_pred, bin=True)
 
             if self.can_specialize(new_rule):
                 specializations.append(new_rule)
         return specializations
 
     def can_specialize(self, rule):
-        '''
+        """
         Is the rule good enough to be further refined?
-        '''
+        """
         return rule.coverage >= self.min_sup and rule.size() <= self.depth
 
     def non_redundant(self, rule, new_rule):
-        '''
+        """
         Is the rule non-redundant compared to its immediate generalization?
-        '''
+        """
         if new_rule.score < rule.score:
             return False
 
@@ -303,7 +307,7 @@ class Learner:
             return not is_redundant(rule, new_rule)
 
     def group_score(self, rules):
-        '''
+        """
         Calculates the score of the whole list of rules.
-        '''
+        """
         return sum([rule.score for rule in rules])

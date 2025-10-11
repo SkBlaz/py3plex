@@ -1,10 +1,11 @@
 # a set of measures for assessing community quality
 
-import numpy as np
 from itertools import product
 
+import numpy as np
 
-def modularity(G, communities, weight='weight'):
+
+def modularity(G, communities, weight="weight"):
 
     communities = list(communities.values())
     multigraph = G.is_multigraph()

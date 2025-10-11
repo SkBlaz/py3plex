@@ -32,14 +32,12 @@ jobs:
     - name: Run ruff linting
       run: |
         echo "🔍 Running ruff linter..."
-        ruff check py3plex/ --output-format=github || true
+        ruff check py3plex/ --output-format=github
       timeout-minutes: 3
-      continue-on-error: true
     
     - name: Linting note
       run: |
-        echo "ℹ️ Ruff linting is informational only (not blocking)."
-        echo "Linting issues are being addressed incrementally as part of the modernization roadmap."
+        echo "✅ Ruff linting complete. Remaining issues should be addressed in future PRs."
 
   format:
     name: Check Formatting with Black
@@ -66,14 +64,12 @@ jobs:
     - name: Check formatting
       run: |
         echo "🎨 Checking code formatting..."
-        black --check --diff py3plex/ || true
+        black --check --diff --extend-exclude "py3plex/algorithms/statistics/powerlaw.py" py3plex/
       timeout-minutes: 3
-      continue-on-error: true
     
     - name: Formatting note
       run: |
-        echo "ℹ️ Black formatting check is informational only (not blocking)."
-        echo "Code formatting is being addressed incrementally as part of the modernization roadmap."
+        echo "✅ Black formatting complete. Code is properly formatted."
 
   type-check:
     name: Type Check with Mypy

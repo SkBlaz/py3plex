@@ -1,25 +1,24 @@
 # Compute many possible network statistics
 
-from typing import Dict, Any, Optional
-import networkx as nx
-import pandas as pd
-import numpy as np
 from operator import itemgetter
+from typing import Any, Dict, Optional
+
+import networkx as nx
+import numpy as np
+import pandas as pd
 
 
 def identify_n_hubs(
-    G: nx.Graph,
-    top_n: int = 100,
-    node_type: Optional[str] = None
+    G: nx.Graph, top_n: int = 100, node_type: Optional[str] = None
 ) -> Dict[Any, int]:
     """
     Identify the top N hub nodes in a network based on degree centrality.
-    
+
     Args:
         G: NetworkX graph to analyze
         top_n: Number of top hubs to return (default: 100)
         node_type: Optional filter for specific node type
-        
+
     Returns:
         Dictionary mapping node identifiers to their degree values
     """
@@ -38,33 +37,41 @@ def identify_n_hubs(
     top_n_id = {
         x[0]: x[1]
         for e, x in enumerate(
-            sorted(degree_dict.items(), key=itemgetter(1), reverse=True))
+            sorted(degree_dict.items(), key=itemgetter(1), reverse=True)
+        )
         if e < top_n
     }
     return top_n_id
 
 
 def core_network_statistics(
-    G: nx.Graph,
-    labels: Optional[Any] = None,
-    name: str = "example"
+    G: nx.Graph, labels: Optional[Any] = None, name: str = "example"
 ) -> pd.DataFrame:
     """
     Compute core statistics for a network.
-    
+
     Args:
         G: NetworkX graph to analyze
         labels: Optional label matrix with shape attribute
         name: Name identifier for the network (default: "example")
-        
+
     Returns:
         DataFrame containing network statistics
     """
-    rframe = pd.DataFrame(columns=[
-        "Name", "classes", "nodes", "edges", "degree", "diameter",
-        "connected components", "clustering coefficient", "density",
-        "flow_hierarchy"
-    ])
+    rframe = pd.DataFrame(
+        columns=[
+            "Name",
+            "classes",
+            "nodes",
+            "edges",
+            "degree",
+            "diameter",
+            "connected components",
+            "clustering coefficient",
+            "density",
+            "flow_hierarchy",
+        ]
+    )
     nodes = len(G.nodes())
     edges = len(G.edges())
     cc = len(list(nx.connected_components(G.to_undirected())))
@@ -109,7 +116,7 @@ def core_network_statistics(
         "flow hierarchy": flow_hierarchy,
         "connected components": cc,
         "clustering coefficient": clustering,
-        "density": dx
+        "density": dx,
     }
     rframe = rframe.append(point, ignore_index=True)
     return rframe

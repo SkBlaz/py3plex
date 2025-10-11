@@ -1,22 +1,25 @@
 # set of parsers used in Py3plex.
 
-import networkx as nx
-from .nx_compat import nx_read_gpickle, nx_write_gpickle, nx_from_scipy_sparse_matrix
-import json
-import itertools
 import glob
-import numpy as np
-import scipy.io
-import pandas as pd
 import gzip
-from .supporting import add_mpx_edges
+import itertools
+import json
+
+import networkx as nx
+import numpy as np
+import pandas as pd
+import scipy.io
+
 from py3plex.logging_config import get_logger
+
+from .nx_compat import nx_from_scipy_sparse_matrix, nx_read_gpickle, nx_write_gpickle
+from .supporting import add_mpx_edges
 
 logger = get_logger(__name__)
 
 
 def parse_gml(file_name, directed):
-    """ 
+    """
     parse a gml network
 
     Args:
@@ -42,8 +45,8 @@ def parse_gml(file_name, directed):
 
         # read into structure
     for edge in H.edges(data=True):
-        node_first = (edge[0], node_type_map[edge[0]]['type'])
-        node_second = (edge[1], node_type_map[edge[1]]['type'])
+        node_first = (edge[0], node_type_map[edge[0]]["type"])
+        node_second = (edge[1], node_type_map[edge[1]]["type"])
         edge_props = edge[2]
 
         A.add_node(node_first, **node_type_map[edge[0]])
@@ -72,7 +75,8 @@ def parse_matrix(file_name, directed):
     """
 
     mat = scipy.io.loadmat(file_name)
-    return (mat['network'], mat['group'])
+    return (mat["network"], mat["group"])
+
 
 def parse_matrix_to_nx(file_name, directed):
     """
@@ -84,30 +88,30 @@ def parse_matrix_to_nx(file_name, directed):
     mat = scipy.io.loadmat(file_name)
     if directed:
         create_using = nx.DiGraph()
-        
+
     else:
         create_using = nx.Graph()
-        
-    G = nx_from_scipy_sparse_matrix(mat['network'], create_using = create_using)
-    
+
+    G = nx_from_scipy_sparse_matrix(mat["network"], create_using=create_using)
+
     if directed:
         G_final = nx.DiGraph()
-        
+
     else:
         G_final = nx.Graph()
 
-        
     for n in G.nodes():
-        G_final.add_node((n,"generic"))
+        G_final.add_node((n, "generic"))
 
     for e in G.edges():
-        G_final.add_edge((e[0],"generic"),(e[1],"generic"))
-        
+        G_final.add_edge((e[0], "generic"), (e[1], "generic"))
+
     return (G_final, None)
+
 
 def parse_gpickle(file_name, directed=False, layer_separator=None):
     """
-    A parser for generic Gpickle as stored by Py3plex.    
+    A parser for generic Gpickle as stored by Py3plex.
     Args:
         A gpickle object
     """
@@ -135,7 +139,7 @@ def parse_gpickle(file_name, directed=False, layer_separator=None):
     todrop = []
     for node in A.nodes(data=True):
         if "labels" in node[1]:
-            if node[1]['labels'] == "":
+            if node[1]["labels"] == "":
                 todrop.append(node[0])
     A.remove_nodes_from(todrop)
     return (A, None)
@@ -160,7 +164,7 @@ def parse_gpickle_biomine(file_name, directed):
 
         l1, n1 = edge[0].split("_")[:2]
         l2, n2 = edge[1].split("_")[:2]
-        G.add_edge((n1, l1), (n2, l2), type=edge[2]['key'])
+        G.add_edge((n1, l1), (n2, l2), type=edge[2]["key"])
 
     return (G, None)
 
@@ -181,20 +185,19 @@ def parse_detangler_json(file_path):
         graph = json.load(f)
 
     id2n = {}
-    for n in graph[u'nodes']:
-        id2n[n[u'id']] = n
-        layers = n[u'descriptors'].split(';')
-        node = n[u'label']
+    for n in graph["nodes"]:
+        id2n[n["id"]] = n
+        layers = n["descriptors"].split(";")
+        node = n["label"]
         for l in layers:
-            node_dict = {'source': node, 'type': l}
             G.add_node((node, l))
         for c in itertools.combinations(layers, 2):
             G.add_edge((node, c[0]), (node, c[1]))
 
-    for e in graph[u'links']:
-        s = id2n[e[u'source']][u'label']
-        t = id2n[e[u'target']][u'label']
-        layers = e[u'descriptors'].split(';')
+    for e in graph["links"]:
+        s = id2n[e["source"]]["label"]
+        t = id2n[e["target"]]["label"]
+        layers = e["descriptors"].split(";")
         for l in layers:
             G.add_edge((s, l), (t, l))
 
@@ -228,24 +231,28 @@ def parse_multi_edgelist(input_name, directed):
 
                 # first case
                 G.add_node((node_first, layer_first), type=layer_first)
-                G.add_edge((node_first, layer_first),
-                           (node_first, layer_first),
-                           weight=weight)
+                G.add_edge(
+                    (node_first, layer_first), (node_first, layer_first), weight=weight
+                )
             elif layer_first == layer_second and node_first != node_second:
 
                 # second case
                 G.add_node((node_first, layer_first), type=layer_first)
                 G.add_node((node_second, layer_second), type=layer_first)
-                G.add_edge((node_first, layer_first),
-                           (node_second, layer_second),
-                           weight=weight)
+                G.add_edge(
+                    (node_first, layer_first),
+                    (node_second, layer_second),
+                    weight=weight,
+                )
             else:
                 # default case
                 G.add_node((node_first, layer_first), type=layer_first)
                 G.add_node((node_second, layer_second), type=layer_second)
-                G.add_edge((node_first, layer_first),
-                           (node_second, layer_second),
-                           weight=weight)
+                G.add_edge(
+                    (node_first, layer_first),
+                    (node_second, layer_second),
+                    weight=weight,
+                )
 
     return (G, None)
 
@@ -264,7 +271,7 @@ def parse_simple_edgelist(input_name, directed):
         G = nx.Graph()
 
     if ".gz" in input_name:
-        handle = gzip.open(input_name, 'rt')
+        handle = gzip.open(input_name, "rt")
 
     else:
         handle = open(input_name)
@@ -313,10 +320,7 @@ def parse_edgelist_multi_types(input_name, directed):
 
                 G.add_node((node_first, "null"), type="null")
                 G.add_node((node_second, "null"), type="null")
-                G.add_edge(node_first,
-                           node_second,
-                           weight=weight,
-                           type=edge_type)
+                G.add_edge(node_first, node_second, weight=weight, type=edge_type)
     return (G, None)
 
 
@@ -375,8 +379,9 @@ def parse_multiedge_tuple_list(network, directed):
 
         G.add_node((node_first, layer_first))
         G.add_node((node_second, layer_second))
-        G.add_edge((node_first, layer_first), (node_second, layer_second),
-                   weight=weight)
+        G.add_edge(
+            (node_first, layer_first), (node_second, layer_second), weight=weight
+        )
 
         # G.add_node(node_first,type=layer_first)
         # G.add_node(node_second,type=layer_second)
@@ -407,9 +412,12 @@ def parse_multiplex_edges(input_name, directed):
             G.add_node((node_first, str(layer)))
             G.add_node((node_second, str(layer)))
             unique_layers.add(str(layer[0]))
-            G.add_edge((node_first, str(layer)), (node_second, str(layer)),
-                       weight=float(weight),
-                       type="default")
+            G.add_edge(
+                (node_first, str(layer)),
+                (node_second, str(layer)),
+                weight=float(weight),
+                type="default",
+            )
 
     return (G, None)
 
@@ -434,21 +442,24 @@ def parse_multiplex_folder(input_folder, directed):
                 layer_dict[lname] = lid
 
     if len(activity_file) >= 1:
-        time_series_tuples = list()  # defaultdict(list)
+        time_series_tuples = []  # defaultdict(list)
         for ac in activity_file:
             with open(ac) as acf:
                 for line in acf:
                     n1, n2, timestamp, layer_name = line.strip().split(" ")
-                    time_series_tuples.append({
-                        "node_first": 1,
-                        "node_second": n2,
-                        "layer": layer_dict[layer_name],
-                        "timestamp": timestamp
-                    })
+                    time_series_tuples.append(
+                        {
+                            "node_first": 1,
+                            "node_second": n2,
+                            "layer": layer_dict[layer_name],
+                            "timestamp": timestamp,
+                        }
+                    )
 
     time_series_tuples = pd.DataFrame()
-    time_series_tuples = time_series_tuples.append(time_series_tuples,
-                                                   ignore_index=True)
+    time_series_tuples = time_series_tuples.append(
+        time_series_tuples, ignore_index=True
+    )
 
     #    nodes_file = [x for x in names if "nodes.txt" in x]
 
@@ -468,23 +479,28 @@ def parse_multiplex_folder(input_folder, directed):
                 weight = parts[3]
                 G.add_node((node_first, str(layer)))
                 G.add_node((node_second, str(layer)))
-                G.add_edge((node_first, str(layer)), (node_second, str(layer)),
-                           key="default",
-                           weight=weight,
-                           type="default")
+                G.add_edge(
+                    (node_first, str(layer)),
+                    (node_second, str(layer)),
+                    key="default",
+                    weight=weight,
+                    type="default",
+                )
 
     return (G, None, time_series_tuples)
 
 
 # main parser method
-def parse_network(input_name,
-                  f_type="gml",
-                  directed=False,
-                  label_delimiter=None,
-                  network_type="multilayer"):
-    '''
+def parse_network(
+    input_name,
+    f_type="gml",
+    directed=False,
+    label_delimiter=None,
+    network_type="multilayer",
+):
+    """
     A wrapper method for available parsers!
-    '''
+    """
 
     time_series = None
     if f_type == "gml":
@@ -495,7 +511,8 @@ def parse_network(input_name,
 
     elif f_type == "multiplex_folder":
         parsed_network, labels, time_series = parse_multiplex_folder(
-            input_name, directed)
+            input_name, directed
+        )
 
     elif f_type == "sparse":
         parsed_network, labels = parse_matrix(input_name, directed)
@@ -522,12 +539,10 @@ def parse_network(input_name,
         parsed_network, labels = parse_spin_edgelist(input_name, directed)
 
     elif f_type == "edgelist_with_edge_types":
-        parsed_network, labels = parse_edgelist_multi_types(
-            input_name, directed)
+        parsed_network, labels = parse_edgelist_multi_types(input_name, directed)
 
     elif f_type == "multiedge_tuple_list":
-        parsed_network, labels = parse_multiedge_tuple_list(
-            input_name, directed)
+        parsed_network, labels = parse_multiedge_tuple_list(input_name, directed)
 
     elif f_type == "multiplex_edges":
         parsed_network, labels = parse_multiplex_edges(input_name, directed)
@@ -544,9 +559,9 @@ def parse_network(input_name,
 
 
 def load_edge_activity_raw(activity_file, layer_mappings):
-    '''
+    """
     Basic parser for loading generic activity files. Here, temporal edges are given as tuples -> this can be easily transformed for example into a pandas dataframe!
-    '''
+    """
 
     time_series_tuples = []
     outframe = pd.DataFrame()
@@ -554,12 +569,14 @@ def load_edge_activity_raw(activity_file, layer_mappings):
         for line in acf:
             n1, n2, timestamp, layer_name = line.strip().split(" ")
 
-            time_series_tuples.append({
-                "node_first": n1,
-                "node_second": n2,
-                "layer_name": layer_mappings[layer_name],
-                "timestamp": timestamp
-            })
+            time_series_tuples.append(
+                {
+                    "node_first": n1,
+                    "node_second": n2,
+                    "layer_name": layer_mappings[layer_name],
+                    "timestamp": timestamp,
+                }
+            )
     outframe = outframe.append(time_series_tuples, ignore_index=True)
     return outframe
 
@@ -582,23 +599,22 @@ def load_edge_activity_file(fname, layer_mapping=None):
             node1, node2, timestamp, layer = line.strip().split()
             if layer_mapping is not None:
                 layer = lmap[layer]
-            data.append({
-                "node_first": node1,
-                "node_second": node2,
-                "layer": layer,
-                "timestamp": timestamp
-            })
+            data.append(
+                {
+                    "node_first": node1,
+                    "node_second": node2,
+                    "layer": layer,
+                    "timestamp": timestamp,
+                }
+            )
     outframe = outframe.from_dict(data)
     return outframe
 
 
-def load_temporal_edge_information(input_network,
-                                   input_type,
-                                   layer_mapping=None):
+def load_temporal_edge_information(input_network, input_type, layer_mapping=None):
 
     if input_type == "edge_activity":
-        return load_edge_activity_file(input_network,
-                                       layer_mapping=layer_mapping)
+        return load_edge_activity_file(input_network, layer_mapping=layer_mapping)
     else:
         return None
 
@@ -607,10 +623,9 @@ def save_gpickle(input_network, output_file):
     nx_write_gpickle(input_network, output_file)
 
 
-def save_multiedgelist(input_network,
-                       output_file,
-                       attributes=False,
-                       encode_with_ints=False):
+def save_multiedgelist(
+    input_network, output_file, attributes=False, encode_with_ints=False
+):
     """
     Save multiedgelist -- as n1, l1, n2, l2, w
     """
@@ -619,23 +634,24 @@ def save_multiedgelist(input_network,
 
         unique_nodes = {n[0] for n in input_network.nodes()}
         unique_node_types = {n[1] for n in input_network.nodes()}
-        node_encodings = {
-            real: str(enc)
-            for enc, real in enumerate(unique_nodes)
-        }
-        type_encodings = {
-            real: str(enc)
-            for enc, real in enumerate(unique_node_types)
-        }
+        node_encodings = {real: str(enc) for enc, real in enumerate(unique_nodes)}
+        type_encodings = {real: str(enc) for enc, real in enumerate(unique_node_types)}
         fh = open(output_file, "w+")
 
         for edge in input_network.edges(data=True):
             n1, l1 = edge[0]
             n2, l2 = edge[1]
-            fh.write("\t".join([
-                node_encodings[n1], type_encodings[l1], node_encodings[n2],
-                type_encodings[l2]
-            ]) + "\n")
+            fh.write(
+                "\t".join(
+                    [
+                        node_encodings[n1],
+                        type_encodings[l1],
+                        node_encodings[n2],
+                        type_encodings[l2],
+                    ]
+                )
+                + "\n"
+            )
         fh.close()
 
         return (node_encodings, type_encodings)
@@ -650,11 +666,10 @@ def save_multiedgelist(input_network,
 
 
 def save_edgelist(input_network, output_file, attributes=False):
-    fh = open(output_file, 'wb')
-    input_network = nx.convert_node_labels_to_integers(input_network,
-                                                       first_label=0,
-                                                       ordering='default',
-                                                       label_attribute=None)
+    fh = open(output_file, "wb")
+    input_network = nx.convert_node_labels_to_integers(
+        input_network, first_label=0, ordering="default", label_attribute=None
+    )
     if attributes:
         pass
     else:

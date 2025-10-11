@@ -1,8 +1,9 @@
-'''
+"""
 Score function definitions.
 
 @author: anze.vavpetic@ijs.si
-'''
+"""
+
 from math import sqrt
 
 
@@ -63,7 +64,7 @@ def chisq(rule):
     x = rule.coverage / float(N)
     y = rule.kb.distribution[rule.target] / float(N)
     if x not in [0, 1] and y not in [0, 1]:
-        return N * (z - x * y)**2 / float(x * y * (1 - x) * (1 - y))
+        return N * (z - x * y) ** 2 / float(x * y * (1 - x) * (1 - y))
     else:
         return 0
 
@@ -126,23 +127,22 @@ def kaplan_meier_AUC(rule):
 # Bounds of interest for each score function
 # A rule is interesting if its score is in (A, B] as defined below.
 _bounds = {
-    z_score: (0, float('inf')),
-    t_score: (0, float('inf')),
-    kaplan_meier_AUC: (0, float('inf')),
-    enrichment_score: (-float('inf'), 1),
+    z_score: (0, float("inf")),
+    t_score: (0, float("inf")),
+    kaplan_meier_AUC: (0, float("inf")),
+    enrichment_score: (-float("inf"), 1),
     wracc: (0, 1),
     precision: (0, 1),
-    chisq: (0, float('inf')),
-    lift: (1, float('inf')),
-    leverage: (0, 1)
+    chisq: (0, float("inf")),
+    lift: (1, float("inf")),
+    leverage: (0, 1),
 }
 
 
 def interesting(rule):
-    '''
+    """
     Checks if a given rule is interesting for the given score function
-    '''
+    """
     score_fun = rule.kb.score_fun
-    filtered_bounds = _bounds[score_fun][0] < rule.score <= _bounds[score_fun][
-        1]
+    filtered_bounds = _bounds[score_fun][0] < rule.score <= _bounds[score_fun][1]
     return filtered_bounds

@@ -87,6 +87,8 @@ extend-exclude = '''
   | build
   | dist
   | examples
+  # files
+  | py3plex/algorithms/statistics/powerlaw\.py
 )/
 '''
 

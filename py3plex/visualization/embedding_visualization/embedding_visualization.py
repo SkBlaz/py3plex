@@ -1,8 +1,8 @@
 # embedding
-from sklearn.manifold import TSNE
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 from plotnine import aes, geom_point, ggplot, theme_bw
+from sklearn.manifold import TSNE
 
 
 def visualize_embedding(multinet, labels=None, verbose=True):
@@ -17,18 +17,20 @@ def visualize_embedding(multinet, labels=None, verbose=True):
         # optionally match indices to labels and add a column
         label_vector = [labels[x] for x in indices]
         X_embedded = TSNE(n_components=2).fit_transform(X)
-        dfr = pd.DataFrame(X_embedded, columns=['dim1', 'dim2'])
-        dfr['labels'] = label_vector
+        dfr = pd.DataFrame(X_embedded, columns=["dim1", "dim2"])
+        dfr["labels"] = label_vector
         print(dfr.head())
-        gx = (ggplot(dfr, aes('dim1', 'dim2', color="labels")) +
-              geom_point(size=0.5) + theme_bw())
+        gx = (
+            ggplot(dfr, aes("dim1", "dim2", color="labels"))
+            + geom_point(size=0.5)
+            + theme_bw()
+        )
         gx.draw()
         plt.show()
     else:
         X_embedded = TSNE(n_components=2).fit_transform(X)
-        dfr = pd.DataFrame(X_embedded, columns=['dim1', 'dim2'])
+        dfr = pd.DataFrame(X_embedded, columns=["dim1", "dim2"])
         print(dfr.head())
-        gx = (ggplot(dfr, aes('dim1', 'dim2')) + geom_point(size=0.5) +
-              theme_bw())
+        gx = ggplot(dfr, aes("dim1", "dim2")) + geom_point(size=0.5) + theme_bw()
         gx.draw()
         plt.show()

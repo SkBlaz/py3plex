@@ -1,9 +1,10 @@
 # node ranking algorithms
-import numpy as np
-import networkx as nx
-import scipy.sparse as sp
 # from networkx.algorithms.community.community_utils import is_partition
 from itertools import product
+
+import networkx as nx
+import numpy as np
+import scipy.sparse as sp
 
 # def stochastic_normalization(matrix):
 #     matrix = matrix.tolil()
@@ -47,7 +48,7 @@ def stochastic_normalization_hin(matrix):
     return matrix
 
 
-def modularity(G, communities, weight='weight'):
+def modularity(G, communities, weight="weight"):
 
     multigraph = G.is_multigraph()
     directed = G.is_directed()
@@ -81,13 +82,16 @@ def modularity(G, communities, weight='weight'):
 def page_rank_kernel(index_row):
 
     # call as results = p.map(pr_kernel, batch)
-    pr = sparse_page_rank(G, [index_row],
-                          epsilon=1e-6,
-                          max_steps=100000,
-                          damping=damping_hyper,
-                          spread_step=spread_step_hyper,
-                          spread_percent=spread_percent_hyper,
-                          try_shrink=True)
+    pr = sparse_page_rank(
+        G,
+        [index_row],
+        epsilon=1e-6,
+        max_steps=100000,
+        damping=damping_hyper,
+        spread_step=spread_step_hyper,
+        spread_percent=spread_percent_hyper,
+        try_shrink=True,
+    )
 
     norm = np.linalg.norm(pr, 2)
     if norm > 0:
@@ -97,14 +101,16 @@ def page_rank_kernel(index_row):
         return (index_row, np.zeros(graph.shape[1]))
 
 
-def sparse_page_rank(matrix,
-                     start_nodes,
-                     epsilon=1e-6,
-                     max_steps=100000,
-                     damping=0.5,
-                     spread_step=10,
-                     spread_percent=0.3,
-                     try_shrink=False):
+def sparse_page_rank(
+    matrix,
+    start_nodes,
+    epsilon=1e-6,
+    max_steps=100000,
+    damping=0.5,
+    spread_step=10,
+    spread_percent=0.3,
+    try_shrink=False,
+):
 
     assert (len(start_nodes)) > 0
 

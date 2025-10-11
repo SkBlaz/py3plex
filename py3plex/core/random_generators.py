@@ -1,12 +1,14 @@
 # a class for random graph generation
+import random
+
 import networkx as nx
 import numpy as np
+
 from .multinet import itertools, multi_layer_network
-import random
 
 
 def random_multilayer_ER(n, l, p, directed=False):
-    """ random multilayer ER """
+    """random multilayer ER"""
 
     if directed:
         G = nx.MultiDiGraph()
@@ -16,17 +18,19 @@ def random_multilayer_ER(n, l, p, directed=False):
     network = nx.fast_gnp_random_graph(n, p, seed=None, directed=directed)
     layers = dict(zip(network.nodes(), np.random.randint(l, size=n)))
     for edge in network.edges():
-        G.add_edge((edge[0], layers[edge[0]]), (edge[1], layers[edge[1]]),
-                   type="default")
+        G.add_edge(
+            (edge[0], layers[edge[0]]), (edge[1], layers[edge[1]]), type="default"
+        )
 
     # construct the ppx object
     no = multi_layer_network(network_type="multilayer").load_network(
-        G, input_type="nx", directed=directed)
+        G, input_type="nx", directed=directed
+    )
     return no
 
 
 def random_multiplex_ER(n, l, p, directed=False):
-    """ random multilayer ER """
+    """random multilayer ER"""
 
     if directed:
         G = nx.MultiDiGraph()
@@ -40,7 +44,8 @@ def random_multiplex_ER(n, l, p, directed=False):
 
     # construct the ppx object
     no = multi_layer_network(network_type="multiplex").load_network(
-        G, input_type="nx", directed=directed)
+        G, input_type="nx", directed=directed
+    )
     return no
 
 
@@ -65,13 +70,12 @@ def random_multiplex_generator(n, m, d=0.9):
     for l, nlist in layer_to_nodes.items():
         clique = tuple(itertools.combinations(nlist, 2))
         nnodes = len(nlist)
-        edge_sample = random.sample(clique,
-                                    int(d * (nnodes * (nnodes - 1)) / 2))
+        edge_sample = random.sample(clique, int(d * (nnodes * (nnodes - 1)) / 2))
         for p1, p2 in edge_sample:
             if p1 < p2:
-                e = tuple([p1, p2])
+                e = (p1, p2)
             else:
-                e = tuple([p2, p1])
+                e = (p2, p1)
 
             edge_to_layers[e] = edge_to_layers.get(e, []) + [l]
 

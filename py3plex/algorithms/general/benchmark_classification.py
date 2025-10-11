@@ -1,8 +1,8 @@
 # algorithms for benchmarking node performance
 
-from sklearn.metrics import f1_score
 import numpy as np
 import scipy.sparse as sp
+from sklearn.metrics import f1_score
 
 
 def evaluate_oracle_F1(probs, Y_real):
@@ -22,6 +22,6 @@ def evaluate_oracle_F1(probs, Y_real):
         predictions.append(a)
     predictions = np.matrix(predictions)
 
-    micro = f1_score(Y_real, predictions, average='micro')
-    macro = f1_score(Y_real, predictions, average='macro')
+    micro = f1_score(Y_real, predictions, average="micro")
+    macro = f1_score(Y_real, predictions, average="macro")
     return (micro, macro)
