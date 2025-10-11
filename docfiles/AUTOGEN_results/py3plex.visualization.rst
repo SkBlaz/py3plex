@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    py3plex.visualization.embedding_visualization
    py3plex.visualization.fa2
@@ -17,70 +18,69 @@ py3plex.visualization.benchmark\_visualizations module
 
 .. automodule:: py3plex.visualization.benchmark_visualizations
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 py3plex.visualization.bezier module
 -----------------------------------
 
 .. automodule:: py3plex.visualization.bezier
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 py3plex.visualization.colors module
 -----------------------------------
 
 .. automodule:: py3plex.visualization.colors
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 py3plex.visualization.drawing\_machinery module
 -----------------------------------------------
 
 .. automodule:: py3plex.visualization.drawing_machinery
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 py3plex.visualization.layout\_algorithms module
 -----------------------------------------------
 
 .. automodule:: py3plex.visualization.layout_algorithms
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 py3plex.visualization.misc\_tools module
 ----------------------------------------
 
 .. automodule:: py3plex.visualization.misc_tools
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 py3plex.visualization.multilayer module
 ---------------------------------------
 
 .. automodule:: py3plex.visualization.multilayer
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 py3plex.visualization.polyfit module
 ------------------------------------
 
 .. automodule:: py3plex.visualization.polyfit
    :members:
-   :undoc-members:
    :show-inheritance:
-
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: py3plex.visualization
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

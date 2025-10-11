@@ -9,14 +9,13 @@ py3plex.algorithms.infomap.infomap module
 
 .. automodule:: py3plex.algorithms.infomap.infomap
    :members:
-   :undoc-members:
    :show-inheritance:
-
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: py3plex.algorithms.infomap
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

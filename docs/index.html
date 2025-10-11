@@ -1,232 +1,186 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>py3plex - documentation &mdash; py3plex 0.80 documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5847cda8"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Core idea and principles" href="core_idea.html" /> 
+    <link rel="next" title="Core Principles" href="core_idea.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="#">
           
-
-          
+          <a href="#">
             
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
-          
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">py3plex - key principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Analysis of multilayers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra adjacency matrices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community detection (multiplex)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra adjacency matrices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning.html">Random networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Further steps: learning:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="learning2.html">Learning - label propagation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning3.html">Learning - Node embeddings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API documentation:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="AUTOGEN_results/modules.html">py3plex</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="#">py3plex</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="#">Docs</a> &raquo;</li>
-        
-      <li><em>py3plex</em> - documentation</li>
-    
-    
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><em>py3plex</em> - documentation</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="py3plex-documentation">
-<h1><em>py3plex</em> - documentation<a class="headerlink" href="#py3plex-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Found at: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex">https://github.com/SkBlaz/Py3Plex</a></p>
-<p>Welcome to the <em>py3plex</em> library’s documentation! Here, user can learn more about how <em>py3plex</em> can be used to solve problems related to complex networks!</p>
-<p>The aim of this library is to:</p>
-<ol class="arabic simple">
-<li><p>Provide primitives for working with multilayer (and multiplex) complex networks</p></li>
-<li><p>Provide a core set of algorithm for statistical analysis of such networks</p></li>
-<li><p>Provide extensive collection of network decomposition algorithms</p></li>
-<li><p>Provide python wrappers for highly efficient algorithm implementations</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install py3plex
+             
+  <section id="py3plex-documentation">
+<h1><em>py3plex</em> - documentation<a class="headerlink" href="#py3plex-documentation" title="Link to this heading"></a></h1>
+<p><strong>py3plex</strong> is a Python library for multilayer and heterogeneous network analysis.</p>
+<p>GitHub: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex">https://github.com/SkBlaz/Py3Plex</a></p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>py3plex
 </pre></div>
 </div>
-<p>To test whether the core library functionality works well, you can run the test suite from the ./tests folder as:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="n">test_core_functionality</span><span class="o">.</span><span class="n">py</span>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p>See comprehensive examples in the <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">examples/ directory</a>.</p>
+<p>Basic usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load a network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Visualize</span>
+<span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>That’s almost it. For full functionality, one needs node2vec and InfoMap binary files, which need to be put into the ./bin folder. This project offers pre-compiled versions, however was tested only on Ubuntu linux &gt; 15.</p>
-<p>A quick overview is discussed next:</p>
+</section>
+<section id="documentation-structure">
+<h2>Documentation Structure<a class="headerlink" href="#documentation-structure" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Basic tutorial:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">py3plex - key principles</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#a-3min-introduction">A 3min introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#what-about-multiplex-networks">What about multiplex networks?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#more-involved-input-schemes">More involved input schemes?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core_idea.html#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_idea.html#learn-more">Learn More</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Analysis of multilayers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis.html#some-useful-constructs">Some useful constructs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis.html#network-traversal">Network traversal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis.html#extending-functionality-with-networkx">Extending functionality with networkX?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis.html#a-technical-note">A technical note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#loading-networks">Loading Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#network-operations">Network Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#for-more-examples">For More Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis_multiplex.html#aggregations">Aggregations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis_multiplex.html#subsetting">Subsetting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis.html#core-operations">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis.html#for-more-examples">For More Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra adjacency matrices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="visualization.html#from-hairball-to-multilayer-plots">From hairball to multilayer plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis_multiplex.html#network-aggregation">Network Aggregation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage_analysis_multiplex.html#examples">Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community detection (multiplex)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra adjacency matrices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning.html">Random networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="supra.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#basic-visualization">Basic Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="community_detection.html#supported-algorithms">Supported Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community_detection.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community_detection.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="supra.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="learning.html#examples">Examples</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Further steps: learning:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Further steps: learning:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="learning2.html">Learning - label propagation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning3.html">Learning - Node embeddings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="learning2.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="learning3.html#examples">Examples</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">API documentation:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="AUTOGEN_results/modules.html">py3plex</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="AUTOGEN_results/py3plex.html">py3plex package</a></li>
@@ -234,65 +188,58 @@
 </li>
 </ul>
 </div>
-<p>All examples and tutorials are accessible in <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
-<p><strong>In progress: We are adding more involved examples, which are for now found in ./examples folder!</strong></p>
-<p>The documentation of all methods is given below:</p>
-<div class="section" id="method-list">
-<h2>Method list<a class="headerlink" href="#method-list" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="examples-tutorials">
+<h2>Examples &amp; Tutorials<a class="headerlink" href="#examples-tutorials" title="Link to this heading"></a></h2>
+<p><strong>The best way to learn py3plex is through examples!</strong></p>
+<p>All examples are available at: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
+<p>Key examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_visualization.py</span></code> - Network visualization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_community_detection.py</span></code> - Community detection with Louvain and Infomap</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_network_decomposition.py</span></code> - Meta-path feature extraction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_n2v_embedding.py</span></code> - Node2Vec embeddings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_label_propagation.py</span></code> - Semi-supervised learning</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_dynamics.py</span></code> - Temporal analysis</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 </ul>
-<div class="toctree-wrapper compound">
-</div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="core_idea.html" class="btn btn-neutral float-right" title="Core idea and principles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="core_idea.html" class="btn btn-neutral float-right" title="Core Principles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Blaž Škrlj
-
-    </p>
+    <p>&#169; Copyright 2020, Blaž Škrlj.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

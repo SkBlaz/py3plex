@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supra adjacency matrices &mdash; py3plex 0.80 documentation</title>
+  <title>Supra-Adjacency Matrices &mdash; py3plex 0.80 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Network visualization" href="visualization.html" />
-    <link rel="prev" title="Analysis of multiplex networks" href="basic_usage_analysis_multiplex.html" /> 
+    <link rel="next" title="Network Visualization" href="visualization.html" />
+    <link rel="prev" title="Multiplex Network Analysis" href="basic_usage_analysis_multiplex.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,20 +45,26 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core idea and principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">py3plex - key principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Analysis of multilayers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Analysis of multiplex networks</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Supra adjacency matrices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network visualization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community detection (multiplex)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Supra adjacency matrices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning.html">Random networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Supra-Adjacency Matrices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Supra-Adjacency Matrices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Further steps: learning:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="learning2.html">Learning - label propagation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning3.html">Learning - Node embeddings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API documentation:</span></p>
 <ul>
@@ -79,7 +85,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Supra adjacency matrices</li>
+      <li class="breadcrumb-item active">Supra-Adjacency Matrices</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/supra.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -90,32 +96,29 @@
            <div itemprop="articleBody">
              
   <section id="supra-adjacency-matrices">
-<h1>Supra adjacency matrices<a class="headerlink" href="#supra-adjacency-matrices" title="Link to this heading"></a></h1>
-<p>Multiplex (layer) networks can also be represented as supra-adjacency matrices as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>     <span class="c1">### simple supra adjacency matrix manipulation</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span>     <span class="c1">## tensor-based operations examples</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span>     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="linenos"> 6</span>     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
-<span class="linenos"> 7</span>
-<span class="linenos"> 8</span>     <span class="c1">## initiate an instance of a random graph</span>
-<span class="linenos"> 9</span>     <span class="n">ER_multilayer</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="linenos">10</span>     <span class="n">mtx</span> <span class="o">=</span> <span class="n">ER_multilayer</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
-<span class="linenos">11</span>
-<span class="linenos">12</span>     <span class="n">comNet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">,</span><span class="n">coupling_weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s1">&#39;../datasets/simple_multiplex.edgelist&#39;</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;multiplex_edges&#39;</span><span class="p">)</span>
-<span class="linenos">13</span>     <span class="n">comNet</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
-<span class="linenos">14</span>     <span class="n">comNet</span><span class="o">.</span><span class="n">load_layer_name_mapping</span><span class="p">(</span><span class="s1">&#39;../datasets/simple_multiplex.txt&#39;</span><span class="p">)</span>
-<span class="linenos">15</span>     <span class="n">mat</span> <span class="o">=</span> <span class="n">comNet</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
-<span class="linenos">16</span>     <span class="nb">print</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="linenos">17</span>     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;display&quot;</span><span class="p">:</span><span class="kc">True</span><span class="p">}</span>
-<span class="linenos">18</span>     <span class="n">comNet</span><span class="o">.</span><span class="n">visualize_matrix</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="linenos">19</span>     <span class="c1">## how are nodes ordered?</span>
-<span class="linenos">20</span>     <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">comNet</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="linenos">21</span>             <span class="nb">print</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
-<span class="linenos">22</span>     <span class="nb">print</span> <span class="p">(</span><span class="n">comNet</span><span class="o">.</span><span class="n">node_order_in_matrix</span><span class="p">)</span>
+<h1>Supra-Adjacency Matrices<a class="headerlink" href="#supra-adjacency-matrices" title="Link to this heading"></a></h1>
+<p>Multiplex networks can be represented as supra-adjacency matrices for tensor-based operations.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
+
+<span class="c1"># Generate network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span>
+    <span class="n">num_nodes</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Get supra-adjacency matrix</span>
+<span class="n">supra_matrix</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
+
+<span class="c1"># Visualize matrix</span>
+<span class="n">network</span><span class="o">.</span><span class="n">visualize_matrix</span><span class="p">({</span><span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 </pre></div>
 </div>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>See:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_supra_adjacency.py</span></code> - Supra-adjacency operations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_tensorial_manipulation.py</span></code> - Tensor operations</p></li>
+</ul>
+<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
 <a class="reference internal image-reference" href="_images/supra.png"><img alt="_images/supra.png" src="_images/supra.png" style="width: 500px;" />
 </a>
 <p>Some additional tensor-like indexing:</p>
@@ -143,13 +146,14 @@
 </pre></div>
 </div>
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="basic_usage_analysis_multiplex.html" class="btn btn-neutral float-left" title="Analysis of multiplex networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="visualization.html" class="btn btn-neutral float-right" title="Network visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="basic_usage_analysis_multiplex.html" class="btn btn-neutral float-left" title="Multiplex Network Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="visualization.html" class="btn btn-neutral float-right" title="Network Visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
