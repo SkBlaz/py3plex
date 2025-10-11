@@ -17,6 +17,10 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.utils import shuffle as skshuffle
 
+from ..logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 class TopKRanker(OneVsRestClassifier):
     def predict(self, X: numpy.ndarray, top_k_list: List[int]) -> List[List]:
@@ -239,7 +243,7 @@ def main():
 
             X_train = X[:training_size, :]
             y_train_ = y[:training_size]
-            print(X_train.shape, y_train_.shape)
+            logger.debug("X_train shape: %s, y_train shape: %s", X_train.shape, y_train_.shape)
             y_train = [[] for x in range(y_train_.shape[0])]
 
             cy = y_train_.tocoo()
@@ -273,20 +277,20 @@ def main():
 
             all_results[train_percent].append(results)
 
-    print("Results, using embeddings of dimensionality", X.shape[1])
-    print("-------------------")
+    logger.info("Results, using embeddings of dimensionality %d", X.shape[1])
+    logger.info("-------------------")
     for train_percent in sorted(all_results.keys()):
-        print("Train percent:", train_percent)
+        logger.info("Train percent: %s", train_percent)
         for index, result in enumerate(all_results[train_percent]):
-            print("Shuffle #%d:   " % (index + 1), result)
+            logger.info("Shuffle #%d:   %s", index + 1, result)
         avg_score = defaultdict(float)
         for score_dict in all_results[train_percent]:
             for metric, score in iteritems(score_dict):
                 avg_score[metric] += score
         for metric in avg_score:
             avg_score[metric] /= len(all_results[train_percent])
-        print("Average score:", dict(avg_score))
-        print("-------------------")
+        logger.info("Average score: %s", dict(avg_score))
+        logger.info("-------------------")
 
 
 if __name__ == "__main__":

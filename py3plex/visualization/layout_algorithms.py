@@ -6,7 +6,10 @@ from typing import Any, Dict, Optional
 import networkx as nx
 import numpy as np
 
+from ..logging_config import get_logger
 from py3plex.core.nx_compat import nx_info
+
+logger = get_logger(__name__)
 
 try:
     from .fa2.forceatlas2 import ForceAtlas2
@@ -50,7 +53,7 @@ def compute_force_directed_layout(
             )
 
             if layout_parameters is not None:
-                print("Using custom init positions!")
+                logger.info("Using custom init positions!")
                 pos = forceatlas2.forceatlas2_networkx_layout(g, **layout_parameters)
             else:
                 pos = forceatlas2.forceatlas2_networkx_layout(g)
@@ -61,19 +64,19 @@ def compute_force_directed_layout(
 
         except Exception as e:
 
-            print(e)
+            logger.error("Error: %s", e)
             if layout_parameters is not None:
                 pos = nx.spring_layout(g, **layout_parameters)
             else:
                 pos = nx.spring_layout(g)
-            print("Using standard layout algorithm, fa2 not present on the system.")
+            logger.warning("Using standard layout algorithm, fa2 not present on the system.")
 
     else:
         if layout_parameters is not None:
             pos = nx.spring_layout(g, **layout_parameters)
         else:
             pos = nx.spring_layout(g)
-        print("Using standard layout algorithm, fa2 not present on the system.")
+        logger.warning("Using standard layout algorithm, fa2 not present on the system.")
 
     # return positions
 
@@ -89,6 +92,6 @@ def compute_random_layout(g: nx.Graph) -> Dict[Any, np.ndarray]:
 if __name__ == "__main__":
 
     G = nx.gaussian_random_partition_graph(1000, 10, 10, 0.25, 0.1)
-    print(nx_info(G))
+    logger.info("Graph info:\n%s", nx_info(G))
     compute_force_directed_layout(G)
-    print("Finished..")
+    logger.info("Finished..")
