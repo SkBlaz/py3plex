@@ -89,7 +89,7 @@ def _detect_format(filepath: Union[str, Path]) -> Optional[str]:
         Format name if detected, None otherwise
     """
     path = Path(filepath)
-    
+
     # Handle compressed files
     if path.suffix == ".gz":
         # Get extension before .gz
@@ -97,7 +97,7 @@ def _detect_format(filepath: Union[str, Path]) -> Optional[str]:
         ext = Path(stem).suffix.lower().lstrip(".")
     else:
         ext = path.suffix.lower().lstrip(".")
-    
+
     # Map extensions to format names
     extension_map = {
         "json": "json",
@@ -108,7 +108,7 @@ def _detect_format(filepath: Union[str, Path]) -> Optional[str]:
         "h5": "hdf5",
         "hdf5": "hdf5",
     }
-    
+
     return extension_map.get(ext)
 
 
@@ -135,11 +135,11 @@ def read(
         >>> graph = read('network.csv', format='csv')
     """
     filepath = Path(filepath)
-    
+
     # Check file exists
     if not filepath.exists():
         raise FileNotFoundError(f"File not found: {filepath}")
-    
+
     # Auto-detect format if not provided
     if format is None:
         format = _detect_format(filepath)
@@ -147,13 +147,13 @@ def read(
             raise FormatUnsupportedError(
                 filepath.suffix.lstrip(".") or "unknown", "read"
             )
-    
+
     format = format.lower()
-    
+
     # Get reader
     if format not in _READERS:
         raise FormatUnsupportedError(format, "read")
-    
+
     reader = _READERS[format]
     return reader(filepath, **kwargs)
 
@@ -181,7 +181,7 @@ def write(
         >>> write(graph, 'network.csv', format='csv', deterministic=True)
     """
     filepath = Path(filepath)
-    
+
     # Auto-detect format if not provided
     if format is None:
         format = _detect_format(filepath)
@@ -189,13 +189,13 @@ def write(
             raise FormatUnsupportedError(
                 filepath.suffix.lstrip(".") or "unknown", "write"
             )
-    
+
     format = format.lower()
-    
+
     # Get writer
     if format not in _WRITERS:
         raise FormatUnsupportedError(format, "write")
-    
+
     writer = _WRITERS[format]
     writer(graph, filepath, **kwargs)
 
@@ -219,4 +219,3 @@ def _register_builtin_formats():
 
 # Register built-in formats on module load
 _register_builtin_formats()
-

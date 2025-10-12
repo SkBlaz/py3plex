@@ -76,7 +76,9 @@ def example_basic_usage():
         )
     )
 
-    print(f"Created graph with {len(graph.nodes)} nodes, {len(graph.layers)} layers, {len(graph.edges)} edges")
+    print(
+        f"Created graph with {len(graph.nodes)} nodes, {len(graph.layers)} layers, {len(graph.edges)} edges"
+    )
     return graph
 
 
@@ -148,35 +150,46 @@ def example_csv_to_py3plex_analysis():
         graph.add_node(Node(id="bob"))
         graph.add_node(Node(id="charlie"))
         graph.add_node(Node(id="diana"))
-        
+
         # Create a simple network
-        graph.add_edge(Edge(src="alice", dst="bob", src_layer="social", dst_layer="social"))
-        graph.add_edge(Edge(src="bob", dst="charlie", src_layer="social", dst_layer="social"))
-        graph.add_edge(Edge(src="charlie", dst="diana", src_layer="social", dst_layer="social"))
-        graph.add_edge(Edge(src="diana", dst="alice", src_layer="social", dst_layer="social"))
-        
+        graph.add_edge(
+            Edge(src="alice", dst="bob", src_layer="social", dst_layer="social")
+        )
+        graph.add_edge(
+            Edge(src="bob", dst="charlie", src_layer="social", dst_layer="social")
+        )
+        graph.add_edge(
+            Edge(src="charlie", dst="diana", src_layer="social", dst_layer="social")
+        )
+        graph.add_edge(
+            Edge(src="diana", dst="alice", src_layer="social", dst_layer="social")
+        )
+
         write(graph, "/tmp/network.csv", format="csv")
         print("Saved network to /tmp/network.csv")
 
         # Load into new I/O system
         loaded_graph = read("/tmp/network.csv", format="csv")
-        
+
         # Convert to NetworkX for py3plex compatibility
         G = to_networkx(loaded_graph, mode="union")
-        
+
         # Now use core py3plex multi_layer_network
         mlnet = multinet.multi_layer_network()
         mlnet.core_network = G
-        
-        print(f"\nConverted to py3plex multi_layer_network:")
+
+        print("\nConverted to py3plex multi_layer_network:")
         mlnet.basic_stats()
-        
+
         # Compute centrality measures
         try:
             import networkx as nx
+
             centrality = nx.degree_centrality(G)
-            print(f"\nDegree centrality:")
-            for node, cent in sorted(centrality.items(), key=lambda x: x[1], reverse=True):
+            print("\nDegree centrality:")
+            for node, cent in sorted(
+                centrality.items(), key=lambda x: x[1], reverse=True
+            ):
                 print(f"  {node}: {cent:.3f}")
         except Exception as e:
             print(f"Could not compute centrality: {e}")
@@ -196,11 +209,15 @@ def example_networkx_conversion(graph):
 
         # Union mode: merge all layers
         G_union = to_networkx(graph, mode="union")
-        print(f"Union mode: {G_union.number_of_nodes()} nodes, {G_union.number_of_edges()} edges")
+        print(
+            f"Union mode: {G_union.number_of_nodes()} nodes, {G_union.number_of_edges()} edges"
+        )
 
         # Multiplex mode: preserve (node, layer) structure
         G_multiplex = to_networkx(graph, mode="multiplex")
-        print(f"Multiplex mode: {G_multiplex.number_of_nodes()} nodes, {G_multiplex.number_of_edges()} edges")
+        print(
+            f"Multiplex mode: {G_multiplex.number_of_nodes()} nodes, {G_multiplex.number_of_edges()} edges"
+        )
 
         # Convert back from multiplex
         graph2 = from_networkx(G_multiplex, mode="multiplex")
@@ -239,9 +256,7 @@ def example_validation():
 
     # Try to add edge with non-existent node
     try:
-        graph.add_edge(
-            Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1")
-        )
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1"))
     except ReferentialIntegrityError as e:
         print(f"Caught expected error: {e}")
 

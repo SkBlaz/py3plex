@@ -7,7 +7,7 @@ with built-in validation and serialization support.
 
 import json
 from dataclasses import dataclass, field
-from typing import Any, Dict, Hashable, List, Optional, Set, Tuple
+from typing import Any, Dict, Hashable, List, Set, Tuple
 
 from .exceptions import ReferentialIntegrityError, SchemaValidationError
 

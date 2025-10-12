@@ -7,7 +7,7 @@ Provides bidirectional conversion between MultiLayerGraph and popular graph libr
 - graph-tool (using property maps)
 """
 
-from typing import Any, Dict, Literal, Optional, Union
+from typing import Any, Dict, Literal
 
 from .schema import Edge, Layer, MultiLayerGraph, Node
 
@@ -38,7 +38,9 @@ def to_networkx(
     try:
         import networkx as nx
     except ImportError:
-        raise ImportError("NetworkX is required for to_networkx(). Install with: pip install networkx")
+        raise ImportError(
+            "NetworkX is required for to_networkx(). Install with: pip install networkx"
+        )
 
     # Create appropriate NetworkX graph type
     if graph.directed:
@@ -119,7 +121,9 @@ def to_networkx(
             G.add_edge(src_tuple, dst_tuple, key=edge.key, **edge.attributes)
 
     else:
-        raise ValueError(f"Unknown mode: {mode}. Must be 'union', 'intersection', or 'multiplex'")
+        raise ValueError(
+            f"Unknown mode: {mode}. Must be 'union', 'intersection', or 'multiplex'"
+        )
 
     return G
 
@@ -150,7 +154,9 @@ def from_networkx(
     try:
         import networkx as nx
     except ImportError:
-        raise ImportError("NetworkX is required for from_networkx(). Install with: pip install networkx")
+        raise ImportError(
+            "NetworkX is required for from_networkx(). Install with: pip install networkx"
+        )
 
     # Create empty graph
     graph = MultiLayerGraph(directed=G.is_directed())
@@ -218,7 +224,11 @@ def from_networkx(
                 if node_tuple[0] == node_id:
                     node_attrs = G.nodes[node_tuple]
                     # Extract non-layer attributes
-                    attrs = {k: v for k, v in node_attrs.items() if k not in {"layer", "layer_attrs"}}
+                    attrs = {
+                        k: v
+                        for k, v in node_attrs.items()
+                        if k not in {"layer", "layer_attrs"}
+                    }
                     break
             graph.add_node(Node(id=node_id, attributes=attrs))
 
@@ -278,7 +288,9 @@ def to_igraph(graph: MultiLayerGraph, mode: ProjectionMode = "multiplex") -> Any
     try:
         import igraph as ig
     except ImportError:
-        raise ImportError("igraph is required for to_igraph(). Install with: pip install python-igraph")
+        raise ImportError(
+            "igraph is required for to_igraph(). Install with: pip install python-igraph"
+        )
 
     # Create igraph graph
     g = ig.Graph(directed=graph.directed)
@@ -390,9 +402,11 @@ def from_igraph(
         ImportError: If igraph is not installed
     """
     try:
-        import igraph as ig
+        import igraph as ig  # noqa: F401
     except ImportError:
-        raise ImportError("igraph is required for from_igraph(). Install with: pip install python-igraph")
+        raise ImportError(
+            "igraph is required for from_igraph(). Install with: pip install python-igraph"
+        )
 
     # Create empty graph
     graph = MultiLayerGraph(directed=g.is_directed())
@@ -409,8 +423,16 @@ def from_igraph(
 
         # Add edges
         for e in g.es:
-            src = g.vs[e.source]["node_id"] if "node_id" in g.vs[e.source].attributes() else e.source
-            dst = g.vs[e.target]["node_id"] if "node_id" in g.vs[e.target].attributes() else e.target
+            src = (
+                g.vs[e.source]["node_id"]
+                if "node_id" in g.vs[e.source].attributes()
+                else e.source
+            )
+            dst = (
+                g.vs[e.target]["node_id"]
+                if "node_id" in g.vs[e.target].attributes()
+                else e.target
+            )
             attrs = {k: e[k] for k in e.attributes() if k not in {"key"}}
             key = e["key"] if "key" in e.attributes() else 0
 
@@ -442,7 +464,11 @@ def from_igraph(
             layers_seen.add(layer_id)
 
             if node_id not in nodes_map:
-                attrs = {k: v[k] for k in v.attributes() if k not in {"node_id", "layer_id", "name"}}
+                attrs = {
+                    k: v[k]
+                    for k in v.attributes()
+                    if k not in {"node_id", "layer_id", "name"}
+                }
                 nodes_map[node_id] = attrs
 
         # Add layers

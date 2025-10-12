@@ -71,7 +71,7 @@ def read_json(filepath: Union[str, Path], **kwargs) -> MultiLayerGraph:
         with gzip.open(filepath, "rt", encoding="utf-8") as f:
             data = json.load(f)
     else:
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             data = json.load(f)
 
     return MultiLayerGraph.from_dict(data)
@@ -143,7 +143,7 @@ def read_jsonl(filepath: Union[str, Path], **kwargs) -> MultiLayerGraph:
     if filepath.suffix == ".gz":
         f = gzip.open(filepath, "rt", encoding="utf-8")
     else:
-        f = open(filepath, "r", encoding="utf-8")
+        f = open(filepath, encoding="utf-8")
 
     try:
         for line_num, line in enumerate(f, 1):

@@ -43,7 +43,12 @@ class TestNode:
         """Test node with JSON-serializable attributes."""
         node = Node(
             id="n1",
-            attributes={"name": "test", "value": 42, "active": True, "tags": ["a", "b"]},
+            attributes={
+                "name": "test",
+                "value": 42,
+                "active": True,
+                "tags": ["a", "b"],
+            },
         )
         # Should not raise
         assert node.attributes["name"] == "test"
@@ -265,7 +270,9 @@ class TestMultiLayerGraph:
         graph.add_layer(Layer(id="l2"))
 
         edge = Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l2")
-        with pytest.raises(ReferentialIntegrityError, match="non-existent source layer"):
+        with pytest.raises(
+            ReferentialIntegrityError, match="non-existent source layer"
+        ):
             graph.add_edge(edge)
 
     def test_add_edge_missing_destination_layer(self):
@@ -599,12 +606,8 @@ class TestCSVFormat:
         graph.add_node(Node(id="n1"))
         graph.add_node(Node(id="n2"))
         graph.add_layer(Layer(id="l1"))
-        graph.add_edge(
-            Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1", key=0)
-        )
-        graph.add_edge(
-            Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1", key=1)
-        )
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1", key=0))
+        graph.add_edge(Edge(src="n1", dst="n2", src_layer="l1", dst_layer="l1", key=1))
 
         with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as tmp:
             tmp_path = tmp.name
@@ -653,9 +656,7 @@ class TestCSVFormat:
 
     def test_csv_missing_required_columns(self):
         """Test CSV with missing required columns raises error."""
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".csv", delete=False
-        ) as tmp:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as tmp:
             # Write CSV with missing columns
             tmp.write("src,dst\n")
             tmp.write("n1,n2\n")
@@ -705,8 +706,9 @@ class TestNetworkXConverter:
         """Test conversion to NetworkX in union mode."""
         # Skip if NetworkX not available
         try:
-            import networkx as nx
-            from py3plex.io import from_networkx, to_networkx
+            import networkx as nx  # noqa: F401
+
+            from py3plex.io import from_networkx, to_networkx  # noqa: F401
         except ImportError:
             pytest.skip("NetworkX not available")
 
@@ -731,7 +733,8 @@ class TestNetworkXConverter:
     def test_to_networkx_multiplex_mode(self):
         """Test conversion to NetworkX in multiplex mode."""
         try:
-            import networkx as nx
+            import networkx as nx  # noqa: F401
+
             from py3plex.io import to_networkx
         except ImportError:
             pytest.skip("NetworkX not available")
@@ -758,6 +761,7 @@ class TestNetworkXConverter:
         """Test conversion from NetworkX in union mode."""
         try:
             import networkx as nx
+
             from py3plex.io import from_networkx
         except ImportError:
             pytest.skip("NetworkX not available")
@@ -782,6 +786,7 @@ class TestNetworkXConverter:
         """Test conversion from NetworkX in multiplex mode."""
         try:
             import networkx as nx
+
             from py3plex.io import from_networkx
         except ImportError:
             pytest.skip("NetworkX not available")
@@ -804,7 +809,8 @@ class TestNetworkXConverter:
     def test_networkx_round_trip(self):
         """Test round-trip conversion: MLG -> NX -> MLG."""
         try:
-            import networkx as nx
+            import networkx as nx  # noqa: F401
+
             from py3plex.io import from_networkx, to_networkx
         except ImportError:
             pytest.skip("NetworkX not available")
@@ -841,7 +847,8 @@ class TestIGraphConverter:
     def test_to_igraph_multiplex_mode(self):
         """Test conversion to igraph in multiplex mode."""
         try:
-            import igraph as ig
+            import igraph as ig  # noqa: F401
+
             from py3plex.io import to_igraph
         except ImportError:
             pytest.skip("igraph not available")
@@ -863,7 +870,8 @@ class TestIGraphConverter:
     def test_to_igraph_union_mode(self):
         """Test conversion to igraph in union mode."""
         try:
-            import igraph as ig
+            import igraph as ig  # noqa: F401
+
             from py3plex.io import to_igraph
         except ImportError:
             pytest.skip("igraph not available")
@@ -888,6 +896,7 @@ class TestIGraphConverter:
         """Test conversion from igraph in union mode."""
         try:
             import igraph as ig
+
             from py3plex.io import from_igraph
         except ImportError:
             pytest.skip("igraph not available")
@@ -910,7 +919,8 @@ class TestIGraphConverter:
     def test_igraph_round_trip(self):
         """Test round-trip conversion: MLG -> igraph -> MLG."""
         try:
-            import igraph as ig
+            import igraph as ig  # noqa: F401
+
             from py3plex.io import from_igraph, to_igraph
         except ImportError:
             pytest.skip("igraph not available")

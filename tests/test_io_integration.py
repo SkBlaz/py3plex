@@ -193,14 +193,16 @@ def test_social_network_json_round_trip():
 
         # Verify edge attributes
         facebook_edges = [
-            e for e in graph2.edges if e.src_layer == "facebook" and e.dst_layer == "facebook"
+            e
+            for e in graph2.edges
+            if e.src_layer == "facebook" and e.dst_layer == "facebook"
         ]
         assert len(facebook_edges) == 5
 
         # Find specific edge
-        alice_bob = [
-            e for e in facebook_edges if e.src == "alice" and e.dst == "bob"
-        ][0]
+        alice_bob = [e for e in facebook_edges if e.src == "alice" and e.dst == "bob"][
+            0
+        ]
         assert alice_bob.attributes["weight"] == 0.9
         assert alice_bob.attributes["timestamp"] == "2023-01-15"
 

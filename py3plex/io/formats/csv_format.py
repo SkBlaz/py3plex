@@ -85,7 +85,7 @@ def read_csv(
     # Load sidecar nodes file if provided
     if nodes_file is not None:
         nodes_file = Path(nodes_file)
-        with open(nodes_file, "r", encoding="utf-8") as f:
+        with open(nodes_file, encoding="utf-8") as f:
             reader = csv.DictReader(f, delimiter=delimiter)
             for row in reader:
                 if "id" not in row:
@@ -100,7 +100,7 @@ def read_csv(
     # Load sidecar layers file if provided
     if layers_file is not None:
         layers_file = Path(layers_file)
-        with open(layers_file, "r", encoding="utf-8") as f:
+        with open(layers_file, encoding="utf-8") as f:
             reader = csv.DictReader(f, delimiter=delimiter)
             for row in reader:
                 if "id" not in row:
@@ -113,7 +113,7 @@ def read_csv(
                 layers_dict[layer_id] = attributes
 
     # Read edges
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         reader = csv.DictReader(f, delimiter=delimiter)
 
         # Check required columns
@@ -176,8 +176,12 @@ def read_csv(
 
     # Build graph data
     graph_data = {
-        "nodes": [{"id": nid, "attributes": attrs} for nid, attrs in nodes_dict.items()],
-        "layers": [{"id": lid, "attributes": attrs} for lid, attrs in layers_dict.items()],
+        "nodes": [
+            {"id": nid, "attributes": attrs} for nid, attrs in nodes_dict.items()
+        ],
+        "layers": [
+            {"id": lid, "attributes": attrs} for lid, attrs in layers_dict.items()
+        ],
         "edges": edges_list,
         "directed": True,  # Default to directed for CSV
         "attributes": {},
@@ -229,9 +233,7 @@ def write_csv(
     # Write edges
     with open(filepath, "w", encoding="utf-8", newline="") as f:
         # Define columns
-        columns = ["src", "dst", "src_layer", "dst_layer", "key"] + list(
-            edge_attr_keys
-        )
+        columns = ["src", "dst", "src_layer", "dst_layer", "key"] + list(edge_attr_keys)
         writer = csv.DictWriter(f, fieldnames=columns, delimiter=delimiter)
         writer.writeheader()
 
