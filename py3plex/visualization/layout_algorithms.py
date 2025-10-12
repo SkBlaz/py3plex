@@ -30,7 +30,30 @@ def compute_force_directed_layout(
     edgeWeightInfluence: float = 1,
     scalingRatio: float = 2.0,
     forceImport: bool = True,
+    seed: Optional[int] = None,
 ) -> Dict[Any, np.ndarray]:
+    """
+    Compute force-directed layout for a graph using ForceAtlas2 or NetworkX spring layout.
+    
+    Args:
+        g: NetworkX graph to layout
+        layout_parameters: Optional parameters to pass to layout algorithm
+        verbose: Whether to print progress information
+        gravity: Attraction force towards the center
+        strongGravityMode: Use strong gravity mode
+        barnesHutTheta: Barnes-Hut approximation parameter
+        edgeWeightInfluence: Influence of edge weights on layout
+        scalingRatio: Scaling factor for the layout
+        forceImport: Whether to use ForceAtlas2 (if available)
+        seed: Random seed for reproducibility in fallback spring layout
+        
+    Returns:
+        Dictionary mapping nodes to 2D position arrays
+        
+    Note:
+        For large networks (>1000 nodes), this may be slow. Consider using
+        faster layouts (circular, random, spectral) or matrix visualization.
+    """
 
     num_nodes = len(g.nodes())
     
@@ -90,18 +113,18 @@ def compute_force_directed_layout(
 
             logger.error("Error: %s", e)
             if layout_parameters is not None:
-                pos = nx.spring_layout(g, **layout_parameters)
+                pos = nx.spring_layout(g, seed=seed, **layout_parameters)
             else:
-                pos = nx.spring_layout(g)
+                pos = nx.spring_layout(g, seed=seed)
             logger.warning(
                 "Using standard layout algorithm, fa2 not present on the system."
             )
 
     else:
         if layout_parameters is not None:
-            pos = nx.spring_layout(g, **layout_parameters)
+            pos = nx.spring_layout(g, seed=seed, **layout_parameters)
         else:
-            pos = nx.spring_layout(g)
+            pos = nx.spring_layout(g, seed=seed)
         logger.warning(
             "Using standard layout algorithm, fa2 not present on the system."
         )
@@ -111,9 +134,20 @@ def compute_force_directed_layout(
     return pos
 
 
-def compute_random_layout(g: nx.Graph) -> Dict[Any, np.ndarray]:
-    tuple(np.random.rand(1, 2))
-    pos = {n: np.array(tuple(np.random.rand(1, 2).tolist()[0])) for n in g.nodes()}
+def compute_random_layout(g: nx.Graph, seed: Optional[int] = None) -> Dict[Any, np.ndarray]:
+    """
+    Compute a random layout for the graph.
+    
+    Args:
+        g: NetworkX graph
+        seed: Random seed for reproducibility
+        
+    Returns:
+        Dictionary mapping nodes to 2D positions
+    """
+    from py3plex.utils import get_rng
+    rng = get_rng(seed)
+    pos = {n: rng.random(2) for n in g.nodes()}
     return pos
 
 
