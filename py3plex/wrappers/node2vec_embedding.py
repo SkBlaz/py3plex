@@ -12,7 +12,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from py3plex.core.nx_compat import nx_info
 
 from ..logging_config import get_logger
-from .benchmark_nodes import benchmark_node_classification, graph, self
+from .benchmark_nodes import benchmark_node_classification
 
 logger = get_logger(__name__)
 

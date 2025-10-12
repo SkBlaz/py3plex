@@ -232,6 +232,8 @@ The repository uses `pytest` as its primary testing framework, with tests organi
 - `test_code_improvements.py`: Tests for Phase 1A/1B code quality improvements
 - `test_logging_conversion.py`: Tests for Phase 2C logging infrastructure and conversion
 - `test_issue_19_fix.py`: Regression test for issue #19 edge rendering fix
+- `test_io_schema.py`: Tests for new I/O system schema validation, formats, and converters (51 tests)
+- `test_io_integration.py`: Integration tests for I/O system with realistic multilayer networks (4 tests)
 
 **Test execution**: Run `python run_tests.py` for a unified test runner that discovers and executes all tests with clear output summaries. Alternatively, use `pytest` directly for advanced features like coverage reporting (`pytest --cov=py3plex --cov-report=html`) and selective test execution.
 
@@ -251,12 +253,104 @@ The repository uses `pytest` as its primary testing framework, with tests organi
 - **Phase 2C**: Major print→logging conversion from 15% to 74% (170/229 statements). Converted 13 modules including topology.py, benchmark_visualizations.py, node2vec_embedding.py, train_node2vec_embedding.py, community_ranking.py, entanglement.py, benchmark_nodes.py, layout_algorithms.py, drawing_machinery.py, bayesiantests.py, correlation_networks.py, critical_distances.py, and hedwig/__init__.py. Added `test_logging_conversion.py` to verify logging infrastructure. Identified and documented global state (only 2 instances in test code, legitimate use for multiprocessing).
 - **Code Quality Review**: Enhanced README.md with installation and requirements, removed redundant testing content from various files, fixed ruff configuration deprecation warnings, added code-quality.yml CI workflow (ruff, black, mypy), fixed unused imports and variables in 10 Python source files
 - **Issue #19 Fix**: Corrected boolean logic in `py3plex/visualization/drawing_machinery.py` line 545 for edge rendering in multilayer networks
+- **I/O System Implementation**: Added comprehensive I/O system in `py3plex/io/` module with schema validation, multiple file formats (JSON, JSONL, CSV), and library converters (NetworkX, igraph). Includes 55 passing tests, dataclass-based schema with automatic referential integrity checking, deterministic serialization, and full backward compatibility. See `examples/example_new_io.py` for usage.
 
 **Modernization roadmap**:
 - **Phase 1** (✅ complete): Fix bare except clauses ✅, convert print() to logging (74% complete), remove wildcard imports (9→1 complete), update Python requirement ✅, set up pytest infrastructure ✅, add type hints (65.4% complete)
-- **Phase 2** (~80% complete): Expand test coverage to 30%+ (in progress), add custom exception types ✅, refactor global state ✅ (identified and documented), update dependencies ✅, add pre-commit hooks ✅, set up CI linting ✅, expand type hints ✅, complete bare except cleanup ✅, print→logging conversion (74% complete)
+- **Phase 2** (~85% complete): Expand test coverage to 30%+ (in progress), add custom exception types ✅, refactor global state ✅ (identified and documented), update dependencies ✅, add pre-commit hooks ✅, set up CI linting ✅, expand type hints ✅, complete bare except cleanup ✅, print→logging conversion (74% complete), modern I/O system ✅
 - **Phase 3** (planned): Complete wildcard import cleanup, expand test coverage to 50%+, refactor large modules, add comprehensive docstrings, generate API documentation, complete print→logging conversion (remaining 26%)
 - **Phase 4** (planned): Full type hint coverage (100%), achieve 70%+ test coverage, performance optimization, comprehensive documentation and tutorials
+
+### Development Status
+
+**Current Status**: Phase 2 Near Complete (~85% complete)
+
+Recent achievements:
+- ✅ Modern packaging added (pyproject.toml)
+- ✅ Logging infrastructure created and tested
+- ✅ Python requirement updated to 3.8+
+- ✅ Bare except clauses: eliminated (50+ → 0, 100% reduction)
+- 🔄 Wildcard imports: reduced from 9 → 1 (89% reduction)
+- ✅ Print → Logging conversion: 74% complete (170/229 statements)
+- ✅ Type hints: 65.4% complete (70/107 maintainable modules)
+- ✅ Modern I/O system with schema validation (py3plex/io/)
+
+**Phase 2 Achievements**:
+- Converted 13 modules to use structured logging
+- Added test suite for logging infrastructure
+- Identified and documented global state (minimal, only 2 instances)
+- Implemented comprehensive I/O system with 55 tests
+- Updated documentation to reflect modernization progress
+
+**Remaining Phase 2 Work**:
+- Complete print→logging conversion (26% remaining, mostly in legacy and test code)
+- Continue expanding test coverage toward 30%+ goal
+
+## I/O System (`py3plex/io/`)
+
+**Overview**: A modern I/O subsystem added to py3plex for multilayer graph serialization, validation, and interoperability. The system provides dataclass-based schema representations with automatic validation, multiple file format support, and bidirectional conversion with popular graph libraries.
+
+**Architecture**:
+```
+py3plex/io/
+├── __init__.py          # Public API exports
+├── schema.py            # MultiLayerGraph, Node, Layer, Edge dataclasses (412 lines)
+├── api.py               # read(), write(), registry functions (222 lines)
+├── exceptions.py        # SchemaValidationError, ReferentialIntegrityError, FormatUnsupportedError
+├── converters.py        # NetworkX, igraph converters (482 lines)
+└── formats/
+    ├── json_format.py   # JSON/JSONL readers/writers with gzip (249 lines)
+    └── csv_format.py    # CSV edge list with sidecar files (299 lines)
+```
+
+**Key Classes**:
+- `MultiLayerGraph`: Main container with automatic validation (referential integrity, JSON-serializability, edge uniqueness)
+- `Node`, `Layer`, `Edge`: Typed dataclasses with to_dict()/from_dict() serialization
+- Custom exceptions with clear error messages for validation failures
+
+**File Formats**:
+- **JSON**: Canonical format with full attribute preservation, deterministic output, gzip compression (.json, .json.gz)
+- **JSONL**: Streaming format (one object per line) for memory efficiency, gzip support (.jsonl, .jsonl.gz)
+- **CSV**: Edge list with required columns (src, dst, src_layer, dst_layer), optional sidecars (nodes.csv, layers.csv)
+
+**Library Converters**:
+- **NetworkX**: `to_networkx()`, `from_networkx()` with three projection modes (union, intersection, multiplex)
+- **igraph**: `to_igraph()`, `from_igraph()` with union and multiplex modes
+
+**API Functions**:
+- `read(filepath, format=None, **kwargs)`: Load graph from file with auto-format detection
+- `write(graph, filepath, format=None, deterministic=False, **kwargs)`: Save graph with optional deterministic sorting
+- `register_reader(format_name, reader_func)`, `register_writer(format_name, writer_func)`: Plugin registration
+- `supported_formats(read=True, write=True)`: List available formats
+
+**Usage Example**:
+```python
+from py3plex.io import MultiLayerGraph, Node, Layer, Edge, read, write
+
+# Create graph
+graph = MultiLayerGraph()
+graph.add_layer(Layer(id="social"))
+graph.add_node(Node(id="alice", attributes={"age": 30}))
+graph.add_edge(Edge(src="alice", dst="bob", src_layer="social", dst_layer="social"))
+
+# Save/load
+write(graph, "network.json", deterministic=True)
+graph2 = read("network.json")
+
+# Convert to py3plex core
+from py3plex.io import to_networkx
+from py3plex.core import multinet
+G = to_networkx(graph, mode="union")
+mlnet = multinet.multi_layer_network()
+mlnet.core_network = G
+```
+
+**Testing**: 55 passing tests across `test_io_schema.py` (51 tests) and `test_io_integration.py` (4 tests). Comprehensive coverage of schema validation, format round-trips, library conversions, and error handling.
+
+**Integration**: The I/O system is fully backward compatible—it's an opt-in module (`from py3plex.io import ...`) that coexists with existing I/O methods. Users can convert between the new schema-based format and the core `multi_layer_network` class via NetworkX as an intermediate representation.
+
+**Example**: See `examples/example_new_io.py` for demonstrations of all features including CSV-to-py3plex workflow for computing centralities.
+
 
 ## Documentation and Examples
 
