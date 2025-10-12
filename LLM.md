@@ -1566,6 +1566,7 @@ Track roadmap progress in GitHub Issues:
 - ✅ CHANGELOG.md creation
 - ✅ Python 3.12 in CI test matrix
 - ✅ Optional dependency groups ([infomap], [algos], [viz])
+- ✅ Sphinx documentation version updated to 0.95a
 
 **Next Priorities** (sorted by impact):
 1. Remove bundled binaries → reduce repo size, improve licensing clarity
@@ -1719,7 +1720,7 @@ Based on impact and current state, the recommended priority order is:
 
 1. **High Priority, Quick Wins**:
    - ~~Add CHANGELOG.md (1 hour)~~ ✅ **COMPLETED**
-   - Update Sphinx version to 0.95a (30 minutes)
+   - ~~Update Sphinx version to 0.95a (30 minutes)~~ ✅ **COMPLETED**
    - ~~Add pyproject.toml extras ([infomap], [algos], [viz]) (2 hours)~~ ✅ **COMPLETED**
    - Run mypy in CI (1 hour)
    - ~~Add Python 3.12 to test matrix (30 minutes)~~ ✅ **COMPLETED**
@@ -1755,5 +1756,7 @@ The repository has seen significant improvements since the original limitations 
 - **NEW (2025-10)**: CHANGELOG.md added for systematic change tracking
 - **NEW (2025-10)**: Python 3.12 added to CI test matrix
 - **NEW (2025-10)**: Optional dependency groups added ([infomap], [algos], [viz])
+- **NEW (2025-10)**: Sphinx documentation version updated to 0.95a
+- **NEW (2025-10)**: README.md updated with optional dependency installation instructions
 
 The main remaining gaps are in **documentation updates**, **licensing clarity**, **binary unbundling**, and **API standardization**. The technical foundation is strong, and most improvements are now about polish, user experience, and maintainability rather than fundamental architectural changes.

@@ -24,6 +24,25 @@ cd py3plex
 pip install -e .
 ```
 
+**Optional Dependencies**: Install additional features as needed:
+
+```bash
+# Advanced community detection with Infomap
+pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
+
+# Additional algorithms (Louvain, cdlib)
+pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[algos]
+
+# Advanced visualization (plotly, igraph)
+pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+
+# Install multiple extras
+pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap,viz]
+
+# For development (includes testing and linting tools)
+pip install -e ".[dev]"
+```
+
 ### Quick Start
 
 To get started, please view the **examples** folder.

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CHANGELOG.md to track changes systematically
 - Python 3.12 support in CI test matrix
 - Optional dependency groups in pyproject.toml: `[infomap]`, `[algos]`, `[viz]`
+- README.md section documenting optional dependencies installation
 - Type hints coverage increased to 65.4% (70 of 107 maintainable modules)
 - Custom exception types module (`py3plex/exceptions.py`) with 13 domain-specific exceptions
 - Pre-commit hooks configuration
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Modern build system with pyproject.toml (PEP 517/518/621 compliance)
 - Comprehensive Makefile-based development workflow
+- Sphinx documentation version updated to 0.95a (from 0.80)
 - Updated all dependencies to modern versions compatible with Python 3.8+
   - numpy 1.19+, scipy 1.5+, matplotlib 3.3+, gensim 4.0+, scikit-learn 0.24+
 - Converted 170 of 229 print statements to logging (74% completion)
