@@ -1560,16 +1560,19 @@ Track roadmap progress in GitHub Issues:
 - ✅ Modern build system with pyproject.toml
 - ✅ Makefile-based development workflow
 - ✅ CI with code quality checks (ruff, black, isort)
-- ✅ Multi-Python version testing (3.8-3.11)
+- ✅ Multi-Python version testing (3.8-3.12)
 - ✅ NetworkX 3.x compatibility
 - ✅ Partial seed support (multilayer_modularity)
+- ✅ CHANGELOG.md creation
+- ✅ Python 3.12 in CI test matrix
+- ✅ Optional dependency groups ([infomap], [algos], [viz])
 
 **Next Priorities** (sorted by impact):
 1. Remove bundled binaries → reduce repo size, improve licensing clarity
 2. Unified seeding → ensure reproducibility
 3. Documentation update → reflect current capabilities
 4. Type hints + mypy → improve developer experience
-5. CHANGELOG.md creation → track changes systematically
+5. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
 
 ---
 
@@ -1715,11 +1718,11 @@ This section provides an up-to-date assessment of which roadmap items have been 
 Based on impact and current state, the recommended priority order is:
 
 1. **High Priority, Quick Wins**:
-   - Add CHANGELOG.md (1 hour)
+   - ~~Add CHANGELOG.md (1 hour)~~ ✅ **COMPLETED**
    - Update Sphinx version to 0.95a (30 minutes)
-   - Add pyproject.toml extras ([infomap], [algos], [viz]) (2 hours)
+   - ~~Add pyproject.toml extras ([infomap], [algos], [viz]) (2 hours)~~ ✅ **COMPLETED**
    - Run mypy in CI (1 hour)
-   - Add Python 3.12 to test matrix (30 minutes)
+   - ~~Add Python 3.12 to test matrix (30 minutes)~~ ✅ **COMPLETED**
 
 2. **High Priority, Medium Effort**:
    - Unified random state helper and consistent seeding (1 week)
@@ -1745,9 +1748,12 @@ The repository has seen significant improvements since the original limitations 
 
 - Sparse matrix support is now the default and well-implemented
 - Memory warnings protect users from OOM errors
-- CI infrastructure is robust with multi-version testing
+- CI infrastructure is robust with multi-version testing (3.8-3.12)
 - Modern Python tooling (black, ruff, pytest) is fully integrated
 - NetworkX 3.x compatibility issues have been resolved
 - Code quality has improved with consistent formatting
+- **NEW (2025-10)**: CHANGELOG.md added for systematic change tracking
+- **NEW (2025-10)**: Python 3.12 added to CI test matrix
+- **NEW (2025-10)**: Optional dependency groups added ([infomap], [algos], [viz])
 
 The main remaining gaps are in **documentation updates**, **licensing clarity**, **binary unbundling**, and **API standardization**. The technical foundation is strong, and most improvements are now about polish, user experience, and maintainability rather than fundamental architectural changes.
