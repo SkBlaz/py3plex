@@ -56,6 +56,20 @@ dev = [
     "mypy>=1.0",
     "pre-commit>=3.0",
 ]
+# Optional: Infomap for advanced community detection
+infomap = [
+    "infomap>=2.0.0",
+]
+# Optional: Additional algorithms (Louvain, label propagation)
+algos = [
+    "python-louvain>=0.16",
+    "cdlib>=0.3.0",
+]
+# Optional: Advanced visualization
+viz = [
+    "plotly>=5.0.0",
+    "python-igraph>=0.10.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"

@@ -987,7 +987,7 @@ Consider using mtype='sparse' instead, or analyzing layers independently.
 ### Documentation Staleness
 
 **Issue**: Some documentation references outdated versions and missing recent features:
-- Official docs mention "v0.80" in some places (several versions old)
+- ~~Official docs mention "v0.80" in some places~~ ✅ **FIXED** - Sphinx config now shows 0.95a
 - Recent additions (multilayer centrality, modularity algorithms) not fully documented in Sphinx docs
 - Tutorial pages reference legacy API patterns
 - GitHub README is more current than published docs
@@ -1057,7 +1057,7 @@ Consider using mtype='sparse' instead, or analyzing layers independently.
 | Supra-adjacency memory use | High | ✅ Resolved | Sparse by default, warnings implemented |
 | Visualization scalability | Medium | Needs improvement | No automatic size guards yet |
 | PyPI version lag | Medium | Known issue | Install from GitHub recommended |
-| Documentation staleness | Medium | In progress | Version 0.80 docs need update to 0.95a |
+| Documentation staleness | Low | ✅ Resolved | Sphinx config updated to 0.95a |
 | NetworkX 3.x compatibility | Low | ✅ Resolved | Compatibility layer implemented |
 | Type hints coverage | Medium | In progress | Partial coverage, mypy not in CI |
 | CI platform coverage | Low | Partial | Ubuntu only, macOS/Windows not tested |
@@ -1284,7 +1284,7 @@ def compute_multilayer_centrality(
 **Goals**:
 - Document algorithmic complexity (time/space) for each major routine (aggregation, supra build, centralities, community detection)
 - Add a "Pick the right tool" decision guide with bullets for algorithm selection
-- Update ReadTheDocs to current API (currently shows "0.80 docs", should reflect latest)
+- ~~Update ReadTheDocs to current API~~ ✅ **FIXED** - Sphinx config updated to 0.95a (ReadTheDocs will reflect on next build)
 - Auto-build and publish docs from `main` branch via GitHub Actions
 - Include gallery-style runnable examples (doctests) that execute in CI
 - Provide reproducible notebooks in `examples/` that run without local datasets (auto-fetch small CC-licensed graphs)
@@ -1294,13 +1294,13 @@ def compute_multilayer_centrality(
 
 **Current State**:
 - ✅ Comprehensive examples in `examples/` directory (43 scripts)
-- ❌ Documentation shows "py3plex 0.80" despite being at 0.95a
+- ✅ Documentation version updated to 0.95a in Sphinx config
 - ❌ No automatic doc building from CI
 - ❌ Examples depend on local datasets that may not exist
 - ❌ No algorithmic complexity documented
 
 **Documentation Priorities**:
-1. Update version in Sphinx config
+1. ~~Update version in Sphinx config~~ ✅ **COMPLETED**
 2. Add complexity tables to algorithm docstrings
 3. Create algorithm selection guide
 4. Set up ReadTheDocs webhook or GitHub Actions build
@@ -1560,16 +1560,20 @@ Track roadmap progress in GitHub Issues:
 - ✅ Modern build system with pyproject.toml
 - ✅ Makefile-based development workflow
 - ✅ CI with code quality checks (ruff, black, isort)
-- ✅ Multi-Python version testing (3.8-3.11)
+- ✅ Multi-Python version testing (3.8-3.12)
 - ✅ NetworkX 3.x compatibility
 - ✅ Partial seed support (multilayer_modularity)
+- ✅ CHANGELOG.md creation
+- ✅ Python 3.12 in CI test matrix
+- ✅ Optional dependency groups ([infomap], [algos], [viz])
+- ✅ Sphinx documentation version updated to 0.95a
 
 **Next Priorities** (sorted by impact):
 1. Remove bundled binaries → reduce repo size, improve licensing clarity
 2. Unified seeding → ensure reproducibility
 3. Documentation update → reflect current capabilities
 4. Type hints + mypy → improve developer experience
-5. CHANGELOG.md creation → track changes systematically
+5. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
 
 ---
 
@@ -1631,7 +1635,7 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - ✅ Comprehensive `LLM.md` with development context
 - ✅ 43 working examples in `examples/` directory
 - ✅ Docstrings present in major functions
-- ❌ Sphinx docs show "py3plex 0.80" instead of current version
+- ✅ Sphinx config updated to version 0.95a
 - ❌ No automatic doc building from CI
 - ❌ Algorithmic complexity not systematically documented
 - ❌ No "Pick the right tool" decision guide
@@ -1715,11 +1719,11 @@ This section provides an up-to-date assessment of which roadmap items have been 
 Based on impact and current state, the recommended priority order is:
 
 1. **High Priority, Quick Wins**:
-   - Add CHANGELOG.md (1 hour)
-   - Update Sphinx version to 0.95a (30 minutes)
-   - Add pyproject.toml extras ([infomap], [algos], [viz]) (2 hours)
+   - ~~Add CHANGELOG.md (1 hour)~~ ✅ **COMPLETED**
+   - ~~Update Sphinx version to 0.95a (30 minutes)~~ ✅ **COMPLETED**
+   - ~~Add pyproject.toml extras ([infomap], [algos], [viz]) (2 hours)~~ ✅ **COMPLETED**
    - Run mypy in CI (1 hour)
-   - Add Python 3.12 to test matrix (30 minutes)
+   - ~~Add Python 3.12 to test matrix (30 minutes)~~ ✅ **COMPLETED**
 
 2. **High Priority, Medium Effort**:
    - Unified random state helper and consistent seeding (1 week)
@@ -1745,9 +1749,14 @@ The repository has seen significant improvements since the original limitations 
 
 - Sparse matrix support is now the default and well-implemented
 - Memory warnings protect users from OOM errors
-- CI infrastructure is robust with multi-version testing
+- CI infrastructure is robust with multi-version testing (3.8-3.12)
 - Modern Python tooling (black, ruff, pytest) is fully integrated
 - NetworkX 3.x compatibility issues have been resolved
 - Code quality has improved with consistent formatting
+- **NEW (2025-10)**: CHANGELOG.md added for systematic change tracking
+- **NEW (2025-10)**: Python 3.12 added to CI test matrix
+- **NEW (2025-10)**: Optional dependency groups added ([infomap], [algos], [viz])
+- **NEW (2025-10)**: Sphinx documentation version updated to 0.95a
+- **NEW (2025-10)**: README.md updated with optional dependency installation instructions
 
 The main remaining gaps are in **documentation updates**, **licensing clarity**, **binary unbundling**, and **API standardization**. The technical foundation is strong, and most improvements are now about polish, user experience, and maintainability rather than fundamental architectural changes.
