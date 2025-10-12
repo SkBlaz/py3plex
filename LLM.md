@@ -68,6 +68,7 @@ py3plex/
 ├── examples/                         → 43 example scripts demonstrating usage
 ├── tests/                            → Unit and integration tests
 ├── docs/                             → Sphinx-generated HTML documentation
+├── Makefile                          → Production-grade build system (development, testing, publishing)
 ├── pyproject.toml                    → Modern build configuration (PEP 517/518/621)
 ├── setup.py                          → Legacy setuptools configuration
 ├── requirements.txt                  → Core dependencies
@@ -235,11 +236,80 @@ The repository uses `pytest` as its primary testing framework, with tests organi
 - `test_io_schema.py`: Tests for new I/O system schema validation, formats, and converters (51 tests)
 - `test_io_integration.py`: Integration tests for I/O system with realistic multilayer networks (4 tests)
 
-**Test execution**: Run `python run_tests.py` for a unified test runner that discovers and executes all tests with clear output summaries. Alternatively, use `pytest` directly for advanced features like coverage reporting (`pytest --cov=py3plex --cov-report=html`) and selective test execution.
+**Test execution via Makefile** (recommended):
+```bash
+make test        # Run pytest with coverage reporting
+make ci          # Run lint + test (full CI suite)
+make coverage    # Open HTML coverage report in browser
+```
+
+The Makefile provides a unified interface for all development tasks and works in both local and CI environments. It automatically detects whether tools are installed in `.venv` or globally (as in CI).
+
+**Alternative test execution**:
+- `python run_tests.py`: Unified test runner with clear output summaries
+- `pytest`: Direct pytest execution for advanced features like selective test execution
 
 **Continuous Integration**: GitHub Actions workflows run on every push and pull request:
-- **Test workflow** (`.github/workflows/tests.yml`): Tests on Python 3.8-3.11 with both full and minimal dependencies, includes timeout protection
-- **Code quality workflow** (`.github/workflows/code-quality.yml`): Ruff linting, Black formatting checks, Mypy type checking
+- **Test workflow** (`.github/workflows/tests.yml`): Uses `make setup` and runs tests on Python 3.8-3.11 with both full and minimal dependencies
+- **Code quality workflow** (`.github/workflows/code-quality.yml`): Uses `make lint` for Ruff linting, Black formatting checks, isort, and Mypy type checking
+
+**Coverage status**: Current test coverage is approximately 15-20%. The modernization roadmap targets 30% coverage in Phase 2, 50% in Phase 3, and 70% in Phase 4. Priority areas for expanded testing include algorithm correctness, edge case handling, and user-facing API stability. A new test suite (`test_logging_conversion.py`) has been added to verify the logging infrastructure.
+
+## Makefile Build System
+
+**Overview**: A production-grade Makefile provides a unified entrypoint for all development, testing, and publishing workflows. The Makefile streamlines common tasks behind memorable commands and ensures consistent execution between local development and CI environments.
+
+**Key Features**:
+- **Smart tool detection**: Automatically uses tools from `.venv/bin/` if available, otherwise falls back to globally installed tools (enabling CI compatibility)
+- **Colorized output**: ANSI color codes for better readability (green for success, yellow for warnings, red for errors)
+- **Virtual environment management**: `make setup` creates `.venv` and installs all dependencies
+- **Cross-platform**: Works on Linux and macOS
+
+**Available Targets** (13 total):
+```bash
+make help         # Display all available commands
+make setup        # Create virtual environment and install dependencies
+make dev-install  # Install package in editable mode with dev dependencies
+make format       # Auto-format code (isort + black + ruff --fix)
+make lint         # Run linters (ruff + isort + black + mypy)
+make test         # Run pytest with coverage reporting
+make coverage     # Open HTML coverage report in browser
+make docs         # Build Sphinx documentation
+make clean        # Remove build artifacts and caches
+make build        # Build source and wheel distributions
+make publish      # Upload to PyPI (requires TWINE_USERNAME/PASSWORD env vars)
+make api-check    # Verify py3plex API exports expected symbols
+make ci           # Run lint + test in sequence (full CI suite)
+```
+
+**Smart Tool Detection Example**:
+```makefile
+RUFF := $(shell if [ -f $(VENV_BIN)/ruff ]; then echo $(VENV_BIN)/ruff; else echo ruff; fi)
+```
+This allows the Makefile to work in both scenarios:
+- **Local Development**: Uses `.venv/bin/ruff` when virtual environment exists
+- **CI Environment**: Falls back to globally installed `ruff` (via `pip install`)
+
+**CI Integration**: GitHub Actions workflows use Makefile targets:
+```yaml
+# .github/workflows/code-quality.yml
+- name: Run lint checks via Makefile
+  run: make lint
+
+# .github/workflows/tests.yml
+- name: Setup development environment via Makefile
+  run: make setup
+```
+
+**Development Workflow**:
+1. `make setup` - Initial environment setup (one-time)
+2. `make dev-install` - Install package in editable mode
+3. `make format` - Auto-format code before committing
+4. `make lint` - Check code quality
+5. `make test` - Run tests with coverage
+6. `make ci` - Full CI checks before pushing
+
+**For LLMs and Downstream Bots**: The Makefile provides a standardized interface. To run tests or lint code in this repository, use `make test` or `make lint` rather than directly invoking pytest or ruff. The Makefile handles tool detection and environment configuration automatically.
 
 **Coverage status**: Current test coverage is approximately 15-20%. The modernization roadmap targets 30% coverage in Phase 2, 50% in Phase 3, and 70% in Phase 4. Priority areas for expanded testing include algorithm correctness, edge case handling, and user-facing API stability. A new test suite (`test_logging_conversion.py`) has been added to verify the logging infrastructure.
 
@@ -393,12 +463,13 @@ Each example is self-contained, includes inline comments explaining key concepts
 
 1. **Start with `README.md`**: Understand the library's purpose, scope, and primary citations
 2. **Read this file (`LLM.md`)**: Comprehensive structural and conceptual overview
-3. **Study `py3plex/core/multinet.py`**: The `multi_layer_network` class is the central abstraction—understand its attributes, methods, and state management
-4. **Examine `py3plex/core/parsers.py`**: Understand supported input formats and how external data becomes internal representations
-5. **Explore `py3plex/algorithms/`**: Review subdirectories based on analytical interest (community detection, statistics, embeddings)
-6. **Review `py3plex/visualization/multilayer.py`**: Understand visualization capabilities and output formats
-7. **Inspect `examples/`**: Real-world usage patterns demonstrate intended workflows
-8. **Consult `tests/`**: Tests reveal expected behaviors, edge cases, and API contracts
+3. **Review the `Makefile`**: Understand the standardized build and test workflow
+4. **Study `py3plex/core/multinet.py`**: The `multi_layer_network` class is the central abstraction—understand its attributes, methods, and state management
+5. **Examine `py3plex/core/parsers.py`**: Understand supported input formats and how external data becomes internal representations
+6. **Explore `py3plex/algorithms/`**: Review subdirectories based on analytical interest (community detection, statistics, embeddings)
+7. **Review `py3plex/visualization/multilayer.py`**: Understand visualization capabilities and output formats
+8. **Inspect `examples/`**: Real-world usage patterns demonstrate intended workflows
+9. **Consult `tests/`**: Tests reveal expected behaviors, edge cases, and API contracts
 
 ### 💡 Tips for Embedding, Indexing, or RAG
 
@@ -418,6 +489,19 @@ Each example is self-contained, includes inline comments explaining key concepts
 - **Error handling**: Post-Phase 1B, all bare except clauses are eliminated. Errors now raise specific exception types. Expect `ImportError` for missing optional dependencies, `FileNotFoundError` for missing data files, and `NetworkXError` for invalid graph operations.
 
 ### 🔧 Common Patterns for Code Generation
+
+**Development workflow**:
+```bash
+# Initial setup
+make setup
+make dev-install
+
+# Code quality
+make format    # Auto-format code
+make lint      # Check code quality
+make test      # Run tests with coverage
+make ci        # Full CI checks (lint + test)
+```
 
 **Network construction**:
 ```python
