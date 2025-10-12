@@ -4,6 +4,7 @@ Example usage of the py3plex I/O system.
 This script demonstrates the new I/O API for multilayer graphs including:
 - Creating graphs with the schema API
 - Reading and writing various formats (JSON, JSONL, CSV)
+- Converting to core py3plex objects for analysis (centrality, etc.)
 - Converting between libraries (NetworkX, igraph)
 - Schema validation and error handling
 """
@@ -23,6 +24,7 @@ from py3plex.io import (
     SchemaValidationError,
     read,
     supported_formats,
+    to_networkx,
     write,
 )
 
@@ -132,6 +134,59 @@ def example_csv_io(graph):
     print(f"Read graph: {len(graph2.nodes)} nodes, {len(graph2.edges)} edges")
 
 
+def example_csv_to_py3plex_analysis():
+    """Load CSV and use core py3plex for analysis."""
+    print("\n=== CSV to py3plex Analysis ===")
+
+    try:
+        from py3plex.core import multinet
+
+        # First, create and save a CSV
+        graph = MultiLayerGraph()
+        graph.add_layer(Layer(id="social"))
+        graph.add_node(Node(id="alice"))
+        graph.add_node(Node(id="bob"))
+        graph.add_node(Node(id="charlie"))
+        graph.add_node(Node(id="diana"))
+        
+        # Create a simple network
+        graph.add_edge(Edge(src="alice", dst="bob", src_layer="social", dst_layer="social"))
+        graph.add_edge(Edge(src="bob", dst="charlie", src_layer="social", dst_layer="social"))
+        graph.add_edge(Edge(src="charlie", dst="diana", src_layer="social", dst_layer="social"))
+        graph.add_edge(Edge(src="diana", dst="alice", src_layer="social", dst_layer="social"))
+        
+        write(graph, "/tmp/network.csv", format="csv")
+        print("Saved network to /tmp/network.csv")
+
+        # Load into new I/O system
+        loaded_graph = read("/tmp/network.csv", format="csv")
+        
+        # Convert to NetworkX for py3plex compatibility
+        G = to_networkx(loaded_graph, mode="union")
+        
+        # Now use core py3plex multi_layer_network
+        mlnet = multinet.multi_layer_network()
+        mlnet.core_network = G
+        
+        print(f"\nConverted to py3plex multi_layer_network:")
+        mlnet.basic_stats()
+        
+        # Compute centrality measures
+        try:
+            import networkx as nx
+            centrality = nx.degree_centrality(G)
+            print(f"\nDegree centrality:")
+            for node, cent in sorted(centrality.items(), key=lambda x: x[1], reverse=True):
+                print(f"  {node}: {cent:.3f}")
+        except Exception as e:
+            print(f"Could not compute centrality: {e}")
+
+    except ImportError as e:
+        print(f"Required libraries not installed: {e}")
+    except Exception as e:
+        print(f"Error in analysis: {e}")
+
+
 def example_networkx_conversion(graph):
     """NetworkX conversion examples."""
     print("\n=== NetworkX Conversion ===")
@@ -220,6 +275,9 @@ def main():
     example_json_io(graph)
     example_jsonl_io(graph)
     example_csv_io(graph)
+
+    # CSV to py3plex analysis (demonstrates integration with core py3plex)
+    example_csv_to_py3plex_analysis()
 
     # Library conversion examples
     example_networkx_conversion(graph)
