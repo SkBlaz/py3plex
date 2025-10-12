@@ -5,13 +5,20 @@ from py3plex.core import multinet
 from py3plex.visualization.multilayer import hairball_plot, plt
 from py3plex.visualization.colors import colors_default
 from collections import Counter
+import random
+import numpy as np
 
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--input_network", default="../datasets/cora.mat")
 parser.add_argument("--input_type", default="sparse")
 parser.add_argument("--iterations", default=200, type=int)
+parser.add_argument("--seed", default=42, type=int, help="Random seed for reproducibility")
 args = parser.parse_args()
+
+# Set random seeds for reproducibility
+random.seed(args.seed)
+np.random.seed(args.seed)
 
 # network and group objects must be present within the .mat object
 

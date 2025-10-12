@@ -24,6 +24,22 @@ def run_infomap(
     import os
     from subprocess import call
 
+    # Check if binary exists and is executable
+    if not os.path.exists(binary):
+        raise FileNotFoundError(
+            f"Infomap binary not found at '{binary}'. "
+            "Please provide a valid path to the Infomap binary using the 'binary' parameter, "
+            "or install Infomap from https://www.mapequation.org/infomap/. "
+            "Alternatively, use Louvain community detection: "
+            "partition = louvain_communities(network)"
+        )
+    
+    if not os.access(binary, os.X_OK):
+        raise PermissionError(
+            f"Infomap binary at '{binary}' is not executable. "
+            f"Run: chmod +x {binary}"
+        )
+
     # Ensure output directory exists
     os.makedirs("out", exist_ok=True)
     if verbose:
