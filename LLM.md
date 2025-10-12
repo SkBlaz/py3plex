@@ -37,6 +37,8 @@ py3plex/
 │   │   ├── community_detection/      → Community detection algorithms
 │   │   │   ├── community_wrapper.py  → High-level interface for Louvain, Infomap
 │   │   │   ├── community_louvain.py  → Louvain modularity optimization
+│   │   │   ├── multilayer_modularity.py → Multilayer modularity (Mucha et al. 2010)
+│   │   │   ├── multilayer_benchmark.py  → Synthetic multilayer benchmarks (mLFR, SBM)
 │   │   │   ├── node_ranking.py       → PageRank, PPR centrality measures
 │   │   │   ├── community_ranking.py  → Community importance ranking
 │   │   │   └── infomap/              → Infomap C++ bindings for overlapping communities
@@ -88,6 +90,8 @@ Inter-module relationships follow a layered architecture: `core` provides founda
 | `core/HINMINE/decomposition.py` | Implements network decomposition algorithms for heterogeneous information networks, including meta-path extraction and cycle enumeration. |
 | `algorithms/community_detection/community_wrapper.py` | High-level interface for community detection, wrapping Louvain and Infomap algorithms with multilayer-aware parameter handling. |
 | `algorithms/community_detection/community_louvain.py` | Louvain modularity optimization for community detection, adapted for multilayer networks with configurable resolution parameters. |
+| `algorithms/community_detection/multilayer_modularity.py` | Multilayer modularity calculation, supra-modularity matrix construction, and generalized Louvain algorithm (Mucha et al. 2010). |
+| `algorithms/community_detection/multilayer_benchmark.py` | Synthetic benchmark generators for multilayer networks: mLFR, coupled ER, multilayer SBM with ground-truth communities. |
 | `algorithms/statistics/statistics.py` | Computes fundamental network statistics: degree distribution, diameter, clustering coefficient, density, connected components, flow hierarchy. |
 | `algorithms/statistics/topology.py` | Topological analysis including degree sequence, assortativity, small-world properties, and scale-free network testing. |
 | `algorithms/statistics/enrichment.py` | Statistical enrichment analysis for identifying over-represented patterns, motifs, or node attributes in network subgraphs. |
@@ -528,6 +532,172 @@ communities = community_wrapper.best_partition(network.core_network)
 from py3plex.visualization.multilayer import draw_multilayer_default
 draw_multilayer_default([network], display=True)
 ```
+
+## Multilayer Modularity and Community Detection
+
+Py3plex includes a comprehensive implementation of **multilayer modularity maximization** based on Mucha et al. (2010), providing both the theoretical framework and practical tools for analyzing community structure in multilayer/multiplex networks.
+
+### Mathematical Framework
+
+The multilayer modularity quality function extends Newman's modularity to networks with multiple layers:
+
+$$Q_{\text{multilayer}} = \frac{1}{2\mu} \sum_{i,j}\sum_{\alpha,\beta} \Big[ \big(A^{[\alpha]}_{ij} - \gamma^{[\alpha]}P^{[\alpha]}_{ij}\big)\,\delta_{\alpha\beta} + \delta_{ij}\,\omega_{\alpha\beta}\Big]\,\delta\big(g_{i,\alpha},\,g_{j,\beta}\big)$$
+
+Where:
+- $A^{[\alpha]}_{ij}$ is the adjacency matrix of layer α
+- $P^{[\alpha]}_{ij}$ is the null model (typically $k_i^\alpha k_j^\alpha / 2m_\alpha$)
+- $\gamma^{[\alpha]}$ is the resolution parameter for layer α (controls community size)
+- $\omega_{\alpha\beta}$ is the inter-layer coupling strength (controls alignment across layers)
+- $\delta_{\alpha\beta}$ = 1 if α=β, else 0 (Kronecker delta)
+- $\delta_{ij}$ = 1 if i=j, else 0
+- $\delta(g_{i,\alpha}, g_{j,\beta})$ = 1 if same community, else 0
+- $\mu$ is the total edge weight in the supra-network
+
+### Core Implementation Files
+
+| File | Purpose |
+|------|---------|
+| `algorithms/community_detection/multilayer_modularity.py` | Implements multilayer modularity calculation, supra-modularity matrix construction, and generalized Louvain algorithm for community detection (433 lines) |
+| `algorithms/community_detection/multilayer_benchmark.py` | Provides synthetic benchmark generators: multilayer LFR, coupled Erdős-Rényi, and multilayer stochastic block models with ground-truth communities (622 lines) |
+
+### Key Features
+
+**1. Multilayer Modularity Calculation**
+- `multilayer_modularity()` - Calculate quality function with layer-specific resolution (γ) and inter-layer coupling (ω)
+- `build_supra_modularity_matrix()` - Construct supra-modularity matrix for spectral methods
+- Supports both uniform and layer-specific parameter configurations
+- Returns modularity Q ∈ [-1, 1]
+
+**2. Generalized Louvain Algorithm**
+- `louvain_multilayer()` - Greedy modularity maximization adapted for multilayer networks
+- Handles inter-layer dependencies through coupling terms
+- Configurable coupling strength to control layer independence
+- Random initialization for robust results
+
+**3. Synthetic Benchmark Generators**
+- `generate_multilayer_lfr()` - Multilayer LFR benchmark with:
+  - Power-law degree and community size distributions
+  - Controllable mixing parameter (μ) for intra/inter-community edges
+  - Community persistence across layers (0.0 = independent, 1.0 = identical)
+  - Node overlap (partial presence in layers)
+  - Overlapping communities (multiple memberships)
+- `generate_coupled_er_multilayer()` - Coupled/interdependent Erdős-Rényi models with:
+  - Layer-specific edge probabilities
+  - Controllable inter-layer coupling
+  - Partial coupling for interdependent networks
+- `generate_sbm_multilayer()` - Multilayer stochastic block models with:
+  - Explicit block structure with intra/inter-block probabilities
+  - Community evolution across layers
+  - Clean ground-truth communities for validation
+
+### Usage Examples
+
+**Calculate multilayer modularity**:
+```python
+from py3plex.algorithms.community_detection.multilayer_modularity import multilayer_modularity
+
+# Define communities (node-layer pairs to community IDs)
+communities = {
+    ('A', 'L1'): 0, ('B', 'L1'): 0, ('C', 'L1'): 1,
+    ('A', 'L2'): 0, ('C', 'L2'): 0
+}
+
+# Calculate modularity with uniform parameters
+Q = multilayer_modularity(network, communities, gamma=1.0, omega=1.0)
+
+# Or with layer-specific resolution
+gamma_dict = {'L1': 0.5, 'L2': 2.0}
+Q = multilayer_modularity(network, communities, gamma=gamma_dict, omega=1.0)
+```
+
+**Detect communities with Louvain**:
+```python
+from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
+
+# Detect communities
+communities = louvain_multilayer(
+    network,
+    gamma=1.0,      # Resolution parameter
+    omega=1.0,      # Coupling strength (0=independent, ∞=identical)
+    max_iter=100,
+    random_state=42
+)
+
+# Result: {(node, layer): community_id, ...}
+```
+
+**Generate synthetic benchmarks**:
+```python
+from py3plex.algorithms.community_detection.multilayer_benchmark import (
+    generate_multilayer_lfr,
+    generate_coupled_er_multilayer,
+    generate_sbm_multilayer
+)
+
+# Multilayer LFR with ground truth
+network, ground_truth = generate_multilayer_lfr(
+    n=100,
+    layers=['L1', 'L2', 'L3'],
+    mu=0.1,                    # 10% external edges
+    avg_degree=10,
+    community_persistence=0.8,  # 80% nodes keep community
+    overlapping_nodes=10,      # 10 nodes in multiple communities
+    seed=42
+)
+
+# Coupled ER for null model testing
+network = generate_coupled_er_multilayer(
+    n=100,
+    layers=['L1', 'L2'],
+    p=0.1,                     # Edge probability
+    omega=1.0,                 # Coupling strength
+    coupling_probability=0.5   # 50% nodes coupled
+)
+
+# Multilayer SBM with clean block structure
+communities_gt = [{0,1,2,3,4}, {5,6,7,8,9}]
+network, ground_truth = generate_sbm_multilayer(
+    n=10,
+    layers=['L1', 'L2'],
+    communities=communities_gt,
+    p_in=0.7,   # Intra-block probability
+    p_out=0.05, # Inter-block probability
+    community_persistence=0.9
+)
+```
+
+### Parameters and Tuning
+
+**Resolution (γ)**: Controls community size within layers
+- Higher values → smaller, more granular communities
+- Lower values → larger, coarser communities
+- Can be set per layer for heterogeneous structure
+
+**Coupling (ω)**: Controls community alignment across layers
+- ω = 0: Layers completely independent (no alignment)
+- ω ∈ (0, 5): Moderate coupling (allows variation)
+- ω > 5: Strong coupling (forces similar communities)
+- ω → ∞: Identical communities across all layers
+
+### Performance Characteristics
+
+- **Time Complexity**:
+  - Modularity calculation: O((NL)²) where N=nodes, L=layers
+  - Louvain algorithm: O(k × (NL)²) where k=iterations (typically small)
+  - LFR generation: O(N × avg_degree × L)
+
+- **Space Complexity**: O((NL)²) for supra-adjacency matrix
+  - Uses scipy.sparse when available for memory efficiency
+
+### Scientific Foundation
+
+Implementation based on:
+- **Mucha, P. J., et al.** (2010). "Community Structure in Time-Dependent, Multiscale, and Multiplex Networks." *Science* 328(5980): 876-878.
+- **Kivelä, M., et al.** (2014). "Multilayer networks." *Journal of Complex Networks* 2(3): 203-271.
+- **Lancichinetti, A., et al.** (2008). "Benchmark graphs for testing community detection algorithms." *Physical Review E* 78(4): 046110.
+- **Granell, C., et al.** (2015). "Benchmark model to assess community structure in evolving networks." *Physical Review E* 92(1): 012805.
+
+The implementation follows the GenLouvain MATLAB framework by Jeub et al., adapted for Python and integrated with py3plex's multilayer network data structures. It provides production-ready tools for temporal network analysis, multiplex social networks, and interdependent infrastructure networks.
 
 ## Metadata and Provenance
 

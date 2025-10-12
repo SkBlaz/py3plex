@@ -24,7 +24,6 @@ def validate_file_structure():
         'tests/test_multilayer_modularity.py',
         'docs/multilayer_modularity_tutorial.md',
         'examples/example_multilayer_modularity.py',
-        'MULTILAYER_MODULARITY.md',
     ]
     
     all_exist = True
@@ -171,7 +170,6 @@ def validate_documentation():
     
     doc_files = [
         ('docs/multilayer_modularity_tutorial.md', 5000),
-        ('MULTILAYER_MODULARITY.md', 5000),
         ('examples/example_multilayer_modularity.py', 5000),
     ]
     
