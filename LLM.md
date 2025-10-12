@@ -764,3 +764,305 @@ Py3plex is designed with three core principles: **readability**, **modularity**,
 The goal is to balance **usability with analytical depth**—enabling researchers to explore multilayer network properties quickly through high-level functions while allowing advanced users to extend or customize functionality through low-level access to underlying data structures. The ongoing modernization effort (Phases 1-4 as described in the "Tests and Quality Assurance" section above) aims to bring the codebase to contemporary Python standards without sacrificing backward compatibility or breaking existing workflows.
 
 Py3plex treats heterogeneous networks as first-class objects, not afterthoughts. This philosophical commitment distinguishes it from general-purpose graph libraries and makes it a natural choice for complex network analysis in research and applied settings.
+
+## Known Limitations and Best Practices (2025 Update)
+
+This section documents known limitations, compatibility concerns, and recommended practices for working with py3plex. These represent areas where users should exercise caution or employ specific workarounds.
+
+### External Binary Dependencies and Portability
+
+**Issue**: Several features depend on external compiled binaries that are not managed by pip/PyPI:
+
+- **Infomap community detection**: Requires the Infomap binary (typically in `../bin/Infomap` or `./infomap`). The binary path is hardcoded in function signatures (e.g., `binary="../bin/Infomap"` in `community_wrapper.py`).
+- **Node2Vec embeddings**: Requires a separate Node2Vec C++ binary (default: `./node2vec`).
+
+**Impact**: Installation is fragile across operating systems and environments. Users must manually:
+1. Download or compile the appropriate binary for their platform
+2. Place it in the expected location or override the `binary` parameter
+3. Ensure the binary has execute permissions on Unix-like systems
+
+**Mitigation**:
+- Always use absolute paths or explicitly set the `binary` parameter when calling these functions
+- Consider using pure-Python alternatives when available (e.g., `community_louvain` instead of Infomap for basic community detection)
+- For Node2Vec, consider using the `node2vec` or `pecanpy` Python packages as alternatives
+- Check binary existence before running analyses to provide better error messages
+
+**Example**:
+```python
+import os
+from py3plex.algorithms.community_detection import community_wrapper as cw
+
+# Bad: Relies on relative path assumption
+# partition = cw.infomap_communities(network, binary="../bin/Infomap")
+
+# Good: Check existence and use absolute path
+infomap_path = "/usr/local/bin/Infomap"
+if os.path.exists(infomap_path) and os.access(infomap_path, os.X_OK):
+    partition = cw.infomap_communities(network, binary=infomap_path)
+else:
+    # Fallback to Louvain
+    partition = cw.louvain_communities(network)
+```
+
+### Licensing Compatibility Concerns
+
+**Issue**: Mixed licensing creates potential compatibility problems:
+- **Main repository**: BSD-3-Clause (permissive, commercial-friendly)
+- **Bundled Infomap code** (`py3plex/algorithms/infomap/`): AGPLv3 (copyleft, viral)
+
+**Impact**: 
+- AGPLv3 is incompatible with proprietary software distribution
+- The "viral" nature of AGPL means any software that uses Infomap features must also be AGPL-licensed
+- This creates ambiguity about py3plex's true licensing status
+- Organizations with strict licensing policies may not be able to use py3plex if Infomap is bundled
+
+**Mitigation**:
+- For commercial or proprietary projects, avoid using Infomap-based functions
+- Use alternative community detection algorithms (Louvain, label propagation) which are BSD-3-Clause
+- Consider requesting a separate py3plex distribution without bundled Infomap code
+- If using Infomap, ensure your project is compatible with AGPLv3 requirements (source disclosure, same license for derivative works)
+- Contact Infomap authors for commercial licensing options if needed
+
+**Current status**: This is a known issue without immediate resolution. Users must make informed decisions based on their use case.
+
+### Reproducibility and Random Seeds
+
+**Issue**: Many algorithms use randomization but examples and documentation don't consistently set random seeds:
+- Community detection (Louvain, Infomap) uses randomized optimization
+- Force-directed layout algorithms use random initialization
+- Network generation functions have stochastic components
+- Examples in the repository often omit seed parameters
+
+**Impact**:
+- Research results are not reproducible across runs
+- Difficult to debug issues when results vary between executions
+- Visualization positions change on every run, complicating visual comparison
+- Benchmarking results may be inconsistent
+
+**Mitigation**:
+- Always set random seeds when reproducibility matters:
+  ```python
+  import random
+  import numpy as np
+  
+  # Set seeds for reproducibility
+  random.seed(42)
+  np.random.seed(42)
+  
+  # For algorithms that accept random_state parameter
+  from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
+  communities = louvain_multilayer(network, random_state=42)
+  ```
+- For NetworkX-based algorithms, use NetworkX's seed parameter where available
+- Be aware that some C++ binaries (Infomap) may not support seed setting from Python
+- Document the seeds used in your analysis for reproducibility
+
+**Examples needing improvement**:
+- `examples/example_community_detection.py`: No seed set for Louvain or layout
+- `examples/example_multilayer_visualization.py`: Force layout positions vary
+- Many example scripts lack seed documentation
+
+### NetworkX 3.x Compatibility
+
+**Issue**: NetworkX 3.x introduced breaking changes that historically caused issues:
+- API changes in graph methods (e.g., `degree()` return type)
+- Deprecated functions removed
+- Different default behaviors for some algorithms
+
+**Current status**: Recent fixes have addressed major compatibility issues. The codebase now works with NetworkX 2.5+ including 3.x versions.
+
+**Mitigation**:
+- Keep NetworkX updated to the latest stable version (currently specified as `>=2.5` in dependencies)
+- If encountering issues, check the `py3plex/core/nx_compat.py` module for compatibility wrappers
+- Report any NetworkX-related issues to the project's issue tracker
+- The library is actively maintained for NetworkX compatibility
+
+### Memory and Scalability: Supra-Adjacency Matrices
+
+**Issue**: The supra-adjacency matrix representation can cause memory problems on large multilayer networks:
+- For a network with N nodes and L layers, the supra-adjacency matrix is (N×L) × (N×L)
+- Dense matrix representation requires O(N²L²) memory
+- Example: 10,000 nodes × 10 layers = 100,000 × 100,000 = 10 billion entries (~80 GB for float64)
+
+**Impact**:
+- Out-of-memory errors on large networks
+- Extremely slow operations (matrix multiplication, eigenvalue computation)
+- Some algorithms that require dense matrices cannot scale to large networks
+
+**Mitigation**:
+- Use sparse matrix representation when possible (check `mtype="sparse"` parameter in `get_supra_adjacency_matrix()`)
+- The library uses `scipy.sparse` matrices by default for large networks
+- Avoid calling `.todense()` on large supra-adjacency matrices
+- For very large networks, consider:
+  - Analyzing layers independently rather than as supra-adjacency
+  - Using layer-by-layer algorithms instead of full multiplex methods
+  - Sampling or coarsening the network before analysis
+  - Using streaming or out-of-core algorithms when available
+
+**Example**:
+```python
+# Good: Keep as sparse matrix
+supra_adj_sparse = network.get_supra_adjacency_matrix(mtype="sparse")
+
+# Bad: Converts to dense (memory explosion on large networks)
+# supra_adj_dense = network.get_supra_adjacency_matrix(mtype="dense")
+
+# Safer approach for large networks: analyze per-layer
+for layer in network.get_layers():
+    layer_subgraph = network.subgraph([n for n in network.get_nodes() if n[1] == layer])
+    # Analyze individual layer
+```
+
+### Visualization Scalability Warnings
+
+**Issue**: Visualization functions use O(N²) or O(N²L²) layout algorithms without warnings:
+- Force-directed layouts (ForceAtlas2, spring layout) compute pairwise repulsive forces
+- Time complexity is O(N²) per iteration, often 100-1000 iterations
+- Interactive rendering can be slow for networks with >5,000 nodes
+- The library does not check network size before starting layout computation
+
+**Impact**:
+- Long computation times (minutes to hours) for large networks
+- UI freezing in interactive environments (Jupyter notebooks)
+- Memory pressure from storing layout positions and intermediate states
+- Users may not realize why their visualization is taking so long
+
+**Mitigation**:
+- Check network size before using force-directed layouts:
+  ```python
+  if len(network.get_nodes()) > 5000:
+      # Use faster layout for large networks
+      layout_algorithm = "circular"  # or "random", "spectral"
+  else:
+      layout_algorithm = "force"
+  ```
+- For large networks (>10,000 nodes):
+  - Use matrix visualizations (heatmaps, adjacency matrices) instead
+  - Consider network sampling or aggregation
+  - Use hierarchical visualization (zoom into subgraphs)
+  - Export to specialized tools (Gephi, Cytoscape) for layout
+- Reduce iteration count for force layouts: `layout_parameters={"iterations": 50}`
+- Use Barnes-Hut optimization when available (ForceAtlas2 with `barnesHutOptimize=True`)
+
+**Recommended thresholds**:
+- <1,000 nodes: Force layouts work well
+- 1,000-5,000 nodes: Use reduced iterations, expect 10-60 seconds
+- 5,000-10,000 nodes: Consider alternatives or sampling
+- >10,000 nodes: Use non-force layouts or matrix visualizations
+
+### PyPI Release Status and Version Lag
+
+**Issue**: The PyPI release (version 0.95, June 2023) significantly lags behind the active GitHub development:
+- GitHub repository has commits through 2025
+- Recent features not available via `pip install py3plex`
+- Bug fixes and improvements require installing from GitHub
+- Documentation may reference features not in PyPI release
+
+**Current features not in PyPI 0.95**:
+- Comprehensive multilayer centrality measures (2025)
+- Multilayer modularity maximization and Louvain algorithm (2025)
+- Modern I/O system with schema validation (`py3plex/io/`, 2025)
+- Phase 2 code quality improvements (logging infrastructure, type hints, exception handling)
+- NetworkX 3.x compatibility fixes
+
+**Mitigation**:
+- **For latest features**, install from GitHub:
+  ```bash
+  pip install git+https://github.com/SkBlaz/py3plex.git
+  ```
+- **For stability**, use PyPI version but be aware of limitations:
+  ```bash
+  pip install py3plex
+  ```
+- Check the GitHub repository's commit history to understand what's new
+- Monitor for future PyPI releases that may include recent improvements
+- Consider contributing to help prepare a new PyPI release
+
+**Status**: The development team is aware of this lag. A new PyPI release incorporating 2025 improvements is anticipated but not yet scheduled.
+
+### Documentation Staleness
+
+**Issue**: Some documentation references outdated versions and missing recent features:
+- Official docs mention "v0.80" in some places (several versions old)
+- Recent additions (multilayer centrality, modularity algorithms) not fully documented in Sphinx docs
+- Tutorial pages reference legacy API patterns
+- GitHub README is more current than published docs
+
+**Impact**:
+- New users may learn outdated patterns
+- Recent features (2025 multilayer centralities) only documented in GitHub markdown files
+- API reference doesn't cover all modules
+
+**Mitigation**:
+- Prefer GitHub documentation over hosted Sphinx docs for recent features
+- Check `docs/` directory in GitHub for markdown tutorials (e.g., `multilayer_centrality_tutorial.md`)
+- Refer to `LLM.md` (this file) as the authoritative reference
+- Look at example scripts in `examples/` directory for current usage patterns
+- When in doubt, check the source code and inline docstrings
+
+**Recommended documentation priority**:
+1. `LLM.md` - Most comprehensive and current
+2. `examples/` directory - Working code examples
+3. GitHub `README.md` - Current quick start
+4. `docs/*.md` files - Recent tutorials
+5. Sphinx documentation - API reference (may be incomplete)
+
+### API Stability and Backward Compatibility
+
+**Issue**: The library is in active development with evolving APIs:
+- Version 0.95a (alpha) indicates pre-1.0 unstable status
+- Recent additions like multilayer centrality are marked as new/experimental
+- Some algorithm APIs may change as the library matures
+- The modernization roadmap (Phases 1-4) involves ongoing refactoring
+
+**Current status**:
+- Core APIs (`multi_layer_network` class, basic visualization) are stable
+- Recent additions (Phase 2 features) maintain backward compatibility
+- No breaking changes are planned, but new features may refine APIs
+
+**Mitigation**:
+- Pin your py3plex version in requirements.txt for production use
+- Test your code when upgrading py3plex versions
+- Core functionality (network construction, basic algorithms) is reliable
+- New features may see API refinements before 1.0 release
+- Check release notes and commit messages when updating
+
+### Community Testing and Issue Reporting
+
+**Issue**: The issue tracker shows relatively few open issues despite known limitations:
+- Low reported issue count may indicate:
+  - Small active user community
+  - Users working around issues without reporting
+  - Issues not being tracked in GitHub
+  - Limited CI/CD coverage for edge cases
+
+**Mitigation**:
+- Report issues you encounter to help improve the library
+- Check closed issues for solutions to similar problems
+- Use the examples directory as reference implementations
+- Contribute fixes for issues you solve
+- Engage with maintainers on GitHub for questions
+
+### Summary Table of Limitations
+
+| Limitation | Severity | Workaround Available | Status |
+|------------|----------|---------------------|--------|
+| External binary dependencies | High | Use pure-Python alternatives | Ongoing |
+| Mixed licensing (BSD/AGPL) | High | Avoid Infomap features | Known issue |
+| Random seed reproducibility | Medium | Manually set seeds | Documentation needed |
+| Supra-adjacency memory use | High | Use sparse matrices, per-layer analysis | Documented |
+| Visualization scalability | Medium | Check size, use fast layouts | Documentation needed |
+| PyPI version lag | Medium | Install from GitHub | New release planned |
+| Documentation staleness | Low | Use GitHub docs | Ongoing updates |
+| NetworkX 3.x compatibility | Low | Fixed in recent commits | Resolved |
+
+### Best Practices Summary
+
+1. **Installation**: Install from GitHub for latest features and fixes
+2. **Binary dependencies**: Check binary existence, use absolute paths
+3. **Licensing**: Avoid Infomap for commercial/proprietary projects
+4. **Reproducibility**: Always set random seeds in production code
+5. **Memory**: Use sparse matrices, check network size before operations
+6. **Visualization**: Check node count, use appropriate layout algorithms
+7. **Documentation**: Prefer GitHub docs and examples over hosted Sphinx docs
+8. **Updates**: Pin versions in production, test when upgrading
