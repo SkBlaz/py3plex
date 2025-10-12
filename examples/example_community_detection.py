@@ -65,34 +65,45 @@ plt.show()
 # THE INFOMAP ALGORITHM WRAPPER EXAMPLE --- this supports multiplex networks directly
 ##################################
 
-partition = cw.infomap_communities(network,
-                                   binary="../bin/Infomap",
-                                   multiplex=False,
-                                   verbose=True)
-# select top n communities by size
-top_n = 5
-partition_counts = dict(Counter(partition.values()))
-top_n_communities = list(partition_counts.keys())[0:top_n]
+# Note: Infomap requires a binary that is no longer bundled with py3plex.
+# You can either:
+# 1. Install from https://www.mapequation.org/infomap/ and specify the path
+# 2. Use Louvain (above) as a Python-only alternative
+# 3. Install pip packages: pip install node2vec (for embeddings)
 
-# assign node colors
-color_mappings = dict(
-    zip(top_n_communities,
-        [x for x in colors_default if x != "black"][0:top_n]))
+try:
+    partition = cw.infomap_communities(network,
+                                       binary="./infomap",  # Assumes infomap is in PATH or current directory
+                                       multiplex=False,
+                                       verbose=True,
+                                       seed=args.seed)  # Use seed for reproducibility
+    # select top n communities by size
+    top_n = 5
+    partition_counts = dict(Counter(partition.values()))
+    top_n_communities = list(partition_counts.keys())[0:top_n]
 
-network_colors = [
-    color_mappings[partition[x]]
-    if partition[x] in top_n_communities else "black"
-    for x in network.get_nodes()
-]
+    # assign node colors
+    color_mappings = dict(
+        zip(top_n_communities,
+            [x for x in colors_default if x != "black"][0:top_n]))
 
-# visualize the network's communities!
-hairball_plot(network.core_network,
-              color_list=network_colors,
-              layout_parameters={"iterations": args.iterations},
-              scale_by_size=True,
-              layout_algorithm="force",
-              legend=False)
-plt.show()
+    network_colors = [
+        color_mappings[partition[x]]
+        if partition[x] in top_n_communities else "black"
+        for x in network.get_nodes()
+    ]
+
+    # visualize the network's communities!
+    hairball_plot(network.core_network,
+                  color_list=network_colors,
+                  layout_parameters={"iterations": args.iterations},
+                  scale_by_size=True,
+                  layout_algorithm="force",
+                  legend=False)
+    plt.show()
+except FileNotFoundError as e:
+    print(f"Skipping Infomap example: {e}")
+    print("Using Louvain results from above instead.")
 
 ################################
 # STORING the multiplex edgelist?

@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom exception types module (`py3plex/exceptions.py`) with 13 domain-specific exceptions
 - Pre-commit hooks configuration
 - Logging infrastructure across core modules
+- Unified random seeding helper (`get_rng()` in `py3plex.utils`)
+- Seed parameters added to layout algorithms (`compute_force_directed_layout`, `compute_random_layout`)
+- Seed parameter added to `infomap_communities()` wrapper
+- Algorithm selection guide (`docs/algorithm_selection_guide.md`)
+- Complexity documentation for key algorithms (louvain_multilayer)
+- `bin/README.md` with installation instructions for external binaries
 
 ### Changed
 - Modern build system with pyproject.toml (PEP 517/518/621 compliance)
@@ -26,6 +32,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Converted 170 of 229 print statements to logging (74% completion)
 - Fixed all 50 bare except clauses with specific exception types
 - Removed 8 wildcard imports (from 9 to 1)
+- Examples updated to handle missing binaries gracefully with try/except blocks
+- Default binary paths changed from `../bin/` to `.` (assumes in PATH or current directory)
+
+### Removed
+- **BREAKING**: Bundled Infomap and Node2Vec binaries (~5MB reduction)
+  - **Migration**: Install binaries separately or use pure Python alternatives
+  - See `bin/README.md` for installation instructions
+  - Louvain algorithm remains available as a built-in alternative to Infomap
 
 ### Fixed
 - Boolean logic in edge rendering for multilayer networks (Issue #19)

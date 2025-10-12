@@ -8,6 +8,7 @@ import os
 import sys
 import tempfile
 import shutil
+import pytest
 from subprocess import call
 
 def test_infomap_integration():
@@ -99,5 +100,29 @@ def test_infomap_integration():
             # Restore original working directory
             os.chdir(original_cwd)
 
+
+def test_infomap_seed_parameter():
+    """
+    Test that infomap_communities accepts seed parameter.
+    This validates the API without requiring the actual binary.
+    """
+    import inspect
+    
+    # Import locally to avoid module-level import errors
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+    from py3plex.algorithms.community_detection import community_wrapper
+    
+    # Check that infomap_communities has seed parameter
+    sig = inspect.signature(community_wrapper.infomap_communities)
+    assert 'seed' in sig.parameters, "infomap_communities should accept 'seed' parameter"
+    
+    # Check that run_infomap has seed parameter
+    sig = inspect.signature(community_wrapper.run_infomap)
+    assert 'seed' in sig.parameters, "run_infomap should accept 'seed' parameter"
+    
+    print("✅ Seed parameters verified in infomap functions")
+
+
 if __name__ == "__main__":
     test_infomap_integration()
+    test_infomap_seed_parameter()

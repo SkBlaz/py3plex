@@ -47,3 +47,9 @@ htmlcov/
 # Documentation builds
 docfiles/_build/
 docs/_build/
+
+# Binaries (users should install separately)
+bin/Infomap
+bin/node2vec
+bin/*.exe
+bin/*.dll

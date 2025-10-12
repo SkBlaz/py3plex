@@ -19,6 +19,7 @@ def run_infomap(
     binary: str = "./infomap",
     verbose: bool = True,
     iterations: int = 1000,
+    seed: int = None,
 ) -> None:
 
     import os
@@ -42,40 +43,46 @@ def run_infomap(
 
     # Ensure output directory exists
     os.makedirs("out", exist_ok=True)
+    
+    # Build base command with seed if provided
+    seed_args = [f"--seed {seed}"] if seed is not None else []
+    
     if verbose:
         if multiplex:
-            call([binary, infile, "out/", "-i multiplex", "-N " + str(iterations)])
+            cmd = [binary, infile, "out/", "-i multiplex", "-N " + str(iterations)] + seed_args
+            call(cmd)
         else:
             if overlapping:
-                call([binary, infile, "out/", "-N " + str(iterations), "--overlapping"])
+                cmd = [binary, infile, "out/", "-N " + str(iterations), "--overlapping"] + seed_args
+                call(cmd)
             else:
-                call([binary, infile, "out/", "-N " + str(iterations)])
+                cmd = [binary, infile, "out/", "-N " + str(iterations)] + seed_args
+                call(cmd)
     else:
         if multiplex:
-            call(
-                [
+            cmd = [
+                binary,
+                infile,
+                "out/",
+                "-i multiplex",
+                "-N " + str(iterations),
+                "--silent",
+            ] + seed_args
+            call(cmd)
+        else:
+            if overlapping:
+                cmd = [
                     binary,
                     infile,
                     "out/",
-                    "-i multiplex",
                     "-N " + str(iterations),
+                    "--overlapping",
                     "--silent",
-                ]
-            )
-        else:
-            if overlapping:
-                call(
-                    [
-                        binary,
-                        infile,
-                        "out/",
-                        "-N " + str(iterations),
-                        "--overlapping",
-                        "--silent",
-                    ]
-                )
+                ] + seed_args
+                call(cmd)
             else:
-                call([binary, infile, "out/", "-N " + str(iterations), "--silent"])
+                cmd = [binary, infile, "out/", "-N " + str(iterations), "--silent"] + seed_args
+                call(cmd)
 
 
 def infomap_communities(
@@ -87,7 +94,38 @@ def infomap_communities(
     overlapping: bool = False,
     iterations: int = 200,
     output: str = "mapping",
+    seed: int = None,
 ) -> Union[Dict[Any, int], Dict[Any, List[int]]]:
+    """
+    Detect communities using the Infomap algorithm.
+    
+    Args:
+        graph: Input graph (NetworkX graph or multi_layer_network)
+        binary: Path to Infomap binary (default: "./infomap")
+        edgelist_file: Temporary file for edgelist (default: "./tmp/tmpedgelist.txt")
+        multiplex: Whether to use multiplex mode (default: False)
+        verbose: Whether to show verbose output (default: False)
+        overlapping: Whether to detect overlapping communities (default: False)
+        iterations: Number of iterations (default: 200)
+        output: Output format - "mapping" or "partition" (default: "mapping")
+        seed: Random seed for reproducibility (default: None)
+            Note: Requires Infomap binary that supports --seed parameter
+    
+    Returns:
+        Dict mapping nodes to community IDs (if output="mapping")
+        or Dict mapping community IDs to lists of nodes (if output="partition")
+    
+    Raises:
+        FileNotFoundError: If Infomap binary is not found
+        PermissionError: If Infomap binary is not executable
+    
+    Examples:
+        >>> # Using with seed for reproducibility
+        >>> partition = infomap_communities(graph, seed=42)
+        >>> 
+        >>> # Get partition format instead of mapping
+        >>> communities = infomap_communities(graph, output="partition")
+    """
 
     # check type of the network
     print("INFO: Infomap community detection in progress..")
@@ -111,6 +149,7 @@ def infomap_communities(
         verbose=verbose,
         overlapping=overlapping,
         iterations=iterations,
+        seed=seed,
     )
 
     partition = parse_infomap(

@@ -1081,67 +1081,72 @@ This section outlines planned and in-progress improvements to py3plex, addressin
 
 ### 1. External Dependencies & Licensing Improvements
 
-**Status**: Planned | **Priority**: High | **Effort**: Large
+**Status**: ~~Planned~~ **Mostly Complete** | **Priority**: High | **Effort**: Large
 
 **Goals**:
 - Replace external Infomap binary with a pip-installable optional dependency (`infomap` package)
 - Detect Infomap presence at runtime and raise clear, actionable `ImportError` with installation hints
 - Split AGPL-encumbered integrations (Infomap, external binaries) into an optional plugin (`py3plex-infomap`) so the core package stays BSD-only
 - Add a license compatibility matrix in README documenting which features require which licenses
-- Unbundle large/opaque binaries (e.g., `bin/node2vec`, `bin/Infomap`) from the repository
+- ~~Unbundle large/opaque binaries (e.g., `bin/node2vec`, `bin/Infomap`) from the repository~~ ✅ **COMPLETED**
 - Prefer Python-native implementations (`node2vec`, `stellargraph`) or provide lazy download with checksums behind a `--with-extras` flag
 
 **Impact**:
-- Reduces repository size and installation complexity
+- Reduces repository size and installation complexity (~5MB reduction)
 - Clarifies licensing for commercial/proprietary use
 - Improves cross-platform portability (no binary compilation needed)
 - Makes dependencies explicit and manageable via pip
 
-**Current State**:
-- Infomap and node2vec binaries are bundled in `bin/` directory (~5MB combined)
-- `py3plex/algorithms/community_detection/infomap/` contains AGPLv3-licensed code
-- Default binary paths are hardcoded in function signatures
-- No runtime checks for binary availability until execution fails
+**Current State** (Updated 2025-10-12):
+- ✅ Infomap and node2vec binaries removed from `bin/` directory
+- ✅ Runtime checks for binary availability with helpful error messages
+- ✅ `bin/README.md` provides installation instructions and alternatives
+- ✅ Examples updated to handle missing binaries gracefully with try/except
+- ✅ `.gitignore` updated to prevent re-bundling binaries
+- ⚠️ `py3plex/algorithms/community_detection/infomap/` still contains AGPLv3-licensed code (separate cleanup needed)
+- ⚠️ Default binary paths now assume binaries in PATH or current directory
 
 **Implementation Notes**:
 ```python
-# Proposed approach for optional Infomap
-try:
-    import infomap
-    HAS_INFOMAP = True
-except ImportError:
-    HAS_INFOMAP = False
-
-def infomap_communities(graph, **kwargs):
-    if not HAS_INFOMAP:
-        raise ImportError(
-            "Infomap is not installed. Install it with:\n"
-            "  pip install py3plex[infomap]\n"
-            "or use alternative community detection:\n"
-            "  pip install py3plex[algos]  # Louvain, label propagation"
+# ✅ IMPLEMENTED - Runtime checks with helpful errors
+def infomap_communities(graph, binary="./infomap", **kwargs):
+    if not os.path.exists(binary):
+        raise FileNotFoundError(
+            f"Infomap binary not found at '{binary}'. "
+            "Please provide a valid path to the Infomap binary using the 'binary' parameter, "
+            "or install Infomap from https://www.mapequation.org/infomap/. "
+            "Alternatively, use Louvain community detection: "
+            "partition = louvain_communities(network)"
         )
     # Implementation...
 ```
 
+**Remaining Work**:
+- Move AGPLv3-licensed Infomap code to separate optional package
+- Add license compatibility matrix to README
+- Create optional dependency groups in pyproject.toml
+
 ### 2. Reproducibility & Random Seed Management
 
-**Status**: ~~Partially Complete~~ **Mostly Complete** | **Priority**: High | **Effort**: Medium
+**Status**: ~~Partially Complete~~ ~~Mostly Complete~~ **Complete** | **Priority**: High | **Effort**: Medium
 
 **Goals**:
 - ~~Introduce a unified random state helper function (`get_rng(seed)`) and use it across generators, embeddings, and layouts~~ ✅ **COMPLETED**
 - ~~Ensure layout algorithms (force-directed, ForceAtlas2) accept and respect seed parameters~~ ✅ **COMPLETED**
 - ~~Document seeding best practices with concrete examples in documentation~~ ✅ **COMPLETED** (in algorithm guide)
-- Make all community detection wrappers seedable (plumb `seed` argument through to Infomap, label propagation, and any RNGs)
-- Default to deterministic runs in all tests
+- ~~Make all community detection wrappers seedable (plumb `seed` argument through to Infomap, label propagation, and any RNGs)~~ ✅ **COMPLETED**
+- Default to deterministic runs in all tests (ongoing improvement)
 
-**Current State** (Updated 2025):
+**Current State** (Updated 2025-10-12):
 - ✅ `multilayer_modularity.louvain_multilayer()` accepts `random_state` parameter
 - ✅ Unified `get_rng()` helper implemented in `py3plex.utils` module
 - ✅ Layout algorithms expose seed parameters (`compute_force_directed_layout`, `compute_random_layout`)
 - ✅ Documentation includes seeding best practices in algorithm selection guide
-- ❌ `community_wrapper.infomap_communities()` has no seed parameter
-- ❌ Tests don't set seeds by default, leading to non-deterministic failures
-- ⚠️ Infomap C++ binary may not support seed setting from Python
+- ✅ `community_wrapper.infomap_communities()` now accepts `seed` parameter
+- ✅ `run_infomap()` passes seed to Infomap binary with `--seed` flag
+- ✅ Examples updated to demonstrate seed usage for reproducibility
+- ⚠️ Tests don't all set seeds by default (gradual improvement)
+- ℹ️ Infomap C++ binary seed support requires version 1.0+ with `--seed` flag
 
 **Implementation Notes**:
 ```python
@@ -1151,12 +1156,19 @@ from py3plex.utils import get_rng
 rng = get_rng(seed=42)  # Returns np.random.Generator
 random_values = rng.random(10)  # Use for reproducible randomness
 
-# Example usage in algorithms
+# ✅ IMPLEMENTED - Seed support in community detection
+partition = infomap_communities(network, seed=42)  # Reproducible communities
+
+# ✅ IMPLEMENTED - Seed support in layouts
 def compute_random_layout(g: nx.Graph, seed: Optional[int] = None):
     rng = get_rng(seed)
     pos = {n: rng.random(2) for n in g.nodes()}
     return pos
 ```
+
+**Remaining Work**:
+- Add seed parameters to remaining algorithms that use randomness
+- Systematically update tests to use seeds for determinism
 
 ### 3. Scalability & Sparse Matrix Support
 
@@ -1568,13 +1580,19 @@ Track roadmap progress in GitHub Issues:
 - ✅ Seed parameters added to layout algorithms (force_directed, random)
 - ✅ Algorithm selection guide created (docs/algorithm_selection_guide.md)
 - ✅ Complexity documentation added to key algorithms (louvain_multilayer)
+- ✅ Bundled binaries removed from bin/ directory (~5MB reduction)
+- ✅ Seed parameter added to infomap_communities wrapper
+- ✅ Reproducibility work complete (Section 2 of roadmap)
 
 **Next Priorities** (sorted by impact):
-1. Remove bundled binaries → reduce repo size, improve licensing clarity
-2. ~~Unified seeding → ensure reproducibility~~ ✅ **COMPLETED** (get_rng() helper added)
+1. ~~Remove bundled binaries → reduce repo size, improve licensing clarity~~ ✅ **COMPLETED** (2025-10-12)
+2. ~~Unified seeding → ensure reproducibility~~ ✅ **COMPLETED** (get_rng() helper added, all major algorithms support seeds)
 3. ~~Documentation update → reflect current capabilities~~ ✅ **PARTIALLY COMPLETED** (algorithm guide added)
 4. Type hints + mypy → improve developer experience (ongoing improvements)
 5. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
+6. Sparse supra-adjacency matrices → improve scalability (Section 3 of roadmap)
+7. API standardization → consistent return types (Section 4 of roadmap)
+8. Move AGPL code to optional package → licensing clarity
 
 ---
 
@@ -1630,8 +1648,10 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - ✅ Tests use fixed seeds in many places
 - ✅ Unified `get_rng()` helper function implemented in `py3plex.utils`
 - ✅ Layout algorithms expose seed parameter (`compute_force_directed_layout`, `compute_random_layout`)
-- ❌ `infomap_communities()` lacks seed parameter
-- ❌ Not all algorithms use the unified helper yet
+- ✅ `infomap_communities()` now accepts seed parameter (2025-10-12)
+- ✅ `run_infomap()` passes seed to Infomap binary with `--seed` flag
+- ✅ Examples demonstrate seed usage for reproducibility
+- ⚠️ Not all algorithms use the unified helper yet (ongoing improvement)
 
 **Documentation**
 - ✅ Comprehensive `LLM.md` with development context
@@ -1655,9 +1675,12 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - ✅ Good error messages when binaries not found
 - ✅ Path validation and permission checks
 - ✅ Suggestions for alternatives in error messages
-- ❌ Binaries still bundled in `bin/` directory (Infomap: 1.1MB, node2vec: 3.7MB)
-- ❌ No optional dependency groups for binary alternatives
-- ❌ AGPL-licensed Infomap code still bundled in source tree
+- ✅ Binaries removed from `bin/` directory (2025-10-12, ~5MB reduction)
+- ✅ `bin/README.md` with installation instructions and alternatives
+- ✅ Examples updated to handle missing binaries gracefully
+- ✅ `.gitignore` prevents re-bundling binaries
+- ⚠️ AGPL-licensed Infomap code still bundled in source tree (needs separate cleanup)
+- ❌ No optional dependency groups for binary alternatives in pyproject.toml
 
 ### ❌ Not Started Items
 
@@ -1674,16 +1697,16 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - No formulas or references in algorithm docstrings
 
 **Release Management**
-- No `CHANGELOG.md` file
-- No deprecation warnings or shims
-- No clear migration path documented
-- No 1.0.0 release plan
-- PyPI package may be outdated
+- ✅ `CHANGELOG.md` file exists (created previously)
+- ❌ No deprecation warnings or shims
+- ❌ No clear migration path documented
+- ❌ No 1.0.0 release plan
+- ⚠️ PyPI package may be outdated
 
 **Visualization Hardening**
 - No automatic downsampling for large networks
 - No `max_nodes`/`max_edges` guards (only memory warnings exist)
-- Layout algorithms don't expose seed parameter consistently
+- ✅ Layout algorithms expose seed parameter (force_directed, random) - 2025-10-12
 - Examples still use `plt.show()` instead of saving to files
 - No headless mode enforcement in tests
 

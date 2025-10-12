@@ -100,6 +100,20 @@ The Makefile provides colorized output and helpful error messages. All commands 
 - Python 3.8 or higher
 - NetworkX, NumPy, SciPy, and other dependencies (automatically installed)
 
+### External Binaries (Optional)
+
+**Note**: As of October 2025, py3plex no longer bundles external binaries (Infomap, Node2Vec) to reduce repository size and improve licensing clarity. If you need these tools:
+
+**For Community Detection with Infomap**:
+- Download from: https://www.mapequation.org/infomap/
+- Or use the built-in Louvain algorithm (no binary needed)
+
+**For Node2Vec Embeddings**:
+- Use pure Python alternatives: `pip install node2vec` or `pip install pecanpy`
+- Or download the C++ binary from: https://github.com/snap-stanford/snap
+
+See `bin/README.md` for detailed installation instructions and alternatives.
+
 For any errors, please open an issue!
 
 ### Testing

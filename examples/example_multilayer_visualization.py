@@ -237,7 +237,7 @@ multilayer_network.save_network("../datasets/test.edgelist")
 # call a specific n2v compiled binary
 train_node2vec_embedding.call_node2vec_binary("../datasets/test.edgelist",
                                               "../datasets/test_embedding.emb",
-                                              binary="../bin/node2vec",
+                                              binary="./node2vec"  # Note: binary no longer bundled,
                                               weighted=False)
 
 # preprocess and check embedding

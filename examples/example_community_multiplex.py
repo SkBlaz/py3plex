@@ -9,11 +9,18 @@ network = multinet.multi_layer_network(network_type="multiplex").load_network(
     input_file="../datasets/multiplex_example.edgelist",
     directed=True,
     input_type="multiplex_edges")
-partition = cw.infomap_communities(network,
-                                   binary="../bin/Infomap",
-                                   multiplex=True,
-                                   verbose=True)
-print(partition)
+
+# Note: Infomap requires a binary that is no longer bundled with py3plex.
+# Install from https://www.mapequation.org/infomap/ if needed
+try:
+    partition = cw.infomap_communities(network,
+                                       binary="./infomap",  # Assumes infomap is in PATH
+                                       multiplex=True,
+                                       verbose=True)
+    print(partition)
+except FileNotFoundError as e:
+    print(f"Skipping Infomap: {e}")
+    print("Continuing with multiplex Louvain instead...")
 
 # get communities with multiplex louvain
 
