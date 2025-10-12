@@ -32,3 +32,18 @@ tests/out/
 tests/custom_dir/
 tests/*.txt
 tests/*.png
+
+# Virtual environment
+.venv/
+venv/
+
+# Test and coverage reports
+htmlcov/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Documentation builds
+docfiles/_build/
+docs/_build/

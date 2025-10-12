@@ -29,6 +29,53 @@ pip install -e .
 To get started, please view the **examples** folder.
 Extensive documentation and quickstart tutorials are available at: [DOCS](https://skblaz.github.io/py3plex/)
 
+### Development with Makefile
+
+For a streamlined development experience, use the provided Makefile:
+
+```bash
+# View all available commands
+make help
+
+# Setup development environment (creates .venv and installs dependencies)
+make setup
+
+# Install package in editable mode with dev dependencies
+make dev-install
+
+# Auto-format code with isort, black, and ruff
+make format
+
+# Run linters and type checker
+make lint
+
+# Run tests with coverage
+make test
+
+# Open coverage report in browser
+make coverage
+
+# Build documentation
+make docs
+
+# Clean build artifacts and caches
+make clean
+
+# Build distribution packages
+make build
+
+# Publish to PyPI (requires TWINE_USERNAME and TWINE_PASSWORD)
+make publish
+
+# Verify API exports
+make api-check
+
+# Run CI checks (lint + test)
+make ci
+```
+
+The Makefile provides colorized output and helpful error messages. All commands check for the virtual environment and provide clear instructions if setup is needed.
+
 ### Requirements
 
 - Python 3.8 or higher
