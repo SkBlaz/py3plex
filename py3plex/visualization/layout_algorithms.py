@@ -32,6 +32,29 @@ def compute_force_directed_layout(
     forceImport: bool = True,
 ) -> Dict[Any, np.ndarray]:
 
+    num_nodes = len(g.nodes())
+    
+    # Warn about performance for large networks
+    if num_nodes > 10000:
+        logger.warning(
+            "Force-directed layout requested for %d nodes. "
+            "This may take a very long time and consume significant memory. "
+            "Consider using faster layout algorithms (circular, random, spectral) "
+            "or visualizing the adjacency matrix instead.",
+            num_nodes
+        )
+    elif num_nodes > 5000:
+        logger.warning(
+            "Force-directed layout requested for %d nodes. "
+            "This may take several minutes. Consider reducing iterations or using a faster layout.",
+            num_nodes
+        )
+    elif num_nodes > 1000 and verbose:
+        logger.info(
+            "Computing force-directed layout for %d nodes. This may take 10-60 seconds.",
+            num_nodes
+        )
+
     if forceImport:
         try:
             forceatlas2 = ForceAtlas2(

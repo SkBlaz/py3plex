@@ -7,6 +7,12 @@ from py3plex.visualization.colors import colors_default
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.visualization.multilayer import draw_multiedges, draw_multilayer_default, hairball_plot, plt
 from py3plex.core import multinet
+import random
+import numpy as np
+
+# Set random seeds for reproducibility
+random.seed(42)
+np.random.seed(42)
 
 
 # visualization from a simple file

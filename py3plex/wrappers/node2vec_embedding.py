@@ -39,7 +39,26 @@ def call_node2vec_binary(
         directed: Whether graph is directed (default: False)
         weighted: Whether graph is weighted (default: True)
         binary: Path to node2vec binary (default: "./node2vec")
+    
+    Raises:
+        FileNotFoundError: If binary does not exist
+        PermissionError: If binary is not executable
     """
+
+    # Check if binary exists and is executable
+    if not os.path.exists(binary):
+        raise FileNotFoundError(
+            f"Node2Vec binary not found at '{binary}'. "
+            "Please provide a valid path to the Node2Vec binary, "
+            "or consider using pure Python alternatives like 'node2vec' or 'pecanpy' packages: "
+            "pip install node2vec"
+        )
+    
+    if not os.access(binary, os.X_OK):
+        raise PermissionError(
+            f"Node2Vec binary at '{binary}' is not executable. "
+            f"Run: chmod +x {binary}"
+        )
 
     input_params = []
     input_params.append(binary)
