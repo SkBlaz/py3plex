@@ -204,15 +204,31 @@ def n2v_embedding(
 
 
 def learn_embedding(
-    core_network,
-    labels=None,
-    ssize=0.5,
-    embedding_outfile="out.emb",
-    p=0.1,
-    q=0.1,
-    binary_path="./node2vec",
-    parameter_range="[0.25,0.50,1,2,4]",
-):
+    core_network: Any,
+    labels: Optional[List[Any]] = None,
+    ssize: float = 0.5,
+    embedding_outfile: str = "out.emb",
+    p: float = 0.1,
+    q: float = 0.1,
+    binary_path: str = "./node2vec",
+    parameter_range: str = "[0.25,0.50,1,2,4]",
+) -> tuple:
+    """
+    Learn node embeddings using Node2Vec.
+    
+    Args:
+        core_network: NetworkX graph
+        labels: Optional node labels for evaluation
+        ssize: Sample size for training
+        embedding_outfile: Path to output embedding file
+        p: Return parameter
+        q: In-out parameter
+        binary_path: Path to node2vec binary
+        parameter_range: String representation of parameter range list
+        
+    Returns:
+        Tuple of (method_name, elapsed_time)
+    """
     if labels is None:
         labels = []
     start = time.time()

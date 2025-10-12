@@ -330,6 +330,16 @@ def louvain_multilayer(
 
     This implements the multilayer Louvain method as described in Mucha et al. (2010),
     which greedily maximizes the multilayer modularity quality function.
+    
+    Complexity:
+        - Time: O(n × L × d × k) per iteration, where:
+            - n = number of nodes per layer
+            - L = number of layers
+            - d = average degree
+            - k = number of communities
+        - Typical: O(n × L) iterations until convergence
+        - Worst case: O((n×L)²) for dense networks
+        - Space: O((n×L)²) for supra-adjacency matrix (use sparse for large networks)
 
     Args:
         network: py3plex multi_layer_network object
@@ -353,8 +363,11 @@ def louvain_multilayer(
         ...     ['A', 'L2', 'C', 'L2', 1]
         ... ], input_type='list')
         >>> 
-        >>> communities = louvain_multilayer(network, gamma=1.0, omega=1.0)
+        >>> communities = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
         >>> print(communities)
+        
+    Note:
+        For reproducible results, always set random_state parameter.
     """
     if random_state is not None:
         np.random.seed(random_state)

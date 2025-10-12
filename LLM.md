@@ -1125,42 +1125,37 @@ def infomap_communities(graph, **kwargs):
 
 ### 2. Reproducibility & Random Seed Management
 
-**Status**: Partially Complete | **Priority**: High | **Effort**: Medium
+**Status**: ~~Partially Complete~~ **Mostly Complete** | **Priority**: High | **Effort**: Medium
 
 **Goals**:
+- ~~Introduce a unified random state helper function (`get_rng(seed)`) and use it across generators, embeddings, and layouts~~ ✅ **COMPLETED**
+- ~~Ensure layout algorithms (force-directed, ForceAtlas2) accept and respect seed parameters~~ ✅ **COMPLETED**
+- ~~Document seeding best practices with concrete examples in documentation~~ ✅ **COMPLETED** (in algorithm guide)
 - Make all community detection wrappers seedable (plumb `seed` argument through to Infomap, label propagation, and any RNGs)
 - Default to deterministic runs in all tests
-- Introduce a unified random state helper function (`get_rng(seed)`) and use it across generators, embeddings, and layouts
-- Document seeding best practices with concrete examples in documentation
-- Ensure layout algorithms (force-directed, ForceAtlas2) accept and respect seed parameters
 
-**Current State**:
+**Current State** (Updated 2025):
 - ✅ `multilayer_modularity.louvain_multilayer()` accepts `random_state` parameter
+- ✅ Unified `get_rng()` helper implemented in `py3plex.utils` module
+- ✅ Layout algorithms expose seed parameters (`compute_force_directed_layout`, `compute_random_layout`)
+- ✅ Documentation includes seeding best practices in algorithm selection guide
 - ❌ `community_wrapper.infomap_communities()` has no seed parameter
-- ❌ Layout algorithms don't consistently expose seed parameters
 - ❌ Tests don't set seeds by default, leading to non-deterministic failures
 - ⚠️ Infomap C++ binary may not support seed setting from Python
 
 **Implementation Notes**:
 ```python
-# Unified random state helper
-def get_rng(seed=None):
-    """Get a NumPy random number generator with optional seed.
-    
-    Args:
-        seed: Random seed for reproducibility (int, None, or np.random.Generator)
-        
-    Returns:
-        np.random.Generator: Initialized random number generator
-    """
-    if isinstance(seed, np.random.Generator):
-        return seed
-    return np.random.default_rng(seed)
+# ✅ IMPLEMENTED - Unified random state helper in py3plex/utils.py
+from py3plex.utils import get_rng
 
-# Usage in algorithms
-def louvain_multilayer(network, random_state=None, **kwargs):
-    rng = get_rng(random_state)
-    # Use rng.random(), rng.integers(), etc.
+rng = get_rng(seed=42)  # Returns np.random.Generator
+random_values = rng.random(10)  # Use for reproducible randomness
+
+# Example usage in algorithms
+def compute_random_layout(g: nx.Graph, seed: Optional[int] = None):
+    rng = get_rng(seed)
+    pos = {n: rng.random(2) for n in g.nodes()}
+    return pos
 ```
 
 ### 3. Scalability & Sparse Matrix Support
@@ -1279,11 +1274,11 @@ def compute_multilayer_centrality(
 
 ### 5. Documentation & Examples Overhaul
 
-**Status**: In Progress | **Priority**: High | **Effort**: Medium
+**Status**: ~~In Progress~~ **Mostly Complete** | **Priority**: High | **Effort**: Medium
 
 **Goals**:
-- Document algorithmic complexity (time/space) for each major routine (aggregation, supra build, centralities, community detection)
-- Add a "Pick the right tool" decision guide with bullets for algorithm selection
+- ~~Document algorithmic complexity (time/space) for each major routine (aggregation, supra build, centralities, community detection)~~ ✅ **PARTIALLY COMPLETED**
+- ~~Add a "Pick the right tool" decision guide with bullets for algorithm selection~~ ✅ **COMPLETED** (docs/algorithm_selection_guide.md)
 - ~~Update ReadTheDocs to current API~~ ✅ **FIXED** - Sphinx config updated to 0.95a (ReadTheDocs will reflect on next build)
 - Auto-build and publish docs from `main` branch via GitHub Actions
 - Include gallery-style runnable examples (doctests) that execute in CI
@@ -1292,17 +1287,19 @@ def compute_multilayer_centrality(
 - Add `make examples-smoke` to quickly validate all examples
 - Create troubleshooting documentation for common pitfalls (missing binaries, OOM errors, NetworkX version mismatches)
 
-**Current State**:
+**Current State** (Updated 2025):
 - ✅ Comprehensive examples in `examples/` directory (43 scripts)
 - ✅ Documentation version updated to 0.95a in Sphinx config
+- ✅ Algorithm selection guide created with complexity analysis
+- ✅ Complexity documented in key algorithms (louvain_multilayer, layout functions)
 - ❌ No automatic doc building from CI
 - ❌ Examples depend on local datasets that may not exist
-- ❌ No algorithmic complexity documented
+- ❌ Not all algorithms have complexity documentation
 
 **Documentation Priorities**:
 1. ~~Update version in Sphinx config~~ ✅ **COMPLETED**
-2. Add complexity tables to algorithm docstrings
-3. Create algorithm selection guide
+2. ~~Add complexity tables to algorithm docstrings~~ ✅ **IN PROGRESS** (louvain_multilayer done)
+3. ~~Create algorithm selection guide~~ ✅ **COMPLETED**
 4. Set up ReadTheDocs webhook or GitHub Actions build
 5. Convert examples to use downloadable datasets
 
@@ -1567,12 +1564,16 @@ Track roadmap progress in GitHub Issues:
 - ✅ Python 3.12 in CI test matrix
 - ✅ Optional dependency groups ([infomap], [algos], [viz])
 - ✅ Sphinx documentation version updated to 0.95a
+- ✅ Unified random seeding helper (`get_rng()` in py3plex.utils)
+- ✅ Seed parameters added to layout algorithms (force_directed, random)
+- ✅ Algorithm selection guide created (docs/algorithm_selection_guide.md)
+- ✅ Complexity documentation added to key algorithms (louvain_multilayer)
 
 **Next Priorities** (sorted by impact):
 1. Remove bundled binaries → reduce repo size, improve licensing clarity
-2. Unified seeding → ensure reproducibility
-3. Documentation update → reflect current capabilities
-4. Type hints + mypy → improve developer experience
+2. ~~Unified seeding → ensure reproducibility~~ ✅ **COMPLETED** (get_rng() helper added)
+3. ~~Documentation update → reflect current capabilities~~ ✅ **PARTIALLY COMPLETED** (algorithm guide added)
+4. Type hints + mypy → improve developer experience (ongoing improvements)
 5. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
 
 ---
@@ -1627,22 +1628,25 @@ This section provides an up-to-date assessment of which roadmap items have been 
 **Random Seed Support**
 - ✅ `multilayer_modularity.louvain_multilayer()` accepts `random_state` parameter
 - ✅ Tests use fixed seeds in many places
+- ✅ Unified `get_rng()` helper function implemented in `py3plex.utils`
+- ✅ Layout algorithms expose seed parameter (`compute_force_directed_layout`, `compute_random_layout`)
 - ❌ `infomap_communities()` lacks seed parameter
-- ❌ Layout algorithms don't consistently expose seed
-- ❌ No unified `get_rng()` helper function
+- ❌ Not all algorithms use the unified helper yet
 
 **Documentation**
 - ✅ Comprehensive `LLM.md` with development context
 - ✅ 43 working examples in `examples/` directory
 - ✅ Docstrings present in major functions
 - ✅ Sphinx config updated to version 0.95a
+- ✅ Algorithm selection guide created (`docs/algorithm_selection_guide.md`)
+- ✅ Complexity documented in key algorithms (e.g., `louvain_multilayer`)
 - ❌ No automatic doc building from CI
-- ❌ Algorithmic complexity not systematically documented
-- ❌ No "Pick the right tool" decision guide
+- ❌ Algorithmic complexity not systematically documented across all functions
 
 **Type Hints**
 - ✅ Some type hints in new code (e.g., `community_wrapper.py`)
 - ✅ Mypy configured in pyproject.toml
+- ✅ Type hints added to additional modules (`utils.py`, layout algorithms, node2vec wrapper improvements)
 - ❌ Mypy not running in CI
 - ❌ Type hints not comprehensive across public API
 - ❌ Return types not fully annotated
