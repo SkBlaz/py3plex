@@ -15,6 +15,14 @@ VENV_BIN := $(VENV)/bin
 VENV_PYTHON := $(VENV_BIN)/python
 VENV_PIP := $(VENV_BIN)/pip
 
+# Detect if we're in CI or if tools are available globally
+# Use venv tools if available, otherwise fall back to global tools
+RUFF := $(shell if [ -f $(VENV_BIN)/ruff ]; then echo $(VENV_BIN)/ruff; else echo ruff; fi)
+BLACK := $(shell if [ -f $(VENV_BIN)/black ]; then echo $(VENV_BIN)/black; else echo black; fi)
+ISORT := $(shell if [ -f $(VENV_BIN)/isort ]; then echo $(VENV_BIN)/isort; else echo isort; fi)
+MYPY := $(shell if [ -f $(VENV_BIN)/mypy ]; then echo $(VENV_BIN)/mypy; else echo mypy; fi)
+PYTEST := $(shell if [ -f $(VENV_BIN)/pytest ]; then echo $(VENV_BIN)/pytest; else echo pytest; fi)
+
 # Colors for terminal output (ANSI escape codes)
 COLOR_RESET := \033[0m
 COLOR_BOLD := \033[1m
@@ -81,16 +89,16 @@ dev-install: ## Install package in editable mode with dev dependencies
 # ─────────────────────────────────────────────────────────────────────────────
 format: ## Auto-format code with isort, black, and ruff --fix
 	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Formatting code...$(COLOR_RESET)\n"
-	@if [ ! -d "$(VENV)" ]; then \
-		printf "$(COLOR_RED)✗ Virtual environment not found. Run 'make setup' first.$(COLOR_RESET)\n"; \
+	@if [ ! -d "$(VENV)" ] && ! command -v black > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ Neither virtual environment nor global tools found. Run 'make setup' first.$(COLOR_RESET)\n"; \
 		exit 1; \
 	fi
 	@printf "$(COLOR_GREEN)✓ Running isort...$(COLOR_RESET)\n"
-	@$(VENV_BIN)/isort $(PACKAGE)/ || true
+	@$(ISORT) $(PACKAGE)/ || true
 	@printf "$(COLOR_GREEN)✓ Running black...$(COLOR_RESET)\n"
-	@$(VENV_BIN)/black $(PACKAGE)/
+	@$(BLACK) $(PACKAGE)/
 	@printf "$(COLOR_GREEN)✓ Running ruff --fix...$(COLOR_RESET)\n"
-	@$(VENV_BIN)/ruff check $(PACKAGE)/ --fix || true
+	@$(RUFF) check $(PACKAGE)/ --fix || true
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Code formatting complete!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -98,18 +106,18 @@ format: ## Auto-format code with isort, black, and ruff --fix
 # ─────────────────────────────────────────────────────────────────────────────
 lint: ## Run ruff, isort --check-only, black --check, and mypy
 	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running linters and type checker...$(COLOR_RESET)\n"
-	@if [ ! -d "$(VENV)" ]; then \
-		printf "$(COLOR_RED)✗ Virtual environment not found. Run 'make setup' first.$(COLOR_RESET)\n"; \
+	@if [ ! -d "$(VENV)" ] && ! command -v ruff > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ Neither virtual environment nor global tools found. Run 'make setup' first.$(COLOR_RESET)\n"; \
 		exit 1; \
 	fi
 	@printf "$(COLOR_YELLOW)▸ Running ruff...$(COLOR_RESET)\n"
-	@$(VENV_BIN)/ruff check $(PACKAGE)/ || true
+	@$(RUFF) check $(PACKAGE)/ || true
 	@printf "$(COLOR_YELLOW)▸ Running isort --check-only...$(COLOR_RESET)\n"
-	@$(VENV_BIN)/isort --check-only $(PACKAGE)/ || true
+	@$(ISORT) --check-only $(PACKAGE)/ || true
 	@printf "$(COLOR_YELLOW)▸ Running black --check...$(COLOR_RESET)\n"
-	@$(VENV_BIN)/black --check $(PACKAGE)/ || true
+	@$(BLACK) --check $(PACKAGE)/ || true
 	@printf "$(COLOR_YELLOW)▸ Running mypy...$(COLOR_RESET)\n"
-	@$(VENV_BIN)/mypy $(PACKAGE)/ --ignore-missing-imports || true
+	@$(MYPY) $(PACKAGE)/ --ignore-missing-imports || true
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Linting complete!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -117,12 +125,12 @@ lint: ## Run ruff, isort --check-only, black --check, and mypy
 # ─────────────────────────────────────────────────────────────────────────────
 test: ## Run pytest with coverage reporting
 	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running tests with coverage...$(COLOR_RESET)\n"
-	@if [ ! -d "$(VENV)" ]; then \
-		printf "$(COLOR_RED)✗ Virtual environment not found. Run 'make setup' first.$(COLOR_RESET)\n"; \
+	@if [ ! -d "$(VENV)" ] && ! command -v pytest > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ Neither virtual environment nor global tools found. Run 'make setup' first.$(COLOR_RESET)\n"; \
 		exit 1; \
 	fi
 	@printf "$(COLOR_GREEN)✓ Running pytest...$(COLOR_RESET)\n"
-	@$(VENV_BIN)/pytest tests/ -v --cov=$(PACKAGE) --cov-report=html --cov-report=term-missing || true
+	@$(PYTEST) tests/ -v --cov=$(PACKAGE) --cov-report=html --cov-report=term-missing || true
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Tests complete! Coverage report saved to htmlcov/index.html$(COLOR_RESET)\n"
 
 coverage: ## Open HTML coverage report in browser
