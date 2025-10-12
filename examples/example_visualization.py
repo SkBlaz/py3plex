@@ -22,7 +22,7 @@ def plot_intact_embedding(num_it):
     train_node2vec_embedding.call_node2vec_binary(
         "../datasets/IntactEdgelistedges.txt",
         "../datasets/test_embedding.emb",
-        binary="../bin/node2vec",
+        binary="./node2vec"  # Note: binary no longer bundled,
         weighted=False)
 
     # preprocess and check embedding -- for speed, install parallel tsne from https://github.com/DmitryUlyanov/Multicore-TSNE, py3plex knows how to use it.
