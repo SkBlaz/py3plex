@@ -4,6 +4,7 @@ Tests for the I/O module - Core Schema and Validation (Task Set 1).
 
 import json
 import tempfile
+import unittest
 from pathlib import Path
 
 import pytest
@@ -23,8 +24,15 @@ from py3plex.io import (
     write,
 )
 
+# Check library availability for conditional tests
+try:
+    import igraph  # noqa: F401
+    HAS_IGRAPH = True
+except ImportError:
+    HAS_IGRAPH = False
 
-class TestNode:
+
+class TestNode(unittest.TestCase):
     """Test Node dataclass and validation."""
 
     def test_node_creation(self):
@@ -72,7 +80,7 @@ class TestNode:
         assert node.attributes == {"label": "Node 1"}
 
 
-class TestLayer:
+class TestLayer(unittest.TestCase):
     """Test Layer dataclass and validation."""
 
     def test_layer_creation(self):
@@ -106,7 +114,7 @@ class TestLayer:
         assert layer.attributes == {"name": "Layer 1"}
 
 
-class TestEdge:
+class TestEdge(unittest.TestCase):
     """Test Edge dataclass and validation."""
 
     def test_edge_creation(self):
@@ -187,7 +195,7 @@ class TestEdge:
         assert edge.edge_tuple() == ("n1", "n2", "l1", "l2", 3)
 
 
-class TestMultiLayerGraph:
+class TestMultiLayerGraph(unittest.TestCase):
     """Test MultiLayerGraph dataclass and validation."""
 
     def test_empty_graph(self):
@@ -351,7 +359,7 @@ class TestMultiLayerGraph:
         assert graph.directed is True
 
 
-class TestAPI:
+class TestAPI(unittest.TestCase):
     """Test I/O API and registry (Task Set 2)."""
 
     def test_supported_formats(self):
@@ -415,7 +423,7 @@ class TestAPI:
             read("/nonexistent/file.json")
 
 
-class TestJSONFormat:
+class TestJSONFormat(unittest.TestCase):
     """Test JSON format implementation (Task Set 3)."""
 
     def test_json_round_trip(self):
@@ -542,7 +550,7 @@ if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
 
-class TestCSVFormat:
+class TestCSVFormat(unittest.TestCase):
     """Test CSV format implementation (Task Set 3, tasks 12-15)."""
 
     def test_csv_basic_round_trip(self):
@@ -699,7 +707,7 @@ class TestCSVFormat:
             Path(tmp2_path).unlink()
 
 
-class TestNetworkXConverter:
+class TestNetworkXConverter(unittest.TestCase):
     """Test NetworkX converter (Task Set 4, task 23)."""
 
     def test_to_networkx_union_mode(self):
@@ -841,17 +849,15 @@ class TestNetworkXConverter:
         assert graph2.nodes["n1"].attributes["value"] == 10
 
 
-class TestIGraphConverter:
+class TestIGraphConverter(unittest.TestCase):
     """Test igraph converter (Task Set 4, task 24)."""
 
+    @unittest.skipUnless(HAS_IGRAPH, "igraph not available")
     def test_to_igraph_multiplex_mode(self):
         """Test conversion to igraph in multiplex mode."""
-        try:
-            import igraph as ig  # noqa: F401
+        import igraph as ig  # noqa: F401
 
-            from py3plex.io import to_igraph
-        except ImportError:
-            pytest.skip("igraph not available")
+        from py3plex.io import to_igraph
 
         # Create a multilayer graph
         graph = MultiLayerGraph()
@@ -867,14 +873,12 @@ class TestIGraphConverter:
         assert g.vcount() == 2  # 2 nodes x 1 layer
         assert g.ecount() == 1
 
+    @unittest.skipUnless(HAS_IGRAPH, "igraph not available")
     def test_to_igraph_union_mode(self):
         """Test conversion to igraph in union mode."""
-        try:
-            import igraph as ig  # noqa: F401
+        import igraph as ig  # noqa: F401
 
-            from py3plex.io import to_igraph
-        except ImportError:
-            pytest.skip("igraph not available")
+        from py3plex.io import to_igraph
 
         # Create a multilayer graph
         graph = MultiLayerGraph()
@@ -892,14 +896,12 @@ class TestIGraphConverter:
         assert g.vcount() == 2
         assert g.ecount() == 2  # Both layer edges
 
+    @unittest.skipUnless(HAS_IGRAPH, "igraph not available")
     def test_from_igraph_union_mode(self):
         """Test conversion from igraph in union mode."""
-        try:
-            import igraph as ig
+        import igraph as ig
 
-            from py3plex.io import from_igraph
-        except ImportError:
-            pytest.skip("igraph not available")
+        from py3plex.io import from_igraph
 
         # Create an igraph graph
         g = ig.Graph(directed=True)
@@ -916,14 +918,12 @@ class TestIGraphConverter:
         assert len(graph.layers) == 1
         assert len(graph.edges) == 1
 
+    @unittest.skipUnless(HAS_IGRAPH, "igraph not available")
     def test_igraph_round_trip(self):
         """Test round-trip conversion: MLG -> igraph -> MLG."""
-        try:
-            import igraph as ig  # noqa: F401
+        import igraph as ig  # noqa: F401
 
-            from py3plex.io import from_igraph, to_igraph
-        except ImportError:
-            pytest.skip("igraph not available")
+        from py3plex.io import from_igraph, to_igraph
 
         # Create original graph
         graph1 = MultiLayerGraph()

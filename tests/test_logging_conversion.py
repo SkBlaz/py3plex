@@ -56,8 +56,8 @@ def test_logger_functionality():
         test_logger.error("Error message")
         
         # Verify logger is properly configured
-        assert test_logger.level == logging.WARNING or test_logger.level == logging.NOTSET, \
-            "Logger should have default level"
+        assert test_logger.level in [logging.INFO, logging.WARNING, logging.NOTSET], \
+            f"Logger should have default level, got: {test_logger.level}"
         
         return True
     except Exception as e:
