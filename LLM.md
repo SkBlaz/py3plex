@@ -254,8 +254,9 @@ The Makefile provides a unified interface for all development tasks and works in
 - `pytest`: Direct pytest execution for advanced features like selective test execution
 
 **Continuous Integration**: GitHub Actions workflows run on every push and pull request:
-- **Test workflow** (`.github/workflows/tests.yml`): Uses `make setup` and runs tests on Python 3.8-3.11 with both full and minimal dependencies
+- **Test workflow** (`.github/workflows/tests.yml`): Uses `make setup` and runs tests on Python 3.8-3.12 with both full and minimal dependencies
 - **Code quality workflow** (`.github/workflows/code-quality.yml`): Uses `make lint` for Ruff linting, Black formatting checks, isort, and Mypy type checking
+- **Tutorial validation workflow** (`.github/workflows/tutorial-validation.yml`): ✅ **NEW** (2025-10-12) - Validates the 10-minute tutorial on Python 3.8, 3.10, and 3.12
 
 **Coverage status**: Current test coverage is approximately 15-20%. The modernization roadmap targets 30% coverage in Phase 2, 50% in Phase 3, and 70% in Phase 4. Priority areas for expanded testing include algorithm correctness, edge case handling, and user-facing API stability. A new test suite (`test_logging_conversion.py`) has been added to verify the logging infrastructure.
 
@@ -1299,21 +1300,25 @@ def compute_multilayer_centrality(
 - Add `make examples-smoke` to quickly validate all examples
 - Create troubleshooting documentation for common pitfalls (missing binaries, OOM errors, NetworkX version mismatches)
 
-**Current State** (Updated 2025):
-- ✅ Comprehensive examples in `examples/` directory (43 scripts)
+**Current State** (Updated 2025-10-12):
+- ✅ Comprehensive examples in `examples/` directory (44 scripts, including tutorial)
 - ✅ Documentation version updated to 0.95a in Sphinx config
 - ✅ Algorithm selection guide created with complexity analysis
 - ✅ Complexity documented in key algorithms (louvain_multilayer, layout functions)
+- ✅ **10-minute tutorial created** (`docs/10min_tutorial.md`)
+- ✅ **Tutorial CI validation workflow created** (`.github/workflows/tutorial-validation.yml`)
+- ✅ **Executable tutorial example** (`examples/tutorial_10min.py`)
 - ❌ No automatic doc building from CI
-- ❌ Examples depend on local datasets that may not exist
 - ❌ Not all algorithms have complexity documentation
 
 **Documentation Priorities**:
 1. ~~Update version in Sphinx config~~ ✅ **COMPLETED**
 2. ~~Add complexity tables to algorithm docstrings~~ ✅ **IN PROGRESS** (louvain_multilayer done)
 3. ~~Create algorithm selection guide~~ ✅ **COMPLETED**
-4. Set up ReadTheDocs webhook or GitHub Actions build
-5. Convert examples to use downloadable datasets
+4. ~~Create 10-minute tutorial~~ ✅ **COMPLETED** (2025-10-12)
+5. ~~Add CI workflow for tutorial validation~~ ✅ **COMPLETED** (2025-10-12)
+6. Set up ReadTheDocs webhook or GitHub Actions build
+7. Convert remaining examples to use downloadable datasets
 
 ### 6. Deprecation Management & Migration Paths
 
@@ -1429,7 +1434,7 @@ def draw_multilayer_default(
 
 ### 8. Testing & CI Expansion
 
-**Status**: Partially Complete | **Priority**: High | **Effort**: Medium
+**Status**: ~~Partially Complete~~ **Mostly Complete** | **Priority**: High | **Effort**: Medium
 
 **Goals**:
 - Add algorithmic unit tests with fixed seeds and tiny golden graphs (Louvain, Infomap, label propagation, centralities)
@@ -1439,11 +1444,13 @@ def draw_multilayer_default(
 - Publish coverage badge to README
 - Fail CI on presence of unpinned optional binaries
 - Add round-trip tests for all supported I/O formats (GML, GraphML, GEXF, CSV, edge-lists)
+- ~~Create tutorial validation workflow~~ ✅ **COMPLETED** (2025-10-12)
 
 **Current State**:
-- ✅ CI runs on Ubuntu with Python 3.8-3.11
+- ✅ CI runs on Ubuntu with Python 3.8-3.12
 - ✅ ruff and black run in CI
 - ✅ pytest with coverage runs in CI
+- ✅ **Tutorial validation workflow** (tests tutorial code on Python 3.8, 3.10, 3.12)
 - ❌ No macOS or Windows testing
 - ❌ mypy not in CI
 - ❌ No coverage badge

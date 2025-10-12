@@ -1,0 +1,86 @@
+name: Tutorial Validation
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  validate-tutorial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.10", "3.12"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+      timeout-minutes: 3
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+      timeout-minutes: 2
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc g++ build-essential
+      timeout-minutes: 5
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install --timeout 120 -r requirements.txt
+        # Add py3plex to PYTHONPATH
+        echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
+      timeout-minutes: 10
+
+    - name: Validate tutorial executable
+      run: |
+        echo "🧪 Running 10-minute tutorial examples..."
+        cd examples
+        python tutorial_10min.py
+        echo "✅ Tutorial validation completed successfully"
+      timeout-minutes: 8
+      env:
+        # Use non-interactive backend for matplotlib
+        MPLBACKEND: Agg
+
+    - name: Check tutorial outputs
+      run: |
+        echo "📊 Checking generated outputs..."
+        if [ -d "example_images" ]; then
+          echo "Found example_images directory"
+          ls -lh example_images/*.png 2>/dev/null || echo "No PNG files generated"
+        else
+          echo "No example_images directory created"
+        fi
+        echo "✓ Output check complete"
+      timeout-minutes: 1
+
+    - name: Upload tutorial artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: tutorial-outputs-py${{ matrix.python-version }}
+        path: example_images/*.png
+        if-no-files-found: warn
+        retention-days: 7
+      timeout-minutes: 2
