@@ -135,6 +135,7 @@ jobs:
       if: matrix.python-version == '3.10' && runner.os == 'Linux'
       uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
         flags: unittests
         name: codecov-py3plex
