@@ -51,6 +51,7 @@ Documentation Structure
    acknowledgements.rst
    community_detection.rst
    learning.rst
+   development.rst
   
 .. toctree::
    :maxdepth: 2

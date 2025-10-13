@@ -58,52 +58,9 @@ python tutorial_10min.py
 For more examples, view the **examples** folder.
 Extensive documentation and quickstart tutorials are available at: [DOCS](https://skblaz.github.io/py3plex/)
 
-### Development with Makefile
+### Development
 
-For a streamlined development experience, use the provided Makefile:
-
-```bash
-# View all available commands
-make help
-
-# Setup development environment (creates .venv and installs dependencies)
-make setup
-
-# Install package in editable mode with dev dependencies
-make dev-install
-
-# Auto-format code with isort, black, and ruff
-make format
-
-# Run linters and type checker
-make lint
-
-# Run tests with coverage
-make test
-
-# Open coverage report in browser
-make coverage
-
-# Build documentation
-make docs
-
-# Clean build artifacts and caches
-make clean
-
-# Build distribution packages
-make build
-
-# Publish to PyPI (requires TWINE_USERNAME and TWINE_PASSWORD)
-make publish
-
-# Verify API exports
-make api-check
-
-# Run CI checks (lint + test)
-make ci
-```
-
-The Makefile provides colorized output and helpful error messages. All commands check for the virtual environment and provide clear instructions if setup is needed.
+For development workflows, testing, and contributing, see [docs/development.md](docs/development.md).
 
 ### Requirements
 
@@ -128,51 +85,17 @@ For any errors, please open an issue!
 
 ### Testing
 
-The simplest way to run tests:
-
 ```bash
 python run_tests.py
 ```
 
-For development with pytest:
-
-```bash
-# Install dev dependencies
-pip install -e ".[dev]"
-
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=py3plex --cov-report=html
-```
+For more testing options and development workflows, see [docs/development.md](docs/development.md).
 
 For comprehensive project context, development status, and guidance for maintainers and LLMs, see [LLM.md](./LLM.md).
 
 ### Contributions
-If you are interested in contributing please:
-- Either open a pull request
-- Or write with your idea
-- Or open an issue with your suggestion (feature requests welcome)
 
-**Development Tools**:
-The `pyproject.toml` includes configurations for:
-- **Black**: Code formatting (`black py3plex/`)
-- **Ruff**: Fast linting (`ruff check py3plex/ --fix`)
-- **Mypy**: Type checking (`mypy py3plex/ --ignore-missing-imports`)
-- **Pytest**: Testing with coverage
-- **Pre-commit hooks**: Automated quality checks before commits
-
-```bash
-# Install dev dependencies
-pip install -e ".[dev]"
-
-# Setup pre-commit hooks (optional but recommended)
-pre-commit install
-
-# Run pre-commit manually on all files
-pre-commit run --all-files
-```
+We welcome contributions! See [docs/development.md](docs/development.md) for development guidelines, testing procedures, and code quality standards.
 
 
 # Citations
