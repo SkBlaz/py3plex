@@ -342,13 +342,13 @@ This allows the Makefile to work in both scenarios:
 
 **Modernization roadmap**:
 - **Phase 1** (✅ complete): Fix bare except clauses ✅, convert print() to logging (74% complete), remove wildcard imports (9→1 complete), update Python requirement ✅, set up pytest infrastructure ✅, add type hints (65.4% complete)
-- **Phase 2** (~85% complete): Expand test coverage to 30%+ (in progress), add custom exception types ✅, refactor global state ✅ (identified and documented), update dependencies ✅, add pre-commit hooks ✅, set up CI linting ✅, expand type hints ✅, complete bare except cleanup ✅, print→logging conversion (74% complete), modern I/O system ✅
+- **Phase 2** (~95% complete): Expand test coverage to 30%+ (in progress), add custom exception types ✅, refactor global state ✅ (identified and documented), update dependencies ✅, add pre-commit hooks ✅, set up CI linting ✅, expand type hints ✅, complete bare except cleanup ✅, print→logging conversion (74% complete), modern I/O system ✅, **coverage badge** ✅, **multi-platform CI** ✅, **auto doc building** ✅
 - **Phase 3** (planned): Complete wildcard import cleanup, expand test coverage to 50%+, refactor large modules, add comprehensive docstrings, generate API documentation, complete print→logging conversion (remaining 26%)
 - **Phase 4** (planned): Full type hint coverage (100%), achieve 70%+ test coverage, performance optimization, comprehensive documentation and tutorials
 
 ### Development Status
 
-**Current Status**: Phase 2 Near Complete (~85% complete)
+**Current Status**: Phase 2 Near Complete (~95% complete)
 
 Recent achievements:
 - ✅ Modern packaging added (pyproject.toml)
@@ -359,6 +359,9 @@ Recent achievements:
 - ✅ Print → Logging conversion: 74% complete (170/229 statements)
 - ✅ Type hints: 65.4% complete (70/107 maintainable modules)
 - ✅ Modern I/O system with schema validation (py3plex/io/)
+- ✅ **Coverage badge and Codecov integration** (2025-10-13)
+- ✅ **Multi-platform CI testing** (Ubuntu, macOS, Windows) (2025-10-13)
+- ✅ **Automatic documentation building** (GitHub Actions + Pages) (2025-10-13)
 
 **Phase 2 Achievements**:
 - Converted 13 modules to use structured logging
@@ -1084,14 +1087,14 @@ Consider using mtype='sparse' instead, or analyzing layers independently.
 |------------|----------|--------|-------|
 | External binary dependencies | High | Known issue | Binaries in bin/, need unbundling |
 | Mixed licensing (BSD/AGPL) | High | Known issue | Infomap code is AGPL, needs separation |
-| Random seed reproducibility | Medium | Partially resolved | Some algorithms support seed, needs consistency |
+| Random seed reproducibility | Medium | ✅ Mostly resolved | Unified get_rng() helper, seeds in tests |
 | Supra-adjacency memory use | High | ✅ Resolved | Sparse by default, warnings implemented |
 | Visualization scalability | Medium | Needs improvement | No automatic size guards yet |
 | PyPI version lag | Medium | Known issue | Install from GitHub recommended |
-| Documentation staleness | Low | ✅ Resolved | Sphinx config updated to 0.95a |
+| Documentation staleness | Low | ✅ Resolved | Sphinx config updated to 0.95a, auto-build CI |
 | NetworkX 3.x compatibility | Low | ✅ Resolved | Compatibility layer implemented |
-| Type hints coverage | Medium | In progress | Partial coverage, mypy not in CI |
-| CI platform coverage | Low | Partial | Ubuntu only, macOS/Windows not tested |
+| Type hints coverage | Medium | In progress | Partial coverage, mypy in CI but not enforcing |
+| CI platform coverage | Low | ✅ Resolved | Ubuntu, macOS, Windows testing (Python 3.8-3.12) |
 
 ### Best Practices Summary
 
@@ -1338,7 +1341,7 @@ def compute_multilayer_centrality(
 - ✅ **10-minute tutorial created** (`docs/10min_tutorial.md`)
 - ✅ **Tutorial CI validation workflow created** (`.github/workflows/tutorial-validation.yml`)
 - ✅ **Executable tutorial example** (`examples/tutorial_10min.py`)
-- ❌ No automatic doc building from CI
+- ✅ **Automatic doc building from CI** (`.github/workflows/docs.yml` with GitHub Pages deployment)
 - ❌ Not all algorithms have complexity documentation
 
 **Documentation Priorities**:
@@ -1347,7 +1350,7 @@ def compute_multilayer_centrality(
 3. ~~Create algorithm selection guide~~ ✅ **COMPLETED**
 4. ~~Create 10-minute tutorial~~ ✅ **COMPLETED** (2025-10-12)
 5. ~~Add CI workflow for tutorial validation~~ ✅ **COMPLETED** (2025-10-12)
-6. Set up ReadTheDocs webhook or GitHub Actions build
+6. ~~Set up ReadTheDocs webhook or GitHub Actions build~~ ✅ **COMPLETED** (2025-10-13)
 7. Convert remaining examples to use downloadable datasets
 
 ### 6. Deprecation Management & Migration Paths
@@ -1481,17 +1484,17 @@ def draw_multilayer_default(
 - ✅ ruff and black run in CI
 - ✅ pytest with coverage runs in CI
 - ✅ **Tutorial validation workflow** (tests tutorial code on Python 3.8, 3.10, 3.12)
-- ❌ No macOS or Windows testing
-- ❌ mypy not in CI
-- ❌ No coverage badge
-- ⚠️ Some tests are non-deterministic due to missing seeds
+- ✅ **Coverage badge** added to README (Codecov integration)
+- ✅ **macOS and Windows testing** added to CI (Python 3.10, 3.11, 3.12)
+- ⚠️ mypy in CI but not enforcing (runs with `|| true`)
+- ⚠️ Some tests are non-deterministic due to missing seeds (ongoing improvement)
 
-**Proposed CI Matrix**:
+**Current CI Matrix**:
 ```yaml
 strategy:
   matrix:
     os: [ubuntu-latest, macos-latest, windows-latest]
-    python-version: ['3.9', '3.10', '3.11', '3.12']
+    python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     exclude:
       # Skip expensive combinations
       - os: macos-latest
@@ -1602,7 +1605,7 @@ Track roadmap progress in GitHub Issues:
 - Link PRs to roadmap items
 - Update this section quarterly with completed items
 
-**Completed Roadmap Items**:
+**Completed Roadmap Items** (Updated 2025-10-13):
 - ✅ Modern build system with pyproject.toml
 - ✅ Makefile-based development workflow
 - ✅ CI with code quality checks (ruff, black, isort)
@@ -1620,16 +1623,23 @@ Track roadmap progress in GitHub Issues:
 - ✅ Bundled binaries removed from bin/ directory (~5MB reduction)
 - ✅ Seed parameter added to infomap_communities wrapper
 - ✅ Reproducibility work complete (Section 2 of roadmap)
+- ✅ **Coverage badge added to README** (Codecov integration) (2025-10-13)
+- ✅ **Multi-platform CI testing** (Ubuntu, macOS, Windows) (2025-10-13)
+- ✅ **Automatic documentation building** (GitHub Actions + Pages) (2025-10-13)
+- ✅ **Test determinism improvements** (added seeds to non-deterministic tests) (2025-10-13)
+- ✅ **Mypy configuration fixed** (python_version 3.9 instead of 3.8) (2025-10-13)
 
 **Next Priorities** (sorted by impact):
 1. ~~Remove bundled binaries → reduce repo size, improve licensing clarity~~ ✅ **COMPLETED** (2025-10-12)
 2. ~~Unified seeding → ensure reproducibility~~ ✅ **COMPLETED** (get_rng() helper added, all major algorithms support seeds)
-3. ~~Documentation update → reflect current capabilities~~ ✅ **PARTIALLY COMPLETED** (algorithm guide added)
-4. Type hints + mypy → improve developer experience (ongoing improvements)
-5. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
-6. Sparse supra-adjacency matrices → improve scalability (Section 3 of roadmap)
-7. API standardization → consistent return types (Section 4 of roadmap)
-8. Move AGPL code to optional package → licensing clarity
+3. ~~Documentation update → reflect current capabilities~~ ✅ **COMPLETED** (algorithm guide + auto-build CI)
+4. ~~Coverage badge → visibility into test coverage~~ ✅ **COMPLETED** (2025-10-13)
+5. ~~Multi-platform CI → test on macOS/Windows~~ ✅ **COMPLETED** (2025-10-13)
+6. Type hints + mypy → improve developer experience (ongoing improvements, mypy runs but not enforcing)
+7. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
+8. Sparse supra-adjacency matrices → improve scalability (already implemented!)
+9. API standardization → consistent return types (Section 4 of roadmap)
+10. Move AGPL code to optional package → licensing clarity
 
 ---
 
@@ -1697,14 +1707,14 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - ✅ Sphinx config updated to version 0.95a
 - ✅ Algorithm selection guide created (`docs/algorithm_selection_guide.md`)
 - ✅ Complexity documented in key algorithms (e.g., `louvain_multilayer`)
-- ❌ No automatic doc building from CI
+- ✅ **Automatic doc building from CI** (`.github/workflows/docs.yml`)
 - ❌ Algorithmic complexity not systematically documented across all functions
 
 **Type Hints**
 - ✅ Some type hints in new code (e.g., `community_wrapper.py`)
-- ✅ Mypy configured in pyproject.toml
+- ✅ Mypy configured in pyproject.toml (fixed to use Python 3.9)
 - ✅ Type hints added to additional modules (`utils.py`, layout algorithms, node2vec wrapper improvements)
-- ❌ Mypy not running in CI
+- ⚠️ Mypy running in CI but not enforcing (uses `|| true`)
 - ❌ Type hints not comprehensive across public API
 - ❌ Return types not fully annotated
 
@@ -1716,8 +1726,8 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - ✅ `bin/README.md` with installation instructions and alternatives
 - ✅ Examples updated to handle missing binaries gracefully
 - ✅ `.gitignore` prevents re-bundling binaries
+- ✅ **Optional dependency groups** added to pyproject.toml ([infomap], [algos], [viz])
 - ⚠️ AGPL-licensed Infomap code still bundled in source tree (needs separate cleanup)
-- ❌ No optional dependency groups for binary alternatives in pyproject.toml
 
 ### ❌ Not Started Items
 
@@ -1765,10 +1775,10 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - No `py3plex-community`, `py3plex-supra`, etc. commands
 
 **CI/CD Expansion**
-- No macOS testing
-- No Windows testing
-- No Python 3.12 testing
-- No coverage badge published
+- ✅ macOS testing (added to CI, Python 3.10-3.12)
+- ✅ Windows testing (added to CI, Python 3.10-3.12)
+- ✅ Python 3.12 testing (added to CI matrix)
+- ✅ Coverage badge published (Codecov integration)
 - Tests may not fail on unpinned binaries
 
 ### Summary Statistics

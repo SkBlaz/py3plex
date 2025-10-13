@@ -53,3 +53,4 @@ bin/Infomap
 bin/node2vec
 bin/*.exe
 bin/*.dll
+_build_test/

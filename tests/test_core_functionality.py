@@ -299,12 +299,15 @@ def test_basic_visualizatio6():
 def test_basic_animation():
     try:
         logging.info("Import viz test 8")
+        # Set seed for reproducibility
+        np.random.seed(42)
         fig = plt.figure()
         folder_tmp_files = "datasets/animation"
 
         def animate(mnod):
             try:
-                lx = np.random.randint(2, 5, 1)[0]  # Reduced layer count to prevent hanging
+                # Use deterministic parameters instead of random
+                lx = ((mnod * 7) % 3) + 2  # Deterministic value between 2 and 4
                 ER_multilayer = random_generators.random_multilayer_ER(mnod,
                                                                        lx,
                                                                        0.01,  # Increased edge probability to reduce node count

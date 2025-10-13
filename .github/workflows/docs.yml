@@ -1,0 +1,62 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build-docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install Sphinx and extensions
+        pip install sphinx sphinx-rtd-theme myst-parser m2r2
+        # Install package dependencies for API documentation
+        pip install numpy scipy networkx matplotlib rdflib tqdm bitarray
+        # Install py3plex package itself for autodoc to work
+        pip install -e .
+      timeout-minutes: 8
+    
+    - name: Build Sphinx documentation
+      run: |
+        cd docfiles
+        echo "📚 Building Sphinx documentation..."
+        # Build without treating warnings as errors to avoid breaking on autodoc issues
+        sphinx-build -b html . _build/ --keep-going
+      timeout-minutes: 5
+    
+    - name: Upload documentation artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: documentation-html
+        path: docfiles/_build/
+        retention-days: 30
+      timeout-minutes: 2
+    
+    - name: Deploy to GitHub Pages
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docfiles/_build
+        force_orphan: true
+      timeout-minutes: 3
