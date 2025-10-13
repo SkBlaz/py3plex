@@ -1716,8 +1716,8 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - ✅ `bin/README.md` with installation instructions and alternatives
 - ✅ Examples updated to handle missing binaries gracefully
 - ✅ `.gitignore` prevents re-bundling binaries
+- ✅ **Optional dependency groups** added to pyproject.toml ([infomap], [algos], [viz])
 - ⚠️ AGPL-licensed Infomap code still bundled in source tree (needs separate cleanup)
-- ❌ No optional dependency groups for binary alternatives in pyproject.toml
 
 ### ❌ Not Started Items
 
