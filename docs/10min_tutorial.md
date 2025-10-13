@@ -154,10 +154,11 @@ print("Multilayer betweenness centrality:", ml_betweenness)
 Identify communities in your multilayer network:
 
 ```python
-from py3plex.algorithms.community_detection import community_wrapper as cw
+from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 
-# Louvain community detection
-partition = cw.louvain_communities(network)
+# Multilayer Louvain community detection
+# This method considers the multilayer structure and inter-layer connections
+partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
 print("Communities found:", len(set(partition.values())))
 
 # Display community assignments
@@ -169,6 +170,12 @@ from collections import Counter
 community_sizes = Counter(partition.values())
 print("\nCommunity sizes:", dict(community_sizes))
 ```
+
+**Note**: The `louvain_multilayer` function performs community detection across all layers simultaneously, taking into account both intra-layer and inter-layer connections. Parameters:
+- `gamma`: Resolution parameter (higher values = more communities)
+- `omega`: Inter-layer coupling strength (higher values = more consistency across layers)
+- `random_state`: Seed for reproducibility
+
 
 ## 6. Basic Visualization (1 minute)
 
@@ -234,7 +241,7 @@ Here's a complete workflow:
 
 ```python
 from py3plex.core import multinet
-from py3plex.algorithms.community_detection import community_wrapper as cw
+from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 from py3plex.visualization.multilayer import hairball_plot
 from py3plex.visualization.colors import colors_default
 from collections import Counter
@@ -242,7 +249,7 @@ import matplotlib.pyplot as plt
 
 # Load network
 network = multinet.multi_layer_network().load_network(
-    "datasets/multiedgelist.txt",
+    "datasets/multiedgelist2.txt",
     input_type="multiedgelist",
     directed=False
 )
@@ -258,8 +265,8 @@ print("\n=== Top 5 Nodes by Degree (Layer 1) ===")
 for node, score in sorted(degree_cent.items(), key=lambda x: x[1], reverse=True)[:5]:
     print(f"{node}: {score:.3f}")
 
-# Detect communities
-partition = cw.louvain_communities(network)
+# Detect communities using multilayer method
+partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
 print(f"\n=== Communities ===")
 print(f"Number of communities: {len(set(partition.values()))}")
 

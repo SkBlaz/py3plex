@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
 from py3plex.core import multinet
 from py3plex.algorithms.community_detection import community_wrapper as cw
+from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 
 
 def example_1_create_network():
@@ -51,7 +52,7 @@ def example_2_load_network():
     # Determine the correct path to datasets
     script_dir = os.path.dirname(os.path.abspath(__file__))
     repo_root = os.path.dirname(script_dir)
-    dataset_path = os.path.join(repo_root, "datasets", "multiedgelist.txt")
+    dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
     
     if not os.path.exists(dataset_path):
         print(f"Warning: Dataset not found at {dataset_path}")
@@ -165,12 +166,13 @@ def example_5_community_detection(network):
         return None
     
     print("\n" + "="*60)
-    print("Example 5: Community Detection")
+    print("Example 5: Multilayer Community Detection")
     print("="*60)
     
     try:
-        # Louvain community detection
-        partition = cw.louvain_communities(network)
+        # Multilayer Louvain community detection
+        print("Running multilayer Louvain algorithm...")
+        partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
         num_communities = len(set(partition.values()))
         print(f"\nCommunities found: {num_communities}")
         
@@ -221,21 +223,24 @@ def example_6_visualization(network, partition=None):
         
         # Simple visualization
         output_file = os.path.join(output_dir, "tutorial_network.png")
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(12, 12))
         hairball_plot(
             graph,
             network_colors,
             layout_algorithm="force",
-            layout_parameters={"iterations": 50}
+            layout_parameters={"iterations": 100},
+            node_size=5,
+            edge_width=0.5,
+            alpha_channel=0.8
         )
-        plt.title("Multilayer Network Visualization")
-        plt.savefig(output_file, dpi=150, bbox_inches='tight')
+        plt.title("Multilayer Network Visualization", fontsize=16, fontweight='bold')
+        plt.savefig(output_file, dpi=150, bbox_inches='tight', facecolor='white')
         plt.close()
         print(f"\nVisualization saved to {output_file}")
         
         # Visualization with communities
         if partition is not None:
-            top_n = min(5, len(set(partition.values())))
+            top_n = min(10, len(set(partition.values())))
             community_counts = Counter(partition.values())
             top_communities = [c for c, _ in community_counts.most_common(top_n)]
             
@@ -246,10 +251,18 @@ def example_6_visualization(network, partition=None):
             ]
             
             output_file_comm = os.path.join(output_dir, "tutorial_network_communities.png")
-            plt.figure(figsize=(10, 10))
-            hairball_plot(graph, network_colors, layout_algorithm="force")
-            plt.title("Multilayer Network with Communities")
-            plt.savefig(output_file_comm, dpi=150, bbox_inches='tight')
+            plt.figure(figsize=(12, 12))
+            hairball_plot(
+                graph, 
+                network_colors, 
+                layout_algorithm="force",
+                layout_parameters={"iterations": 100},
+                node_size=5,
+                edge_width=0.5,
+                alpha_channel=0.8
+            )
+            plt.title("Multilayer Network with Communities", fontsize=16, fontweight='bold')
+            plt.savefig(output_file_comm, dpi=150, bbox_inches='tight', facecolor='white')
             plt.close()
             print(f"Community visualization saved to {output_file_comm}")
     except ImportError as e:
@@ -269,7 +282,7 @@ def complete_example():
     # Determine the correct path to datasets
     script_dir = os.path.dirname(os.path.abspath(__file__))
     repo_root = os.path.dirname(script_dir)
-    dataset_path = os.path.join(repo_root, "datasets", "multiedgelist.txt")
+    dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
     
     if not os.path.exists(dataset_path):
         print(f"Dataset not found at {dataset_path}")
@@ -308,10 +321,10 @@ def complete_example():
         except Exception as e:
             print(f"Could not compute centrality: {e}")
     
-    # Detect communities
+    # Detect communities with multilayer method
     try:
-        partition = cw.louvain_communities(network)
-        print(f"\n=== Communities ===")
+        print("\n=== Multilayer Community Detection ===")
+        partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
         print(f"Number of communities: {len(set(partition.values()))}")
         
         # Try visualization
@@ -337,9 +350,17 @@ def complete_example():
             output_file = os.path.join(output_dir, "complete_analysis.png")
             
             plt.figure(figsize=(12, 12))
-            hairball_plot(graph, network_colors, layout_algorithm="force")
-            plt.title("Multilayer Network Analysis")
-            plt.savefig(output_file, dpi=150, bbox_inches='tight')
+            hairball_plot(
+                graph, 
+                network_colors, 
+                layout_algorithm="force",
+                layout_parameters={"iterations": 100},
+                node_size=5,
+                edge_width=0.5,
+                alpha_channel=0.8
+            )
+            plt.title("Multilayer Network Analysis", fontsize=16, fontweight='bold')
+            plt.savefig(output_file, dpi=150, bbox_inches='tight', facecolor='white')
             plt.close()
             print(f"\nComplete analysis saved to {output_file}")
         except ImportError:
