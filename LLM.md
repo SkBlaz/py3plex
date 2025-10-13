@@ -342,13 +342,13 @@ This allows the Makefile to work in both scenarios:
 
 **Modernization roadmap**:
 - **Phase 1** (✅ complete): Fix bare except clauses ✅, convert print() to logging (74% complete), remove wildcard imports (9→1 complete), update Python requirement ✅, set up pytest infrastructure ✅, add type hints (65.4% complete)
-- **Phase 2** (~85% complete): Expand test coverage to 30%+ (in progress), add custom exception types ✅, refactor global state ✅ (identified and documented), update dependencies ✅, add pre-commit hooks ✅, set up CI linting ✅, expand type hints ✅, complete bare except cleanup ✅, print→logging conversion (74% complete), modern I/O system ✅
+- **Phase 2** (~95% complete): Expand test coverage to 30%+ (in progress), add custom exception types ✅, refactor global state ✅ (identified and documented), update dependencies ✅, add pre-commit hooks ✅, set up CI linting ✅, expand type hints ✅, complete bare except cleanup ✅, print→logging conversion (74% complete), modern I/O system ✅, **coverage badge** ✅, **multi-platform CI** ✅, **auto doc building** ✅
 - **Phase 3** (planned): Complete wildcard import cleanup, expand test coverage to 50%+, refactor large modules, add comprehensive docstrings, generate API documentation, complete print→logging conversion (remaining 26%)
 - **Phase 4** (planned): Full type hint coverage (100%), achieve 70%+ test coverage, performance optimization, comprehensive documentation and tutorials
 
 ### Development Status
 
-**Current Status**: Phase 2 Near Complete (~85% complete)
+**Current Status**: Phase 2 Near Complete (~95% complete)
 
 Recent achievements:
 - ✅ Modern packaging added (pyproject.toml)
@@ -359,6 +359,9 @@ Recent achievements:
 - ✅ Print → Logging conversion: 74% complete (170/229 statements)
 - ✅ Type hints: 65.4% complete (70/107 maintainable modules)
 - ✅ Modern I/O system with schema validation (py3plex/io/)
+- ✅ **Coverage badge and Codecov integration** (2025-10-13)
+- ✅ **Multi-platform CI testing** (Ubuntu, macOS, Windows) (2025-10-13)
+- ✅ **Automatic documentation building** (GitHub Actions + Pages) (2025-10-13)
 
 **Phase 2 Achievements**:
 - Converted 13 modules to use structured logging
@@ -1602,7 +1605,7 @@ Track roadmap progress in GitHub Issues:
 - Link PRs to roadmap items
 - Update this section quarterly with completed items
 
-**Completed Roadmap Items**:
+**Completed Roadmap Items** (Updated 2025-10-13):
 - ✅ Modern build system with pyproject.toml
 - ✅ Makefile-based development workflow
 - ✅ CI with code quality checks (ruff, black, isort)
@@ -1620,16 +1623,23 @@ Track roadmap progress in GitHub Issues:
 - ✅ Bundled binaries removed from bin/ directory (~5MB reduction)
 - ✅ Seed parameter added to infomap_communities wrapper
 - ✅ Reproducibility work complete (Section 2 of roadmap)
+- ✅ **Coverage badge added to README** (Codecov integration) (2025-10-13)
+- ✅ **Multi-platform CI testing** (Ubuntu, macOS, Windows) (2025-10-13)
+- ✅ **Automatic documentation building** (GitHub Actions + Pages) (2025-10-13)
+- ✅ **Test determinism improvements** (added seeds to non-deterministic tests) (2025-10-13)
+- ✅ **Mypy configuration fixed** (python_version 3.9 instead of 3.8) (2025-10-13)
 
 **Next Priorities** (sorted by impact):
 1. ~~Remove bundled binaries → reduce repo size, improve licensing clarity~~ ✅ **COMPLETED** (2025-10-12)
 2. ~~Unified seeding → ensure reproducibility~~ ✅ **COMPLETED** (get_rng() helper added, all major algorithms support seeds)
-3. ~~Documentation update → reflect current capabilities~~ ✅ **PARTIALLY COMPLETED** (algorithm guide added)
-4. Type hints + mypy → improve developer experience (ongoing improvements)
-5. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
-6. Sparse supra-adjacency matrices → improve scalability (Section 3 of roadmap)
-7. API standardization → consistent return types (Section 4 of roadmap)
-8. Move AGPL code to optional package → licensing clarity
+3. ~~Documentation update → reflect current capabilities~~ ✅ **COMPLETED** (algorithm guide + auto-build CI)
+4. ~~Coverage badge → visibility into test coverage~~ ✅ **COMPLETED** (2025-10-13)
+5. ~~Multi-platform CI → test on macOS/Windows~~ ✅ **COMPLETED** (2025-10-13)
+6. Type hints + mypy → improve developer experience (ongoing improvements, mypy runs but not enforcing)
+7. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
+8. Sparse supra-adjacency matrices → improve scalability (already implemented!)
+9. API standardization → consistent return types (Section 4 of roadmap)
+10. Move AGPL code to optional package → licensing clarity
 
 ---
 
