@@ -1,6 +1,8 @@
 # *Py3Plex* - a library for analysis and visualization of heterogeneous networks
 
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
+[![Tutorial](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml)
+[![Code Quality](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml)
 
 Heterogeneous networks are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
@@ -45,7 +47,15 @@ pip install -e ".[dev]"
 
 ### Quick Start
 
-To get started, please view the **examples** folder.
+**New to py3plex?** Start with our [10-minute tutorial](docs/10min_tutorial.md)!
+
+You can also run the executable version:
+```bash
+cd examples
+python tutorial_10min.py
+```
+
+For more examples, view the **examples** folder.
 Extensive documentation and quickstart tutorials are available at: [DOCS](https://skblaz.github.io/py3plex/)
 
 ### Development with Makefile

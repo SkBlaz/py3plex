@@ -15,6 +15,10 @@ Installation
 Quick Start
 ===========
 
+**New to py3plex? Start with our 10-minute tutorial!**
+
+See :doc:`10min_tutorial` for a comprehensive introduction.
+
 See comprehensive examples in the `examples/ directory <https://github.com/SkBlaz/Py3Plex/tree/master/examples>`_.
 
 Basic usage:
@@ -37,6 +41,7 @@ Documentation Structure
    :maxdepth: 2
    :caption: Basic tutorial:
 
+   10min_tutorial
    core_idea.rst
    basic_usage.rst
    basic_usage_analysis.rst
@@ -45,7 +50,6 @@ Documentation Structure
    visualization.rst
    acknowledgements.rst
    community_detection.rst
-   supra.rst
    learning.rst
   
 .. toctree::
@@ -66,10 +70,17 @@ Examples & Tutorials
 
 **The best way to learn py3plex is through examples!**
 
+**Getting Started:**
+
+- :doc:`10min_tutorial` - **Start here!** A comprehensive 10-minute introduction to py3plex
+
+**Core Examples:**
+
 All examples are available at: https://github.com/SkBlaz/Py3Plex/tree/master/examples
 
 Key examples:
 
+- ``tutorial_10min.py`` - Executable version of the 10-minute tutorial
 - ``example_multilayer_visualization.py`` - Network visualization
 - ``example_community_detection.py`` - Community detection with Louvain and Infomap
 - ``example_network_decomposition.py`` - Meta-path feature extraction
