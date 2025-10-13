@@ -47,18 +47,26 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools wheel
+        # Install numpy and scipy first to avoid potential conflicts
+        pip install --timeout 120 numpy scipy
         pip install --timeout 120 -r requirements.txt
         # Add py3plex to PYTHONPATH
         echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
-      timeout-minutes: 10
+        # Verify key dependencies
+        python -c "import numpy; print(f'numpy {numpy.__version__}')"
+        python -c "import scipy; print(f'scipy {scipy.__version__}')"
+        python -c "import networkx; print(f'networkx {networkx.__version__}')"
+      timeout-minutes: 15
 
     - name: Validate tutorial executable
       run: |
         echo "🧪 Running 10-minute tutorial examples..."
+        # Verify imports work before running
+        python -c "from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer; print('✓ Import successful')"
         cd examples
         python tutorial_10min.py
         echo "✅ Tutorial validation completed successfully"
-      timeout-minutes: 8
+      timeout-minutes: 10
       env:
         # Use non-interactive backend for matplotlib
         MPLBACKEND: Agg
