@@ -1338,7 +1338,7 @@ def compute_multilayer_centrality(
 - ✅ **10-minute tutorial created** (`docs/10min_tutorial.md`)
 - ✅ **Tutorial CI validation workflow created** (`.github/workflows/tutorial-validation.yml`)
 - ✅ **Executable tutorial example** (`examples/tutorial_10min.py`)
-- ❌ No automatic doc building from CI
+- ✅ **Automatic doc building from CI** (`.github/workflows/docs.yml` with GitHub Pages deployment)
 - ❌ Not all algorithms have complexity documentation
 
 **Documentation Priorities**:
@@ -1347,7 +1347,7 @@ def compute_multilayer_centrality(
 3. ~~Create algorithm selection guide~~ ✅ **COMPLETED**
 4. ~~Create 10-minute tutorial~~ ✅ **COMPLETED** (2025-10-12)
 5. ~~Add CI workflow for tutorial validation~~ ✅ **COMPLETED** (2025-10-12)
-6. Set up ReadTheDocs webhook or GitHub Actions build
+6. ~~Set up ReadTheDocs webhook or GitHub Actions build~~ ✅ **COMPLETED** (2025-10-13)
 7. Convert remaining examples to use downloadable datasets
 
 ### 6. Deprecation Management & Migration Paths
@@ -1697,14 +1697,14 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - ✅ Sphinx config updated to version 0.95a
 - ✅ Algorithm selection guide created (`docs/algorithm_selection_guide.md`)
 - ✅ Complexity documented in key algorithms (e.g., `louvain_multilayer`)
-- ❌ No automatic doc building from CI
+- ✅ **Automatic doc building from CI** (`.github/workflows/docs.yml`)
 - ❌ Algorithmic complexity not systematically documented across all functions
 
 **Type Hints**
 - ✅ Some type hints in new code (e.g., `community_wrapper.py`)
-- ✅ Mypy configured in pyproject.toml
+- ✅ Mypy configured in pyproject.toml (fixed to use Python 3.9)
 - ✅ Type hints added to additional modules (`utils.py`, layout algorithms, node2vec wrapper improvements)
-- ❌ Mypy not running in CI
+- ⚠️ Mypy running in CI but not enforcing (uses `|| true`)
 - ❌ Type hints not comprehensive across public API
 - ❌ Return types not fully annotated
 
