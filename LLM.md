@@ -1084,14 +1084,14 @@ Consider using mtype='sparse' instead, or analyzing layers independently.
 |------------|----------|--------|-------|
 | External binary dependencies | High | Known issue | Binaries in bin/, need unbundling |
 | Mixed licensing (BSD/AGPL) | High | Known issue | Infomap code is AGPL, needs separation |
-| Random seed reproducibility | Medium | Partially resolved | Some algorithms support seed, needs consistency |
+| Random seed reproducibility | Medium | ✅ Mostly resolved | Unified get_rng() helper, seeds in tests |
 | Supra-adjacency memory use | High | ✅ Resolved | Sparse by default, warnings implemented |
 | Visualization scalability | Medium | Needs improvement | No automatic size guards yet |
 | PyPI version lag | Medium | Known issue | Install from GitHub recommended |
-| Documentation staleness | Low | ✅ Resolved | Sphinx config updated to 0.95a |
+| Documentation staleness | Low | ✅ Resolved | Sphinx config updated to 0.95a, auto-build CI |
 | NetworkX 3.x compatibility | Low | ✅ Resolved | Compatibility layer implemented |
-| Type hints coverage | Medium | In progress | Partial coverage, mypy not in CI |
-| CI platform coverage | Low | Partial | Ubuntu only, macOS/Windows not tested |
+| Type hints coverage | Medium | In progress | Partial coverage, mypy in CI but not enforcing |
+| CI platform coverage | Low | ✅ Resolved | Ubuntu, macOS, Windows testing (Python 3.8-3.12) |
 
 ### Best Practices Summary
 
@@ -1482,16 +1482,16 @@ def draw_multilayer_default(
 - ✅ pytest with coverage runs in CI
 - ✅ **Tutorial validation workflow** (tests tutorial code on Python 3.8, 3.10, 3.12)
 - ✅ **Coverage badge** added to README (Codecov integration)
-- ❌ No macOS or Windows testing
+- ✅ **macOS and Windows testing** added to CI (Python 3.10, 3.11, 3.12)
 - ⚠️ mypy in CI but not enforcing (runs with `|| true`)
-- ⚠️ Some tests are non-deterministic due to missing seeds
+- ⚠️ Some tests are non-deterministic due to missing seeds (ongoing improvement)
 
-**Proposed CI Matrix**:
+**Current CI Matrix**:
 ```yaml
 strategy:
   matrix:
     os: [ubuntu-latest, macos-latest, windows-latest]
-    python-version: ['3.9', '3.10', '3.11', '3.12']
+    python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     exclude:
       # Skip expensive combinations
       - os: macos-latest
@@ -1765,8 +1765,8 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - No `py3plex-community`, `py3plex-supra`, etc. commands
 
 **CI/CD Expansion**
-- No macOS testing
-- No Windows testing
+- ✅ macOS testing (added to CI, Python 3.10-3.12)
+- ✅ Windows testing (added to CI, Python 3.10-3.12)
 - ✅ Python 3.12 testing (added to CI matrix)
 - ✅ Coverage badge published (Codecov integration)
 - Tests may not fail on unpinned binaries

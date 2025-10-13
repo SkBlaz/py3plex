@@ -8,12 +8,23 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30  # Set overall job timeout
     strategy:
       fail-fast: false  # Don't cancel other jobs if one fails
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        exclude:
+          # Skip some combinations to reduce CI time
+          - os: macos-latest
+            python-version: "3.8"
+          - os: macos-latest
+            python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.8"
+          - os: windows-latest
+            python-version: "3.9"
 
     steps:
     - name: Checkout code
@@ -29,36 +40,66 @@ jobs:
     - name: Cache pip dependencies
       uses: actions/cache@v3
       with:
-        path: ~/.cache/pip
+        path: |
+          ~/.cache/pip
+          ~/Library/Caches/pip
+          ~\AppData\Local\pip\Cache
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
       timeout-minutes: 2
 
-    - name: Install system dependencies
+    - name: Install system dependencies (Linux)
+      if: runner.os == 'Linux'
       run: |
         sudo apt-get update
         sudo apt-get install -y gcc g++ build-essential
       timeout-minutes: 5
+
+    - name: Install system dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        # macOS already has Xcode command line tools
+        echo "Using system compiler tools"
+      timeout-minutes: 1
+
+    - name: Install system dependencies (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        # Windows doesn't need special setup for pip packages
+        echo "Using Visual Studio build tools"
+      timeout-minutes: 1
 
     - name: Setup development environment via Makefile
       run: |
         echo "🔧 Setting up development environment..."
         make setup
       timeout-minutes: 15
+      shell: bash  # Use bash on all platforms
 
     - name: Install package
       run: |
-        source .venv/bin/activate
+        # Activate virtual environment (cross-platform)
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          source .venv/Scripts/activate
+        else
+          source .venv/bin/activate
+        fi
         pip install --timeout 120 -r requirements.txt
         # Add py3plex to PYTHONPATH for testing without full install
         echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
       timeout-minutes: 5
+      shell: bash
 
     - name: Run tests via Makefile
       run: |
         echo "🧪 Running tests via Makefile..."
-        source .venv/bin/activate
+        # Activate virtual environment (cross-platform)
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          source .venv/Scripts/activate
+        else
+          source .venv/bin/activate
+        fi
         # Use pytest with coverage for Python 3.10 to upload to codecov
         if [ "${{ matrix.python-version }}" == "3.10" ]; then
           pytest tests/ --cov=py3plex --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests failed"
