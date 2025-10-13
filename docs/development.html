@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Development Guide &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Label Propagation" href="learning2.html" />
+    <link rel="prev" title="Random Network Generation" href="learning.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Development Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#makefile-commands">Makefile Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-quality">Code Quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Further steps: learning:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="AUTOGEN_results/modules.html">py3plex</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Development Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/development.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="development-guide">
+<h1>Development Guide<a class="headerlink" href="#development-guide" title="Link to this heading"></a></h1>
+<p>This guide covers development workflows, Makefile commands, testing, and contributing to py3plex.</p>
+<p><strong>View the full development guide</strong>: <a class="reference external" href="https://github.com/SkBlaz/py3plex/blob/master/docs/development.md">development.md</a></p>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<p>Clone the repository and install in development mode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+
+<span class="c1"># Setup development environment</span>
+make<span class="w"> </span>setup
+
+<span class="c1"># Install package in editable mode with dev dependencies</span>
+make<span class="w"> </span>dev-install
+</pre></div>
+</div>
+</section>
+<section id="makefile-commands">
+<h2>Makefile Commands<a class="headerlink" href="#makefile-commands" title="Link to this heading"></a></h2>
+<p>The project includes a production-grade Makefile for streamlined development:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View all available commands</span>
+make<span class="w"> </span><span class="nb">help</span>
+
+<span class="c1"># Environment setup</span>
+make<span class="w"> </span>setup<span class="w">          </span><span class="c1"># Create virtual environment</span>
+make<span class="w"> </span>dev-install<span class="w">    </span><span class="c1"># Install in editable mode</span>
+
+<span class="c1"># Code quality</span>
+make<span class="w"> </span>format<span class="w">         </span><span class="c1"># Auto-format code</span>
+make<span class="w"> </span>lint<span class="w">           </span><span class="c1"># Run linters</span>
+
+<span class="c1"># Testing</span>
+make<span class="w"> </span><span class="nb">test</span><span class="w">           </span><span class="c1"># Run tests with coverage</span>
+make<span class="w"> </span>coverage<span class="w">       </span><span class="c1"># Open coverage report</span>
+
+<span class="c1"># Documentation</span>
+make<span class="w"> </span>docs<span class="w">           </span><span class="c1"># Build Sphinx documentation</span>
+
+<span class="c1"># Build &amp; publish</span>
+make<span class="w"> </span>clean<span class="w">          </span><span class="c1"># Remove build artifacts</span>
+make<span class="w"> </span>build<span class="w">          </span><span class="c1"># Build distributions</span>
+make<span class="w"> </span>publish<span class="w">        </span><span class="c1"># Publish to PyPI</span>
+
+<span class="c1"># CI</span>
+make<span class="w"> </span>ci<span class="w">             </span><span class="c1"># Run full CI checks</span>
+</pre></div>
+</div>
+<p>Key Features:</p>
+<ul class="simple">
+<li><p><strong>Smart tool detection</strong>: Uses <code class="docutils literal notranslate"><span class="pre">.venv/bin/</span></code> tools if available, otherwise falls back to global tools</p></li>
+<li><p><strong>Colorized output</strong>: Clear success/warning/error messages</p></li>
+<li><p><strong>Cross-platform</strong>: Works on Linux and macOS</p></li>
+</ul>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
+<p>Quick testing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run_tests.py
+</pre></div>
+</div>
+<p>Development testing with pytest:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
+pytest
+
+<span class="c1"># Run with coverage</span>
+pytest<span class="w"> </span>--cov<span class="o">=</span>py3plex<span class="w"> </span>--cov-report<span class="o">=</span>html
+
+<span class="c1"># Run specific test file</span>
+pytest<span class="w"> </span>tests/test_core.py
+
+<span class="c1"># Using Makefile (recommended)</span>
+make<span class="w"> </span><span class="nb">test</span>
+</pre></div>
+</div>
+</section>
+<section id="code-quality">
+<h2>Code Quality<a class="headerlink" href="#code-quality" title="Link to this heading"></a></h2>
+<p>Tools configured in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Black</strong>: Code formatting</p></li>
+<li><p><strong>Ruff</strong>: Fast linting</p></li>
+<li><p><strong>isort</strong>: Import sorting</p></li>
+<li><p><strong>Mypy</strong>: Type checking</p></li>
+<li><p><strong>Pytest</strong>: Testing with coverage</p></li>
+</ul>
+<p>Before committing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>format<span class="w">  </span><span class="c1"># Auto-format code</span>
+make<span class="w"> </span>lint<span class="w">    </span><span class="c1"># Check code quality</span>
+make<span class="w"> </span><span class="nb">test</span><span class="w">    </span><span class="c1"># Run tests</span>
+make<span class="w"> </span>ci<span class="w">      </span><span class="c1"># Run all checks</span>
+</pre></div>
+</div>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h2>
+<p>We welcome contributions! Here’s how:</p>
+<ol class="arabic simple">
+<li><p>Fork the repository</p></li>
+<li><p>Create a feature branch</p></li>
+<li><p>Make your changes</p></li>
+<li><p>Run tests and linting: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ci</span></code></p></li>
+<li><p>Commit with clear messages</p></li>
+<li><p>Push to your fork</p></li>
+<li><p>Open a Pull Request</p></li>
+</ol>
+<p><strong>Code Guidelines</strong>:</p>
+<ul class="simple">
+<li><p>Follow existing code style (enforced by Black and Ruff)</p></li>
+<li><p>Add tests for new features</p></li>
+<li><p>Update documentation as needed</p></li>
+<li><p>Keep changes focused and atomic</p></li>
+<li><p>Write clear commit messages</p></li>
+</ul>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h2>
+<p>Build Sphinx documentation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Makefile (recommended)</span>
+make<span class="w"> </span>docs
+
+<span class="c1"># Manual build</span>
+<span class="nb">cd</span><span class="w"> </span>docfiles
+sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>.<span class="w"> </span>_build/html
+</pre></div>
+</div>
+<p>The built documentation will be in <code class="docutils literal notranslate"><span class="pre">docfiles/_build/html/</span></code>.</p>
+</section>
+<section id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Repository</strong>: <a class="reference external" href="https://github.com/SkBlaz/py3plex">https://github.com/SkBlaz/py3plex</a></p></li>
+<li><p><strong>Documentation</strong>: <a class="reference external" href="https://skblaz.github.io/py3plex/">https://skblaz.github.io/py3plex/</a></p></li>
+<li><p><strong>Issues</strong>: <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p></li>
+<li><p><strong>Examples</strong>: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p></li>
+</ul>
+<p>For comprehensive project context, see <a class="reference external" href="https://github.com/SkBlaz/py3plex/blob/master/LLM.md">LLM.md</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="learning.html" class="btn btn-neutral float-left" title="Random Network Generation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="learning2.html" class="btn btn-neutral float-right" title="Label Propagation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

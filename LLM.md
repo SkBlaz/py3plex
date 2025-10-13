@@ -69,12 +69,22 @@ py3plex/
 │       └── benchmark_nodes.py        → Node classification benchmarking
 ├── examples/                         → 43 example scripts demonstrating usage
 ├── tests/                            → Unit and integration tests
-├── docs/                             → Sphinx-generated HTML documentation
+├── docs/                             → Markdown tutorials and guides
+│   ├── 10min_tutorial.md             → 10-minute getting started tutorial
+│   ├── development.md                → Development guide with Makefile commands
+│   ├── multilayer_modularity_tutorial.md → Multilayer modularity guide
+│   ├── multilayer_centrality_tutorial.md → Centrality measures guide
+│   └── algorithm_selection_guide.md  → Algorithm selection and complexity
+├── docfiles/                         → Sphinx documentation source files (RST)
+│   ├── index.rst                     → Documentation entry point
+│   ├── *.rst                         → ReStructuredText documentation files
+│   └── _build/                       → Sphinx build output (HTML)
 ├── Makefile                          → Production-grade build system (development, testing, publishing)
 ├── pyproject.toml                    → Modern build configuration (PEP 517/518/621)
 ├── setup.py                          → Legacy setuptools configuration
 ├── requirements.txt                  → Core dependencies
-└── README.md                         → Project introduction and getting started
+├── README.md                         → Project introduction and quick start (minimalistic)
+└── LLM.md                            → Comprehensive context for LLMs and maintainers
 ```
 
 The library is structured around modular packages with clear separation of concerns. The `core/` package defines the fundamental `multi_layer_network` class and handles all I/O operations. The `algorithms/` package provides analytical capabilities organized by function (community detection, statistics, classification). The `visualization/` package supplies rendering tools optimized for multilayer networks. The `wrappers/` package offers simplified interfaces for common workflows like embedding generation.
@@ -429,12 +439,29 @@ mlnet.core_network = G
 
 ## Documentation and Examples
 
-**Documentation Philosophy**: The documentation has been streamlined to be minimalistic and example-focused. Instead of verbose explanations, the docs point users directly to practical examples in the `examples/` directory.
+**Documentation Philosophy**: The documentation has been streamlined to be minimalistic and example-focused. The README.md is kept brief and points to comprehensive guides in the `docs/` directory.
 
-**Primary documentation**: Sphinx-generated documentation hosted on GitHub Pages at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/). The `docs/` directory contains pre-built HTML documentation. The `docfiles/` directory contains source ReStructuredText files that have been refined to be concise and reference-oriented.
+**Documentation layers**:
+1. **README.md**: Minimalistic introduction, installation, and quick start - points to other docs
+2. **docs/**: Markdown tutorials and development guides
+   - `10min_tutorial.md`: Comprehensive 10-minute introduction
+   - `development.md`: Full development guide with Makefile commands, testing, contributing
+   - `multilayer_modularity_tutorial.md`: Multilayer modularity guide
+   - `multilayer_centrality_tutorial.md`: Centrality measures guide
+   - `algorithm_selection_guide.md`: Algorithm selection and complexity
+3. **docfiles/**: Sphinx source files (RST) that build to HTML documentation
+   - `index.rst`: Documentation entry point with TOC
+   - `*.rst`: ReStructuredText files that include markdown docs via mdinclude
+   - `AUTOGEN_results/`: Auto-generated API documentation from docstrings
+4. **examples/**: 43 Python scripts - the primary hands-on learning resource
+5. **LLM.md**: Comprehensive context for LLMs and maintainers
 
-**Documentation structure** (in `docfiles/`):
-- `index.rst`: Quick start and navigation hub pointing to examples
+**Primary documentation**: Sphinx-generated documentation hosted on GitHub Pages at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/).
+
+**Documentation structure in docfiles/**:
+- `index.rst`: Quick start and navigation hub
+- `10min_tutorial.rst`: Links to `docs/10min_tutorial.md`
+- `development.rst`: Links to `docs/development.md`
 - `core_idea.rst`: Brief overview of core principles
 - `basic_usage.rst`: Minimal quick start guide with example links
 - `basic_usage_analysis.rst`: Core operations with example references
@@ -444,6 +471,7 @@ mlnet.core_network = G
 - `AUTOGEN_results/`: Auto-generated API documentation from docstrings
 
 **Example scripts**: The `examples/` directory contains 43 Python scripts demonstrating practical use cases. These are the primary learning resource:
+- `tutorial_10min.py`: Executable version of the 10-minute tutorial
 - `example_multilayer_visualization.py`: Basic multilayer network rendering
 - `example_community_detection.py`: Community detection with Louvain and Infomap
 - `example_network_decomposition.py`: Meta-path-based feature extraction
@@ -454,12 +482,14 @@ mlnet.core_network = G
 
 Each example is self-contained, includes inline comments explaining key concepts, and produces either visualizations or printed output demonstrating results.
 
-**Build system**: Documentation is built using Sphinx with autodoc for API reference generation. The `docfiles/` directory contains source ReStructuredText files and Sphinx configuration. To rebuild documentation: `cd docfiles && sphinx-build -b html . _build/`.
+**Build system**: Documentation is built using Sphinx with autodoc for API reference generation. The `docfiles/` directory contains source ReStructuredText files and Sphinx configuration. To rebuild documentation: `make docs` (or `cd docfiles && sphinx-build -b html . _build/`).
 
-**Recent changes**: Documentation was refined in 2025 to reduce verbosity and emphasize examples over lengthy explanations. The docs now serve as navigation aids pointing users to relevant example scripts.
+**Recent changes**: Documentation was refined in 2025 to reduce verbosity and emphasize examples over lengthy explanations. The docs now serve as navigation aids pointing users to relevant example scripts. In October 2025, the README was streamlined to be minimalistic, with detailed development workflows moved to `docs/development.md`.
 
 **Maintenance notes**: Documentation references key meta-documents:
-- `README.md`: High-level introduction, installation, quick start, testing, development status, citations
+- `README.md`: Minimalistic introduction, installation, quick start - points to other docs
+- `docs/development.md`: Comprehensive development guide with Makefile commands, testing, contributing
+- `docs/10min_tutorial.md`: 10-minute getting started tutorial
 - `LLM.md` (this file): Comprehensive context for LLMs and maintainers - the anchor document
 
 ## For LLMs
@@ -1007,9 +1037,9 @@ Consider using mtype='sparse' instead, or analyzing layers independently.
 
 **Recommended documentation priority**:
 1. `LLM.md` - Most comprehensive and current
-2. `examples/` directory - Working code examples
-3. GitHub `README.md` - Current quick start
-4. `docs/*.md` files - Recent tutorials
+2. `docs/` directory - Markdown tutorials and development guides (10min_tutorial.md, development.md)
+3. `examples/` directory - Working code examples
+4. GitHub `README.md` - Current quick start (minimalistic, points to other docs)
 5. Sphinx documentation - API reference (may be incomplete)
 
 ### API Stability and Backward Compatibility
