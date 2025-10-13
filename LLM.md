@@ -1481,9 +1481,9 @@ def draw_multilayer_default(
 - ✅ ruff and black run in CI
 - ✅ pytest with coverage runs in CI
 - ✅ **Tutorial validation workflow** (tests tutorial code on Python 3.8, 3.10, 3.12)
+- ✅ **Coverage badge** added to README (Codecov integration)
 - ❌ No macOS or Windows testing
-- ❌ mypy not in CI
-- ❌ No coverage badge
+- ⚠️ mypy in CI but not enforcing (runs with `|| true`)
 - ⚠️ Some tests are non-deterministic due to missing seeds
 
 **Proposed CI Matrix**:
@@ -1767,8 +1767,8 @@ This section provides an up-to-date assessment of which roadmap items have been 
 **CI/CD Expansion**
 - No macOS testing
 - No Windows testing
-- No Python 3.12 testing
-- No coverage badge published
+- ✅ Python 3.12 testing (added to CI matrix)
+- ✅ Coverage badge published (Codecov integration)
 - Tests may not fail on unpinned binaries
 
 ### Summary Statistics

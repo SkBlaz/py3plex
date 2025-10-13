@@ -59,9 +59,24 @@ jobs:
       run: |
         echo "🧪 Running tests via Makefile..."
         source .venv/bin/activate
-        # Use run_tests.py since pytest may not be installed yet
-        timeout 600 python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
+        # Use pytest with coverage for Python 3.10 to upload to codecov
+        if [ "${{ matrix.python-version }}" == "3.10" ]; then
+          pytest tests/ --cov=py3plex --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests failed"
+        else
+          # Use run_tests.py for other Python versions
+          timeout 600 python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
+        fi
       timeout-minutes: 12
+
+    - name: Upload coverage to Codecov
+      if: matrix.python-version == '3.10'
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-py3plex
+        fail_ci_if_error: false
+      timeout-minutes: 2
 
     - name: Upload test results
       if: always()
