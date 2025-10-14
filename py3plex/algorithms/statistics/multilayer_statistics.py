@@ -25,12 +25,17 @@ from scipy.stats import pearsonr
 
 def layer_density(network: Any, layer: str) -> float:
     """
-    Calculate layer density (ρᵢ).
+    Calculate layer density (ρₐ).
     
-    Formula: ρᵢ = (2Eᵢ) / (Nᵢ(Nᵢ - 1))
+    Formula: ρₐ = (2Eₐ) / (Nₐ(Nₐ - 1))  [undirected]
+             ρₐ = Eₐ / (Nₐ(Nₐ - 1))      [directed]
     
-    Fraction of possible edges present in layer i, indicating how densely 
-    connected that layer is.
+    Measures the fraction of possible edges present in a specific layer, indicating 
+    how densely connected that layer is.
+    
+    Variables:
+        Eₐ = number of edges in layer α
+        Nₐ = number of nodes in layer α
     
     Args:
         network: py3plex multi_layer_network object
@@ -48,6 +53,9 @@ def layer_density(network: Any, layer: str) -> float:
         ... ], input_type='list')
         >>> density = layer_density(network, 'L1')
         >>> print(f"Layer L1 density: {density:.3f}")
+    
+    Reference:
+        Kivelä et al. (2014), J. Complex Networks 2(3), 203-271
     """
     # Get nodes and edges in the specified layer
     layer_nodes = set()
@@ -82,23 +90,30 @@ def inter_layer_coupling_strength(
     layer_j: str
 ) -> float:
     """
-    Calculate inter-layer coupling strength (Cᵢⱼ).
+    Calculate inter-layer coupling strength (C^αβ).
     
-    Formula: Cᵢⱼ = (1/N) Σₖ wₖᵢⱼ
+    Formula: C^αβ = (1/N_αβ) Σᵢ wᵢ^αβ
     
-    Average inter-layer weight between corresponding nodes in layers i and j;
-    quantifies cross-layer connectivity.
+    Average weight of inter-layer connections between corresponding nodes in two layers.
+    Quantifies cross-layer connectivity.
+    
+    Variables:
+        N_αβ = number of nodes present in both layers α and β
+        wᵢ^αβ = weight of inter-layer edge connecting node i in layer α to node i in layer β
     
     Args:
         network: py3plex multi_layer_network object
-        layer_i: First layer identifier
-        layer_j: Second layer identifier
+        layer_i: First layer identifier (α)
+        layer_j: Second layer identifier (β)
         
     Returns:
         Average coupling strength
         
     Examples:
         >>> coupling = inter_layer_coupling_strength(network, 'L1', 'L2')
+    
+    Reference:
+        De Domenico et al. (2013), Physical Review X 3(4), 041022
     """
     coupling_weights = []
     
@@ -120,9 +135,14 @@ def node_activity(network: Any, node: Any) -> float:
     """
     Calculate node activity (aᵢ).
     
-    Formula: aᵢ = (1/L) Σₗ I(vᵢ ∈ layerₗ)
+    Formula: aᵢ = (1/L) Σₐ 𝟙(vᵢ ∈ Vₐ)
     
     Fraction of layers in which node i is active (has at least one connection).
+    
+    Variables:
+        L = total number of layers
+        𝟙(vᵢ ∈ Vₐ) = indicator function (1 if node i is active in layer α, 0 otherwise)
+        Vₐ = set of active nodes in layer α
     
     Args:
         network: py3plex multi_layer_network object
@@ -133,6 +153,9 @@ def node_activity(network: Any, node: Any) -> float:
         
     Examples:
         >>> activity = node_activity(network, 'A')
+    
+    Reference:
+        Kivelä et al. (2014), J. Complex Networks 2(3), 203-271
     """
     # Get all layers
     all_layers = set()
@@ -158,10 +181,14 @@ def degree_vector(network: Any, node: Any, weighted: bool = False) -> Dict[str, 
     """
     Calculate degree vector (kᵢ).
     
-    Formula: kᵢ = [kᵢ¹, kᵢ², …, kᵢᴸ]
+    Formula: kᵢ = (kᵢ¹, kᵢ², …, kᵢᴸ)
     
     Node degree in each layer; can be analyzed via mean, variance, or entropy 
     to capture node versatility.
+    
+    Variables:
+        kᵢᵅ = degree of node i in layer α
+        For undirected: kᵢᵅ = Σⱼ Aᵢⱼᵅ
     
     Args:
         network: py3plex multi_layer_network object
@@ -174,6 +201,9 @@ def degree_vector(network: Any, node: Any, weighted: bool = False) -> Dict[str, 
     Examples:
         >>> degrees = degree_vector(network, 'A')
         >>> print(f"Degree in layer L1: {degrees['L1']}")
+    
+    Reference:
+        Kivelä et al. (2014), J. Complex Networks 2(3), 203-271
     """
     # Get all layers
     all_layers = set()
@@ -205,23 +235,31 @@ def inter_layer_degree_correlation(
     layer_j: str
 ) -> float:
     """
-    Calculate inter-layer degree correlation (rᵢⱼ).
+    Calculate inter-layer degree correlation (r^αβ).
     
-    Formula: rᵢⱼ = corr(kᵢˡ, kᵢᵐ)
+    Formula: r^αβ = Σᵢ(kᵢᵅ - k̄ᵅ)(kᵢᵝ - k̄ᵝ) / [√(Σᵢ(kᵢᵅ - k̄ᵅ)²) √(Σᵢ(kᵢᵝ - k̄ᵝ)²)]
     
-    Correlation of node degrees across layers l and m; reveals if highly 
+    Pearson correlation of node degrees between two layers; reveals if highly 
     connected nodes in one layer are also central in others.
+    
+    Variables:
+        kᵢᵅ = degree of node i in layer α
+        k̄ᵅ = mean degree in layer α
+        Sum over nodes present in both layers
     
     Args:
         network: py3plex multi_layer_network object
-        layer_i: First layer identifier
-        layer_j: Second layer identifier
+        layer_i: First layer identifier (α)
+        layer_j: Second layer identifier (β)
         
     Returns:
         Pearson correlation coefficient between -1 and 1
         
     Examples:
         >>> corr = inter_layer_degree_correlation(network, 'L1', 'L2')
+    
+    Reference:
+        Battiston et al. (2014), Nicosia & Latora (2015)
     """
     # Get nodes present in both layers
     nodes_i = set()
@@ -257,22 +295,30 @@ def inter_layer_degree_correlation(
 
 def edge_overlap(network: Any, layer_i: str, layer_j: str) -> float:
     """
-    Calculate edge overlap (ωᵢⱼ).
+    Calculate edge overlap (ω^αβ).
     
-    Formula: ωᵢⱼ = |Eᵢ ∩ Eⱼ| / |Eᵢ ∪ Eⱼ|
+    Formula: ω^αβ = |Eₐ ∩ Eᵦ| / |Eₐ ∪ Eᵦ|
     
-    Fraction of edges shared between layers i and j; measures structural redundancy.
+    Jaccard similarity of edge sets between two layers; measures structural redundancy.
+    
+    Variables:
+        Eₐ = set of edges in layer α
+        Eᵦ = set of edges in layer β
+        |·| = cardinality (number of elements)
     
     Args:
         network: py3plex multi_layer_network object
-        layer_i: First layer identifier
-        layer_j: Second layer identifier
+        layer_i: First layer identifier (α)
+        layer_j: Second layer identifier (β)
         
     Returns:
         Overlap coefficient between 0 and 1 (Jaccard similarity)
         
     Examples:
         >>> overlap = edge_overlap(network, 'L1', 'L2')
+    
+    Reference:
+        Kivelä et al. (2014), J. Complex Networks 2(3), 203-271
     """
     # Get edges in each layer (as unordered node pairs)
     edges_i = set()
@@ -307,17 +353,21 @@ def layer_similarity(
     method: str = 'cosine'
 ) -> float:
     """
-    Calculate layer similarity (Sᵢⱼ).
+    Calculate layer similarity (S^αβ).
     
-    Formula: Sᵢⱼ = ⟨Aᵢ, Aⱼ⟩ / (‖Aᵢ‖‖Aⱼ‖)
+    Formula: S^αβ = ⟨Aₐ, Aᵦ⟩ / (‖Aₐ‖ ‖Aᵦ‖) = Σᵢⱼ AᵢⱼᵅAᵢⱼᵝ / √(Σᵢⱼ(Aᵢⱼᵅ)²) √(Σᵢⱼ(Aᵢⱼᵝ)²)
     
-    Cosine or Jaccard similarity between adjacency matrices; quantifies 
-    similarity of connection patterns.
+    Cosine or Jaccard similarity between adjacency matrices of two layers.
+    
+    Variables:
+        Aₐ, Aᵦ = adjacency matrices for layers α and β
+        ⟨·,·⟩ = Frobenius inner product
+        ‖·‖ = Frobenius norm
     
     Args:
         network: py3plex multi_layer_network object
-        layer_i: First layer identifier
-        layer_j: Second layer identifier
+        layer_i: First layer identifier (α)
+        layer_j: Second layer identifier (β)
         method: 'cosine' or 'jaccard'
         
     Returns:
@@ -325,6 +375,9 @@ def layer_similarity(
         
     Examples:
         >>> similarity = layer_similarity(network, 'L1', 'L2', method='cosine')
+    
+    Reference:
+        De Domenico et al. (2013), Physical Review X 3(4), 041022
     """
     if method == 'jaccard':
         # Use edge overlap for Jaccard
@@ -383,9 +436,14 @@ def multilayer_clustering_coefficient(
     """
     Calculate multilayer clustering coefficient (Cᴹ).
     
-    Formula: Cᴹ = (1/N) Σᵢ (number of multilayer triangles involving i) / (possible triplets)
+    Formula: Cᵢᴹ = Tᵢ / Tᵢᵐᵃˣ
     
     Extends transitivity to account for triangles that span multiple layers.
+    
+    Variables:
+        Tᵢ = number of closed triplets (triangles) involving node i across all layers
+        Tᵢᵐᵃˣ = maximum possible triplets = Σₐ kᵢᵅ(kᵢᵅ - 1)/2 for undirected networks
+        Average over all nodes: Cᴹ = (1/N) Σᵢ Cᵢᴹ
     
     Args:
         network: py3plex multi_layer_network object
@@ -397,6 +455,9 @@ def multilayer_clustering_coefficient(
     Examples:
         >>> clustering = multilayer_clustering_coefficient(network)
         >>> node_clustering = multilayer_clustering_coefficient(network, node='A')
+    
+    Reference:
+        Battiston et al. (2014), Section III.C
     """
     # Build neighbor sets for each node-layer pair
     neighbors = {}
@@ -497,10 +558,13 @@ def versatility_centrality(
     """
     Calculate versatility centrality (Vᵢ).
     
-    Formula: Vᵢ = Σₗ αₗ Cᵢˡ
+    Formula: Vᵢ = Σₐ wₐ Cᵢᵅ
     
-    Weighted combination of node centrality values across layers; measures 
-    influence considering all layers.
+    Weighted combination of node centrality values across layers; measures overall influence.
+    
+    Variables:
+        wₐ = weight for layer α (typically 1/L for uniform weighting, Σₐ wₐ = 1)
+        Cᵢᵅ = centrality of node i in layer α (can be degree, betweenness, closeness, etc.)
     
     Args:
         network: py3plex multi_layer_network object
@@ -512,6 +576,9 @@ def versatility_centrality(
         
     Examples:
         >>> versatility = versatility_centrality(network, centrality_type='degree')
+    
+    Reference:
+        De Domenico et al. (2015), Nature Communications 6, 6868
     """
     # Get all layers
     all_layers = set()
@@ -578,9 +645,19 @@ def interdependence(network: Any, sample_size: int = 100) -> float:
     """
     Calculate interdependence (λ).
     
-    Formula: λ = (shortest path length in multiplex) / (average shortest path in single layers)
+    Formula: λ = ⟨dᴹᴸ⟩ / ⟨dᵃᵛᵍ⟩
     
     Quantifies how much shortest-path communication depends on inter-layer connections.
+    
+    Variables:
+        dᵢⱼᴹᴸ = shortest path from node i to node j in the full multilayer network
+        dᵢⱼᵃᵛᵍ = (1/L) Σₐ dᵢⱼᵅ is the average shortest path across individual layers
+        ⟨·⟩ = average over sampled node pairs
+    
+    Interpretation:
+        λ < 1: multilayer connectivity reduces path lengths (positive interdependence)
+        λ ≈ 1: inter-layer connections provide little benefit
+        λ > 1: multilayer structure increases path lengths (rare)
     
     Args:
         network: py3plex multi_layer_network object
@@ -591,6 +668,9 @@ def interdependence(network: Any, sample_size: int = 100) -> float:
         
     Examples:
         >>> interdep = interdependence(network, sample_size=50)
+    
+    Reference:
+        Gomez et al. (2013), Buldyrev et al. (2010)
     """
     # Get all layers
     all_layers = set()
@@ -691,10 +771,15 @@ def supra_laplacian_spectrum(
     """
     Calculate supra-Laplacian spectrum (Λ).
     
-    Formula: Lˢ = Dˢ - Aˢ, where Aˢ is the supra-adjacency matrix
+    Formula: ℒ = 𝒟 - 𝒜
     
-    Eigenvalue spectrum of the supra-Laplacian; captures diffusion and 
-    synchronization properties across layers.
+    Eigenvalue spectrum of the supra-Laplacian matrix; captures diffusion properties.
+    
+    Variables:
+        𝒜 = supra-adjacency matrix (NL × NL block matrix containing all layers and inter-layer couplings)
+        𝒟 = supra-degree matrix (diagonal matrix with row sums of 𝒜)
+        ℒ = supra-Laplacian matrix
+        Λ = {λ₀, λ₁, ..., λₙₗ₋₁} with 0 = λ₀ ≤ λ₁ ≤ ... ≤ λₙₗ₋₁
     
     Args:
         network: py3plex multi_layer_network object
@@ -705,6 +790,9 @@ def supra_laplacian_spectrum(
         
     Examples:
         >>> spectrum = supra_laplacian_spectrum(network, k=10)
+    
+    Reference:
+        De Domenico et al. (2013), Gomez et al. (2013)
     """
     # Get supra-adjacency matrix
     supra_adj = network.get_supra_adjacency_matrix()
@@ -744,11 +832,18 @@ def supra_laplacian_spectrum(
 
 def algebraic_connectivity(network: Any) -> float:
     """
-    Calculate algebraic connectivity (λ₂(Lˢ)).
+    Calculate algebraic connectivity (λ₂).
     
-    Second smallest eigenvalue of supra-Laplacian Lˢ.
+    Formula: λ₂(ℒ)
+    
+    Second smallest eigenvalue of the supra-Laplacian (Fiedler value).
     
     Indicates global connectivity and diffusion efficiency of the multilayer system.
+    
+    Properties:
+        λ₀ = 0 always (associated with constant eigenvector)
+        λ₁ > 0 if and only if the multilayer network is connected
+        Larger λ₁ indicates better connectivity and faster diffusion/synchronization
     
     Args:
         network: py3plex multi_layer_network object
@@ -758,6 +853,9 @@ def algebraic_connectivity(network: Any) -> float:
         
     Examples:
         >>> alg_conn = algebraic_connectivity(network)
+    
+    Reference:
+        Fiedler (1973), Sole-Ribalta et al. (2013)
     """
     spectrum = supra_laplacian_spectrum(network, k=2)
     
@@ -775,20 +873,29 @@ def inter_layer_assortativity(
     """
     Calculate inter-layer assortativity (rᴵ).
     
-    Formula: rᴵ = cov(kᵢˡ, kᵢᵐ) / (σₗσₘ)
+    Formula: r^αβ = cov(k^α, k^β) / (σₐ σᵦ) = corr(k^α, k^β)
     
     Measures whether nodes with similar degrees tend to connect across different layers.
     
+    Variables:
+        k^α = degree vector in layer α
+        k^β = degree vector in layer β
+        σₐ, σᵦ = standard deviations of degrees in layers α and β
+        Equivalent to Pearson correlation of degree vectors
+    
     Args:
         network: py3plex multi_layer_network object
-        layer_i: First layer identifier
-        layer_j: Second layer identifier
+        layer_i: First layer identifier (α)
+        layer_j: Second layer identifier (β)
         
     Returns:
         Assortativity coefficient
         
     Examples:
         >>> assort = inter_layer_assortativity(network, 'L1', 'L2')
+    
+    Reference:
+        Newman (2002), Nicosia & Latora (2015)
     """
     # This is essentially the same as inter-layer degree correlation
     return inter_layer_degree_correlation(network, layer_i, layer_j)
@@ -798,9 +905,18 @@ def entropy_of_multiplexity(network: Any) -> float:
     """
     Calculate entropy of multiplexity (Hₘ).
     
-    Formula: Hₘ = -Σₗ pₗ log(pₗ), where pₗ = Eₗ / ΣₖEₖ
+    Formula: Hₘ = -Σₐ pₐ log₂(pₐ), where pₐ = Eₐ / Σᵦ Eᵦ
     
-    Shannon entropy of layer contributions; measures diversity or heterogeneity of layers.
+    Shannon entropy of layer contributions; measures layer diversity.
+    
+    Variables:
+        pₐ = proportion of edges in layer α
+        Eₐ = number of edges in layer α
+        log₂ gives entropy in bits
+    
+    Properties:
+        Hₘ = 0 when all edges are in one layer (minimum entropy/diversity)
+        Hₘ = log₂(L) when edges are uniformly distributed across L layers (maximum entropy)
     
     Args:
         network: py3plex multi_layer_network object
@@ -810,6 +926,9 @@ def entropy_of_multiplexity(network: Any) -> float:
         
     Examples:
         >>> entropy = entropy_of_multiplexity(network)
+    
+    Reference:
+        De Domenico et al. (2013), Shannon (1948)
     """
     # Count edges per layer
     layer_edge_counts = {}
@@ -847,11 +966,15 @@ def multilayer_motif_frequency(
     
     Formula: fₘ = nₘ / Σₖ nₖ
     
-    Frequency of small recurring subgraphs (motifs) across layers; reveals 
-    cross-layer structural patterns.
+    Frequency of recurring subgraph patterns across layers.
     
-    Note: This is a simplified implementation that counts basic patterns.
-    For comprehensive motif analysis, consider using specialized tools.
+    Variables:
+        nₘ = count of motif type m
+        Σₖ nₖ = total count of all motifs
+    
+    Note: This is a simplified implementation counting basic patterns (intra-layer vs. 
+    inter-layer triangles). Complete multilayer motif enumeration includes many more 
+    configurations and is computationally expensive.
     
     Args:
         network: py3plex multi_layer_network object
@@ -862,6 +985,9 @@ def multilayer_motif_frequency(
         
     Examples:
         >>> motifs = multilayer_motif_frequency(network, motif_size=3)
+    
+    Reference:
+        Battiston et al. (2014), Section IV
     """
     if motif_size != 3:
         # Only triangles implemented for now
@@ -927,10 +1053,22 @@ def resilience(
     """
     Calculate resilience (R).
     
-    Formula: R = (S' / S₀) after removal of layers or inter-layer edges
+    Formula: R = S' / S₀
     
-    Ratio of largest connected component size after perturbation to the original; 
-    measures robustness of the multilayer structure.
+    Ratio of largest connected component after perturbation to original size.
+    
+    Variables:
+        S₀ = size of largest connected component in original network
+        S' = size of largest connected component after perturbation
+    
+    Perturbation types:
+        1. Layer removal: Remove all nodes/edges in a specific layer
+        2. Coupling removal: Remove a fraction of inter-layer edges
+    
+    Properties:
+        R = 1 indicates full resilience (no impact from perturbation)
+        R = 0 indicates complete fragmentation
+        0 < R < 1 indicates partial resilience
     
     Args:
         network: py3plex multi_layer_network object
@@ -943,6 +1081,9 @@ def resilience(
     Examples:
         >>> r = resilience(network, 'layer_removal', perturbation_param='L1')
         >>> r = resilience(network, 'coupling_removal', perturbation_param=0.5)
+    
+    Reference:
+        Buldyrev et al. (2010), Nature 464, 1025-1028
     """
     # Build full network graph
     original_graph = nx.Graph() if not network.directed else nx.DiGraph()
@@ -1021,10 +1162,20 @@ def multilayer_modularity(
     This is a wrapper for the existing multilayer_modularity implementation
     in py3plex.algorithms.community_detection.multilayer_modularity.
     
-    Formula: Qᴹᴸ = (1/2μ) Σᵢⱼₗ [(Aᵢⱼˡ - γˡPᵢⱼˡ) δ(gᵢˡ, gⱼˡ) + δᵢⱼ Cˡˡ' δ(gᵢˡ, gⱼˡ')]
+    Formula: Qᴹᴸ = (1/2μ) Σᵢⱼₐᵦ [(Aᵢⱼᵅ - γₐPᵢⱼᵅ)δₐᵦ + ωₐᵦδᵢⱼ] δ(gᵢᵅ, gⱼᵝ)
     
-    Extension of Newman–Girvan modularity to multiplex networks (Mucha et al., Science 2010); 
-    measures community quality across layers.
+    Extension of Newman-Girvan modularity to multiplex networks (Mucha et al., 2010).
+    Measures community quality across layers.
+    
+    Variables:
+        μ = total edge weight in supra-network
+        Aᵢⱼᵅ = adjacency matrix element for layer α
+        Pᵢⱼᵅ = kᵢᵅkⱼᵅ/(2mₐ) is the null model (configuration model)
+        γₐ = resolution parameter for layer α
+        ωₐᵦ = inter-layer coupling strength
+        δₐᵦ = Kronecker delta (1 if α=β, 0 otherwise)
+        δᵢⱼ = Kronecker delta (1 if i=j, 0 otherwise)
+        δ(gᵢᵅ, gⱼᵝ) = 1 if node i in layer α and node j in layer β are in same community
     
     Args:
         network: py3plex multi_layer_network object
@@ -1039,6 +1190,9 @@ def multilayer_modularity(
     Examples:
         >>> communities = {('A', 'L1'): 0, ('B', 'L1'): 0, ('C', 'L1'): 1}
         >>> Q = multilayer_modularity(network, communities)
+    
+    Reference:
+        Mucha et al. (2010), Science 328(5980), 876-878
     """
     from py3plex.algorithms.community_detection.multilayer_modularity import (
         multilayer_modularity as mm
