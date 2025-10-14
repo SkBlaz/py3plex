@@ -116,7 +116,7 @@ def benchmark_node_classification(
             X_train = X[:training_size, :]
             y_train_ = y[:training_size]
 
-            y_train = [[] for x in range(y_train_.shape[0])]
+            y_train: list = [[] for x in range(y_train_.shape[0])]
 
             cy = y_train_.tocoo()
             for i, j in zip(cy.row, cy.col):
@@ -127,7 +127,7 @@ def benchmark_node_classification(
             X_test = X[training_size:, :]
             y_test_ = y[training_size:]
 
-            y_test = [[] for _ in range(y_test_.shape[0])]
+            y_test: list = [[] for _ in range(y_test_.shape[0])]
 
             cy = y_test_.tocoo()
             for i, j in zip(cy.row, cy.col):

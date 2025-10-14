@@ -5,11 +5,11 @@ class Status:
     Could be replaced by named tuple, but don't want to depend on python 2.6
     """
 
-    node2com = {}
+    node2com: dict = {}
     total_weight = 0
-    internals = {}
-    degrees = {}
-    gdegrees = {}
+    internals: dict = {}
+    degrees: dict = {}
+    gdegrees: dict = {}
 
     def __init__(self):
         self.node2com = {}

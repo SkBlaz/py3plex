@@ -1,7 +1,8 @@
 # set of supporting methods for parsers and converters
 
 import itertools
-from collections import defaultdict
+import operator
+from collections import Counter, defaultdict
 from typing import Any, Dict, List, Optional
 
 import networkx as nx

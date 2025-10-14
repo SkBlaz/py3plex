@@ -148,16 +148,18 @@ def compute_entanglement_analysis(network):
 
 
 if __name__ == "__main__":
-
-    analysis = compute_entanglement_analysis(net)
-
-    logger.info("%d connected components of layers", len(analysis))
-    for i, b in enumerate(analysis):
-        logger.info("--- block %d", i)
-        layer_labels = b["Layer entanglement"].keys()
-        logger.info("Covering layers: %s", layer_labels)
-
-        logger.info("Entanglement intensity: %f", b["Entanglement intensity"])
-        logger.info("Layer entanglement: %s", b["Layer entanglement"])
-        logger.info("Entanglement homogeneity: %f", b["Entanglement homogeneity"])
-        logger.info("Normalized homogeneity: %f", b["Normalized homogeneity"])
+    # Example usage - requires a network object to be defined
+    # net = ...  # Define your network here
+    # analysis = compute_entanglement_analysis(net)
+    #
+    # logger.info("%d connected components of layers", len(analysis))
+    # for i, b in enumerate(analysis):
+    #     logger.info("--- block %d", i)
+    #     layer_labels = b["Layer entanglement"].keys()
+    #     logger.info("Covering layers: %s", layer_labels)
+    #
+    #     logger.info("Entanglement intensity: %f", b["Entanglement intensity"])
+    #     logger.info("Layer entanglement: %s", b["Layer entanglement"])
+    #     logger.info("Entanglement homogeneity: %f", b["Entanglement homogeneity"])
+    #     logger.info("Normalized homogeneity: %f", b["Normalized homogeneity"])
+    pass

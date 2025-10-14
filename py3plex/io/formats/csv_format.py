@@ -220,15 +220,16 @@ def write_csv(
     nodes, layers, edges = _sort_graph_data_csv(graph, deterministic)
 
     # Collect all edge attribute keys for consistent column ordering
-    edge_attr_keys: Set[str] = set()
+    edge_attr_keys_set: Set[str] = set()
     for edge in edges:
-        edge_attr_keys.update(edge.attributes.keys())
+        edge_attr_keys_set.update(edge.attributes.keys())
 
     # Sort attribute keys for deterministic output
+    edge_attr_keys: List[str]
     if deterministic:
-        edge_attr_keys = sorted(edge_attr_keys)
+        edge_attr_keys = sorted(edge_attr_keys_set)
     else:
-        edge_attr_keys = list(edge_attr_keys)
+        edge_attr_keys = list(edge_attr_keys_set)
 
     # Write edges
     with open(filepath, "w", encoding="utf-8", newline="") as f:
@@ -256,14 +257,15 @@ def write_csv(
         nodes_file = filepath.parent / "nodes.csv"
         if nodes:
             # Collect all node attribute keys
-            node_attr_keys: Set[str] = set()
+            node_attr_keys_set: Set[str] = set()
             for node in nodes:
-                node_attr_keys.update(node.attributes.keys())
+                node_attr_keys_set.update(node.attributes.keys())
 
+            node_attr_keys: List[str]
             if deterministic:
-                node_attr_keys = sorted(node_attr_keys)
+                node_attr_keys = sorted(node_attr_keys_set)
             else:
-                node_attr_keys = list(node_attr_keys)
+                node_attr_keys = list(node_attr_keys_set)
 
             with open(nodes_file, "w", encoding="utf-8", newline="") as f:
                 columns = ["id"] + list(node_attr_keys)
@@ -280,14 +282,15 @@ def write_csv(
         layers_file = filepath.parent / "layers.csv"
         if layers:
             # Collect all layer attribute keys
-            layer_attr_keys: Set[str] = set()
+            layer_attr_keys_set: Set[str] = set()
             for layer in layers:
-                layer_attr_keys.update(layer.attributes.keys())
+                layer_attr_keys_set.update(layer.attributes.keys())
 
+            layer_attr_keys: List[str]
             if deterministic:
-                layer_attr_keys = sorted(layer_attr_keys)
+                layer_attr_keys = sorted(layer_attr_keys_set)
             else:
-                layer_attr_keys = list(layer_attr_keys)
+                layer_attr_keys = list(layer_attr_keys_set)
 
             with open(layers_file, "w", encoding="utf-8", newline="") as f:
                 columns = ["id"] + list(layer_attr_keys)

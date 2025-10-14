@@ -548,7 +548,7 @@ def _generate_power_law_degrees(
     degrees = degrees.astype(int)
     
     # Ensure even sum for undirected graph
-    total = np.sum(degrees)
+    total: int = np.sum(degrees)
     if total % 2 != 0:
         degrees[0] += 1
     
@@ -571,7 +571,7 @@ def _generate_lfr_edges(
     node_to_idx = {node: i for i, node in enumerate(nodes)}
     
     # Build community structure
-    com_to_nodes = {}
+    com_to_nodes: dict = {}
     for node, coms in communities.items():
         if node in node_to_idx:
             for com in coms:
@@ -585,7 +585,7 @@ def _generate_lfr_edges(
         
         # Determine internal vs external edges
         n_internal = int(deg * (1 - mu))
-        n_external = deg - n_internal
+        n_external: int = deg - n_internal
         
         # Get node's communities
         node_coms = communities.get(node, {0})
