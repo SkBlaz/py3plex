@@ -1812,7 +1812,7 @@ This section provides an up-to-date assessment of which roadmap items have been 
 - Section 5 (Documentation): 80% complete (auto-build CI done, complexity docs needed)
 - Section 6 (Deprecation Management): 10% complete (CHANGELOG exists, deprecation warnings needed)
 - Section 7 (Visualization Hardening): 30% complete (seed support done, size guards needed)
-- Section 8 (Testing & CI): 85% complete (multi-platform CI done, mypy enforcement needed)
+- Section 8 (Testing & CI): 90% complete (multi-platform CI done, mypy errors reduced 51%, near enforcement)
 - Section 9 (I/O Validation): 40% complete (new I/O system exists, legacy parsers need validation)
 - Section 10 (CLI Tools): 0% complete (not started)
 
@@ -1830,7 +1830,7 @@ Based on impact and current state, the recommended priority order is:
    - ~~Add pyproject.toml extras ([infomap], [algos], [viz])~~ ✅ **COMPLETED**
    - ~~Add Python 3.12 to test matrix~~ ✅ **COMPLETED**
    - ~~Add license compatibility matrix to README~~ ✅ **COMPLETED** (document BSD vs AGPL features)
-   - **Enforce mypy in CI** (remove `|| true`, fix ~80 remaining type errors after excluding generated code)
+   - **Enforce mypy in CI** - **IN PROGRESS** ⚠️ (82 → 40 errors fixed, 51% reduction! Remaining 40 errors need attention before full enforcement)
 
 2. **High Priority, Medium Effort** (3-7 days each):
    - ~~Unified random state helper and consistent seeding~~ ✅ **COMPLETED** (get_rng() helper added)
@@ -1877,5 +1877,6 @@ The repository has seen significant improvements since the original limitations 
 - **NEW (2025-10-14)**: Section 3 (Scalability) status corrected to "Complete" (sparse matrices already implemented)
 - **NEW (2025-10-14)**: **License compatibility matrix added to README** (BSD vs AGPL feature documentation)
 - **NEW (2025-10-14)**: **Mypy configuration improved** (exclude build/ and SWIG-generated files, 209→82 errors)
+- **NEW (2025-10-14)**: **Major mypy error reduction** - Fixed 42 type errors (82→40 errors, 51% reduction). Resolved missing imports, type annotations, broken references, and type incompatibilities across 9 files. Remaining 40 errors are mostly complex type issues (no-any-return, index types, return-value mismatches).
 
 The main remaining gaps are in **licensing clarity** (AGPL code separation), **API standardization** (consistent return types), **type safety** (100% coverage + mypy enforcement), and **release management** (1.0.0 preparation). The technical foundation is strong, and most improvements are now about polish, user experience, and maintainability rather than fundamental architectural changes.

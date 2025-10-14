@@ -159,6 +159,7 @@ if __name__ == "__main__":
     #     logger.info("Covering layers: %s", layer_labels)
     #
     #     logger.info("Entanglement intensity: %f", b["Entanglement intensity"])
-        logger.info("Layer entanglement: %s", b["Layer entanglement"])
-        logger.info("Entanglement homogeneity: %f", b["Entanglement homogeneity"])
-        logger.info("Normalized homogeneity: %f", b["Normalized homogeneity"])
+    #     logger.info("Layer entanglement: %s", b["Layer entanglement"])
+    #     logger.info("Entanglement homogeneity: %f", b["Entanglement homogeneity"])
+    #     logger.info("Normalized homogeneity: %f", b["Normalized homogeneity"])
+    pass
