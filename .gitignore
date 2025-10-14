@@ -46,6 +46,7 @@ htmlcov/
 
 # Documentation builds
 docfiles/_build/
+docfiles/build/
 docs/_build/
 
 # Binaries (users should install separately)
