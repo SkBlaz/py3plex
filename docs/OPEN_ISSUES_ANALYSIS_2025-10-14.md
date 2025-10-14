@@ -77,13 +77,13 @@ The repository has made significant progress, particularly in:
 - [ ] Standardize centrality function signatures (uniform parameter names and defaults)
 - [ ] Add formulas and literature references to algorithm docstrings
 - [ ] Expand type hints to 100% coverage of public API
-- [ ] Enforce mypy in CI (currently runs with `|| true`)
 - [ ] Document return types comprehensively
 
 **Current Progress**:
 - ✅ 65.4% type hint coverage (70/107 maintainable modules)
-- ✅ Mypy configured and running in CI (not enforcing)
+- ✅ Mypy configured, running in CI, and enforced (fails on type errors)
 - ✅ Type hints in core modules (`utils.py`, layout algorithms, community_wrapper.py)
+- ✅ All 112 source files pass mypy type checking
 
 **Impact**: High - improves developer experience and API consistency
 **Effort**: Large (2-3 weeks)
@@ -165,10 +165,10 @@ The repository has made significant progress, particularly in:
 - ✅ Tutorial validation workflow
 - ✅ Ruff, black, isort in CI
 - ✅ Pytest with coverage
+- ✅ Mypy enforced in Makefile (all type errors fixed)
 
 **Remaining Work**:
 - [ ] Add algorithmic unit tests with fixed seeds and golden graphs
-- [ ] Enforce mypy in CI (remove `|| true`)
 - [ ] Add round-trip tests for all I/O formats (GML, GraphML, GEXF, CSV)
 - [ ] Fail CI on presence of unpinned optional binaries
 - [ ] Systematically add seeds to non-deterministic tests
@@ -229,11 +229,11 @@ The repository has made significant progress, particularly in:
 **Effort**: Small (few hours for remaining cleanup)
 
 ### Mypy Enforcement
-**Current**: Runs in CI with `|| true` (doesn't fail on errors)
-**Target**: Enforce mypy checks (fail CI on type errors)
-**Progress**: 51% error reduction (82→40 errors after excluding generated code)
-**Remaining**: Fix ~40 remaining type errors and remove `|| true`
-**Effort**: Small to Medium (1-2 days)
+**Status**: ✅ **COMPLETED** (2025-10-14)
+**Current**: Enforced in Makefile (no longer uses `|| true`)
+**Progress**: Fixed all 51 type errors (100% reduction)
+**Result**: All 112 source files pass mypy type checking
+**Effort**: Small to Medium (1-2 days) ✅ **DONE**
 
 ---
 
@@ -245,7 +245,7 @@ The repository has made significant progress, particularly in:
 3. ✅ ~~Add pyproject.toml extras~~ (Complete)
 4. ✅ ~~Remove debug prints and build artifacts~~ (Complete)
 5. ✅ ~~Add license compatibility matrix to README~~ (Complete)
-6. **Enforce mypy in CI** (remove `|| true`, fix ~40 remaining errors)
+6. ✅ ~~Enforce mypy in CI~~ (Complete - all 51 errors fixed, mypy enforced in Makefile)
 
 ### High Priority, Medium Effort (3-7 days each)
 1. **Move AGPL Infomap code to separate package**
@@ -295,11 +295,11 @@ The LLM.md section "Known Limitations and Best Practices (2025 Update)" document
 2. ~~**Update Summary Statistics** - recalculate completion percentages (currently outdated)~~ ✅ **COMPLETED** (2025-10-14)
 3. ~~**Remove debug prints and build artifacts**~~ ✅ **COMPLETED** (2025-10-14) - Removed debug print from wrappers/__init__.py and 21 build artifact files
 4. ~~**Update print→logging status**~~ ✅ **COMPLETED** (2025-10-14) - Documented that 82 remaining prints are mostly legitimate
-5. **Enforce mypy in CI** - remove `|| true`, fix ~40 remaining type errors (51% reduction achieved: 82→40)
+5. ~~**Enforce mypy in CI** - remove `|| true`, fix ~40 remaining type errors~~ ✅ **COMPLETED** (2025-10-14) - Fixed all 51 type errors, mypy now enforced in Makefile
 6. ~~**Add license matrix to README** - document BSD vs AGPL features~~ ✅ **COMPLETED** (2025-10-14)
 7. **Create issue tracker** - move roadmap items to GitHub Issues with labels
 
-**Note**: Mypy configuration has been improved with proper exclusions for build/ directories and auto-generated SWIG bindings (infomap.py). Major progress made: 51% error reduction (82→40 errors). Full enforcement requires fixing remaining 40 legitimate type errors.
+**Note**: Mypy enforcement is now complete! All 112 source files pass mypy type checking with proper exclusions for build/ directories and auto-generated SWIG bindings (infomap.py). The `|| true` has been removed from Makefile, and mypy errors now fail the build.
 
 ### Short-term Goals (Next Month)
 1. ~~Complete print→logging conversion~~ ✅ **LARGELY COMPLETED** (only 2-3 debug prints remain, rest are legitimate)
