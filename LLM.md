@@ -1111,6 +1111,11 @@ Consider using mtype='sparse' instead, or analyzing layers independently.
 
 ## Development Roadmap and Future Improvements
 
+**Quick Reference Documents**:
+- **Quick Status**: `docs/ROADMAP_STATUS_SUMMARY.md` - Section-by-section completion status and top priorities
+- **Detailed Analysis**: `docs/OPEN_ISSUES_ANALYSIS_2025-10-14.md` - Comprehensive breakdown of all remaining issues
+- **This Document**: Full roadmap with implementation details and examples
+
 This section outlines planned and in-progress improvements to py3plex, addressing known limitations and enhancing the library's usability, scalability, and maintainability.
 
 ### 1. External Dependencies & Licensing Improvements
@@ -1648,6 +1653,10 @@ Track roadmap progress in GitHub Issues:
 ---
 
 ## Repository State Assessment (2025)
+
+**Status Update**: October 14, 2025  
+**Quick Reference**: See `docs/ROADMAP_STATUS_SUMMARY.md` for a concise status overview  
+**Detailed Analysis**: See `docs/OPEN_ISSUES_ANALYSIS_2025-10-14.md` for comprehensive issue breakdown
 
 This section provides an up-to-date assessment of which roadmap items have been completed, which are in progress, and which remain planned.
 
