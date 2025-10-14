@@ -69,7 +69,7 @@ def random_multiplex_generator(n: int, m: int, d: float = 0.9) -> nx.MultiGraph:
 
     layers = range(m)
     node_to_layers = {}
-    layer_to_nodes = {}
+    layer_to_nodes: dict = {}
     G = nx.MultiGraph()
     for node in range(n):
         layer_list = random.sample(layers, random.choice(layers))
@@ -77,7 +77,7 @@ def random_multiplex_generator(n: int, m: int, d: float = 0.9) -> nx.MultiGraph:
         for l in layer_list:
             layer_to_nodes[l] = layer_to_nodes.get(l, []) + [node]
 
-    edge_to_layers = {}
+    edge_to_layers: dict = {}
     for l, nlist in layer_to_nodes.items():
         clique = tuple(itertools.combinations(nlist, 2))
         nnodes = len(nlist)

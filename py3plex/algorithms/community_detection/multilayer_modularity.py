@@ -116,7 +116,7 @@ def multilayer_modularity(
         layer_adj = supra_matrix[np.ix_(layer_indices, layer_indices)]
         
         # Calculate layer total weight and degrees
-        layer_weight = np.sum(layer_adj)
+        layer_weight: float = np.sum(layer_adj)
         degrees = np.sum(layer_adj, axis=1)
         
         # Store statistics
@@ -269,7 +269,7 @@ def build_supra_modularity_matrix(
         
         # Extract layer adjacency
         layer_adj = supra_matrix[np.ix_(layer_indices, layer_indices)]
-        layer_weight = np.sum(layer_adj)
+        layer_weight: float = np.sum(layer_adj)
         degrees = np.sum(layer_adj, axis=1)
         
         layer_stats[layer] = {

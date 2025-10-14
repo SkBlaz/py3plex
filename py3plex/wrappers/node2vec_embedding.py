@@ -169,7 +169,7 @@ def n2v_embedding(
                 )
                 logger.debug("Parsing %s", outfile_name)
                 rdict = benchmark_node_classification(
-                    outfile_name, graph, targets, percent=float(sample_size)
+                    outfile_name, G, targets, percent=float(sample_size)
                 )
 
                 mi, ma, misd, masd = rdict[float(sample_size)]
