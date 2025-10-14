@@ -47,15 +47,7 @@ pip install -e ".[dev]"
 
 ### Quick Start
 
-**New to py3plex?** Start with our [10-minute tutorial](docs/10min_tutorial.md)!
-
-You can also run the executable version:
-```bash
-cd examples
-python tutorial_10min.py
-```
-
-For more examples, view the **examples** folder.
+For examples, view the **examples** folder.
 Extensive documentation and quickstart tutorials are available at: [DOCS](https://skblaz.github.io/py3plex/)
 
 ### Development
