@@ -1875,5 +1875,7 @@ The repository has seen significant improvements since the original limitations 
 - **NEW (2025-10-14)**: Comprehensive open issues analysis created (`docs/OPEN_ISSUES_ANALYSIS_2025-10-14.md`)
 - **NEW (2025-10-14)**: Roadmap statistics corrected (40% complete, not 30%)
 - **NEW (2025-10-14)**: Section 3 (Scalability) status corrected to "Complete" (sparse matrices already implemented)
+- **NEW (2025-10-14)**: **License compatibility matrix added to README** (BSD vs AGPL feature documentation)
+- **NEW (2025-10-14)**: **Mypy configuration improved** (exclude build/ and SWIG-generated files, 209→82 errors)
 
 The main remaining gaps are in **licensing clarity** (AGPL code separation), **API standardization** (consistent return types), **type safety** (100% coverage + mypy enforcement), and **release management** (1.0.0 preparation). The technical foundation is strong, and most improvements are now about polish, user experience, and maintainability rather than fundamental architectural changes.
