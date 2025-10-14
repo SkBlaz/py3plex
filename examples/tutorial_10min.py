@@ -159,8 +159,75 @@ def example_4_compute_metrics(network):
         traceback.print_exc()
 
 
-def example_5_community_detection(network):
-    """Example 5: Community Detection"""
+def example_5_multilayer_statistics(network):
+    """Example 5: Multilayer Network Statistics"""
+    if network is None:
+        print("\nSkipping Example 5 - no network loaded")
+        return
+    
+    print("\n" + "="*60)
+    print("Example 5: Multilayer Network Statistics")
+    print("="*60)
+    
+    try:
+        from py3plex.algorithms.statistics import multilayer_statistics as mls
+        
+        layer_names = network.get_layers()
+        if len(layer_names) < 2:
+            print("Need at least 2 layers for multilayer statistics")
+            return
+        
+        layer1 = str(layer_names[0])
+        layer2 = str(layer_names[1])
+        
+        # Basic Layer Statistics
+        print("\n--- Basic Layer Statistics ---")
+        density1 = mls.layer_density(network, layer1)
+        density2 = mls.layer_density(network, layer2)
+        print(f"Layer {layer1} density: {density1:.3f}")
+        print(f"Layer {layer2} density: {density2:.3f}")
+        
+        entropy = mls.entropy_of_multiplexity(network)
+        print(f"Layer diversity (entropy): {entropy:.3f} bits")
+        
+        # Node Activity
+        print("\n--- Node Activity Across Layers ---")
+        nodes = list(network.get_nodes())
+        sample_nodes = [n[0] for n in nodes[:4]]  # Get first 4 unique node names
+        for node in sample_nodes:
+            activity = mls.node_activity(network, node)
+            print(f"Node {node} is active in {activity*100:.0f}% of layers")
+        
+        # Cross-Layer Analysis
+        print("\n--- Cross-Layer Analysis ---")
+        similarity = mls.layer_similarity(network, layer1, layer2, method='cosine')
+        print(f"Layer similarity (cosine): {similarity:.3f}")
+        
+        overlap = mls.edge_overlap(network, layer1, layer2)
+        print(f"Edge overlap (Jaccard): {overlap:.3f}")
+        
+        # Network Versatility
+        print("\n--- Network Versatility ---")
+        versatility = mls.versatility_centrality(network, centrality_type='degree')
+        print("Top 5 nodes by versatility:")
+        for node, score in sorted(versatility.items(), key=lambda x: x[1], reverse=True)[:5]:
+            print(f"  {node}: {score:.3f}")
+        
+        # Network Robustness
+        print("\n--- Network Robustness ---")
+        resilience = mls.resilience(network, 'layer_removal', perturbation_param=layer1)
+        print(f"Resilience after removing {layer1}: {resilience:.3f}")
+        
+    except ImportError:
+        print("Multilayer statistics module not available")
+    except Exception as e:
+        print(f"Error computing multilayer statistics: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+def example_6_community_detection(network):
+    """Example 6: Community Detection"""
     if network is None:
         print("\nSkipping Example 5 - no network loaded")
         return None
@@ -195,14 +262,14 @@ def example_5_community_detection(network):
         return None
 
 
-def example_6_visualization(network, partition=None):
-    """Example 6: Basic Visualization"""
+def example_7_visualization(network, partition=None):
+    """Example 7: Basic Visualization"""
     if network is None:
-        print("\nSkipping Example 6 - no network loaded")
+        print("\nSkipping Example 7 - no network loaded")
         return
     
     print("\n" + "="*60)
-    print("Example 6: Visualization")
+    print("Example 7: Visualization")
     print("="*60)
     
     try:
@@ -390,11 +457,14 @@ def main():
     # Example 4: Compute metrics
     example_4_compute_metrics(network)
     
-    # Example 5: Community detection
-    partition = example_5_community_detection(network)
+    # Example 5: Multilayer statistics
+    example_5_multilayer_statistics(network)
     
-    # Example 6: Visualization
-    example_6_visualization(network, partition)
+    # Example 6: Community detection
+    partition = example_6_community_detection(network)
+    
+    # Example 7: Visualization
+    example_7_visualization(network, partition)
     
     # Complete example
     complete_example()

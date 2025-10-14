@@ -7,8 +7,9 @@ This tutorial provides a quick introduction to py3plex, covering the most common
 In just 10 minutes, you'll learn how to:
 1. Create and load multilayer networks
 2. Perform basic network analysis
-3. Detect communities
-4. Visualize your networks
+3. Compute multilayer statistics
+4. Detect communities
+5. Visualize your networks
 
 ## Prerequisites
 
@@ -149,7 +150,80 @@ ml_betweenness = multilayer_betweenness_centrality(network)
 print("Multilayer betweenness centrality:", ml_betweenness)
 ```
 
-## 5. Community Detection (2 minutes)
+## 5. Multilayer Network Statistics (2 minutes)
+
+Py3plex provides 17 specialized statistics for analyzing multilayer networks. Here are the most commonly used:
+
+### Basic Layer Statistics
+
+```python
+from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+# Measure how densely connected each layer is
+density_layer1 = mls.layer_density(network, 'layer1')
+density_layer2 = mls.layer_density(network, 'layer2')
+print(f"Layer 1 density: {density_layer1:.3f}")
+print(f"Layer 2 density: {density_layer2:.3f}")
+
+# Measure diversity across layers
+entropy = mls.entropy_of_multiplexity(network)
+print(f"Layer diversity (entropy): {entropy:.3f} bits")
+```
+
+### Node Activity Across Layers
+
+```python
+# Check which nodes are active in multiple layers
+for node in ['A', 'B', 'C', 'D']:
+    activity = mls.node_activity(network, node)
+    print(f"Node {node} is active in {activity*100:.0f}% of layers")
+
+# Get degree distribution across layers
+degrees = mls.degree_vector(network, 'B')
+print(f"\nNode B degrees by layer: {degrees}")
+```
+
+### Cross-Layer Analysis
+
+```python
+# Measure how similar two layers are
+similarity = mls.layer_similarity(network, 'layer1', 'layer2', method='cosine')
+print(f"Layer similarity: {similarity:.3f}")
+
+# Check if edges overlap between layers
+overlap = mls.edge_overlap(network, 'layer1', 'layer2')
+print(f"Edge overlap (Jaccard): {overlap:.3f}")
+
+# Correlation of node degrees across layers
+correlation = mls.inter_layer_degree_correlation(network, 'layer1', 'layer2')
+print(f"Degree correlation: {correlation:.3f}")
+```
+
+### Network Versatility
+
+```python
+# Measure node importance across all layers combined
+versatility = mls.versatility_centrality(network, centrality_type='degree')
+print("\nNode versatility (combined influence):")
+for node, score in sorted(versatility.items(), key=lambda x: x[1], reverse=True):
+    print(f"  {node}: {score:.3f}")
+```
+
+### Network Robustness
+
+```python
+# Test resilience to layer removal
+resilience = mls.resilience(network, 'layer_removal', perturbation_param='layer1')
+print(f"\nResilience after removing layer1: {resilience:.3f}")
+
+# Test resilience to coupling removal
+resilience_coupling = mls.resilience(network, 'coupling_removal', perturbation_param=0.5)
+print(f"Resilience after removing 50% of inter-layer edges: {resilience_coupling:.3f}")
+```
+
+**Available Statistics**: For a complete list of all 17 multilayer statistics (including supra-Laplacian spectrum, algebraic connectivity, and multilayer clustering), see `py3plex/algorithms/statistics/README_MULTILAYER_STATISTICS.md` or run `python examples/example_multilayer_statistics.py`.
+
+## 6. Community Detection (2 minutes)
 
 Identify communities in your multilayer network:
 
@@ -177,7 +251,7 @@ print("\nCommunity sizes:", dict(community_sizes))
 - `random_state`: Seed for reproducibility
 
 
-## 6. Basic Visualization (1 minute)
+## 7. Basic Visualization (1 minute)
 
 Visualize your multilayer network:
 
@@ -293,6 +367,7 @@ print("\nComplete analysis saved to complete_analysis.png")
 
 Now that you've completed this tutorial, explore more advanced features:
 
+- **Multilayer Statistics**: See `py3plex/algorithms/statistics/README_MULTILAYER_STATISTICS.md` for all 17 statistics
 - **Multilayer Modularity**: See `docs/multilayer_modularity_tutorial.md`
 - **Multilayer Centrality**: See `docs/multilayer_centrality_tutorial.md`
 - **More Examples**: Check the `examples/` directory for 40+ examples
