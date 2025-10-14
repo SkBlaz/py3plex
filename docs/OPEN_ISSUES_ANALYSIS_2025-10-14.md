@@ -288,11 +288,13 @@ The LLM.md section "Known Limitations and Best Practices (2025 Update)" document
 ## Recommended Action Items
 
 ### Immediate Actions (Next Sprint)
-1. **Update LLM.md Section 3** - mark sparse matrices as "Complete" instead of "Planned"
-2. **Update Summary Statistics** - recalculate completion percentages (currently outdated)
-3. **Enforce mypy in CI** - remove `|| true`, fix type errors
-4. **Add license matrix to README** - document BSD vs AGPL features
+1. ~~**Update LLM.md Section 3** - mark sparse matrices as "Complete" instead of "Planned"~~ ✅ **COMPLETED** (2025-10-14)
+2. ~~**Update Summary Statistics** - recalculate completion percentages (currently outdated)~~ ✅ **COMPLETED** (2025-10-14)
+3. **Enforce mypy in CI** - remove `|| true`, fix ~80 remaining type errors (after excluding generated code)
+4. ~~**Add license matrix to README** - document BSD vs AGPL features~~ ✅ **COMPLETED** (2025-10-14)
 5. **Create issue tracker** - move roadmap items to GitHub Issues with labels
+
+**Note**: Mypy configuration has been improved with proper exclusions for build/ directories and auto-generated SWIG bindings (infomap.py), reducing errors from 209 to 82. Full enforcement requires fixing remaining legitimate type errors.
 
 ### Short-term Goals (Next Month)
 1. Complete print→logging conversion (59 statements)

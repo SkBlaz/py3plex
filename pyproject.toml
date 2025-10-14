@@ -155,6 +155,14 @@ strict_optional = false
 warn_redundant_casts = true
 warn_unused_ignores = true
 check_untyped_defs = false  # Set to true when type hints are complete
+exclude = [
+    'build/',
+    'dist/',
+    '.eggs/',
+    # Auto-generated SWIG bindings (many type errors, not maintainable)
+    'py3plex/algorithms/infomap/infomap\.py$',
+    'py3plex/algorithms/community_detection/infomap/infomap\.py$',
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
