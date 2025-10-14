@@ -53,6 +53,22 @@ py3plex.algorithms.community\_detection.community\_wrapper module
    :show-inheritance:
    :undoc-members:
 
+py3plex.algorithms.community\_detection.multilayer\_benchmark module
+--------------------------------------------------------------------
+
+.. automodule:: py3plex.algorithms.community_detection.multilayer_benchmark
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+py3plex.algorithms.community\_detection.multilayer\_modularity module
+---------------------------------------------------------------------
+
+.. automodule:: py3plex.algorithms.community_detection.multilayer_modularity
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 py3plex.algorithms.community\_detection.node\_ranking module
 ------------------------------------------------------------
 

@@ -45,7 +45,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
@@ -96,7 +96,7 @@
   <section id="supra-adjacency-matrices">
 <h1>Supra-Adjacency Matrices<a class="headerlink" href="#supra-adjacency-matrices" title="Link to this heading"></a></h1>
 <p>Multiplex networks can be represented as supra-adjacency matrices for tensor-based operations.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
 
 <span class="c1"># Generate network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span>
@@ -122,8 +122,8 @@
 <p>Some additional tensor-like indexing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>     <span class="c1">## tensor-based operations examples</span>
 <span class="linenos"> 2</span>
-<span class="linenos"> 3</span>     <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="linenos"> 4</span>     <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_generators</span>
+<span class="linenos"> 3</span>     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="linenos"> 4</span>     <span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
 <span class="linenos"> 5</span>
 <span class="linenos"> 6</span>     <span class="c1">## initiate an instance of a random graph</span>
 <span class="linenos"> 7</span>     <span class="n">ER_multilayer</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
