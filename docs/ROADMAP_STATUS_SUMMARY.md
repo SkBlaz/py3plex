@@ -21,7 +21,7 @@ This is a quick-reference summary of the py3plex roadmap status. For detailed an
 | 5 | Documentation & Examples | Mostly Complete | 80% | High |
 | 6 | Deprecation Management | Not Started | 10% | Medium |
 | 7 | Visualization Hardening | Planned | 30% | Medium |
-| 8 | Testing & CI Expansion | Mostly Complete | 90% | High |
+| 8 | Testing & CI Expansion | Mostly Complete | 85% | High |
 | 9 | I/O Validation | Planned | 40% | Medium |
 | 10 | CLI & Batch Workflows | Not Started | 0% | Low |
 
@@ -35,14 +35,14 @@ This is a quick-reference summary of the py3plex roadmap status. For detailed an
 
 ### 2. Enforce Mypy in CI
 - **Impact**: High (type safety, developer experience)
-- **Effort**: Small (1 day to fix remaining 40 errors)
-- **Status**: ⚠️ **IN PROGRESS** - 51% complete (42/82 errors fixed, 40 remaining)
+- **Effort**: Small (1 day)
+- **Status**: Not Started (mypy runs but doesn't enforce)
 - **Section**: 4 (API Standardization & Type Safety)
 
-### 3. ~~Add License Compatibility Matrix to README~~
+### 3. Add License Compatibility Matrix to README
 - **Impact**: High (user awareness of BSD vs AGPL)
 - **Effort**: Small (1-2 days)
-- **Status**: ✅ **COMPLETED** (2025-10-14)
+- **Status**: Not Started
 - **Section**: 1 (External Dependencies & Licensing)
 
 ### 4. Complete Print→Logging Conversion
@@ -119,7 +119,7 @@ This is a quick-reference summary of the py3plex roadmap status. For detailed an
 ### High Priority
 1. **Licensing** - AGPL Infomap code needs separation from BSD core
 2. **API Standardization** - Inconsistent return types and signatures
-3. **Type Safety** - ⚠️ **IN PROGRESS** - Mypy errors reduced 51% (82→40), needs final push to enable full enforcement
+3. **Type Safety** - Mypy not enforcing (uses `|| true`)
 4. **Release Management** - No 1.0 release, PyPI outdated (June 2023)
 
 ### Medium Priority
@@ -133,12 +133,11 @@ This is a quick-reference summary of the py3plex roadmap status. For detailed an
 
 ## Next Sprint Recommendations
 
-1. ~~Update roadmap Section 3 status (sparse matrices already complete)~~ ✅ **COMPLETED**
-2. ~~Enforce mypy in CI~~ ⚠️ **IN PROGRESS** - 51% complete (40 errors remaining)
-3. ~~Add license compatibility matrix to README~~ ✅ **COMPLETED**
+1. Update roadmap Section 3 status (sparse matrices already complete)
+2. Enforce mypy in CI (remove `|| true`)
+3. Add license compatibility matrix to README
 4. Create GitHub issues for top 10 priorities with appropriate labels
 5. Complete print→logging conversion (59 statements remaining)
-6. Finish mypy error fixes (40 remaining errors in 18 files)
 
 ## Links
 

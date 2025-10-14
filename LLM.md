@@ -1877,6 +1877,12 @@ The repository has seen significant improvements since the original limitations 
 - **NEW (2025-10-14)**: Section 3 (Scalability) status corrected to "Complete" (sparse matrices already implemented)
 - **NEW (2025-10-14)**: **License compatibility matrix added to README** (BSD vs AGPL feature documentation)
 - **NEW (2025-10-14)**: **Mypy configuration improved** (exclude build/ and SWIG-generated files, 209→82 errors)
-- **NEW (2025-10-14)**: **Major mypy error reduction** - Fixed 42 type errors (82→40 errors, 51% reduction). Resolved missing imports, type annotations, broken references, and type incompatibilities across 9 files. Remaining 40 errors are mostly complex type issues (no-any-return, index types, return-value mismatches).
+- **NEW (2025-10-14)**: **Major mypy error reduction** - Fixed 42 type errors (82→40 errors, 51% reduction). Resolved missing imports, type annotations, broken references, and type incompatibilities across 16 files. Remaining 40 errors are mostly complex type issues detailed below.
+
+**Remaining Mypy Errors** (40 errors in 18 files):
+- **Error types**: no-any-return (9), assignment (9), index (4), attr-defined (4), var-annotated (4), return-value (2), list-item (2), call-arg (2), others (4)
+- **Files affected**: Core modules (multinet.py, converters.py, nx_compat.py), I/O system (io/converters.py, io/api.py), community detection algorithms (5 files), statistics (4 files), wrappers (2 files), visualization (2 files)
+- **Next steps**: Fix no-any-return errors with explicit casts, resolve assignment incompatibilities, correct index types, add missing type annotations, then remove `|| true` from Makefile to enable full CI enforcement
+- **Estimated effort**: 1-2 days to complete all fixes and enable enforcement
 
 The main remaining gaps are in **licensing clarity** (AGPL code separation), **API standardization** (consistent return types), **type safety** (100% coverage + mypy enforcement), and **release management** (1.0.0 preparation). The technical foundation is strong, and most improvements are now about polish, user experience, and maintainability rather than fundamental architectural changes.

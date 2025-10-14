@@ -290,15 +290,11 @@ The LLM.md section "Known Limitations and Best Practices (2025 Update)" document
 ### Immediate Actions (Next Sprint)
 1. ~~**Update LLM.md Section 3** - mark sparse matrices as "Complete" instead of "Planned"~~ ✅ **COMPLETED** (2025-10-14)
 2. ~~**Update Summary Statistics** - recalculate completion percentages (currently outdated)~~ ✅ **COMPLETED** (2025-10-14)
-3. **Enforce mypy in CI** - ⚠️ **IN PROGRESS** - Fixed 42 type errors (82→40, 51% reduction). Remaining 40 errors need attention before full enforcement can be enabled by removing `|| true`.
+3. **Enforce mypy in CI** - remove `|| true`, fix ~80 remaining type errors (after excluding generated code)
 4. ~~**Add license matrix to README** - document BSD vs AGPL features~~ ✅ **COMPLETED** (2025-10-14)
 5. **Create issue tracker** - move roadmap items to GitHub Issues with labels
 
-**Note**: Mypy error reduction progress (2025-10-14):
-- **Phase 1**: Configuration improvements (209→82 errors) - exclude build/ and auto-generated SWIG files
-- **Phase 2**: Type error fixes (82→40 errors) - fixed missing imports, added type annotations, resolved broken references
-- **Remaining**: 40 errors in 18 files - mostly complex issues (no-any-return, index types, assignment mismatches)
-- **Types fixed**: name-defined (11), var-annotated (14), assignment (6), Set/List incompatibilities (6), broken test code (5)
+**Note**: Mypy configuration has been improved with proper exclusions for build/ directories and auto-generated SWIG bindings (infomap.py), reducing errors from 209 to 82. Full enforcement requires fixing remaining legitimate type errors.
 
 ### Short-term Goals (Next Month)
 1. Complete print→logging conversion (59 statements)
