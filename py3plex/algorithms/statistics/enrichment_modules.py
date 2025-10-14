@@ -6,7 +6,7 @@
 
 import logging
 from collections import defaultdict
-from typing import Tuple
+from typing import Any, Dict, List, Tuple
 
 import pandas as pd
 from scipy.stats import fisher_exact
@@ -16,6 +16,16 @@ from py3plex.algorithms.term_parsers import read_topology_mappings, read_uniprot
 
 logging.basicConfig(format="%(asctime)s - %(message)s", datefmt="%d-%b-%y %H:%M:%S")
 logging.getLogger().setLevel(logging.INFO)
+
+# Module-level globals for parallel processing
+_partition_name: str = ""
+_alternative: str = "two-sided"
+_partition_entries: List[Any] = []
+_term_database: Dict[int, Tuple[str, int]] = {}
+_map_term_database: Dict[str, List[str]] = {}
+_number_of_all_annotated: int = 0
+_number_of_communities: int = 0
+_normalize_by_comsize: bool = False
 
 
 def calculate_pval(term: Tuple[str, int], alternative: str = "two-sided") -> float:

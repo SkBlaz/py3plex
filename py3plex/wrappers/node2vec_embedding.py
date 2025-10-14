@@ -232,19 +232,18 @@ def learn_embedding(
     if labels is None:
         labels = []
     start = time.time()
-    parameter_range = ast.literal_eval(parameter_range)
-    if self.method == "default_n2v":
-        n2v_embedding(
-            core_network,
-            targets=labels,
-            sample_size=ssize,
-            verbose=self.vb,
-            outfile_name=embedding_outfile,
-            p=p,
-            q=q,
-            binary_path=binary_path,
-            parameter_range=parameter_range,
-        )
+    parameter_range_list = ast.literal_eval(parameter_range)
+    n2v_embedding(
+        core_network,
+        targets=labels,
+        sample_size=ssize,
+        verbose=False,
+        outfile_name=embedding_outfile,
+        p=p,
+        q=q,
+        binary_path=binary_path,
+        parameter_range=parameter_range_list,
+    )
     end = time.time()
     elapsed = end - start
-    return (self.method, elapsed)
+    return ("default_n2v", elapsed)
