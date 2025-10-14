@@ -1,4 +1,0 @@
-community_detection
-infomap
-network_ranking
-statistics
