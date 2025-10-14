@@ -198,23 +198,25 @@ core.parsers → multi_layer_network object
 ### Multilayer Network Statistics (`multilayer_statistics.py`)
 Comprehensive suite of 17 statistics for multilayer networks following Kivelä et al. (2014) and De Domenico et al. (2013):
 
-- **Layer Density (ρᵢ)**: Fraction of possible edges present in a layer
-- **Inter-layer Coupling Strength (Cᵢⱼ)**: Average weight of inter-layer connections
-- **Node Activity (aᵢ)**: Fraction of layers where a node is active
-- **Degree Vector (kᵢ)**: Node degree in each layer for versatility analysis
-- **Inter-layer Degree Correlation (rᵢⱼ)**: Correlation of node degrees across layers
-- **Edge Overlap (ωᵢⱼ)**: Jaccard similarity of edge sets between layers
-- **Layer Similarity (Sᵢⱼ)**: Cosine/Jaccard similarity of adjacency matrices
-- **Multilayer Clustering Coefficient (Cᴹ)**: Transitivity accounting for cross-layer triangles
-- **Versatility Centrality (Vᵢ)**: Weighted centrality across all layers
-- **Interdependence (λ)**: Shortest path dependence on inter-layer connections
-- **Multilayer Modularity (Qᴹᴸ)**: Community quality across layers (Mucha et al. 2010)
-- **Supra-Laplacian Spectrum (Λ)**: Eigenvalues for diffusion analysis
-- **Algebraic Connectivity (λ₂)**: Fiedler value of supra-Laplacian
-- **Inter-layer Assortativity (rᴵ)**: Degree mixing patterns across layers
-- **Entropy of Multiplexity (Hₘ)**: Shannon entropy of layer diversity
-- **Multilayer Motif Frequency (fₘ)**: Frequency of cross-layer subgraph patterns
-- **Resilience (R)**: Robustness to layer or coupling removal
+- **Layer Density (ρₐ)**: `ρₐ = 2Eₐ/(Nₐ(Nₐ-1))` - Fraction of possible edges present in layer α
+- **Inter-layer Coupling Strength (C^αβ)**: `C^αβ = (1/N) Σᵢ wᵢ^αβ` - Average weight of inter-layer connections between nodes in layers α and β
+- **Node Activity (aᵢ)**: `aᵢ = (1/L) Σₐ 𝟙(vᵢ ∈ Vₐ)` - Fraction of layers where node i is active
+- **Degree Vector (kᵢ)**: `kᵢ = (kᵢ¹, kᵢ², ..., kᵢᴸ)` - Node degree in each layer for versatility analysis
+- **Inter-layer Degree Correlation (r^αβ)**: `r^αβ = corr(k^α, k^β)` - Pearson correlation of node degrees between layers α and β
+- **Edge Overlap (ω^αβ)**: `ω^αβ = |Eₐ ∩ Eᵦ| / |Eₐ ∪ Eᵦ|` - Jaccard similarity of edge sets between layers
+- **Layer Similarity (S^αβ)**: `S^αβ = ⟨Aₐ, Aᵦ⟩ / (‖Aₐ‖‖Aᵦ‖)` - Cosine similarity of adjacency matrices
+- **Multilayer Clustering Coefficient (Cᴹ)**: `Cᵢᴹ = Tᵢ/Tᵢᵐᵃˣ` - Transitivity accounting for cross-layer triangles
+- **Versatility Centrality (Vᵢ)**: `Vᵢ = Σₐ wₐ Cᵢᵅ` - Weighted centrality across all layers (De Domenico et al. 2015)
+- **Interdependence (λ)**: `λ = ⟨d^ML⟩ / ⟨d^avg⟩` - Ratio of multilayer to single-layer shortest paths
+- **Multilayer Modularity (Qᴹᴸ)**: `Q = (1/2μ) Σᵢⱼₐᵦ [(Aᵢⱼᵅ - γₐPᵢⱼᵅ)δₐᵦ + ωₐᵦδᵢⱼ] δ(gᵢᵅ, gⱼᵝ)` - Community quality across layers (Mucha et al. 2010)
+- **Supra-Laplacian Spectrum (Λ)**: `ℒ = 𝒟 - 𝒜` - Eigenvalue spectrum of supra-Laplacian for diffusion analysis
+- **Algebraic Connectivity (λ₂)**: Second smallest eigenvalue of supra-Laplacian (Fiedler value)
+- **Inter-layer Assortativity (rᴵ)**: `r^αβ = cov(k^α, k^β)/(σₐσᵦ)` - Degree mixing patterns across layers
+- **Entropy of Multiplexity (Hₘ)**: `Hₘ = -Σₐ pₐ log₂(pₐ)` where `pₐ = Eₐ/ΣₖEₖ` - Shannon entropy of layer diversity
+- **Multilayer Motif Frequency (fₘ)**: `fₘ = nₘ / Σₖ nₖ` - Frequency of cross-layer subgraph patterns
+- **Resilience (R)**: `R = S'/S₀` - Ratio of largest component size after perturbation to original
+
+**Note**: Formulas verified against canonical literature (Mucha et al. 2010, De Domenico et al. 2013, Kivelä et al. 2014, Boccaletti et al. 2014). See `MULTILAYER_STATISTICS_VERIFICATION.md` for detailed mathematical verification.
 
 Example usage:
 ```python
