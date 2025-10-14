@@ -297,7 +297,7 @@ def to_igraph(graph: MultiLayerGraph, mode: ProjectionMode = "multiplex") -> Any
 
     if mode == "multiplex":
         # Create vertex name mapping
-        vertex_map = {}  # (node_id, layer_id) -> vertex_index
+        vertex_map: Dict[tuple, int] = {}  # (node_id, layer_id) -> vertex_index
 
         # Add vertices for each (node, layer) combination
         for node_id, node in graph.nodes.items():
@@ -344,19 +344,19 @@ def to_igraph(graph: MultiLayerGraph, mode: ProjectionMode = "multiplex") -> Any
 
     elif mode == "union":
         # Add vertices
-        vertex_map = {}
+        vertex_map_union: Dict[Any, int] = {}
         for node_id, node in graph.nodes.items():
             vertex_idx = g.vcount()
             g.add_vertex(name=str(node_id), node_id=node_id, **node.attributes)
-            vertex_map[node_id] = vertex_idx
+            vertex_map_union[node_id] = vertex_idx
 
         # Add edges
         edge_list = []
-        edge_attrs: Dict[str, list] = {}
+        edge_attrs_union: Dict[str, list] = {}
 
         for edge in graph.edges:
-            src_idx = vertex_map[edge.src]
-            dst_idx = vertex_map[edge.dst]
+            src_idx = vertex_map_union[edge.src]
+            dst_idx = vertex_map_union[edge.dst]
 
             edge_list.append((src_idx, dst_idx))
 
@@ -366,14 +366,14 @@ def to_igraph(graph: MultiLayerGraph, mode: ProjectionMode = "multiplex") -> Any
             attrs["dst_layer"] = edge.dst_layer
 
             for key, value in attrs.items():
-                if key not in edge_attrs:
-                    edge_attrs[key] = []
-                edge_attrs[key].append(value)
+                if key not in edge_attrs_union:
+                    edge_attrs_union[key] = []
+                edge_attrs_union[key].append(value)
 
         g.add_edges(edge_list)
 
         # Set edge attributes
-        for key, values in edge_attrs.items():
+        for key, values in edge_attrs_union.items():
             g.es[key] = values
 
     else:

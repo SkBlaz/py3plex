@@ -460,7 +460,7 @@ def multilayer_clustering_coefficient(
         Battiston et al. (2014), Section III.C
     """
     # Build neighbor sets for each node-layer pair
-    neighbors = {}
+    neighbors: Dict[tuple, set] = {}
     all_node_layers = set()
     
     for edge in network.get_edges():
@@ -714,7 +714,7 @@ def interdependence(network: Any, sample_size: int = 100) -> float:
     layer_paths = []
     
     np.random.seed(42)  # For reproducibility
-    sampled_pairs = set()
+    sampled_pairs: set = set()
     
     while len(sampled_pairs) < sample_size:
         n1, n2 = np.random.choice(all_nodes, size=2, replace=False)
@@ -816,7 +816,8 @@ def supra_laplacian_spectrum(
     k = min(k, laplacian.shape[0] - 2)
     
     if k < 1:
-        return np.array([])
+        empty_result: np.ndarray = np.array([])
+        return empty_result
     
     try:
         if sp.issparse(laplacian):
@@ -825,9 +826,11 @@ def supra_laplacian_spectrum(
             all_eigenvalues = np.linalg.eigvalsh(laplacian)
             eigenvalues = np.sort(all_eigenvalues)[:k]
         
-        return eigenvalues
+        result: np.ndarray = eigenvalues
+        return result
     except:
-        return np.array([])
+        empty_except: np.ndarray = np.array([])
+        return empty_except
 
 
 def algebraic_connectivity(network: Any) -> float:
@@ -931,7 +934,7 @@ def entropy_of_multiplexity(network: Any) -> float:
         De Domenico et al. (2013), Shannon (1948)
     """
     # Count edges per layer
-    layer_edge_counts = {}
+    layer_edge_counts: Dict[str, int] = {}
     
     for edge in network.get_edges():
         (n1, l1), (n2, l2) = edge[0], edge[1]
@@ -994,16 +997,16 @@ def multilayer_motif_frequency(
         return {'not_implemented': 0.0}
     
     # Count different types of triangles
-    motif_counts = {
-        'intra_layer_triangles': 0,
-        'inter_layer_triangles': 0,
+    motif_counts: Dict[str, float] = {
+        'intra_layer_triangles': 0.0,
+        'inter_layer_triangles': 0.0,
     }
     
     # Get all node-layer pairs
     node_layers = list(network.get_nodes())
     
     # Build adjacency
-    adj = {}
+    adj: Dict[tuple, set] = {}
     for edge in network.get_edges():
         (n1, l1), (n2, l2) = edge[0], edge[1]
         nl1 = (n1, l1)
@@ -1035,7 +1038,7 @@ def multilayer_motif_frequency(
     
     # Each triangle is counted 6 times (3 nodes × 2 directions)
     for key in motif_counts:
-        motif_counts[key] = motif_counts[key] / 6
+        motif_counts[key] = motif_counts[key] / 6.0
     
     # Calculate frequencies
     total = sum(motif_counts.values())

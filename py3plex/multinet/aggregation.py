@@ -118,10 +118,11 @@ def aggregate_layers(
     )
     
     # Extract columns
-    rows = edges[:, 1].astype(np.int32)  # Source nodes
-    cols = edges[:, 2].astype(np.int32)  # Target nodes
+    rows: np.ndarray = edges[:, 1].astype(np.int32)  # Source nodes
+    cols: np.ndarray = edges[:, 2].astype(np.int32)  # Target nodes
     
     # Handle weights: use column 3 if available, else default to 1.0
+    data: np.ndarray
     if edges.shape[1] > 3:
         data = edges[:, 3].astype(np.float64)
     else:

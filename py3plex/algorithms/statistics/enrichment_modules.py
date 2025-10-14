@@ -64,7 +64,7 @@ def calculate_pval(term: Tuple[str, int], alternative: str = "two-sided") -> flo
         query_counts = [inside_local, query_term_count_population]
     pop_counts = [outside_local, _number_of_all_annotated - query_term_count_population]
     p_value = fisher_exact([query_counts, pop_counts], alternative=alternative)[1]
-    return p_value
+    return float(p_value)
 
 
 def multiple_test_correction(input_dataset: str) -> None:

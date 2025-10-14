@@ -89,7 +89,7 @@ def plot_power_law(
     try:
         start = a[int(results.xmin)]
         k = results.xmin
-        norm = int(
+        norm: Any = int(
             round(start * len(degree_sequence) * 100 / pow(k, -results.alpha), 0)
         )
     except (IndexError, KeyError, ValueError, ZeroDivisionError):
@@ -127,9 +127,9 @@ def plot_power_law(
         results.distribution_compare("exponential", "power_law"),
     )
     plt.legend(numpoints=1, loc="lower left", bbox_to_anchor=(0.05, 0))
-    vals = ax1.get_yticks()
-    vals = [float(round(x * len(degree_sequence), 1)) for x in vals]
-    ax1.set_yticklabels(vals[0:6])
+    yticks = ax1.get_yticks()
+    vals: List[float] = [float(round(x * len(degree_sequence), 1)) for x in yticks]
+    ax1.set_yticklabels([str(v) for v in vals[0:6]])
     plt.ylabel(ylabel)
     plt.axvline(x=results.xmin, color="black", linestyle="--")
     plt.ylim(0, 0.1)

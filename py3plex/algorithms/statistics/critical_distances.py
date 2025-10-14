@@ -4,6 +4,7 @@
 
 from os import makedirs
 from os.path import exists
+from typing import Any, List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -278,7 +279,7 @@ def remove_backslash(file_name):
     return "".join(ch_list)
 
 
-results = []
+results: List[Any] = []
 
 # try:
 #     results_file = sys.argv[1].strip().split("=")[1]

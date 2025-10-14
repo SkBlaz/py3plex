@@ -105,7 +105,7 @@ def compute_force_directed_layout(
             else:
                 pos = forceatlas2.forceatlas2_networkx_layout(g)
 
-            norm = np.max([np.abs(x) for x in itertools.chain(zip(*pos.values()))])
+            norm: float = np.max([np.abs(x) for x in itertools.chain(zip(*pos.values()))])
             pos_pairs = [np.array([(a / norm), (b / norm)]) for a, b in pos.values()]
             pos = dict(zip(pos.keys(), pos_pairs))
 
@@ -130,8 +130,8 @@ def compute_force_directed_layout(
         )
 
     # return positions
-
-    return pos
+    result: Dict[Any, np.ndarray] = pos
+    return result
 
 
 def compute_random_layout(g: nx.Graph, seed: Optional[int] = None) -> Dict[Any, np.ndarray]:
@@ -147,8 +147,8 @@ def compute_random_layout(g: nx.Graph, seed: Optional[int] = None) -> Dict[Any, 
     """
     from py3plex.utils import get_rng
     rng = get_rng(seed)
-    pos = {n: rng.random(2) for n in g.nodes()}
-    return pos
+    result: Dict[Any, np.ndarray] = {n: rng.random(2) for n in g.nodes()}
+    return result
 
 
 if __name__ == "__main__":

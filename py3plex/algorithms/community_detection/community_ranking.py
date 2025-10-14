@@ -43,9 +43,11 @@ def page_rank_kernel(index_row: int) -> Tuple[int, np.ndarray]:
 
 
 def create_tree(centers: np.ndarray) -> Dict[int, Dict[str, List]]:
-    clusters = {}
+    clusters: Dict[int, Any] = {}
     to_merge = linkage(centers, method="single")
     for i, merge in enumerate(to_merge):
+        a: Any
+        b: Any
         if merge[0] <= len(to_merge):
             # if it is an original point read it from the centers array
             a = centers[int(merge[0]) - 1]

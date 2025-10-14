@@ -1333,4 +1333,4 @@ class multi_layer_network:
 if __name__ == "__main__":
 
     multinet = multi_layer_network("../../datasets/imdb_gml.gml")
-    multinet.print_basic_stats()
+    multinet.basic_stats()

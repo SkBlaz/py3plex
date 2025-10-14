@@ -39,8 +39,8 @@ def pick_threshold(matrix: np.ndarray) -> float:
             logger.debug("Updating R^2: %s", r_value)
             current_r_opt = r_value
         if r_value > 0.80:
-            return j
-    return current_r_opt
+            return float(j)
+    return float(current_r_opt)
 
 
 def default_correlation_to_network(

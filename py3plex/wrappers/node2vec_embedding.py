@@ -177,7 +177,7 @@ def n2v_embedding(
                     if verbose:
                         logger.info("Updating the parameters: %s %s", ma, cset)
 
-                    cset = [x, y]
+                    cset = [int(x), int(y)]
                     copt = ma
                 else:
                     logger.debug("Current optimum %s", ma)

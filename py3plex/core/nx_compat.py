@@ -24,7 +24,7 @@ def nx_info(G: nx.Graph) -> str:
     """
     if hasattr(nx, "info"):
         # NetworkX < 3.0
-        return nx.info(G)
+        return str(nx.info(G))
     else:
         # NetworkX >= 3.0 - manually construct info string
         info_lines = []

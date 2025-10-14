@@ -463,7 +463,7 @@ def _generate_power_law_communities(
         np.random.seed(seed)
     
     communities = {}
-    assigned = set()
+    assigned: Set[int] = set()
     com_id = 0
     
     while len(assigned) < n:
@@ -516,12 +516,12 @@ def _add_overlapping_nodes(
     all_communities = set()
     for coms in communities.values():
         all_communities.update(coms)
-    all_communities = list(all_communities)
+    all_communities_list: List[int] = list(all_communities)
     
     for node in overlapping_nodes:
         # Add additional communities
         current_coms = communities[node]
-        available_coms = [c for c in all_communities if c not in current_coms]
+        available_coms = [c for c in all_communities_list if c not in current_coms]
         
         if available_coms:
             n_add = min(n_memberships - len(current_coms), len(available_coms))
@@ -548,11 +548,12 @@ def _generate_power_law_degrees(
     degrees = degrees.astype(int)
     
     # Ensure even sum for undirected graph
-    total: int = np.sum(degrees)
+    total: int = int(np.sum(degrees))
     if total % 2 != 0:
         degrees[0] += 1
     
-    return degrees
+    result: np.ndarray = degrees
+    return result
 
 
 def _generate_lfr_edges(
@@ -585,7 +586,7 @@ def _generate_lfr_edges(
         
         # Determine internal vs external edges
         n_internal = int(deg * (1 - mu))
-        n_external: int = deg - n_internal
+        n_external = int(deg - n_internal)
         
         # Get node's communities
         node_coms = communities.get(node, {0})

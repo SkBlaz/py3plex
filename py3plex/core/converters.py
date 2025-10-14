@@ -84,7 +84,7 @@ def prepare_for_visualization(
     layout_parameters: Optional[Dict[str, Any]] = None,
     verbose: bool = True,
     multiplex: bool = False,
-) -> Tuple[List[Any], Dict[Any, nx.Graph], List[Tuple]]:
+) -> Tuple[List[Any], Dict[Any, nx.Graph], Any]:
     """
     This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.
 
@@ -139,8 +139,8 @@ def prepare_for_visualization(
             multiedges["default_inter"].append(edge)
             pass
 
-    names, networks = zip(*networks.items())
-    return (names, networks, multiedges)
+    names_list: List[Any] = list(networks.keys())
+    return (names_list, networks, multiedges)
 
 
 def prepare_for_visualization_hairball(multinet, compute_layouts=False):
