@@ -35,20 +35,20 @@ This is a quick-reference summary of the py3plex roadmap status. For detailed an
 
 ### 2. Enforce Mypy in CI
 - **Impact**: High (type safety, developer experience)
-- **Effort**: Small (1 day)
-- **Status**: Not Started (mypy runs but doesn't enforce)
+- **Effort**: Small (1-2 days)
+- **Status**: In Progress (51% error reduction: 82→40 errors)
 - **Section**: 4 (API Standardization & Type Safety)
 
-### 3. Add License Compatibility Matrix to README
+### 3. ~~Add License Compatibility Matrix to README~~ ✅
 - **Impact**: High (user awareness of BSD vs AGPL)
 - **Effort**: Small (1-2 days)
-- **Status**: Not Started
+- **Status**: ✅ Complete (2025-10-14)
 - **Section**: 1 (External Dependencies & Licensing)
 
-### 4. Complete Print→Logging Conversion
+### 4. ~~Complete Print→Logging Conversion~~ ✅
 - **Impact**: Medium (code quality)
-- **Effort**: Small (2-3 days, 59 statements remaining)
-- **Status**: In Progress (74% complete)
+- **Effort**: Small (few hours for remaining cleanup)
+- **Status**: ✅ Largely Complete (82 remaining are mostly legitimate)
 - **Section**: Code Quality
 
 ### 5. Prepare 1.0.0 Release
@@ -68,12 +68,18 @@ This is a quick-reference summary of the py3plex roadmap status. For detailed an
 - ✅ 10-minute tutorial with CI validation
 - ✅ Sparse supra-adjacency matrices (already implemented!)
 - ✅ Type hints expanded to 65.4% coverage (70/107 modules)
+- ✅ License compatibility matrix added to README (2025-10-14)
+- ✅ Build artifacts removed from git tracking (21 files, 2025-10-14)
+- ✅ Debug print statements cleaned up (2025-10-14)
+- ✅ Print→logging conversion largely complete (82 remaining are mostly legitimate)
+- ✅ Mypy error reduction (51% improvement: 82→40 errors, 2025-10-14)
 
 ## Key Metrics
 
 - **Test Coverage**: ~15-20% (target: 30%+ for Phase 2)
 - **Type Hint Coverage**: 65.4% (70/107 maintainable modules)
-- **Print→Logging Conversion**: 74% (170/229 statements)
+- **Print→Logging Conversion**: Largely Complete (82 remaining, mostly legitimate)
+- **Mypy Errors**: 40 (51% reduction from 82)
 - **Bare Except Clauses**: 0 (100% eliminated, was 50+)
 - **Python Support**: 3.8, 3.9, 3.10, 3.11, 3.12
 - **Platform Support**: Ubuntu, macOS, Windows
@@ -133,11 +139,12 @@ This is a quick-reference summary of the py3plex roadmap status. For detailed an
 
 ## Next Sprint Recommendations
 
-1. Update roadmap Section 3 status (sparse matrices already complete)
-2. Enforce mypy in CI (remove `|| true`)
-3. Add license compatibility matrix to README
-4. Create GitHub issues for top 10 priorities with appropriate labels
-5. Complete print→logging conversion (59 statements remaining)
+1. ~~Update roadmap Section 3 status (sparse matrices already complete)~~ ✅ Complete
+2. ~~Add license compatibility matrix to README~~ ✅ Complete
+3. ~~Remove build artifacts and debug prints~~ ✅ Complete
+4. **Enforce mypy in CI** (fix remaining 40 errors, remove `|| true`)
+5. **Move AGPL Infomap code to separate package** (licensing clarity)
+6. Create GitHub issues for top 10 priorities with appropriate labels
 
 ## Links
 
