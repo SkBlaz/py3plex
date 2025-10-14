@@ -1624,7 +1624,9 @@ Track roadmap progress in GitHub Issues:
 - ✅ Automatic documentation building (GitHub Actions + Pages)
 - ✅ Test determinism improvements (added seeds to non-deterministic tests)
 - ✅ Mypy configuration fixed (python_version 3.9)
+- ✅ **Mypy exclusions for generated code** (build/, infomap.py SWIG bindings)
 - ✅ **Sparse supra-adjacency matrices** (default behavior, with memory warnings)
+- ✅ **License compatibility matrix in README** (BSD vs AGPL documentation)
 - ✅ 10-minute tutorial created (docs/10min_tutorial.md)
 - ✅ Tutorial validation workflow
 - ✅ Bare except clause cleanup (100% elimination, 50+ → 0)
@@ -1639,10 +1641,10 @@ Track roadmap progress in GitHub Issues:
 3. ~~Documentation update → reflect current capabilities~~ ✅ **COMPLETED** (algorithm guide + auto-build CI)
 4. ~~Coverage badge → visibility into test coverage~~ ✅ **COMPLETED** (2025-10-13)
 5. ~~Multi-platform CI → test on macOS/Windows~~ ✅ **COMPLETED** (2025-10-13)
-6. **Move AGPL Infomap code to separate package** → licensing clarity (HIGH PRIORITY)
-7. **Enforce mypy in CI** → improve type safety (HIGH PRIORITY, quick win)
-8. **Complete print→logging conversion** → 59 statements remaining (26%)
-9. **Add license compatibility matrix to README** → document BSD vs AGPL features
+6. ~~Add license compatibility matrix to README~~ ✅ **COMPLETED** (2025-10-14, document BSD vs AGPL features)
+7. **Move AGPL Infomap code to separate package** → licensing clarity (HIGH PRIORITY)
+8. **Enforce mypy in CI** → improve type safety (HIGH PRIORITY, ~80 errors after excluding generated code)
+9. **Complete print→logging conversion** → 59 statements remaining (26%)
 10. **Prepare 1.0.0 release** → tag, wheels, release notes, PyPI update
 11. Type hints + mypy enforcement → improve developer experience (ongoing, 65% → 100%)
 12. ~~CHANGELOG.md creation → track changes systematically~~ ✅ **COMPLETED**
@@ -1827,8 +1829,8 @@ Based on impact and current state, the recommended priority order is:
    - ~~Update Sphinx version to 0.95a~~ ✅ **COMPLETED**
    - ~~Add pyproject.toml extras ([infomap], [algos], [viz])~~ ✅ **COMPLETED**
    - ~~Add Python 3.12 to test matrix~~ ✅ **COMPLETED**
-   - **Enforce mypy in CI** (remove `|| true`, fix type errors)
-   - **Add license compatibility matrix to README** (document BSD vs AGPL features)
+   - ~~Add license compatibility matrix to README~~ ✅ **COMPLETED** (document BSD vs AGPL features)
+   - **Enforce mypy in CI** (remove `|| true`, fix ~80 remaining type errors after excluding generated code)
 
 2. **High Priority, Medium Effort** (3-7 days each):
    - ~~Unified random state helper and consistent seeding~~ ✅ **COMPLETED** (get_rng() helper added)

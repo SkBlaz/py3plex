@@ -81,6 +81,29 @@ For development workflows, testing, and contributing, see [docs/development.md](
 
 See `bin/README.md` for detailed installation instructions and alternatives.
 
+### License Compatibility
+
+**Main Library**: py3plex is distributed under the **MIT License** (permissive, commercial-friendly).
+
+**Bundled Code Considerations**: The repository contains AGPLv3-licensed code in `py3plex/algorithms/infomap/` and `py3plex/algorithms/community_detection/infomap/`. If you use Infomap-based community detection functions, your application may be subject to AGPLv3 requirements (copyleft).
+
+**License Matrix**:
+
+| Feature Category | License | Commercial Use | Notes |
+|-----------------|---------|----------------|-------|
+| Core multilayer network functionality | MIT | ✅ Yes | Safe for proprietary use |
+| Network visualization (layouts, colors) | MIT | ✅ Yes | Safe for proprietary use |
+| I/O operations (load/save networks) | MIT | ✅ Yes | Safe for proprietary use |
+| Louvain community detection | BSD-3-Clause | ✅ Yes | Safe for proprietary use |
+| Label propagation algorithms | MIT | ✅ Yes | Safe for proprietary use |
+| **Infomap community detection** | **AGPLv3** | ⚠️ Restricted | Viral license - requires open-sourcing derived works |
+| Node embeddings (if using bundled code) | Varies | ⚠️ Check | Use pure Python alternatives for safety |
+
+**Recommendations**:
+- **For commercial/proprietary projects**: Avoid Infomap functions or use the pure Python `infomap` package separately
+- **For open-source projects**: All features are safe to use
+- **When in doubt**: Use alternative algorithms (Louvain, label propagation) which are BSD/MIT licensed
+
 For any errors, please open an issue!
 
 ### Testing
