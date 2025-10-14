@@ -85,7 +85,7 @@ See `bin/README.md` for detailed installation instructions and alternatives.
 
 **Main Library**: py3plex is distributed under the **MIT License** (permissive, commercial-friendly).
 
-**Bundled Code Considerations**: The repository contains AGPLv3-licensed code in `py3plex/algorithms/infomap/` and `py3plex/algorithms/community_detection/infomap/`. If you use Infomap-based community detection functions, your application may be subject to AGPLv3 requirements (copyleft).
+**Bundled Code Considerations**: The repository contains AGPLv3-licensed code in `py3plex/algorithms/community_detection/infomap/`. If you use Infomap-based community detection functions, your application may be subject to AGPLv3 requirements (copyleft).
 
 **License Matrix**:
 
