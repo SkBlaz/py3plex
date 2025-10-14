@@ -44,6 +44,7 @@ py3plex/
 │   │   │   └── infomap/              → Infomap C++ bindings for overlapping communities
 │   │   ├── statistics/               → Network statistics and metrics
 │   │   │   ├── statistics.py         → Core network statistics (diameter, density, clustering)
+│   │   │   ├── multilayer_statistics.py → Multilayer network statistics (17 measures)
 │   │   │   ├── topology.py           → Topological measures (degree distribution)
 │   │   │   ├── enrichment.py         → Statistical enrichment analysis
 │   │   │   ├── correlation_networks.py → Correlation-based network construction
@@ -193,6 +194,47 @@ core.parsers → multi_layer_network object
 - **Connectivity**: Connected components, strongly/weakly connected analysis
 - **Density and sparsity**: Edge density, maximum flow, minimum cuts
 - **Assortativity**: Degree assortativity, attribute-based mixing patterns
+
+### Multilayer Network Statistics (`multilayer_statistics.py`)
+Comprehensive suite of 17 statistics for multilayer networks following Kivelä et al. (2014) and De Domenico et al. (2013):
+
+- **Layer Density (ρᵢ)**: Fraction of possible edges present in a layer
+- **Inter-layer Coupling Strength (Cᵢⱼ)**: Average weight of inter-layer connections
+- **Node Activity (aᵢ)**: Fraction of layers where a node is active
+- **Degree Vector (kᵢ)**: Node degree in each layer for versatility analysis
+- **Inter-layer Degree Correlation (rᵢⱼ)**: Correlation of node degrees across layers
+- **Edge Overlap (ωᵢⱼ)**: Jaccard similarity of edge sets between layers
+- **Layer Similarity (Sᵢⱼ)**: Cosine/Jaccard similarity of adjacency matrices
+- **Multilayer Clustering Coefficient (Cᴹ)**: Transitivity accounting for cross-layer triangles
+- **Versatility Centrality (Vᵢ)**: Weighted centrality across all layers
+- **Interdependence (λ)**: Shortest path dependence on inter-layer connections
+- **Multilayer Modularity (Qᴹᴸ)**: Community quality across layers (Mucha et al. 2010)
+- **Supra-Laplacian Spectrum (Λ)**: Eigenvalues for diffusion analysis
+- **Algebraic Connectivity (λ₂)**: Fiedler value of supra-Laplacian
+- **Inter-layer Assortativity (rᴵ)**: Degree mixing patterns across layers
+- **Entropy of Multiplexity (Hₘ)**: Shannon entropy of layer diversity
+- **Multilayer Motif Frequency (fₘ)**: Frequency of cross-layer subgraph patterns
+- **Resilience (R)**: Robustness to layer or coupling removal
+
+Example usage:
+```python
+from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+# Calculate layer density
+density = mls.layer_density(network, 'layer1')
+
+# Node activity across layers
+activity = mls.node_activity(network, 'node_A')
+
+# Versatility centrality
+versatility = mls.versatility_centrality(network, centrality_type='degree')
+
+# Inter-layer correlation
+correlation = mls.inter_layer_degree_correlation(network, 'layer1', 'layer2')
+
+# Network resilience
+resilience = mls.resilience(network, 'layer_removal', perturbation_param='layer1')
+```
 
 ### Centrality Measures (Multilayer-Aware)
 - **Degree centrality**: Node importance by connection count, layer-weighted variants
