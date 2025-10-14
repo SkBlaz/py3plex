@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="10-Minute Tutorial" href="10min_tutorial.html" /> 
+    <link rel="next" title="10-Minute Tutorial: Getting Started with Py3plex" href="10min_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,7 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
@@ -102,10 +102,10 @@
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <p><strong>New to py3plex? Start with our 10-minute tutorial!</strong></p>
-<p>See <a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial</span></a> for a comprehensive introduction.</p>
+<p>See <a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with Py3plex</span></a> for a comprehensive introduction.</p>
 <p>See comprehensive examples in the <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">examples/ directory</a>.</p>
 <p>Basic usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load a network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
@@ -121,9 +121,20 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#quick-example">Quick Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#what-you-ll-learn">What You’ll Learn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#creating-your-first-multilayer-network-2-minutes">1. Creating Your First Multilayer Network (2 minutes)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#loading-networks-from-files-1-minute">2. Loading Networks from Files (1 minute)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#exploring-network-structure-2-minutes">3. Exploring Network Structure (2 minutes)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#computing-network-metrics-2-minutes">4. Computing Network Metrics (2 minutes)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#multilayer-network-statistics-2-minutes">5. Multilayer Network Statistics (2 minutes)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#community-detection-2-minutes">6. Community Detection (2 minutes)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#basic-visualization-1-minute">7. Basic Visualization (1 minute)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#complete-example-putting-it-all-together">Complete Example: Putting It All Together</a></li>
 <li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10min_tutorial.html#tips-for-success">Tips for Success</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a><ul>
@@ -208,7 +219,7 @@
 <p><strong>The best way to learn py3plex is through examples!</strong></p>
 <p><strong>Getting Started:</strong></p>
 <ul class="simple">
-<li><p><a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial</span></a> - <strong>Start here!</strong> A comprehensive 10-minute introduction to py3plex</p></li>
+<li><p><a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with Py3plex</span></a> - <strong>Start here!</strong> A comprehensive 10-minute introduction to py3plex</p></li>
 </ul>
 <p><strong>Core Examples:</strong></p>
 <p>All examples are available at: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
@@ -236,7 +247,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="10min_tutorial.html" class="btn btn-neutral float-right" title="10-Minute Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="10min_tutorial.html" class="btn btn-neutral float-right" title="10-Minute Tutorial: Getting Started with Py3plex" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

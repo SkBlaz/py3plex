@@ -10,7 +10,6 @@ Subpackages
    py3plex.algorithms.community_detection
    py3plex.algorithms.general
    py3plex.algorithms.hedwig
-   py3plex.algorithms.infomap
    py3plex.algorithms.multilayer_algorithms
    py3plex.algorithms.network_classification
    py3plex.algorithms.node_ranking

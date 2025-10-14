@@ -60,6 +60,14 @@ py3plex.algorithms.statistics.enrichment\_modules module
    :show-inheritance:
    :undoc-members:
 
+py3plex.algorithms.statistics.multilayer\_statistics module
+-----------------------------------------------------------
+
+.. automodule:: py3plex.algorithms.statistics.multilayer_statistics
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 py3plex.algorithms.statistics.powerlaw module
 ---------------------------------------------
 
