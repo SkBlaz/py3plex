@@ -216,7 +216,7 @@ Comprehensive suite of 17 statistics for multilayer networks following Kivelä e
 - **Multilayer Motif Frequency (fₘ)**: `fₘ = nₘ / Σₖ nₖ` - Frequency of cross-layer subgraph patterns
 - **Resilience (R)**: `R = S'/S₀` - Ratio of largest component size after perturbation to original
 
-**Note**: Formulas verified against canonical literature (Mucha et al. 2010, De Domenico et al. 2013, Kivelä et al. 2014, Boccaletti et al. 2014). See `MULTILAYER_STATISTICS_VERIFICATION.md` for detailed mathematical verification.
+**Note**: Formulas verified against canonical literature (Mucha et al. 2010, De Domenico et al. 2013, Kivelä et al. 2014, Boccaletti et al. 2014) in October 2025.
 
 Example usage:
 ```python
@@ -506,6 +506,7 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 - ✅ Coverage badge and Codecov integration
 - ✅ Automatic documentation building (GitHub Actions + Pages)
 - ✅ Mypy type checking enforced in CI (all 112 source files pass)
+- ✅ Documentation cleanup (October 2025) - Removed redundant temporary files, consolidated into README.md and LLM.md
 
 **Top Remaining Priorities**:
 1. Move AGPL Infomap code to separate optional package
