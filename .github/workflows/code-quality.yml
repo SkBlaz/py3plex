@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install black ruff isort mypy types-six
         # Install minimal dependencies for type checking
-        pip install numpy scipy networkx matplotlib rdflib tqdm bitarray
+        pip install numpy scipy networkx matplotlib rdflib tqdm bitarray pandas
       timeout-minutes: 8
     
     - name: Run lint checks via Makefile
