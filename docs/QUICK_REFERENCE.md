@@ -311,7 +311,7 @@ print(f"API Version: {py3plex.__api_version__}")
 - **Examples**: [examples/](../examples/)
 - **Architecture**: [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Citations**: [ALGORITHM_CITATIONS.md](ALGORITHM_CITATIONS.md)
-- **Contributing**: [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Getting Help
 

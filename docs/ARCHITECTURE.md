@@ -302,4 +302,4 @@ When proposing architectural changes:
 4. Discuss impact on existing code
 5. Get maintainer approval before implementing
 
-For questions, see `CONTRIBUTING.md` or open an issue.
+For questions, see [CONTRIBUTING.md](CONTRIBUTING.md) or open an issue.

@@ -28,7 +28,7 @@ This directory contains comprehensive documentation for py3plex. Choose the guid
 ## Developer Resources
 
 ### Contributing
-- **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute to py3plex
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to py3plex
 - **[Architecture](ARCHITECTURE.md)** - System architecture and design patterns
 - **[Development Guide](development.md)** - Development workflow and best practices
 
@@ -99,7 +99,7 @@ To suggest new features or improvements:
 
 We welcome documentation contributions! To contribute:
 
-1. Follow the [Contributing Guide](../CONTRIBUTING.md)
+1. Follow the [Contributing Guide](CONTRIBUTING.md)
 2. Use Markdown format
 3. Include code examples that run
 4. Add links to related documentation
