@@ -39,7 +39,7 @@ def call_node2vec_binary(
         directed: Whether graph is directed (default: False)
         weighted: Whether graph is weighted (default: True)
         binary: Path to node2vec binary (default: "./node2vec")
-    
+
     Raises:
         FileNotFoundError: If binary does not exist
         PermissionError: If binary is not executable
@@ -53,7 +53,7 @@ def call_node2vec_binary(
             "or consider using pure Python alternatives like 'node2vec' or 'pecanpy' packages: "
             "pip install node2vec"
         )
-    
+
     if not os.access(binary, os.X_OK):
         raise PermissionError(
             f"Node2Vec binary at '{binary}' is not executable. "
@@ -215,7 +215,7 @@ def learn_embedding(
 ) -> tuple:
     """
     Learn node embeddings using Node2Vec.
-    
+
     Args:
         core_network: NetworkX graph
         labels: Optional node labels for evaluation
@@ -225,7 +225,7 @@ def learn_embedding(
         q: In-out parameter
         binary_path: Path to node2vec binary
         parameter_range: String representation of parameter range list
-        
+
     Returns:
         Tuple of (method_name, elapsed_time)
     """
