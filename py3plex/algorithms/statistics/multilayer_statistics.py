@@ -1108,10 +1108,10 @@ def resilience(
 
         num_to_remove = int(len(inter_layer_edges) * perturbation_param)
         np.random.seed(42)
-        edges_to_remove = np.random.choice(
+        edge_indices = np.random.choice(
             len(inter_layer_edges), size=num_to_remove, replace=False
         )
-        edges_to_remove = [inter_layer_edges[i] for i in edges_to_remove]
+        edges_to_remove = [inter_layer_edges[i] for i in edge_indices]
         perturbed_graph.remove_edges_from(edges_to_remove)
 
     # Calculate perturbed largest component size
