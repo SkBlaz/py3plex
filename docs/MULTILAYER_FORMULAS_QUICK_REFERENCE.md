@@ -412,7 +412,7 @@ coupling = mls.inter_layer_coupling_strength(network, 'L1', 'L2')
 
 ✅ **All formulas verified** (October 2025)
 
-See `MULTILAYER_STATISTICS_VERIFICATION.md` for detailed verification report.
+All formulas have been verified against canonical literature (Mucha et al. 2010, De Domenico et al. 2013, Kivelä et al. 2014, Boccaletti et al. 2014).
 
 ---
 

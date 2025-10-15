@@ -2,7 +2,7 @@
 
 This module implements 17 comprehensive statistics for multilayer and multiplex networks, following standard definitions from multilayer network analysis literature.
 
-**Formula Verification:** All formulas have been verified against canonical literature (October 2025). See `MULTILAYER_STATISTICS_VERIFICATION.md` in the repository root for detailed mathematical verification and bibliographic references.
+**Formula Verification:** All formulas have been verified against canonical literature (October 2025). See the references section below for bibliographic citations.
 
 ## Overview
 
