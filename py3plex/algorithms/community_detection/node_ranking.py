@@ -107,7 +107,7 @@ def modularity(
             w *= 2
         return w - in_degree[u] * out_degree[v] * norm
 
-    Q: float = np.sum(val(u, v) for c in communities for u, v in product(c, repeat=2))
+    Q: float = np.sum([val(u, v) for c in communities for u, v in product(c, repeat=2)])
     return float(Q * norm)
 
 

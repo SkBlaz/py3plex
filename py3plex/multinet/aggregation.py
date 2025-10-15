@@ -190,12 +190,12 @@ def _aggregate_max(
     split_indices = np.where(unique_mask)[0]
 
     # Compute max for each group
-    max_data = []
+    max_data_list = []
     for i, start in enumerate(split_indices):
         end = split_indices[i + 1] if i + 1 < len(split_indices) else len(sorted_data)
-        max_data.append(sorted_data[start:end].max())
+        max_data_list.append(sorted_data[start:end].max())
 
-    max_data = np.array(max_data)
+    max_data = np.array(max_data_list)
 
     # Get unique edge coordinates
     unique_ids = sorted_ids[unique_mask]
@@ -230,12 +230,12 @@ def _aggregate_mean(
     # Split data into groups and compute mean for each
     split_indices = np.where(unique_mask)[0]
 
-    mean_data = []
+    mean_data_list = []
     for i, start in enumerate(split_indices):
         end = split_indices[i + 1] if i + 1 < len(split_indices) else len(sorted_data)
-        mean_data.append(sorted_data[start:end].mean())
+        mean_data_list.append(sorted_data[start:end].mean())
 
-    mean_data = np.array(mean_data)
+    mean_data = np.array(mean_data_list)
 
     # Get unique edge coordinates
     unique_ids = sorted_ids[unique_mask]
