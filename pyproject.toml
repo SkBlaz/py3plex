@@ -54,6 +54,7 @@ dev = [
     "black>=23.0",
     "ruff>=0.1.0",
     "mypy>=1.0",
+    "types-six>=1.16.0",  # Type stubs for six library (mypy)
     "pre-commit>=3.0",
 ]
 # Optional: Infomap for advanced community detection
