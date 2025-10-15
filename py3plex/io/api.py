@@ -12,8 +12,8 @@ from .exceptions import FormatUnsupportedError
 from .schema import MultiLayerGraph
 
 # Type aliases
-ReaderFunc = Callable[[Union[str, Path], Dict[str, Any]], MultiLayerGraph]
-WriterFunc = Callable[[MultiLayerGraph, Union[str, Path], Dict[str, Any]], None]
+ReaderFunc = Callable[..., MultiLayerGraph]
+WriterFunc = Callable[..., None]
 
 # Internal registries
 _READERS: Dict[str, ReaderFunc] = {}

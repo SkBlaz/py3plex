@@ -957,48 +957,50 @@ class multi_layer_network:
     def get_supra_adjacency_matrix(self, mtype="sparse"):
         """
         Get sparse representation of the supra matrix.
-        
+
         Args:
             mtype: 'sparse' or 'dense' - matrix representation type
-            
+
         Returns:
             Supra-adjacency matrix in requested format
-            
+
         Warning:
-            For large multilayer networks, dense matrices can consume 
+            For large multilayer networks, dense matrices can consume
             significant memory (N*L)^2 * 8 bytes for float64.
         """
 
         if self.numeric_core_network is None:
             self._encode_to_numeric()
-        
+
         # Calculate and warn about memory usage for dense matrices
         if mtype == "dense":
             num_nodes = len(self.get_nodes())
             num_layers = len(self.get_layers())
             supra_size = num_nodes * num_layers
-            
+
             # Estimate memory for dense matrix (8 bytes per float64)
             estimated_bytes = supra_size * supra_size * 8
             estimated_gb = estimated_bytes / (1024**3)
-            
+
             if estimated_gb > 10:
                 import warnings
+
                 warnings.warn(
                     f"Dense supra-adjacency matrix will be approximately {estimated_gb:.1f} GB "
                     f"({num_nodes} nodes × {num_layers} layers = {supra_size} × {supra_size} matrix). "
                     "This may cause memory issues. Consider using mtype='sparse' instead, "
                     "or analyzing layers independently.",
                     ResourceWarning,
-                    stacklevel=2
+                    stacklevel=2,
                 )
             elif estimated_gb > 1:
                 import warnings
+
                 warnings.warn(
                     f"Dense supra-adjacency matrix will be approximately {estimated_gb:.1f} GB. "
                     "Consider using mtype='sparse' for better memory efficiency.",
                     ResourceWarning,
-                    stacklevel=2
+                    stacklevel=2,
                 )
 
         #        print(self.numeric_core_network)
@@ -1333,4 +1335,4 @@ class multi_layer_network:
 if __name__ == "__main__":
 
     multinet = multi_layer_network("../../datasets/imdb_gml.gml")
-    multinet.print_basic_stats()
+    multinet.basic_stats()

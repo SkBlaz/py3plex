@@ -4,15 +4,20 @@ import multiprocessing as mp
 import os
 import time
 from datetime import datetime
+from typing import Any
 
 from tqdm import tqdm
 
 from .core import ExperimentKB, Rule
-from .core.converters import arguments, knowledgebase, validator_object
 from .core.load import load_graph
 from .core.settings import DESCRIPTION, VERSION, logger
 from .learners import HeuristicLearner, OptimalLearner
 from .stats import Validate, adjustment, scorefunctions, significance
+
+# Global variables for multiprocessing (set by run_learner)
+arguments: dict = {}
+knowledgebase: Any = None
+validator_object: Any = None
 
 
 def _parameters_report(args, start, time_taken):

@@ -46,7 +46,8 @@ def bezier_calculate_dfy(
     x_t = [x0, midpoint_x, x1]
     y_t = [y0, midpoint_y, y1]
     cs = CubicSpline(x_t, y_t)
-    return cs(dfx)
+    result: np.ndarray = cs(dfx)
+    return result
 
 
 def draw_bezier(
@@ -148,8 +149,8 @@ def draw_bezier(
         return dfx, dfy
 
     elif mode == "cubic":
-
-        pass
+        # Cubic mode not implemented yet
+        raise NotImplementedError("Cubic bezier mode is not yet implemented")
 
     else:
         msg = "Unknown mode '{mode}' in curve calculation (value must be one of 'quadratic', 'cubic', 'quad'"

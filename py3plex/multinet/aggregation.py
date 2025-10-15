@@ -31,13 +31,13 @@ def aggregate_layers(
 ) -> Union[sp.csr_matrix, np.ndarray]:
     """
     Aggregate edge weights across multiple layers using vectorized operations.
-    
+
     This function replaces Python loops with efficient NumPy and SciPy sparse
     matrix operations for superior performance on large multilayer networks.
-    
+
     **Complexity**: O(E) where E is the number of edges
     **Memory**: O(E) for sparse output, O(N²) for dense output
-    
+
     Args:
         edges: Edge data as ndarray with shape (E, >=3) containing
                (layer, src, dst, [weight]) columns. If no weight column,
@@ -51,15 +51,15 @@ def aggregate_layers(
                 - "max": Take maximum weight across layers
         to_sparse: If True, return scipy.sparse.csr_matrix (default, memory-efficient).
                   If False, return dense numpy.ndarray.
-    
+
     Returns:
         Aggregated adjacency matrix in requested format (sparse CSR or dense).
         Shape is (N, N) where N is the maximum node ID + 1.
-    
+
     Raises:
         ValueError: If edges array has wrong shape or reducer is invalid.
         TypeError: If edges is not ndarray or list-like.
-    
+
     Examples:
         >>> import numpy as np
         >>> # Create edge list: (layer, src, dst, weight)
@@ -74,19 +74,19 @@ def aggregate_layers(
         (4, 4)
         >>> mat[0, 1]  # Sum of weights from both layers
         1.5
-        
+
         >>> # With mean aggregation
         >>> mat_mean = aggregate_layers(edges, reducer="mean", to_sparse=False)
         >>> mat_mean[0, 1]  # Average of 1.0 and 0.5
         0.75
-    
+
     Notes:
         - Node IDs are assumed to be integers starting from 0
         - Self-loops are supported
         - For directed graphs, (i,j) and (j,i) are different edges
         - Sparse output recommended for large networks (N > 1000)
         - Deterministic output for fixed input order
-    
+
     Performance:
         Achieves ≥3× speedup vs loop-based aggregation on 1M edges:
         - Legacy loop: ~2.5s for 1M edges, 4 layers
@@ -95,45 +95,46 @@ def aggregate_layers(
     # Input validation and conversion
     if isinstance(edges, list):
         edges = np.array(edges)
-    
+
     if not isinstance(edges, np.ndarray):
         raise TypeError(
             f"edges must be numpy.ndarray or list, got {type(edges).__name__}"
         )
-    
+
     if edges.ndim != 2 or edges.shape[1] < 3:
         raise ValueError(
             f"edges must have shape (E, >=3) with columns (layer, src, dst, [weight]), "
             f"got shape {edges.shape}"
         )
-    
+
     if reducer not in {"sum", "mean", "max"}:
         raise ValueError(
             f"reducer must be one of ('sum', 'mean', 'max'), got '{reducer}'"
         )
-    
+
     logger.debug(
         f"Aggregating {len(edges)} edges with reducer='{reducer}', "
         f"to_sparse={to_sparse}"
     )
-    
+
     # Extract columns
-    rows = edges[:, 1].astype(np.int32)  # Source nodes
-    cols = edges[:, 2].astype(np.int32)  # Target nodes
-    
+    rows: np.ndarray = edges[:, 1].astype(np.int32)  # Source nodes
+    cols: np.ndarray = edges[:, 2].astype(np.int32)  # Target nodes
+
     # Handle weights: use column 3 if available, else default to 1.0
+    data: np.ndarray
     if edges.shape[1] > 3:
         data = edges[:, 3].astype(np.float64)
     else:
         data = np.ones(len(rows), dtype=np.float64)
-    
+
     # Determine matrix size
     n = max(rows.max(), cols.max()) + 1
-    
+
     # Build sparse matrix from edge list
     # COO format allows duplicate (i,j) entries which we'll aggregate
     mat = sp.coo_matrix((data, (rows, cols)), shape=(n, n))
-    
+
     # Apply aggregation based on reducer
     if reducer == "sum":
         # sum_duplicates() merges duplicate (i,j) entries by summing
@@ -144,7 +145,7 @@ def aggregate_layers(
     elif reducer == "mean":
         # For mean, sum then divide by count of duplicates
         mat = _aggregate_mean(rows, cols, data, n)
-    
+
     # Convert to requested format
     if to_sparse:
         result = mat.tocsr()
@@ -167,40 +168,40 @@ def _aggregate_max(
 ) -> sp.coo_matrix:
     """
     Aggregate duplicate edges by taking maximum weight.
-    
+
     Uses vectorized groupby-like operations for efficiency.
-    
+
     Complexity: O(E log E) due to sorting
     Memory: O(E)
     """
     # Create compound index for (row, col) pairs
     # Use a stable approach that works for large indices
     edge_ids = rows * n + cols
-    
+
     # Sort by edge ID to group duplicates together
     sort_idx = np.argsort(edge_ids)
     sorted_ids = edge_ids[sort_idx]
     sorted_data = data[sort_idx]
-    
+
     # Find boundaries where edge ID changes
     unique_mask = np.concatenate([[True], sorted_ids[1:] != sorted_ids[:-1]])
-    
+
     # Split data into groups and take max of each
     split_indices = np.where(unique_mask)[0]
-    
+
     # Compute max for each group
-    max_data = []
+    max_data_list = []
     for i, start in enumerate(split_indices):
         end = split_indices[i + 1] if i + 1 < len(split_indices) else len(sorted_data)
-        max_data.append(sorted_data[start:end].max())
-    
-    max_data = np.array(max_data)
-    
+        max_data_list.append(sorted_data[start:end].max())
+
+    max_data = np.array(max_data_list)
+
     # Get unique edge coordinates
     unique_ids = sorted_ids[unique_mask]
     unique_rows = unique_ids // n
     unique_cols = unique_ids % n
-    
+
     return sp.coo_matrix((max_data, (unique_rows, unique_cols)), shape=(n, n))
 
 
@@ -209,36 +210,36 @@ def _aggregate_mean(
 ) -> sp.coo_matrix:
     """
     Aggregate duplicate edges by computing mean weight.
-    
+
     Uses vectorized operations to compute sum and count, then divide.
-    
+
     Complexity: O(E log E) due to sorting
     Memory: O(E)
     """
     # Create compound index for (row, col) pairs
     edge_ids = rows * n + cols
-    
+
     # Sort by edge ID to group duplicates together
     sort_idx = np.argsort(edge_ids)
     sorted_ids = edge_ids[sort_idx]
     sorted_data = data[sort_idx]
-    
+
     # Find boundaries where edge ID changes
     unique_mask = np.concatenate([[True], sorted_ids[1:] != sorted_ids[:-1]])
-    
+
     # Split data into groups and compute mean for each
     split_indices = np.where(unique_mask)[0]
-    
-    mean_data = []
+
+    mean_data_list = []
     for i, start in enumerate(split_indices):
         end = split_indices[i + 1] if i + 1 < len(split_indices) else len(sorted_data)
-        mean_data.append(sorted_data[start:end].mean())
-    
-    mean_data = np.array(mean_data)
-    
+        mean_data_list.append(sorted_data[start:end].mean())
+
+    mean_data = np.array(mean_data_list)
+
     # Get unique edge coordinates
     unique_ids = sorted_ids[unique_mask]
     unique_rows = unique_ids // n
     unique_cols = unique_ids % n
-    
+
     return sp.coo_matrix((mean_data, (unique_rows, unique_cols)), shape=(n, n))

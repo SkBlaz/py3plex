@@ -22,7 +22,7 @@ def modularity(
         Modularity value
     """
 
-    communities = list(communities.values())
+    communities_list: List[List[Any]] = list(communities.values())
     multigraph = G.is_multigraph()
     directed = G.is_directed()
     m = G.size(weight=weight)
@@ -48,8 +48,10 @@ def modularity(
             w *= 2
         return w - in_degree[u] * out_degree[v] * norm
 
-    Q: float = np.sum(val(u, v) for c in communities for u, v in product(c, repeat=2))
-    return Q * norm
+    Q: float = np.sum(
+        [val(u, v) for c in communities_list for u, v in product(c, repeat=2)]
+    )
+    return float(Q * norm)
 
 
 def size_distribution(network_partition: Dict[Any, List[Any]]) -> np.ndarray:
@@ -62,7 +64,8 @@ def size_distribution(network_partition: Dict[Any, List[Any]]) -> np.ndarray:
     Returns:
         Array of community sizes
     """
-    return np.array([len(x) for x in network_partition.values()])
+    result: np.ndarray = np.array([len(x) for x in network_partition.values()])
+    return result
 
 
 def number_of_communities(network_partition: Dict[Any, List[Any]]) -> int:

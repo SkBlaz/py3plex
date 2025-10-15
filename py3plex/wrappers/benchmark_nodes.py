@@ -63,7 +63,7 @@ def sparse2graph(x: sparse.spmatrix) -> Dict[str, List[str]]:
 
 def benchmark_node_classification(
     path: str, core_network: Any, labels_matrix: Any, percent: Any = "all"
-) -> Dict[str, Any]:
+) -> Dict[Any, Any]:
     """
     Benchmark node classification using embeddings.
 

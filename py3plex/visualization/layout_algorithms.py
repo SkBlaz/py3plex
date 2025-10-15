@@ -34,7 +34,7 @@ def compute_force_directed_layout(
 ) -> Dict[Any, np.ndarray]:
     """
     Compute force-directed layout for a graph using ForceAtlas2 or NetworkX spring layout.
-    
+
     Args:
         g: NetworkX graph to layout
         layout_parameters: Optional parameters to pass to layout algorithm
@@ -46,17 +46,17 @@ def compute_force_directed_layout(
         scalingRatio: Scaling factor for the layout
         forceImport: Whether to use ForceAtlas2 (if available)
         seed: Random seed for reproducibility in fallback spring layout
-        
+
     Returns:
         Dictionary mapping nodes to 2D position arrays
-        
+
     Note:
         For large networks (>1000 nodes), this may be slow. Consider using
         faster layouts (circular, random, spectral) or matrix visualization.
     """
 
     num_nodes = len(g.nodes())
-    
+
     # Warn about performance for large networks
     if num_nodes > 10000:
         logger.warning(
@@ -64,18 +64,18 @@ def compute_force_directed_layout(
             "This may take a very long time and consume significant memory. "
             "Consider using faster layout algorithms (circular, random, spectral) "
             "or visualizing the adjacency matrix instead.",
-            num_nodes
+            num_nodes,
         )
     elif num_nodes > 5000:
         logger.warning(
             "Force-directed layout requested for %d nodes. "
             "This may take several minutes. Consider reducing iterations or using a faster layout.",
-            num_nodes
+            num_nodes,
         )
     elif num_nodes > 1000 and verbose:
         logger.info(
             "Computing force-directed layout for %d nodes. This may take 10-60 seconds.",
-            num_nodes
+            num_nodes,
         )
 
     if forceImport:
@@ -105,7 +105,9 @@ def compute_force_directed_layout(
             else:
                 pos = forceatlas2.forceatlas2_networkx_layout(g)
 
-            norm = np.max([np.abs(x) for x in itertools.chain(zip(*pos.values()))])
+            norm: float = np.max(
+                [np.abs(x) for x in itertools.chain(zip(*pos.values()))]
+            )
             pos_pairs = [np.array([(a / norm), (b / norm)]) for a, b in pos.values()]
             pos = dict(zip(pos.keys(), pos_pairs))
 
@@ -130,25 +132,28 @@ def compute_force_directed_layout(
         )
 
     # return positions
+    result: Dict[Any, np.ndarray] = pos
+    return result
 
-    return pos
 
-
-def compute_random_layout(g: nx.Graph, seed: Optional[int] = None) -> Dict[Any, np.ndarray]:
+def compute_random_layout(
+    g: nx.Graph, seed: Optional[int] = None
+) -> Dict[Any, np.ndarray]:
     """
     Compute a random layout for the graph.
-    
+
     Args:
         g: NetworkX graph
         seed: Random seed for reproducibility
-        
+
     Returns:
         Dictionary mapping nodes to 2D positions
     """
     from py3plex.utils import get_rng
+
     rng = get_rng(seed)
-    pos = {n: rng.random(2) for n in g.nodes()}
-    return pos
+    result: Dict[Any, np.ndarray] = {n: rng.random(2) for n in g.nodes()}
+    return result
 
 
 if __name__ == "__main__":

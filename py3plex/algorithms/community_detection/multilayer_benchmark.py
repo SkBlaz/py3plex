@@ -11,9 +11,9 @@ Includes:
 - Support for partial node presence across layers
 
 References:
-    Lancichinetti et al., "Benchmark graphs for testing community detection 
+    Lancichinetti et al., "Benchmark graphs for testing community detection
     algorithms", Phys. Rev. E 78, 046110 (2008)
-    
+
     Granell et al., "Benchmark model to assess community structure in evolving
     networks", Phys. Rev. E 92, 012805 (2015)
 """
@@ -80,15 +80,15 @@ def generate_multilayer_lfr(
 
     Examples:
         >>> from py3plex.algorithms.community_detection.multilayer_benchmark import generate_multilayer_lfr
-        >>> 
+        >>>
         >>> # Generate with identical communities across layers
         >>> network, communities = generate_multilayer_lfr(
-        ...     n=100, 
+        ...     n=100,
         ...     layers=['L1', 'L2', 'L3'],
         ...     mu=0.1,
         ...     community_persistence=1.0
         ... )
-        >>> 
+        >>>
         >>> # Generate with evolving communities
         >>> network, communities = generate_multilayer_lfr(
         ...     n=100,
@@ -99,19 +99,19 @@ def generate_multilayer_lfr(
     """
     if seed is not None:
         np.random.seed(seed)
-    
+
     from py3plex.core import multinet
-    
+
     if max_community is None:
         max_community = n // 2
-    
+
     # Convert single values to lists
     n_layers = len(layers)
     if isinstance(mu, (int, float)):
         mu = [float(mu)] * n_layers
     if isinstance(avg_degree, (int, float)):
         avg_degree = [float(avg_degree)] * n_layers
-    
+
     # Determine which nodes appear in which layers
     if node_overlap < 1.0:
         # Some nodes don't appear in all layers
@@ -123,26 +123,28 @@ def generate_multilayer_lfr(
             else:
                 # Node appears in subset of layers
                 n_present = np.random.randint(1, n_layers + 1)
-                node_layers[node] = set(np.random.choice(layers, n_present, replace=False))
+                node_layers[node] = set(
+                    np.random.choice(layers, n_present, replace=False)
+                )
     else:
         # All nodes in all layers (full multiplex)
         node_layers = {node: set(layers) for node in range(n)}
-    
+
     # Generate initial community structure (for first layer or reference)
     communities = _generate_power_law_communities(
         n, tau2, min_community, max_community, seed
     )
-    
+
     # Handle overlapping communities
     if overlapping_nodes > 0:
         communities = _add_overlapping_nodes(
             communities, overlapping_nodes, overlapping_membership, seed
         )
-    
+
     # Generate layer-specific communities
     layer_communities = {}
     prev_communities = communities
-    
+
     for i, layer in enumerate(layers):
         if i == 0:
             # First layer uses the base communities
@@ -165,43 +167,43 @@ def generate_multilayer_lfr(
                             new_communities[node] = {new_com}
             layer_communities[layer] = new_communities
             prev_communities = new_communities
-    
+
     # Generate network structure for each layer
     if directed:
         G = nx.MultiDiGraph()
     else:
         G = nx.MultiGraph()
-    
+
     for layer_idx, layer in enumerate(layers):
         layer_mu = mu[layer_idx]
         layer_avg_deg = avg_degree[layer_idx]
         layer_coms = layer_communities[layer]
-        
+
         # Get nodes present in this layer
         layer_nodes = [node for node in range(n) if layer in node_layers[node]]
-        
+
         if not layer_nodes:
             continue
-        
+
         # Generate degree sequence with power law
         degrees = _generate_power_law_degrees(
             len(layer_nodes), tau1, layer_avg_deg, seed
         )
-        
+
         # Build community graph
         edges = _generate_lfr_edges(
             layer_nodes, degrees, layer_coms, layer_mu, directed, seed
         )
-        
+
         # Add edges to multilayer network
         for u, v in edges:
             G.add_edge((u, layer), (v, layer), weight=1)
-    
+
     # Create py3plex network
     network = multinet.multi_layer_network(
         network_type="multiplex", directed=directed
     ).load_network(G, input_type="nx", directed=directed)
-    
+
     # Convert communities to (node, layer) format
     ground_truth = {}
     for layer in layers:
@@ -209,7 +211,7 @@ def generate_multilayer_lfr(
             for node, coms in layer_communities[layer].items():
                 if layer in node_layers[node]:
                     ground_truth[(node, layer)] = coms
-    
+
     return network, ground_truth
 
 
@@ -246,7 +248,7 @@ def generate_coupled_er_multilayer(
 
     Examples:
         >>> from py3plex.algorithms.community_detection.multilayer_benchmark import generate_coupled_er_multilayer
-        >>> 
+        >>>
         >>> # Full multiplex ER network
         >>> network = generate_coupled_er_multilayer(
         ...     n=100,
@@ -255,7 +257,7 @@ def generate_coupled_er_multilayer(
         ...     omega=1.0,
         ...     coupling_probability=1.0
         ... )
-        >>> 
+        >>>
         >>> # Partially coupled (interdependent)
         >>> network = generate_coupled_er_multilayer(
         ...     n=100,
@@ -267,37 +269,37 @@ def generate_coupled_er_multilayer(
     """
     if seed is not None:
         np.random.seed(seed)
-    
+
     from py3plex.core import multinet
-    
+
     n_layers = len(layers)
-    
+
     # Convert single value to list
     if isinstance(p, (int, float)):
         p = [float(p)] * n_layers
-    
+
     # Create base graph
     if directed:
         G = nx.MultiDiGraph()
     else:
         G = nx.MultiGraph()
-    
+
     # Generate ER graph for each layer
     for layer_idx, layer in enumerate(layers):
         layer_p = p[layer_idx]
-        
+
         # Generate random edges
         for i in range(n):
             for j in range(i + 1, n) if not directed else range(n):
                 if i != j and np.random.random() < layer_p:
                     G.add_edge((i, layer), (j, layer), weight=1)
-    
+
     # Add inter-layer coupling
     if omega > 0:
         coupled_nodes = np.random.choice(
             n, size=int(n * coupling_probability), replace=False
         )
-        
+
         for node in coupled_nodes:
             # Add coupling between all layer pairs for this node
             for i in range(n_layers):
@@ -307,14 +309,14 @@ def generate_coupled_er_multilayer(
                         (node, layers[i]),
                         (node, layers[j]),
                         weight=omega,
-                        type="coupling"
+                        type="coupling",
                     )
-    
+
     # Create py3plex network
     network = multinet.multi_layer_network(
         network_type="multiplex", directed=directed
     ).load_network(G, input_type="nx", directed=directed)
-    
+
     return network
 
 
@@ -351,13 +353,13 @@ def generate_sbm_multilayer(
 
     Examples:
         >>> from py3plex.algorithms.community_detection.multilayer_benchmark import generate_sbm_multilayer
-        >>> 
+        >>>
         >>> # Define initial communities
         >>> communities = [
         ...     {0, 1, 2, 3, 4},  # Community 0
         ...     {5, 6, 7, 8, 9}   # Community 1
         ... ]
-        >>> 
+        >>>
         >>> network, ground_truth = generate_sbm_multilayer(
         ...     n=10,
         ...     layers=['L1', 'L2'],
@@ -369,24 +371,24 @@ def generate_sbm_multilayer(
     """
     if seed is not None:
         np.random.seed(seed)
-    
+
     from py3plex.core import multinet
-    
+
     n_layers = len(layers)
     n_communities = len(communities)
-    
+
     # Convert single values to lists
     if isinstance(p_in, (int, float)):
         p_in = [float(p_in)] * n_layers
     if isinstance(p_out, (int, float)):
         p_out = [float(p_out)] * n_layers
-    
+
     # Initialize node-to-community mapping
     node_to_com_initial = {}
     for com_id, com_nodes in enumerate(communities):
         for node in com_nodes:
             node_to_com_initial[node] = com_id
-    
+
     # Generate layer-specific community assignments
     layer_communities = {}
     for i, layer in enumerate(layers):
@@ -397,59 +399,60 @@ def generate_sbm_multilayer(
             # Subsequent layers: persist with probability
             new_assignment = {}
             for node in range(n):
-                if node in layer_communities[layers[i-1]]:
+                if node in layer_communities[layers[i - 1]]:
                     if np.random.random() < community_persistence:
                         # Keep same community
-                        new_assignment[node] = layer_communities[layers[i-1]][node]
+                        new_assignment[node] = layer_communities[layers[i - 1]][node]
                     else:
                         # Reassign to random community
                         new_assignment[node] = np.random.randint(n_communities)
             layer_communities[layer] = new_assignment
-    
+
     # Generate network
     if directed:
         G = nx.MultiDiGraph()
     else:
         G = nx.MultiGraph()
-    
+
     for layer_idx, layer in enumerate(layers):
         layer_p_in = p_in[layer_idx]
         layer_p_out = p_out[layer_idx]
         node_to_com = layer_communities[layer]
-        
+
         # Generate edges based on SBM
         for i in range(n):
             for j in range(i + 1, n) if not directed else range(n):
                 if i == j:
                     continue
-                
+
                 com_i = node_to_com.get(i, -1)
                 com_j = node_to_com.get(j, -1)
-                
+
                 # Determine connection probability
                 if com_i == com_j:
                     prob = layer_p_in
                 else:
                     prob = layer_p_out
-                
+
                 if np.random.random() < prob:
                     G.add_edge((i, layer), (j, layer), weight=1)
-    
+
     # Create py3plex network
     network = multinet.multi_layer_network(
         network_type="multiplex", directed=directed
     ).load_network(G, input_type="nx", directed=directed)
-    
+
     # Convert to ground truth format
     ground_truth = {}
     for layer in layers:
         for node, com in layer_communities[layer].items():
             ground_truth[(node, layer)] = com
-    
+
     return network, ground_truth
 
 
 # Helper functions
+
 
 def _generate_power_law_communities(
     n: int,
@@ -461,39 +464,41 @@ def _generate_power_law_communities(
     """Generate communities with power-law size distribution."""
     if seed is not None:
         np.random.seed(seed)
-    
+
     communities = {}
-    assigned = set()
+    assigned: Set[int] = set()
     com_id = 0
-    
+
     while len(assigned) < n:
         # Sample community size from power law
         size = int(np.random.pareto(tau - 1) * min_size)
         size = max(min_size, min(size, max_size))
         size = min(size, n - len(assigned))
-        
+
         if size < min_size:
             size = n - len(assigned)
-        
+
         # Assign random unassigned nodes to this community
         available = [node for node in range(n) if node not in assigned]
         if not available:
             break
-        
-        com_nodes = np.random.choice(available, size=min(size, len(available)), replace=False)
+
+        com_nodes = np.random.choice(
+            available, size=min(size, len(available)), replace=False
+        )
         communities[com_id] = {com_id}  # Each node initially has one community
-        
+
         for node in com_nodes:
             assigned.add(node)
-        
+
         com_id += 1
-    
+
     # Convert to node -> community mapping
     node_to_com = {}
     for node in range(n):
         # Find which community this node belongs to (simplified assignment)
         node_to_com[node] = {node % com_id}  # Simple round-robin for now
-    
+
     return node_to_com
 
 
@@ -506,29 +511,29 @@ def _add_overlapping_nodes(
     """Add overlapping community memberships to nodes."""
     if seed is not None:
         np.random.seed(seed)
-    
+
     nodes = list(communities.keys())
     if n_overlapping > len(nodes):
         n_overlapping = len(nodes)
-    
+
     overlapping_nodes = np.random.choice(nodes, n_overlapping, replace=False)
-    
+
     all_communities = set()
     for coms in communities.values():
         all_communities.update(coms)
-    all_communities = list(all_communities)
-    
+    all_communities_list: List[int] = list(all_communities)
+
     for node in overlapping_nodes:
         # Add additional communities
         current_coms = communities[node]
-        available_coms = [c for c in all_communities if c not in current_coms]
-        
+        available_coms = [c for c in all_communities_list if c not in current_coms]
+
         if available_coms:
             n_add = min(n_memberships - len(current_coms), len(available_coms))
             if n_add > 0:
                 new_coms = np.random.choice(available_coms, n_add, replace=False)
                 communities[node].update(new_coms)
-    
+
     return communities
 
 
@@ -541,18 +546,19 @@ def _generate_power_law_degrees(
     """Generate degree sequence with power-law distribution."""
     if seed is not None:
         np.random.seed(seed)
-    
+
     # Sample from power law
     degrees = np.random.pareto(tau - 1, n) * (avg_degree / 2)
     degrees = np.maximum(degrees, 1)  # At least degree 1
     degrees = degrees.astype(int)
-    
+
     # Ensure even sum for undirected graph
-    total: int = np.sum(degrees)
+    total: int = int(np.sum(degrees))
     if total % 2 != 0:
         degrees[0] += 1
-    
-    return degrees
+
+    result: np.ndarray = degrees
+    return result
 
 
 def _generate_lfr_edges(
@@ -566,10 +572,10 @@ def _generate_lfr_edges(
     """Generate edges for LFR benchmark with mixing parameter mu."""
     if seed is not None:
         np.random.seed(seed)
-    
+
     edges = []
     node_to_idx = {node: i for i, node in enumerate(nodes)}
-    
+
     # Build community structure
     com_to_nodes: dict = {}
     for node, coms in communities.items():
@@ -578,45 +584,47 @@ def _generate_lfr_edges(
                 if com not in com_to_nodes:
                     com_to_nodes[com] = []
                 com_to_nodes[com].append(node)
-    
+
     # Generate edges for each node
     for i, node in enumerate(nodes):
         deg = degrees[i]
-        
+
         # Determine internal vs external edges
         n_internal = int(deg * (1 - mu))
-        n_external: int = deg - n_internal
-        
+        n_external = int(deg - n_internal)
+
         # Get node's communities
         node_coms = communities.get(node, {0})
-        
+
         # Internal edges (within community)
         internal_candidates = []
         for com in node_coms:
             if com in com_to_nodes:
                 internal_candidates.extend([n for n in com_to_nodes[com] if n != node])
-        
+
         if internal_candidates:
             internal_targets = np.random.choice(
                 internal_candidates,
                 size=min(n_internal, len(internal_candidates)),
-                replace=False
+                replace=False,
             )
             for target in internal_targets:
                 if node < target or directed:
                     edges.append((node, target))
-        
+
         # External edges (outside community)
-        external_candidates = [n for n in nodes if n != node and n not in internal_candidates]
-        
+        external_candidates = [
+            n for n in nodes if n != node and n not in internal_candidates
+        ]
+
         if external_candidates:
             external_targets = np.random.choice(
                 external_candidates,
                 size=min(n_external, len(external_candidates)),
-                replace=False
+                replace=False,
             )
             for target in external_targets:
                 if node < target or directed:
                     edges.append((node, target))
-    
+
     return edges

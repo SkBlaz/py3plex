@@ -29,9 +29,9 @@ def pick_threshold(matrix: np.ndarray) -> float:
         tmp_array[tmp_array < j] = 0
         np.fill_diagonal(tmp_array, 0)  # self loops
         rw_sum = np.sum(tmp_array, axis=0)
-        counts = Counter(rw_sum)
-        key_counts = np.log(list(counts.keys()))
-        counts = np.log(list(counts.values()))
+        count_dict = Counter(rw_sum)
+        key_counts = np.log(list(count_dict.keys()))
+        counts = np.log(list(count_dict.values()))
         slope, intercept, r_value, p_value, std_err = stats.linregress(
             key_counts, counts
         )
@@ -39,8 +39,8 @@ def pick_threshold(matrix: np.ndarray) -> float:
             logger.debug("Updating R^2: %s", r_value)
             current_r_opt = r_value
         if r_value > 0.80:
-            return j
-    return current_r_opt
+            return float(j)
+    return float(current_r_opt)
 
 
 def default_correlation_to_network(

@@ -505,15 +505,16 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 - ✅ CHANGELOG.md created
 - ✅ Coverage badge and Codecov integration
 - ✅ Automatic documentation building (GitHub Actions + Pages)
+- ✅ Mypy type checking enforced in CI (all 112 source files pass)
 
 **Top Remaining Priorities**:
 1. Move AGPL Infomap code to separate optional package
-2. Enforce mypy in CI (fix remaining ~40 type errors)
-3. Add deprecation warnings for legacy APIs
-4. Prepare 1.0.0 release
-5. Expand test coverage to 30%+
+2. Add deprecation warnings for legacy APIs
+3. Prepare 1.0.0 release
+4. Expand test coverage to 30%+
+5. Standardize algorithm output schemas
 
-**Current Focus**: Modernization Phase 2 (95% complete)
+**Current Focus**: Modernization Phase 2 (98% complete)
 
 ## Repository Status
 
@@ -523,7 +524,7 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 
 **Modernization Progress** (October 2025):
 - Phase 1: ✅ Complete (bare except clauses, wildcard imports, Python 3.8+)
-- Phase 2: ~95% Complete (logging, type hints 65.4%, test infrastructure, modern I/O)
+- Phase 2: ~98% Complete (logging, type hints 65.4%, test infrastructure, modern I/O, mypy enforcement)
 - Phase 3: Planned (complete wildcard cleanup, 50%+ test coverage)
 - Phase 4: Planned (100% type hints, 70%+ test coverage, performance optimization)
 
