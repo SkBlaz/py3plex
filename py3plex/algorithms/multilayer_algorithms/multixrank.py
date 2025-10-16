@@ -15,12 +15,15 @@ References:
     - Docs: https://multixrank-doc.readthedocs.io/
 """
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import scipy.sparse as sp
 
 from py3plex.logging_config import get_logger
+
+if TYPE_CHECKING:
+    from py3plex.core import multinet
 
 logger = get_logger(__name__)
 
@@ -93,7 +96,7 @@ class MultiXRank:
         if not sp.issparse(supra_adjacency):
             supra_adjacency = sp.csr_matrix(supra_adjacency)
         else:
-            supra_adjacency = supra_adjacency.tocsr()
+            supra_adjacency = supra_adjacency.tocsr()  # type: ignore[union-attr]
 
         if supra_adjacency.shape[0] != supra_adjacency.shape[1]:
             raise ValueError(f"Supra-adjacency matrix for '{name}' must be square")
@@ -135,7 +138,7 @@ class MultiXRank:
         if not sp.issparse(bipartite_matrix):
             bipartite_matrix = sp.csr_matrix(bipartite_matrix)
         else:
-            bipartite_matrix = bipartite_matrix.tocsr()
+            bipartite_matrix = bipartite_matrix.tocsr()  # type: ignore[union-attr]
 
         # Verify dimensions match
         expected_rows = self._multiplex_dims[multiplex_from]
@@ -160,7 +163,7 @@ class MultiXRank:
             )
 
     def build_supra_heterogeneous_matrix(
-        self, block_weights: Optional[Dict[str, float]] = None
+        self, block_weights: Optional[Dict[Union[str, Tuple[str, str]], float]] = None
     ):
         """
         Build the supra-heterogeneous adjacency matrix S.
@@ -431,12 +434,12 @@ class MultiXRank:
             offset = self._multiplex_offsets[multiplex_name]
             if isinstance(seed_nodes, np.ndarray):
                 seed_nodes = seed_nodes.tolist()
-            return [idx + offset for idx in seed_nodes]
+            return [int(idx) + offset for idx in seed_nodes]
 
         else:
             # Assume global indices
             if isinstance(seed_nodes, np.ndarray):
-                return seed_nodes.tolist()
+                return list(seed_nodes.tolist())
             return list(seed_nodes)
 
     def aggregate_scores(
