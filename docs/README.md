@@ -9,21 +9,15 @@ This directory contains comprehensive documentation for py3plex. Choose the guid
 
 ## User Guides
 
-### Core Concepts
-- **[Multilayer Networks Overview](multilayer_networks_overview.md)** - Introduction to multilayer network concepts
-- **[Network Construction](network_construction_guide.md)** - How to create and load networks
-
-### Algorithms
+### Algorithms and Analysis
 - **[Algorithm Selection Guide](algorithm_selection_guide.md)** - Choose the right algorithm for your task
-- **[Algorithm Citations](ALGORITHM_CITATIONS.md)** - Academic references for implemented algorithms
-- **[Community Detection](community_detection_guide.md)** - Community detection algorithms and usage
+- **[Algorithm Citations](ALGORITHM_CITATIONS.md)** - Academic references for implemented algorithms with DOIs
 - **[Multilayer Centrality Tutorial](multilayer_centrality_tutorial.md)** - Centrality measures for multilayer networks
 - **[Multilayer Modularity Tutorial](multilayer_modularity_tutorial.md)** - Computing modularity in multilayer networks
+- **[Multilayer Formulas Quick Reference](MULTILAYER_FORMULAS_QUICK_REFERENCE.md)** - Mathematical formulas and metrics
 
 ### Visualization
-- **[Visualization Guide](visualization_guide.md)** - Overview of visualization options
 - **[Layout Coordinates](LAYOUT_COORDINATES.md)** - Understanding coordinate systems and conventions
-- **[Color Schemes](color_schemes_guide.md)** - Working with color palettes
 
 ## Developer Resources
 
@@ -31,10 +25,14 @@ This directory contains comprehensive documentation for py3plex. Choose the guid
 - **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to py3plex
 - **[Architecture](ARCHITECTURE.md)** - System architecture and design patterns
 - **[Development Guide](development.md)** - Development workflow and best practices
+- **[Quick Reference](QUICK_REFERENCE.md)** - Cheat sheet for common operations
+
+### Additional Resources
+- **[Open Issues Analysis](OPEN_ISSUES_ANALYSIS_2025-10-14.md)** - Status of open issues and roadmap items
 
 ### API Reference
-- **[API Documentation](api_reference.md)** - Full API reference
-- Sphinx Documentation: [ReadTheDocs](https://py3plex.readthedocs.io)
+- **Sphinx Documentation**: Build locally with `cd docfiles && make html`
+- **API details**: See the [examples/](../examples/) directory for usage patterns
 
 ## Additional Resources
 
@@ -61,17 +59,19 @@ See the [tests/](../tests/) directory for:
 
 ```
 docs/
-├── README.md                          ← You are here
-├── 10min_tutorial.md                  ← Quick start guide
-├── ALGORITHM_CITATIONS.md             ← Academic references
-├── ARCHITECTURE.md                    ← System design
-├── LAYOUT_COORDINATES.md              ← Visualization coordinates
-├── algorithm_selection_guide.md       ← Algorithm guide
-├── community_detection_guide.md       ← Community detection
-├── development.md                     ← Development workflow
-├── multilayer_centrality_tutorial.md  ← Centrality tutorial
-├── multilayer_modularity_tutorial.md  ← Modularity tutorial
-└── ... (other guides)
+├── README.md                            ← You are here
+├── 10min_tutorial.md                    ← Quick start guide
+├── ALGORITHM_CITATIONS.md               ← Academic references with DOIs
+├── ARCHITECTURE.md                      ← System design
+├── CONTRIBUTING.md                      ← Contribution guidelines
+├── LAYOUT_COORDINATES.md                ← Visualization coordinates
+├── QUICK_REFERENCE.md                   ← Quick reference guide
+├── MULTILAYER_FORMULAS_QUICK_REFERENCE.md ← Mathematical formulas
+├── algorithm_selection_guide.md         ← Algorithm guide
+├── development.md                       ← Development workflow
+├── multilayer_centrality_tutorial.md    ← Centrality tutorial
+├── multilayer_modularity_tutorial.md    ← Modularity tutorial
+└── OPEN_ISSUES_ANALYSIS_2025-10-14.md   ← Status and roadmap
 ```
 
 ## Getting Help

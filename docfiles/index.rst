@@ -64,7 +64,7 @@ Documentation Structure
    :maxdepth: 2
    :caption: API documentation:
 			 
-   AUTOGEN_results/modules.rst
+   apidocs.rst
    
 Examples & Tutorials
 ====================

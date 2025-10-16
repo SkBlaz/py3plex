@@ -49,6 +49,21 @@ docfiles/_build/
 docfiles/build/
 docs/_build/
 
+# Generated HTML documentation (should be built, not committed)
+docs/*.html
+docs/**/*.html
+docs/_static/
+docs/_sources/
+docs/_images/
+docs/objects.inv
+docs/searchindex.js
+
+# Auto-generated API documentation
+docfiles/AUTOGEN_results/
+docfiles/sources/
+docfiles/source/
+docfiles/_sources/
+
 # Binaries (users should install separately)
 bin/Infomap
 bin/node2vec
