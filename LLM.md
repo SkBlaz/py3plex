@@ -54,6 +54,9 @@ py3plex/
 │   │   │   ├── powerlaw.py           → Power-law fitting for degree distributions
 │   │   │   └── bayesian*.py          → Bayesian statistical testing frameworks
 │   │   ├── multilayer_algorithms/    → Algorithms specific to multilayer networks
+│   │   │   ├── centrality.py         → Multilayer centrality measures (degree, betweenness, closeness, etc.)
+│   │   │   ├── entanglement.py       → Layer entanglement and interdependence metrics
+│   │   │   └── multixrank.py         → MultiXRank: Random walk with restart on universal multilayer networks
 │   │   ├── network_classification/   → Network-level classification
 │   │   ├── node_ranking/             → Node importance and centrality algorithms
 │   │   ├── hedwig/                   → Semantic subgroup discovery
@@ -120,6 +123,7 @@ Inter-module relationships follow a layered architecture: `core` provides founda
 | `algorithms/statistics/enrichment.py` | Statistical enrichment analysis for identifying over-represented patterns, motifs, or node attributes in network subgraphs. |
 | `algorithms/node_ranking/node_ranking.py` | Centrality measures including PageRank, betweenness, closeness, and eigenvector centrality adapted for multilayer networks. |
 | `algorithms/multilayer_algorithms/` | Specialized algorithms for multilayer analysis: inter-layer coupling strength, layer similarity, aggregation strategies. |
+| `algorithms/multilayer_algorithms/multixrank.py` | MultiXRank implementation: Random walk with restart on universal multilayer networks with supra-heterogeneous adjacency construction and bipartite inter-multiplex connections. |
 | `visualization/multilayer.py` | Core visualization functions for multilayer networks: diagonal projection plots, supra-adjacency heatmaps, layered spring layouts, and 3D interactive renderings. |
 | `visualization/drawing_machinery.py` | Low-level drawing primitives for node placement, edge routing, label rendering, and visual attribute mapping. |
 | `visualization/layout_algorithms.py` | Layout computation algorithms including force-directed (FA2), spring, circular, and spectral layouts optimized for multilayer structures. |
@@ -260,6 +264,90 @@ resilience = mls.resilience(network, 'layer_removal', perturbation_param='layer1
 - **Eigenvector centrality**: Influence based on network connectivity structure
 - **PageRank**: Web-page ranking adapted for multilayer networks with teleportation
 - **Personalized PageRank (PPR)**: Query-based node importance with custom restart distributions
+- **MultiXRank**: Universal multilayer network exploration by random walk with restart (RWR) on supra-heterogeneous adjacency matrices
+
+### MultiXRank: Universal Multilayer Network Exploration
+
+**MultiXRank** (Baptista et al., 2022) implements Random Walk with Restart (RWR) on universal multilayer networks for node prioritization and ranking. It builds a **supra-heterogeneous adjacency matrix** by combining multiple multiplexes (each with its own supra-adjacency) connected via bipartite blocks, then performs RWR to compute steady-state node scores.
+
+**Algorithm Overview**:
+1. **Supra-heterogeneous matrix construction**: Place multiplex supra-adjacency matrices on block diagonal; add bipartite inter-multiplex connection blocks off-diagonal
+2. **Column-stochastic normalization**: Normalize to transition matrix Ṡ where each column sums to 1 (handles dangling nodes)
+3. **Random Walk with Restart**: Iterate `p_{t+1} = (1-r)·Ṡ·p_t + r·p_0` until convergence (|p_{t+1} - p_t|₁ < ε)
+4. **Score aggregation**: Aggregate node-replica scores to physical nodes; extract top-k rankings
+
+**Key Features**:
+- Supports arbitrary number of multiplexes with different dimensions
+- Handles directed/undirected, weighted/unweighted networks
+- Optional block reweighting (emphasize/de-emphasize within-multiplex vs. cross-multiplex transitions)
+- Configurable restart probability r (commonly 0.3-0.5)
+- Efficient sparse matrix operations for scalability
+
+**Mathematical Core**:
+- Build universal supra-heterogeneous adjacency `S := [[A₁, B₁₂, ...], [B₂₁, A₂, ...], ...]` where Aₖ are multiplex supra-adjacency matrices and Bₖₗ are bipartite inter-multiplex blocks
+- Column-normalize: `Ṡ[i,j] = S[i,j] / Σᵢ S[i,j]` for each column j
+- RWR update: `p^(t+1) = (1-r)·Ṡ·p^(t) + r·p⁰` where p⁰ is normalized seed vector
+- Convergence: Stop when `‖p^(t+1) - p^(t)‖₁ < ε`
+
+**Implementation** (`algorithms/multilayer_algorithms/multixrank.py`):
+```python
+from py3plex.algorithms.multilayer_algorithms.multixrank import MultiXRank
+
+# Initialize
+mxr = MultiXRank(restart_prob=0.4, epsilon=1e-6, max_iter=100000)
+
+# Add multiplexes (can use supra-adjacency from multi_layer_network)
+mxr.add_multiplex('net1', supra_adj1, node_order=['A', 'B', 'C'])
+mxr.add_multiplex('net2', supra_adj2, node_order=['X', 'Y', 'Z'])
+
+# Add bipartite inter-multiplex connections
+mxr.add_bipartite_block('net1', 'net2', bipartite_matrix)
+
+# Build and normalize
+mxr.build_supra_heterogeneous_matrix(block_weights={'net1': 1.5})
+mxr.column_normalize(handle_dangling='uniform')
+
+# Run RWR from seed nodes
+scores = mxr.random_walk_with_restart({'net1': [0, 1]})
+
+# Aggregate scores per multiplex
+aggregated = mxr.aggregate_scores(scores)
+
+# Get top-k ranked nodes
+top_k = mxr.get_top_ranked(scores, k=10, exclude_seeds=True)
+```
+
+**Convenience function for py3plex networks**:
+```python
+from py3plex.algorithms.multilayer_algorithms.multixrank import multixrank_from_py3plex_networks
+
+networks = {'ppi': ppi_network, 'gene': gene_network}
+bipartite_connections = {('ppi', 'gene'): bipartite_matrix}
+seed_nodes = {'ppi': ['protein1', 'protein2']}
+
+mxr, scores = multixrank_from_py3plex_networks(
+    networks, bipartite_connections, seed_nodes, restart_prob=0.4
+)
+```
+
+**Applications**:
+- Node prioritization: Rank nodes by proximity to seed set (e.g., disease-gene prioritization)
+- Link prediction: Use RWR scores to predict missing edges in evaluation protocols
+- Subnetwork extraction: Identify high-scoring neighborhoods around seeds
+- Cross-network propagation: Propagate information across heterogeneous networks via bipartite connections
+
+**Reference**:
+- Baptista et al. (2022), "Universal multilayer network exploration by random walk with restart", *Communications Physics*, 5, 170. [DOI: 10.1038/s42005-022-00937-9](https://doi.org/10.1038/s42005-022-00937-9)
+- arXiv preprint: [https://arxiv.org/abs/2106.07869](https://arxiv.org/abs/2106.07869)
+- Official package: [https://github.com/anthbapt/multixrank](https://github.com/anthbapt/multixrank)
+- Documentation: [https://multixrank-doc.readthedocs.io/](https://multixrank-doc.readthedocs.io/)
+
+**Testing**: Comprehensive test suite in `tests/test_multixrank.py` validates supra-heterogeneous adjacency construction, column normalization, RWR convergence, bipartite connections, and integration with py3plex networks (25 test cases).
+
+**Example**: See `examples/example_multixrank.py` for detailed usage demonstrating:
+1. Two multiplexes with bipartite connections
+2. Integration with py3plex multi_layer_network objects
+3. Detailed supra-adjacency construction with 2-layer multiplex
 
 ### Community Detection
 - **Louvain algorithm**: Modularity optimization for non-overlapping communities (`community_louvain.py`)
