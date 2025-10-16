@@ -27,42 +27,80 @@ print("MultiXRank Example: Universal Multilayer Network Exploration")
 print("=" * 70)
 
 # ============================================================================
-# Example 1: Basic MultiXRank with Two Multiplexes
+# Example 1: Building Networks with py3plex Data Structures
 # ============================================================================
 print("\n" + "=" * 70)
-print("Example 1: Two Multiplexes with Bipartite Connections")
+print("Example 1: Building Networks with py3plex Data Structures")
 print("=" * 70)
 
-# Create first multiplex: Social network (3 nodes)
-# Node arrangement: A-B-C in a line
-social_network = sp.csr_matrix([
-    [0, 1, 0],  # A connects to B
-    [1, 0, 1],  # B connects to A and C
-    [0, 1, 0]   # C connects to B
-], dtype=float)
+# Create first multiplex using py3plex: Social network
+# Build a 2-layer social network with 3 people (A, B, C)
+print("\nCreating social multiplex network with py3plex...")
+social_net = multinet.multi_layer_network(directed=False)
 
-# Create second multiplex: Collaboration network (3 nodes)
-# Node arrangement: X-Y-Z in a triangle
-collab_network = sp.csr_matrix([
-    [0, 1, 1],  # X connects to Y and Z
-    [1, 0, 1],  # Y connects to X and Z
-    [1, 1, 0]   # Z connects to X and Y
-], dtype=float)
+# Layer 1: Face-to-face interactions (A-B-C in a line)
+social_net.add_edges([
+    ['A', 'face2face', 'B', 'face2face', 1],
+    ['B', 'face2face', 'C', 'face2face', 1]
+], input_type='list')
+
+# Layer 2: Online interactions (A, B, and C form a triangle)
+social_net.add_edges([
+    ['A', 'online', 'B', 'online', 1],
+    ['B', 'online', 'C', 'online', 1],
+    ['C', 'online', 'A', 'online', 1]
+], input_type='list')
+
+print(f"Social network has {len(list(social_net.get_nodes()))} unique node-layer pairs")
+print(f"Social network has {len(social_net.get_layers()[0])} layers: {social_net.get_layers()[0]}")
+
+# Create second multiplex using py3plex: Collaboration network
+print("\nCreating collaboration multiplex network with py3plex...")
+collab_net = multinet.multi_layer_network(directed=False)
+
+# Layer 1: Project collaborations (X, Y, Z all connected)
+collab_net.add_edges([
+    ['X', 'project', 'Y', 'project', 1],
+    ['Y', 'project', 'Z', 'project', 1],
+    ['Z', 'project', 'X', 'project', 1]
+], input_type='list')
+
+# Layer 2: Co-authorship (X-Y and Y-Z connections)
+collab_net.add_edges([
+    ['X', 'coauthor', 'Y', 'coauthor', 1],
+    ['Y', 'coauthor', 'Z', 'coauthor', 1]
+], input_type='list')
+
+print(f"Collaboration network has {len(list(collab_net.get_nodes()))} unique node-layer pairs")
+print(f"Collaboration network has {len(collab_net.get_layers()[0])} layers: {collab_net.get_layers()[0]}")
+
+# Get supra-adjacency matrices from py3plex networks
+print("\nExtracting supra-adjacency matrices...")
+social_supra = social_net.get_supra_adjacency_matrix(mtype='sparse')
+collab_supra = collab_net.get_supra_adjacency_matrix(mtype='sparse')
+
+print(f"Social supra-adjacency shape: {social_supra.shape}")
+print(f"Collaboration supra-adjacency shape: {collab_supra.shape}")
 
 # Initialize MultiXRank
 mxr = MultiXRank(restart_prob=0.4, epsilon=1e-6, max_iter=100000, verbose=True)
 
-# Add multiplexes
-mxr.add_multiplex('social', social_network, node_order=['A', 'B', 'C'])
-mxr.add_multiplex('collab', collab_network, node_order=['X', 'Y', 'Z'])
+# Add multiplexes to MultiXRank
+# Use node_order from the py3plex networks for proper mapping
+social_node_order = social_net.node_order_in_matrix if hasattr(social_net, 'node_order_in_matrix') else None
+collab_node_order = collab_net.node_order_in_matrix if hasattr(collab_net, 'node_order_in_matrix') else None
+
+mxr.add_multiplex('social', social_supra, node_order=social_node_order)
+mxr.add_multiplex('collab', collab_supra, node_order=collab_node_order)
 
 # Create bipartite connections between networks
-# Let's say: A<->X, B<->Y, C<->Z (identity mapping)
-bipartite_social_to_collab = sp.csr_matrix([
-    [1, 0, 0],
-    [0, 1, 0],
-    [0, 0, 1]
-], dtype=float)
+# Map people in social network to their counterparts in collaboration network
+# Assuming: A<->X, B<->Y, C<->Z (identity mapping at the node-layer replica level)
+print("\nCreating bipartite inter-multiplex connections...")
+bipartite_social_to_collab = sp.csr_matrix(
+    np.eye(social_supra.shape[0], collab_supra.shape[0]), 
+    dtype=float
+)
 
 # Add bidirectional bipartite connections
 mxr.add_bipartite_block('social', 'collab', bipartite_social_to_collab)
@@ -71,33 +109,32 @@ mxr.add_bipartite_block('collab', 'social', bipartite_social_to_collab.T)
 # Build the supra-heterogeneous adjacency matrix
 print("\nBuilding supra-heterogeneous adjacency matrix...")
 supra_matrix = mxr.build_supra_heterogeneous_matrix()
-print(f"Supra-matrix shape: {supra_matrix.shape}")
+print(f"Universal supra-matrix shape: {supra_matrix.shape}")
 print(f"Total edges: {supra_matrix.nnz}")
-
-print("\nSupra-heterogeneous adjacency matrix:")
-print(supra_matrix.toarray())
 
 # Column-normalize to create transition matrix
 print("\nCreating column-stochastic transition matrix...")
 transition_matrix = mxr.column_normalize()
 
-# Run Random Walk with Restart from seed node 'B' in social network
-print("\nRunning RWR with seed node 'B' (index 1) in social network...")
+# Run Random Walk with Restart from seed node
+# Seed at node index 1 (corresponds to person B in social network)
+print("\nRunning RWR with seed at index 1 in social network...")
 scores = mxr.random_walk_with_restart({'social': [1]})
 
 print(f"\nRaw scores (length={len(scores)}):")
-print(scores)
+print(f"Total probability mass: {np.sum(scores):.6f}")
 
 # Aggregate scores by multiplex
 print("\nAggregated scores by multiplex:")
 aggregated = mxr.aggregate_scores(scores)
 for multiplex_name, node_scores in aggregated.items():
-    print(f"\n{multiplex_name}:")
-    for node_id, score in sorted(node_scores.items(), key=lambda x: x[1], reverse=True):
-        print(f"  {node_id}: {score:.6f}")
+    print(f"\n{multiplex_name} (top 5 node-replicas):")
+    sorted_nodes = sorted(node_scores.items(), key=lambda x: x[1], reverse=True)[:5]
+    for node_id, score in sorted_nodes:
+        print(f"  Node-replica {node_id}: {score:.6f}")
 
 # Get top-5 ranked nodes
-print("\nTop-5 ranked nodes (excluding seed):")
+print("\nTop-5 ranked node-replicas (excluding seed):")
 top_k = mxr.get_top_ranked(scores, k=5, exclude_seeds=True, seed_nodes={'social': [1]})
 for idx, (global_idx, score) in enumerate(top_k, 1):
     print(f"  {idx}. Global index {global_idx}: {score:.6f}")
