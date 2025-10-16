@@ -22,7 +22,10 @@ Key distinguishing features include: (1) native support for heterogeneous node a
 py3plex/
 ├── py3plex/                          → Main library source code
 │   ├── __init__.py                   → Package entry point
+│   ├── config.py                     → Centralized configuration (colors, layouts, performance)
+│   ├── exceptions.py                 → Custom exception hierarchy (13 domain-specific exceptions)
 │   ├── logging_config.py             → Logging infrastructure for the library
+│   ├── utils.py                      → Utility functions (RNG, deprecation, validation)
 │   ├── core/                         → Core data structures and network management
 │   │   ├── multinet.py               → multi_layer_network class (1223 lines)
 │   │   ├── parsers.py                → Input parsers (GML, GraphML, CSV, GEXF, JSON)
@@ -75,7 +78,13 @@ py3plex/
 │   ├── development.md                → Development guide with Makefile commands
 │   ├── multilayer_modularity_tutorial.md → Multilayer modularity guide
 │   ├── multilayer_centrality_tutorial.md → Centrality measures guide
-│   └── algorithm_selection_guide.md  → Algorithm selection and complexity
+│   ├── algorithm_selection_guide.md  → Algorithm selection and complexity
+│   ├── ALGORITHM_CITATIONS.md        → Academic citations for all algorithms with DOIs
+│   ├── ARCHITECTURE.md               → System architecture and design patterns
+│   ├── LAYOUT_COORDINATES.md         → Visualization coordinate conventions
+│   ├── CONTRIBUTING.md               → Contribution guidelines and code standards
+│   ├── QUICK_REFERENCE.md            → Quick reference guide for common operations
+│   └── README.md                     → Documentation index and navigation
 ├── docfiles/                         → Sphinx documentation source files (RST)
 │   ├── index.rst                     → Documentation entry point
 │   ├── *.rst                         → ReStructuredText documentation files
@@ -84,7 +93,10 @@ py3plex/
 ├── pyproject.toml                    → Modern build configuration (PEP 517/518/621)
 ├── setup.py                          → Legacy setuptools configuration
 ├── requirements.txt                  → Core dependencies
+├── benchmarks/                       → Performance benchmarks and config examples
+│   └── config_benchmark.py           → Config usage and network creation benchmarks
 ├── README.md                         → Project introduction and quick start (minimalistic)
+├── CHANGELOG.md                      → Version history and change tracking
 └── LLM.md                            → Comprehensive context for LLMs and maintainers
 ```
 
@@ -112,7 +124,10 @@ Inter-module relationships follow a layered architecture: `core` provides founda
 | `visualization/drawing_machinery.py` | Low-level drawing primitives for node placement, edge routing, label rendering, and visual attribute mapping. |
 | `visualization/layout_algorithms.py` | Layout computation algorithms including force-directed (FA2), spring, circular, and spectral layouts optimized for multilayer structures. |
 | `wrappers/node2vec_embedding.py` | Generates Node2Vec embeddings for multilayer networks using biased random walks and skip-gram models. |
+| `config.py` | Centralized configuration module with color palettes (including color-blind safe), visualization defaults, layout parameters, and performance settings. |
 | `logging_config.py` | Centralized logging configuration providing structured logging across all modules with configurable verbosity levels. |
+| `utils.py` | Utility functions including random state management (`get_rng()`), deprecation framework (`@deprecated`), and input validation. |
+| `exceptions.py` | Custom exception hierarchy (13 domain-specific exceptions) for clear error handling across the library. |
 
 The `multi_layer_network` class in `multinet.py` is the heart of the library, providing methods like `add_layer()`, `add_nodes()`, `add_edges()`, `aggregate_layers()`, `get_layers()`, and `get_community()`. It maintains internal state including layer-to-integer mappings, node orderings for matrix representations, and cached computational results. The class integrates seamlessly with NetworkX by exposing a `.core_network` attribute containing the underlying `MultiDiGraph` or `MultiGraph` object.
 
@@ -303,6 +318,12 @@ make docs         # Build Sphinx documentation
 - **docs/10min_tutorial.md**: 10-minute getting started tutorial
 - **docs/development.md**: Development guide with Makefile commands, testing, contributing
 - **docs/algorithm_selection_guide.md**: Algorithm selection and complexity
+- **docs/ALGORITHM_CITATIONS.md**: Academic references with DOIs for 12+ algorithms
+- **docs/ARCHITECTURE.md**: System architecture, design patterns, extension points
+- **docs/LAYOUT_COORDINATES.md**: Visualization coordinate conventions and best practices
+- **docs/CONTRIBUTING.md**: Contribution guidelines, code standards, PR requirements
+- **docs/QUICK_REFERENCE.md**: Cheat sheet for common operations
+- **docs/README.md**: Documentation index and navigation
 - **examples/**: 43 Python scripts demonstrating practical use cases
 - **Sphinx docs**: [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/) - API reference and guides
 
@@ -512,11 +533,11 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 
 **Top Remaining Priorities**:
 1. Move AGPL Infomap code to separate optional package
-2. Add deprecation warnings for legacy APIs
-3. Prepare 1.0.0 release
-4. Expand test coverage to 30%+
-5. Standardize algorithm output schemas
-6. Create GitHub issues for roadmap items (tracking)
+2. Prepare 1.0.0 release
+3. Expand test coverage to 30%+
+4. Standardize algorithm output schemas
+5. Create GitHub issues for roadmap items (tracking)
+6. Add type hints to core modules (multinet.py, visualization/)
 
 **Current Focus**: Modernization Phase 2 (99% complete, mypy enforcement finalized)
 
@@ -529,8 +550,22 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 **Modernization Progress** (October 2025):
 - Phase 1: ✅ Complete (bare except clauses, wildcard imports, Python 3.8+)
 - Phase 2: ~99% Complete (logging, type hints 65.4%, test infrastructure, modern I/O, mypy enforcement ✅)
-- Phase 3: Planned (complete wildcard cleanup, 50%+ test coverage)
-- Phase 4: Planned (100% type hints, 70%+ test coverage, performance optimization)
+- Phase 3: In Progress (documentation improvements, centralized config, API versioning ✅)
+- Phase 4: Planned (complete wildcard cleanup, 50%+ test coverage)
+- Phase 5: Planned (100% type hints, 70%+ test coverage, performance optimization)
+
+**Recent Improvements** (October 2025):
+- ✅ **Centralized Configuration**: `py3plex/config.py` with 8 color palettes (color-blind safe), 50+ parameters
+- ✅ **API Versioning**: `__api_version__` attribute for downstream tool compatibility
+- ✅ **Deprecation Framework**: `@deprecated` decorator and `warn_if_deprecated()` in utils
+- ✅ **Comprehensive Documentation**: 5 major docs added (1,900+ lines)
+  - `docs/ALGORITHM_CITATIONS.md` - Academic references with DOIs
+  - `docs/ARCHITECTURE.md` - System architecture and design patterns
+  - `docs/LAYOUT_COORDINATES.md` - Visualization coordinate conventions
+  - `docs/CONTRIBUTING.md` - Contribution guidelines and code standards
+  - `docs/QUICK_REFERENCE.md` - Common operations cheat sheet
+- ✅ **Code Ownership**: `.github/CODEOWNERS` for automated PR reviews
+- ✅ **Testing**: New test suite for config module and benchmarks
 
 ## Performance Optimization
 

@@ -1,0 +1,44 @@
+# CODEOWNERS file for py3plex
+# This file defines code ownership for different parts of the repository.
+# GitHub will automatically request reviews from these owners when PRs touch their code.
+#
+# Format: path/pattern @github-username
+# More specific patterns override less specific ones.
+
+# Default owner for everything (repository maintainer)
+* @SkBlaz
+
+# Core library components
+/py3plex/core/ @SkBlaz
+/py3plex/exceptions.py @SkBlaz
+/py3plex/logging_config.py @SkBlaz
+/py3plex/config.py @SkBlaz
+
+# Algorithm implementations
+/py3plex/algorithms/ @SkBlaz
+/py3plex/algorithms/community_detection/ @SkBlaz
+/py3plex/algorithms/statistics/ @SkBlaz
+/py3plex/algorithms/multilayer_algorithms/ @SkBlaz
+
+# Visualization
+/py3plex/visualization/ @SkBlaz
+
+# I/O operations
+/py3plex/io/ @SkBlaz
+
+# Tests and CI
+/tests/ @SkBlaz
+/.github/ @SkBlaz
+/Makefile @SkBlaz
+
+# Documentation
+/docs/ @SkBlaz
+/docfiles/ @SkBlaz
+/README.md @SkBlaz
+/CHANGELOG.md @SkBlaz
+/LLM.md @SkBlaz
+
+# Build and package configuration
+/pyproject.toml @SkBlaz
+/setup.py @SkBlaz
+/requirements.txt @SkBlaz

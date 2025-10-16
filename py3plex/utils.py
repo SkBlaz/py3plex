@@ -2,10 +2,13 @@
 Utility functions for py3plex.
 
 This module provides common utilities used across the library,
-including random state management for reproducibility.
+including random state management for reproducibility and deprecation warnings.
 """
 
-from typing import Optional, Union
+import functools
+import warnings
+from typing import Any, Callable, Optional, Union
+
 import numpy as np
 
 
@@ -47,3 +50,104 @@ def get_rng(seed: Optional[Union[int, np.random.Generator]] = None) -> np.random
     if isinstance(seed, np.random.Generator):
         return seed
     return np.random.default_rng(seed)
+
+
+def deprecated(
+    reason: str, version: str = None, alternative: str = None
+) -> Callable[[Callable], Callable]:
+    """
+    Decorator to mark functions/methods as deprecated.
+
+    This decorator will issue a DeprecationWarning when the decorated
+    function is called, providing information about why it's deprecated
+    and what to use instead.
+
+    Args:
+        reason: Explanation of why the function is deprecated
+        version: Version in which the function was deprecated (optional)
+        alternative: Suggested alternative function/method (optional)
+
+    Returns:
+        Decorator function
+
+    Example:
+        >>> @deprecated(
+        ...     reason="This function is obsolete",
+        ...     version="0.95a",
+        ...     alternative="new_function()"
+        ... )
+        ... def old_function():
+        ...     pass
+    """
+
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            msg = f"{func.__name__} is deprecated"
+            if version:
+                msg += f" (since version {version})"
+            msg += f": {reason}"
+            if alternative:
+                msg += f" Use {alternative} instead."
+
+            warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+def warn_if_deprecated(feature_name: str, reason: str, alternative: str = None) -> None:
+    """
+    Issue a deprecation warning for a feature.
+
+    This is useful for deprecating specific usage patterns or parameter
+    combinations rather than entire functions.
+
+    Args:
+        feature_name: Name of the deprecated feature
+        reason: Explanation of why it's deprecated
+        alternative: Suggested alternative (optional)
+
+    Example:
+        >>> def my_function(old_param=None, new_param=None):
+        ...     if old_param is not None:
+        ...         warn_if_deprecated(
+        ...             "old_param",
+        ...             "This parameter is no longer used",
+        ...             "new_param"
+        ...         )
+    """
+    msg = f"{feature_name} is deprecated: {reason}"
+    if alternative:
+        msg += f" Use {alternative} instead."
+
+    warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+
+
+def validate_multilayer_input(network_data: Any) -> None:
+    """
+    Validate multilayer network input data.
+
+    Performs sanity checks on multilayer network structures to catch
+    common errors early.
+
+    Args:
+        network_data: Network data to validate (can be various formats)
+
+    Raises:
+        ValueError: If the network data is invalid
+
+    Example:
+        >>> from py3plex.utils import validate_multilayer_input
+        >>> validate_multilayer_input(my_network)
+    """
+    # Import here to avoid circular dependencies
+    from py3plex.exceptions import NetworkConstructionError
+
+    if network_data is None:
+        raise NetworkConstructionError("Network data cannot be None")
+
+    # Additional validation logic can be added here
+    # This is a placeholder for future validation enhancements

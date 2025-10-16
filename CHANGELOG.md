@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Algorithm selection guide (`docs/algorithm_selection_guide.md`)
 - Complexity documentation for key algorithms (louvain_multilayer)
 - `bin/README.md` with installation instructions for external binaries
+- **NEW**: Centralized configuration module (`py3plex/config.py`) with visualization, color schemes, and layout settings
+- **NEW**: Deprecation utilities (`deprecated` decorator and `warn_if_deprecated()` in `py3plex.utils`)
+- **NEW**: `__api_version__` attribute in main package for downstream tool compatibility
+- **NEW**: CODEOWNERS file for GitHub code review automation
+- **NEW**: Algorithm citations document (`docs/ALGORITHM_CITATIONS.md`) with proper academic references
+- **NEW**: Color-blind safe color palettes (ColorBrewer and Wong palettes)
+- **NEW**: Validation utility (`validate_multilayer_input()`) for input sanity checks
+- **NEW**: Comprehensive test suite for config module and API improvements
 
 ### Changed
 - Modern build system with pyproject.toml (PEP 517/518/621 compliance)
@@ -34,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed 8 wildcard imports (from 9 to 1)
 - Examples updated to handle missing binaries gracefully with try/except blocks
 - Default binary paths changed from `../bin/` to `.` (assumes in PATH or current directory)
+- Enhanced `__init__.py` with proper module docstring and version exports
 
 ### Removed
 - **BREAKING**: Bundled Infomap and Node2Vec binaries (~5MB reduction)

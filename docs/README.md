@@ -1,0 +1,144 @@
+# Py3plex Documentation
+
+This directory contains comprehensive documentation for py3plex. Choose the guide that best fits your needs.
+
+## Quick Start
+
+- **[10-Minute Tutorial](10min_tutorial.md)** - Get started with py3plex quickly
+- **[README](../README.md)** - Main project README with installation and basic usage
+
+## User Guides
+
+### Core Concepts
+- **[Multilayer Networks Overview](multilayer_networks_overview.md)** - Introduction to multilayer network concepts
+- **[Network Construction](network_construction_guide.md)** - How to create and load networks
+
+### Algorithms
+- **[Algorithm Selection Guide](algorithm_selection_guide.md)** - Choose the right algorithm for your task
+- **[Algorithm Citations](ALGORITHM_CITATIONS.md)** - Academic references for implemented algorithms
+- **[Community Detection](community_detection_guide.md)** - Community detection algorithms and usage
+- **[Multilayer Centrality Tutorial](multilayer_centrality_tutorial.md)** - Centrality measures for multilayer networks
+- **[Multilayer Modularity Tutorial](multilayer_modularity_tutorial.md)** - Computing modularity in multilayer networks
+
+### Visualization
+- **[Visualization Guide](visualization_guide.md)** - Overview of visualization options
+- **[Layout Coordinates](LAYOUT_COORDINATES.md)** - Understanding coordinate systems and conventions
+- **[Color Schemes](color_schemes_guide.md)** - Working with color palettes
+
+## Developer Resources
+
+### Contributing
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to py3plex
+- **[Architecture](ARCHITECTURE.md)** - System architecture and design patterns
+- **[Development Guide](development.md)** - Development workflow and best practices
+
+### API Reference
+- **[API Documentation](api_reference.md)** - Full API reference
+- Sphinx Documentation: [ReadTheDocs](https://py3plex.readthedocs.io)
+
+## Additional Resources
+
+### Examples
+See the [examples/](../examples/) directory for:
+- Basic usage examples
+- Algorithm demonstrations  
+- Visualization samples
+- Integration examples
+
+### Benchmarks
+See the [benchmarks/](../benchmarks/) directory for:
+- Performance benchmarks
+- Configuration examples
+- Comparison scripts
+
+### Tests
+See the [tests/](../tests/) directory for:
+- Unit test examples
+- Integration test patterns
+- Test coverage reports
+
+## Documentation Structure
+
+```
+docs/
+├── README.md                          ← You are here
+├── 10min_tutorial.md                  ← Quick start guide
+├── ALGORITHM_CITATIONS.md             ← Academic references
+├── ARCHITECTURE.md                    ← System design
+├── LAYOUT_COORDINATES.md              ← Visualization coordinates
+├── algorithm_selection_guide.md       ← Algorithm guide
+├── community_detection_guide.md       ← Community detection
+├── development.md                     ← Development workflow
+├── multilayer_centrality_tutorial.md  ← Centrality tutorial
+├── multilayer_modularity_tutorial.md  ← Modularity tutorial
+└── ... (other guides)
+```
+
+## Getting Help
+
+### Documentation Issues
+If you find errors or gaps in the documentation:
+1. Check if there's already an [issue](https://github.com/SkBlaz/py3plex/issues)
+2. Create a new issue with the `documentation` label
+3. Consider submitting a PR with corrections
+
+### Usage Questions
+For questions about using py3plex:
+- Check the [examples/](../examples/) directory
+- Search [closed issues](https://github.com/SkBlaz/py3plex/issues?q=is%3Aissue+is%3Aclosed)
+- Open a [discussion](https://github.com/SkBlaz/py3plex/discussions)
+- Create an issue with the `question` label
+
+### Feature Requests
+To suggest new features or improvements:
+- Check the [roadmap](../LLM.md) for planned features
+- Open an issue with the `enhancement` label
+- Describe the use case and expected behavior
+
+## Contributing to Documentation
+
+We welcome documentation contributions! To contribute:
+
+1. Follow the [Contributing Guide](CONTRIBUTING.md)
+2. Use Markdown format
+3. Include code examples that run
+4. Add links to related documentation
+5. Update this README if adding new docs
+
+### Documentation Style
+
+- **Clear and concise**: Use simple language
+- **Code examples**: Include working examples
+- **Visual aids**: Add diagrams where helpful
+- **Cross-references**: Link to related docs
+- **Up-to-date**: Keep synchronized with code
+
+### Building Sphinx Documentation
+
+```bash
+# Install documentation dependencies
+pip install -e ".[dev]"
+
+# Build HTML documentation
+cd docfiles
+make html
+
+# View documentation
+open _build/html/index.html  # macOS
+# or
+xdg-open _build/html/index.html  # Linux
+```
+
+## Version Information
+
+This documentation is for py3plex version **0.95a**.
+
+For documentation of other versions, see the [releases page](https://github.com/SkBlaz/py3plex/releases).
+
+## License
+
+Documentation is licensed under the same terms as py3plex (MIT License).
+
+---
+
+**Need more help?** Open an issue on [GitHub](https://github.com/SkBlaz/py3plex/issues) or check the [discussions](https://github.com/SkBlaz/py3plex/discussions).
