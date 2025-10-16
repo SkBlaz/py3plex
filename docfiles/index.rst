@@ -48,6 +48,7 @@ Documentation Structure
    basic_usage_analysis_multiplex.rst
    supra.rst
    visualization.rst
+   random_walks.rst
    acknowledgements.rst
    community_detection.rst
    learning.rst
@@ -83,6 +84,7 @@ All examples are available at: https://github.com/SkBlaz/Py3Plex/tree/master/exa
 Key examples:
 
 - ``tutorial_10min.py`` - Executable version of the 10-minute tutorial
+- ``example_random_walks.py`` - Random walk primitives (Node2Vec, DeepWalk)
 - ``example_multilayer_visualization.py`` - Network visualization
 - ``example_community_detection.py`` - Community detection with Louvain and Infomap
 - ``example_network_decomposition.py`` - Meta-path feature extraction
