@@ -168,6 +168,24 @@ sphinx-apidoc -o AUTOGEN_results -f ../py3plex
 3. **Version Documentation**: Add version-specific documentation builds
 4. **Link Checking**: Add automated link checking to CI
 
+## Update: Reversion of HTML Exclusion (October 16, 2025)
+
+**Issue**: Initial cleanup excluded all HTML files from git via `.gitignore`, which broke GitHub Pages deployment from the `docs/` folder.
+
+**Resolution**: Reverted `.gitignore` changes to allow `docs/*.html` and related files to be tracked again.
+
+**Rationale**: 
+- The repository supports two deployment methods:
+  1. **GitHub Actions** (`.github/workflows/docs.yml`) - auto-builds and deploys
+  2. **Manual** (`make_docs.sh`) - copies HTML to `docs/` for GitHub Pages
+
+Both methods require HTML files in `docs/` to be committable for GitHub Pages to serve them.
+
+**Current State**:
+- `docs/*.html` files ARE tracked in git (reverted)
+- `docfiles/AUTOGEN_results/` remains excluded (auto-generated)
+- Both deployment methods now work correctly
+
 ## References
 
 - Issue: "Redundancies - Make sure rst docs are clear, LLM.md reflects repo state, no redundant files"
