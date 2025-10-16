@@ -74,7 +74,7 @@ py3plex/
 │   └── wrappers/                     → High-level interfaces and integrations
 │       ├── node2vec_embedding.py     → Node2Vec embedding generation
 │       └── benchmark_nodes.py        → Node classification benchmarking
-├── examples/                         → 43 example scripts demonstrating usage
+├── examples/                         → 50 example scripts demonstrating usage
 ├── tests/                            → Unit and integration tests
 ├── docs/                             → Markdown tutorials and guides
 │   ├── 10min_tutorial.md             → 10-minute getting started tutorial
@@ -415,7 +415,7 @@ make docs         # Build Sphinx documentation
 - **docs/QUICK_REFERENCE.md**: Cheat sheet for common operations
 - **docs/MULTILAYER_FORMULAS_QUICK_REFERENCE.md**: Mathematical formulas and metrics reference
 - **docs/README.md**: Documentation index and navigation
-- **examples/**: 43 Python scripts demonstrating practical use cases
+- **examples/**: 50 Python scripts demonstrating practical use cases
 - **Sphinx docs**: Build with `cd docfiles && ./make_docs.sh` - API reference and guides
 
 **Documentation Structure**:

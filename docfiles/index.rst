@@ -65,6 +65,7 @@ Documentation Structure
    :caption: API documentation:
 			 
    apidocs.rst
+   AUTOGEN_results/modules.rst
    
 Examples & Tutorials
 ====================
