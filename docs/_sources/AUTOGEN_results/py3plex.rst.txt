@@ -17,6 +17,14 @@ Subpackages
 Submodules
 ----------
 
+py3plex.config module
+---------------------
+
+.. automodule:: py3plex.config
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 py3plex.exceptions module
 -------------------------
 

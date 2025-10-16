@@ -20,6 +20,14 @@ py3plex.algorithms.multilayer\_algorithms.entanglement module
    :show-inheritance:
    :undoc-members:
 
+py3plex.algorithms.multilayer\_algorithms.multixrank module
+-----------------------------------------------------------
+
+.. automodule:: py3plex.algorithms.multilayer_algorithms.multixrank
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Module contents
 ---------------
 
