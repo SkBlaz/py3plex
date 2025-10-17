@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Core Principles" href="core_idea.html" />
-    <link rel="prev" title="py3plex - documentation" href="index.html" /> 
+    <link rel="prev" title="Quickstart Guide" href="quickstart.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,8 +43,10 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Basic tutorial:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">10-Minute Tutorial: Getting Started with Py3plex</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-you-ll-learn">What You’ll Learn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
@@ -67,7 +69,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#community-detection-2-minutes">6. Community Detection (2 minutes)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#basic-visualization-1-minute">7. Basic Visualization (1 minute)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#random-walks-1-minute">7. Random Walks (1 minute)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-random-walk">Basic Random Walk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node2vec-biased-walks">Node2Vec Biased Walks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generating-multiple-walks">Generating Multiple Walks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-visualization-1-minute">8. Basic Visualization (1 minute)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#complete-example-putting-it-all-together">Complete Example: Putting It All Together</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a><ul>
@@ -80,24 +88,42 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Further steps: learning:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">API documentation:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="AUTOGEN_results/modules.html">py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation and References</a></li>
 </ul>
 
         </div>
@@ -135,6 +161,7 @@
 <li><p>Perform basic network analysis</p></li>
 <li><p>Compute multilayer statistics</p></li>
 <li><p>Detect communities</p></li>
+<li><p>Perform random walks for embeddings</p></li>
 <li><p>Visualize your networks</p></li>
 </ol>
 </section>
@@ -356,8 +383,87 @@ Number of layers: 2
 <li><p><code class="docutils literal notranslate"><span class="pre">random_state</span></code>: Seed for reproducibility</p></li>
 </ul>
 </section>
+<section id="random-walks-1-minute">
+<h2>7. Random Walks (1 minute)<a class="headerlink" href="#random-walks-1-minute" title="Link to this heading"></a></h2>
+<p>Random walks are fundamental for graph embeddings (Node2Vec, DeepWalk) and analyzing network structure:</p>
+<section id="basic-random-walk">
+<h3>Basic Random Walk<a class="headerlink" href="#basic-random-walk" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">basic_random_walk</span>
+
+<span class="c1"># Load a network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;datasets/test.edgelist&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Perform a random walk</span>
+<span class="n">start_node</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">walk</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">start_node</span><span class="o">=</span><span class="n">start_node</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Random walk: </span><span class="si">{</span><span class="n">walk</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">... (length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="node2vec-biased-walks">
+<h3>Node2Vec Biased Walks<a class="headerlink" href="#node2vec-biased-walks" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">node2vec_walk</span>
+
+<span class="c1"># Biased walk with Node2Vec parameters</span>
+<span class="c1"># p: return parameter (higher = less likely to return)</span>
+<span class="c1"># q: in-out parameter (higher = stay local, lower = explore)</span>
+
+<span class="n">walk_bfs</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span> <span class="n">start_node</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>  <span class="c1"># BFS-like (local)</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="n">walk_dfs</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span> <span class="n">start_node</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># DFS-like (explore)</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="generating-multiple-walks">
+<h3>Generating Multiple Walks<a class="headerlink" href="#generating-multiple-walks" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+
+<span class="c1"># Generate walks from all nodes for embeddings</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>      <span class="c1"># Walks per node</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>    <span class="c1"># Steps per walk</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Node2Vec parameters</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2"> walks&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use with Word2Vec for node embeddings</span>
+<span class="c1"># walks_str = [[str(node) for node in walk] for walk in walks]</span>
+<span class="c1"># model = Word2Vec(walks_str, vector_size=128, window=10)</span>
+</pre></div>
+</div>
+<p><strong>Key parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">walk_length</span></code>: Number of steps in the walk</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code>: Return parameter (controls backtracking)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code>: In-out parameter (controls exploration vs. local search)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weighted</span></code>: Use edge weights in sampling</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code>: Random seed for reproducibility</p></li>
+</ul>
+</section>
+</section>
 <section id="basic-visualization-1-minute">
-<h2>7. Basic Visualization (1 minute)<a class="headerlink" href="#basic-visualization-1-minute" title="Link to this heading"></a></h2>
+<h2>8. Basic Visualization (1 minute)<a class="headerlink" href="#basic-visualization-1-minute" title="Link to this heading"></a></h2>
 <p>Visualize your multilayer network:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">hairball_plot</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -526,7 +632,7 @@ pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="py3plex - documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="core_idea.html" class="btn btn-neutral float-right" title="Core Principles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
