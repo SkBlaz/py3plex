@@ -86,17 +86,17 @@ def basic_random_walk(
         # Get edge weights if weighted
         if weighted and G.is_multigraph():
             # For multigraphs, sum weights across all edges between node pairs
-            weights = []
+            weight_list = []
             for neighbor in neighbors:
                 edge_data = G.get_edge_data(current, neighbor)
                 if isinstance(edge_data, dict):
                     # Single edge
-                    weights.append(edge_data.get("weight", 1.0))
+                    weight_list.append(edge_data.get("weight", 1.0))
                 else:
                     # Multiple edges (multigraph)
                     total_weight = sum(d.get("weight", 1.0) for d in edge_data.values())
-                    weights.append(total_weight)
-            weights = np.array(weights)
+                    weight_list.append(total_weight)
+            weights = np.array(weight_list)
         elif weighted:
             weights = np.array(
                 [G[current][neighbor].get("weight", 1.0) for neighbor in neighbors]
@@ -209,7 +209,7 @@ def node2vec_walk(
         prev_neighbors = set(G.neighbors(prev))
 
         # Compute biased weights
-        biased_weights = []
+        biased_weight_list = []
         for neighbor in neighbors:
             if weighted:
                 edge_weight = G[current][neighbor].get("weight", 1.0)
@@ -227,9 +227,9 @@ def node2vec_walk(
                 # Explore further (not a neighbor of prev)
                 biased_weight = edge_weight / q
 
-            biased_weights.append(biased_weight)
+            biased_weight_list.append(biased_weight)
 
-        biased_weights = np.array(biased_weights)
+        biased_weights = np.array(biased_weight_list)
         probabilities = biased_weights / biased_weights.sum()
 
         idx = rng.choice(len(neighbors), p=probabilities)
