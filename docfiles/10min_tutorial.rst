@@ -12,7 +12,8 @@ In just 10 minutes, you'll learn how to:
 2. Perform basic network analysis
 3. Compute multilayer statistics
 4. Detect communities
-5. Visualize your networks
+5. Perform random walks for embeddings
+6. Visualize your networks
 
 Prerequisites
 -------------
@@ -253,7 +254,90 @@ Py3plex provides Louvain-based community detection that works across multiple la
 - ``omega``: Inter-layer coupling strength (higher values = more consistency across layers)
 - ``random_state``: Seed for reproducibility
 
-7. Basic Visualization (1 minute)
+7. Random Walks (1 minute)
+---------------------------
+
+Random walks are fundamental for graph embeddings (Node2Vec, DeepWalk) and analyzing network structure:
+
+Basic Random Walk
+~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.algorithms.general.walkers import basic_random_walk
+
+    # Load a network
+    network = multinet.multi_layer_network().load_network(
+        "datasets/test.edgelist",
+        input_type="edgelist",
+        directed=False
+    )
+    G = network.core_network
+    
+    # Perform a random walk
+    start_node = list(G.nodes())[0]
+    walk = basic_random_walk(
+        G, 
+        start_node=start_node, 
+        walk_length=10, 
+        weighted=True,
+        seed=42
+    )
+    print(f"Random walk: {walk[:5]}... (length: {len(walk)})")
+
+Node2Vec Biased Walks
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.algorithms.general.walkers import node2vec_walk
+
+    # Biased walk with Node2Vec parameters
+    # p: return parameter (higher = less likely to return)
+    # q: in-out parameter (higher = stay local, lower = explore)
+    
+    walk_bfs = node2vec_walk(
+        G, start_node, walk_length=20, 
+        p=1.0, q=2.0,  # BFS-like (local)
+        seed=42
+    )
+    
+    walk_dfs = node2vec_walk(
+        G, start_node, walk_length=20,
+        p=1.0, q=0.5,  # DFS-like (explore)
+        seed=42
+    )
+
+Generating Multiple Walks
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.algorithms.general.walkers import generate_walks
+
+    # Generate walks from all nodes for embeddings
+    walks = generate_walks(
+        G,
+        num_walks=10,      # Walks per node
+        walk_length=10,    # Steps per walk
+        p=1.0, q=1.0,      # Node2Vec parameters
+        seed=42
+    )
+    print(f"Generated {len(walks)} walks")
+    
+    # Use with Word2Vec for node embeddings
+    # walks_str = [[str(node) for node in walk] for walk in walks]
+    # model = Word2Vec(walks_str, vector_size=128, window=10)
+
+**Key parameters:**
+
+- ``walk_length``: Number of steps in the walk
+- ``p``: Return parameter (controls backtracking)
+- ``q``: In-out parameter (controls exploration vs. local search)
+- ``weighted``: Use edge weights in sampling
+- ``seed``: Random seed for reproducibility
+
+8. Basic Visualization (1 minute)
 ----------------------------------
 
 Visualize your multilayer network:
