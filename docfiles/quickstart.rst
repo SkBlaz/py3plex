@@ -352,7 +352,7 @@ After this quickstart, explore:
 Examples
 --------
 
-See the `examples/ directory <https://github.com/SkBlaz/Py3Plex/tree/master/examples>`_ for:
+See the `examples/ directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ for:
 
 * ``example_multilayer_visualization.py`` - Visualization examples
 * ``example_community_detection.py`` - Community detection
