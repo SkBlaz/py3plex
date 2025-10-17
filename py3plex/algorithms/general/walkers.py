@@ -105,8 +105,9 @@ def basic_random_walk(
         # Normalize to probabilities
         probabilities = weights / weights.sum()
         
-        # Sample next node
-        current = rng.choice(neighbors, p=probabilities)
+        # Sample next node (use index to avoid numpy array issues with tuple nodes)
+        idx = rng.choice(len(neighbors), p=probabilities)
+        current = neighbors[idx]
         walk.append(current)
     
     return walk
@@ -187,7 +188,8 @@ def node2vec_walk(
         weights = np.ones(len(neighbors))
     
     probabilities = weights / weights.sum()
-    current = rng.choice(neighbors, p=probabilities)
+    idx = rng.choice(len(neighbors), p=probabilities)
+    current = neighbors[idx]
     walk.append(current)
     
     # Subsequent steps use second-order bias
@@ -226,7 +228,8 @@ def node2vec_walk(
         biased_weights = np.array(biased_weights)
         probabilities = biased_weights / biased_weights.sum()
         
-        next_node = rng.choice(neighbors, p=probabilities)
+        idx = rng.choice(len(neighbors), p=probabilities)
+        next_node = neighbors[idx]
         walk.append(next_node)
     
     return walk
@@ -354,11 +357,13 @@ def general_random_walk(G, start_node, iterations=1000, teleportation_prob=0):
         
         # Check teleportation
         if teleportation_prob > 0 and len(trace) > 0 and rng.random() < teleportation_prob:
-            start_node = rng.choice(trace)
+            idx = rng.choice(len(trace))
+            start_node = trace[idx]
             continue
         
         # Sample next neighbor uniformly
-        new_pivot = rng.choice(neighbors)
+        idx = rng.choice(len(neighbors))
+        new_pivot = neighbors[idx]
         trace.append(new_pivot)
         start_node = new_pivot
         x += 1
@@ -451,7 +456,8 @@ def layer_specific_random_walk(
             weights = np.ones(len(neighbors))
         
         probabilities = weights / weights.sum()
-        current = rng.choice(neighbors, p=probabilities)
+        idx = rng.choice(len(neighbors), p=probabilities)
+        current = neighbors[idx]
         walk.append(current)
     
     return walk
