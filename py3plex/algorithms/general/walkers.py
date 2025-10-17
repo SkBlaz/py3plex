@@ -19,7 +19,7 @@ References:
       representations. KDD '14. https://doi.org/10.1145/2623330.2623732
 """
 
-from typing import Any, List, Optional, Tuple, Union, cast
+from typing import Any, List, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -309,7 +309,7 @@ def generate_walks(
 
         for node in shuffled_nodes:
             # Generate walk with a unique seed for reproducibility
-            walk_seed = rng.integers(0, 2**31)
+            walk_seed = int(rng.integers(0, 2**31))
 
             if use_biased:
                 walk = node2vec_walk(G, node, walk_length, p, q, weighted, walk_seed)
