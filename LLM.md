@@ -84,7 +84,6 @@ py3plex/
 │   ├── development.md                → Development guide with Makefile commands
 │   ├── multilayer_modularity_tutorial.md → Multilayer modularity guide
 │   ├── multilayer_centrality_tutorial.md → Centrality measures guide
-│   ├── random_walks_tutorial.md      → Random walk algorithms tutorial (Node2Vec, DeepWalk)
 │   ├── algorithm_selection_guide.md  → Algorithm selection and complexity
 │   ├── ALGORITHM_CITATIONS.md        → Academic citations for all algorithms with DOIs
 │   ├── ARCHITECTURE.md               → System architecture and design patterns
@@ -448,7 +447,6 @@ walk_ml = layer_specific_random_walk(
 
 **Documentation**: 
 - API reference: `docfiles/random_walks.rst` (15KB comprehensive guide with examples)
-- Tutorial: `docs/random_walks_tutorial.md` (8.6KB step-by-step guide)
 - Examples: `examples/example_random_walks.py` (demonstrates all features with statistical validation)
 
 ### Community Detection
