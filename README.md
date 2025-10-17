@@ -47,12 +47,29 @@ pip install -e ".[dev]"
 
 ### Quick Start
 
-For examples, view the **examples** folder.
-Extensive documentation and quickstart tutorials are available at: [DOCS](https://skblaz.github.io/py3plex/)
+**Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
+
+**Quick Links:**
+
+* [Installation Guide](https://skblaz.github.io/py3plex/installation.html) - Detailed installation instructions
+* [Quickstart Tutorial](https://skblaz.github.io/py3plex/quickstart.html) - Get started in minutes
+* [10-Minute Tutorial](https://skblaz.github.io/py3plex/10min_tutorial.html) - Comprehensive introduction
+* [API Reference](https://skblaz.github.io/py3plex/apidocs.html) - Complete API documentation
+* [Examples](examples/) - 50+ example scripts demonstrating usage
+
+**Tutorials:**
+
+* [Multilayer Centrality](https://skblaz.github.io/py3plex/tutorials/multilayer_centrality.html) - Computing centrality measures
+* [Community Detection](https://skblaz.github.io/py3plex/tutorials/community_detection.html) - Finding communities
+* [Network Decomposition](https://skblaz.github.io/py3plex/tutorials/network_decomposition.html) - Feature extraction
 
 ### Development
 
-For development workflows, testing, and contributing, see [docs/development.md](docs/development.md).
+For development workflows, testing, and contributing, see:
+
+* [Contributing Guide](https://skblaz.github.io/py3plex/contributing.html) - How to contribute
+* [Development Guide](docs/development.md) - Development workflow and best practices
+* [Architecture](https://skblaz.github.io/py3plex/architecture.html) - System architecture
 
 ### Requirements
 
