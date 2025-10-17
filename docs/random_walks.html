@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Walk Algorithms &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Supra-Adjacency Matrices" href="supra.html" />
+    <link rel="prev" title="Network Decomposition Tutorial" href="tutorials/network_decomposition.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Random Walk Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-random-walk">Basic Random Walk</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-example">Simple Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#weighted-graphs">Weighted Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#directed-graphs">Directed Graphs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#node2vec-biased-random-walk">Node2Vec Biased Random Walk</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exploring-vs-backtracking">Exploring vs Backtracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-walk-generation">Multiple Walk Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generate-walks-from-all-nodes">Generate Walks from All Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-from-specific-nodes">Generate from Specific Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node2vec-style-walks">Node2Vec-Style Walks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edge-sequences">Edge Sequences</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multilayer-network-walks">Multilayer Network Walks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#layer-constrained-walks">Layer-Constrained Walks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cross-layer-transitions">Cross-Layer Transitions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reproducibility">Reproducibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fixed-seed">Fixed Seed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#different-seeds">Different Seeds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-reproducibility">Batch Reproducibility</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-tips">Performance Tips</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#large-graphs">Large Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#correctness-validation">Correctness Validation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#uniformity-test">Uniformity Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conservation-test">Conservation Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bias-consistency-test">Bias Consistency Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edge-weight-test">Edge Weight Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Random Walk Algorithms</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/random_walks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="random-walk-algorithms">
+<h1>Random Walk Algorithms<a class="headerlink" href="#random-walk-algorithms" title="Link to this heading"></a></h1>
+<p>Py3plex provides comprehensive random walk primitives for graph-based algorithms,
+including Node2Vec, DeepWalk, and diffusion processes. These implementations support
+weighted, directed, and multilayer networks with deterministic reproducibility.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Random walks are fundamental building blocks for many graph algorithms:</p>
+<ul class="simple">
+<li><p><strong>Node2Vec</strong>: Learn node embeddings using biased random walks</p></li>
+<li><p><strong>DeepWalk</strong>: Generate node embeddings through uniform random walks</p></li>
+<li><p><strong>Personalized PageRank</strong>: Compute node importance via random walks with restart</p></li>
+<li><p><strong>Diffusion processes</strong>: Model information or disease propagation</p></li>
+<li><p><strong>Community detection</strong>: Identify network structure through walk patterns</p></li>
+</ul>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>✅ Basic random walks with proper edge weight handling</p></li>
+<li><p>✅ Second-order (biased) random walks following Node2Vec logic</p></li>
+<li><p>✅ Multiple simultaneous walks with deterministic seeding</p></li>
+<li><p>✅ Support for directed, weighted, and multigraphs</p></li>
+<li><p>✅ Multilayer network-aware walks with layer constraints</p></li>
+<li><p>✅ Efficient sparse adjacency matrix handling</p></li>
+<li><p>✅ Comprehensive test suite validating correctness properties</p></li>
+</ul>
+</section>
+</section>
+<section id="basic-random-walk">
+<h2>Basic Random Walk<a class="headerlink" href="#basic-random-walk" title="Link to this heading"></a></h2>
+<p>The basic random walk samples the next node proportionally to normalized edge weights.</p>
+<section id="simple-example">
+<h3>Simple Example<a class="headerlink" href="#simple-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">basic_random_walk</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Create a simple graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Perform a random walk</span>
+<span class="n">walk</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">start_node</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># for reproducibility</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Walk: </span><span class="si">{</span><span class="n">walk</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 11 nodes (includes start)</span>
+</pre></div>
+</div>
+</section>
+<section id="weighted-graphs">
+<h3>Weighted Graphs<a class="headerlink" href="#weighted-graphs" title="Link to this heading"></a></h3>
+<p>Edge weights are automatically used when <code class="docutils literal notranslate"><span class="pre">weighted=True</span></code> (default):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">basic_random_walk</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Create weighted graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">([</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>  <span class="c1"># high weight -&gt; more likely</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>   <span class="c1"># low weight -&gt; less likely</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span>
+<span class="p">])</span>
+
+<span class="c1"># Weighted walk (respects edge weights)</span>
+<span class="n">walk</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Unweighted walk (uniform transitions)</span>
+<span class="n">walk_uniform</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="directed-graphs">
+<h3>Directed Graphs<a class="headerlink" href="#directed-graphs" title="Link to this heading"></a></h3>
+<p>Directed edges are handled correctly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">basic_random_walk</span>
+
+<span class="c1"># Create directed graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)])</span>
+
+<span class="c1"># Walk respects edge direction</span>
+<span class="n">walk</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Verify all transitions follow directed edges</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">G</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">walk</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">walk</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="node2vec-biased-random-walk">
+<h2>Node2Vec Biased Random Walk<a class="headerlink" href="#node2vec-biased-random-walk" title="Link to this heading"></a></h2>
+<p>Second-order random walks with return parameter <code class="docutils literal notranslate"><span class="pre">p</span></code> and in-out parameter <code class="docutils literal notranslate"><span class="pre">q</span></code>
+following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<p>When transitioning from node <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">→</span> <span class="pre">v</span> <span class="pre">→</span> <span class="pre">x</span></code>, the probability of choosing <code class="docutils literal notranslate"><span class="pre">x</span></code> is biased:</p>
+<ul class="simple">
+<li><p><strong>If x == t</strong> (return to previous): <code class="docutils literal notranslate"><span class="pre">weight</span> <span class="pre">/</span> <span class="pre">p</span></code></p></li>
+<li><p><strong>If x is neighbor of t</strong> (stay close): <code class="docutils literal notranslate"><span class="pre">weight</span> <span class="pre">/</span> <span class="pre">1</span></code></p></li>
+<li><p><strong>If x is not neighbor of t</strong> (explore): <code class="docutils literal notranslate"><span class="pre">weight</span> <span class="pre">/</span> <span class="pre">q</span></code></p></li>
+</ul>
+<p><strong>Parameter Effects:</strong></p>
+<ul class="simple">
+<li><p><strong>p &gt; 1</strong>: Less likely to return to previous node (explore forward)</p></li>
+<li><p><strong>p &lt; 1</strong>: More likely to return (backtrack)</p></li>
+<li><p><strong>q &gt; 1</strong>: Less likely to explore distant nodes (stay local, BFS-like)</p></li>
+<li><p><strong>q &lt; 1</strong>: More likely to explore distant nodes (venture far, DFS-like)</p></li>
+<li><p><strong>p = q = 1</strong>: Equivalent to basic random walk</p></li>
+</ul>
+</section>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">node2vec_walk</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Balanced walk (p=1, q=1)</span>
+<span class="n">walk_balanced</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># BFS-like walk (stay local)</span>
+<span class="n">walk_bfs</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># DFS-like walk (explore outward)</span>
+<span class="n">walk_dfs</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="exploring-vs-backtracking">
+<h3>Exploring vs Backtracking<a class="headerlink" href="#exploring-vs-backtracking" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">node2vec_walk</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Triangle graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+
+<span class="c1"># Low p, high q: tends to backtrack</span>
+<span class="n">walk_backtrack</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># High p, low q: tends to explore outward</span>
+<span class="n">walk_explore</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Count backtracking patterns</span>
+<span class="n">backtracks</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">walk_backtrack</span><span class="p">))</span>
+                 <span class="k">if</span> <span class="n">walk_backtrack</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">walk_backtrack</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Backtracks: </span><span class="si">{</span><span class="n">backtracks</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="multiple-walk-generation">
+<h2>Multiple Walk Generation<a class="headerlink" href="#multiple-walk-generation" title="Link to this heading"></a></h2>
+<p>Generate multiple walks efficiently with deterministic seeding.</p>
+<section id="generate-walks-from-all-nodes">
+<h3>Generate Walks from All Nodes<a class="headerlink" href="#generate-walks-from-all-nodes" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Generate 10 walks from each node</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total walks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 340 (34 nodes × 10 walks)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First walk: </span><span class="si">{</span><span class="n">walks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="generate-from-specific-nodes">
+<h3>Generate from Specific Nodes<a class="headerlink" href="#generate-from-specific-nodes" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Generate walks only from nodes 0, 1, 2</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">start_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total walks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 15 (3 nodes × 5 walks)</span>
+</pre></div>
+</div>
+</section>
+<section id="node2vec-style-walks">
+<h3>Node2Vec-Style Walks<a class="headerlink" href="#node2vec-style-walks" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Generate biased walks with p=0.5, q=2.0</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="edge-sequences">
+<h3>Edge Sequences<a class="headerlink" href="#edge-sequences" title="Link to this heading"></a></h3>
+<p>Return walks as edge sequences instead of node sequences:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Generate edge sequences</span>
+<span class="n">edge_walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">return_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># First walk is a list of edges</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">edge_walks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># [(0, 3), (3, 2), (2, 1), ...]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="multilayer-network-walks">
+<h2>Multilayer Network Walks<a class="headerlink" href="#multilayer-network-walks" title="Link to this heading"></a></h2>
+<p>Perform random walks on multilayer networks with layer constraints.</p>
+<section id="layer-constrained-walks">
+<h3>Layer-Constrained Walks<a class="headerlink" href="#layer-constrained-walks" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">layer_specific_random_walk</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s2">&quot;biological&quot;</span><span class="p">)</span>
+
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;biological&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;biological&quot;</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">((</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">)),</span>
+    <span class="p">((</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">)),</span>
+    <span class="p">((</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;biological&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;biological&quot;</span><span class="p">)),</span>
+<span class="p">])</span>
+
+<span class="c1"># Walk constrained to social layer</span>
+<span class="n">walk</span> <span class="o">=</span> <span class="n">layer_specific_random_walk</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">start_node</span><span class="o">=</span><span class="s2">&quot;A---social&quot;</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span>
+    <span class="n">cross_layer_prob</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># never cross layers</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># All nodes in walk are in social layer</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cross-layer-transitions">
+<h3>Cross-Layer Transitions<a class="headerlink" href="#cross-layer-transitions" title="Link to this heading"></a></h3>
+<p>Allow occasional transitions between layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">layer_specific_random_walk</span>
+
+<span class="c1"># Same network as above</span>
+
+<span class="c1"># Walk with 10% probability of crossing layers</span>
+<span class="n">walk</span> <span class="o">=</span> <span class="n">layer_specific_random_walk</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">start_node</span><span class="o">=</span><span class="s2">&quot;A---social&quot;</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span>
+    <span class="n">cross_layer_prob</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># 10% chance to cross</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># May contain nodes from both layers</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="reproducibility">
+<h2>Reproducibility<a class="headerlink" href="#reproducibility" title="Link to this heading"></a></h2>
+<p>All walk functions support deterministic seeding for reproducibility.</p>
+<section id="fixed-seed">
+<h3>Fixed Seed<a class="headerlink" href="#fixed-seed" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">basic_random_walk</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Same seed produces identical walks</span>
+<span class="n">walk1</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">walk2</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">walk1</span> <span class="o">==</span> <span class="n">walk2</span>  <span class="c1"># Identical</span>
+</pre></div>
+</div>
+</section>
+<section id="different-seeds">
+<h3>Different Seeds<a class="headerlink" href="#different-seeds" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Different seeds produce different walks</span>
+<span class="n">walk1</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">walk2</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">walk1</span> <span class="o">!=</span> <span class="n">walk2</span>  <span class="c1"># Different</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-reproducibility">
+<h3>Batch Reproducibility<a class="headerlink" href="#batch-reproducibility" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Same seed produces identical walk sets</span>
+<span class="n">walks1</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">walks2</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">walks1</span> <span class="o">==</span> <span class="n">walks2</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-tips">
+<h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h2>
+<section id="large-graphs">
+<h3>Large Graphs<a class="headerlink" href="#large-graphs" title="Link to this heading"></a></h3>
+<p>For large sparse graphs (&gt;100k nodes), use basic walks for better performance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Large sparse graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Use basic walk (p=1, q=1) for speed</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># No bias = faster</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="parallel-processing">
+<h3>Parallel Processing<a class="headerlink" href="#parallel-processing" title="Link to this heading"></a></h3>
+<p>For generating many walks, consider parallel processing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">generate_batch</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+<span class="c1"># Generate walks in parallel</span>
+<span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+    <span class="n">batch_walks</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">generate_batch</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># Flatten results</span>
+<span class="n">all_walks</span> <span class="o">=</span> <span class="p">[</span><span class="n">walk</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">batch_walks</span> <span class="k">for</span> <span class="n">walk</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="correctness-validation">
+<h2>Correctness Validation<a class="headerlink" href="#correctness-validation" title="Link to this heading"></a></h2>
+<p>The implementation has been validated against the following properties:</p>
+<section id="uniformity-test">
+<h3>Uniformity Test<a class="headerlink" href="#uniformity-test" title="Link to this heading"></a></h3>
+<p>On unweighted regular graphs, transition probabilities are uniform:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">basic_random_walk</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="c1"># Complete graph (regular)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">complete_graph</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Count visits to neighbors from node 0</span>
+<span class="n">visits</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="n">walk</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">visits</span><span class="p">[</span><span class="n">walk</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1"># All neighbors should be visited roughly equally</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">visits</span><span class="p">)</span>
+<span class="c1"># Expected: ~1111 visits to each of 9 neighbors</span>
+</pre></div>
+</div>
+</section>
+<section id="conservation-test">
+<h3>Conservation Test<a class="headerlink" href="#conservation-test" title="Link to this heading"></a></h3>
+<p>Sum of transition probabilities equals 1.0 (within machine epsilon):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># For each node, verify probability conservation</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">G</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">])</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">probs</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-10</span>  <span class="c1"># Machine epsilon</span>
+</pre></div>
+</div>
+</section>
+<section id="bias-consistency-test">
+<h3>Bias Consistency Test<a class="headerlink" href="#bias-consistency-test" title="Link to this heading"></a></h3>
+<p>Node2Vec parameters p and q produce expected biases:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">node2vec_walk</span>
+
+<span class="c1"># Triangle graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+
+<span class="c1"># Low p should encourage backtracking</span>
+<span class="n">backtracks_low_p</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">walk</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">walk</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">walk</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="n">backtracks_low_p</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1"># High p should discourage backtracking</span>
+<span class="n">backtracks_high_p</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">walk</span> <span class="o">=</span> <span class="n">node2vec_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">walk</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">walk</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="n">backtracks_high_p</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="k">assert</span> <span class="n">backtracks_low_p</span> <span class="o">&gt;</span> <span class="n">backtracks_high_p</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># Significantly more</span>
+</pre></div>
+</div>
+</section>
+<section id="edge-weight-test">
+<h3>Edge Weight Test<a class="headerlink" href="#edge-weight-test" title="Link to this heading"></a></h3>
+<p>Visit frequency matches edge weight ratios:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">basic_random_walk</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">([</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>
+<span class="p">])</span>
+
+<span class="n">visits</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="n">walk</span> <span class="o">=</span> <span class="n">basic_random_walk</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">visits</span><span class="p">[</span><span class="n">walk</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1"># Expected ratio: 1:2:3</span>
+<span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">visits</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="n">ratios</span> <span class="o">=</span> <span class="p">[</span><span class="n">visits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">total</span><span class="p">,</span> <span class="n">visits</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">total</span><span class="p">,</span> <span class="n">visits</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">/</span><span class="n">total</span><span class="p">]</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">6</span><span class="p">]</span>
+
+<span class="c1"># Within 5% tolerance</span>
+<span class="k">for</span> <span class="n">obs</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obs</span> <span class="o">-</span> <span class="n">exp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>Node2Vec:</strong></dt><dd><p>Grover, A., &amp; Leskovec, J. (2016). node2vec: Scalable feature learning for networks.
+<em>Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining</em>, 855-864.
+<a class="reference external" href="https://doi.org/10.1145/2939672.2939754">https://doi.org/10.1145/2939672.2939754</a></p>
+</dd>
+<dt><strong>DeepWalk:</strong></dt><dd><p>Perozzi, B., Al-Rfou, R., &amp; Skiena, S. (2014). DeepWalk: Online learning of social representations.
+<em>Proceedings of the 20th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining</em>, 701-710.
+<a class="reference external" href="https://doi.org/10.1145/2623330.2623732">https://doi.org/10.1145/2623330.2623732</a></p>
+</dd>
+<dt><strong>Random Walks on Graphs:</strong></dt><dd><p>Lovász, L. (1993). Random walks on graphs: A survey.
+<em>Combinatorics, Paul Erdős is Eighty</em>, 2, 1-46.</p>
+</dd>
+</dl>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">py3plex.algorithms.general.walkers</span></code> for complete API documentation.</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>Complete examples can be found in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/example_random_walks.py</span></code> - Basic usage examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/test_random_walks.py</span></code> - Comprehensive test suite</p></li>
+</ul>
+<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/py3plex">https://github.com/SkBlaz/py3plex</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorials/network_decomposition.html" class="btn btn-neutral float-left" title="Network Decomposition Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="supra.html" class="btn btn-neutral float-right" title="Supra-Adjacency Matrices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

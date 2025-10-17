@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multilayer Network Centrality Measures &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multilayer Modularity and Community Detection" href="multilayer_modularity.html" />
+    <link rel="prev" title="Performance and Scalability" href="../performance.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core Principles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance and Scalability</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multilayer Network Centrality Measures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-centrality-measures">Supported Centrality Measures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#degree-strength-based-measures">1. Degree/Strength-based Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eigenvector-type-measures">2. Eigenvector-type Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#path-based-measures">3. Path-based Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-measures">4. Advanced Measures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computing-all-centralities">Computing All Centralities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aggregation-methods">Aggregation Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mathematical-definitions">Mathematical Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#degree-based-measures">Degree-based Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Eigenvector-type Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Advanced Measures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-applications">Example Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../random_walks.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra-Adjacency Matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Random Network Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning3.html">Node Embeddings</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs.html">API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citation.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multilayer Network Centrality Measures</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/multilayer_centrality.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multilayer-network-centrality-measures">
+<h1>Multilayer Network Centrality Measures<a class="headerlink" href="#multilayer-network-centrality-measures" title="Link to this heading"></a></h1>
+<p>This tutorial demonstrates how to compute various centrality measures for multilayer and multiplex networks using py3plex.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <cite>py3plex.algorithms.multilayer_algorithms.centrality</cite> module provides comprehensive implementations of centrality measures specifically designed for multilayer networks. These measures follow standard definitions from multilayer network analysis literature.</p>
+</section>
+<section id="supported-centrality-measures">
+<h2>Supported Centrality Measures<a class="headerlink" href="#supported-centrality-measures" title="Link to this heading"></a></h2>
+<section id="degree-strength-based-measures">
+<h3>1. Degree/Strength-based Measures<a class="headerlink" href="#degree-strength-based-measures" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Layer-specific degree/strength</strong>: Centrality computed within individual layers</p></li>
+<li><p><strong>Supra degree/strength</strong>: Centrality on the full supra-adjacency matrix</p></li>
+<li><p><strong>Overlapping degree/strength</strong>: Node-level aggregation across all layers</p></li>
+<li><p><strong>Participation coefficient</strong>: Measures how evenly a node’s connections are distributed across layers</p></li>
+</ul>
+</section>
+<section id="eigenvector-type-measures">
+<h3>2. Eigenvector-type Measures<a class="headerlink" href="#eigenvector-type-measures" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Multiplex eigenvector centrality</strong>: Principal eigenvector of the supra-adjacency matrix</p></li>
+<li><p><strong>Eigenvector versatility</strong>: Node-level aggregation of eigenvector centrality</p></li>
+<li><p><strong>Katz-Bonacich centrality</strong>: Weighted sum of walks on the supra-graph</p></li>
+<li><p><strong>PageRank centrality</strong>: Random walk centrality on the supra-graph</p></li>
+</ul>
+</section>
+<section id="path-based-measures">
+<h3>3. Path-based Measures<a class="headerlink" href="#path-based-measures" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Multilayer closeness centrality</strong>: Based on shortest paths in the supra-graph</p></li>
+<li><p><strong>Multilayer betweenness centrality</strong>: Fraction of shortest paths passing through each node-layer</p></li>
+</ul>
+</section>
+<section id="advanced-measures">
+<h3>4. Advanced Measures<a class="headerlink" href="#advanced-measures" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>HITS centrality</strong>: Hubs and authorities (equals eigenvector for undirected networks)</p></li>
+<li><p><strong>Current-flow closeness/betweenness</strong>: Based on electrical current flow through the network</p></li>
+<li><p><strong>Subgraph centrality</strong>: Counts closed walks via matrix exponential</p></li>
+<li><p><strong>Total communicability</strong>: Sum of matrix exponential entries</p></li>
+<li><p><strong>Multiplex k-core</strong>: Core decomposition of the multilayer network</p></li>
+</ul>
+</section>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">MultilayerCentrality</span>
+
+<span class="c1"># Create a multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Initialize centrality calculator</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Compute various centrality measures</span>
+<span class="n">layer_degrees</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">layer_degree_centrality</span><span class="p">(</span><span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">overlapping_degrees</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">overlapping_degree_centrality</span><span class="p">(</span><span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">participation</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">participation_coefficient</span><span class="p">(</span><span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">eigenvector</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multiplex_eigenvector_centrality</span><span class="p">()</span>
+<span class="n">pagerank</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">pagerank_centrality</span><span class="p">()</span>
+<span class="n">hits</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">hits_centrality</span><span class="p">()</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">subgraph_centrality</span><span class="p">()</span>
+<span class="n">k_core</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multiplex_k_core</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="computing-all-centralities">
+<h2>Computing All Centralities<a class="headerlink" href="#computing-all-centralities" title="Link to this heading"></a></h2>
+<p>For convenience, you can compute all available centrality measures at once:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">compute_all_centralities</span>
+
+<span class="c1"># Compute basic centralities</span>
+<span class="n">basic_centralities</span> <span class="o">=</span> <span class="n">compute_all_centralities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Include path-based measures (computationally expensive)</span>
+<span class="n">with_paths</span> <span class="o">=</span> <span class="n">compute_all_centralities</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">include_path_based</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Include all advanced measures (most comprehensive but computationally intensive)</span>
+<span class="n">all_centralities</span> <span class="o">=</span> <span class="n">compute_all_centralities</span><span class="p">(</span><span class="n">network</span><span class="p">,</span>
+                                          <span class="n">include_path_based</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">include_advanced</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="aggregation-methods">
+<h2>Aggregation Methods<a class="headerlink" href="#aggregation-methods" title="Link to this heading"></a></h2>
+<p>The module provides several methods to aggregate node-layer centralities to node-level centralities:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sum aggregation (default)</span>
+<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+
+<span class="c1"># Mean aggregation</span>
+<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+
+<span class="c1"># Maximum aggregation</span>
+<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+
+<span class="c1"># Weighted sum with custom layer weights</span>
+<span class="n">layer_weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;L1&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span>
+                                                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weighted_sum&#39;</span><span class="p">,</span>
+                                                <span class="n">weights</span><span class="o">=</span><span class="n">layer_weights</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mathematical-definitions">
+<h2>Mathematical Definitions<a class="headerlink" href="#mathematical-definitions" title="Link to this heading"></a></h2>
+<section id="degree-based-measures">
+<h3>Degree-based Measures<a class="headerlink" href="#degree-based-measures" title="Link to this heading"></a></h3>
+<p><strong>Layer-specific degree (unweighted)</strong>
+* Undirected: <span class="math notranslate nohighlight">\(k^{[\alpha]}_i = \sum_j \mathbf{1}(A^{[\alpha]}_{ij} &gt; 0)\)</span>
+* Directed: <span class="math notranslate nohighlight">\(k^{[\alpha],\text{out}}_i = \sum_j \mathbf{1}(A^{[\alpha]}_{ij} &gt; 0)\)</span>, <span class="math notranslate nohighlight">\(k^{[\alpha],\text{in}}_i = \sum_j \mathbf{1}(A^{[\alpha]}_{ji} &gt; 0)\)</span></p>
+<p><strong>Layer-specific strength (weighted)</strong>
+* <span class="math notranslate nohighlight">\(s^{[\alpha]}_i = \sum_j A^{[\alpha]}_{ij}\)</span> (out-strength)
+* <span class="math notranslate nohighlight">\(s^{[\alpha],\text{in}}_i = \sum_j A^{[\alpha]}_{ji}\)</span> (in-strength)</p>
+<p><strong>Supra degree/strength</strong>
+* <span class="math notranslate nohighlight">\(k_{i\alpha} = \sum_{j,\beta} \mathbf{1}(M_{(i,\alpha),(j,\beta)} &gt; 0)\)</span>
+* <span class="math notranslate nohighlight">\(s_{i\alpha} = \sum_{j,\beta} M_{(i,\alpha),(j,\beta)}\)</span></p>
+<p><strong>Overlapping degree/strength</strong>
+* <span class="math notranslate nohighlight">\(k_i^{\text{over}} = \sum_\alpha k^{[\alpha]}_i\)</span>
+* <span class="math notranslate nohighlight">\(s_i^{\text{over}} = \sum_\alpha s^{[\alpha]}_i\)</span></p>
+<p><strong>Participation coefficient</strong>
+* <span class="math notranslate nohighlight">\(P_i = 1 - \sum_{\alpha=1}^m \left(\frac{k^{[\alpha]}_i}{k_i^{\text{over}}}\right)^2\)</span></p>
+</section>
+<section id="id1">
+<h3>Eigenvector-type Measures<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p><strong>Multiplex eigenvector centrality</strong>
+* <span class="math notranslate nohighlight">\(x = \frac{1}{\lambda_{\max}} Mx\)</span> where <span class="math notranslate nohighlight">\(x_{i\alpha}\)</span> is the centrality of node <span class="math notranslate nohighlight">\(i\)</span> in layer <span class="math notranslate nohighlight">\(\alpha\)</span></p>
+<p><strong>Katz-Bonacich centrality</strong>
+* <span class="math notranslate nohighlight">\(z = \sum_{t=0}^\infty \alpha^t M^t b = (I - \alpha M)^{-1} b\)</span></p>
+<p><strong>PageRank centrality</strong>
+* Standard PageRank algorithm applied to the supra-adjacency matrix</p>
+</section>
+<section id="id2">
+<h3>Advanced Measures<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p><strong>HITS centrality</strong>
+* For undirected networks: equivalent to eigenvector centrality
+* For directed networks: separate hub and authority scores</p>
+<p><strong>Subgraph centrality</strong>
+* <span class="math notranslate nohighlight">\(SC_i = (e^A)_{ii}\)</span> where <span class="math notranslate nohighlight">\(A\)</span> is the adjacency matrix</p>
+<p><strong>Total communicability</strong>
+* <span class="math notranslate nohighlight">\(TC_i = \sum_j (e^A)_{ij}\)</span> (row sum of matrix exponential)</p>
+<p><strong>Multiplex k-core</strong>
+* Core number: maximum <span class="math notranslate nohighlight">\(k\)</span> such that node has at least <span class="math notranslate nohighlight">\(k\)</span> neighbors in the multilayer network</p>
+</section>
+</section>
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Path-based measures</strong> (closeness, betweenness) are computationally expensive as they require shortest path computations on the entire supra-graph</p></li>
+<li><p><strong>Advanced measures</strong> (current-flow, communicability, k-core) involve matrix operations that can be costly for large networks</p></li>
+<li><p><strong>Matrix exponential</strong> computations (subgraph centrality, communicability) are particularly expensive</p></li>
+<li><p>For large networks, consider using only degree-based and eigenvector-based measures</p></li>
+<li><p>Use <cite>include_path_based=False</cite> and <cite>include_advanced=False</cite> (defaults) in <cite>compute_all_centralities()</cite> for better performance</p></li>
+</ul>
+</section>
+<section id="example-applications">
+<h2>Example Applications<a class="headerlink" href="#example-applications" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Social network analysis</strong>: Identify influential users across different communication platforms</p></li>
+<li><p><strong>Transportation networks</strong>: Find critical stations/stops across different transport modes</p></li>
+<li><p><strong>Biological networks</strong>: Analyze protein interactions across different cellular conditions</p></li>
+<li><p><strong>Infrastructure networks</strong>: Study robustness of multilayer utility networks</p></li>
+</ol>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>The implementations follow standard definitions from multilayer network analysis literature, particularly:</p>
+<ul class="simple">
+<li><p>Kivelä, M., Arenas, A., Barthelemy, M., Gleeson, J. P., Moreno, Y., &amp; Porter, M. A. (2014). Multilayer networks. Journal of complex networks, 2(3), 203-271.</p></li>
+<li><p>Boccaletti, S., Bianconi, G., Criado, R., Del Genio, C. I., Gómez-Gardenes, J., Romance, M., … &amp; Zanin, M. (2014). The structure and dynamics of multilayer networks. Physics Reports, 544(1), 1-122.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../performance.html" class="btn btn-neutral float-left" title="Performance and Scalability" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multilayer_modularity.html" class="btn btn-neutral float-right" title="Multilayer Modularity and Community Detection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation and Setup &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quickstart Guide" href="quickstart.html" />
+    <link rel="prev" title="Py3plex Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-installation">Basic Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-from-github-recommended">Install from GitHub (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-from-source">Install from Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-dependencies">Optional Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-community-detection">Advanced Community Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-algorithms">Additional Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-visualization">Advanced Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-extras">Multiple Extras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development-installation">Development Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#system-requirements">System Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python-version">Python Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform-support">Platform Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#core-dependencies">Core Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#external-binaries-optional">External Binaries (Optional)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#infomap-community-detection">Infomap Community Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node2vec-embeddings">Node2Vec Embeddings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#virtual-environment-setup">Virtual Environment Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-venv">Using venv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-conda">Using conda</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-installation-issues">Common Installation Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#issue-no-module-named-numpy">Issue: “No module named ‘numpy’”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#issue-compilation-errors-on-windows">Issue: Compilation errors on Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#issue-permission-denied-on-linux-macos">Issue: “Permission denied” on Linux/macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#issue-old-version-installed">Issue: Old version installed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#verifying-installation">Verifying Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license-considerations">License Considerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-library-license">Main Library License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bundled-code-licenses">Bundled Code Licenses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#license-matrix">License Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recommendations">Recommendations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation and Setup</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation-and-setup">
+<h1>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Link to this heading"></a></h1>
+<p>This guide covers all aspects of installing py3plex and setting up your environment.</p>
+<section id="basic-installation">
+<h2>Basic Installation<a class="headerlink" href="#basic-installation" title="Link to this heading"></a></h2>
+<section id="install-from-github-recommended">
+<h3>Install from GitHub (Recommended)<a class="headerlink" href="#install-from-github-recommended" title="Link to this heading"></a></h3>
+<p>The latest version is always available on GitHub:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+<p>This installs the core py3plex library with all required dependencies.</p>
+</section>
+<section id="install-from-source">
+<h3>Install from Source<a class="headerlink" href="#install-from-source" title="Link to this heading"></a></h3>
+<p>For development or to access the latest features:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag installs in “editable” mode, so changes to the source code are immediately available.</p>
+</section>
+</section>
+<section id="optional-dependencies">
+<h2>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h2>
+<p>py3plex offers several optional feature sets that can be installed separately:</p>
+<section id="advanced-community-detection">
+<h3>Advanced Community Detection<a class="headerlink" href="#advanced-community-detection" title="Link to this heading"></a></h3>
+<p>Install Infomap for advanced overlapping community detection:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="additional-algorithms">
+<h3>Additional Algorithms<a class="headerlink" href="#additional-algorithms" title="Link to this heading"></a></h3>
+<p>Install extra community detection algorithms (Louvain, cdlib):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>algos<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-visualization">
+<h3>Advanced Visualization<a class="headerlink" href="#advanced-visualization" title="Link to this heading"></a></h3>
+<p>Install Plotly and igraph for interactive and advanced visualizations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="multiple-extras">
+<h3>Multiple Extras<a class="headerlink" href="#multiple-extras" title="Link to this heading"></a></h3>
+<p>Install multiple feature sets at once:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap,viz,algos<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="development-installation">
+<h3>Development Installation<a class="headerlink" href="#development-installation" title="Link to this heading"></a></h3>
+<p>For contributors, install with development tools (testing, linting):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+<p>This installs:</p>
+<ul class="simple">
+<li><p>pytest and coverage tools</p></li>
+<li><p>black, ruff, isort for code formatting</p></li>
+<li><p>mypy for type checking</p></li>
+<li><p>sphinx for documentation building</p></li>
+</ul>
+</section>
+</section>
+<section id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading"></a></h2>
+<section id="python-version">
+<h3>Python Version<a class="headerlink" href="#python-version" title="Link to this heading"></a></h3>
+<p>py3plex requires <strong>Python 3.8 or higher</strong>. We test on:</p>
+<ul class="simple">
+<li><p>Python 3.8</p></li>
+<li><p>Python 3.9</p></li>
+<li><p>Python 3.10</p></li>
+<li><p>Python 3.11</p></li>
+<li><p>Python 3.12</p></li>
+</ul>
+</section>
+<section id="platform-support">
+<h3>Platform Support<a class="headerlink" href="#platform-support" title="Link to this heading"></a></h3>
+<p>py3plex is cross-platform and tested on:</p>
+<ul class="simple">
+<li><p><strong>Linux</strong> (Ubuntu 20.04, 22.04)</p></li>
+<li><p><strong>macOS</strong> (macOS 11, 12, 13)</p></li>
+<li><p><strong>Windows</strong> (Windows Server 2019, 2022)</p></li>
+</ul>
+</section>
+<section id="core-dependencies">
+<h3>Core Dependencies<a class="headerlink" href="#core-dependencies" title="Link to this heading"></a></h3>
+<p>These are automatically installed with py3plex:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">networkx&gt;=2.5</span></code> - Graph data structures and algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy&gt;=0.8</span></code> - Numerical computing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scipy&gt;=1.1.0</span></code> - Scientific computing and sparse matrices</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pandas</span></code> - Data manipulation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> - Static visualization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> - Machine learning utilities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tqdm</span></code> - Progress bars</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rdflib&gt;=0.1</span></code> - Semantic web support</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitarray&gt;=2.0.0</span></code> - Efficient boolean arrays</p></li>
+</ul>
+</section>
+</section>
+<section id="external-binaries-optional">
+<h2>External Binaries (Optional)<a class="headerlink" href="#external-binaries-optional" title="Link to this heading"></a></h2>
+<p><strong>Note:</strong> As of October 2025, py3plex no longer bundles external binaries to reduce repository size and improve licensing clarity.</p>
+<section id="infomap-community-detection">
+<h3>Infomap Community Detection<a class="headerlink" href="#infomap-community-detection" title="Link to this heading"></a></h3>
+<p>For advanced community detection using Infomap:</p>
+<p><strong>Option 1:</strong> Use the bundled Python implementation (recommended):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Option 2:</strong> Download the C++ binary from the official source:</p>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="https://www.mapequation.org/infomap/">https://www.mapequation.org/infomap/</a></p></li>
+<li><p>Follow platform-specific installation instructions</p></li>
+</ul>
+<p><strong>Alternative:</strong> Use the built-in Louvain algorithm (no binary needed):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="node2vec-embeddings">
+<h3>Node2Vec Embeddings<a class="headerlink" href="#node2vec-embeddings" title="Link to this heading"></a></h3>
+<p>For Node2Vec node embeddings, use pure Python alternatives:</p>
+<p><strong>Option 1:</strong> Use pecanpy (fast parallel implementation):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pecanpy
+</pre></div>
+</div>
+<p><strong>Option 2:</strong> Use node2vec package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>node2vec
+</pre></div>
+</div>
+<p><strong>Option 3:</strong> Use py3plex’s built-in random walk implementation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">node2vec_walk</span><span class="p">,</span> <span class="n">generate_walks</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <code class="docutils literal notranslate"><span class="pre">bin/README.md</span></code> for detailed installation instructions and alternatives.</p>
+</section>
+</section>
+<section id="virtual-environment-setup">
+<h2>Virtual Environment Setup<a class="headerlink" href="#virtual-environment-setup" title="Link to this heading"></a></h2>
+<p>We strongly recommend using a virtual environment:</p>
+<section id="using-venv">
+<h3>Using venv<a class="headerlink" href="#using-venv" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create virtual environment</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>py3plex-env
+
+<span class="c1"># Activate (Linux/macOS)</span>
+<span class="nb">source</span><span class="w"> </span>py3plex-env/bin/activate
+
+<span class="c1"># Activate (Windows)</span>
+py3plex-env<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+
+<span class="c1"># Install py3plex</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+<section id="using-conda">
+<h3>Using conda<a class="headerlink" href="#using-conda" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create conda environment</span>
+conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>py3plex<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10
+
+<span class="c1"># Activate</span>
+conda<span class="w"> </span>activate<span class="w"> </span>py3plex
+
+<span class="c1"># Install py3plex</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+</section>
+<section id="common-installation-issues">
+<h2>Common Installation Issues<a class="headerlink" href="#common-installation-issues" title="Link to this heading"></a></h2>
+<section id="issue-no-module-named-numpy">
+<h3>Issue: “No module named ‘numpy’”<a class="headerlink" href="#issue-no-module-named-numpy" title="Link to this heading"></a></h3>
+<p><strong>Solution:</strong> Install numpy first:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+<section id="issue-compilation-errors-on-windows">
+<h3>Issue: Compilation errors on Windows<a class="headerlink" href="#issue-compilation-errors-on-windows" title="Link to this heading"></a></h3>
+<p><strong>Solution:</strong> Install Visual C++ Build Tools:</p>
+<ol class="arabic simple">
+<li><p>Download from: <a class="reference external" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">https://visualstudio.microsoft.com/visual-cpp-build-tools/</a></p></li>
+<li><p>Install “Desktop development with C++”</p></li>
+<li><p>Retry installation</p></li>
+</ol>
+</section>
+<section id="issue-permission-denied-on-linux-macos">
+<h3>Issue: “Permission denied” on Linux/macOS<a class="headerlink" href="#issue-permission-denied-on-linux-macos" title="Link to this heading"></a></h3>
+<p><strong>Solution:</strong> Use pip install with –user flag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+<p>Or use a virtual environment (recommended).</p>
+</section>
+<section id="issue-old-version-installed">
+<h3>Issue: Old version installed<a class="headerlink" href="#issue-old-version-installed" title="Link to this heading"></a></h3>
+<p><strong>Solution:</strong> Upgrade to latest version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+</section>
+<section id="verifying-installation">
+<h2>Verifying Installation<a class="headerlink" href="#verifying-installation" title="Link to this heading"></a></h2>
+<p>Test that py3plex is correctly installed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3plex</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;py3plex installed successfully!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Run the test suite:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone repository (if not already)</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+
+<span class="c1"># Run tests</span>
+python<span class="w"> </span>run_tests.py
+</pre></div>
+</div>
+</section>
+<section id="license-considerations">
+<h2>License Considerations<a class="headerlink" href="#license-considerations" title="Link to this heading"></a></h2>
+<section id="main-library-license">
+<h3>Main Library License<a class="headerlink" href="#main-library-license" title="Link to this heading"></a></h3>
+<p>py3plex core is distributed under the <strong>MIT License</strong> (permissive, commercial-friendly).</p>
+</section>
+<section id="bundled-code-licenses">
+<h3>Bundled Code Licenses<a class="headerlink" href="#bundled-code-licenses" title="Link to this heading"></a></h3>
+<p><strong>Important:</strong> The repository contains AGPLv3-licensed code in <code class="docutils literal notranslate"><span class="pre">py3plex/algorithms/community_detection/infomap/</span></code>.</p>
+<p>If you use Infomap-based community detection functions, your application may be subject to AGPLv3 requirements (copyleft).</p>
+</section>
+<section id="license-matrix">
+<h3>License Matrix<a class="headerlink" href="#license-matrix" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature Category</p></th>
+<th class="head"><p>License</p></th>
+<th class="head"><p>Commercial Use</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Core multilayer functionality</p></td>
+<td><p>MIT</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Safe for proprietary use</p></td>
+</tr>
+<tr class="row-odd"><td><p>Network visualization</p></td>
+<td><p>MIT</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Safe for proprietary use</p></td>
+</tr>
+<tr class="row-even"><td><p>I/O operations</p></td>
+<td><p>MIT</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Safe for proprietary use</p></td>
+</tr>
+<tr class="row-odd"><td><p>Louvain community detection</p></td>
+<td><p>BSD-3-Clause</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Safe for proprietary use</p></td>
+</tr>
+<tr class="row-even"><td><p>Label propagation</p></td>
+<td><p>MIT</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Safe for proprietary use</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Infomap community detection</strong></p></td>
+<td><p><strong>AGPLv3</strong></p></td>
+<td><p>⚠️ Restricted</p></td>
+<td><p>Viral license - requires open-sourcing derived works</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="recommendations">
+<h3>Recommendations<a class="headerlink" href="#recommendations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>For commercial/proprietary projects:</strong> Avoid Infomap functions or use the pure Python <code class="docutils literal notranslate"><span class="pre">infomap</span></code> package separately</p></li>
+<li><p><strong>For open-source projects:</strong> All features are safe to use</p></li>
+<li><p><strong>When in doubt:</strong> Use alternative algorithms (Louvain, label propagation) which are BSD/MIT licensed</p></li>
+</ul>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>After installation, proceed to:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="quickstart.html"><span class="doc">Quickstart Guide</span></a> - Quick introduction to basic features</p></li>
+<li><p><a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with Py3plex</span></a> - Comprehensive 10-minute tutorial</p></li>
+<li><p><a class="reference internal" href="basic_usage.html"><span class="doc">Quick Start Guide</span></a> - Detailed usage guide</p></li>
+</ul>
+</section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
+<p>If you encounter installation issues:</p>
+<ol class="arabic simple">
+<li><p>Check <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">GitHub Issues</a></p></li>
+<li><p>Search for similar problems</p></li>
+<li><p>Open a new issue with:</p>
+<ul class="simple">
+<li><p>Your operating system and version</p></li>
+<li><p>Python version (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--version</span></code>)</p></li>
+<li><p>Error message and full traceback</p></li>
+<li><p>Installation command used</p></li>
+</ul>
+</li>
+</ol>
+<p>For any errors, please open an issue at <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Py3plex Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Quickstart Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
