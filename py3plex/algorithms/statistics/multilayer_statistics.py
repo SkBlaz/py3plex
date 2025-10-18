@@ -14,7 +14,7 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -114,7 +114,7 @@ def inter_layer_coupling_strength(network: Any, layer_i: str, layer_j: str) -> f
     coupling_weights = []
 
     for edge in network.get_edges(data=True):
-        (n1, l1), (n2, l2) = edge[0], edge[1]
+        (_, l1), (_, l2) = edge[0], edge[1]
         # Inter-layer edge between the two specified layers
         if (l1 == layer_i and l2 == layer_j) or (l1 == layer_j and l2 == layer_i):
             weight = edge[2].get("weight", 1.0) if len(edge) > 2 else 1.0
@@ -206,7 +206,7 @@ def degree_vector(network: Any, node: Any, weighted: bool = False) -> Dict[str, 
         all_layers.add(layer)
 
     # Initialize degree vector
-    degrees = {layer: 0.0 for layer in all_layers}
+    degrees = dict.fromkeys(all_layers, 0.0)
 
     # Count degrees/strengths
     for edge in network.get_edges(data=True):
@@ -517,7 +517,7 @@ def multilayer_clustering_coefficient(
     clustering_coeffs = {}
 
     # Group by node
-    nodes = set(n for n, _ in all_node_layers)
+    nodes = {n for n, _ in all_node_layers}
 
     for n in nodes:
         total_triangles = 0
@@ -577,7 +577,7 @@ def versatility_centrality(
         alpha = {layer: 1.0 / len(all_layers) for layer in all_layers}
 
     # Get all unique nodes
-    all_nodes = set(n for n, _ in network.get_nodes())
+    all_nodes = {n for n, _ in network.get_nodes()}
 
     # Calculate centrality for each layer
     layer_centralities = {}
@@ -592,7 +592,7 @@ def versatility_centrality(
                 layer_edges.append((n1, n2, {"weight": weight}))
 
         if not layer_edges:
-            layer_centralities[layer] = {node: 0.0 for node in all_nodes}
+            layer_centralities[layer] = dict.fromkeys(all_nodes, 0.0)
             continue
 
         # Create NetworkX graph for this layer
@@ -617,8 +617,9 @@ def versatility_centrality(
             layer_centralities[layer] = {
                 node: cent.get(node, 0.0) for node in all_nodes
             }
-        except:
-            layer_centralities[layer] = {node: 0.0 for node in all_nodes}
+        except Exception:
+            # If centrality calculation fails, use zeros
+            layer_centralities[layer] = dict.fromkeys(all_nodes, 0.0)
 
     # Calculate versatility centrality
     versatility = {}
@@ -669,7 +670,7 @@ def interdependence(network: Any, sample_size: int = 100) -> float:
         all_layers.add(layer)
 
     # Get all unique nodes
-    all_nodes = list(set(n for n, _ in network.get_nodes()))
+    all_nodes = list({n for n, _ in network.get_nodes()})
 
     if len(all_nodes) < 2:
         return 0.0
@@ -816,7 +817,8 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
 
         result: np.ndarray = eigenvalues
         return result
-    except:
+    except Exception:
+        # Return empty array if computation fails
         empty_except: np.ndarray = np.array([])
         return empty_except
 
@@ -921,7 +923,7 @@ def entropy_of_multiplexity(network: Any) -> float:
     layer_edge_counts: Dict[str, int] = {}
 
     for edge in network.get_edges():
-        (n1, l1), (n2, l2) = edge[0], edge[1]
+        (_, l1), (_, l2) = edge[0], edge[1]
         # Only count intra-layer edges
         if l1 == l2:
             layer_edge_counts[l1] = layer_edge_counts.get(l1, 0) + 1
@@ -1024,7 +1026,7 @@ def multilayer_motif_frequency(network: Any, motif_size: int = 3) -> Dict[str, f
     # Calculate frequencies
     total = sum(motif_counts.values())
     if total == 0:
-        return {k: 0.0 for k in motif_counts}
+        return dict.fromkeys(motif_counts, 0.0)
 
     return {k: float(v / total) for k, v in motif_counts.items()}
 

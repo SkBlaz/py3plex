@@ -1,4 +1,9 @@
-# a framework for community-based node ranking
+"""
+Community-based node ranking framework.
+
+This module implements a framework for ranking nodes within and across
+communities using PageRank-based metrics and hierarchical clustering.
+"""
 
 import multiprocessing as mp
 from typing import Any, Dict, List, Tuple

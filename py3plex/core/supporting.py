@@ -1,4 +1,9 @@
-# set of supporting methods for parsers and converters
+"""
+Supporting methods for parsers and converters.
+
+This module provides utility functions for network parsing and conversion,
+including layer splitting, multiplex edge addition, and GAF parsing.
+"""
 
 import itertools
 import operator
@@ -9,7 +14,21 @@ import networkx as nx
 
 
 def split_to_layers(input_network: nx.Graph) -> Dict[Any, nx.Graph]:
+    """
+    Split a multilayer network into separate layer subgraphs.
 
+    Args:
+        input_network: NetworkX graph containing nodes from multiple layers.
+
+    Returns:
+        Dictionary mapping layer names to their corresponding subgraphs.
+
+    Example:
+        >>> network = nx.Graph()
+        >>> network.add_node(('A', 'layer1'))
+        >>> network.add_node(('B', 'layer2'))
+        >>> layers = split_to_layers(network)
+    """
     layer_info = defaultdict(list)
     subgraph_dictionary = {}
 
@@ -28,7 +47,24 @@ def split_to_layers(input_network: nx.Graph) -> Dict[Any, nx.Graph]:
 
 
 def add_mpx_edges(input_network: nx.Graph) -> nx.Graph:
+    """
+    Add multiplex edges between corresponding nodes across layers.
 
+    Multiplex edges connect nodes representing the same entity across
+    different layers of a multilayer network.
+
+    Args:
+        input_network: NetworkX graph with multilayer structure.
+
+    Returns:
+        Network with added multiplex edges between corresponding nodes.
+
+    Example:
+        >>> network = nx.Graph()
+        >>> network.add_node(('A', 'layer1'))
+        >>> network.add_node(('A', 'layer2'))
+        >>> network = add_mpx_edges(network)
+    """
     _layerwise_nodes = split_to_layers(input_network)
 
     min_node_layer = {}
@@ -53,6 +89,19 @@ def add_mpx_edges(input_network: nx.Graph) -> nx.Graph:
 def parse_gaf_to_uniprot_GO(
     gaf_mappings: str, filter_terms: Optional[int] = None
 ) -> Dict[str, List[str]]:
+    """
+    Parse Gene Association File (GAF) to map UniProt IDs to GO terms.
+
+    Args:
+        gaf_mappings: Path to GAF file.
+        filter_terms: Optional minimum occurrence threshold for GO terms.
+
+    Returns:
+        Dictionary mapping UniProt IDs to lists of associated GO terms.
+
+    Example:
+        >>> mappings = parse_gaf_to_uniprot_GO("gaf_file.gaf", filter_terms=5)
+    """
     uniGO = defaultdict(list)
     with open(gaf_mappings) as im:
         for line in im:

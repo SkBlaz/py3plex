@@ -21,12 +21,9 @@ import random
 
 import matplotlib.pyplot as plt
 
-from . import (
-    bezier,  # those are bezier curves
-    colors,  # those are color ranges
-    drawing_machinery,
-    polyfit,
-)
+from . import bezier  # those are bezier curves
+from . import colors  # those are color ranges
+from . import drawing_machinery, polyfit
 from .layout_algorithms import compute_force_directed_layout, compute_random_layout
 
 try:

@@ -1,4 +1,10 @@
-# a set of measures for assessing community quality
+"""
+Community quality measures and metrics.
+
+This module provides various measures for assessing the quality of community
+partitions in networks, including modularity, size distribution, and other
+statistical metrics.
+"""
 
 from itertools import product
 from typing import Any, Dict, List

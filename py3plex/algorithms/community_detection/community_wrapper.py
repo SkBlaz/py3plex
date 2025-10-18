@@ -34,7 +34,7 @@ def run_infomap(
             "Alternatively, use Louvain community detection: "
             "partition = louvain_communities(network)"
         )
-    
+
     if not os.access(binary, os.X_OK):
         raise PermissionError(
             f"Infomap binary at '{binary}' is not executable. "
@@ -43,17 +43,29 @@ def run_infomap(
 
     # Ensure output directory exists
     os.makedirs("out", exist_ok=True)
-    
+
     # Build base command with seed if provided
     seed_args = [f"--seed {seed}"] if seed is not None else []
-    
+
     if verbose:
         if multiplex:
-            cmd = [binary, infile, "out/", "-i multiplex", "-N " + str(iterations)] + seed_args
+            cmd = [
+                binary,
+                infile,
+                "out/",
+                "-i multiplex",
+                "-N " + str(iterations),
+            ] + seed_args
             call(cmd)
         else:
             if overlapping:
-                cmd = [binary, infile, "out/", "-N " + str(iterations), "--overlapping"] + seed_args
+                cmd = [
+                    binary,
+                    infile,
+                    "out/",
+                    "-N " + str(iterations),
+                    "--overlapping",
+                ] + seed_args
                 call(cmd)
             else:
                 cmd = [binary, infile, "out/", "-N " + str(iterations)] + seed_args
@@ -81,7 +93,13 @@ def run_infomap(
                 ] + seed_args
                 call(cmd)
             else:
-                cmd = [binary, infile, "out/", "-N " + str(iterations), "--silent"] + seed_args
+                cmd = [
+                    binary,
+                    infile,
+                    "out/",
+                    "-N " + str(iterations),
+                    "--silent",
+                ] + seed_args
                 call(cmd)
 
 
@@ -98,7 +116,7 @@ def infomap_communities(
 ) -> Union[Dict[Any, int], Dict[Any, List[int]]]:
     """
     Detect communities using the Infomap algorithm.
-    
+
     Args:
         graph: Input graph (NetworkX graph or multi_layer_network)
         binary: Path to Infomap binary (default: "./infomap")
@@ -110,19 +128,19 @@ def infomap_communities(
         output: Output format - "mapping" or "partition" (default: "mapping")
         seed: Random seed for reproducibility (default: None)
             Note: Requires Infomap binary that supports --seed parameter
-    
+
     Returns:
         Dict mapping nodes to community IDs (if output="mapping")
         or Dict mapping community IDs to lists of nodes (if output="partition")
-    
+
     Raises:
         FileNotFoundError: If Infomap binary is not found
         PermissionError: If Infomap binary is not executable
-    
+
     Examples:
         >>> # Using with seed for reproducibility
         >>> partition = infomap_communities(graph, seed=42)
-        >>> 
+        >>>
         >>> # Get partition format instead of mapping
         >>> communities = infomap_communities(graph, output="partition")
     """

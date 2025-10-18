@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-import networkx as nx
-import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-
+import matplotlib.pyplot as plt
+import networkx as nx
 from infomap import infomap
 
 """
