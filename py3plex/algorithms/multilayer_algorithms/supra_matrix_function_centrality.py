@@ -204,9 +204,15 @@ def katz_centrality(
     # Compute alpha if not provided (0.85 / lambda_max)
     if alpha is None:
         try:
-            # Compute largest eigenvalue
-            eigenvals, _ = eigs(supra_matrix, k=1, which="LM", tol=tol)
-            lambda_max = np.abs(eigenvals[0])
+            # For very small matrices (n <= 2), use dense eigenvalue computation
+            if n <= 2:
+                dense_matrix = supra_matrix.toarray()
+                eigenvals = np.linalg.eigvals(dense_matrix)
+                lambda_max = np.max(np.abs(eigenvals))
+            else:
+                # Compute largest eigenvalue using sparse methods
+                eigenvals, _ = eigs(supra_matrix, k=1, which="LM", tol=tol)
+                lambda_max = np.abs(eigenvals[0])
 
             if lambda_max < 1e-10:
                 # Matrix is essentially zero, return uniform distribution
@@ -214,19 +220,26 @@ def katz_centrality(
                 return centralities
 
             alpha = 0.85 / lambda_max
-        except (ArithmeticError, ValueError, RuntimeError) as e:
+        except (ArithmeticError, ValueError, RuntimeError, TypeError) as e:
             # Fallback: use small default alpha if eigenvalue computation fails
             alpha = 0.01
     else:
         # Validate provided alpha
         try:
-            eigenvals, _ = eigs(supra_matrix, k=1, which="LM", tol=tol)
-            lambda_max = np.abs(eigenvals[0])
+            # For very small matrices (n <= 2), use dense eigenvalue computation
+            if n <= 2:
+                dense_matrix = supra_matrix.toarray()
+                eigenvals = np.linalg.eigvals(dense_matrix)
+                lambda_max = np.max(np.abs(eigenvals))
+            else:
+                eigenvals, _ = eigs(supra_matrix, k=1, which="LM", tol=tol)
+                lambda_max = np.abs(eigenvals[0])
+            
             if alpha >= 1.0 / lambda_max:
                 raise Py3plexMatrixError(
                     f"Alpha ({alpha}) must be less than 1/lambda_max ({1.0/lambda_max:.6f})"
                 )
-        except (ArithmeticError, ValueError, RuntimeError):
+        except (ArithmeticError, ValueError, RuntimeError, TypeError):
             # If eigenvalue computation fails, just warn but proceed
             pass
 
