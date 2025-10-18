@@ -3,6 +3,7 @@
 import itertools
 
 import networkx as nx
+import numpy as np
 
 from py3plex.logging_config import get_logger
 
@@ -993,7 +994,12 @@ class multi_layer_network:
             for layer in unique_layers:
                 layer_nodes = [n for n in self.core_network.nodes() if n[1] == layer]
                 H = self.core_network.subgraph(layer_nodes)
-                adj = nx.to_numpy_matrix(H)
+                # NetworkX 3.x compatibility: use to_numpy_array instead of to_numpy_matrix
+                try:
+                    adj = nx.to_numpy_array(H)
+                except AttributeError:
+                    # Fallback for older NetworkX versions
+                    adj = nx.to_numpy_matrix(H)
                 all_nodes += list(H.nodes())
                 individual_adj.append(adj)
 

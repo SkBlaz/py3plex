@@ -183,6 +183,7 @@ Documentation Contents
    tutorials/multilayer_modularity
    tutorials/community_detection
    tutorials/network_decomposition
+   multilayer_centrality_matrix_functions
    random_walks
    supra
 

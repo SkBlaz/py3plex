@@ -17,6 +17,12 @@ import scipy.sparse as sp
 from scipy.sparse import identity
 from scipy.sparse.linalg import eigs
 
+# Import supra matrix function centralities
+from py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality import (
+    communicability_centrality,
+    katz_centrality,
+)
+
 
 class MultilayerCentrality:
     """
@@ -979,3 +985,12 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
         results["multiplex_k_core"] = calc.multiplex_k_core()
 
     return results
+
+
+# Export public API including supra matrix function centralities
+__all__ = [
+    "MultilayerCentrality",
+    "compute_all_centralities",
+    "communicability_centrality",
+    "katz_centrality",
+]
