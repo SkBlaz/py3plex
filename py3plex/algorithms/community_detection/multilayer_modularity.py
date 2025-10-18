@@ -86,7 +86,7 @@ def multilayer_modularity(
     node_layer_to_idx = {nl: i for i, nl in enumerate(node_layer_list)}
 
     # Extract layers
-    layers = list(set(nl[1] for nl in node_layer_list))
+    layers = list({nl[1] for nl in node_layer_list})
     n_layers = len(layers)
 
     # Convert gamma to dict if single value
@@ -136,8 +136,8 @@ def multilayer_modularity(
         for j, layer_j in enumerate(layers):
             if i != j:
                 # Count nodes present in both layers
-                nodes_i = set(nl[0] for nl in layer_stats[layer_i]["nodes"])
-                nodes_j = set(nl[0] for nl in layer_stats[layer_j]["nodes"])
+                nodes_i = {nl[0] for nl in layer_stats[layer_i]["nodes"]}
+                nodes_j = {nl[0] for nl in layer_stats[layer_j]["nodes"]}
                 common_nodes = nodes_i & nodes_j
                 total_weight += omega_matrix[i, j] * len(common_nodes)
 
@@ -240,7 +240,7 @@ def build_supra_modularity_matrix(
     n_total = len(node_layer_list)
 
     # Extract layers
-    layers = list(set(nl[1] for nl in node_layer_list))
+    layers = list({nl[1] for nl in node_layer_list})
     layer_to_idx = {layer: i for i, layer in enumerate(layers)}
     n_layers = len(layers)
 

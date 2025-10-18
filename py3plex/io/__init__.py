@@ -12,9 +12,9 @@ This module provides a comprehensive I/O system for multilayer graphs with:
 from .api import read, register_reader, register_writer, supported_formats, write
 from .converters import from_igraph, from_networkx, to_igraph, to_networkx
 from .exceptions import (
-                  FormatUnsupportedError,
-                  ReferentialIntegrityError,
-                  SchemaValidationError,
+    FormatUnsupportedError,
+    ReferentialIntegrityError,
+    SchemaValidationError,
 )
 from .schema import Edge, Layer, MultiLayerGraph, Node
 

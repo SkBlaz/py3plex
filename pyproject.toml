@@ -87,6 +87,12 @@ where = ["."]
 include = ["py3plex*"]
 exclude = ["tests*", "docs*", "examples*"]
 
+[tool.isort]
+profile = "black"
+line_length = 88
+skip_gitignore = true
+extend_skip = ["py3plex/algorithms/statistics/powerlaw.py"]
+
 [tool.black]
 line-length = 88
 target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
@@ -116,6 +122,7 @@ extend-exclude = [
     "build",
     "dist",
     ".eggs",
+    "py3plex/algorithms/statistics/powerlaw.py",
 ]
 
 [tool.ruff.lint]
@@ -123,7 +130,7 @@ select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
     "F",  # pyflakes
-    "I",  # isort
+    # "I",  # isort (disabled - using standalone isort instead)
     "B",  # flake8-bugbear
     "C4",  # flake8-comprehensions
     "UP",  # pyupgrade
@@ -163,6 +170,8 @@ exclude = [
     # Auto-generated SWIG bindings (many type errors, not maintainable)
     'py3plex/algorithms/infomap/infomap\.py$',
     'py3plex/algorithms/community_detection/infomap/infomap\.py$',
+    # Pre-existing syntax errors in powerlaw.py
+    'py3plex/algorithms/statistics/powerlaw\.py$',
 ]
 
 [tool.pytest.ini_options]

@@ -517,7 +517,7 @@ def multilayer_clustering_coefficient(
     clustering_coeffs = {}
 
     # Group by node
-    nodes = set(n for n, _ in all_node_layers)
+    nodes = {n for n, _ in all_node_layers}
 
     for n in nodes:
         total_triangles = 0
@@ -577,7 +577,7 @@ def versatility_centrality(
         alpha = {layer: 1.0 / len(all_layers) for layer in all_layers}
 
     # Get all unique nodes
-    all_nodes = set(n for n, _ in network.get_nodes())
+    all_nodes = {n for n, _ in network.get_nodes()}
 
     # Calculate centrality for each layer
     layer_centralities = {}
@@ -617,7 +617,7 @@ def versatility_centrality(
             layer_centralities[layer] = {
                 node: cent.get(node, 0.0) for node in all_nodes
             }
-        except Exception as e:
+        except Exception:
             # If centrality calculation fails, use zeros
             layer_centralities[layer] = dict.fromkeys(all_nodes, 0.0)
 
@@ -670,7 +670,7 @@ def interdependence(network: Any, sample_size: int = 100) -> float:
         all_layers.add(layer)
 
     # Get all unique nodes
-    all_nodes = list(set(n for n, _ in network.get_nodes()))
+    all_nodes = list({n for n, _ in network.get_nodes()})
 
     if len(all_nodes) < 2:
         return 0.0
@@ -817,7 +817,7 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
 
         result: np.ndarray = eigenvalues
         return result
-    except Exception as e:
+    except Exception:
         # Return empty array if computation fails
         empty_except: np.ndarray = np.array([])
         return empty_except

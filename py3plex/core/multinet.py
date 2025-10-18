@@ -7,10 +7,8 @@ import networkx as nx
 from py3plex.logging_config import get_logger
 
 from . import converters, parsers
-from .HINMINE.decomposition import (  # decompose the graph
-    hinmine_decompose,
-    hinmine_get_cycles,
-)
+from .HINMINE.decomposition import hinmine_decompose  # decompose the graph
+from .HINMINE.decomposition import hinmine_get_cycles
 from .HINMINE.IO import load_hinmine_object  # parse the graph
 from .nx_compat import nx_from_scipy_sparse_matrix, nx_info, nx_to_scipy_sparse_matrix
 

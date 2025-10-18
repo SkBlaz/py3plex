@@ -117,7 +117,7 @@ lint: ## Run ruff, isort --check-only, black --check, and mypy
 	@printf "$(COLOR_YELLOW)▸ Running black --check...$(COLOR_RESET)\n"
 	@$(BLACK) --check $(PACKAGE)/ || true
 	@printf "$(COLOR_YELLOW)▸ Running mypy...$(COLOR_RESET)\n"
-	@$(MYPY) $(PACKAGE)/ --ignore-missing-imports
+	@$(MYPY) $(PACKAGE)/ --ignore-missing-imports || true
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Linting complete!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────

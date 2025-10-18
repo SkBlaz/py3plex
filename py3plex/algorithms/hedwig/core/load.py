@@ -4,10 +4,10 @@ Reading input data.
 @author: anze.vavpetic@ijs.si
 """
 
-import _pickle as cPickle
 import hashlib
 import os
 
+import _pickle as cPickle
 import rdflib
 
 from .settings import GENERIC_NAMESPACE, HEDWIG, logger
