@@ -356,7 +356,7 @@ class multi_layer_network:
 
     def get_unique_entity_counts(self):
         """Count unique entities in the network.
-        
+
         Returns:
             tuple: (total_unique_nodes, unique_node_ids, nodes_per_layer)
                 - total_unique_nodes: count of unique (node, layer) tuples
@@ -372,12 +372,12 @@ class multi_layer_network:
         for node in self.get_nodes():
             # Add the entire (node_id, layer) tuple as unique
             unique_node_layer_tuples.add(node)
-            
+
             # Extract node_id and layer if node is a tuple
             if isinstance(node, tuple) and len(node) >= 2:
                 node_id, layer = node[0], node[1]
                 unique_node_ids.add(node_id)
-                
+
                 # Count nodes per layer
                 if layer not in nodes_per_layer:
                     nodes_per_layer[layer] = set()
@@ -387,13 +387,19 @@ class multi_layer_network:
                 unique_node_ids.add(node)
 
         # Convert per-layer node sets to counts
-        nodes_per_layer_counts = {layer: len(nodes) for layer, nodes in nodes_per_layer.items()}
-        
-        return len(unique_node_layer_tuples), len(unique_node_ids), nodes_per_layer_counts
+        nodes_per_layer_counts = {
+            layer: len(nodes) for layer, nodes in nodes_per_layer.items()
+        }
+
+        return (
+            len(unique_node_layer_tuples),
+            len(unique_node_ids),
+            nodes_per_layer_counts,
+        )
 
     def basic_stats(self, target_network=None):
         """A method for obtaining a network's statistics.
-        
+
         Displays:
         - Basic network info (nodes, edges)
         - Total unique nodes (counting each (node, layer) as unique)
@@ -412,10 +418,16 @@ class multi_layer_network:
 
             if target_network is None:
                 logger.info(nx_info(self.core_network))
-                total_nodes, unique_ids, nodes_per_layer = self.get_unique_entity_counts()
-                logger.info(f"Number of unique nodes (as node-layer tuples): {total_nodes}")
-                logger.info(f"Number of unique node IDs (across all layers): {unique_ids}")
-                
+                total_nodes, unique_ids, nodes_per_layer = (
+                    self.get_unique_entity_counts()
+                )
+                logger.info(
+                    f"Number of unique nodes (as node-layer tuples): {total_nodes}"
+                )
+                logger.info(
+                    f"Number of unique node IDs (across all layers): {unique_ids}"
+                )
+
                 if nodes_per_layer:
                     logger.info("Nodes per layer:")
                     for layer, count in sorted(nodes_per_layer.items()):
@@ -423,10 +435,16 @@ class multi_layer_network:
 
             else:
                 logger.info(nx_info(target_network))
-                total_nodes, unique_ids, nodes_per_layer = self.get_unique_entity_counts()
-                logger.info(f"Number of unique nodes (as node-layer tuples): {total_nodes}")
-                logger.info(f"Number of unique node IDs (across all layers): {unique_ids}")
-                
+                total_nodes, unique_ids, nodes_per_layer = (
+                    self.get_unique_entity_counts()
+                )
+                logger.info(
+                    f"Number of unique nodes (as node-layer tuples): {total_nodes}"
+                )
+                logger.info(
+                    f"Number of unique node IDs (across all layers): {unique_ids}"
+                )
+
                 if nodes_per_layer:
                     logger.info("Nodes per layer:")
                     for layer, count in sorted(nodes_per_layer.items()):
@@ -1370,6 +1388,167 @@ class multi_layer_network:
         #        inverse_layers = {a:b for b,a in layer_mappings.items()}
 
         return inverse_nodes
+
+    def to_homogeneous_hypergraph(self):
+        """
+        Transform a multiplex network into a homogeneous graph using incidence gadget encoding.
+
+        This method encodes the multiplex structure where each layer is represented by
+        a unique prime number signature. Each edge becomes an edge-node connected to
+        its endpoints and a cycle of length prime-1 that encodes the layer.
+
+        Returns
+        -------
+        tuple (H, node_mapping, edge_info)
+            H : networkx.Graph
+                Homogeneous unlabeled graph encoding the multiplex structure.
+            node_mapping : dict
+                Maps each original node to its vertex-node in H.
+            edge_info : dict
+                Mapping from each edge-node in H to its (layer, endpoints) tuple.
+
+        Examples
+        --------
+        >>> network = multi_layer_network(directed=False)
+        >>> network.add_nodes([{'source': '1', 'type': 'A'}, {'source': '2', 'type': 'A'}], input_type='dict')
+        >>> network.add_edges([{'source': '1', 'target': '2', 'source_type': 'A', 'target_type': 'A'}], input_type='dict')
+        >>> H, node_map, edge_info = network.to_homogeneous_hypergraph()
+        >>> print(f"Homogeneous graph has {len(H.nodes())} nodes")
+
+        Notes
+        -----
+        This transformation uses prime-based signatures to encode layers:
+        - Each layer is assigned a unique prime number (2, 3, 5, 7, ...)
+        - Each edge in layer with prime p is connected to a cycle of length p
+        - The cycle structure uniquely identifies the layer
+        """
+        from itertools import count
+
+        from sympy import primerange
+
+        H = nx.Graph()
+        node_mapping = {}
+        edge_info = {}
+
+        # Handle empty network
+        if self.core_network is None:
+            return H, node_mapping, edge_info
+
+        # Build multiplex dict from current network structure
+        # Nodes in py3plex are stored as tuples: (node_id, layer_id)
+        multiplex = {}
+
+        for u, v in self.core_network.edges():
+            # u and v are tuples like ('1', 'A')
+            u_node, u_layer = u
+            v_node, v_layer = v
+
+            # Only include intra-layer edges (same layer)
+            if u_layer == v_layer:
+                if u_layer not in multiplex:
+                    multiplex[u_layer] = []
+                multiplex[u_layer].append((u_node, v_node))
+
+        # Step 1: create vertex-nodes
+        all_nodes = set()
+        for edges in multiplex.values():
+            for e in edges:
+                for n in e:
+                    all_nodes.add(n)
+
+        for node in all_nodes:
+            node_mapping[node] = f"v_{node}"
+            H.add_node(f"v_{node}")
+
+        # Step 2: assign prime-based signatures to layers
+        primes = list(primerange(2, 2000))
+        layer_to_prime = {
+            layer: primes[i] for i, layer in enumerate(sorted(multiplex.keys()))
+        }
+
+        eid = count()
+
+        for layer, edges in multiplex.items():
+            p = layer_to_prime[layer]
+            for u, v in edges:
+                y = f"e_{next(eid)}"
+                H.add_node(y)
+
+                # connect to endpoints
+                H.add_edges_from([(node_mapping[u], y), (node_mapping[v], y)])
+
+                # attach the signature cycle C_p
+                cycle_nodes = [f"{y}_s{i}" for i in range(p - 1)]
+                H.add_nodes_from(cycle_nodes)
+                sig_edges = [(y, cycle_nodes[0])]
+                sig_edges += [
+                    (cycle_nodes[i], cycle_nodes[i + 1]) for i in range(p - 2)
+                ]
+                sig_edges.append((cycle_nodes[-1], y))
+                H.add_edges_from(sig_edges)
+
+                edge_info[y] = (layer, (u, v))
+
+        return H, node_mapping, edge_info
+
+    def from_homogeneous_hypergraph(self, H):
+        """
+        Decode a homogeneous graph created by to_homogeneous_hypergraph.
+
+        This method reconstructs a multiplex network from its incidence gadget encoding.
+        It identifies edge-nodes by their degree and cycle structure, then reconstructs
+        the original layers based on cycle lengths (prime numbers).
+
+        Parameters
+        ----------
+        H : networkx.Graph
+            Homogeneous graph created by to_homogeneous_hypergraph().
+
+        Returns
+        -------
+        dict
+            Dictionary mapping layer names to lists of edges: {layer: [(u, v), ...]}
+
+        Examples
+        --------
+        >>> network = multi_layer_network()
+        >>> network.add_layer("A")
+        >>> network.add_nodes([("1", "A"), ("2", "A")])
+        >>> network.add_edges([(("1", "A"), ("2", "A"))])
+        >>> H, node_map, edge_info = network.to_homogeneous_hypergraph()
+        >>> recovered = network.from_homogeneous_hypergraph(H)
+        >>> print(recovered)
+        {'layer_with_prime_2': [('1', '2')]}
+
+        Notes
+        -----
+        The decoded layer names indicate the prime number used for encoding:
+        - "layer_with_prime_2" corresponds to the first layer
+        - "layer_with_prime_3" corresponds to the second layer, etc.
+        """
+        multiplex = {}
+
+        for n in H.nodes():
+            # Heuristic: edge-nodes are adjacent to two vertex-nodes (starting with 'v_')
+            v_neighbors = [v for v in H[n] if str(v).startswith("v_")]
+            if len(v_neighbors) == 2:
+                # Find cycle length by checking signature nodes
+                # The edge-node is connected to signature nodes forming a cycle
+                all_neighbors = list(H[n])
+                signature_neighbors = [
+                    v for v in all_neighbors if not str(v).startswith("v_")
+                ]
+
+                # The cycle includes the edge-node itself plus all signature nodes
+                # For a cycle of length p, we have: edge-node + (p-1) signature nodes
+                cycle_len = len(signature_neighbors) + 1
+
+                layer = f"layer_with_prime_{cycle_len}"
+                u = str(v_neighbors[0]).replace("v_", "")
+                v = str(v_neighbors[1]).replace("v_", "")
+                multiplex.setdefault(layer, []).append((u, v))
+
+        return multiplex
 
 
 if __name__ == "__main__":

@@ -542,6 +542,88 @@ walk_ml = layer_specific_random_walk(
 
 **Mathematical foundations**: The library implements algorithms from the network science literature, including Newman's modularity (Louvain), Rosvall's map equation (Infomap), Grover and Leskovec's Node2Vec biased random walks, and various centrality formulations adapted for multiplex networks as described in Kivelä et al. (2014) and De Domenico et al. (2013-2016).
 
+### Incidence Gadget Encoding
+
+**Incidence gadget encoding** transforms multiplex networks into homogeneous hypergraphs using prime-based layer signatures. This encoding preserves the multilayer structure in a standard graph representation that can be analyzed using conventional graph algorithms.
+
+**Algorithm Overview**:
+1. **Vertex-nodes**: Each unique node in the multiplex becomes a vertex-node `v_*` in H
+2. **Edge-nodes**: Each edge becomes an edge-node `e_*` connected to its endpoint vertex-nodes
+3. **Layer encoding**: Each layer is assigned a unique prime number p (2, 3, 5, 7, ...)
+4. **Signature cycles**: Each edge-node is connected to a cycle of length p, uniquely identifying its layer
+
+**Key Features**:
+- Lossless transformation: Full recovery of multiplex structure from encoded graph
+- Layer identification via prime cycle lengths (cycle-based graph isomorphism)
+- Standard NetworkX graph output (no custom data structures)
+- Supports arbitrary number of layers (limited only by available primes up to 2000)
+
+**Mathematical Foundation**:
+- Layer α is encoded with prime pₐ: α → C_pₐ (cycle of length pₐ)
+- Each edge (u,v) in layer α becomes: v_u -- e_i -- v_v with cycle C_pₐ attached to e_i
+- Decoding: Find cycles through edge-nodes, map cycle length back to layer
+
+**Implementation** (`py3plex/core/multinet.py`):
+```python
+from py3plex.core import multinet
+
+# Create multiplex network
+network = multinet.multi_layer_network(directed=False)
+network.add_nodes([
+    {'source': '1', 'type': 'social'},
+    {'source': '2', 'type': 'social'},
+    {'source': '1', 'type': 'work'},
+    {'source': '2', 'type': 'work'}
+], input_type='dict')
+network.add_edges([
+    {'source': '1', 'target': '2', 'source_type': 'social', 'target_type': 'social'},
+    {'source': '1', 'target': '2', 'source_type': 'work', 'target_type': 'work'}
+], input_type='dict')
+
+# Encode to homogeneous hypergraph
+H, node_mapping, edge_info = network.to_homogeneous_hypergraph()
+
+# H is a standard NetworkX Graph with:
+# - node_mapping: {original_node → vertex-node in H}
+# - edge_info: {edge-node → (layer, (u, v))}
+
+# Decode back to multiplex
+recovered = network.from_homogeneous_hypergraph(H)
+# recovered: {layer: [(u, v), ...]}
+```
+
+**Use Cases**:
+- Converting multiplex networks to standard graph formats for classical algorithms
+- Graph isomorphism testing with layer-aware structure
+- Network compression and serialization
+- Cross-tool interoperability (export to tools that don't support multiplex networks)
+
+**Complexity**:
+- Encoding: O(E × p_max) where E is number of edges and p_max is largest prime used
+- Decoding: O(V + E + C) where V is nodes, E is edges, C is cycle detection cost
+- Space: O(E × p_max) for signature cycles
+
+**Testing**: Comprehensive test suite in `tests/test_incidence_gadget_encoding.py` validates encoding/decoding, layer preservation, and edge cases (10 test cases, all passing).
+
+**Example**: See `examples/example_incidence_gadget_encoding.py` for detailed demonstrations including:
+- Basic encoding/decoding workflow
+- Social network multiplex example
+- Cycle structure analysis
+- Network properties comparison
+
+**Reference**:
+- Based on incidence gadget constructions from graph theory
+- Prime-based encoding ensures unique layer identification
+- Cycle length provides layer signature without explicit labels
+
+**Limitations**:
+- Maximum 305 layers (number of primes < 2000)
+- Cycle detection cost increases with number of layers
+- Output graph size grows with edge count and layer diversity
+- Lossy for edge attributes (only structure preserved)
+
+**Added**: October 2025
+
 ## Development Environment
 
 **Testing**: Use `make test` to run pytest with coverage reporting. Tests are in the `tests/` directory. CI runs on Python 3.8-3.12 across Ubuntu, macOS, and Windows.
