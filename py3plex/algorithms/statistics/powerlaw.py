@@ -185,7 +185,6 @@ class Fit:
         This is the method of Clauset et al. 2007.
         """
         from numpy import argmin, asarray, unique
-
         # Much of the rest of this function was inspired by Adam Ginsburg's plfit code,
         # specifically the mapping and sigma threshold behavior:
         # http://code.google.com/p/agpy/source/browse/trunk/plfit/plfit.py?spec=svn359&r=357
@@ -867,7 +866,7 @@ class Distribution:
                     upper_limit = self.discrete_approximation
 
 
-m mpmath import exp
+#            from mpmath import exp
                 from numpy import arange
                 X = arange(self.xmin, upper_limit + 1)
                 PDF = self._pdf_base_function(X)
@@ -1254,7 +1253,6 @@ class Exponential(Distribution):
         if not self.discrete and self.in_range() and not self.xmax:
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import exp
-
             #        likelihoods = exp(-Lambda*data)*\
             #                Lambda*exp(Lambda*xmin)
             likelihoods = self.Lambda * exp(self.Lambda * (self.xmin - data))
@@ -1271,7 +1269,6 @@ class Exponential(Distribution):
         if not self.discrete and self.in_range() and not self.xmax:
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import log
-
             #        likelihoods = exp(-Lambda*data)*\
             #                Lambda*exp(Lambda*xmin)
             loglikelihoods = log(self.Lambda) + (self.Lambda *
@@ -1368,7 +1365,6 @@ class Stretched_Exponential(Distribution):
 
     def _generate_random_continuous(self, r):
         from numpy import log
-
         #        return ( (self.xmin**self.beta) -
         #            (1/self.Lambda) * log(1-r) )**(1/self.beta)
         return (1 / self.Lambda) * (
@@ -1422,8 +1418,10 @@ class Truncated_Power_Law(Distribution):
     def _pdf_discrete_normalizer(self):
         if 0:
             return False
-        from mpmath import exp  # faster /here/ than numpy.exp
-        from mpmath import lerchphi
+        from mpmath import (
+            exp,  # faster /here/ than numpy.exp
+            lerchphi,
+        )
         C = (float(
             exp(self.xmin * self.Lambda) /
             lerchphi(exp(-self.Lambda), self.alpha, self.xmin)))
@@ -1442,7 +1440,6 @@ class Truncated_Power_Law(Distribution):
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from mpmath import gammainc
             from numpy import exp
-
             #        likelihoods = (data**-alpha)*exp(-Lambda*data)*\
             #                (Lambda**(1-alpha))/\
             #                float(gammainc(1-alpha,Lambda*xmin))
@@ -1531,7 +1528,7 @@ class Lognormal(Distribution):
                     upper_limit = self.xmax
                 else:
                     upper_limit = self.discrete_approximation
-m mpmath import exp
+#            from mpmath import exp
                 from numpy import arange
                 X = arange(self.xmin, upper_limit + 1)
                 PDF = self._pdf_base_function(X)
@@ -1667,6 +1664,7 @@ m mpmath import exp
     def _pdf_continuous_normalizer(self):
         from mpmath import erfc
         from numpy import log, sqrt
+
         #        from scipy.special import erfc
         from scipy.constants import pi
         C = (erfc((log(self.xmin) - self.mu) / (sqrt(2) * self.sigma)) /
@@ -1680,7 +1678,6 @@ m mpmath import exp
     def _generate_random_continuous(self, r):
         from mpmath import erf, erfinv
         from numpy import exp, frompyfunc, log, sqrt
-
         # This is a long, complicated function broken into parts.
         # We use mpmath to maintain numerical accuracy as we run through
         # erf and erfinv, until we get to more sane numbers. Thanks to
@@ -2901,7 +2898,6 @@ def gamma_likelihoods(data, k, theta, xmin, xmax=False, discrete=False):
 
     from mpmath import gammainc
     from numpy import exp
-
     #    from scipy.special import gamma, gammainc #Not NEARLY numerically accurate enough for the job
     if not discrete:
         likelihoods = (data**(k - 1)) / (exp(data / theta) *
@@ -2945,7 +2941,6 @@ def truncated_power_law_likelihoods(data,
     from numpy import exp
     if not discrete:
         from mpmath import gammainc
-
         #        from scipy.special import gamma, gammaincc #Not NEARLY accurate enough to do the job
         #        likelihoods = (data**-alpha)*exp(-Lambda*data)*\
         #                (Lambda**(1-alpha))/\
@@ -2984,6 +2979,7 @@ def lognormal_likelihoods(data, mu, sigma, xmin, xmax=False, discrete=False):
     if not discrete:
         from numpy import exp, sqrt
         from scipy.constants import pi
+
         #        from mpmath import erfc
         from scipy.special import erfc
         likelihoods = (1.0 / data) * exp(-((log(data) - mu) ** 2) / (2 * sigma ** 2)) *\
@@ -2997,7 +2993,6 @@ def lognormal_likelihoods(data, mu, sigma, xmin, xmax=False, discrete=False):
             xmax = max(data)
         if xmax:
             from numpy import arange, exp
-
             #            from mpmath import exp
             X = arange(xmin, xmax + 1)
             #            PDF_function = lambda x: (1.0/x)*exp(-( (log(x) - mu)**2 ) / 2*sigma**2)
