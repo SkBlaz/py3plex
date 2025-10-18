@@ -1532,17 +1532,21 @@ class multi_layer_network:
             # Heuristic: edge-nodes are adjacent to two vertex-nodes (starting with 'v_')
             v_neighbors = [v for v in H[n] if str(v).startswith("v_")]
             if len(v_neighbors) == 2:
-                # find a small cycle through n
-                cycle_len = None
-                for cycle in nx.cycle_basis(H, n):
-                    if n in cycle:
-                        cycle_len = len(cycle)
-                        break
-                if cycle_len is not None:
-                    layer = f"layer_with_prime_{cycle_len}"
-                    u = str(v_neighbors[0]).replace("v_", "")
-                    v = str(v_neighbors[1]).replace("v_", "")
-                    multiplex.setdefault(layer, []).append((u, v))
+                # Find cycle length by checking signature nodes
+                # The edge-node is connected to signature nodes forming a cycle
+                all_neighbors = list(H[n])
+                signature_neighbors = [
+                    v for v in all_neighbors if not str(v).startswith("v_")
+                ]
+
+                # The cycle includes the edge-node itself plus all signature nodes
+                # For a cycle of length p, we have: edge-node + (p-1) signature nodes
+                cycle_len = len(signature_neighbors) + 1
+
+                layer = f"layer_with_prime_{cycle_len}"
+                u = str(v_neighbors[0]).replace("v_", "")
+                v = str(v_neighbors[1]).replace("v_", "")
+                multiplex.setdefault(layer, []).append((u, v))
 
         return multiplex
 
