@@ -355,21 +355,51 @@ class multi_layer_network:
         }
 
     def get_unique_entity_counts(self):
-        """Main network loader
-        Count unique entities.
+        """Count unique entities in the network.
+        
+        Returns:
+            tuple: (total_unique_nodes, unique_node_ids, nodes_per_layer)
+                - total_unique_nodes: count of unique (node, layer) tuples
+                - unique_node_ids: count of unique node IDs (across all layers)
+                - nodes_per_layer: dict mapping layer to count of nodes in that layer
         """
 
-        node_layer_tuples = set()
-        unique_nodes = set()
+        unique_node_layer_tuples = set()
+        unique_node_ids = set()
+        nodes_per_layer = {}
 
-        for edge in self.get_edges():
-            node_layer_tuples.add(edge)
-            unique_nodes.add(edge[0])
+        # Iterate through all nodes (which are (node_id, layer) tuples in multilayer networks)
+        for node in self.get_nodes():
+            # Add the entire (node_id, layer) tuple as unique
+            unique_node_layer_tuples.add(node)
+            
+            # Extract node_id and layer if node is a tuple
+            if isinstance(node, tuple) and len(node) >= 2:
+                node_id, layer = node[0], node[1]
+                unique_node_ids.add(node_id)
+                
+                # Count nodes per layer
+                if layer not in nodes_per_layer:
+                    nodes_per_layer[layer] = set()
+                nodes_per_layer[layer].add(node)
+            else:
+                # For simple networks without layers, just count the node
+                unique_node_ids.add(node)
 
-        return len(node_layer_tuples), len(unique_nodes)
+        # Convert per-layer node sets to counts
+        nodes_per_layer_counts = {layer: len(nodes) for layer, nodes in nodes_per_layer.items()}
+        
+        return len(unique_node_layer_tuples), len(unique_node_ids), nodes_per_layer_counts
 
     def basic_stats(self, target_network=None):
-        """A method for obtaining a network's statistics"""
+        """A method for obtaining a network's statistics.
+        
+        Displays:
+        - Basic network info (nodes, edges)
+        - Total unique nodes (counting each (node, layer) as unique)
+        - Unique node IDs (across all layers)
+        - Per-layer node counts
+        """
 
         if self.sparse_enabled:
             self.monitor(
@@ -382,13 +412,25 @@ class multi_layer_network:
 
             if target_network is None:
                 logger.info(nx_info(self.core_network))
-                nt, n = self.get_unique_entity_counts()
-                logger.info(f"Number of unique node IDs: {n}")
+                total_nodes, unique_ids, nodes_per_layer = self.get_unique_entity_counts()
+                logger.info(f"Number of unique nodes (as node-layer tuples): {total_nodes}")
+                logger.info(f"Number of unique node IDs (across all layers): {unique_ids}")
+                
+                if nodes_per_layer:
+                    logger.info("Nodes per layer:")
+                    for layer, count in sorted(nodes_per_layer.items()):
+                        logger.info(f"  Layer '{layer}': {count} nodes")
 
             else:
                 logger.info(nx_info(target_network))
-                nt, n = self.get_unique_entity_counts()
-                logger.info(f"Number of unique node IDs: {n}")
+                total_nodes, unique_ids, nodes_per_layer = self.get_unique_entity_counts()
+                logger.info(f"Number of unique nodes (as node-layer tuples): {total_nodes}")
+                logger.info(f"Number of unique node IDs (across all layers): {unique_ids}")
+                
+                if nodes_per_layer:
+                    logger.info("Nodes per layer:")
+                    for layer, count in sorted(nodes_per_layer.items()):
+                        logger.info(f"  Layer '{layer}': {count} nodes")
 
     def get_edges(self, data=False, multiplex_edges=False):
         """A method for obtaining a network's edges"""
