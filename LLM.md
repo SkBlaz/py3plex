@@ -356,6 +356,31 @@ resilience = mls.resilience(network, 'layer_removal', perturbation_param='layer1
 
 ### Centrality Measures (Multilayer-Aware)
 
+**Multiplex Participation Coefficient (MPC)** (Added: October 2025):
+- **Purpose**: Measures how evenly a node participates across layers in a multiplex network
+- **Formula**: `MPC(i) = (L/(L-1)) × (1 - Σₐ (k_i^α / k_i^total)²)`
+  - `k_i^α` is the degree of node i in layer α
+  - `k_i^total` is the total degree of node i across all layers
+  - `L` is the number of layers
+  - Normalized version multiplies by `L/(L-1)` to scale to [0,1]
+- **Interpretation**:
+  - MPC = 0: Node active in only one layer (no cross-layer participation)
+  - MPC ≈ 1: Node equally active across all layers (perfect participation)
+  - 0 < MPC < 1: Partial participation with varying degrees across layers
+- **Requirements**: True multiplex network (identical node set across all layers)
+- **Module**: `algorithms/multicentrality.py`
+- **Reference**: Battiston et al. (2014), De Domenico et al. (2015)
+- **Example usage**:
+```python
+from py3plex.algorithms.multicentrality import multiplex_participation_coefficient
+
+# Compute MPC for all nodes
+mpc = multiplex_participation_coefficient(multinet, normalized=True)
+
+# Check participation of specific node
+node_participation = mpc['node_A']
+```
+
 **Supra Matrix Function Centralities** (Added: October 2025, Phase II):
 - **Communicability centrality**: exp(A) · 1 via matrix exponential (Estrada index)
   - Measures weighted sum of all walks with exponentially decaying weights
