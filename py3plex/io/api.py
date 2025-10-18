@@ -6,7 +6,7 @@ format detection and a registry system for extensibility.
 """
 
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 
 from .exceptions import FormatUnsupportedError
 from .schema import MultiLayerGraph

@@ -14,7 +14,7 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -206,7 +206,7 @@ def degree_vector(network: Any, node: Any, weighted: bool = False) -> Dict[str, 
         all_layers.add(layer)
 
     # Initialize degree vector
-    degrees = {layer: 0.0 for layer in all_layers}
+    degrees = dict.fromkeys(all_layers, 0.0)
 
     # Count degrees/strengths
     for edge in network.get_edges(data=True):
@@ -592,7 +592,7 @@ def versatility_centrality(
                 layer_edges.append((n1, n2, {"weight": weight}))
 
         if not layer_edges:
-            layer_centralities[layer] = {node: 0.0 for node in all_nodes}
+            layer_centralities[layer] = dict.fromkeys(all_nodes, 0.0)
             continue
 
         # Create NetworkX graph for this layer
@@ -618,7 +618,7 @@ def versatility_centrality(
                 node: cent.get(node, 0.0) for node in all_nodes
             }
         except:
-            layer_centralities[layer] = {node: 0.0 for node in all_nodes}
+            layer_centralities[layer] = dict.fromkeys(all_nodes, 0.0)
 
     # Calculate versatility centrality
     versatility = {}
@@ -1024,7 +1024,7 @@ def multilayer_motif_frequency(network: Any, motif_size: int = 3) -> Dict[str, f
     # Calculate frequencies
     total = sum(motif_counts.values())
     if total == 0:
-        return {k: 0.0 for k in motif_counts}
+        return dict.fromkeys(motif_counts, 0.0)
 
     return {k: float(v / total) for k, v in motif_counts.items()}
 
