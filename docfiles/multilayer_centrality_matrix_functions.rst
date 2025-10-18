@@ -273,9 +273,9 @@ Memory Error
 See Also
 --------
 
-* :ref:`Multilayer Centrality Measures <centrality>` - Overview of all centrality measures
-* :ref:`Algorithm Selection Guide <algorithm_guide>` - Choosing the right algorithm
-* :ref:`Multiplex Network Concepts <multilayer_concepts>` - Understanding multilayer networks
+* :doc:`tutorials/multilayer_centrality` - Overview of all centrality measures
+* :doc:`algorithm_guide` - Choosing the right algorithm
+* :doc:`multilayer_concepts` - Understanding multilayer networks
 
 References
 ----------

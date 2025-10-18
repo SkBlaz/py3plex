@@ -20,7 +20,9 @@ Multilayer Modularity Quality Function
 
 The multilayer modularity :math:`Q` is defined as:
 
-$:math:`Q_{\text{multilayer}} = \frac{1}{2\mu} \sum_{i,j}\sum_{\alpha,\beta} \Big[ \big(A^{[\alpha]}_{ij} - \gamma^{[\alpha]}P^{[\alpha]}_{ij}\big)\,\delta_{\alpha\beta} + \delta_{ij}\,\omega_{\alpha\beta}\Big]\,\delta\big(g_{i,\alpha},\,g_{j,\beta}\big)`$
+.. math::
+
+   Q_{\text{multilayer}} = \frac{1}{2\mu} \sum_{i,j}\sum_{\alpha,\beta} \Big[ \big(A^{[\alpha]}_{ij} - \gamma^{[\alpha]}P^{[\alpha]}_{ij}\big)\,\delta_{\alpha\beta} + \delta_{ij}\,\omega_{\alpha\beta}\Big]\,\delta\big(g_{i,\alpha},\,g_{j,\beta}\big)
 
 where:
 * :math:`A^{[\alpha]}_{ij}` is the adjacency matrix of layer :math:`\alpha`

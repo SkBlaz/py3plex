@@ -200,7 +200,6 @@ Documentation Contents
    :caption: API Reference
 
    apidocs
-   AUTOGEN_results/modules
 
 .. toctree::
    :maxdepth: 2
