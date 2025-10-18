@@ -20,23 +20,29 @@ def example_basic_encoding():
     network = multinet.multi_layer_network(directed=False)
 
     # Add nodes to layers using dict format
-    network.add_nodes([
-        {'source': '1', 'type': 'A'},
-        {'source': '2', 'type': 'A'},
-        {'source': '3', 'type': 'A'},
-        {'source': '1', 'type': 'B'},
-        {'source': '3', 'type': 'B'},
-        {'source': '2', 'type': 'C'},
-        {'source': '4', 'type': 'C'}
-    ], input_type='dict')
+    network.add_nodes(
+        [
+            {"source": "1", "type": "A"},
+            {"source": "2", "type": "A"},
+            {"source": "3", "type": "A"},
+            {"source": "1", "type": "B"},
+            {"source": "3", "type": "B"},
+            {"source": "2", "type": "C"},
+            {"source": "4", "type": "C"},
+        ],
+        input_type="dict",
+    )
 
     # Add edges using dict format
-    network.add_edges([
-        {'source': '1', 'target': '2', 'source_type': 'A', 'target_type': 'A'},
-        {'source': '2', 'target': '3', 'source_type': 'A', 'target_type': 'A'},
-        {'source': '1', 'target': '3', 'source_type': 'B', 'target_type': 'B'},
-        {'source': '2', 'target': '4', 'source_type': 'C', 'target_type': 'C'}
-    ], input_type='dict')
+    network.add_edges(
+        [
+            {"source": "1", "target": "2", "source_type": "A", "target_type": "A"},
+            {"source": "2", "target": "3", "source_type": "A", "target_type": "A"},
+            {"source": "1", "target": "3", "source_type": "B", "target_type": "B"},
+            {"source": "2", "target": "4", "source_type": "C", "target_type": "C"},
+        ],
+        input_type="dict",
+    )
 
     print("\nOriginal multiplex network:")
     print(f"  Nodes: {len(list(network.get_nodes()))}")
@@ -46,15 +52,15 @@ def example_basic_encoding():
     print("\nEncoding to homogeneous hypergraph...")
     H, node_mapping, edge_info = network.to_homogeneous_hypergraph()
 
-    print(f"\nHomogeneous graph H:")
+    print("\nHomogeneous graph H:")
     print(f"  Nodes: {len(H.nodes())}")
     print(f"  Edges: {len(H.edges())}")
 
-    print(f"\nNode mapping (original -> vertex-node):")
+    print("\nNode mapping (original -> vertex-node):")
     for orig, mapped in sorted(node_mapping.items()):
         print(f"  {orig} -> {mapped}")
 
-    print(f"\nEdge information (edge-node -> (layer, endpoints)):")
+    print("\nEdge information (edge-node -> (layer, endpoints)):")
     for edge_node, (layer, endpoints) in sorted(edge_info.items()):
         print(f"  {edge_node} -> Layer: {layer}, Endpoints: {endpoints}")
 
@@ -82,31 +88,72 @@ def example_social_network():
     people = ["Alice", "Bob", "Charlie", "Diana"]
 
     # Friendship layer
-    network.add_nodes([
-        {'source': p, 'type': 'friendship'} for p in people
-    ], input_type='dict')
-    network.add_edges([
-        {'source': 'Alice', 'target': 'Bob', 'source_type': 'friendship', 'target_type': 'friendship'},
-        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'friendship', 'target_type': 'friendship'},
-        {'source': 'Charlie', 'target': 'Diana', 'source_type': 'friendship', 'target_type': 'friendship'}
-    ], input_type='dict')
+    network.add_nodes(
+        [{"source": p, "type": "friendship"} for p in people], input_type="dict"
+    )
+    network.add_edges(
+        [
+            {
+                "source": "Alice",
+                "target": "Bob",
+                "source_type": "friendship",
+                "target_type": "friendship",
+            },
+            {
+                "source": "Bob",
+                "target": "Charlie",
+                "source_type": "friendship",
+                "target_type": "friendship",
+            },
+            {
+                "source": "Charlie",
+                "target": "Diana",
+                "source_type": "friendship",
+                "target_type": "friendship",
+            },
+        ],
+        input_type="dict",
+    )
 
     # Colleague layer
-    network.add_nodes([
-        {'source': p, 'type': 'colleague'} for p in ["Alice", "Bob", "Diana"]
-    ], input_type='dict')
-    network.add_edges([
-        {'source': 'Alice', 'target': 'Bob', 'source_type': 'colleague', 'target_type': 'colleague'},
-        {'source': 'Alice', 'target': 'Diana', 'source_type': 'colleague', 'target_type': 'colleague'}
-    ], input_type='dict')
+    network.add_nodes(
+        [{"source": p, "type": "colleague"} for p in ["Alice", "Bob", "Diana"]],
+        input_type="dict",
+    )
+    network.add_edges(
+        [
+            {
+                "source": "Alice",
+                "target": "Bob",
+                "source_type": "colleague",
+                "target_type": "colleague",
+            },
+            {
+                "source": "Alice",
+                "target": "Diana",
+                "source_type": "colleague",
+                "target_type": "colleague",
+            },
+        ],
+        input_type="dict",
+    )
 
     # Family layer
-    network.add_nodes([
-        {'source': p, 'type': 'family'} for p in ["Alice", "Charlie", "Diana"]
-    ], input_type='dict')
-    network.add_edges([
-        {'source': 'Alice', 'target': 'Charlie', 'source_type': 'family', 'target_type': 'family'}
-    ], input_type='dict')
+    network.add_nodes(
+        [{"source": p, "type": "family"} for p in ["Alice", "Charlie", "Diana"]],
+        input_type="dict",
+    )
+    network.add_edges(
+        [
+            {
+                "source": "Alice",
+                "target": "Charlie",
+                "source_type": "family",
+                "target_type": "family",
+            }
+        ],
+        input_type="dict",
+    )
 
     print("\nMultiplex social network:")
     print(f"  People: {people}")
@@ -115,12 +162,12 @@ def example_social_network():
     # Encode
     H, node_mapping, edge_info = network.to_homogeneous_hypergraph()
 
-    print(f"\nEncoded as homogeneous hypergraph:")
+    print("\nEncoded as homogeneous hypergraph:")
     print(f"  Nodes in H: {len(H.nodes())}")
     print(f"  Edges in H: {len(H.edges())}")
     print(f"  Connected components: {nx.number_connected_components(H)}")
 
-    print(f"\nRelationships encoded:")
+    print("\nRelationships encoded:")
     for edge_node, (layer, (u, v)) in sorted(edge_info.items()):
         print(f"  {u} <--> {v} via {layer}")
 
@@ -147,23 +194,31 @@ def example_cycle_detection():
     network = multinet.multi_layer_network(directed=False)
 
     for layer_name in ["Layer1", "Layer2", "Layer3"]:
-        network.add_nodes([
-            {'source': 'A', 'type': layer_name},
-            {'source': 'B', 'type': layer_name}
-        ], input_type='dict')
-        network.add_edges([
-            {'source': 'A', 'target': 'B', 'source_type': layer_name, 'target_type': layer_name}
-        ], input_type='dict')
+        network.add_nodes(
+            [{"source": "A", "type": layer_name}, {"source": "B", "type": layer_name}],
+            input_type="dict",
+        )
+        network.add_edges(
+            [
+                {
+                    "source": "A",
+                    "target": "B",
+                    "source_type": layer_name,
+                    "target_type": layer_name,
+                }
+            ],
+            input_type="dict",
+        )
 
     print("\nCreated 3 layers, each with one edge A-B")
 
     H, node_mapping, edge_info = network.to_homogeneous_hypergraph()
 
-    print(f"\nHomogeneous graph statistics:")
+    print("\nHomogeneous graph statistics:")
     print(f"  Total nodes: {len(H.nodes())}")
     print(f"  Total edges: {len(H.edges())}")
 
-    print(f"\nCycle analysis:")
+    print("\nCycle analysis:")
     print("  Each layer is encoded with a unique prime cycle length:")
 
     from sympy import primerange
@@ -177,7 +232,7 @@ def example_cycle_detection():
     print(f"  Cycle lengths: {sorted([len(c) for c in all_cycles])}")
 
     # Each edge-node should have a cycle through it
-    print(f"\n  Edge-node analysis:")
+    print("\n  Edge-node analysis:")
     for edge_node, (layer, endpoints) in sorted(edge_info.items()):
         # Find cycle containing this edge-node
         cycles_with_edge = [c for c in all_cycles if edge_node in c]
@@ -202,24 +257,32 @@ def example_network_properties():
     # Create a small-world like structure in two layers
     for layer in ["Layer1", "Layer2"]:
         # Add nodes
-        network.add_nodes([
-            {'source': str(i), 'type': layer} for i in range(6)
-        ], input_type='dict')
+        network.add_nodes(
+            [{"source": str(i), "type": layer} for i in range(6)], input_type="dict"
+        )
         # Create a ring
         for i in range(6):
-            network.add_edges([
-                {'source': str(i), 'target': str((i + 1) % 6), 'source_type': layer, 'target_type': layer}
-            ], input_type='dict')
+            network.add_edges(
+                [
+                    {
+                        "source": str(i),
+                        "target": str((i + 1) % 6),
+                        "source_type": layer,
+                        "target_type": layer,
+                    }
+                ],
+                input_type="dict",
+            )
 
     print("\nOriginal multiplex network:")
-    print(f"  Nodes per layer: 6")
-    print(f"  Edges per layer: 6 (ring topology)")
+    print("  Nodes per layer: 6")
+    print("  Edges per layer: 6 (ring topology)")
     print(f"  Total edges: {len(list(network.get_edges()))}")
 
     # Encode
     H, node_mapping, edge_info = network.to_homogeneous_hypergraph()
 
-    print(f"\nHomogeneous hypergraph H:")
+    print("\nHomogeneous hypergraph H:")
     print(f"  Nodes: {len(H.nodes())}")
     print(f"  Edges: {len(H.edges())}")
     print(f"  Average degree: {sum(dict(H.degree()).values()) / len(H.nodes()):.2f}")
@@ -234,7 +297,7 @@ def example_network_properties():
         if not str(n).startswith("v_") and not str(n).startswith("e_")
     ]
 
-    print(f"\n  Node types in H:")
+    print("\n  Node types in H:")
     print(f"    Vertex-nodes (v_*): {len(vertex_nodes)}")
     print(f"    Edge-nodes (e_*): {len(edge_nodes)}")
     print(f"    Signature-nodes (*_s*): {len(signature_nodes)}")

@@ -356,7 +356,7 @@ class multi_layer_network:
 
     def get_unique_entity_counts(self):
         """Count unique entities in the network.
-        
+
         Returns:
             tuple: (total_unique_nodes, unique_node_ids, nodes_per_layer)
                 - total_unique_nodes: count of unique (node, layer) tuples
@@ -372,12 +372,12 @@ class multi_layer_network:
         for node in self.get_nodes():
             # Add the entire (node_id, layer) tuple as unique
             unique_node_layer_tuples.add(node)
-            
+
             # Extract node_id and layer if node is a tuple
             if isinstance(node, tuple) and len(node) >= 2:
                 node_id, layer = node[0], node[1]
                 unique_node_ids.add(node_id)
-                
+
                 # Count nodes per layer
                 if layer not in nodes_per_layer:
                     nodes_per_layer[layer] = set()
@@ -387,13 +387,19 @@ class multi_layer_network:
                 unique_node_ids.add(node)
 
         # Convert per-layer node sets to counts
-        nodes_per_layer_counts = {layer: len(nodes) for layer, nodes in nodes_per_layer.items()}
-        
-        return len(unique_node_layer_tuples), len(unique_node_ids), nodes_per_layer_counts
+        nodes_per_layer_counts = {
+            layer: len(nodes) for layer, nodes in nodes_per_layer.items()
+        }
+
+        return (
+            len(unique_node_layer_tuples),
+            len(unique_node_ids),
+            nodes_per_layer_counts,
+        )
 
     def basic_stats(self, target_network=None):
         """A method for obtaining a network's statistics.
-        
+
         Displays:
         - Basic network info (nodes, edges)
         - Total unique nodes (counting each (node, layer) as unique)
@@ -412,10 +418,16 @@ class multi_layer_network:
 
             if target_network is None:
                 logger.info(nx_info(self.core_network))
-                total_nodes, unique_ids, nodes_per_layer = self.get_unique_entity_counts()
-                logger.info(f"Number of unique nodes (as node-layer tuples): {total_nodes}")
-                logger.info(f"Number of unique node IDs (across all layers): {unique_ids}")
-                
+                total_nodes, unique_ids, nodes_per_layer = (
+                    self.get_unique_entity_counts()
+                )
+                logger.info(
+                    f"Number of unique nodes (as node-layer tuples): {total_nodes}"
+                )
+                logger.info(
+                    f"Number of unique node IDs (across all layers): {unique_ids}"
+                )
+
                 if nodes_per_layer:
                     logger.info("Nodes per layer:")
                     for layer, count in sorted(nodes_per_layer.items()):
@@ -423,10 +435,16 @@ class multi_layer_network:
 
             else:
                 logger.info(nx_info(target_network))
-                total_nodes, unique_ids, nodes_per_layer = self.get_unique_entity_counts()
-                logger.info(f"Number of unique nodes (as node-layer tuples): {total_nodes}")
-                logger.info(f"Number of unique node IDs (across all layers): {unique_ids}")
-                
+                total_nodes, unique_ids, nodes_per_layer = (
+                    self.get_unique_entity_counts()
+                )
+                logger.info(
+                    f"Number of unique nodes (as node-layer tuples): {total_nodes}"
+                )
+                logger.info(
+                    f"Number of unique node IDs (across all layers): {unique_ids}"
+                )
+
                 if nodes_per_layer:
                     logger.info("Nodes per layer:")
                     for layer, count in sorted(nodes_per_layer.items()):
@@ -1419,12 +1437,12 @@ class multi_layer_network:
         # Build multiplex dict from current network structure
         # Nodes in py3plex are stored as tuples: (node_id, layer_id)
         multiplex = {}
-        
+
         for u, v in self.core_network.edges():
             # u and v are tuples like ('1', 'A')
             u_node, u_layer = u
             v_node, v_layer = v
-            
+
             # Only include intra-layer edges (same layer)
             if u_layer == v_layer:
                 if u_layer not in multiplex:
@@ -1444,7 +1462,9 @@ class multi_layer_network:
 
         # Step 2: assign prime-based signatures to layers
         primes = list(primerange(2, 2000))
-        layer_to_prime = {layer: primes[i] for i, layer in enumerate(sorted(multiplex.keys()))}
+        layer_to_prime = {
+            layer: primes[i] for i, layer in enumerate(sorted(multiplex.keys()))
+        }
 
         eid = count()
 
