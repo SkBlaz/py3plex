@@ -87,7 +87,6 @@ def multilayer_modularity(
 
     # Extract layers
     layers = list(set(nl[1] for nl in node_layer_list))
-    layer_to_idx = {layer: i for i, layer in enumerate(layers)}
     n_layers = len(layers)
 
     # Convert gamma to dict if single value
@@ -154,7 +153,6 @@ def multilayer_modularity(
         layer_weight = stats["weight"]
         degrees = stats["degrees"]
         nodes = stats["nodes"]
-        node_to_idx = stats["node_to_idx"]
         layer_idx = stats["indices"]
 
         gamma_layer = gamma_dict.get(layer, 1.0)

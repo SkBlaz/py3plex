@@ -114,7 +114,7 @@ def inter_layer_coupling_strength(network: Any, layer_i: str, layer_j: str) -> f
     coupling_weights = []
 
     for edge in network.get_edges(data=True):
-        (n1, l1), (n2, l2) = edge[0], edge[1]
+        (_, l1), (_, l2) = edge[0], edge[1]
         # Inter-layer edge between the two specified layers
         if (l1 == layer_i and l2 == layer_j) or (l1 == layer_j and l2 == layer_i):
             weight = edge[2].get("weight", 1.0) if len(edge) > 2 else 1.0
@@ -921,7 +921,7 @@ def entropy_of_multiplexity(network: Any) -> float:
     layer_edge_counts: Dict[str, int] = {}
 
     for edge in network.get_edges():
-        (n1, l1), (n2, l2) = edge[0], edge[1]
+        (_, l1), (_, l2) = edge[0], edge[1]
         # Only count intra-layer edges
         if l1 == l2:
             layer_edge_counts[l1] = layer_edge_counts.get(l1, 0) + 1
