@@ -327,6 +327,20 @@ resilience = mls.resilience(network, 'layer_removal', perturbation_param='layer1
 ```
 
 ### Centrality Measures (Multilayer-Aware)
+
+**Supra Matrix Function Centralities** (Added: October 2025, Phase II):
+- **Communicability centrality**: exp(A) · 1 via matrix exponential (Estrada index)
+  - Measures weighted sum of all walks with exponentially decaying weights
+  - Uses scipy.sparse.linalg.expm_multiply for efficient sparse computation
+  - Normalized output suitable for network comparison
+- **Katz centrality**: (I - αA)⁻¹1 with λ_max-based α
+  - Accounts for all paths with exponentially decaying weights
+  - Auto-computation of α = 0.85/λ_max ensures convergence
+  - Includes exogenous influence term (β parameter)
+- **Module**: `algorithms/multilayer_algorithms/supra_matrix_function_centrality.py`
+- **Reference**: Estrada & Hatano (2008), Katz (1953)
+
+**Other Centrality Measures**:
 - **Degree centrality**: Node importance by connection count, layer-weighted variants
 - **Betweenness centrality**: Nodes critical for inter-layer and intra-layer paths
 - **Closeness centrality**: Average distance to all other nodes across layers
@@ -412,6 +426,14 @@ mxr, scores = multixrank_from_py3plex_networks(
 - Documentation: [https://multixrank-doc.readthedocs.io/](https://multixrank-doc.readthedocs.io/)
 
 **Testing**: Comprehensive test suite in `tests/test_multixrank.py` validates supra-heterogeneous adjacency construction, column normalization, RWR convergence, bipartite connections, and integration with py3plex networks (25 test cases).
+
+**Supra Matrix Function Centrality Testing**: Test suite in `tests/test_supra_matrix_function_centrality.py` validates communicability and Katz centrality implementations including:
+- Sparse and dense matrix computation modes
+- Auto-computation of alpha parameter based on spectral radius
+- Edge cases (empty, single node, disconnected networks)
+- Normalization and convergence properties
+- Consistency between sparse and dense methods
+- 22 test cases passing (2 performance benchmarks skipped by default)
 
 **Example**: See `examples/example_multixrank.py` for detailed usage demonstrating:
 1. Two multiplexes with bipartite connections
@@ -666,6 +688,7 @@ Primary documentation in ``docfiles/`` directory (ReStructuredText format):
 - **architecture.rst**: Detailed system architecture and design patterns
 - **tutorials/** directory:
   - **multilayer_centrality.rst**: Centrality measures tutorial
+  - **multilayer_centrality_matrix_functions.rst**: Supra matrix function centralities (communicability, Katz)
   - **multilayer_modularity.rst**: Multilayer modularity tutorial  
   - **community_detection.rst**: Community detection algorithms tutorial
   - **network_decomposition.rst**: Network decomposition and feature extraction tutorial
