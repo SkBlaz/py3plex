@@ -617,7 +617,8 @@ def versatility_centrality(
             layer_centralities[layer] = {
                 node: cent.get(node, 0.0) for node in all_nodes
             }
-        except:
+        except Exception as e:
+            # If centrality calculation fails, use zeros
             layer_centralities[layer] = dict.fromkeys(all_nodes, 0.0)
 
     # Calculate versatility centrality
@@ -816,7 +817,8 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
 
         result: np.ndarray = eigenvalues
         return result
-    except:
+    except Exception as e:
+        # Return empty array if computation fails
         empty_except: np.ndarray = np.array([])
         return empty_except
 
