@@ -1,4 +1,9 @@
-# ncd
+"""
+Node Ranking and Clustering (NoRC) module for community detection.
+
+This module implements algorithms for node ranking and hierarchical clustering
+in networks, including parallel PageRank computation and hierarchical merging.
+"""
 
 import multiprocessing as mp
 from collections import defaultdict

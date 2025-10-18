@@ -1,4 +1,10 @@
-# node ranking algorithms
+"""
+Community detection algorithms for multilayer networks.
+
+This module provides algorithms for detecting communities in multilayer networks,
+including multilayer modularity optimization, benchmark generation, and various
+community detection methods.
+"""
 
 # Multilayer community detection
 from .multilayer_benchmark import (
