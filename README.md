@@ -12,43 +12,6 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 ![Customization](example_images/part1.png)
 ## Getting Started
 
-### Installation
-
-Install py3plex from GitHub:
-
-```bash
-pip install git+https://github.com/SkBlaz/py3plex.git
-```
-
-Or install from source for development:
-
-```bash
-git clone https://github.com/SkBlaz/py3plex.git
-cd py3plex
-pip install -e .
-```
-
-**Optional Dependencies**: Install additional features as needed:
-
-```bash
-# Advanced community detection with Infomap
-pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
-
-# Additional algorithms (Louvain, cdlib)
-pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[algos]
-
-# Advanced visualization (plotly, igraph)
-pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
-
-# Install multiple extras
-pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap,viz]
-
-# For development (includes testing and linting tools)
-pip install -e ".[dev]"
-```
-
-### Quick Start
-
 **Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
