@@ -48,6 +48,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING**: Bundled Infomap and Node2Vec binaries (~5MB reduction)
   - **Migration**: Install binaries separately or use pure Python alternatives
   - See `bin/README.md` for installation instructions
+- **plotnine dependency**: Removed plotnine requirement, replaced with matplotlib for embedding visualization
+  - All visualization functionality preserved using matplotlib which is already a core dependency
+  - No API changes to `visualize_embedding()` function
   - Louvain algorithm remains available as a built-in alternative to Infomap
 
 ### Fixed

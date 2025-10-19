@@ -272,7 +272,7 @@ The `multi_layer_network` class in `multinet.py` is the heart of the library, pr
 | **Numerical processing** | `numpy>=0.8`, `scipy>=1.1.0` | Matrix operations, sparse matrices, linear algebra, optimization |
 | **Data handling** | `pandas`, `bitarray>=2.0.0` | Tabular data manipulation, efficient boolean arrays |
 | **Machine learning** | `scikit-learn`, `gensim` | Classification, clustering, embeddings (Word2Vec, Node2Vec) |
-| **Visualization** | `matplotlib`, `seaborn`, `plotnine`, `plotly` | Static plots, heatmaps, grammar-of-graphics, interactive 3D visualizations |
+| **Visualization** | `matplotlib`, `seaborn`, `plotly` | Static plots, heatmaps, interactive 3D visualizations |
 | **Semantic web** | `rdflib>=0.1` | RDF graph parsing for semantic enrichment and ontology integration |
 | **Compilation** | `cython>=0.20` | Performance-critical modules (Infomap bindings) |
 | **Utilities** | `tqdm>0.0` | Progress bars for long-running computations |
