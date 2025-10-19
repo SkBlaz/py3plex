@@ -1,0 +1,150 @@
+name: Benchmarks
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: "Performance Benchmarks (Python 3.10)"
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-benchmark-${{ hashFiles('**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-benchmark-
+          ${{ runner.os }}-pip-
+      timeout-minutes: 2
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc g++ build-essential
+      timeout-minutes: 5
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        # Install core dependencies needed for benchmarks
+        pip install numpy scipy networkx matplotlib tqdm
+        pip install pytest pytest-benchmark
+      timeout-minutes: 10
+
+    - name: Add py3plex to PYTHONPATH
+      run: |
+        echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
+
+    - name: Run core performance benchmarks
+      run: |
+        echo "🚀 Running core multilayer data structure benchmarks..."
+        pytest tests/test_performance_core.py --benchmark-only -v --benchmark-json=benchmark-core.json
+      timeout-minutes: 10
+
+    - name: Run aggregation benchmarks
+      run: |
+        echo "🚀 Running aggregation benchmarks..."
+        pytest benchmarks/bench_aggregation.py --benchmark-only -v --benchmark-json=benchmark-aggregation.json
+      timeout-minutes: 10
+      continue-on-error: true  # Don't fail if aggregation module not available
+
+    - name: Generate benchmark summary
+      if: always()
+      run: |
+        echo "## 📊 Benchmark Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Core Performance Benchmarks" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ -f benchmark-core.json ]; then
+          echo "✅ Core benchmarks completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          python -c "
+import json
+import sys
+try:
+    with open('benchmark-core.json', 'r') as f:
+        data = json.load(f)
+    benchmarks = data.get('benchmarks', [])
+    if benchmarks:
+        print('| Test | Mean Time | Std Dev |')
+        print('|------|-----------|---------|')
+        for b in benchmarks[:10]:  # Show first 10
+            name = b['name'].split('::')[-1]
+            mean = b['stats']['mean']
+            stddev = b['stats']['stddev']
+            print(f'| {name} | {mean:.6f}s | {stddev:.6f}s |')
+except Exception as e:
+    print(f'Error processing benchmark results: {e}')
+    sys.exit(0)
+          " >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ No core benchmark results found" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Aggregation Benchmarks" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ -f benchmark-aggregation.json ]; then
+          echo "✅ Aggregation benchmarks completed successfully" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "ℹ️ Aggregation benchmarks skipped (module not available)" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Upload benchmark results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: benchmark-results
+        path: |
+          benchmark-*.json
+        retention-days: 90
+
+    - name: Compare with baseline (if available)
+      if: github.event_name == 'pull_request'
+      continue-on-error: true
+      run: |
+        echo "📈 Comparing with baseline performance..."
+        echo "This would compare with baseline from main branch in a production setup"
+        # In a full implementation, this would:
+        # 1. Download baseline benchmark from main branch
+        # 2. Compare current results with baseline
+        # 3. Fail if regression > threshold (e.g., 10% slower)
+        # 4. Post comparison comment to PR
+
+    - name: Create benchmark badge
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      continue-on-error: true
+      run: |
+        echo "Creating benchmark badge data..."
+        if [ -f benchmark-core.json ]; then
+          # Extract average benchmark time
+          avg_time=$(python -c "
+import json
+with open('benchmark-core.json', 'r') as f:
+    data = json.load(f)
+benchmarks = data.get('benchmarks', [])
+if benchmarks:
+    avg = sum(b['stats']['mean'] for b in benchmarks) / len(benchmarks)
+    print(f'{avg:.3f}')
+else:
+    print('N/A')
+          ")
+          echo "Average benchmark time: ${avg_time}s"
+          # In production, this would update a badge endpoint
+        fi
