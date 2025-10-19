@@ -47,7 +47,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools wheel
         # Install core dependencies needed for benchmarks
-        pip install numpy scipy networkx matplotlib tqdm
+        pip install numpy scipy networkx matplotlib tqdm pandas
         pip install pytest pytest-benchmark
       timeout-minutes: 10
 
