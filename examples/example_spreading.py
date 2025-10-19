@@ -32,7 +32,7 @@ for j in range(5):
             candidate = Q.get()
             iterations += 1
             if iterations % 100 == 0:
-                print("Iterations: {}".format(iterations))
+                print(f"Iterations: {iterations}")
             for neighbor in ER_multilayer.get_neighbors(
                     candidate[0], candidate[1]):
                 idx = all_nodes_indexed[neighbor]
@@ -47,7 +47,7 @@ for j in range(5):
     sns.distplot(layer_visit_sequence,
                  bins=10,
                  kde=True,
-                 label="Walker {}".format(j + 1),
+                 label=f"Walker {j + 1}",
                  hist_kws={
                      "linewidth": 3,
                      "alpha": 0.2

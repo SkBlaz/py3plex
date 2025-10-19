@@ -47,8 +47,8 @@ num_edges = defaultdict(list)
 for enx, time_slice in enumerate(partial_slices):
     if enx < 12:
         plt.subplot(4, 3, enx + 1)
-        plt.title("Time slice: {}".format(enx + 1))
-        num_edges_int = dict()
+        plt.title(f"Time slice: {enx + 1}")
+        num_edges_int = {}
         for enx, row in time_slice.iterrows():
             real_name = multilayer_network.real_layer_names[int(row.layer_name)
                                                             - 1]

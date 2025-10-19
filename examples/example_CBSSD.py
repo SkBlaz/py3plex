@@ -41,7 +41,6 @@ hedwig_input_parameters = {
     "negations": True,
     "alpha": 0.05,
     "latex_report": False,
-    "adjust": "fwer",
     "FDR": 0.05,
     "leaves": True,
     "learner": "heuristic",

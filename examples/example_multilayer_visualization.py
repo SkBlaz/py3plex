@@ -94,7 +94,7 @@ draw_multilayer_default(graphs,
                         labels=network_labels)
 
 enum = 1
-color_mappings = {idx: col for idx, col in enumerate(colors_default)}
+color_mappings = dict(enumerate(colors_default))
 for edge_type, edges in multilinks.items():
 
     #    network_list,multi_edge_tuple,input_type="nodes",linepoints="-.",alphachannel=0.3,linecolor="black",curve_height=1,style="curve2_bezier",linewidth=1,invert=False,linmod="both",resolution=0.1
@@ -237,7 +237,7 @@ multilayer_network.save_network("../datasets/test.edgelist")
 # call a specific n2v compiled binary
 train_node2vec_embedding.call_node2vec_binary("../datasets/test.edgelist",
                                               "../datasets/test_embedding.emb",
-                                              binary="./node2vec"  # Note: binary no longer bundled,
+                                              binary="./node2vec",  # Note: binary no longer bundled
                                               weighted=False)
 
 # preprocess and check embedding

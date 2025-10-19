@@ -50,23 +50,23 @@ layer_counter = 0
 for edge in network.get_edges(data=True):
     src_node = edge[0]
     dst_node = edge[1]
-    
+
     # Extract node IDs and layer information
     src_id = src_node[0]
     src_layer = src_node[1]
     dst_id = dst_node[0]
     dst_layer = dst_node[1]
-    
+
     # Map layer names to integers
     if src_layer not in layer_map:
         layer_map[src_layer] = layer_counter
         layer_counter += 1
-    
+
     layer_idx = layer_map[src_layer]
-    
+
     # Get weight from edge data if available
     weight = edge[2].get('weight', 1.0) if len(edge) > 2 else 1.0
-    
+
     edge_list.append([layer_idx, int(src_id), int(dst_id), weight])
 
 edges_array = np.array(edge_list)
@@ -94,8 +94,8 @@ for i in range(min(5, aggregated_matrix.shape[0])):
 # Note: Skipping legacy method comparison due to missing imports in original code
 # The new vectorized method provides significant speedup as demonstrated in benchmarks
 print("\n4. Vectorized method provides significant speedup over legacy approaches")
-print(f"  (See benchmarks for detailed comparisons)")
-print(f"  Typical speedup: 5-8× on large networks")
+print("  (See benchmarks for detailed comparisons)")
+print("  Typical speedup: 5-8× on large networks")
 
 # Example 5: Larger network for performance comparison
 print("\n" + "=" * 70)
@@ -108,7 +108,7 @@ large_network = random_generators.random_multiplex_ER(
     500, 4, 0.01, directed=False
 )
 
-print(f"Network stats:")
+print("Network stats:")
 large_network.basic_stats()
 
 # Extract edges for vectorized method
@@ -120,21 +120,21 @@ layer_counter = 0
 for edge in large_network.get_edges(data=True):
     src_node = edge[0]
     dst_node = edge[1]
-    
+
     src_id = src_node[0]
     src_layer = src_node[1]
     dst_id = dst_node[0]
-    
+
     if src_layer not in layer_map_large:
         layer_map_large[src_layer] = layer_counter
         layer_counter += 1
-    
+
     layer_idx = layer_map_large[src_layer]
     # Handle edge data - might be int (key) or dict
     weight = 1.0
     if len(edge) > 2 and isinstance(edge[2], dict):
         weight = edge[2].get('weight', 1.0)
-    
+
     edge_list_large.append([layer_idx, int(src_id), int(dst_id), weight])
 
 edges_array_large = np.array(edge_list_large)
@@ -155,12 +155,12 @@ print(f"  Non-zeros: {agg_matrix_large.nnz:,}")
 print("\nPerformance comparison (from benchmarks):")
 print(f"  Vectorized method: {vec_time_large:.4f}s")
 print(f"  Expected legacy time: ~{vec_time_large * 7:.4f}s (7× slower, from benchmarks)")
-print(f"  Expected speedup: ~7×")
+print("  Expected speedup: ~7×")
 
 print(f"\n{'=' * 70}")
-print(f"Performance Summary:")
+print("Performance Summary:")
 print(f"  Vectorized method: {vec_time_large:.4f}s")
-print(f"  Typical speedup over legacy: 5-8× (from benchmarks)")
+print("  Typical speedup over legacy: 5-8× (from benchmarks)")
 print(f"{'=' * 70}")
 
 # Example 6: Different reducer modes

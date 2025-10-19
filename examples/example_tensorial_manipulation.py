@@ -12,8 +12,8 @@ ER_multilayer = random_generators.random_multilayer_ER(500,
 visualization_params = {"display": True}
 ER_multilayer.visualize_matrix(visualization_params)
 
-some_nodes = [node for node in ER_multilayer.get_nodes()][0:5]
-some_edges = [node for node in ER_multilayer.get_edges()][0:5]
+some_nodes = list(ER_multilayer.get_nodes())[0:5]
+some_edges = list(ER_multilayer.get_edges())[0:5]
 
 # random node is accessed as follows
 print(ER_multilayer[some_nodes[0]])

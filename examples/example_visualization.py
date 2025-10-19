@@ -22,7 +22,7 @@ def plot_intact_embedding(num_it):
     train_node2vec_embedding.call_node2vec_binary(
         "../datasets/IntactEdgelistedges.txt",
         "../datasets/test_embedding.emb",
-        binary="./node2vec"  # Note: binary no longer bundled,
+        binary="./node2vec",  # Note: binary no longer bundled
         weighted=False)
 
     # preprocess and check embedding -- for speed, install parallel tsne from https://github.com/DmitryUlyanov/Multicore-TSNE, py3plex knows how to use it.
@@ -155,8 +155,7 @@ if __name__ == "__main__":
             plot_intact_embedding(iterations)
             end = (time.time() - start) / 60
             mean_times.append(end)
-        print("Mean time for BK {}, iterations: {}".format(
-            np.mean(mean_times), iterations))
+        print(f"Mean time for BK {np.mean(mean_times)}, iterations: {iterations}")
 
     # mean_times = []
     # for j in range(iterations):

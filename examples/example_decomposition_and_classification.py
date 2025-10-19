@@ -18,7 +18,7 @@ dataset = "../datasets/imdb.gpickle"
 multilayer_network = multinet.multi_layer_network().load_network(
     input_file=dataset, directed=True, input_type=dataset.split(".")[-1])
 
-print("Running optimization for {}".format(dataset))
+print(f"Running optimization for {dataset}")
 multilayer_network.basic_stats()  # check core imports
 triplet_set = list(set(multilayer_network.get_decomposition_cycles()))
 print(triplet_set)
