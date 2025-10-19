@@ -48,10 +48,9 @@ pip install -e ".[dev]"
 
 ### Quick Start
 
-**📚 Documentation:**
-- **[Master Documentation](docs/MASTER_DOCUMENTATION.md)** - Comprehensive, publication-quality documentation (NEW!)
-- **[Online Sphinx Documentation](https://skblaz.github.io/py3plex/)** - Auto-generated API reference
-- **[Examples](examples/)** - 50+ example scripts demonstrating usage
+**Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
+
+* [Examples](examples/) - 50+ example scripts demonstrating usage
 
 
 ### Requirements

@@ -755,6 +755,35 @@ make docs         # Build Sphinx documentation
 - **API Consistency Check**: `make docs-check` or `python docs/check_api_consistency.py`
 - **Sphinx Build**: `make docs` or `cd docfiles && make html`
 
+**Quick Start Resources**:
+
+For new users getting started with Py3plex:
+
+1. **Master Documentation** (`docs/MASTER_DOCUMENTATION.md`) - Best starting point:
+   - Complete overview of Py3plex capabilities
+   - Installation guide and requirements
+   - Quick start with minimal working examples (with expected outputs)
+   - Core modules documentation with full API references
+   - Interactive Jupyter-ready examples for 4 real-world scenarios:
+     - Social network analysis (multi-platform)
+     - Biological networks (protein interactions)
+     - Community detection (multilayer Louvain)
+     - Random walks and embeddings (Node2Vec)
+   - Advanced usage patterns (embeddings, parallel computation, decomposition)
+   - Contributing & extending guidelines
+   - Complete API reference with edge cases and performance notes
+   - Academic citations with DOIs
+
+2. **Online Sphinx Documentation** (https://skblaz.github.io/py3plex/) - Auto-generated API reference with search
+
+3. **Examples Directory** (`examples/`) - 52 working Python scripts demonstrating real usage
+
+**Documentation Navigation** (`docs/DOCUMENTATION_OVERVIEW.md`):
+- Complete guide to all documentation resources
+- Documentation hierarchy for new users, developers, and researchers
+- Common tasks quick reference
+- Maintenance guidelines
+
 **Sphinx Documentation** (October 2025 - Fully restructured and cleaned):
 
 Primary documentation in ``docfiles/`` directory (32 ReStructuredText files):

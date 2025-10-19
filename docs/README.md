@@ -2,22 +2,6 @@
 
 This directory contains comprehensive documentation for py3plex. Choose the guide that best fits your needs.
 
-> 📋 **Not sure where to start?** See [DOCUMENTATION_OVERVIEW.md](DOCUMENTATION_OVERVIEW.md) for a complete guide to all documentation resources.
-
-## **NEW: Master Documentation**
-
-📚 **[MASTER_DOCUMENTATION.md](MASTER_DOCUMENTATION.md)** - **Comprehensive, publication-quality documentation** covering:
-- Complete overview of Py3plex capabilities
-- Quick start with runnable examples
-- In-depth core module documentation with API references
-- Interactive Jupyter-ready examples
-- Advanced usage patterns (embeddings, parallel computation)
-- Contributing guidelines
-- Full API reference
-- Citations and academic references
-
-**This is the recommended starting point for understanding Py3plex comprehensively.**
-
 ## Quick Start
 
 - **[10-Minute Tutorial](10min_tutorial.md)** - Get started with py3plex quickly
