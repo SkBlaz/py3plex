@@ -99,6 +99,19 @@ For any errors, please open an issue!
 
 ### Testing
 
+**Quick start** - Run all tests, benchmarks, and linting (single entrypoint that ensures all CI passes):
+```bash
+make test-all
+```
+
+**Individual commands:**
+```bash
+make test       # Run tests only
+make benchmark  # Run benchmarks only
+make lint       # Run linters only
+```
+
+**Legacy method:**
 ```bash
 python run_tests.py
 ```
@@ -111,7 +124,12 @@ For comprehensive project context, development status, and guidance for maintain
 
 Py3plex includes performance benchmark tests to track and ensure the runtime efficiency of core multilayer data structures. These benchmarks measure operations like network creation, node/edge traversal, layer operations, and network transformations.
 
-**Run all benchmarks:**
+**Run all benchmarks via Makefile:**
+```bash
+make benchmark
+```
+
+**Or run directly with pytest:**
 ```bash
 pytest tests/test_performance_core.py --benchmark-only -v
 pytest benchmarks/ --benchmark-only -v
