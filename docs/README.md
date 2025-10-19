@@ -2,6 +2,8 @@
 
 This directory contains comprehensive documentation for py3plex. Choose the guide that best fits your needs.
 
+> 📋 **Not sure where to start?** See [DOCUMENTATION_OVERVIEW.md](DOCUMENTATION_OVERVIEW.md) for a complete guide to all documentation resources.
+
 ## **NEW: Master Documentation**
 
 📚 **[MASTER_DOCUMENTATION.md](MASTER_DOCUMENTATION.md)** - **Comprehensive, publication-quality documentation** covering:
