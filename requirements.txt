@@ -2,7 +2,6 @@ numpy>=1.19.0
 rdflib>=6.0.0
 scipy>=1.5.0
 networkx>=2.5
-plotnine>=0.10.0
 cython>=0.29.0
 tqdm>=4.40.0
 matplotlib>=3.3.0
