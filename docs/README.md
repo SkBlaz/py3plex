@@ -27,6 +27,14 @@ This directory contains comprehensive documentation for py3plex. Choose the guid
 - **[Development Guide](development.md)** - Development workflow and best practices
 - **[Quick Reference](QUICK_REFERENCE.md)** - Cheat sheet for common operations
 
+### Documentation Tools
+- **[check_doc_coverage.py](check_doc_coverage.py)** - Measure RST documentation coverage
+  - Run: `python docs/check_doc_coverage.py` to see coverage report
+  - Options: `--verbose` (show undocumented items), `--json` (save JSON report), `--badge-only` (badge URL only)
+  - CI: Automated checks run on every push/PR via `.github/workflows/doc-coverage.yml`
+- **[check_api_consistency.py](check_api_consistency.py)** - Check API documentation quality
+  - Run: `python docs/check_api_consistency.py` to find missing docstrings
+
 ### Additional Resources
 - **[Open Issues Analysis](OPEN_ISSUES_ANALYSIS_2025-10-14.md)** - Status of open issues and roadmap items
 
