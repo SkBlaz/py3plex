@@ -1069,10 +1069,159 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 
 **Recent Work** (October 2025):
 - ✅ **Vectorized Multiplex Aggregation**: 8× speedup on 1M edges (`py3plex/multinet/aggregation.py`)
+- ✅ **Performance Benchmark Tests**: Comprehensive benchmark suite for core multilayer data structures
 - See `docs/SPEC_A_IMPLEMENTATION_SUMMARY.md` for details
 
 **Planned Optimizations**:
 - Streaming supra-adjacency (2× speedup target)
 - Backend registry for igraph/cugraph integration
 - ForceAtlas2 layout modernization
-- Comprehensive benchmark harness with CI integration
+
+### Performance Benchmark Tests
+
+Performance benchmarks track runtime of core multilayer data structures to detect regressions and provide baseline metrics for optimization efforts.
+
+**Overview**:
+Performance benchmarks are designed to:
+1. **Pin down runtime** of core operations to detect performance regressions
+2. **Measure scalability** with different network sizes and layer counts
+3. **Provide baseline metrics** for performance optimization efforts
+4. **Track improvements** in data structure efficiency over time
+
+**Test Categories** (17 benchmark tests in `tests/test_performance_core.py`):
+
+1. **Network Creation Benchmarks** (`TestNetworkCreationBenchmarks`)
+   - Tests overhead of creating and initializing multilayer network objects
+   - `test_bench_network_init`: Basic network initialization
+   - `test_bench_network_with_type`: Network initialization with specific parameters
+   - Purpose: Measure instantiation overhead and ensure it remains minimal
+
+2. **Node/Edge Operations Benchmarks** (`TestNodeEdgeOperationsBenchmarks`)
+   - Tests fundamental operations on network nodes and edges
+   - `test_bench_add_single_edge`: Adding edges to the network
+   - `test_bench_get_nodes_iteration_small/medium`: Iterating through nodes
+   - `test_bench_get_edges_iteration_small/medium`: Iterating through edges
+   - Purpose: Ensure basic graph operations remain efficient across different network sizes
+
+3. **Layer Operations Benchmarks** (`TestLayerOperationsBenchmarks`)
+   - Tests operations specific to multilayer networks
+   - `test_bench_get_layers_small/medium`: Retrieving layer information
+   - `test_bench_split_to_layers_small`: Splitting network into individual layers
+   - Purpose: Measure performance of multilayer-specific functionality
+
+4. **Network Query Benchmarks** (`TestNetworkQueryBenchmarks`)
+   - Tests network analysis and statistical queries
+   - `test_bench_summary`: Computing network statistics
+   - `test_bench_get_unique_entity_counts`: Counting unique nodes and layers
+   - `test_bench_get_neighbors`: Finding neighbors of a node
+   - Purpose: Ensure analytical operations remain performant
+
+5. **Network Transformation Benchmarks** (`TestNetworkTransformationBenchmarks`)
+   - Tests conversion operations between different representations
+   - `test_bench_to_sparse_matrix`: Converting to sparse matrix format
+   - `test_bench_to_json`: Converting to JSON representation
+   - Purpose: Track performance of format conversions commonly used in analysis pipelines
+
+6. **Scalability Benchmarks** (`TestScalabilityBenchmarks`)
+   - Tests how performance scales with network size and complexity
+   - `test_node_iteration_scaling`: Tests linear scaling with node count
+   - `test_layer_count_scaling`: Tests scaling with number of layers
+   - Purpose: Verify that operations scale reasonably (ideally linearly) with network size
+
+7. **Multiplex Network Benchmarks** (`TestMultiplexNetworkBenchmarks`)
+   - Tests operations specific to multiplex networks with coupling edges
+   - `test_bench_get_edges_multiplex_no_coupling`: Edge iteration excluding coupling edges
+   - `test_bench_get_edges_multiplex_with_coupling`: Edge iteration including coupling edges
+   - Purpose: Measure performance of multiplex-specific edge filtering
+
+**Network Sizes**:
+Tests use three standard network sizes:
+- **Small**: 100-150 nodes, 2 layers
+- **Medium**: 1,000 nodes, 4 layers
+- **Large**: 2,000+ nodes, 8-16 layers (in scaling tests)
+
+**Running Benchmarks**:
+```bash
+# Run all benchmarks
+pytest tests/test_performance_core.py --benchmark-only -v
+
+# Run specific category
+pytest tests/test_performance_core.py::TestNetworkCreationBenchmarks --benchmark-only -v
+
+# Generate JSON report
+pytest tests/test_performance_core.py --benchmark-only --benchmark-json=benchmark-results.json
+
+# Compare with baseline
+pytest tests/test_performance_core.py --benchmark-only --benchmark-save=baseline
+pytest tests/test_performance_core.py --benchmark-only --benchmark-compare=baseline
+```
+
+**CI Integration**:
+Benchmarks run automatically via `.github/workflows/benchmarks.yml` on:
+- Push to main/master/develop branches
+- Pull requests to main/master/develop branches
+- Manual workflow dispatch
+
+Results are:
+- Saved as JSON artifacts (retained for 90 days)
+- Displayed in GitHub Actions summary
+- Used to detect performance regressions
+- Badge displayed in README.md
+
+**Performance Targets**:
+Expected performance characteristics:
+1. **Network Creation**: < 1 microsecond for basic initialization
+2. **Node/Edge Iteration**: Linear time O(n) with network size
+3. **Layer Operations**: Linear or near-linear with layer count
+4. **Queries**: Sub-second for networks up to 1,000 nodes
+5. **Transformations**: < 200ms for sparse matrix conversion of 1,000 nodes
+
+**Sample Performance Metrics**:
+- Network initialization: ~500ns
+- Node iteration (100 nodes): ~4µs
+- Node iteration (1000 nodes): ~32µs (linear scaling ✓)
+- Edge iteration (small): ~40µs
+- Summary computation: ~4.7ms
+- Sparse matrix conversion: ~190µs
+- Layer operations: ~113ms (small network)
+
+**Adding New Benchmarks**:
+To add a new benchmark:
+1. Add test method to appropriate class in `test_performance_core.py`
+2. Use `benchmark` fixture: `def test_new_operation(self, benchmark): result = benchmark(operation)`
+3. Add assertions to validate correctness
+4. Document the purpose and expected performance
+5. Run locally to establish baseline
+
+Example:
+```python
+def test_bench_my_operation(self, benchmark):
+    """Benchmark my new operation."""
+    net = self._create_test_network()
+    result = benchmark(net.my_operation, param1, param2)
+    assert result is not None
+```
+
+**Interpreting Results**:
+pytest-benchmark provides several metrics:
+- **Min/Max**: Fastest and slowest execution times
+- **Mean**: Average execution time (most reliable metric)
+- **StdDev**: Standard deviation (lower is more consistent)
+- **Median**: Middle value (robust to outliers)
+- **IQR**: Interquartile range (measure of spread)
+- **Outliers**: Number of executions significantly different from mean
+- **OPS**: Operations per second (inverse of mean)
+
+Focus on **Mean** and **StdDev** for overall performance assessment.
+
+**Performance Regression Detection**:
+A performance regression is detected when:
+- Mean time increases by > 10% compared to baseline
+- Scaling tests show non-linear behavior
+- Operations that should be O(n) show O(n²) or worse characteristics
+
+**Related Files**:
+- Main benchmarks: `tests/test_performance_core.py`
+- Aggregation benchmarks: `benchmarks/bench_aggregation.py`
+- Benchmark workflow: `.github/workflows/benchmarks.yml`
+- Benchmark badge in README.md

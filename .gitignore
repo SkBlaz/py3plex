@@ -44,6 +44,9 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
+# Benchmark results
+benchmark-*.json
+
 # Documentation builds
 docfiles/_build/
 docfiles/build/
