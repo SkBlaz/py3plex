@@ -508,9 +508,9 @@ def cmd_community(args: argparse.Namespace) -> int:
         if args.algorithm == "louvain":
             from py3plex.algorithms.community_detection import community_wrapper
 
-            partition = community_wrapper.louvain_communities(
-                network.core_network, resolution=args.resolution
-            )
+            # Convert to undirected if needed
+            G = network.core_network.to_undirected() if network.core_network.is_directed() else network.core_network
+            partition = community_wrapper.louvain_communities(G)
             communities = {str(node): int(comm) for node, comm in partition.items()}
 
         elif args.algorithm == "infomap":

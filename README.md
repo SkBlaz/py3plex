@@ -5,6 +5,7 @@
 [![Code Quality](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml)
 [![Benchmarks](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml)
 [![Documentation](https://github.com/SkBlaz/py3plex/actions/workflows/doc-coverage.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/doc-coverage.yml)
+![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 
 Heterogeneous networks are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
@@ -15,6 +16,43 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 **Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
+
+### CLI Tool
+
+Py3plex now includes a comprehensive command-line interface for multilayer network analysis. After installation, you can use the `py3plex` command:
+
+```bash
+# Create a multilayer network
+py3plex create --nodes 100 --layers 3 --type er --probability 0.1 --output network.graphml
+
+# Load and analyze a network
+py3plex load network.graphml --stats
+
+# Detect communities
+py3plex community network.graphml --algorithm louvain --output communities.json
+
+# Compute centrality measures
+py3plex centrality network.graphml --measure degree --top 10
+
+# Visualize a network
+py3plex visualize network.graphml --layout multilayer --output network.png
+
+# Get multilayer statistics
+py3plex stats network.graphml --measure all --output stats.json
+
+# See all available commands
+py3plex --help
+```
+
+**Available Commands:**
+- `create` - Create new multilayer networks (ER, BA, WS models)
+- `load` - Load and inspect networks
+- `community` - Detect communities (Louvain, Infomap, Label Propagation)
+- `centrality` - Compute centrality measures (degree, betweenness, closeness, PageRank, eigenvector)
+- `stats` - Compute multilayer network statistics
+- `visualize` - Create network visualizations
+- `aggregate` - Aggregate multilayer networks into single layer
+- `convert` - Convert between network formats (GraphML, GEXF, JSON, gpickle)
 
 
 ### Requirements
