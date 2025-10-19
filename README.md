@@ -3,6 +3,7 @@
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 [![Tutorial](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml)
 [![Code Quality](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml)
+[![Benchmarks](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml)
 
 Heterogeneous networks are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
@@ -105,6 +106,35 @@ python run_tests.py
 For more testing options and development workflows, see [docs/development.md](docs/development.md).
 
 For comprehensive project context, development status, and guidance for maintainers and LLMs, see [LLM.md](./LLM.md).
+
+### Performance Benchmarks
+
+Py3plex includes performance benchmark tests to track and ensure the runtime efficiency of core multilayer data structures. These benchmarks measure operations like network creation, node/edge traversal, layer operations, and network transformations.
+
+**Run all benchmarks:**
+```bash
+pytest tests/test_performance_core.py --benchmark-only -v
+pytest benchmarks/ --benchmark-only -v
+```
+
+**Run specific benchmark categories:**
+```bash
+# Network creation benchmarks
+pytest tests/test_performance_core.py::TestNetworkCreationBenchmarks --benchmark-only -v
+
+# Node/edge operation benchmarks
+pytest tests/test_performance_core.py::TestNodeEdgeOperationsBenchmarks --benchmark-only -v
+
+# Scaling tests
+pytest tests/test_performance_core.py::TestScalabilityBenchmarks -v
+```
+
+**Generate JSON report:**
+```bash
+pytest tests/test_performance_core.py --benchmark-only --benchmark-json=benchmark-results.json
+```
+
+Benchmark results are automatically collected in CI and made available as workflow artifacts. The benchmark badge above shows the current status of performance tests.
 
 ### Contributions
 

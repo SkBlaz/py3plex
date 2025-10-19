@@ -190,11 +190,13 @@ class TestLayerOperationsBenchmarks:
     
     def test_bench_split_to_layers_small(self, multilayer_network_small, benchmark):
         """Benchmark splitting to individual layers on small network."""
-        result = benchmark(
+        benchmark(
             multilayer_network_small.split_to_layers,
-            return_layer_names=True
+            verbose=False
         )
-        assert result is not None
+        # split_to_layers sets attributes on the object
+        assert hasattr(multilayer_network_small, 'layer_names')
+        assert hasattr(multilayer_network_small, 'separate_layers')
 
 
 class TestNetworkQueryBenchmarks:
