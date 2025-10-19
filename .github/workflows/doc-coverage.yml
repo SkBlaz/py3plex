@@ -1,0 +1,82 @@
+name: Documentation Coverage
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  doc-coverage:
+    name: Check Documentation Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+    
+    - name: Check documentation coverage
+      run: |
+        cd docs
+        python3 check_doc_coverage.py --json ../doc-coverage.json
+      timeout-minutes: 3
+    
+    - name: Display coverage
+      run: |
+        echo "Documentation Coverage Results:"
+        cat doc-coverage.json | python3 -m json.tool
+      timeout-minutes: 1
+    
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: doc-coverage-report
+        path: doc-coverage.json
+        retention-days: 90
+      timeout-minutes: 2
+    
+    - name: Generate badge
+      run: |
+        COVERAGE=$(cat doc-coverage.json | python3 -c "import sys, json; print(f\"{json.load(sys.stdin)['overall_coverage']:.1f}\")")
+        echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
+        echo "Documentation coverage: $COVERAGE%"
+      timeout-minutes: 1
+    
+    - name: Comment coverage on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const coverage = JSON.parse(fs.readFileSync('doc-coverage.json', 'utf8'));
+          
+          const comment = `## 📚 Documentation Coverage Report
+          
+          | Metric | Count | Coverage |
+          |--------|-------|----------|
+          | Functions | ${coverage.documented_functions}/${coverage.total_functions} | ${coverage.function_coverage.toFixed(1)}% |
+          | Classes | ${coverage.documented_classes}/${coverage.total_classes} | ${coverage.class_coverage.toFixed(1)}% |
+          | **Overall** | **${coverage.documented_functions + coverage.documented_classes}/${coverage.total_items}** | **${coverage.overall_coverage.toFixed(1)}%** |
+          
+          ![Badge](${coverage.badge_url})
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+      timeout-minutes: 2

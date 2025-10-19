@@ -1,12 +1,27 @@
 # LLM Context Summary
 
-**Last Updated**: 2025-10-18 (Documentation Cleanup and Sphinx Fixes Applied)
+**Last Updated**: 2025-10-19 (Documentation Coverage CI Added)
 
 This repository defines **Py3plex**, a modular Python library for analysis and visualization of heterogeneous and multilayer networks. Heterogeneous networks are complex networks with additional information assigned to nodes, edges, or both—including multiple node types, edge types, and layered structures. Py3plex provides utilities for constructing, decomposing, analyzing, and visualizing such networks with built-in support for computing structural metrics, performing community detection, network classification, and integrating multilayer network data with external knowledge sources.
 
-## Recent Documentation Improvements (2025-10-18)
+## Recent Documentation Improvements (2025-10-19)
 
-The documentation has been cleaned up and restructured with comprehensive Sphinx fixes:
+### Documentation Coverage CI (2025-10-19)
+- **NEW: Documentation Coverage Checker** - Automated measurement of RST documentation coverage
+  - Script: `docs/check_doc_coverage.py` - Scans code and RST files to measure coverage
+  - CI Workflow: `.github/workflows/doc-coverage.yml` - Runs on every push/PR
+  - Badge: Added to README.md showing documentation coverage percentage
+  - Coverage increased from 15.5% to 29.9% by adding missing RST documentation
+  - Added 18 additional automodule directives to `docfiles/apidocs.rst` covering:
+    - Core utilities (config, utils, exceptions)
+    - Additional core modules (supporting, nx_compat)
+    - HINMINE decomposition modules
+    - Additional statistics modules (basic_statistics)
+    - Additional visualization modules (bezier, benchmark_visualizations)
+    - Additional wrappers (benchmark_nodes)
+    - I/O operations module
+  - Current coverage: 276/909 functions (30.4%), 21/83 classes (25.3%)
+  - Badge color: Orange (20-40% range)
 
 ### Master Documentation (2025-10-19)
 - **NEW: MASTER_DOCUMENTATION.md** - Comprehensive, publication-quality documentation covering:
