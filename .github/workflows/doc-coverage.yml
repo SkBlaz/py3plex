@@ -1,4 +1,4 @@
-name: Documentation Coverage
+name: Documentation
 
 on:
   push:
