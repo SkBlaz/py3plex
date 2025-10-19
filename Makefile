@@ -50,7 +50,10 @@ help: ## Display all available commands with descriptions
 	@printf "  make test         # Run tests\n"
 	@printf "  make benchmark    # Run benchmarks\n"
 	@printf "  make test-all     # Run ALL checks (lint + test + benchmark)\n"
-	@printf "  make ci           # Run CI checks (lint + test)\n\n"
+	@printf "  make ci           # Run CI checks (lint + test)\n"
+	@printf "  make docs         # Build Sphinx documentation\n"
+	@printf "  make docs-pdf     # Generate PDF from master documentation\n"
+	@printf "  make docs-check   # Check API consistency\n\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Environment Setup
@@ -165,6 +168,20 @@ docs: ## Build Sphinx documentation
 	@printf "$(COLOR_GREEN)✓ Running sphinx-build...$(COLOR_RESET)\n"
 	@$(VENV_BIN)/sphinx-build -b html docfiles docfiles/_build/html
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Documentation built! Open docfiles/_build/html/index.html$(COLOR_RESET)\n"
+
+docs-pdf: ## Generate PDF from master documentation
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Generating PDF documentation...$(COLOR_RESET)\n"
+	@if [ ! -f "docs/MASTER_DOCUMENTATION.md" ]; then \
+		printf "$(COLOR_RED)✗ Master documentation not found.$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@cd docs && ./generate_pdf.sh MASTER_DOCUMENTATION.md py3plex_documentation.pdf
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ PDF generated: docs/py3plex_documentation.pdf$(COLOR_RESET)\n"
+
+docs-check: ## Check API documentation consistency
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Checking API documentation consistency...$(COLOR_RESET)\n"
+	@python docs/check_api_consistency.py --verbose
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ API consistency check complete!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Cleanup
