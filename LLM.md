@@ -8,6 +8,23 @@ This repository defines **Py3plex**, a modular Python library for analysis and v
 
 The documentation has been cleaned up and restructured with comprehensive Sphinx fixes:
 
+### Master Documentation (2025-10-19)
+- **NEW: MASTER_DOCUMENTATION.md** - Comprehensive, publication-quality documentation covering:
+  - Complete overview of Py3plex capabilities and architecture
+  - Quick start with minimal working examples
+  - In-depth core module documentation with full API references
+  - Interactive Jupyter-ready examples for real-world scenarios
+  - Advanced usage patterns (embeddings, parallel computation, network decomposition)
+  - Contributing & extending guidelines
+  - Complete API reference with parameters, returns, examples, edge cases
+  - Citations and academic references with DOIs
+- **PDF Generation**: Script to generate PDF documentation using Pandoc (docs/generate_pdf.sh)
+- **API Consistency Checker**: Automated script to flag undocumented functions (docs/check_api_consistency.py)
+- **Makefile Integration**: New targets for documentation generation
+  - `make docs` - Build Sphinx HTML documentation
+  - `make docs-pdf` - Generate PDF from master documentation
+  - `make docs-check` - Check API documentation consistency
+
 ### Sphinx Documentation Fixes (2025-10-18)
 - **Configuration fixes**: Updated `conf.py` to use `language = 'en'` instead of `None`
 - **Formatting fixes**: Fixed block quote issues in `acknowledgements.rst`
@@ -727,9 +744,45 @@ make docs         # Build Sphinx documentation
 
 **Key Resources:**
 
-- **Comprehensive Documentation**: [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/) - **Primary documentation source** (Sphinx-generated, auto-deployed)
+- **Master Documentation**: [docs/MASTER_DOCUMENTATION.md](docs/MASTER_DOCUMENTATION.md) - **NEW: Comprehensive, publication-quality documentation** (October 2025)
+- **Comprehensive Documentation**: [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/) - Sphinx-generated, auto-deployed
 - **README.md**: Minimalistic introduction, installation, quick start
 - **LLM.md**: This file - comprehensive context for LLMs and maintainers
+
+**Documentation Tooling** (October 2025):
+
+- **PDF Generation**: `make docs-pdf` or `cd docs && ./generate_pdf.sh` (requires pandoc)
+- **API Consistency Check**: `make docs-check` or `python docs/check_api_consistency.py`
+- **Sphinx Build**: `make docs` or `cd docfiles && make html`
+
+**Quick Start Resources**:
+
+For new users getting started with Py3plex:
+
+1. **Master Documentation** (`docs/MASTER_DOCUMENTATION.md`) - Best starting point:
+   - Complete overview of Py3plex capabilities
+   - Installation guide and requirements
+   - Quick start with minimal working examples (with expected outputs)
+   - Core modules documentation with full API references
+   - Interactive Jupyter-ready examples for 4 real-world scenarios:
+     - Social network analysis (multi-platform)
+     - Biological networks (protein interactions)
+     - Community detection (multilayer Louvain)
+     - Random walks and embeddings (Node2Vec)
+   - Advanced usage patterns (embeddings, parallel computation, decomposition)
+   - Contributing & extending guidelines
+   - Complete API reference with edge cases and performance notes
+   - Academic citations with DOIs
+
+2. **Online Sphinx Documentation** (https://skblaz.github.io/py3plex/) - Auto-generated API reference with search
+
+3. **Examples Directory** (`examples/`) - 52 working Python scripts demonstrating real usage
+
+**Documentation Navigation** (`docs/DOCUMENTATION_OVERVIEW.md`):
+- Complete guide to all documentation resources
+- Documentation hierarchy for new users, developers, and researchers
+- Common tasks quick reference
+- Maintenance guidelines
 
 **Sphinx Documentation** (October 2025 - Fully restructured and cleaned):
 
@@ -789,6 +842,7 @@ Primary documentation in ``docfiles/`` directory (32 ReStructuredText files):
 
 **Markdown Guides** (``docs/`` directory - complementary documentation):
 
+- **MASTER_DOCUMENTATION.md**: **NEW: Comprehensive, publication-quality documentation** (October 2025)
 - **development.md**: Development workflow with Makefile commands
 - **algorithm_selection_guide.md**: Algorithm selection guide
 - **ALGORITHM_CITATIONS.md**: Academic references with DOIs (referenced from RST docs via external links)
@@ -810,11 +864,12 @@ Primary documentation in ``docfiles/`` directory (32 ReStructuredText files):
 
 **Documentation Priority** (October 2025 update):
 
-1. **Sphinx RST documentation** (``docfiles/*.rst``) - **Primary, most current, and cleanest**
-2. **LLM.md** (this file) - Comprehensive overview and context (updated October 2025)
-3. ``examples/`` directory - Working code examples (32+ files)
-4. ``docs/`` Markdown files - Development and algorithm guides (complementary)
-5. README.md - Quick start (minimalistic, points to Sphinx docs)
+1. **Master Documentation** (`docs/MASTER_DOCUMENTATION.md`) - **NEW: Comprehensive, publication-quality** (October 2025)
+2. **Sphinx RST documentation** (`docfiles/*.rst`) - Primary API reference, most current and cleanest
+3. **LLM.md** (this file) - Comprehensive overview and context (updated October 2025)
+4. `examples/` directory - Working code examples (52 files)
+5. `docs/` Markdown files - Development and algorithm guides (complementary)
+6. README.md - Quick start (minimalistic, points to Sphinx docs)
 
 **Documentation Health Metrics** (October 2025):
 - ✅ 32 RST files with comprehensive coverage
