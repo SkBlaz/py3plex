@@ -20,17 +20,17 @@ try:
                                                   "../datasets/test_embedding.emb",
                                                   binary="./node2vec",  # Assumes in PATH
                                                   weighted=False)
-    
+
     # preprocess and check embedding
     multilayer_network.load_embedding("../datasets/test_embedding.emb")
-    
+
     # visualize embedding
     embedding_visualization.visualize_embedding(multilayer_network)
-    
+
     # output embedded coordinates as JSON
     output_json = embedding_tools.get_2d_coordinates_tsne(multilayer_network,
                                                           output_format="json")
-    
+
     with open('../datasets/embedding_coordinates.json', 'w') as outfile:
         json.dump(output_json, outfile)
 except FileNotFoundError as e:

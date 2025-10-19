@@ -14,7 +14,6 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from py3plex.core import multinet
-from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 
 
@@ -23,10 +22,10 @@ def example_1_create_network():
     print("\n" + "="*60)
     print("Example 1: Creating a Multilayer Network")
     print("="*60)
-    
+
     # Create a new multilayer network
     network = multinet.multi_layer_network()
-    
+
     # Add edges within layers (this automatically creates nodes)
     # Format: [source_node, source_layer, target_node, target_layer, weight]
     network.add_edges([
@@ -35,11 +34,11 @@ def example_1_create_network():
         ['A', 'layer2', 'B', 'layer2', 1],
         ['B', 'layer2', 'D', 'layer2', 1]
     ], input_type="list")
-    
+
     # Display basic statistics
     print("\nBasic Statistics:")
     network.basic_stats()
-    
+
     return network
 
 
@@ -48,28 +47,28 @@ def example_2_load_network():
     print("\n" + "="*60)
     print("Example 2: Loading Network from File")
     print("="*60)
-    
+
     # Determine the correct path to datasets
     script_dir = os.path.dirname(os.path.abspath(__file__))
     repo_root = os.path.dirname(script_dir)
     dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
-    
+
     if not os.path.exists(dataset_path):
         print(f"Warning: Dataset not found at {dataset_path}")
         print("Skipping this example...")
         return None
-    
+
     # Load from a multiedgelist file
     network = multinet.multi_layer_network().load_network(
         dataset_path,
         input_type="multiedgelist",
         directed=False
     )
-    
+
     # Check what we loaded
     print("\nLoaded network statistics:")
     network.basic_stats()
-    
+
     return network
 
 
@@ -78,25 +77,25 @@ def example_3_explore_structure(network):
     if network is None:
         print("\nSkipping Example 3 - no network loaded")
         return
-    
+
     print("\n" + "="*60)
     print("Example 3: Exploring Network Structure")
     print("="*60)
-    
+
     # Get first few nodes
     print("\nFirst 5 nodes:")
     for i, node in enumerate(network.get_nodes(data=True)):
         if i >= 5:
             break
         print(f"  {node}")
-    
+
     # Get first few edges
     print("\nFirst 5 edges:")
     for i, edge in enumerate(network.get_edges(data=True)):
         if i >= 5:
             break
         print(f"  {edge}")
-    
+
     # Try to get neighbors (if network has nodes)
     nodes = list(network.get_nodes())
     if nodes:
@@ -110,7 +109,7 @@ def example_3_explore_structure(network):
                 print(f"\nNeighbors of {node_of_interest} in layer {layer_id}: {neighbors[:5]}")
             except Exception as e:
                 print(f"\nCouldn't get neighbors: {e}")
-    
+
     # Extract subnetworks
     layer_names = network.get_layers()
     if layer_names:
@@ -127,30 +126,30 @@ def example_4_compute_metrics(network):
     if network is None:
         print("\nSkipping Example 4 - no network loaded")
         return
-    
+
     print("\n" + "="*60)
     print("Example 4: Computing Network Metrics")
     print("="*60)
-    
+
     layer_names = network.get_layers()
     if not layer_names:
         print("No layers found in network")
         return
-    
+
     try:
         # Get a single layer
         first_layer = [str(layer_names[0])]
         layer_1 = network.subnetwork(first_layer, subset_by="layers")
-        
+
         # Compute degree centrality
         degree_centrality = layer_1.monoplex_nx_wrapper("degree_centrality")
-        print(f"\nDegree centrality (first 5):")
+        print("\nDegree centrality (first 5):")
         for node, score in list(degree_centrality.items())[:5]:
             print(f"  {node}: {score:.3f}")
-        
+
         # Compute betweenness centrality
         betweenness = layer_1.monoplex_nx_wrapper("betweenness_centrality")
-        print(f"\nBetweenness centrality (first 5):")
+        print("\nBetweenness centrality (first 5):")
         for node, score in list(betweenness.items())[:5]:
             print(f"  {node}: {score:.3f}")
     except Exception as e:
@@ -164,32 +163,32 @@ def example_5_multilayer_statistics(network):
     if network is None:
         print("\nSkipping Example 5 - no network loaded")
         return
-    
+
     print("\n" + "="*60)
     print("Example 5: Multilayer Network Statistics")
     print("="*60)
-    
+
     try:
         from py3plex.algorithms.statistics import multilayer_statistics as mls
-        
+
         layer_names = network.get_layers()
         if len(layer_names) < 2:
             print("Need at least 2 layers for multilayer statistics")
             return
-        
+
         layer1 = str(layer_names[0])
         layer2 = str(layer_names[1])
-        
+
         # Basic Layer Statistics
         print("\n--- Basic Layer Statistics ---")
         density1 = mls.layer_density(network, layer1)
         density2 = mls.layer_density(network, layer2)
         print(f"Layer {layer1} density: {density1:.3f}")
         print(f"Layer {layer2} density: {density2:.3f}")
-        
+
         entropy = mls.entropy_of_multiplexity(network)
         print(f"Layer diversity (entropy): {entropy:.3f} bits")
-        
+
         # Node Activity
         print("\n--- Node Activity Across Layers ---")
         nodes = list(network.get_nodes())
@@ -197,27 +196,27 @@ def example_5_multilayer_statistics(network):
         for node in sample_nodes:
             activity = mls.node_activity(network, node)
             print(f"Node {node} is active in {activity*100:.0f}% of layers")
-        
+
         # Cross-Layer Analysis
         print("\n--- Cross-Layer Analysis ---")
         similarity = mls.layer_similarity(network, layer1, layer2, method='cosine')
         print(f"Layer similarity (cosine): {similarity:.3f}")
-        
+
         overlap = mls.edge_overlap(network, layer1, layer2)
         print(f"Edge overlap (Jaccard): {overlap:.3f}")
-        
+
         # Network Versatility
         print("\n--- Network Versatility ---")
         versatility = mls.versatility_centrality(network, centrality_type='degree')
         print("Top 5 nodes by versatility:")
         for node, score in sorted(versatility.items(), key=lambda x: x[1], reverse=True)[:5]:
             print(f"  {node}: {score:.3f}")
-        
+
         # Network Robustness
         print("\n--- Network Robustness ---")
         resilience = mls.resilience(network, 'layer_removal', perturbation_param=layer1)
         print(f"Resilience after removing {layer1}: {resilience:.3f}")
-        
+
     except ImportError:
         print("Multilayer statistics module not available")
     except Exception as e:
@@ -231,29 +230,29 @@ def example_6_community_detection(network):
     if network is None:
         print("\nSkipping Example 5 - no network loaded")
         return None
-    
+
     print("\n" + "="*60)
     print("Example 5: Multilayer Community Detection")
     print("="*60)
-    
+
     try:
         # Multilayer Louvain community detection
         print("Running multilayer Louvain algorithm...")
         partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
         num_communities = len(set(partition.values()))
         print(f"\nCommunities found: {num_communities}")
-        
+
         # Display community assignments (first 5)
         print("\nCommunity assignments (first 5):")
         for node, community_id in list(partition.items())[:5]:
             print(f"  Node {node} -> Community {community_id}")
-        
+
         # Count nodes per community
         community_sizes = Counter(partition.values())
-        print(f"\nCommunity sizes (top 5):")
+        print("\nCommunity sizes (top 5):")
         for comm, size in community_sizes.most_common(5):
             print(f"  Community {comm}: {size} nodes")
-        
+
         return partition
     except Exception as e:
         print(f"Error in community detection: {e}")
@@ -267,11 +266,11 @@ def example_7_visualization(network, partition=None):
     if network is None:
         print("\nSkipping Example 7 - no network loaded")
         return
-    
+
     print("\n" + "="*60)
     print("Example 7: Visualization")
     print("="*60)
-    
+
     try:
         # Check if matplotlib is available
         import matplotlib
@@ -279,15 +278,15 @@ def example_7_visualization(network, partition=None):
         import matplotlib.pyplot as plt
         from py3plex.visualization.multilayer import hairball_plot
         from py3plex.visualization.colors import colors_default
-        
+
         # Get network for visualization
         network_colors, graph = network.get_layers(style="hairball")
-        
+
         # Create output directory
         script_dir = os.path.dirname(os.path.abspath(__file__))
         output_dir = os.path.join(os.path.dirname(script_dir), "example_images")
         os.makedirs(output_dir, exist_ok=True)
-        
+
         # Simple visualization
         output_file = os.path.join(output_dir, "tutorial_network.png")
         plt.figure(figsize=(12, 12))
@@ -304,24 +303,24 @@ def example_7_visualization(network, partition=None):
         plt.savefig(output_file, dpi=150, bbox_inches='tight', facecolor='white')
         plt.close()
         print(f"\nVisualization saved to {output_file}")
-        
+
         # Visualization with communities
         if partition is not None:
             top_n = min(10, len(set(partition.values())))
             community_counts = Counter(partition.values())
             top_communities = [c for c, _ in community_counts.most_common(top_n)]
-            
+
             color_map = dict(zip(top_communities, colors_default[:top_n]))
             network_colors = [
                 color_map.get(partition.get(node), "lightgray")
                 for node in network.get_nodes()
             ]
-            
+
             output_file_comm = os.path.join(output_dir, "tutorial_network_communities.png")
             plt.figure(figsize=(12, 12))
             hairball_plot(
-                graph, 
-                network_colors, 
+                graph,
+                network_colors,
                 layout_algorithm="force",
                 layout_parameters={"iterations": 100},
                 node_size=5,
@@ -345,16 +344,16 @@ def complete_example():
     print("\n" + "="*60)
     print("Complete Example: Full Workflow")
     print("="*60)
-    
+
     # Determine the correct path to datasets
     script_dir = os.path.dirname(os.path.abspath(__file__))
     repo_root = os.path.dirname(script_dir)
     dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
-    
+
     if not os.path.exists(dataset_path):
         print(f"Dataset not found at {dataset_path}")
         print("Using simple network instead...")
-        
+
         # Create a simple network
         network = multinet.multi_layer_network()
         network.add_edges([
@@ -370,11 +369,11 @@ def complete_example():
             input_type="multiedgelist",
             directed=False
         )
-    
+
     # Analyze structure
     print("\n=== Network Statistics ===")
     network.basic_stats()
-    
+
     # Compute centrality for one layer
     layer_names = network.get_layers()
     if layer_names:
@@ -387,13 +386,13 @@ def complete_example():
                 print(f"{node}: {score:.3f}")
         except Exception as e:
             print(f"Could not compute centrality: {e}")
-    
+
     # Detect communities with multilayer method
     try:
         print("\n=== Multilayer Community Detection ===")
         partition = louvain_multilayer(network, gamma=1.0, omega=1.0, random_state=42)
         print(f"Number of communities: {len(set(partition.values()))}")
-        
+
         # Try visualization
         try:
             import matplotlib
@@ -401,7 +400,7 @@ def complete_example():
             import matplotlib.pyplot as plt
             from py3plex.visualization.multilayer import hairball_plot
             from py3plex.visualization.colors import colors_default
-            
+
             network_colors, graph = network.get_layers(style="hairball")
             top_n = min(3, len(set(partition.values())))
             community_counts = Counter(partition.values())
@@ -411,15 +410,15 @@ def complete_example():
                 color_map.get(partition.get(node), "lightgray")
                 for node in network.get_nodes()
             ]
-            
+
             output_dir = os.path.join(repo_root, "example_images")
             os.makedirs(output_dir, exist_ok=True)
             output_file = os.path.join(output_dir, "complete_analysis.png")
-            
+
             plt.figure(figsize=(12, 12))
             hairball_plot(
-                graph, 
-                network_colors, 
+                graph,
+                network_colors,
                 layout_algorithm="force",
                 layout_parameters={"iterations": 100},
                 node_size=5,
@@ -441,34 +440,34 @@ def main():
     print("\n" + "="*60)
     print("Py3plex 10-Minute Tutorial - Executable Examples")
     print("="*60)
-    
+
     # Example 1: Create network from scratch
     network1 = example_1_create_network()
-    
+
     # Example 2: Load network from file
     network2 = example_2_load_network()
-    
+
     # Use the loaded network for remaining examples (or created one if load failed)
     network = network2 if network2 is not None else network1
-    
+
     # Example 3: Explore structure
     example_3_explore_structure(network)
-    
+
     # Example 4: Compute metrics
     example_4_compute_metrics(network)
-    
+
     # Example 5: Multilayer statistics
     example_5_multilayer_statistics(network)
-    
+
     # Example 6: Community detection
     partition = example_6_community_detection(network)
-    
+
     # Example 7: Visualization
     example_7_visualization(network, partition)
-    
+
     # Complete example
     complete_example()
-    
+
     print("\n" + "="*60)
     print("Tutorial completed successfully! ✓")
     print("="*60)

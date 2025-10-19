@@ -12,8 +12,8 @@ def animate(mnod):
                                                            6,
                                                            0.005,
                                                            directed=False)
-    fx = ER_multilayer.visualize_network(show=False)
-    plt.savefig("{}{}.png".format(folder_tmp_files, mnod))
+    ER_multilayer.visualize_network(show=False)
+    plt.savefig(f"{folder_tmp_files}{mnod}.png")
 
 
 imrange = [100, 150, 200, 300, 500, 250, 600]
@@ -21,7 +21,7 @@ for j in imrange:
     animate(j)
 myimages = []
 for p in imrange:
-    img = mgimg.imread("{}{}.png".format(folder_tmp_files, p))
+    img = mgimg.imread(f"{folder_tmp_files}{p}.png")
     imgplot = plt.imshow(img)
     myimages.append([imgplot])
 my_anim = animation.ArtistAnimation(fig, myimages, interval=1000, blit=True)

@@ -2,7 +2,7 @@
 Example demonstrating vectorized multilayer aggregation with multi_layer_network.
 
 This example shows how to use the new optimized aggregate_layers function
-with the main py3plex multi_layer_network data structure to efficiently 
+with the main py3plex multi_layer_network data structure to efficiently
 aggregate edge weights across multiple layers.
 
 Performance: ~8× faster than legacy loop-based approaches.
@@ -23,15 +23,15 @@ network = multinet.multi_layer_network(directed=False)
 
 # Add edges across multiple layers
 edges_to_add = [
-    {"source": 0, "target": 1, "source_type": "layer1", "target_type": "layer1", 
+    {"source": 0, "target": 1, "source_type": "layer1", "target_type": "layer1",
      "type": "edge", "weight": 1.0},
-    {"source": 1, "target": 2, "source_type": "layer1", "target_type": "layer1", 
+    {"source": 1, "target": 2, "source_type": "layer1", "target_type": "layer1",
      "type": "edge", "weight": 2.0},
-    {"source": 0, "target": 1, "source_type": "layer2", "target_type": "layer2", 
+    {"source": 0, "target": 1, "source_type": "layer2", "target_type": "layer2",
      "type": "edge", "weight": 0.5},
-    {"source": 2, "target": 3, "source_type": "layer2", "target_type": "layer2", 
+    {"source": 2, "target": 3, "source_type": "layer2", "target_type": "layer2",
      "type": "edge", "weight": 1.5},
-    {"source": 0, "target": 1, "source_type": "layer3", "target_type": "layer3", 
+    {"source": 0, "target": 1, "source_type": "layer3", "target_type": "layer3",
      "type": "edge", "weight": 1.5},
 ]
 
@@ -46,20 +46,20 @@ layer_counter = 0
 for edge in network.get_edges(data=True):
     src_node = edge[0]
     dst_node = edge[1]
-    
+
     src_id = src_node[0]
     src_layer = src_node[1]
     dst_id = dst_node[0]
-    
+
     if src_layer not in layer_map:
         layer_map[src_layer] = layer_counter
         layer_counter += 1
-    
+
     layer_idx = layer_map[src_layer]
     weight = 1.0
     if len(edge) > 2 and isinstance(edge[2], dict):
         weight = edge[2].get('weight', 1.0)
-    
+
     edge_list.append([layer_idx, int(src_id), int(dst_id), weight])
 
 edges = np.array(edge_list)
@@ -69,10 +69,10 @@ mat_sum = aggregate_layers(edges, reducer="sum", to_sparse=True)
 
 print(f"\nExtracted {len(edges)} edges from network")
 print(f"Layer mapping: {layer_map}")
-print(f"\nAggregated result:")
+print("\nAggregated result:")
 print(f"  Matrix size: {mat_sum.shape[0]}×{mat_sum.shape[1]} (sparse)")
 print(f"  Non-zero entries: {mat_sum.nnz}")
-print(f"\nAggregated weights:")
+print("\nAggregated weights:")
 print(f"  Edge (0→1): {mat_sum[0, 1]:.2f} (sum across layers)")
 print(f"  Edge (1→2): {mat_sum[1, 2]:.2f}")
 print(f"  Edge (2→3): {mat_sum[2, 3]:.2f}")
@@ -84,7 +84,7 @@ print("=" * 60)
 
 mat_mean = aggregate_layers(edges, reducer="mean", to_sparse=False)
 
-print(f"Mean aggregated weights:")
+print("Mean aggregated weights:")
 print(f"  Edge (0→1): {mat_mean[0, 1]:.2f} (mean across layers)")
 
 # Example 3: Max aggregation
@@ -94,7 +94,7 @@ print("=" * 60)
 
 mat_max = aggregate_layers(edges, reducer="max", to_sparse=False)
 
-print(f"Max aggregated weights:")
+print("Max aggregated weights:")
 print(f"  Edge (0→1): {mat_max[0, 1]:.2f} (max of 1.0, 0.5, 1.5)")
 
 # Example 4: Large-scale performance with random multiplex network
@@ -116,15 +116,15 @@ large_layer_counter = 0
 for edge in large_network.get_edges(data=True):
     src_node = edge[0]
     src_layer = src_node[1]
-    
+
     if src_layer not in large_layer_map:
         large_layer_map[src_layer] = large_layer_counter
         large_layer_counter += 1
-    
+
     weight = 1.0
     if len(edge) > 2 and isinstance(edge[2], dict):
         weight = edge[2].get('weight', 1.0)
-    
+
     large_edge_list.append([
         large_layer_map[src_layer],
         int(src_node[0]),
@@ -135,7 +135,7 @@ for edge in large_network.get_edges(data=True):
 large_edges = np.array(large_edge_list)
 
 print(f"Network has {len(large_edges):,} edges across {len(large_layer_map)} layers")
-print(f"\nAggregating edges...")
+print("\nAggregating edges...")
 
 t0 = time.perf_counter()
 large_mat = aggregate_layers(large_edges, reducer="sum", to_sparse=True)
@@ -157,13 +157,13 @@ import networkx as nx
 # Convert aggregated matrix to NetworkX graph
 G = nx.from_scipy_sparse_array(large_mat, create_using=nx.DiGraph)
 
-print(f"Created NetworkX DiGraph:")
+print("Created NetworkX DiGraph:")
 print(f"  Nodes: {G.number_of_nodes():,}")
 print(f"  Edges: {G.number_of_edges():,}")
 print(f"  Average degree: {sum(dict(G.degree()).values()) / G.number_of_nodes():.2f}")
 
 # Can now use NetworkX algorithms on aggregated network
-print(f"\nExample centrality measures:")
+print("\nExample centrality measures:")
 pr = nx.pagerank(G, max_iter=50)
 top_nodes = sorted(pr.items(), key=lambda x: x[1], reverse=True)[:5]
 print("  Top 5 nodes by PageRank:")
