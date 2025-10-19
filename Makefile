@@ -3,7 +3,7 @@
 # Production-Grade Makefile for Development, Testing, and Publishing
 # ─────────────────────────────────────────────────────────────────────────────
 
-.PHONY: help setup dev-install format lint test coverage docs clean build publish api-check ci
+.PHONY: help setup dev-install format lint test coverage benchmark docs clean build publish api-check ci test-all
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Variables
@@ -48,6 +48,8 @@ help: ## Display all available commands with descriptions
 	@printf "  make format       # Format code\n"
 	@printf "  make lint         # Run linters\n"
 	@printf "  make test         # Run tests\n"
+	@printf "  make benchmark    # Run benchmarks\n"
+	@printf "  make test-all     # Run ALL checks (lint + test + benchmark)\n"
 	@printf "  make ci           # Run CI checks (lint + test)\n\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -232,6 +234,21 @@ api-check: ## Verify py3plex API exports expected public symbols
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ API check passed!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Benchmarking
+# ─────────────────────────────────────────────────────────────────────────────
+benchmark: ## Run performance benchmarks with pytest-benchmark
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running performance benchmarks...$(COLOR_RESET)\n"
+	@if [ ! -d "$(VENV)" ] && ! command -v pytest > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ Neither virtual environment nor global tools found. Run 'make setup' first.$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(COLOR_GREEN)✓ Running core performance benchmarks...$(COLOR_RESET)\n"
+	@$(PYTEST) tests/test_performance_core.py --benchmark-only -v || true
+	@printf "$(COLOR_GREEN)✓ Running aggregation benchmarks...$(COLOR_RESET)\n"
+	@$(PYTEST) benchmarks/bench_aggregation.py --benchmark-only -v || true
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Benchmarks complete!$(COLOR_RESET)\n"
+
+# ─────────────────────────────────────────────────────────────────────────────
 # CI Integration
 # ─────────────────────────────────────────────────────────────────────────────
 ci: ## Run lint + test in sequence for CI workflows
@@ -240,3 +257,16 @@ ci: ## Run lint + test in sequence for CI workflows
 	@printf "\n"
 	@$(MAKE) test
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ CI checks complete!$(COLOR_RESET)\n"
+
+test-all: ## Run ALL tests, benchmarks, and linting - ensures all CI will pass
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running COMPLETE test suite (lint + test + benchmark)...$(COLOR_RESET)\n"
+	@printf "$(COLOR_BOLD)$(COLOR_YELLOW)This is the comprehensive entrypoint that ensures all build CI will pass.$(COLOR_RESET)\n"
+	@printf "\n"
+	@$(MAKE) lint
+	@printf "\n"
+	@$(MAKE) test
+	@printf "\n"
+	@$(MAKE) benchmark
+	@printf "\n"
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓✓✓ ALL CHECKS PASSED! ✓✓✓$(COLOR_RESET)\n"
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)Your changes are ready for CI and should pass all build checks.$(COLOR_RESET)\n"

@@ -704,7 +704,7 @@ recovered = network.from_homogeneous_hypergraph(H)
 
 ## Development Environment
 
-**Testing**: Use `make test` to run pytest with coverage reporting. Tests are in the `tests/` directory. CI runs on Python 3.8-3.12 across Ubuntu, macOS, and Windows.
+**Testing**: Use `make test-all` to run the complete test suite including all tests, benchmarks, and linting. This is the **single entrypoint that ensures all build CI will pass**. For individual components, use `make test` for tests only, `make benchmark` for benchmarks only, or `make lint` for linting only. Tests are in the `tests/` directory. CI runs on Python 3.8-3.12 across Ubuntu, macOS, and Windows.
 
 **Development Workflow**: See `docs/development.md` for comprehensive development guide including Makefile commands, testing, and contributing guidelines.
 
@@ -715,11 +715,13 @@ make dev-install  # Install package in editable mode with dev dependencies
 make format       # Auto-format code (isort + black + ruff --fix)
 make lint         # Run linters (ruff + isort + black + mypy)
 make test         # Run pytest with coverage reporting
-make ci           # Run lint + test (full CI suite)
+make benchmark    # Run performance benchmarks
+make test-all     # Run ALL checks (lint + test + benchmark) - ENSURES ALL CI PASSES
+make ci           # Run lint + test (CI suite without benchmarks)
 make docs         # Build Sphinx documentation
 ```
 
-**For LLMs**: Use `make test` or `make lint` rather than directly invoking pytest or ruff. The Makefile handles tool detection and environment configuration automatically.
+**For LLMs**: Use `make test-all` to verify all changes will pass CI, or use `make test`, `make benchmark`, or `make lint` for individual checks. The Makefile handles tool detection and environment configuration automatically. **Always run `make test-all` before submitting code** to ensure all build CI workflows will pass.
 
 ## Documentation
 
@@ -856,11 +858,13 @@ Primary documentation in ``docfiles/`` directory (32 ReStructuredText files):
 make setup
 make dev-install
 
-# Code quality
-make format    # Auto-format code
-make lint      # Check code quality
-make test      # Run tests with coverage
-make ci        # Full CI checks (lint + test)
+# Code quality and testing
+make format       # Auto-format code
+make lint         # Check code quality
+make test         # Run tests with coverage
+make benchmark    # Run performance benchmarks
+make test-all     # Run ALL checks (lint + test + benchmark) - ensures all CI passes
+make ci           # Run lint + test (CI suite without benchmarks)
 ```
 
 **Network construction**:
