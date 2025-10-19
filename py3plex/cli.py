@@ -18,6 +18,63 @@ from py3plex import __version__
 from py3plex.core import multinet
 
 
+def _load_network(file_path: str) -> "multinet.multi_layer_network":
+    """Load a network from file, handling different formats.
+    
+    Args:
+        file_path: Path to the network file
+        
+    Returns:
+        Loaded multi_layer_network object
+    """
+    network = multinet.multi_layer_network()
+    input_path = Path(file_path)
+    
+    # For formats not directly supported by py3plex, load with NetworkX first
+    if input_path.suffix in [".graphml", ".gexf"]:
+        if input_path.suffix == ".graphml":
+            G = nx.read_graphml(str(file_path))
+        else:  # .gexf
+            G = nx.read_gexf(str(file_path))
+        # Convert NetworkX graph to py3plex format
+        # The core_network is a NetworkX graph, so we can assign directly
+        network.core_network = G
+        network.directed = G.is_directed()
+    elif input_path.suffix == ".gpickle":
+        network.load_network(file_path, input_type="gpickle")
+    else:
+        # Try as GML or edgelist
+        try:
+            network.load_network(file_path, input_type="gml")
+        except:
+            try:
+                network.load_network(file_path, input_type="edgelist")
+            except Exception as e:
+                raise ValueError(f"Could not load network from {file_path}: {e}")
+    
+    return network
+
+
+def _determine_input_type(file_path: str) -> str:
+    """Determine network input type from file extension.
+    
+    Args:
+        file_path: Path to the input file
+        
+    Returns:
+        Input type string for load_network
+    """
+    input_path = Path(file_path)
+    if input_path.suffix == ".graphml":
+        return "graphml"
+    elif input_path.suffix == ".gexf":
+        return "gexf"
+    elif input_path.suffix == ".gpickle":
+        return "gpickle"
+    else:
+        return "gml"  # default
+
+
 def create_parser() -> argparse.ArgumentParser:
     """Create and configure the argument parser for py3plex CLI.
 
@@ -327,17 +384,21 @@ def cmd_create(args: argparse.Namespace) -> int:
 
         # Save network
         output_path = Path(args.output)
-        if output_path.suffix == ".graphml":
-            network.save_network(str(output_path), output_type="graphml")
-        elif output_path.suffix == ".gexf":
-            nx.write_gexf(network.core_network, str(output_path))
-        elif output_path.suffix == ".gpickle":
-            nx.write_gpickle(network.core_network, str(output_path))
-        elif output_path.suffix == ".edgelist" or output_path.suffix == ".txt":
-            network.save_network(str(output_path), output_type="edgelist")
-        else:
-            print(f"Warning: Unsupported format '{output_path.suffix}', using edgelist")
-            network.save_network(str(output_path.with_suffix(".txt")), output_type="edgelist")
+        try:
+            if output_path.suffix == ".graphml":
+                nx.write_graphml(network.core_network, str(output_path))
+            elif output_path.suffix == ".gexf":
+                nx.write_gexf(network.core_network, str(output_path))
+            elif output_path.suffix == ".gpickle":
+                network.save_network(str(output_path), output_type="gpickle")
+            elif output_path.suffix in [".edgelist", ".txt"]:
+                network.save_network(str(output_path), output_type="edgelist")
+            else:
+                print(f"Warning: Unsupported format '{output_path.suffix}', using GraphML")
+                nx.write_graphml(network.core_network, str(output_path.with_suffix(".graphml")))
+        except Exception as e:
+            print(f"Warning: Error saving with native format, trying alternate method: {e}")
+            nx.write_graphml(network.core_network, str(output_path))
 
         print(f"Network saved to {args.output}")
         print(f"  Nodes: {network.core_network.number_of_nodes()}")
@@ -361,8 +422,7 @@ def cmd_load(args: argparse.Namespace) -> int:
     """
     try:
         print(f"Loading network from {args.input}...")
-        network = multinet.multi_layer_network()
-        network.load_network(args.input)
+        network = _load_network(args.input)
 
         output_data = {}
 
@@ -370,7 +430,7 @@ def cmd_load(args: argparse.Namespace) -> int:
             info = {
                 "nodes": network.core_network.number_of_nodes(),
                 "edges": network.core_network.number_of_edges(),
-                "layers": list(network.get_layers()),
+                "layers": network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers()),
                 "directed": network.directed,
             }
             output_data["info"] = info
@@ -386,7 +446,7 @@ def cmd_load(args: argparse.Namespace) -> int:
 
             stats = {}
             try:
-                layers = list(network.get_layers())
+                layers = network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers())
                 if layers:
                     stats["layer_densities"] = {
                         layer: float(mls.layer_density(network, layer))
@@ -439,8 +499,7 @@ def cmd_community(args: argparse.Namespace) -> int:
     """
     try:
         print(f"Loading network from {args.input}...")
-        network = multinet.multi_layer_network()
-        network.load_network(args.input)
+        network = _load_network(args.input)
 
         print(f"Detecting communities using {args.algorithm}...")
 
@@ -524,8 +583,7 @@ def cmd_centrality(args: argparse.Namespace) -> int:
     """
     try:
         print(f"Loading network from {args.input}...")
-        network = multinet.multi_layer_network()
-        network.load_network(args.input)
+        network = _load_network(args.input)
 
         print(f"Computing {args.measure} centrality...")
 
@@ -589,13 +647,12 @@ def cmd_stats(args: argparse.Namespace) -> int:
     """
     try:
         print(f"Loading network from {args.input}...")
-        network = multinet.multi_layer_network()
-        network.load_network(args.input)
+        network = _load_network(args.input)
 
         from py3plex.algorithms.statistics import multilayer_statistics as mls
 
         stats = {}
-        layers = list(network.get_layers())
+        layers = network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers())
 
         print(f"Computing multilayer statistics...")
 
@@ -696,8 +753,7 @@ def cmd_visualize(args: argparse.Namespace) -> int:
     """
     try:
         print(f"Loading network from {args.input}...")
-        network = multinet.multi_layer_network()
-        network.load_network(args.input)
+        network = _load_network(args.input)
 
         print(f"Generating visualization with {args.layout} layout...")
 
@@ -757,8 +813,7 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
     """
     try:
         print(f"Loading network from {args.input}...")
-        network = multinet.multi_layer_network()
-        network.load_network(args.input)
+        network = _load_network(args.input)
 
         print(f"Aggregating layers using {args.method} method...")
 
@@ -800,8 +855,7 @@ def cmd_convert(args: argparse.Namespace) -> int:
     """
     try:
         print(f"Loading network from {args.input}...")
-        network = multinet.multi_layer_network()
-        network.load_network(args.input)
+        network = _load_network(args.input)
 
         output_path = Path(args.output)
         print(f"Converting to {output_path.suffix} format...")
@@ -820,7 +874,7 @@ def cmd_convert(args: argparse.Namespace) -> int:
                     {"source": str(u), "target": str(v)}
                     for u, v in network.core_network.edges()
                 ],
-                "layers": list(network.get_layers()),
+                "layers": network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers()),
                 "directed": network.directed,
             }
             with open(output_path, "w") as f:

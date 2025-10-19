@@ -20,10 +20,13 @@ from py3plex.core import multinet
 class TestCLIBasic:
     """Test basic CLI functionality."""
 
-    def test_cli_help(self):
+    def test_cli_help(self, capsys):
         """Test that --help works."""
-        result = cli.main(["--help"])
-        assert result == 0
+        with pytest.raises(SystemExit) as exc_info:
+            cli.main(["--help"])
+        assert exc_info.value.code == 0
+        captured = capsys.readouterr()
+        assert "Py3plex" in captured.out
 
     def test_cli_version(self, capsys):
         """Test that --version works."""
@@ -38,8 +41,11 @@ class TestCLIBasic:
 
     def test_cli_invalid_command(self, capsys):
         """Test CLI with invalid command."""
-        result = cli.main(["invalid_command"])
-        assert result != 0
+        with pytest.raises(SystemExit) as exc_info:
+            cli.main(["invalid_command"])
+        assert exc_info.value.code == 2  # argparse error code
+        captured = capsys.readouterr()
+        assert "invalid choice" in captured.err
 
 
 class TestCLICreate:
