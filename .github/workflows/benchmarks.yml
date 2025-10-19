@@ -28,7 +28,7 @@ jobs:
       timeout-minutes: 3
 
     - name: Cache pip dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-benchmark-${{ hashFiles('**/pyproject.toml') }}
@@ -78,25 +78,25 @@ jobs:
         if [ -f benchmark-core.json ]; then
           echo "✅ Core benchmarks completed successfully" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          python -c "
-import json
-import sys
-try:
-    with open('benchmark-core.json', 'r') as f:
-        data = json.load(f)
-    benchmarks = data.get('benchmarks', [])
-    if benchmarks:
-        print('| Test | Mean Time | Std Dev |')
-        print('|------|-----------|---------|')
-        for b in benchmarks[:10]:  # Show first 10
-            name = b['name'].split('::')[-1]
-            mean = b['stats']['mean']
-            stddev = b['stats']['stddev']
-            print(f'| {name} | {mean:.6f}s | {stddev:.6f}s |')
-except Exception as e:
-    print(f'Error processing benchmark results: {e}')
-    sys.exit(0)
-          " >> $GITHUB_STEP_SUMMARY
+          python -c 'import json, sys, textwrap; exec(textwrap.dedent("""
+              import json
+              import sys
+              try:
+                  with open("benchmark-core.json", "r") as f:
+                      data = json.load(f)
+                  benchmarks = data.get("benchmarks", [])
+                  if benchmarks:
+                      print("| Test | Mean Time | Std Dev |")
+                      print("|------|-----------|---------|")
+                      for b in benchmarks[:10]:  # Show first 10
+                          name = b["name"].split("::")[-1]
+                          mean = b["stats"]["mean"]
+                          stddev = b["stats"]["stddev"]
+                          print(f"| {name} | {mean:.6f}s | {stddev:.6f}s |")
+              except Exception as e:
+                  print(f"Error processing benchmark results: {e}")
+                  sys.exit(0)
+          """))' >> $GITHUB_STEP_SUMMARY
         else
           echo "⚠️ No core benchmark results found" >> $GITHUB_STEP_SUMMARY
         fi
@@ -111,7 +111,7 @@ except Exception as e:
 
     - name: Upload benchmark results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: benchmark-results
         path: |
@@ -137,17 +137,17 @@ except Exception as e:
         echo "Creating benchmark badge data..."
         if [ -f benchmark-core.json ]; then
           # Extract average benchmark time
-          avg_time=$(python -c "
-import json
-with open('benchmark-core.json', 'r') as f:
-    data = json.load(f)
-benchmarks = data.get('benchmarks', [])
-if benchmarks:
-    avg = sum(b['stats']['mean'] for b in benchmarks) / len(benchmarks)
-    print(f'{avg:.3f}')
-else:
-    print('N/A')
-          ")
+          avg_time=$(python -c 'import json, textwrap; exec(textwrap.dedent("""
+              import json
+              with open("benchmark-core.json", "r") as f:
+                  data = json.load(f)
+              benchmarks = data.get("benchmarks", [])
+              if benchmarks:
+                  avg = sum(b["stats"]["mean"] for b in benchmarks) / len(benchmarks)
+                  print(f"{avg:.3f}")
+              else:
+                  print("N/A")
+          """))')
           echo "Average benchmark time: ${avg_time}s"
           # In production, this would update a badge endpoint
         fi
