@@ -49,6 +49,9 @@ def multiplex_participation_coefficient(multinet, normalized=True, check_multipl
     - De Domenico, M., et al. (2015). "Identifying modular flows on multilayer networks
       reveals highly overlapping organization in interconnected systems."
       Physical Review X, 5(1), 011027.
+    - Harooni, M., et al. (2025). "Centrality in Multilayer Networks: Accurate 
+      Measurements with MultiNetPy." The Journal of Supercomputing, 81(1), 92.
+      DOI: 10.1007/s11227-025-07197-8
     """
     
     # Get layers from the multiplex network

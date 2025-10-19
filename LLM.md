@@ -369,7 +369,10 @@ resilience = mls.resilience(network, 'layer_removal', perturbation_param='layer1
   - 0 < MPC < 1: Partial participation with varying degrees across layers
 - **Requirements**: True multiplex network (identical node set across all layers)
 - **Module**: `algorithms/multicentrality.py`
-- **Reference**: Battiston et al. (2014), De Domenico et al. (2015)
+- **References**: 
+  - Battiston et al. (2014) - Structural measures for multiplex networks
+  - De Domenico et al. (2015) - Identifying modular flows on multilayer networks
+  - Harooni et al. (2025) - Centrality in Multilayer Networks: Accurate Measurements with MultiNetPy (DOI: 10.1007/s11227-025-07197-8)
 - **Example usage**:
 ```python
 from py3plex.algorithms.multicentrality import multiplex_participation_coefficient
