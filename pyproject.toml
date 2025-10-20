@@ -78,6 +78,9 @@ Documentation = "https://py3plex.readthedocs.io"
 Repository = "https://github.com/SkBlaz/py3plex"
 "Bug Tracker" = "https://github.com/SkBlaz/py3plex/issues"
 
+[project.scripts]
+py3plex = "py3plex.cli:main"
+
 [tool.setuptools]
 zip-safe = false
 include-package-data = true

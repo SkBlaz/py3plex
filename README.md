@@ -5,6 +5,7 @@
 [![Code Quality](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml)
 [![Benchmarks](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml)
 [![Documentation](https://github.com/SkBlaz/py3plex/actions/workflows/doc-coverage.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/doc-coverage.yml)
+![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 
 Heterogeneous networks are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
@@ -15,6 +16,18 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 **Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
+
+### CLI Tool
+
+Py3plex includes a command-line interface for multilayer network analysis. See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
+
+Quick example:
+
+```bash
+py3plex create --nodes 50 --layers 2 --output network.graphml
+py3plex community network.graphml --algorithm louvain
+py3plex --help  # See all available commands
+```
 
 
 ### Requirements

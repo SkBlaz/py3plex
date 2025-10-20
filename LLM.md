@@ -1,8 +1,45 @@
 # LLM Context Summary
 
-**Last Updated**: 2025-10-19 (Documentation Coverage CI Added)
+**Last Updated**: 2025-10-20 (CLI Tool Added)
 
 This repository defines **Py3plex**, a modular Python library for analysis and visualization of heterogeneous and multilayer networks. Heterogeneous networks are complex networks with additional information assigned to nodes, edges, or both—including multiple node types, edge types, and layered structures. Py3plex provides utilities for constructing, decomposing, analyzing, and visualizing such networks with built-in support for computing structural metrics, performing community detection, network classification, and integrating multilayer network data with external knowledge sources.
+
+## Recent Feature Additions (2025-10-20)
+
+### Command-Line Interface (CLI) Tool (2025-10-20)
+- **NEW: Comprehensive CLI for Terminal Usage** - Full-featured command-line interface providing access to all main algorithms
+  - Entry point: `py3plex` command available after installation
+  - Implementation: `py3plex/cli.py` - 900+ lines with 8 main commands
+  - Console script entry in `pyproject.toml`: `py3plex = "py3plex.cli:main"`
+  - **8 Main Commands with Full Functionality:**
+    - `create` - Create multilayer networks (ER, BA, WS models) with configurable parameters
+    - `load` - Load and inspect networks with basic statistics
+    - `community` - Community detection (Louvain, Infomap, Label Propagation)
+    - `centrality` - Compute centrality measures (degree, betweenness, closeness, eigenvector, PageRank)
+    - `stats` - Multilayer network statistics (layer density, clustering, node activity, versatility, edge overlap)
+    - `visualize` - Network visualization with multiple layouts (multilayer, spring, circular, kamada_kawai)
+    - `aggregate` - Aggregate multilayer networks (sum, mean, max, min methods)
+    - `convert` - Convert between formats (GraphML, GEXF, JSON, gpickle)
+  - **Format Support:**
+    - Input: GraphML, GEXF, gpickle, GML, edgelist
+    - Output: GraphML, GEXF, gpickle, JSON
+  - **Key Features:**
+    - Built-in help system: `py3plex --help` and `py3plex <command> --help`
+    - JSON output for all analysis commands (machine-readable results)
+    - Automatic format detection from file extensions
+    - Progress feedback and informative error messages
+    - Reproducibility: `--seed` parameter for random network generation
+  - **Testing:** Comprehensive test suite in `tests/test_cli.py` with 40+ test cases
+  - **Documentation:** Complete tutorial in `docfiles/tutorials/cli_usage.rst` with examples and workflows
+  - **Badge:** CLI Tool badge added to README.md
+  - **Examples:**
+    ```bash
+    # Create and analyze a network
+    py3plex create --nodes 100 --layers 3 --type ba --output network.graphml --seed 42
+    py3plex community network.graphml --algorithm louvain --output communities.json
+    py3plex centrality network.graphml --measure pagerank --top 10
+    py3plex visualize network.graphml --layout multilayer --output viz.png
+    ```
 
 ## Recent Documentation Improvements (2025-10-19)
 
@@ -755,6 +792,23 @@ make docs         # Build Sphinx documentation
 
 **For LLMs**: Use `make test-all` to verify all changes will pass CI, or use `make test`, `make benchmark`, or `make lint` for individual checks. The Makefile handles tool detection and environment configuration automatically. **Always run `make test-all` before submitting code** to ensure all build CI workflows will pass.
 
+### CLI Tool Usage
+
+The py3plex CLI provides terminal access to all main algorithms:
+
+```bash
+# Quick examples
+py3plex create --nodes 50 --layers 2 --output network.graphml
+py3plex load network.graphml --stats
+py3plex community network.graphml --algorithm louvain
+py3plex centrality network.graphml --measure pagerank --top 10
+py3plex visualize network.graphml --layout multilayer --output viz.png
+```
+
+**Available Commands**: create, load, community, centrality, stats, visualize, aggregate, convert
+
+**Full Documentation**: See `docfiles/tutorials/cli_usage.rst` for comprehensive tutorial with examples and workflows.
+
 ## Documentation
 
 **Key Resources:**
@@ -937,13 +991,29 @@ make test-all     # Run ALL checks (lint + test + benchmark) - ensures all CI pa
 make ci           # Run lint + test (CI suite without benchmarks)
 ```
 
-**Network construction**:
+**CLI usage** (October 2025 - NEW):
+```bash
+# Terminal-based analysis
+py3plex create --nodes 50 --layers 2 --type er --output network.graphml
+py3plex community network.graphml --algorithm louvain --output communities.json
+py3plex centrality network.graphml --measure pagerank --top 10
+py3plex visualize network.graphml --layout multilayer --output viz.png
+```
+
+**Network construction** (Python API):
 ```python
 from py3plex.core import multinet
 network = multinet.multi_layer_network()
-network.add_layer("layer1")
-network.add_nodes([("A", "layer1"), ("B", "layer1")])
-network.add_edges([(("A", "layer1"), ("B", "layer1"))])
+# Add nodes using dict format (type = layer)
+network.add_nodes([
+    {"source": "A", "type": "layer1"},
+    {"source": "B", "type": "layer1"}
+], input_type="dict")
+# Add edges using dict format
+network.add_edges([{
+    "source": "A", "target": "B",
+    "source_type": "layer1", "target_type": "layer1"
+}], input_type="dict")
 ```
 
 **Loading from file**:
