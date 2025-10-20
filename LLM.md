@@ -1565,15 +1565,10 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 4. GitHub `README.md` - Quick start
 5. Sphinx documentation - API reference (may be incomplete)
 
-### Best Practices Summary
-1. Install from GitHub for latest features
-2. Check binary existence and use absolute paths
-3. Avoid Infomap for commercial projects (use Louvain)
-4. Always set random seeds for reproducibility
-5. Use sparse matrices for large networks
-6. Check node count before using force layouts
-7. Prefer GitHub docs over hosted Sphinx docs
-8. Pin versions in production
+**Known Technical Debt (Being Addressed):**
+
+| Issue | Severity | Status | Resolution |
+|-------|----------|--------|------------|
 | Documentation staleness | Low | ✅ Resolved | Sphinx config updated to 0.95a, auto-build CI |
 | NetworkX 3.x compatibility | Low | ✅ Resolved | Compatibility layer implemented |
 | Type hints coverage | Medium | ✅ Mostly Resolved | 65.4% coverage, mypy enforced (100% clean) |
