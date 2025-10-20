@@ -69,10 +69,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
 </ul>
@@ -92,6 +94,10 @@
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture and Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
 </ul>
 
         </div>
@@ -144,18 +150,18 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_dynamics.py</span></code> - Temporal dynamics</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">example_multiplex_community_detection.py</span></code> - Community detection</p></li>
 </ul>
-<dl>
-<dt>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></dt><dd><p>## However, the weights differ!
-for e in aggregated_network2.edges(data=True):</p>
-<blockquote>
-<div><p>print(e)</p>
-</div></blockquote>
-<dl class="simple">
-<dt>for e in aggregated_network1.edges(data=True):</dt><dd><p>print(e)</p>
-</dd>
-</dl>
-</dd>
-</dl>
+<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>However, the weights differ!</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">aggregated_network2</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="linenos">2</span>    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="linenos">3</span>
+<span class="linenos">4</span><span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">aggregated_network1</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="linenos">5</span>    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The first network divides the contribution of an individual edge with the average node degree in a given layer, and the second one simply sums them.</p>
 <section id="subsetting">
 <h3>Subsetting<a class="headerlink" href="#subsetting" title="Link to this heading"></a></h3>

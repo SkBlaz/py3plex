@@ -545,7 +545,7 @@ When using specific algorithms in publications, cite the original papers:
 **Multilayer Modularity:**
   Mucha, P. J., et al. (2010). Community structure in time-dependent, multiscale, and multiplex networks. *Science*, 328(5980), 876-878.
 
-See :doc:`../docs/ALGORITHM_CITATIONS` for complete references with DOIs.
+For complete references with DOIs, see the `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ file in the repository.
 
 Next Steps
 ----------
@@ -553,4 +553,4 @@ Next Steps
 * :doc:`tutorials/community_detection` - Community detection tutorial
 * :doc:`tutorials/multilayer_centrality` - Centrality measures tutorial
 * :doc:`performance` - Performance optimization guide
-* :doc:`../docs/ALGORITHM_CITATIONS` - Full citation list
+* See `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ for full citation list

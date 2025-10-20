@@ -315,6 +315,6 @@ See Also
 --------
 
 * :doc:`acknowledgements` - Full acknowledgments
-* :doc:`../docs/ALGORITHM_CITATIONS` - Complete algorithm citations with DOIs
+* `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ - Complete algorithm citations with DOIs
 * `py3plex GitHub <https://github.com/SkBlaz/py3plex>`_ - Source code and issues
 * `Applied Network Science paper <https://doi.org/10.1007/s41109-019-0203-7>`_ - Primary publication

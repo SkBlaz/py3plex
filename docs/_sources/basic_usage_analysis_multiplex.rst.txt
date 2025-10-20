@@ -30,18 +30,25 @@ See:
 - ``example_multiplex_community_detection.py`` - Community detection
 
 Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples
-    ## However, the weights differ!
-    for e in aggregated_network2.edges(data=True):
-	print(e)
 
-    for e in aggregated_network1.edges(data=True):
-	print(e)
+.. note::
+   However, the weights differ!
+
+.. code-block:: python
+   :linenos:
+
+   for e in aggregated_network2.edges(data=True):
+       print(e)
+
+   for e in aggregated_network1.edges(data=True):
+       print(e)
 
 The first network divides the contribution of an individual edge with the average node degree in a given layer, and the second one simply sums them.
 
 
 Subsetting
-*******
+**********
+
 Subsetting operates in the same manner than for multilayers, hence:
 
 .. code-block:: python

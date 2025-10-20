@@ -54,7 +54,11 @@ Let's start by creating a simple multilayer network from scratch:
 
     Number of nodes: 5
     Number of edges: 4
-    Number of layers: 2
+    Number of unique nodes (as node-layer tuples): 5
+    Number of unique node IDs (across all layers): 4
+    Nodes per layer:
+      Layer 'layer1': 3 nodes
+      Layer 'layer2': 3 nodes
 
 2. Loading Networks from Files (1 minute)
 ------------------------------------------
