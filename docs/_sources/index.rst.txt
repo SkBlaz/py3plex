@@ -179,10 +179,12 @@ Documentation Contents
    :maxdepth: 2
    :caption: Tutorials
 
+   tutorials/cli_usage
    tutorials/multilayer_centrality
    tutorials/multilayer_modularity
    tutorials/community_detection
    tutorials/network_decomposition
+   multilayer_centrality_matrix_functions
    random_walks
    supra
 
@@ -199,7 +201,6 @@ Documentation Contents
    :caption: API Reference
 
    apidocs
-   AUTOGEN_results/modules
 
 .. toctree::
    :maxdepth: 2
