@@ -19,40 +19,15 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 ### CLI Tool
 
-Py3plex now includes a comprehensive command-line interface for multilayer network analysis. After installation, you can use the `py3plex` command:
+Py3plex includes a command-line interface for multilayer network analysis. See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
+
+Quick example:
 
 ```bash
-# Create a multilayer network
-py3plex create --nodes 100 --layers 3 --type er --probability 0.1 --output network.graphml
-
-# Load and analyze a network
-py3plex load network.graphml --stats
-
-# Detect communities
-py3plex community network.graphml --algorithm louvain --output communities.json
-
-# Compute centrality measures
-py3plex centrality network.graphml --measure degree --top 10
-
-# Visualize a network
-py3plex visualize network.graphml --layout multilayer --output network.png
-
-# Get multilayer statistics
-py3plex stats network.graphml --measure all --output stats.json
-
-# See all available commands
-py3plex --help
+py3plex create --nodes 50 --layers 2 --output network.graphml
+py3plex community network.graphml --algorithm louvain
+py3plex --help  # See all available commands
 ```
-
-**Available Commands:**
-- `create` - Create new multilayer networks (ER, BA, WS models)
-- `load` - Load and inspect networks
-- `community` - Detect communities (Louvain, Infomap, Label Propagation)
-- `centrality` - Compute centrality measures (degree, betweenness, closeness, PageRank, eigenvector)
-- `stats` - Compute multilayer network statistics
-- `visualize` - Create network visualizations
-- `aggregate` - Aggregate multilayer networks into single layer
-- `convert` - Convert between network formats (GraphML, GEXF, JSON, gpickle)
 
 
 ### Requirements

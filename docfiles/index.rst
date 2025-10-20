@@ -179,6 +179,7 @@ Documentation Contents
    :maxdepth: 2
    :caption: Tutorials
 
+   tutorials/cli_usage
    tutorials/multilayer_centrality
    tutorials/multilayer_modularity
    tutorials/community_detection
