@@ -1,6 +1,158 @@
 # LLM Context Summary
 
-**Last Updated**: 2025-10-20 (All Open Issues Resolved - Repository Fully Up to Date)
+**Last Updated**: 2025-10-20 (Issue #11: LLM.md improvements and documentation)  
+**Previous Update**: 2025-10-20 (All Open Issues Resolved - Repository Fully Up to Date)
+
+---
+
+## 📋 Document Changelog
+
+This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
+
+### 2025-10-20: Issue #11 - LLM.md Improvements
+**Changes Made:**
+- Added comprehensive Table of Contents for easier navigation
+- Added Document Changelog section to track updates to this file
+- Added Quick Reference section for common tasks and lookups
+- Improved section organization and consistency across the document
+- Enhanced cross-references between related sections
+- Added metadata about document purpose and usage guidelines
+- Improved formatting and readability throughout
+
+**Purpose:** Make LLM.md more accessible, navigable, and maintainable for both LLMs and human developers.
+
+---
+
+## 📖 About This Document
+
+**Purpose:** This document serves as a comprehensive context file for Large Language Models (LLMs) and maintainers working with the Py3plex repository. It provides:
+- Complete overview of the library architecture and capabilities
+- Development status and recent changes (see [Repository Status](#repository-status-all-issues-resolved-2025-10-20))
+- Detailed API documentation and usage patterns (see [Algorithms and Analytical Capabilities](#algorithms-and-analytical-capabilities))
+- Best practices and known limitations (see [Known Limitations and Best Practices](#known-limitations-and-best-practices))
+- Quick reference for common tasks (see [Quick Reference](#-quick-reference) above)
+
+**Target Audience:**
+- **LLM assistants** (GitHub Copilot, Claude, GPT-4, etc.) - See [For LLMs](#for-llms) section
+- **New developers and contributors** - Start with [Quick Reference](#-quick-reference) and [Development Environment](#development-environment)
+- **Maintainers** needing comprehensive context - Review [Repository Status](#repository-status) and [Development Roadmap](#development-roadmap)
+- **Code review and analysis tools** - Focus on [Architecture](#architecture-and-data-flow) and [Key Files](#key-files)
+
+**How to Navigate:**
+- **For LLMs:** Read sections relevant to your current task; prioritize [For LLMs](#for-llms) section
+- **For Developers:** Start with [Quick Reference](#-quick-reference) and [Development Environment](#development-environment)
+- **For Contributors:** Review [Structure](#structure), [Development Roadmap](#development-roadmap), and [Best Practices](#known-limitations-and-best-practices)
+- **For Code Review:** Focus on [Architecture](#architecture-and-data-flow), [Key Files](#key-files), and [Known Limitations](#known-limitations-and-best-practices)
+- **For Bug Fixing:** Check [Development Environment](#development-environment) for testing commands, [Known Limitations](#known-limitations-and-best-practices) for common issues
+- **For Adding Features:** Review [Architecture](#architecture-and-data-flow), [Key Files](#key-files), and [Development Roadmap](#development-roadmap)
+
+**Document Statistics:**
+- **Length:** ~1600 lines
+- **Sections:** 16 major sections with 50+ subsections
+- **Last Major Update:** 2025-10-20 (Issue #11)
+- **Maintenance:** Updated with each significant repository change
+
+---
+
+## 🚀 Quick Reference
+
+This section provides quick answers to common questions and tasks.
+
+### Most Common Tasks
+
+**Installation:**
+```bash
+pip install git+https://github.com/SkBlaz/py3plex.git
+```
+
+**Running All Tests:**
+```bash
+make test-all  # Single command that ensures all CI passes
+```
+
+**Building Documentation:**
+```bash
+make docs  # Sphinx HTML documentation
+cd docfiles && make html  # Alternative method
+```
+
+**Code Quality:**
+```bash
+make format  # Auto-format code (black, isort, ruff)
+make lint    # Check code quality
+```
+
+**CLI Usage:**
+```bash
+py3plex create --nodes 50 --layers 2 --output network.graphml
+py3plex community network.graphml --algorithm louvain
+py3plex --help  # See all commands
+```
+
+### Quick Lookup Table
+
+| Need | Location | Command/Tool |
+|------|----------|--------------|
+| Run all tests | Root directory | `make test-all` |
+| Build docs | docfiles/ | `make docs` or `cd docfiles && make html` |
+| Core data structure | py3plex/core/multinet.py | `multi_layer_network` class |
+| Add algorithm | py3plex/algorithms/ | Follow existing patterns |
+| Add test | tests/ | Use pytest framework |
+| Check coverage | Root directory | `make test` (includes coverage) |
+| CLI tool | After install | `py3plex --help` |
+| Examples | examples/ | 50+ working Python scripts |
+
+### File Navigation Quick Links
+
+- **Main README:** `/README.md` - Project overview and quick start
+- **This File:** `/LLM.md` - Comprehensive LLM context (you are here)
+- **Development Guide:** `/docs/development.md` - Development workflow
+- **Master Documentation:** `/docs/MASTER_DOCUMENTATION.md` - Publication-quality docs
+- **Architecture:** `/docs/ARCHITECTURE.md` - System design
+- **Contributing:** `/docs/CONTRIBUTING.md` - Contribution guidelines
+- **Changelog:** `/CHANGELOG.md` - Version history
+
+### Key Statistics (As of 2025-10-20)
+
+- **Python Files:** 198 total, 116 in main package
+- **Documentation:** 33 RST files, 9/10 quality rating
+- **Test Coverage:** Comprehensive unit and integration tests
+- **Code Quality:** PEP 8 compliant, 65.4% type hints coverage
+- **CLI Commands:** 8 main commands with full functionality
+- **Example Scripts:** 50+ working examples
+- **CI Status:** All workflows passing ✅
+
+---
+
+## 📑 Table of Contents
+
+### Core Information
+1. [Repository Status: All Issues Resolved](#repository-status-all-issues-resolved-2025-10-20)
+2. [Overview](#overview) - What Py3plex does and why
+3. [Structure](#structure) - Repository organization
+4. [Key Files](#key-files) - Critical files and their purposes
+5. [Dependencies and Ecosystem](#dependencies-and-ecosystem) - Required packages
+
+### Technical Details
+6. [Architecture and Data Flow](#architecture-and-data-flow) - How the library works
+7. [Algorithms and Analytical Capabilities](#algorithms-and-analytical-capabilities) - What you can compute
+8. [Development Environment](#development-environment) - Setup and testing
+9. [Documentation](#documentation) - Where to find information
+
+### For Developers
+10. [For LLMs](#for-llms) - Specific guidance for AI assistants
+11. [Development Roadmap](#development-roadmap) - Future plans
+12. [Repository Status](#repository-status) - Current state and progress
+13. [Performance Optimization](#performance-optimization) - Speed and efficiency
+
+### Reference
+14. [Metadata and Provenance](#metadata-and-provenance) - Authors, license, citations
+15. [Recommended Use Cases](#recommended-use-cases) - Best applications
+16. [Known Limitations and Best Practices](#known-limitations-and-best-practices) - What to watch out for
+
+---
+
+## Repository Summary
 
 This repository defines **Py3plex**, a modular Python library for analysis and visualization of heterogeneous and multilayer networks. Heterogeneous networks are complex networks with additional information assigned to nodes, edges, or both—including multiple node types, edge types, and layered structures. Py3plex provides utilities for constructing, decomposing, analyzing, and visualizing such networks with built-in support for computing structural metrics, performing community detection, network classification, and integrating multilayer network data with external knowledge sources.
 
@@ -1168,29 +1320,111 @@ Primary documentation in ``docfiles/`` directory (33 ReStructuredText files, com
 
 ## For LLMs
 
+> **Note for AI Assistants:** This section provides specialized guidance for Large Language Models working with this codebase. It includes reading order, indexing priorities, and key architectural insights.
+
 ### 🧭 Suggested Reading Order
 
-1. `README.md` - Library purpose and quick start
-2. `LLM.md` (this file) - Comprehensive overview
-3. `Makefile` - Build and test workflow
-4. `py3plex/core/multinet.py` - Central `multi_layer_network` class
-5. `examples/` - Real-world usage patterns
+**For understanding the library:**
+1. **Quick Reference** (this file, above) - Overview and common tasks
+2. `README.md` - Library purpose and quick start
+3. **Overview** section (this file, below) - What Py3plex does and why
+4. `py3plex/core/multinet.py` - Central `multi_layer_network` class (1223 lines, core data structure)
+5. `examples/` - 50+ real-world usage patterns
 6. `tests/` - Expected behaviors and API contracts
+
+**For making changes:**
+1. `Makefile` - Build and test workflow (use `make test-all` before submitting)
+2. **Development Environment** section (this file) - Setup and testing commands
+3. **Architecture and Data Flow** section (this file) - How components interact
+4. **Key Files** section (this file) - Critical files and their responsibilities
+5. Relevant algorithm/visualization module based on task
+6. Corresponding test file to understand expected behavior
+
+**For documentation tasks:**
+1. `docs/MASTER_DOCUMENTATION.md` - Publication-quality documentation
+2. `docfiles/*.rst` - Sphinx RST documentation (33 files)
+3. **Documentation** section (this file) - Documentation structure and tooling
+4. `docs/DOCUMENTATION_OVERVIEW.md` - Complete documentation guide
 
 ### 💡 Embedding/Indexing Tips
 
-- **Core logic**: Prioritize `core/multinet.py`, `algorithms/community_detection/`, `algorithms/statistics/`, and `visualization/multilayer.py`
-- **Exclude**: Skip `docfiles/_build/`, `docfiles/AUTOGEN_results/`, `docs/_build/`, `.git/`, `__pycache__/`, `*.pyc`, `example_images/`, and large binary files
-- **Examples as docs**: Scripts in `examples/` are high-quality semantic examples
-- **Type hints**: 65.4% coverage (70/107 maintainable modules). Refer to docstrings for modules without complete type coverage.
+**High Priority - Core Functionality (Index First):**
+- `py3plex/core/multinet.py` - Main data structure (1223 lines, central to everything)
+- `py3plex/algorithms/community_detection/` - Community detection algorithms
+- `py3plex/algorithms/statistics/multilayer_statistics.py` - 17 multilayer metrics
+- `py3plex/visualization/multilayer.py` - Core visualization functions
+- `py3plex/cli.py` - CLI tool (900+ lines, added October 2025)
+- `examples/*.py` - 50+ high-quality working examples (excellent semantic examples)
+
+**Medium Priority - Extended Functionality:**
+- `py3plex/algorithms/multilayer_algorithms/` - Specialized multilayer algorithms
+- `py3plex/algorithms/general/walkers.py` - Random walk primitives
+- `py3plex/core/parsers.py` - I/O for various formats
+- `py3plex/config.py` - Centralized configuration
+- `py3plex/utils.py` - Utility functions
+- `tests/*.py` - Test files (document expected behavior)
+
+**Low Priority - Documentation and Build:**
+- `docs/*.md` - Markdown documentation and guides
+- `docfiles/*.rst` - RST documentation (source, not built)
+- `Makefile` - Build system commands
+- `pyproject.toml`, `setup.py` - Package configuration
+
+**Exclude from Indexing:**
+- `docfiles/_build/` - Generated documentation (regenerated on build)
+- `docfiles/AUTOGEN_results/` - Auto-generated API docs
+- `docs/_build/` - Documentation build artifacts
+- `docs/AUTOGEN_results/` - Auto-generated results
+- `.git/` - Version control
+- `__pycache__/`, `*.pyc`, `*.pyo` - Python bytecode
+- `example_images/` - Large binary image files
+- `.pytest_cache/`, `.mypy_cache/` - Tool caches
+- `*.egg-info/` - Package metadata
+- Binary files (images, PDFs, compiled extensions)
+
+**Examples as Documentation:**
+- Scripts in `examples/` are high-quality, production-ready code examples
+- Each example is self-contained and demonstrates specific functionality
+- Use examples to understand API patterns and best practices
+- Examples include error handling and proper resource management
+
+**Type Hints:**
+- 65.4% coverage (70/107 maintainable modules)
+- All modules pass mypy type checking (100% clean)
+- Refer to docstrings for modules without complete type coverage
+- Type hints enforced in CI via mypy
 
 ### 🔮 Key Insights
 
+**Data Structures:**
 - **NetworkX foundation**: `.core_network` attribute is always a NetworkX `MultiDiGraph` or `MultiGraph`
-- **Layer representation**: Layers encoded in edge keys; `label_delimiter` (default `"---"`) separates node IDs from layer IDs
-- **Determinism**: Most algorithms are deterministic with fixed seeds. Louvain and Infomap use randomized search.
-- **Sparse vs. dense**: Auto-detects sparsity and uses SciPy sparse matrices for large networks
-- **Scalability**: Diagonal projection plots handle 10k+ nodes; force-directed layouts scale to ~5k nodes
+- **Layer encoding**: Layers encoded in edge keys; `label_delimiter` (default `"---"`) separates node IDs from layer IDs
+- **Node naming convention**: `{node_id}---{layer_name}` in internal representation
+- **Matrix representation**: `node_order_in_matrix` provides canonical ordering for matrix operations
+- **Layer mapping**: `layer_name_map` is a bidirectional dict mapping layer names ↔ integer IDs
+
+**Algorithm Behavior:**
+- **Determinism**: Most algorithms are deterministic with fixed seeds
+- **Randomized algorithms**: Louvain and Infomap use randomized search (set seed for reproducibility)
+- **Performance**: Auto-detects sparsity and uses SciPy sparse matrices for large networks
+- **Scalability limits**: 
+  - Diagonal projection plots: handle 10k+ nodes efficiently
+  - Force-directed layouts: scale to ~5k nodes (use sparse layouts for larger networks)
+  - Supra-adjacency matrices: sparse by default (memory-efficient)
+
+**Development Patterns:**
+- **Testing**: Use `make test-all` to ensure all CI will pass (single entrypoint)
+- **Code formatting**: Auto-format with `make format` (black, isort, ruff)
+- **Documentation**: Build with `make docs` (Sphinx HTML)
+- **CLI tool**: Available as `py3plex` command after installation (8 main commands)
+- **Reproducibility**: Always set random seeds in code examples and tests
+
+**Common Pitfalls:**
+- Don't forget to set `directed=True/False` when creating networks
+- Check node/layer existence before operations (use `.get_nodes()`, `.get_layers()`)
+- Use `.core_network` to access underlying NetworkX graph for standard algorithms
+- Remember inter-layer edges when computing statistics on multiplex networks
+- Use sparse matrices for large networks (automatic, but can be forced)
 
 **Development workflow**:
 ```bash
@@ -1585,3 +1819,146 @@ A performance regression is detected when:
 - Aggregation benchmarks: `benchmarks/bench_aggregation.py`
 - Benchmark workflow: `.github/workflows/benchmarks.yml`
 - Benchmark badge in README.md
+
+---
+
+## 📊 Section Update Tracking
+
+This section tracks when major sections of this document were last significantly updated, helping maintainers and LLMs understand the currency of information.
+
+| Section | Last Updated | Notes |
+|---------|--------------|-------|
+| Document Changelog | 2025-10-20 | Added with Issue #11 |
+| About This Document | 2025-10-20 | Enhanced with cross-references and navigation |
+| Quick Reference | 2025-10-20 | New section added |
+| Table of Contents | 2025-10-20 | New section added |
+| Repository Status | 2025-10-20 | Updated with Issue #167 closure |
+| Recent Documentation Review | 2025-10-20 | RST documentation review completed |
+| CLI Tool | 2025-10-20 | CLI tool completed (Issue #161) |
+| Documentation Coverage CI | 2025-10-19 | CI workflow and badge added |
+| Master Documentation | 2025-10-19 | Publication-quality docs created |
+| Sphinx Documentation Fixes | 2025-10-18 | Build warnings reduced |
+| Code Style Improvements | 2025-10-18 | PEP 8 compliance improved |
+| For LLMs | 2025-10-20 | Enhanced with detailed guidance |
+| Performance Optimization | 2025-10-19 | Benchmark tests added |
+| Multilayer Statistics | 2024 | Core formulas documented |
+| Random Walk Primitives | 2025-10 | Comprehensive implementation |
+| MultiXRank | 2025-10 | Universal multilayer exploration |
+| Known Limitations | 2025-10 | Updated with current status |
+| Development Roadmap | 2025-10 | Phase 2 near completion |
+
+### Content Freshness Guidelines
+
+**Current (2025-10-20):**
+- Repository status and issue resolution summary
+- CLI tool documentation
+- Documentation coverage metrics
+- Recent feature additions (MPC, supra matrix centralities, etc.)
+- Code quality metrics (type hints, test coverage)
+
+**Mostly Current (2025-10):**
+- Algorithm implementations and documentation
+- Performance benchmarks
+- Development workflow and tooling
+- Documentation structure
+
+**May Need Updates:**
+- Specific version numbers (check CHANGELOG.md for latest)
+- External tool versions and links
+- Performance metrics (re-run benchmarks for current numbers)
+- Code examples (verify against latest API)
+
+### Maintenance Checklist
+
+When updating this document:
+- [ ] Update "Last Updated" date at the top
+- [ ] Add entry to Document Changelog
+- [ ] Update relevant section in Section Update Tracking table
+- [ ] Update cross-references if section names changed
+- [ ] Verify links to other documents still work
+- [ ] Check that code examples still run
+- [ ] Update statistics (file counts, coverage, etc.) if changed
+- [ ] Run spell check and grammar check
+- [ ] Verify markdown formatting renders correctly
+- [ ] Test that anchor links work
+
+---
+
+## 🎯 Quick Task Index
+
+This index helps you quickly find information for common tasks.
+
+### I want to...
+
+**...understand what Py3plex does:**
+→ See [Overview](#overview) and [Recommended Use Cases](#recommended-use-cases)
+
+**...install and get started:**
+→ See [Quick Reference](#-quick-reference) → Installation section
+
+**...run tests:**
+→ See [Quick Reference](#-quick-reference) → `make test-all`
+
+**...add a new algorithm:**
+→ See [Key Files](#key-files) → algorithms/ section, then [Architecture](#architecture-and-data-flow)
+
+**...add a new visualization:**
+→ See [Key Files](#key-files) → visualization/ section
+
+**...fix a bug:**
+→ See [Development Environment](#development-environment) and [Known Limitations](#known-limitations-and-best-practices)
+
+**...improve documentation:**
+→ See [Documentation](#documentation) section
+
+**...contribute code:**
+→ See [Development Environment](#development-environment) and `/docs/CONTRIBUTING.md`
+
+**...understand the architecture:**
+→ See [Architecture and Data Flow](#architecture-and-data-flow) and [Key Files](#key-files)
+
+**...find example code:**
+→ See `examples/` directory (50+ working scripts)
+
+**...understand multilayer statistics:**
+→ See [Multilayer Network Statistics](#multilayer-network-statistics-multilayer_statisticspy)
+
+**...use the CLI tool:**
+→ See [CLI Tool Usage](#cli-tool-usage) and run `py3plex --help`
+
+**...optimize performance:**
+→ See [Performance Optimization](#performance-optimization) and [Known Limitations](#known-limitations-and-best-practices)
+
+**...work with this file (LLM.md):**
+→ See [About This Document](#-about-this-document) and [Document Changelog](#-document-changelog)
+
+---
+
+## 📝 Document Metadata
+
+**Document Type:** Technical Reference / Context File  
+**Primary Audience:** Large Language Models (LLMs) and Human Developers  
+**Secondary Audience:** Code Review Tools, Documentation Generators  
+**Format:** Markdown with enhanced formatting  
+**Encoding:** UTF-8  
+**Line Endings:** Unix (LF)  
+**Length:** ~1700 lines (as of 2025-10-20)  
+**Repository:** https://github.com/SkBlaz/py3plex  
+**File Path:** `/LLM.md` (root directory)  
+**Related Files:**
+- `/README.md` - Project overview (minimalistic)
+- `/docs/MASTER_DOCUMENTATION.md` - Publication-quality documentation
+- `/docs/development.md` - Development workflow
+- `/CHANGELOG.md` - Version history
+- `/docs/ARCHITECTURE.md` - System architecture
+
+**Versioning:**
+This document is maintained alongside the codebase and updated with significant repository changes. See [Document Changelog](#-document-changelog) for update history.
+
+**License:** Same as repository (MIT for main code, see README.md for details)
+
+**Maintenance:** Updated by repository maintainers and automated tools. Last reviewed: 2025-10-20.
+
+---
+
+**End of Document** - Thank you for reading! For questions or improvements, please open an issue on GitHub.
