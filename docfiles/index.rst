@@ -184,6 +184,7 @@ Documentation Contents
    tutorials/multilayer_modularity
    tutorials/community_detection
    tutorials/network_decomposition
+   tutorials/incidence_gadget_encoding
    multilayer_centrality_matrix_functions
    random_walks
    supra
@@ -201,6 +202,8 @@ Documentation Contents
    :caption: API Reference
 
    apidocs
+   core
+   community_detection
 
 .. toctree::
    :maxdepth: 2
