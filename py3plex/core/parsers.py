@@ -126,11 +126,15 @@ def parse_matrix_to_nx(file_name: str, directed: bool) -> Union[nx.Graph, nx.DiG
     return (G_final, None)
 
 
-def parse_gpickle(file_name, directed=False, layer_separator=None):
+def parse_gpickle(
+    file_name: str, directed: bool = False, layer_separator: Union[str, None] = None
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     A parser for generic Gpickle as stored by Py3plex.
     Args:
-        A gpickle object
+        file_name: Path to gpickle file
+        directed: Whether to create directed graph
+        layer_separator: Optional separator for layer parsing
     """
 
     logger.info("Parsing gpickle..")
@@ -162,11 +166,14 @@ def parse_gpickle(file_name, directed=False, layer_separator=None):
     return (A, None)
 
 
-def parse_gpickle_biomine(file_name, directed):
+def parse_gpickle_biomine(
+    file_name: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     Gpickle parser for biomine graphs
     Args:
-        Gpickle containing BioMine data
+        file_name: Path to gpickle containing BioMine data
+        directed: Whether to create directed graph
     """
 
     # convert the biomine
@@ -186,11 +193,13 @@ def parse_gpickle_biomine(file_name, directed):
     return (G, None)
 
 
-def parse_detangler_json(file_path):
+def parse_detangler_json(
+    file_path: str
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     Parser for generic Detangler files
     Args:
-        Detangler JSON
+        file_path: Path to Detangler JSON file
     """
 
     if directed:
@@ -221,12 +230,15 @@ def parse_detangler_json(file_path):
     return (G, None)
 
 
-def parse_multi_edgelist(input_name, directed):
+def parse_multi_edgelist(
+    input_name: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     A generic multiedgelist parser
     n l n l w
     Args:
-    A text file containing multiedges
+        input_name: Path to text file containing multiedges
+        directed: Whether to create directed graph
     """
 
     if directed:
@@ -274,11 +286,14 @@ def parse_multi_edgelist(input_name, directed):
     return (G, None)
 
 
-def parse_simple_edgelist(input_name, directed):
+def parse_simple_edgelist(
+    input_name: str, directed: bool
+) -> Tuple[Union[nx.Graph, nx.DiGraph], None]:
     """
     Simple edgelist n n w
     Args:
-        A text file
+        input_name: Path to text file
+        directed: Whether to create directed graph
     """
 
     if directed:
@@ -316,7 +331,9 @@ def parse_simple_edgelist(input_name, directed):
     return (G, None)
 
 
-def parse_edgelist_multi_types(input_name, directed):
+def parse_edgelist_multi_types(
+    input_name: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     if directed:
         G = nx.MultiDiGraph()
 
@@ -341,7 +358,9 @@ def parse_edgelist_multi_types(input_name, directed):
     return (G, None)
 
 
-def parse_spin_edgelist(input_name, directed):
+def parse_spin_edgelist(
+    input_name: str, directed: bool
+) -> Tuple[nx.Graph, None]:
 
     G = nx.Graph()
     with open(input_name) as IN:
@@ -363,9 +382,15 @@ def parse_spin_edgelist(input_name, directed):
     return (G, None)
 
 
-def parse_embedding(input_name):
+def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
     """
     Loader for generic embedding as outputed by GenSim
+    
+    Args:
+        input_name: Path to embedding file
+        
+    Returns:
+        Tuple of (embedding matrix, embedding indices)
     """
 
     embedding_matrix = []
@@ -383,7 +408,9 @@ def parse_embedding(input_name):
     return (embedding_matrix, embedding_indices)
 
 
-def parse_multiedge_tuple_list(network, directed):
+def parse_multiedge_tuple_list(
+    network: list, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     if directed:
         G = nx.MultiDiGraph()
 
@@ -407,7 +434,9 @@ def parse_multiedge_tuple_list(network, directed):
     return (G, None)
 
 
-def parse_multiplex_edges(input_name, directed):
+def parse_multiplex_edges(
+    input_name: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
 
     if directed:
         G = nx.MultiDiGraph()
@@ -439,7 +468,9 @@ def parse_multiplex_edges(input_name, directed):
     return (G, None)
 
 
-def parse_multiplex_folder(input_folder, directed):
+def parse_multiplex_folder(
+    input_folder: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None, pd.DataFrame]:
 
     # 16 17 1377438155 RT -> activity n1 n2 time label
     # 1 RT -> layer name
@@ -509,14 +540,24 @@ def parse_multiplex_folder(input_folder, directed):
 
 # main parser method
 def parse_network(
-    input_name,
-    f_type="gml",
-    directed=False,
-    label_delimiter=None,
-    network_type="multilayer",
-):
+    input_name: Union[str, Any],
+    f_type: str = "gml",
+    directed: bool = False,
+    label_delimiter: Union[str, None] = None,
+    network_type: str = "multilayer",
+) -> Tuple[Any, Any, Any]:
     """
     A wrapper method for available parsers!
+    
+    Args:
+        input_name: Path to network file or network object
+        f_type: Type of file format to parse
+        directed: Whether to create directed graph
+        label_delimiter: Optional delimiter for labels
+        network_type: Type of network (multilayer or multiplex)
+        
+    Returns:
+        Tuple of (parsed_network, labels, time_series)
     """
 
     time_series = None
@@ -575,9 +616,18 @@ def parse_network(
         raise Exception("Please, specify heterogeneous network type.")
 
 
-def load_edge_activity_raw(activity_file, layer_mappings):
+def load_edge_activity_raw(
+    activity_file: str, layer_mappings: dict
+) -> pd.DataFrame:
     """
     Basic parser for loading generic activity files. Here, temporal edges are given as tuples -> this can be easily transformed for example into a pandas dataframe!
+    
+    Args:
+        activity_file: Path to activity file
+        layer_mappings: Dictionary mapping layer names to IDs
+        
+    Returns:
+        DataFrame with edge activity data
     """
 
     time_series_tuples = []
@@ -598,7 +648,9 @@ def load_edge_activity_raw(activity_file, layer_mappings):
     return outframe
 
 
-def load_edge_activity_file(fname, layer_mapping=None):
+def load_edge_activity_file(
+    fname: str, layer_mapping: Union[str, None] = None
+) -> pd.DataFrame:
 
     # Example edge looks like this: 11 11 1375695069 RE
 
@@ -628,7 +680,9 @@ def load_edge_activity_file(fname, layer_mapping=None):
     return outframe
 
 
-def load_temporal_edge_information(input_network, input_type, layer_mapping=None):
+def load_temporal_edge_information(
+    input_network: str, input_type: str, layer_mapping: Union[str, None] = None
+) -> Union[pd.DataFrame, None]:
 
     if input_type == "edge_activity":
         return load_edge_activity_file(input_network, layer_mapping=layer_mapping)
@@ -636,13 +690,16 @@ def load_temporal_edge_information(input_network, input_type, layer_mapping=None
         return None
 
 
-def save_gpickle(input_network, output_file):
+def save_gpickle(input_network: Any, output_file: str) -> None:
     nx_write_gpickle(input_network, output_file)
 
 
 def save_multiedgelist(
-    input_network, output_file, attributes=False, encode_with_ints=False
-):
+    input_network: Any,
+    output_file: str,
+    attributes: bool = False,
+    encode_with_ints: bool = False,
+) -> None:
     """
     Save multiedgelist -- as n1, l1, n2, l2, w
     """
