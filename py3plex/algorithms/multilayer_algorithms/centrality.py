@@ -10,6 +10,7 @@ Date: 2025
 """
 
 from collections import defaultdict
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -33,7 +34,7 @@ class MultilayerCentrality:
     degree-based, eigenvector-based, and path-based measures.
     """
 
-    def __init__(self, network):
+    def __init__(self, network: Any) -> None:
         """
         Initialize the centrality calculator.
 
@@ -45,13 +46,13 @@ class MultilayerCentrality:
         self._layer_matrices = None
         self._node_layer_mapping = None
 
-    def _get_supra_adjacency_matrix(self):
+    def _get_supra_adjacency_matrix(self) -> Any:
         """Get the supra-adjacency matrix."""
         if self._supra_matrix is None:
             self._supra_matrix = self.network.get_supra_adjacency_matrix()
         return self._supra_matrix
 
-    def _get_layer_matrices(self):
+    def _get_layer_matrices(self) -> Dict[str, np.ndarray]:
         """Extract individual layer adjacency matrices."""
         if self._layer_matrices is None:
             self._layer_matrices = {}
@@ -92,7 +93,7 @@ class MultilayerCentrality:
 
         return self._layer_matrices
 
-    def _get_node_layer_mapping(self):
+    def _get_node_layer_mapping(self) -> Tuple[Dict, Dict]:
         """Get mapping between (node, layer) pairs and supra-matrix indices."""
         if self._node_layer_mapping is None:
             mapping = {}
@@ -111,7 +112,12 @@ class MultilayerCentrality:
 
     # ==================== DEGREE/STRENGTH-BASED MEASURES ====================
 
-    def layer_degree_centrality(self, layer=None, weighted=False, direction="out"):
+    def layer_degree_centrality(
+        self,
+        layer: Optional[str] = None,
+        weighted: bool = False,
+        direction: str = "out",
+    ) -> Dict:
         """
         Compute layer-specific degree (or strength) centrality.
 
@@ -181,7 +187,7 @@ class MultilayerCentrality:
 
         return results
 
-    def supra_degree_centrality(self, weighted=False):
+    def supra_degree_centrality(self, weighted: bool = False) -> Dict:
         """
         Compute supra degree/strength centrality (node-layer level).
 
@@ -215,7 +221,7 @@ class MultilayerCentrality:
 
         return results
 
-    def overlapping_degree_centrality(self, weighted=False):
+    def overlapping_degree_centrality(self, weighted: bool = False) -> Dict:
         """
         Compute overlapping degree/strength centrality (node level).
 
@@ -236,7 +242,7 @@ class MultilayerCentrality:
 
         return dict(results)
 
-    def participation_coefficient(self, weighted=False):
+    def participation_coefficient(self, weighted: bool = False) -> Dict:
         """
         Compute participation coefficient across layers.
 
@@ -275,7 +281,9 @@ class MultilayerCentrality:
 
     # ==================== EIGENVECTOR-TYPE MEASURES ====================
 
-    def multiplex_eigenvector_centrality(self, max_iter=1000, tol=1e-6):
+    def multiplex_eigenvector_centrality(
+        self, max_iter: int = 1000, tol: float = 1e-6
+    ) -> Dict:
         """
         Compute multiplex eigenvector centrality (node-layer level).
 
@@ -336,7 +344,9 @@ class MultilayerCentrality:
 
         return results
 
-    def multiplex_eigenvector_versatility(self, max_iter=1000, tol=1e-6):
+    def multiplex_eigenvector_versatility(
+        self, max_iter: int = 1000, tol: float = 1e-6
+    ) -> Dict:
         """
         Compute node-level eigenvector versatility.
 

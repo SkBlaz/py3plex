@@ -10,6 +10,9 @@ import networkx as nx
 # coding=utf-8
 
 
+from typing import Any, Dict, List, Optional, Union
+
+
 class Status:
     """
     To handle several data in one struct.
@@ -105,7 +108,7 @@ __PASS_MAX = -1
 __MIN = 0.0000001
 
 
-def partition_at_level(dendrogram, level):
+def partition_at_level(dendrogram: List[Dict], level: int) -> Dict:
     """Return the partition of the nodes at the given level
 
     A dendrogram is a tree and each level is a partition of the graph nodes.
@@ -151,7 +154,7 @@ def partition_at_level(dendrogram, level):
     return partition
 
 
-def modularity(partition, graph, weight="weight"):
+def modularity(partition: Dict, graph: nx.Graph, weight: str = "weight") -> float:
     """Compute the modularity of a partition of a graph
 
     Parameters
@@ -217,8 +220,12 @@ def modularity(partition, graph, weight="weight"):
 
 
 def best_partition(
-    graph, partition=None, weight="weight", resolution=1.0, randomize=False
-):
+    graph: nx.Graph,
+    partition: Optional[Dict] = None,
+    weight: str = "weight",
+    resolution: float = 1.0,
+    randomize: bool = False,
+) -> Dict:
     """Compute the partition of the graph nodes which maximises the modularity
     (or try..) using the Louvain heuristices
 
@@ -296,8 +303,12 @@ def best_partition(
 
 
 def generate_dendrogram(
-    graph, part_init=None, weight="weight", resolution=1.0, randomize=False
-):
+    graph: nx.Graph,
+    part_init: Optional[Dict] = None,
+    weight: str = "weight",
+    resolution: float = 1.0,
+    randomize: bool = False,
+) -> List[Dict]:
     """Find communities in the graph and return the associated dendrogram
 
     A dendrogram is a tree and each level is a partition of the graph nodes.
@@ -393,7 +404,9 @@ def generate_dendrogram(
     return status_list[:]
 
 
-def induced_graph(partition, graph, weight="weight"):
+def induced_graph(
+    partition: Dict, graph: nx.Graph, weight: str = "weight"
+) -> nx.Graph:
     """Produce the graph where nodes are the communities
 
     there is a link of weight w between communities if the sum of the weights
