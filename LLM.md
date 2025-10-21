@@ -9,6 +9,25 @@
 
 This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
 
+### 2025-10-21: Issue #12 - Analysis Recipes & Workflows Documentation
+**Changes Made:**
+- Added comprehensive `docfiles/recipes.rst` with 17 practical recipes covering common analysis workflows
+- Integrated recipes documentation into Sphinx documentation structure (added to User Guide toctree)
+- Created complete, ready-to-use solutions for real-world tasks including:
+  - Data import & setup (3 recipes)
+  - Network exploration & analysis (3 recipes)
+  - Centrality & node importance (2 recipes)
+  - Community detection (2 recipes)
+  - Visualization (2 recipes)
+  - Advanced workflows (3 recipes)
+  - Performance & optimization (2 recipes)
+- Added tips & best practices section
+- Added common issues & solutions troubleshooting guide
+- All recipes include complete code examples with explanations
+- Documentation builds successfully with recipes integrated
+
+**Purpose:** Provide practical, copy-paste-ready code for common analysis tasks, making py3plex more accessible to new users and accelerating workflow development.
+
 ### 2025-10-20: Issue #11 - LLM.md Improvements
 **Changes Made:**
 - Added comprehensive Table of Contents for easier navigation
@@ -313,7 +332,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 - Consider adding more interactive Jupyter notebook examples
 - Potential for video tutorials demonstrating visualization features
 - Could expand troubleshooting sections based on user feedback
-- Consider adding a "recipes" section for common analysis workflows
+- ✅ **COMPLETED (2025-10-21)**: Added comprehensive "recipes" section for common analysis workflows
 - Increase documentation coverage beyond 30% (target: 50%+)
 
 ## Recent Documentation Review (2025-10-20)
@@ -1241,6 +1260,7 @@ Primary documentation in ``docfiles/`` directory (33 ReStructuredText files, com
 - **tutorials/community_detection.rst**: Community detection algorithms tutorial
 - **tutorials/network_decomposition.rst**: Network decomposition and feature extraction tutorial
 - **tutorials/incidence_gadget_encoding.rst**: Incidence gadget encoding for multiplex networks
+- **recipes.rst**: **NEW (2025-10-21)** - 17 practical recipes for common analysis workflows with complete code examples
 
 **API Documentation:**
 - **apidocs.rst**: API documentation entry point

@@ -171,6 +171,7 @@ Documentation Contents
    basic_usage_analysis
    basic_usage_analysis_multiplex
    multilayer_concepts
+   recipes
    visualization
    algorithm_guide
    performance
