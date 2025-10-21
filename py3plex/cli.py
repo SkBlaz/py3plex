@@ -8,6 +8,7 @@ with full coverage of main algorithms.
 
 import argparse
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -16,6 +17,10 @@ import networkx as nx
 
 from py3plex import __version__
 from py3plex.core import multinet
+from py3plex.logging_config import get_logger
+
+# Get logger for CLI module
+logger = get_logger(__name__)
 
 
 def _load_network(file_path: str) -> "multinet.multi_layer_network":
@@ -299,7 +304,7 @@ def cmd_create(args: argparse.Namespace) -> int:
             import numpy as np
             np.random.seed(args.seed)
 
-        print(f"Creating {args.type} multilayer network with {args.nodes} nodes and {args.layers} layers...")
+        logger.info(f"Creating {args.type} multilayer network with {args.nodes} nodes and {args.layers} layers...")
 
         network = multinet.multi_layer_network()
 
@@ -394,20 +399,20 @@ def cmd_create(args: argparse.Namespace) -> int:
             elif output_path.suffix in [".edgelist", ".txt"]:
                 network.save_network(str(output_path), output_type="edgelist")
             else:
-                print(f"Warning: Unsupported format '{output_path.suffix}', using GraphML")
+                logger.warning(f"Unsupported format '{output_path.suffix}', using GraphML")
                 nx.write_graphml(network.core_network, str(output_path.with_suffix(".graphml")))
         except Exception as e:
-            print(f"Warning: Error saving with native format, trying alternate method: {e}")
+            logger.warning(f"Error saving with native format, trying alternate method: {e}")
             nx.write_graphml(network.core_network, str(output_path))
 
-        print(f"Network saved to {args.output}")
-        print(f"  Nodes: {network.core_network.number_of_nodes()}")
-        print(f"  Edges: {network.core_network.number_of_edges()}")
-        print(f"  Layers: {len(network.get_layers())}")
+        logger.info(f"Network saved to {args.output}")
+        logger.info(f"  Nodes: {network.core_network.number_of_nodes()}")
+        logger.info(f"  Edges: {network.core_network.number_of_edges()}")
+        logger.info(f"  Layers: {len(network.get_layers())}")
 
         return 0
     except Exception as e:
-        print(f"Error creating network: {e}", file=sys.stderr)
+        logger.error(f"Error creating network: {e}")
         return 1
 
 
@@ -421,7 +426,7 @@ def cmd_load(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        print(f"Loading network from {args.input}...")
+        logger.info(f"Loading network from {args.input}...")
         network = _load_network(args.input)
 
         output_data = {}
@@ -435,11 +440,11 @@ def cmd_load(args: argparse.Namespace) -> int:
             }
             output_data["info"] = info
 
-            print("\nNetwork Information:")
-            print(f"  Nodes: {info['nodes']}")
-            print(f"  Edges: {info['edges']}")
-            print(f"  Layers: {len(info['layers'])} ({', '.join(info['layers'])})")
-            print(f"  Directed: {info['directed']}")
+            logger.info("\nNetwork Information:")
+            logger.info(f"  Nodes: {info['nodes']}")
+            logger.info(f"  Edges: {info['edges']}")
+            logger.info(f"  Layers: {len(info['layers'])} ({', '.join(info['layers'])})")
+            logger.info(f"  Directed: {info['directed']}")
 
         if args.stats:
             from py3plex.algorithms.statistics import multilayer_statistics as mls
@@ -464,27 +469,27 @@ def cmd_load(args: argparse.Namespace) -> int:
                 stats["max_degree"] = int(max(degrees.values())) if degrees else 0
 
             except Exception as e:
-                print(f"Warning: Could not compute all statistics: {e}")
+                logger.warning(f"Could not compute all statistics: {e}")
 
             output_data["statistics"] = stats
 
-            print("\nBasic Statistics:")
+            logger.info("\nBasic Statistics:")
             if "layer_densities" in stats:
-                print("  Layer Densities:")
+                logger.info("  Layer Densities:")
                 for layer, density in stats["layer_densities"].items():
-                    print(f"    {layer}: {density:.4f}")
-            print(f"  Avg Clustering: {stats.get('clustering_coefficient', 0):.4f}")
-            print(f"  Avg Degree: {stats.get('avg_degree', 0):.2f}")
-            print(f"  Max Degree: {stats.get('max_degree', 0)}")
+                    logger.info(f"    {layer}: {density:.4f}")
+            logger.info(f"  Avg Clustering: {stats.get('clustering_coefficient', 0):.4f}")
+            logger.info(f"  Avg Degree: {stats.get('avg_degree', 0):.2f}")
+            logger.info(f"  Max Degree: {stats.get('max_degree', 0)}")
 
         if args.output:
             with open(args.output, "w") as f:
                 json.dump(output_data, f, indent=2)
-            print(f"\nOutput saved to {args.output}")
+            logger.info(f"\nOutput saved to {args.output}")
 
         return 0
     except Exception as e:
-        print(f"Error loading network: {e}", file=sys.stderr)
+        logger.error(f"Error loading network: {e}")
         return 1
 
 
@@ -498,10 +503,10 @@ def cmd_community(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        print(f"Loading network from {args.input}...")
+        logger.info(f"Loading network from {args.input}...")
         network = _load_network(args.input)
 
-        print(f"Detecting communities using {args.algorithm}...")
+        logger.info(f"Detecting communities using {args.algorithm}...")
 
         communities = {}
 
@@ -520,8 +525,8 @@ def cmd_community(args: argparse.Namespace) -> int:
                 partition = community_wrapper.infomap_communities(network)
                 communities = {str(node): int(comm) for node, comm in partition.items()}
             except Exception as e:
-                print(f"Error: Infomap not available: {e}", file=sys.stderr)
-                print("Please use 'louvain' or 'label_prop' instead.", file=sys.stderr)
+                logger.error(f"Infomap not available: {e}")
+                logger.error("Please use 'louvain' or 'label_prop' instead.")
                 return 1
 
         elif args.algorithm == "label_prop":
@@ -536,14 +541,14 @@ def cmd_community(args: argparse.Namespace) -> int:
 
         # Count communities
         num_communities = len(set(communities.values()))
-        print(f"Found {num_communities} communities")
+        logger.info(f"Found {num_communities} communities")
 
         # Community size distribution
         comm_sizes = {}
         for comm_id in communities.values():
             comm_sizes[comm_id] = comm_sizes.get(comm_id, 0) + 1
 
-        print(f"Community sizes: min={min(comm_sizes.values())}, max={max(comm_sizes.values())}, avg={sum(comm_sizes.values())/len(comm_sizes):.1f}")
+        logger.info(f"Community sizes: min={min(comm_sizes.values())}, max={max(comm_sizes.values())}, avg={sum(comm_sizes.values())/len(comm_sizes):.1f}")
 
         output_data = {
             "algorithm": args.algorithm,
@@ -555,18 +560,18 @@ def cmd_community(args: argparse.Namespace) -> int:
         if args.output:
             with open(args.output, "w") as f:
                 json.dump(output_data, f, indent=2)
-            print(f"Communities saved to {args.output}")
+            logger.info(f"Communities saved to {args.output}")
         else:
             # Print sample
-            print("\nSample community assignments:")
+            logger.info("\nSample community assignments:")
             for i, (node, comm) in enumerate(list(communities.items())[:10]):
-                print(f"  {node}: Community {comm}")
+                logger.info(f"  {node}: Community {comm}")
             if len(communities) > 10:
-                print(f"  ... and {len(communities) - 10} more")
+                logger.info(f"  ... and {len(communities) - 10} more")
 
         return 0
     except Exception as e:
-        print(f"Error detecting communities: {e}", file=sys.stderr)
+        logger.error(f"Error detecting communities: {e}")
         import traceback
         traceback.print_exc()
         return 1
@@ -582,10 +587,10 @@ def cmd_centrality(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        print(f"Loading network from {args.input}...")
+        logger.info(f"Loading network from {args.input}...")
         network = _load_network(args.input)
 
-        print(f"Computing {args.measure} centrality...")
+        logger.info(f"Computing {args.measure} centrality...")
 
         G = network.core_network.to_undirected() if network.directed else network.core_network
 
@@ -599,7 +604,7 @@ def cmd_centrality(args: argparse.Namespace) -> int:
             try:
                 centrality = nx.eigenvector_centrality(G, max_iter=1000)
             except:
-                print("Warning: Eigenvector centrality failed, using degree instead")
+                logger.warning("Eigenvector centrality failed, using degree instead")
                 centrality = dict(G.degree())
         elif args.measure == "pagerank":
             centrality = nx.pagerank(G)
@@ -610,9 +615,9 @@ def cmd_centrality(args: argparse.Namespace) -> int:
         # Sort by centrality
         sorted_nodes = sorted(centrality_data.items(), key=lambda x: x[1], reverse=True)
 
-        print(f"\nTop {min(args.top or 10, len(sorted_nodes))} nodes by {args.measure} centrality:")
+        logger.info(f"\nTop {min(args.top or 10, len(sorted_nodes))} nodes by {args.measure} centrality:")
         for node, score in sorted_nodes[: args.top or 10]:
-            print(f"  {node}: {score:.6f}")
+            logger.info(f"  {node}: {score:.6f}")
 
         output_data = {
             "measure": args.measure,
@@ -626,11 +631,11 @@ def cmd_centrality(args: argparse.Namespace) -> int:
         if args.output:
             with open(args.output, "w") as f:
                 json.dump(output_data, f, indent=2)
-            print(f"\nCentrality scores saved to {args.output}")
+            logger.info(f"\nCentrality scores saved to {args.output}")
 
         return 0
     except Exception as e:
-        print(f"Error computing centrality: {e}", file=sys.stderr)
+        logger.error(f"Error computing centrality: {e}")
         import traceback
         traceback.print_exc()
         return 1
@@ -646,7 +651,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        print(f"Loading network from {args.input}...")
+        logger.info(f"Loading network from {args.input}...")
         network = _load_network(args.input)
 
         from py3plex.algorithms.statistics import multilayer_statistics as mls
@@ -654,7 +659,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
         stats = {}
         layers = network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers())
 
-        print(f"Computing multilayer statistics...")
+        logger.info(f"Computing multilayer statistics...")
 
         if args.measure in ["all", "density", "layer_density"] and layers:
             stats["layer_densities"] = {}
@@ -663,14 +668,14 @@ def cmd_stats(args: argparse.Namespace) -> int:
                     density = mls.layer_density(network, layer)
                     stats["layer_densities"][layer] = float(density)
                 except Exception as e:
-                    print(f"Warning: Could not compute density for layer {layer}: {e}")
+                    logger.warning(f"Could not compute density for layer {layer}: {e}")
 
         if args.measure in ["all", "clustering"]:
             try:
                 G_undirected = network.core_network.to_undirected()
                 stats["clustering_coefficient"] = float(nx.average_clustering(G_undirected))
             except Exception as e:
-                print(f"Warning: Could not compute clustering: {e}")
+                logger.warning(f"Could not compute clustering: {e}")
 
         if args.measure in ["all", "node_activity"]:
             try:
@@ -683,7 +688,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
                     activity = mls.node_activity(network, base_node)
                     stats["node_activity_sample"][str(node)] = float(activity)
             except Exception as e:
-                print(f"Warning: Could not compute node activity: {e}")
+                logger.warning(f"Could not compute node activity: {e}")
 
         if args.measure in ["all", "versatility"]:
             try:
@@ -692,7 +697,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
                 sorted_vers = sorted(versatility.items(), key=lambda x: x[1], reverse=True)[:10]
                 stats["versatility_top10"] = {str(k): float(v) for k, v in sorted_vers}
             except Exception as e:
-                print(f"Warning: Could not compute versatility: {e}")
+                logger.warning(f"Could not compute versatility: {e}")
 
         if args.measure in ["all", "edge_overlap"] and len(layers) >= 2:
             try:
@@ -702,41 +707,41 @@ def cmd_stats(args: argparse.Namespace) -> int:
                         overlap = mls.edge_overlap(network, layer_i, layer_j)
                         stats["edge_overlap"][f"{layer_i}-{layer_j}"] = float(overlap)
             except Exception as e:
-                print(f"Warning: Could not compute edge overlap: {e}")
+                logger.warning(f"Could not compute edge overlap: {e}")
 
         # Print results
-        print("\nMultilayer Network Statistics:")
+        logger.info("\nMultilayer Network Statistics:")
         if "layer_densities" in stats:
-            print("  Layer Densities:")
+            logger.info("  Layer Densities:")
             for layer, density in stats["layer_densities"].items():
-                print(f"    {layer}: {density:.4f}")
+                logger.info(f"    {layer}: {density:.4f}")
 
         if "clustering_coefficient" in stats:
-            print(f"  Clustering Coefficient: {stats['clustering_coefficient']:.4f}")
+            logger.info(f"  Clustering Coefficient: {stats['clustering_coefficient']:.4f}")
 
         if "node_activity_sample" in stats:
-            print(f"  Node Activity (sample):")
+            logger.info(f"  Node Activity (sample):")
             for node, activity in list(stats["node_activity_sample"].items())[:5]:
-                print(f"    {node}: {activity:.4f}")
+                logger.info(f"    {node}: {activity:.4f}")
 
         if "versatility_top10" in stats:
-            print(f"  Versatility Centrality (top 10):")
+            logger.info(f"  Versatility Centrality (top 10):")
             for node, score in list(stats["versatility_top10"].items())[:5]:
-                print(f"    {node}: {score:.4f}")
+                logger.info(f"    {node}: {score:.4f}")
 
         if "edge_overlap" in stats:
-            print(f"  Edge Overlap:")
+            logger.info(f"  Edge Overlap:")
             for pair, overlap in stats["edge_overlap"].items():
-                print(f"    {pair}: {overlap:.4f}")
+                logger.info(f"    {pair}: {overlap:.4f}")
 
         if args.output:
             with open(args.output, "w") as f:
                 json.dump(stats, f, indent=2)
-            print(f"\nStatistics saved to {args.output}")
+            logger.info(f"\nStatistics saved to {args.output}")
 
         return 0
     except Exception as e:
-        print(f"Error computing statistics: {e}", file=sys.stderr)
+        logger.error(f"Error computing statistics: {e}")
         import traceback
         traceback.print_exc()
         return 1
@@ -752,10 +757,10 @@ def cmd_visualize(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        print(f"Loading network from {args.input}...")
+        logger.info(f"Loading network from {args.input}...")
         network = _load_network(args.input)
 
-        print(f"Generating visualization with {args.layout} layout...")
+        logger.info(f"Generating visualization with {args.layout} layout...")
 
         import matplotlib
         matplotlib.use("Agg")  # Non-interactive backend
@@ -793,10 +798,10 @@ def cmd_visualize(args: argparse.Namespace) -> int:
         plt.savefig(args.output, dpi=150, bbox_inches="tight")
         plt.close()
 
-        print(f"Visualization saved to {args.output}")
+        logger.info(f"Visualization saved to {args.output}")
         return 0
     except Exception as e:
-        print(f"Error creating visualization: {e}", file=sys.stderr)
+        logger.error(f"Error creating visualization: {e}")
         import traceback
         traceback.print_exc()
         return 1
@@ -812,10 +817,10 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        print(f"Loading network from {args.input}...")
+        logger.info(f"Loading network from {args.input}...")
         network = _load_network(args.input)
 
-        print(f"Aggregating layers using {args.method} method...")
+        logger.info(f"Aggregating layers using {args.method} method...")
 
         # Aggregate the network
         aggregated = network.aggregate_layers(method=args.method)
@@ -829,16 +834,16 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
         elif output_path.suffix == ".gpickle":
             nx.write_gpickle(aggregated, str(output_path))
         else:
-            print(f"Warning: Unsupported format, using GraphML")
+            logger.warning(f"Unsupported format, using GraphML")
             nx.write_graphml(aggregated, str(output_path.with_suffix(".graphml")))
 
-        print(f"Aggregated network saved to {args.output}")
-        print(f"  Nodes: {aggregated.number_of_nodes()}")
-        print(f"  Edges: {aggregated.number_of_edges()}")
+        logger.info(f"Aggregated network saved to {args.output}")
+        logger.info(f"  Nodes: {aggregated.number_of_nodes()}")
+        logger.info(f"  Edges: {aggregated.number_of_edges()}")
 
         return 0
     except Exception as e:
-        print(f"Error aggregating network: {e}", file=sys.stderr)
+        logger.error(f"Error aggregating network: {e}")
         import traceback
         traceback.print_exc()
         return 1
@@ -854,11 +859,11 @@ def cmd_convert(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        print(f"Loading network from {args.input}...")
+        logger.info(f"Loading network from {args.input}...")
         network = _load_network(args.input)
 
         output_path = Path(args.output)
-        print(f"Converting to {output_path.suffix} format...")
+        logger.info(f"Converting to {output_path.suffix} format...")
 
         if output_path.suffix == ".graphml":
             nx.write_graphml(network.core_network, str(output_path))
@@ -880,14 +885,14 @@ def cmd_convert(args: argparse.Namespace) -> int:
             with open(output_path, "w") as f:
                 json.dump(data, f, indent=2)
         else:
-            print(f"Error: Unsupported output format '{output_path.suffix}'", file=sys.stderr)
-            print("Supported formats: .graphml, .gexf, .gpickle, .json", file=sys.stderr)
+            logger.error(f"Unsupported output format '{output_path.suffix}'")
+            logger.error("Supported formats: .graphml, .gexf, .gpickle, .json")
             return 1
 
-        print(f"Network converted and saved to {args.output}")
+        logger.info(f"Network converted and saved to {args.output}")
         return 0
     except Exception as e:
-        print(f"Error converting network: {e}", file=sys.stderr)
+        logger.error(f"Error converting network: {e}")
         return 1
 
 
@@ -907,6 +912,9 @@ def main(argv=None) -> int:
         parser.print_help()
         return 0
 
+    # Configure logging level based on verbosity (if added)
+    # This allows for future --verbose/-v and --quiet/-q flags
+    
     # Dispatch to command handlers
     command_handlers = {
         "create": cmd_create,
@@ -923,7 +931,7 @@ def main(argv=None) -> int:
     if handler:
         return handler(args)
     else:
-        print(f"Error: Unknown command '{args.command}'", file=sys.stderr)
+        logger.error(f"Unknown command '{args.command}'")
         return 1
 
 
