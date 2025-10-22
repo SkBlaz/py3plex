@@ -96,7 +96,7 @@ class MultiXRank:
         if not sp.issparse(supra_adjacency):
             supra_adjacency = sp.csr_matrix(supra_adjacency)
         else:
-            supra_adjacency = supra_adjacency.tocsr()  # type: ignore[union-attr]
+            supra_adjacency = supra_adjacency.tocsr()
 
         if supra_adjacency.shape[0] != supra_adjacency.shape[1]:
             raise ValueError(f"Supra-adjacency matrix for '{name}' must be square")
@@ -138,7 +138,7 @@ class MultiXRank:
         if not sp.issparse(bipartite_matrix):
             bipartite_matrix = sp.csr_matrix(bipartite_matrix)
         else:
-            bipartite_matrix = bipartite_matrix.tocsr()  # type: ignore[union-attr]
+            bipartite_matrix = bipartite_matrix.tocsr()
 
         # Verify dimensions match
         expected_rows = self._multiplex_dims[multiplex_from]

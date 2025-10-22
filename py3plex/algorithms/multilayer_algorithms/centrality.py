@@ -43,8 +43,12 @@ class MultilayerCentrality:
         """
         self.network = network
         self._supra_matrix = None
-        self._layer_matrices = None
-        self._node_layer_mapping = None
+        self._layer_matrices: Optional[Dict[str, np.ndarray]] = None
+        self._node_layer_mapping: Optional[Dict[Any, int]] = None
+        self._reverse_node_layer_mapping: Optional[Dict[int, Any]] = None
+        self._nodes: Optional[List[str]] = None
+        self._layers: Optional[List[str]] = None
+        self._node_to_idx: Optional[Dict[str, int]] = None
 
     def _get_supra_adjacency_matrix(self) -> Any:
         """Get the supra-adjacency matrix."""
@@ -65,15 +69,15 @@ class MultilayerCentrality:
                 layers.add(layer)
                 nodes.add(node_id)
 
-            layers = sorted(layers)
-            nodes = sorted(nodes)
+            sorted_layers = sorted(layers)
+            sorted_nodes = sorted(nodes)
 
             # Create mapping from node to index
-            node_to_idx = {node: i for i, node in enumerate(nodes)}
+            node_to_idx = {node: i for i, node in enumerate(sorted_nodes)}
 
             # Build layer matrices
-            for layer in layers:
-                n_nodes = len(nodes)
+            for layer in sorted_layers:
+                n_nodes = len(sorted_nodes)
                 matrix = np.zeros((n_nodes, n_nodes))
 
                 for edge in self.network.get_edges(data=True):
@@ -87,8 +91,8 @@ class MultilayerCentrality:
 
                 self._layer_matrices[layer] = matrix
 
-            self._nodes = nodes
-            self._layers = layers
+            self._nodes = sorted_nodes
+            self._layers = sorted_layers
             self._node_to_idx = node_to_idx
 
         return self._layer_matrices
@@ -117,7 +121,7 @@ class MultilayerCentrality:
         layer: Optional[str] = None,
         weighted: bool = False,
         direction: str = "out",
-    ) -> Dict:
+    ) -> Dict[Union[str, Tuple[str, str]], float]:
         """
         Compute layer-specific degree (or strength) centrality.
 
@@ -145,7 +149,7 @@ class MultilayerCentrality:
         else:
             layers_to_process = self._layers
 
-        results = {}
+        results: Dict[Union[str, Tuple[str, str]], float] = {}
 
         for layer_name in layers_to_process:
             if layer_name not in layer_matrices:
@@ -235,10 +239,15 @@ class MultilayerCentrality:
             dict: {node: centrality_value}
         """
         layer_centralities = self.layer_degree_centrality(weighted=weighted)
-        results = defaultdict(float)
+        results: Dict[str, float] = defaultdict(float)
 
-        for (node, _layer), centrality in layer_centralities.items():
-            results[node] += centrality
+        for key, centrality in layer_centralities.items():
+            if isinstance(key, tuple):
+                node, _layer = key
+                results[node] += centrality
+            else:
+                # Shouldn't happen when layer=None, but handle gracefully
+                results[str(key)] += centrality
 
         return dict(results)
 
@@ -360,7 +369,7 @@ class MultilayerCentrality:
             dict: {node: versatility_value}
         """
         node_layer_centralities = self.multiplex_eigenvector_centrality(max_iter, tol)
-        results = defaultdict(float)
+        results: Dict[str, float] = defaultdict(float)
 
         for (node, _layer), centrality in node_layer_centralities.items():
             results[node] += centrality
