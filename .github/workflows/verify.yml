@@ -48,8 +48,14 @@ jobs:
           echo "🔍 Running CrossHair formal verification..."
           # Run CrossHair with per-path timeout of 20 seconds
           # Focus on modules with contracts
+          echo "Verifying aggregation.py..."
           crosshair check py3plex/multinet/aggregation.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          echo "Verifying multinet.py..."
           crosshair check py3plex/core/multinet.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          echo "Verifying multilayer_statistics.py..."
+          crosshair check py3plex/algorithms/statistics/multilayer_statistics.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          echo "Verifying converters.py..."
+          crosshair check py3plex/core/converters.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "✅ Formal verification completed"
         timeout-minutes: 15
       
