@@ -5,6 +5,26 @@ import itertools
 import networkx as nx
 import numpy as np
 
+# Optional formal verification support
+try:
+    from icontract import require, ensure, invariant
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def invariant(*args, **kwargs):
+        def decorator(cls):
+            return cls
+        return decorator
+    ICONTRACT_AVAILABLE = False
+
 from py3plex.logging_config import get_logger
 
 from . import converters, parsers
@@ -527,6 +547,10 @@ class multi_layer_network:
         tmp_net.core_network = subnetwork
         return tmp_net
 
+    @require(lambda self: self.core_network is not None, "core_network must be initialized")
+    @require(lambda metric: metric in {"count", "mean", "max", "sum"}, "metric must be valid aggregation method")
+    @ensure(lambda result: result is not None, "result must not be None")
+    @ensure(lambda result: isinstance(result, (nx.Graph, nx.DiGraph)), "result must be a NetworkX graph")
     def aggregate_edges(self, metric="count", normalize_by="degree"):
         """Edge aggregation method
 
