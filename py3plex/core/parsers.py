@@ -16,9 +16,30 @@ from py3plex.logging_config import get_logger
 from .nx_compat import nx_from_scipy_sparse_matrix, nx_read_gpickle, nx_write_gpickle
 from .supporting import add_mpx_edges
 
+# Optional formal verification support
+try:
+    from icontract import require, ensure
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    ICONTRACT_AVAILABLE = False
+
 logger = get_logger(__name__)
 
 
+@require(lambda file_name: isinstance(file_name, str) and len(file_name) > 0, 
+         "file_name must be a non-empty string")
+@ensure(lambda result: result[0] is not None, "result graph must not be None")
+@ensure(lambda result: isinstance(result[0], (nx.MultiGraph, nx.MultiDiGraph)), 
+        "result must be a MultiGraph or MultiDiGraph")
 def parse_gml(
     file_name: str, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
@@ -31,6 +52,11 @@ def parse_gml(
 
     Returns:
         Tuple of (multigraph, possible labels)
+    
+    Contracts:
+        - Precondition: file_name must be a non-empty string
+        - Postcondition: result graph is not None
+        - Postcondition: result is a MultiGraph or MultiDiGraph
     """
 
     H = nx.read_gml(file_name)
@@ -59,6 +85,9 @@ def parse_gml(
     return (A, None)
 
 
+@require(lambda nx_object: nx_object is not None, "nx_object must not be None")
+@require(lambda nx_object: isinstance(nx_object, nx.Graph), "nx_object must be a NetworkX graph")
+@ensure(lambda result: result[0] is not None, "result graph must not be None")
 def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
     """
     Core parser for networkx objects.
@@ -69,11 +98,19 @@ def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
 
     Returns:
         Tuple of (graph, None)
+    
+    Contracts:
+        - Precondition: nx_object must not be None
+        - Precondition: nx_object must be a NetworkX graph
+        - Postcondition: result graph is not None
     """
 
     return (nx_object, None)
 
 
+@require(lambda file_name: isinstance(file_name, str) and len(file_name) > 0, 
+         "file_name must be a non-empty string")
+@ensure(lambda result: result[0] is not None, "network must not be None")
 def parse_matrix(file_name: str, directed: bool) -> Tuple[Any, Any]:
     """
     Parser for matrices.
@@ -84,6 +121,10 @@ def parse_matrix(file_name: str, directed: bool) -> Tuple[Any, Any]:
 
     Returns:
         Tuple of (network, group) from the .mat file
+    
+    Contracts:
+        - Precondition: file_name must be a non-empty string
+        - Postcondition: network must not be None
     """
 
     mat = scipy.io.loadmat(file_name)
@@ -126,15 +167,26 @@ def parse_matrix_to_nx(file_name: str, directed: bool) -> Union[nx.Graph, nx.DiG
     return (G_final, None)
 
 
+@require(lambda file_name: isinstance(file_name, str) and len(file_name) > 0, 
+         "file_name must be a non-empty string")
+@ensure(lambda result: result[0] is not None, "result graph must not be None")
+@ensure(lambda result: isinstance(result[0], (nx.MultiGraph, nx.MultiDiGraph)), 
+        "result must be a MultiGraph or MultiDiGraph")
 def parse_gpickle(
     file_name: str, directed: bool = False, layer_separator: Union[str, None] = None
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     A parser for generic Gpickle as stored by Py3plex.
+    
     Args:
         file_name: Path to gpickle file
         directed: Whether to create directed graph
         layer_separator: Optional separator for layer parsing
+    
+    Contracts:
+        - Precondition: file_name must be a non-empty string
+        - Postcondition: result graph is not None
+        - Postcondition: result is a MultiGraph or MultiDiGraph
     """
 
     logger.info("Parsing gpickle..")

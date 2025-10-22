@@ -6,6 +6,22 @@ from typing import Any, Dict, Optional
 import networkx as nx
 import numpy as np
 
+# Optional formal verification support
+try:
+    from icontract import require, ensure
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    ICONTRACT_AVAILABLE = False
+
 from py3plex.core.nx_compat import nx_info
 
 from ..logging_config import get_logger
@@ -20,6 +36,14 @@ except ImportError:
     forceImport = False
 
 
+@require(lambda g: g is not None, "graph must not be None")
+@require(lambda g: isinstance(g, nx.Graph), "g must be a NetworkX graph")
+@require(lambda g: g.number_of_nodes() > 0, "graph must have at least one node")
+@require(lambda gravity: gravity >= 0, "gravity must be non-negative")
+@require(lambda scalingRatio: scalingRatio > 0, "scalingRatio must be positive")
+@ensure(lambda result: isinstance(result, dict), "result must be a dictionary")
+@ensure(lambda g, result: len(result) == g.number_of_nodes(), 
+        "result must have positions for all nodes")
 def compute_force_directed_layout(
     g: nx.Graph,
     layout_parameters: Optional[Dict[str, Any]] = None,
@@ -39,11 +63,11 @@ def compute_force_directed_layout(
         g: NetworkX graph to layout
         layout_parameters: Optional parameters to pass to layout algorithm
         verbose: Whether to print progress information
-        gravity: Attraction force towards the center
+        gravity: Attraction force towards the center (must be non-negative)
         strongGravityMode: Use strong gravity mode
         barnesHutTheta: Barnes-Hut approximation parameter
         edgeWeightInfluence: Influence of edge weights on layout
-        scalingRatio: Scaling factor for the layout
+        scalingRatio: Scaling factor for the layout (must be positive)
         forceImport: Whether to use ForceAtlas2 (if available)
         seed: Random seed for reproducibility in fallback spring layout
 
@@ -53,6 +77,14 @@ def compute_force_directed_layout(
     Note:
         For large networks (>1000 nodes), this may be slow. Consider using
         faster layouts (circular, random, spectral) or matrix visualization.
+    
+    Contracts:
+        - Precondition: graph must not be None and be a NetworkX graph
+        - Precondition: graph must have at least one node
+        - Precondition: gravity must be non-negative
+        - Precondition: scalingRatio must be positive
+        - Postcondition: result is a dictionary
+        - Postcondition: result has positions for all nodes
     """
 
     num_nodes = len(g.nodes())
@@ -136,6 +168,12 @@ def compute_force_directed_layout(
     return result
 
 
+@require(lambda g: g is not None, "graph must not be None")
+@require(lambda g: isinstance(g, nx.Graph), "g must be a NetworkX graph")
+@require(lambda g: g.number_of_nodes() > 0, "graph must have at least one node")
+@ensure(lambda result: isinstance(result, dict), "result must be a dictionary")
+@ensure(lambda g, result: len(result) == g.number_of_nodes(), 
+        "result must have positions for all nodes")
 def compute_random_layout(
     g: nx.Graph, seed: Optional[int] = None
 ) -> Dict[Any, np.ndarray]:
@@ -148,6 +186,12 @@ def compute_random_layout(
 
     Returns:
         Dictionary mapping nodes to 2D positions
+    
+    Contracts:
+        - Precondition: graph must not be None and be a NetworkX graph
+        - Precondition: graph must have at least one node
+        - Postcondition: result is a dictionary
+        - Postcondition: result has positions for all nodes
     """
     from py3plex.utils import get_rng
 

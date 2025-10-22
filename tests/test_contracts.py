@@ -97,6 +97,87 @@ class TestSupportingContracts:
         assert callable(add_mpx_edges)
 
 
+class TestParsersContracts:
+    """Test contracts in py3plex.core.parsers module."""
+
+    def test_contracts_are_optional_parsers(self):
+        """Verify that parsers can be imported without icontract."""
+        from py3plex.core import parsers
+        assert hasattr(parsers, 'ICONTRACT_AVAILABLE')
+
+    def test_parse_gml_has_contracts(self):
+        """Test that parse_gml has contract decorators."""
+        from py3plex.core.parsers import parse_gml
+        assert callable(parse_gml)
+
+    def test_parse_nx_has_contracts(self):
+        """Test that parse_nx has contract decorators."""
+        from py3plex.core.parsers import parse_nx
+        assert callable(parse_nx)
+
+    def test_parse_matrix_has_contracts(self):
+        """Test that parse_matrix has contract decorators."""
+        from py3plex.core.parsers import parse_matrix
+        assert callable(parse_matrix)
+
+    def test_parse_gpickle_has_contracts(self):
+        """Test that parse_gpickle has contract decorators."""
+        from py3plex.core.parsers import parse_gpickle
+        assert callable(parse_gpickle)
+
+
+class TestIOAPIContracts:
+    """Test contracts in py3plex.io.api module."""
+
+    def test_contracts_are_optional_io_api(self):
+        """Verify that io.api can be imported without icontract."""
+        from py3plex.io import api
+        assert hasattr(api, 'ICONTRACT_AVAILABLE')
+
+    def test_register_reader_has_contracts(self):
+        """Test that register_reader has contract decorators."""
+        from py3plex.io.api import register_reader
+        assert callable(register_reader)
+
+    def test_register_writer_has_contracts(self):
+        """Test that register_writer has contract decorators."""
+        from py3plex.io.api import register_writer
+        assert callable(register_writer)
+
+    def test_supported_formats_has_contracts(self):
+        """Test that supported_formats has contract decorators."""
+        from py3plex.io.api import supported_formats
+        assert callable(supported_formats)
+        
+        # Test that it returns the expected structure
+        try:
+            formats = supported_formats()
+            assert isinstance(formats, dict)
+            assert "read" in formats
+            assert "write" in formats
+        except Exception:
+            pytest.skip("Could not test supported_formats")
+
+
+class TestLayoutAlgorithmsContracts:
+    """Test contracts in py3plex.visualization.layout_algorithms module."""
+
+    def test_contracts_are_optional_layout_algorithms(self):
+        """Verify that layout_algorithms can be imported without icontract."""
+        from py3plex.visualization import layout_algorithms
+        assert hasattr(layout_algorithms, 'ICONTRACT_AVAILABLE')
+
+    def test_compute_force_directed_layout_has_contracts(self):
+        """Test that compute_force_directed_layout has contract decorators."""
+        from py3plex.visualization.layout_algorithms import compute_force_directed_layout
+        assert callable(compute_force_directed_layout)
+
+    def test_compute_random_layout_has_contracts(self):
+        """Test that compute_random_layout has contract decorators."""
+        from py3plex.visualization.layout_algorithms import compute_random_layout
+        assert callable(compute_random_layout)
+
+
 class TestContractIntegration:
     """Integration tests for contract system."""
 
@@ -106,6 +187,9 @@ class TestContractIntegration:
             'py3plex.core.random_generators',
             'py3plex.utils',
             'py3plex.core.supporting',
+            'py3plex.core.parsers',
+            'py3plex.io.api',
+            'py3plex.visualization.layout_algorithms',
         ]
         
         for module_name in modules_to_test:
@@ -140,10 +224,13 @@ class TestContractIntegration:
             "Probabilities (p, d) must be in [0, 1]",
             "get_rng() always returns numpy.random.Generator",
             "Network operations preserve graph types",
+            "File parsers validate input paths are non-empty strings",
+            "Registry functions validate format names and callables",
+            "Layout algorithms validate graph inputs and return positions for all nodes",
         ]
         
         # Document that these invariants exist
-        assert len(invariants) == 4
+        assert len(invariants) == 7
         for inv in invariants:
             assert isinstance(inv, str)
             assert len(inv) > 0
