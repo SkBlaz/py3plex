@@ -212,3 +212,7 @@ exclude_lines = [
     "if verbose:",
     "@abstractmethod",
 ]
+
+[tool.hypothesis]
+max_examples = 100
+deadline = 500
