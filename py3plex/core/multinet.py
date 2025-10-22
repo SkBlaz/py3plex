@@ -4,7 +4,26 @@ import itertools
 
 import networkx as nx
 import numpy as np
-from icontract import require, ensure, invariant
+
+# Optional formal verification support
+try:
+    from icontract import require, ensure, invariant
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def invariant(*args, **kwargs):
+        def decorator(cls):
+            return cls
+        return decorator
+    ICONTRACT_AVAILABLE = False
 
 from py3plex.logging_config import get_logger
 

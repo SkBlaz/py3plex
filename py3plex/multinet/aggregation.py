@@ -19,7 +19,22 @@ from typing import Literal, Union
 
 import numpy as np
 import scipy.sparse as sp
-from icontract import require, ensure
+
+# Optional formal verification support
+try:
+    from icontract import require, ensure
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    ICONTRACT_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 

@@ -24,6 +24,10 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
   - `crosshair-tool>=0.0.60`
   - `icontract>=2.6.0`
   - `z3-solver>=4.12.0`
+- **Made icontract imports optional** with graceful fallback to no-op decorators when not installed
+  - Contracts are active when icontract is available (dev/CI environments)
+  - No-op decorators allow normal operation without icontract (production/minimal installs)
+  - Preserves backward compatibility with existing installation methods
 - Created comprehensive formal verification documentation section in this file
 
 **Contracts Implemented:**
@@ -44,6 +48,7 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 - Documents mathematical invariants as executable specifications
 - Complements property-based testing (Hypothesis) with symbolic execution
 - Establishes foundation for expanding contracts to more modules
+- **Zero impact on minimal installations** - contracts are optional and gracefully degrade
 
 **Purpose:** Introduce formal verification as an additional layer of correctness guarantees beyond unit tests and property-based tests, documenting core invariants as machine-checkable contracts.
 
@@ -2272,6 +2277,7 @@ except ImportError:
 - **Coverage:** Core aggregation functions in `py3plex/multinet/aggregation.py` and `py3plex/core/multinet.py`
 - **Verification Strategy:** Lightweight contracts on critical paths to maximize CrossHair's reasoning success
 - **CI Integration:** `.github/workflows/verify.yml` runs automated verification on every push/PR
+- **Optional Dependency:** icontract is optional - contracts use no-op decorators when not installed, ensuring zero impact on minimal installations
 
 **Contracts Implemented:**
 
