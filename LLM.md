@@ -9,6 +9,44 @@
 
 This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
 
+### 2025-10-22: Formal Verification Expansion (Issue #19 - v2)
+**Changes Made:**
+- Expanded CrossHair formal verification to additional modules
+- Added contracts to `py3plex/algorithms/statistics/multilayer_statistics.py`:
+  - `layer_density()` - Ensures density is in [0,1] and not NaN
+  - `inter_layer_coupling_strength()` - Ensures non-negative coupling values
+  - `node_activity()` - Ensures activity fraction is in [0,1]
+- Added contracts to `py3plex/algorithms/statistics/basic_statistics.py`:
+  - `identify_n_hubs()` - Ensures result size ≤ top_n and non-negative degrees
+- Added contracts to `py3plex/core/converters.py`:
+  - `compute_layout()` - Ensures all nodes receive position attributes
+- Updated `.github/workflows/verify.yml` to verify 4 modules (was 2)
+- All contracts use optional icontract imports with no-op fallbacks
+- Verified locally that CrossHair runs without errors on new modules
+
+**Contracts Added (New Invariants):**
+1. **Layer Density Bounds**: Density ∈ [0,1] - fundamental property of network density
+2. **Coupling Non-Negativity**: Average edge weights are non-negative
+3. **Node Activity Bounds**: Activity fraction ∈ [0,1] - fraction of layers where node is active
+4. **Hub Identification Size**: Result contains at most top_n entries
+5. **Degree Non-Negativity**: All degree values are non-negative integers
+6. **Layout Completeness**: All nodes get position attributes after layout computation
+
+**Modules Now Under Verification:**
+- `py3plex/multinet/aggregation.py` (existing)
+- `py3plex/core/multinet.py` (existing)
+- `py3plex/algorithms/statistics/multilayer_statistics.py` (new)
+- `py3plex/algorithms/statistics/basic_statistics.py` (new)
+
+**Impact:**
+- Extended formal verification coverage from 2 to 4 modules
+- Added 6 new mathematical invariants verified symbolically
+- Improved documentation of expected function behavior through executable contracts
+- Maintains zero impact on production installations (optional contracts)
+- Complements existing property-based tests with compile-time verification
+
+**Purpose:** Expand formal verification opportunities beyond core data structures to algorithm implementations, documenting mathematical properties and catching edge cases during development (Issue #19).
+
 ### 2025-10-22: Type Coverage Improvement (Issue #18)
 **Changes Made:**
 - Continued systematic type coverage improvement from Issue #17
@@ -2354,9 +2392,13 @@ except ImportError:
 - **Reproducibility:** All tests use fixed seeds for deterministic results
 - **CI/CD:** Automated testing on Python 3.8-3.12 across Ubuntu, macOS, Windows
 
-#### 7. Formal Verification (Partial Coverage)
+#### 7. Formal Verification (Extended Coverage)
 - **Framework:** CrossHair (symbolic execution) + icontract (design-by-contract)
-- **Coverage:** Core aggregation functions in `py3plex/multinet/aggregation.py` and `py3plex/core/multinet.py`
+- **Coverage:** 4 modules with contracts:
+  - Core aggregation: `py3plex/multinet/aggregation.py`
+  - Core data structures: `py3plex/core/multinet.py`
+  - Multilayer statistics: `py3plex/algorithms/statistics/multilayer_statistics.py` (NEW)
+  - Basic statistics: `py3plex/algorithms/statistics/basic_statistics.py` (NEW)
 - **Verification Strategy:** Lightweight contracts on critical paths to maximize CrossHair's reasoning success
 - **CI Integration:** `.github/workflows/verify.yml` runs automated verification on every push/PR
 - **Optional Dependency:** icontract is optional - contracts use no-op decorators when not installed, ensuring zero impact on minimal installations
@@ -2380,12 +2422,48 @@ except ImportError:
      - `@ensure(lambda result: result is not None)` - Non-null result
      - `@ensure(lambda result: isinstance(result, (nx.Graph, nx.DiGraph)))` - NetworkX graph type
 
+3. **`layer_density()` in `py3plex/algorithms/statistics/multilayer_statistics.py`:** (NEW)
+   - **Preconditions:**
+     - `@require(lambda network: network is not None)` - Non-null network
+     - `@require(lambda network: hasattr(network, 'get_edges'))` - Network has required methods
+     - `@require(lambda layer: isinstance(layer, str) and len(layer) > 0)` - Valid layer name
+   - **Postconditions:**
+     - `@ensure(lambda result: 0.0 <= result <= 1.0)` - Density in [0,1]
+     - `@ensure(lambda result: not np.isnan(result))` - No NaN values
+
+4. **`inter_layer_coupling_strength()` in `py3plex/algorithms/statistics/multilayer_statistics.py`:** (NEW)
+   - **Preconditions:**
+     - `@require(lambda network: hasattr(network, 'get_edges'))` - Network has required methods
+     - `@require(lambda layer_i, layer_j: isinstance(layer_i, str) and isinstance(layer_j, str))` - Valid layer names
+   - **Postconditions:**
+     - `@ensure(lambda result: result >= 0.0)` - Non-negative coupling
+     - `@ensure(lambda result: not np.isnan(result))` - No NaN values
+
+5. **`node_activity()` in `py3plex/algorithms/statistics/multilayer_statistics.py`:** (NEW)
+   - **Preconditions:**
+     - `@require(lambda network: hasattr(network, 'get_nodes') and hasattr(network, 'get_edges'))` - Network has required methods
+     - `@require(lambda node: node is not None)` - Valid node identifier
+   - **Postconditions:**
+     - `@ensure(lambda result: 0.0 <= result <= 1.0)` - Activity fraction in [0,1]
+     - `@ensure(lambda result: not np.isnan(result))` - No NaN values
+
+6. **`identify_n_hubs()` in `py3plex/algorithms/statistics/basic_statistics.py`:** (NEW)
+   - **Preconditions:**
+     - `@require(lambda top_n: top_n > 0)` - Positive top_n value
+   - **Postconditions:**
+     - `@ensure(lambda result: len(result) <= top_n)` - Result size bounded
+     - `@ensure(lambda result: all(isinstance(v, int) and v >= 0 for v in result.values()))` - Non-negative degrees
+
 **Core Invariants Verified:**
 
 - **Node Preservation:** Aggregation preserves the union of all nodes from input layers (no nodes lost)
 - **Weight Non-Negativity:** Aggregated weights remain non-negative for sum/mean/max reducers
 - **Type Safety:** Operations return expected types (sparse matrices, NetworkX graphs)
 - **Input Validation:** Empty inputs and invalid parameters are rejected at function entry
+- **Density Bounds:** Network density always in [0, 1] - fundamental mathematical property
+- **Activity Bounds:** Node activity fraction always in [0, 1] - fraction of layers
+- **Degree Non-Negativity:** Node degrees are always non-negative integers
+- **Result Size Bounds:** Top-k queries return at most k results
 
 **Invariants Documented but Not Yet Verified:**
 
@@ -2402,18 +2480,22 @@ pip install crosshair-tool icontract z3-solver
 # Verify specific modules
 crosshair check py3plex/multinet/aggregation.py --per_path_timeout=20
 crosshair check py3plex/core/multinet.py --per_path_timeout=20
+crosshair check py3plex/algorithms/statistics/multilayer_statistics.py --per_path_timeout=20
+crosshair check py3plex/algorithms/statistics/basic_statistics.py --per_path_timeout=20
 
 # Verify all modules with contracts
 crosshair check py3plex --per_path_timeout=20
 ```
 
 **Future Expansion:**
+- Add contracts to centrality computation functions (degree, betweenness, closeness)
 - Add contracts to projection and merging functions
 - Implement idempotence and commutativity tests as contracts
-- Expand to community detection and centrality algorithms
+- Expand to community detection algorithms
+- Add contracts to layout computation functions
 - Document all invariants in this file when contracts change
 
-**Note:** This is **partial formal verification** - not all functions have contracts, and CrossHair may time out on complex functions. The goal is lightweight, maintainable contracts on critical paths that catch common bugs during development.
+**Note:** This is **extended formal verification** - not all functions have contracts, and CrossHair may time out on complex functions. The goal is lightweight, maintainable contracts on critical paths that catch common bugs during development. Coverage expanded from 2 modules to 4 modules as of 2025-10-22.
 
 ### Issues and Recommendations
 
