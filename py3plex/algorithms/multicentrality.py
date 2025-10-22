@@ -8,10 +8,14 @@ Authors: py3plex contributors
 Date: 2025
 """
 
+from typing import Any, Dict
+
 import numpy as np
 
 
-def multiplex_participation_coefficient(multinet, normalized=True, check_multiplex=True):
+def multiplex_participation_coefficient(
+    multinet: Any, normalized: bool = True, check_multiplex: bool = True
+) -> Dict[Any, float]:
     """
     Compute the Multiplex Participation Coefficient (MPC) for multiplex networks.
     MPC measures how evenly a node participates across layers.

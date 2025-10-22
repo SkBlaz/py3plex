@@ -5,6 +5,8 @@ This module provides algorithms for benchmarking node classification
 performance, including oracle-based F1 score evaluation.
 """
 
+from typing import List
+
 import numpy as np
 import scipy.sparse as sp
 from sklearn.metrics import f1_score
@@ -32,7 +34,7 @@ def evaluate_oracle_F1(probs: np.ndarray, Y_real: np.ndarray) -> tuple[float, fl
         >>> Y_real = np.array([[1, 0, 0], [0, 1, 1]])
         >>> micro, macro = evaluate_oracle_F1(probs, Y_real)
     """
-    y_test = [[] for _ in range(Y_real.shape[0])]
+    y_test: List[List[int]] = [[] for _ in range(Y_real.shape[0])]
     cy = sp.csr_matrix(Y_real).tocoo()
     for i, b in zip(cy.row, cy.col):
         y_test[i].append(b)

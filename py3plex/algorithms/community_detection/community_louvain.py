@@ -196,8 +196,8 @@ def modularity(partition: Dict, graph: nx.Graph, weight: str = "weight") -> floa
     if "Di" in str(type(graph)):
         raise TypeError("Bad graph type, use only non directed graph")
 
-    inc = {}
-    deg = {}
+    inc: Dict[int, float] = {}
+    deg: Dict[int, float] = {}
     links = graph.size(weight=weight)
     if links == 0:
         raise ValueError("A graph without link has an undefined modularity")

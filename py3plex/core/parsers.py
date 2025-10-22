@@ -4,7 +4,7 @@ import glob
 import gzip
 import itertools
 import json
-from typing import Any, Tuple, Union
+from typing import Any, Dict, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -194,12 +194,13 @@ def parse_gpickle_biomine(
 
 
 def parse_detangler_json(
-    file_path: str
+    file_path: str, directed: bool = False
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     Parser for generic Detangler files
     Args:
         file_path: Path to Detangler JSON file
+        directed: Whether to create directed graph
     """
 
     if directed:
@@ -254,7 +255,7 @@ def parse_multi_edgelist(
 
             else:
                 node_first, layer_first, node_second, layer_second = parts
-                weight = 1
+                weight = "1"
 
             if layer_first == layer_second and node_first == node_second:
 
@@ -313,15 +314,15 @@ def parse_simple_edgelist(
             if line.split()[0] != "#":
                 parts = line.strip().split()
                 if len(parts) == 3:
-                    node_first, node_second, weight = parts
+                    node_first_str, node_second_str, weight = parts
                 elif len(parts) == 2:
-                    node_first, node_second = parts
-                    weight = 1
+                    node_first_str, node_second_str = parts
+                    weight = "1"
                 else:
                     continue
 
-                node_first = (node_first, "null")
-                node_second = (node_second, "null")
+                node_first = (node_first_str, "null")
+                node_second = (node_second_str, "null")
 
                 G.add_node(node_first, type="null")
                 G.add_node(node_second, type="null")
@@ -349,7 +350,7 @@ def parse_edgelist_multi_types(
                     edge_type = parts[3]
                 else:
                     node_first, node_second = parts
-                    weight = 1
+                    weight = "1"
                     edge_type = None
 
                 G.add_node((node_first, "null"), type="null")
@@ -373,7 +374,7 @@ def parse_spin_edgelist(
             if len(parts) >= 4:
                 weight = parts[3]
             else:
-                weight = 1
+                weight = "1"
 
             G.add_node(node_first)
             G.add_node(node_second)
@@ -397,12 +398,12 @@ def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
     embedding_indices = []
     with open(input_name) as IN:
         for line in IN:
-            line = line.strip().split()
-            if len(line) == 2:
+            parts = line.strip().split()
+            if len(parts) == 2:
                 pass
             else:
-                embedding_matrix.append(line[1:])
-                embedding_indices.append(line[0])
+                embedding_matrix.append(parts[1:])
+                embedding_indices.append(parts[0])
     embedding_matrix = np.matrix(embedding_matrix)
     embedding_indices = np.array(embedding_indices)
     return (embedding_matrix, embedding_indices)
@@ -411,6 +412,13 @@ def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
 def parse_multiedge_tuple_list(
     network: list, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
+    """
+    Parse a list of edge tuples into a multilayer network.
+    
+    Args:
+        network: List of edge tuples (node_first, node_second, layer_first, layer_second, weight)
+        directed: Whether to create directed graph
+    """
     if directed:
         G = nx.MultiDiGraph()
 
@@ -454,7 +462,7 @@ def parse_multiplex_edges(
             if len(parts) > 2:
                 weight = parts[3]
             else:
-                weight = 1
+                weight = "1"
             G.add_node((node_first, str(layer)))
             G.add_node((node_second, str(layer)))
             unique_layers.add(str(layer[0]))
@@ -600,7 +608,7 @@ def parse_network(
         parsed_network, labels = parse_edgelist_multi_types(input_name, directed)
 
     elif f_type == "multiedge_tuple_list":
-        parsed_network, labels = parse_multiedge_tuple_list(input_name, directed)
+        parsed_network, labels = parse_multiedge_tuple_list(input_name, directed)  # type: ignore[arg-type]
 
     elif f_type == "multiplex_edges":
         parsed_network, labels = parse_multiplex_edges(input_name, directed)
@@ -699,9 +707,13 @@ def save_multiedgelist(
     output_file: str,
     attributes: bool = False,
     encode_with_ints: bool = False,
-) -> None:
+) -> Union[Tuple[Dict[Any, str], Dict[Any, str]], None]:
     """
     Save multiedgelist -- as n1, l1, n2, l2, w
+    
+    Returns:
+        When encode_with_ints is True, returns tuple of (node_encodings, type_encodings)
+        Otherwise returns None
     """
 
     if encode_with_ints:
@@ -737,6 +749,7 @@ def save_multiedgelist(
             n2, l2 = edge[1]
             fh.write("\t".join([n1, l1, n2, l2]) + "\n")
         fh.close()
+        return None
 
 
 def save_edgelist(input_network, output_file, attributes=False):

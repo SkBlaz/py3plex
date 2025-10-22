@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 import networkx as nx
+import numpy as np
 
 from py3plex import __version__
 from py3plex.core import multinet
@@ -449,7 +450,7 @@ def cmd_load(args: argparse.Namespace) -> int:
         if args.stats:
             from py3plex.algorithms.statistics import multilayer_statistics as mls
 
-            stats = {}
+            stats: Dict[str, Any] = {}
             try:
                 layers = network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers())
                 if layers:
@@ -523,7 +524,10 @@ def cmd_community(args: argparse.Namespace) -> int:
                 from py3plex.algorithms.community_detection import community_wrapper
 
                 partition = community_wrapper.infomap_communities(network)
-                communities = {str(node): int(comm) for node, comm in partition.items()}
+                communities = {
+                    str(node): int(comm) if isinstance(comm, (int, np.integer)) else int(comm[0])
+                    for node, comm in partition.items()
+                }
             except Exception as e:
                 logger.error(f"Infomap not available: {e}")
                 logger.error("Please use 'louvain' or 'label_prop' instead.")
@@ -544,7 +548,7 @@ def cmd_community(args: argparse.Namespace) -> int:
         logger.info(f"Found {num_communities} communities")
 
         # Community size distribution
-        comm_sizes = {}
+        comm_sizes: Dict[int, int] = {}
         for comm_id in communities.values():
             comm_sizes[comm_id] = comm_sizes.get(comm_id, 0) + 1
 
@@ -656,7 +660,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
 
         from py3plex.algorithms.statistics import multilayer_statistics as mls
 
-        stats = {}
+        stats: Dict[str, Any] = {}
         layers = network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers())
 
         logger.info(f"Computing multilayer statistics...")
@@ -773,7 +777,7 @@ def cmd_visualize(args: argparse.Namespace) -> int:
             multilayer.draw_multilayer_default(
                 [network],
                 display=False,
-                show_legend=True,
+                labels=True,
             )
         else:
             # Use NetworkX layouts
@@ -822,8 +826,8 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
 
         logger.info(f"Aggregating layers using {args.method} method...")
 
-        # Aggregate the network
-        aggregated = network.aggregate_layers(method=args.method)
+        # Aggregate the network using aggregate_edges
+        aggregated = network.aggregate_edges(metric=args.method)
 
         # Save aggregated network
         output_path = Path(args.output)
