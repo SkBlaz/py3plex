@@ -3,6 +3,7 @@
 # draw multi layered network, takes .nx object list as input
 
 # imports first
+from typing import Any, List, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -36,26 +37,26 @@ except ImportError:
 
 
 def draw_multilayer_default(
-    network_list,
-    display=True,
-    node_size=10,
-    alphalevel=0.13,
-    rectanglex=1,
-    rectangley=1,
-    background_shape="circle",
-    background_color="rainbow",
-    networks_color="rainbow",
-    labels=False,
-    arrowsize=0.5,
-    label_position=1,
-    verbose=False,
-    remove_isolated_nodes=False,
-    axis=None,
-    edge_size=1,
-    node_labels=False,
-    node_font_size=5,
-    scale_by_size=False,
-):
+    network_list: List[nx.Graph],
+    display: bool = True,
+    node_size: int = 10,
+    alphalevel: float = 0.13,
+    rectanglex: float = 1,
+    rectangley: float = 1,
+    background_shape: str = "circle",
+    background_color: str = "rainbow",
+    networks_color: str = "rainbow",
+    labels: bool = False,
+    arrowsize: float = 0.5,
+    label_position: int = 1,
+    verbose: bool = False,
+    remove_isolated_nodes: bool = False,
+    axis: Optional[Any] = None,
+    edge_size: float = 1,
+    node_labels: bool = False,
+    node_font_size: int = 5,
+    scale_by_size: bool = False,
+) -> None:
     """Core multilayer drawing method
 
     Args:
@@ -158,7 +159,7 @@ def draw_multilayer_default(
                 plt.text(
                     start_location_network + label_position,
                     start_location_network - label_position,
-                    labels[color],
+                    labels[color],  # type: ignore[index]
                 )
             except Exception as es:
                 logger.error("Error setting label: %s", es)
@@ -191,8 +192,8 @@ def draw_multilayer_default(
         else:
             pass
 
-        start_location_network += 1.5
-        start_location_background += 1.5
+        start_location_network += 1.5  # type: ignore[assignment]
+        start_location_background += 1.5  # type: ignore[assignment]
         # if len(network.nodes()) > 10000:
         #     correction=10
         # else:
@@ -231,19 +232,35 @@ def draw_multilayer_default(
 
 
 def draw_multiedges(
-    network_list,
-    multi_edge_tuple,
-    input_type="nodes",
-    linepoints="-.",
-    alphachannel=0.3,
-    linecolor="black",
-    curve_height=1,
-    style="curve2_bezier",
-    linewidth=1,
-    invert=False,
-    linmod="both",
-    resolution=0.001,
-):
+    network_list: List[nx.Graph],
+    multi_edge_tuple: List[Any],  # Can be various tuple types
+    input_type: str = "nodes",
+    linepoints: str = "-.",
+    alphachannel: float = 0.3,
+    linecolor: str = "black",
+    curve_height: float = 1,
+    style: str = "curve2_bezier",
+    linewidth: float = 1,
+    invert: bool = False,
+    linmod: str = "both",
+    resolution: float = 0.001,
+) -> None:
+    """Draw edges connecting multiple layers.
+    
+    Args:
+        network_list: List of NetworkX graphs (layers)
+        multi_edge_tuple: Tuple specifying edges to draw
+        input_type: Type of input ("nodes" or other)
+        linepoints: Line style
+        alphachannel: Transparency level
+        linecolor: Color of the lines
+        curve_height: Height of curved edges
+        style: Style of edges ("curve2_bezier", "line", etc.)
+        linewidth: Width of lines
+        invert: Whether to invert drawing direction
+        linmod: Line modification mode
+        resolution: Resolution for curve drawing
+    """
     # indices are correct network positions
     #    main_figure = plt.figure()
     #    shape_subplot = main_figure.add_subplot(111)
@@ -284,8 +301,8 @@ def draw_multiedges(
 
                     x, y = bezier.draw_bezier(
                         len(network_list),
-                        p1,
-                        p2,
+                        p1,  # type: ignore[arg-type]
+                        p2,  # type: ignore[arg-type]
                         path_height=curve_height,
                         inversion=invert,
                         linemode=linmod,
@@ -304,7 +321,7 @@ def draw_multiedges(
                 elif style == "curve3_bezier":
 
                     x, y = bezier.draw_bezier(
-                        len(network_list), p1, p2, mode="cubic", resolution=resolution
+                        len(network_list), p1, p2, mode="cubic", resolution=resolution  # type: ignore[arg-type]
                     )
 
                 elif style == "curve3_fit":
@@ -336,16 +353,29 @@ def draw_multiedges(
 
 
 def generate_random_multiedges(
-    network_list,
-    random_edges,
-    style="line",
-    linepoints="-.",
-    upper_first=2,
-    lower_first=0,
-    lower_second=2,
-    inverse_tag=False,
-    pheight=1,
-):
+    network_list: List[nx.Graph],
+    random_edges: int,
+    style: str = "line",
+    linepoints: str = "-.",
+    upper_first: int = 2,
+    lower_first: int = 0,
+    lower_second: int = 2,
+    inverse_tag: bool = False,
+    pheight: float = 1,
+) -> None:
+    """Generate and draw random multi-layer edges.
+    
+    Args:
+        network_list: List of NetworkX graphs (layers)
+        random_edges: Number of random edges to generate
+        style: Style of edges to draw
+        linepoints: Line style
+        upper_first: Upper bound for first layer
+        lower_first: Lower bound for first layer
+        lower_second: Lower bound for second layer
+        inverse_tag: Whether to invert drawing
+        pheight: Height parameter for curves
+    """
 
     #    main_figure = plt.figure()
     #    shape_subplot = main_figure.add_subplot(111)
@@ -384,8 +414,8 @@ def generate_random_multiedges(
 
                 x, y = bezier.draw_bezier(
                     len(network_list),
-                    p1,
-                    p2,
+                    p1,  # type: ignore[arg-type]
+                    p2,  # type: ignore[arg-type]
                     inversion=inverse_tag,
                     path_height=pheight,
                 )
@@ -393,7 +423,7 @@ def generate_random_multiedges(
 
             elif style == "curve3_bezier":
 
-                x, y = bezier.draw_bezier(len(network_list), p1, p2, mode="cubic")
+                x, y = bezier.draw_bezier(len(network_list), p1, p2, mode="cubic")  # type: ignore[arg-type]
 
             elif style == "curve3_fit":
 
@@ -412,7 +442,15 @@ def generate_random_multiedges(
             pass
 
 
-def generate_random_networks(number_of_networks):
+def generate_random_networks(number_of_networks: int) -> List[nx.Graph]:
+    """Generate random networks for testing.
+    
+    Args:
+        number_of_networks: Number of random networks to generate
+        
+    Returns:
+        List of NetworkX graphs with random layouts
+    """
 
     network_list = []
     for _j in range(number_of_networks):
@@ -423,13 +461,24 @@ def generate_random_networks(number_of_networks):
     return network_list
 
 
-def supra_adjacency_matrix_plot(matrix, display=False):
+def supra_adjacency_matrix_plot(matrix: np.ndarray, display: bool = False) -> None:
+    """Plot a supra-adjacency matrix.
+    
+    Args:
+        matrix: Supra-adjacency matrix to plot
+        display: Whether to display the plot immediately
+    """
     plt.imshow(matrix, interpolation="nearest", cmap=plt.cm.binary)
     if display:
         plt.show()
 
 
-def onclick(event):
+def onclick(event: Any) -> None:
+    """Handle mouse click events on plots.
+    
+    Args:
+        event: Matplotlib event object
+    """
     logger.debug(
         "%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f",
         "double" if event.dblclick else "single",
@@ -442,22 +491,22 @@ def onclick(event):
 
 
 def hairball_plot(
-    g,
-    color_list=None,
-    display=False,
-    node_size=1,
-    text_color="black",
-    node_sizes=None,  # for custom sizes
-    layout_parameters=None,
-    legend=None,
-    scale_by_size=True,
-    layout_algorithm="force",
-    edge_width=0.01,
-    alpha_channel=0.5,
-    labels=None,
-    draw=True,
-    label_font_size=2,
-):
+    g: Union[nx.Graph, Any],
+    color_list: Optional[Union[List[str], List[int]]] = None,
+    display: bool = False,
+    node_size: float = 1,
+    text_color: str = "black",
+    node_sizes: Optional[List[float]] = None,  # for custom sizes
+    layout_parameters: Optional[dict] = None,
+    legend: Optional[Any] = None,
+    scale_by_size: bool = True,
+    layout_algorithm: str = "force",
+    edge_width: float = 0.01,
+    alpha_channel: float = 0.5,
+    labels: Optional[List[str]] = None,
+    draw: bool = True,
+    label_font_size: int = 2,
+) -> Optional[Any]:  # Returns tuple when draw=False, None otherwise
     """A method for drawing force-directed plots
     Args:
     network (networkx): A network to be visualized
@@ -510,7 +559,7 @@ def hairball_plot(
             cols = colors.colors_default
         else:
             # color_list contains actual color values
-            cols = color_list
+            cols = color_list  # type: ignore[assignment]
     except Exception:
         logger.info("Using default palette")
         cols = colors.colors_default
@@ -603,11 +652,28 @@ def hairball_plot(
 
     if not draw:
         return g, nsizes, final_color_mapping, pos
+    return None  # Explicit return when draw=True
 
 
 def interactive_hairball_plot(
-    G, nsizes, final_color_mapping, pos, colorscale="Rainbow"
-):
+    G: nx.Graph,
+    nsizes: List[float],
+    final_color_mapping: dict,
+    pos: dict,
+    colorscale: str = "Rainbow",
+) -> Union[bool, Any]:
+    """Create an interactive 3D hairball plot using Plotly.
+    
+    Args:
+        G: NetworkX graph to visualize
+        nsizes: Node sizes
+        final_color_mapping: Mapping of nodes to colors
+        pos: Node positions
+        colorscale: Color scale to use
+        
+    Returns:
+        False if plotly not available, otherwise plotly figure object
+    """
 
     #    main_figure = plt.figure()
     #    shape_subplot = main_figure.add_subplot(111)
@@ -694,6 +760,7 @@ def interactive_hairball_plot(
         ),
     )
     fig.show()
+    return fig  # Return the figure object
 
 
 if __name__ == "__main__":

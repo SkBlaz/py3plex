@@ -1,4 +1,6 @@
 # node ranking algorithms
+from typing import Any, List, Optional, Tuple, Union
+
 import networkx as nx
 import numpy as np
 import scipy.sparse as sp
@@ -19,7 +21,15 @@ import scipy.sparse as sp
 #     return matrix
 
 
-def stochastic_normalization(matrix):
+def stochastic_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
+    """Normalize a sparse matrix stochastically.
+    
+    Args:
+        matrix: Sparse matrix to normalize
+        
+    Returns:
+        Stochastically normalized sparse matrix
+    """
     matrix = matrix.tolil()
     try:
         matrix.setdiag(0)
@@ -33,7 +43,15 @@ def stochastic_normalization(matrix):
     return matrix
 
 
-def stochastic_normalization_hin(matrix):
+def stochastic_normalization_hin(matrix: sp.spmatrix) -> sp.spmatrix:
+    """Normalize a heterogeneous information network matrix stochastically.
+    
+    Args:
+        matrix: Sparse matrix to normalize
+        
+    Returns:
+        Stochastically normalized sparse matrix
+    """
     matrix = matrix.tolil()
     try:
         matrix.setdiag(0)
@@ -47,7 +65,17 @@ def stochastic_normalization_hin(matrix):
     return matrix
 
 
-def modularity(G, communities, weight="weight"):
+def modularity(G: nx.Graph, communities: Any, weight: str = "weight") -> int:
+    """Calculate modularity (placeholder).
+    
+    Args:
+        G: NetworkX graph
+        communities: Community structure
+        weight: Edge weight attribute
+        
+    Returns:
+        Modularity value (currently returns 1)
+    """
     return 1
     # if not is_partition(G, communities):
     #     raise NotAPartition(G, communities)
@@ -81,17 +109,29 @@ def modularity(G, communities, weight="weight"):
     # return Q * norm
 
 
-def page_rank_kernel(index_row):
+def page_rank_kernel(index_row: int) -> Tuple[int, np.ndarray]:
+    """PageRank kernel for parallel computation.
+    
+    Note: This function expects global variables G, damping_hyper, 
+    spread_step_hyper, spread_percent_hyper, and graph to be defined.
+    It's designed for use with multiprocessing.Pool.map().
+    
+    Args:
+        index_row: Row index to compute PageRank for
+        
+    Returns:
+        Tuple of (index, PageRank vector)
+    """
 
     # call as results = p.map(pr_kernel, batch)
     pr = sparse_page_rank(
-        G,
+        G,  # type: ignore[name-defined]
         [index_row],
         epsilon=1e-6,
         max_steps=100000,
-        damping=damping_hyper,
-        spread_step=spread_step_hyper,
-        spread_percent=spread_percent_hyper,
+        damping=damping_hyper,  # type: ignore[name-defined]
+        spread_step=spread_step_hyper,  # type: ignore[name-defined]
+        spread_percent=spread_percent_hyper,  # type: ignore[name-defined]
         try_shrink=True,
     )
 
@@ -100,21 +140,36 @@ def page_rank_kernel(index_row):
         pr = pr / np.linalg.norm(pr, 2)
         return (index_row, pr)
     else:
-        return (index_row, np.zeros(graph.shape[1]))
+        return (index_row, np.zeros(graph.shape[1]))  # type: ignore[name-defined]
 
 
 def sparse_page_rank(
-    matrix,
-    start_nodes,
-    epsilon=1e-6,
-    max_steps=100000,
-    damping=0.5,
-    spread_step=10,
-    spread_percent=0.3,
-    try_shrink=False,
-):
+    matrix: sp.spmatrix,
+    start_nodes: Union[List[int], range, None],
+    epsilon: float = 1e-6,
+    max_steps: int = 100000,
+    damping: float = 0.5,
+    spread_step: int = 10,
+    spread_percent: float = 0.3,
+    try_shrink: bool = False,
+) -> np.ndarray:
+    """Compute sparse PageRank with personalization.
+    
+    Args:
+        matrix: Sparse adjacency matrix (column-stochastic)
+        start_nodes: List of starting node indices for personalization (can be range or None)
+        epsilon: Convergence threshold
+        max_steps: Maximum number of iterations
+        damping: Damping factor (teleportation probability)
+        spread_step: Maximum steps for spread calculation
+        spread_percent: Percentage threshold for spread
+        try_shrink: Whether to try matrix shrinking optimization
+        
+    Returns:
+        PageRank vector
+    """
 
-    assert (len(start_nodes)) > 0
+    assert start_nodes is None or (len(start_nodes)) > 0
 
     # this method assumes that column sums are all equal to 1 (stochastic normalizaition!)
     size = matrix.shape[0]
@@ -171,13 +226,37 @@ def sparse_page_rank(
         return rank_vec.flatten()
 
 
-def hubs_and_authorities(graph):
-    return nx.hits_scipy(graph)
+def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
+    """Compute hubs and authorities scores using HITS algorithm.
+    
+    Args:
+        graph: NetworkX graph
+        
+    Returns:
+        Tuple of (hubs dictionary, authorities dictionary)
+    """
+    return nx.hits_scipy(graph)  # type: ignore[no-any-return]
 
 
-def hub_matrix(graph):
+def hub_matrix(graph: nx.Graph) -> sp.spmatrix:
+    """Get the hub matrix of a graph.
+    
+    Args:
+        graph: NetworkX graph
+        
+    Returns:
+        Hub matrix
+    """
     return nx.hub_matrix(graph)
 
 
-def authority_matrix(graph):
+def authority_matrix(graph: nx.Graph) -> sp.spmatrix:
+    """Get the authority matrix of a graph.
+    
+    Args:
+        graph: NetworkX graph
+        
+    Returns:
+        Authority matrix
+    """
     return nx.authority_matrix(graph)

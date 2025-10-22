@@ -285,9 +285,9 @@ def _validate_node_preservation(result: Union[sp.csr_matrix, np.ndarray], edges:
     
     # Check result matrix size
     if isinstance(result, sp.csr_matrix):
-        return result.shape[0] > max_node and result.shape[1] > max_node
+        return bool(result.shape[0] > max_node and result.shape[1] > max_node)
     else:
-        return result.shape[0] > max_node and result.shape[1] > max_node
+        return bool(result.shape[0] > max_node and result.shape[1] > max_node)
 
 
 def _validate_no_negative_weights(result: Union[sp.csr_matrix, np.ndarray]) -> bool:
@@ -298,7 +298,7 @@ def _validate_no_negative_weights(result: Union[sp.csr_matrix, np.ndarray]) -> b
     weights should never produce negative weights.
     """
     if isinstance(result, sp.csr_matrix):
-        return np.all(result.data >= 0)
+        return bool(np.all(result.data >= 0))
     else:
-        return np.all(result >= 0)
+        return bool(np.all(result >= 0))
 

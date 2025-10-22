@@ -42,11 +42,11 @@ class Node:
     id: Hashable
     attributes: Dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate node after initialization."""
         self._validate()
 
-    def _validate(self):
+    def _validate(self) -> None:
         """
         Validate the node.
 
@@ -96,11 +96,11 @@ class Layer:
     id: Hashable
     attributes: Dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate layer after initialization."""
         self._validate()
 
-    def _validate(self):
+    def _validate(self) -> None:
         """
         Validate the layer.
 
@@ -158,11 +158,11 @@ class Edge:
     key: int = 0
     attributes: Dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate edge after initialization."""
         self._validate()
 
-    def _validate(self):
+    def _validate(self) -> None:
         """
         Validate the edge.
 
@@ -241,11 +241,11 @@ class MultiLayerGraph:
     directed: bool = True
     attributes: Dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate graph after initialization."""
         self._validate()
 
-    def _validate(self):
+    def _validate(self) -> None:
         """
         Validate the entire graph structure.
 
