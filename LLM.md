@@ -1,13 +1,57 @@
 # LLM Context Summary
 
-**Last Updated**: 2025-10-22 (Test Verification Coverage Expansion - Issue #20)  
-**Previous Update**: 2025-10-22 (Formal Verification Expansion - Issue #19 - v3)
+**Last Updated**: 2025-10-22 (Fuzzing Infrastructure - Issue #fuzzing)  
+**Previous Update**: 2025-10-22 (Test Verification Coverage Expansion - Issue #20)
 
 ---
 
 ## 📋 Document Changelog
 
 This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
+
+### 2025-10-22: Fuzzing Infrastructure (Issue #fuzzing)
+**Changes Made:**
+- Added comprehensive fuzzing infrastructure for discovering bugs in input parsing and network construction
+- Created `fuzzing/` directory with Atheris-based fuzzing harnesses:
+  - `fuzz_load_network.py` - Fuzzes `load_network()` with multiple input formats
+  - `fuzz_parse_line.py` - Fuzzes individual edge/line parsing
+- Added seed corpus with 4 test files (valid and malformed inputs)
+- Created `fuzzing/README.md` with comprehensive documentation (8.7KB):
+  - Installation and setup instructions
+  - Usage examples and fuzzing campaigns
+  - Crash triage and debugging workflow
+  - Best practices and troubleshooting
+- Added `fuzzing/run_fuzzing.sh` automated execution script
+- Created `fuzzing/Dockerfile` for ASAN-enabled fuzzing with memory error detection
+- Added Makefile targets for fuzzing workflows:
+  - `make fuzz-quick` - 1-minute quick test
+  - `make fuzz` - 5-minute standard campaign  
+  - `make fuzz-long` - 1-hour extended campaign
+  - `make fuzz-docker` - Docker-based ASAN fuzzing
+- Updated `pyproject.toml` with fuzzing dependencies:
+  - `atheris>=2.3.0` - Coverage-guided Python fuzzer
+  - `hypothesis>=6.0` - Property-based testing (already used)
+- Added `tests/test_fuzzing_properties.py` with Hypothesis-based property tests:
+  - 8 test classes with 100+ test cases
+  - Tests for multiedgelist parsing, edgelist parsing, delimiter handling
+  - Unicode handling, edge cases, load/save roundtrip invariants
+- Updated `.gitignore` to exclude fuzzing artifacts (crashes/, logs, etc.)
+
+**Fuzzing Targets:**
+1. **Network loaders/parsers** - `multi_layer_network().load_network()` with various input types (multiedgelist, edgelist, gpickle, gml)
+2. **Edge/node parsers** - Line-by-line parsing in multilayer edge lists
+3. **File I/O operations** - GraphML, pickle, and other format loaders
+4. **Delimiter handling** - Various label delimiters and format variations
+5. **Unicode and special characters** - Non-ASCII node/layer names
+6. **Edge cases** - Empty files, self-loops, malformed data, memory limits
+
+**Coverage:**
+- Atheris coverage-guided fuzzing for automated bug discovery
+- Hypothesis property-based testing for invariant verification
+- 400+ seed inputs generated per campaign (mutations of 4 seed files)
+- Comprehensive error handling (filters expected errors vs. real bugs)
+
+**Purpose:** Discover crashes, unhandled exceptions, memory errors, and logic faults in py3plex's input parsing, network construction, and core multilayer operations through automated fuzzing (Issue from entry:LLM.md).
 
 ### 2025-10-22: Test Verification Coverage Expansion (Issue #20)
 **Changes Made:**
@@ -2668,6 +2712,153 @@ crosshair check py3plex --per_path_timeout=20
 - Document all invariants in this file when contracts change
 
 **Note:** This is **extended formal verification** - not all functions have contracts, and CrossHair may time out on complex functions. The goal is lightweight, maintainable contracts on critical paths that catch common bugs during development. Coverage expanded from 2 modules (original) → 4 modules (v2) → 8 modules (v3) as of 2025-10-22.
+
+#### 8. Fuzzing Infrastructure (Comprehensive Bug Discovery)
+
+Py3plex includes comprehensive fuzzing infrastructure for discovering crashes, memory errors, and logic faults through automated testing. This complements formal verification and property-based testing.
+
+**Framework:** Atheris (coverage-guided Python fuzzer) + Hypothesis (property-based testing)
+
+**Coverage:** Input parsing, network loading, edge/line parsing, file I/O operations
+
+**Infrastructure Location:** `fuzzing/` directory in repository root
+
+**Fuzzing Harnesses:**
+
+1. **`fuzz_load_network.py`** - Fuzzes the main network loading path
+   - Tests multiple input formats: multiedgelist, edgelist, gpickle, gml
+   - Exercises `multi_layer_network().load_network()` with malformed data
+   - Handles temporary file creation for file-based parsers
+   - Filters expected exceptions (ValueError, TypeError) from real bugs
+   - Example: `python fuzzing/fuzz_load_network.py fuzzing/seeds/ -max_total_time=300`
+
+2. **`fuzz_parse_line.py`** - Fuzzes individual edge/line parsing
+   - Tests multiedgelist format line-by-line parsing
+   - Discovers delimiter and format handling issues
+   - Tests edge cases (missing columns, unicode, special chars)
+   - Example: `python fuzzing/fuzz_parse_line.py fuzzing/seeds/ -max_total_time=300`
+
+**Seed Corpus:** `fuzzing/seeds/` contains 4 seed files:
+- `small_multiedgelist.txt` - Valid multilayer edges
+- `simple_edgelist.txt` - Basic edge list format  
+- `minimal_multiplex.txt` - Minimal multiplex network
+- `malformed_variants.txt` - Known edge cases (missing columns, unicode, huge integers, etc.)
+
+**Property-Based Tests:** `tests/test_fuzzing_properties.py`
+
+8 test classes with Hypothesis-generated inputs:
+1. **TestMultiedgelistParsing** - Valid multiedgelist format parsing
+2. **TestEdgelistParsing** - Simple edgelist format parsing
+3. **TestDelimiterHandling** - Different label delimiters (---, :::, ___, |||, ...)
+4. **TestNetworkLoadRoundtrip** - Load/save roundtrip invariants
+5. **TestUnicodeHandling** - Unicode and special character node names
+6. **TestEdgeCases** - Self-loops, empty lines, edge cases
+7. **Arbitrary Text Parsing** - Random text input resilience
+8. **Edge Case Validation** - Boundary conditions
+
+**Running Fuzzing Campaigns:**
+
+```bash
+# Quick test (1 minute)
+make fuzz-quick
+
+# Standard campaign (5 minutes)
+make fuzz
+
+# Extended campaign (1 hour)
+make fuzz-long
+
+# Docker with ASAN (memory error detection)
+make fuzz-docker
+
+# Manual execution
+python fuzzing/fuzz_load_network.py fuzzing/seeds/ -max_total_time=300
+
+# Run property-based tests
+pytest tests/test_fuzzing_properties.py -v
+```
+
+**Fuzzing Targets:**
+- Network loaders/parsers (`load_network()` with multiedgelist, edgelist, gpickle, gml, graphml)
+- Edge/node parsers (line parsing, delimiter handling, weight parsing)
+- File I/O operations (GraphML, pickle, GEXF loaders)
+- Graph transformations (aggregation, layer slicing, get_layers())
+- Delimiter variations (---, :::, custom delimiters)
+- Unicode and special characters in node/layer names
+- Edge cases (empty files, self-loops, malformed data, huge weights)
+
+**Expected vs. Real Bugs:**
+
+Expected errors (not bugs):
+- `ValueError` - Invalid input formats
+- `TypeError` - Wrong data types
+- `KeyError` - Missing required fields
+- `FileNotFoundError` - Missing files
+
+Real bugs (should be fixed):
+- `AssertionError` - Logic errors in invariants
+- `MemoryError` - Memory leaks or excessive allocation
+- Segmentation faults - Memory corruption (C/C++ components)
+- Infinite loops - Performance issues
+- Unhandled exceptions - Missing error handling
+
+**ASAN-Enabled Fuzzing:**
+
+For C/C++ components (e.g., Infomap bindings), build with AddressSanitizer:
+
+```bash
+# Set compiler flags
+export CFLAGS="-fsanitize=address -fno-omit-frame-pointer -g"
+export CXXFLAGS="-fsanitize=address -fno-omit-frame-pointer -g"
+export LDFLAGS="-fsanitize=address"
+
+# Rebuild
+pip install -e . --force-reinstall --no-binary :all:
+
+# Run fuzzer (ASAN will detect memory errors)
+python fuzzing/fuzz_load_network.py fuzzing/seeds/
+```
+
+Or use Docker:
+```bash
+docker build -t py3plex-fuzzing -f fuzzing/Dockerfile .
+docker run py3plex-fuzzing
+```
+
+**ASAN Detects:**
+- Heap buffer overflows
+- Stack buffer overflows  
+- Use-after-free errors
+- Memory leaks
+- Double-free errors
+
+**Crash Triage Workflow:**
+
+1. **Atheris finds a crash** - Saves testcase to `crash-XXXXX` file
+2. **Reproduce crash:** `python fuzzing/fuzz_load_network.py fuzzing/seeds/ ./crash-XXXXX`
+3. **Minimize testcase** - Use Atheris reproduction tools
+4. **Debug** - Add logging, run under debugger
+5. **Fix** - Patch the bug
+6. **Regression test** - Add test to `tests/` with minimized input
+7. **Re-run fuzzer** - Verify fix and continue fuzzing
+
+**Coverage Metrics:**
+- Atheris generates 400+ test cases per campaign from 4 seeds
+- Hypothesis runs 50-200 examples per property test (configurable)
+- Comprehensive error handling filters expected errors
+- Coverage-guided mutation explores new code paths
+
+**Documentation:** Complete guide in `fuzzing/README.md` (8.7KB) includes:
+- Installation instructions
+- Usage examples and fuzzing campaigns
+- Crash triage and debugging workflow  
+- Best practices and troubleshooting
+- CI integration examples
+- Advanced ASAN fuzzing
+
+**Purpose:** Automated bug discovery in input parsing, network construction, and core operations. Complements formal verification (compile-time) and property-based testing (structured inputs) with coverage-guided fuzzing (random mutations).
+
+**Integration:** Fuzzing is optional (requires `pip install atheris`) but recommended for development and CI pipelines.
 
 ### Issues and Recommendations
 
