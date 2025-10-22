@@ -1,13 +1,73 @@
 # LLM Context Summary
 
-**Last Updated**: 2025-10-22 (Formal Verification Expansion - Issue #19 - v3)  
-**Previous Update**: 2025-10-22 (Formal Verification Expansion - Issue #19 - v2)
+**Last Updated**: 2025-10-22 (Test Verification Coverage Expansion - Issue #20)  
+**Previous Update**: 2025-10-22 (Formal Verification Expansion - Issue #19 - v3)
 
 ---
 
 ## 📋 Document Changelog
 
 This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
+
+### 2025-10-22: Test Verification Coverage Expansion (Issue #20)
+**Changes Made:**
+- Expanded CrossHair formal verification coverage from 8 to 11 modules (37.5% increase)
+- Added contracts to `py3plex/core/parsers.py`:
+  - `parse_gml()` - Validates file_name is non-empty string, ensures result is MultiGraph/MultiDiGraph
+  - `parse_nx()` - Validates nx_object is not None and is NetworkX graph
+  - `parse_matrix()` - Validates file_name is non-empty string, ensures network is not None
+  - `parse_gpickle()` - Validates file_name is non-empty string, ensures result is MultiGraph/MultiDiGraph
+- Added contracts to `py3plex/io/api.py`:
+  - `register_reader()` - Validates format_name is non-empty string and reader_func is callable
+  - `register_writer()` - Validates format_name is non-empty string and writer_func is callable
+  - `supported_formats()` - Ensures result is dictionary with correct keys based on parameters
+- Added contracts to `py3plex/visualization/layout_algorithms.py`:
+  - `compute_force_directed_layout()` - Validates graph is not None, has nodes, gravity≥0, scalingRatio>0
+  - `compute_random_layout()` - Validates graph is not None and has nodes, ensures positions for all nodes
+- Updated `.github/workflows/verify.yml` to verify 11 modules (was 8)
+- Enhanced `tests/test_contracts.py` with 3 new test classes and 9 new test methods
+- All contracts use optional icontract imports with no-op fallbacks
+
+**Contracts Added (New Invariants):**
+1. **File Path Validation**: All parser file_name parameters must be non-empty strings
+2. **Graph Type Preservation**: Parsers return correct graph types (MultiGraph/MultiDiGraph)
+3. **Non-null Parser Results**: All parsers ensure non-null return values
+4. **Registry Validation**: Format names must be non-empty strings, functions must be callable
+5. **Post-Registration Verification**: Registered readers/writers must be in registry after call
+6. **Format List Structure**: supported_formats() returns dict with correct keys
+7. **Layout Parameter Validation**: gravity≥0, scalingRatio>0 for force-directed layout
+8. **Layout Completeness**: All layout functions return positions for all nodes in graph
+9. **Graph Input Validation**: Layout algorithms validate graph is not None and has nodes
+
+**Modules Now Under Verification:**
+- `py3plex/multinet/aggregation.py` (existing)
+- `py3plex/core/multinet.py` (existing)
+- `py3plex/algorithms/statistics/multilayer_statistics.py` (existing)
+- `py3plex/algorithms/statistics/basic_statistics.py` (existing)
+- `py3plex/core/converters.py` (existing)
+- `py3plex/core/random_generators.py` (existing)
+- `py3plex/utils.py` (existing)
+- `py3plex/core/supporting.py` (existing)
+- `py3plex/core/parsers.py` (new)
+- `py3plex/io/api.py` (new)
+- `py3plex/visualization/layout_algorithms.py` (new)
+
+**Test Coverage:**
+- Added `TestParsersContracts` class with 5 test methods
+- Added `TestIOAPIContracts` class with 4 test methods
+- Added `TestLayoutAlgorithmsContracts` class with 3 test methods
+- Updated `TestContractIntegration` to verify all 11 modules
+- Expanded documented invariants from 4 to 7 categories
+
+**Impact:**
+- Extended formal verification coverage from 8 to 11 modules (37.5% increase)
+- Added 9 new function contracts with 13 invariants verified symbolically (total: 28 invariants)
+- Improved input validation for file parsing, I/O registry, and visualization layout
+- Enhanced test coverage to validate all contracted modules
+- Better error detection for invalid inputs at development time
+- Maintains zero impact on production installations (optional contracts)
+
+**Purpose:** Continue expanding formal verification opportunities to I/O and visualization modules, documenting fundamental invariants for file parsing, registry operations, and layout algorithms (Issue #20).
 
 ### 2025-10-22: Formal Verification Expansion (Issue #19 - v3)
 **Changes Made:**

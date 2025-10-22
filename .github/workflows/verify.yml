@@ -64,6 +64,12 @@ jobs:
           crosshair check py3plex/utils.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "Verifying supporting.py..."
           crosshair check py3plex/core/supporting.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          echo "Verifying parsers.py..."
+          crosshair check py3plex/core/parsers.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          echo "Verifying io/api.py..."
+          crosshair check py3plex/io/api.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
+          echo "Verifying visualization/layout_algorithms.py..."
+          crosshair check py3plex/visualization/layout_algorithms.py --per_path_timeout=20 || echo "⚠️ Some verification checks incomplete"
           echo "✅ Formal verification completed"
         timeout-minutes: 15
       
