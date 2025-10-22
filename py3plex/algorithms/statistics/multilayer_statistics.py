@@ -22,7 +22,28 @@ import scipy.sparse as sp
 from scipy.sparse.linalg import eigsh
 from scipy.stats import pearsonr
 
+# Optional formal verification support
+try:
+    from icontract import require, ensure
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    ICONTRACT_AVAILABLE = False
 
+
+@require(lambda network: network is not None, "network must not be None")
+@require(lambda network: hasattr(network, 'get_edges'), "network must have get_edges method")
+@require(lambda layer: isinstance(layer, str) and len(layer) > 0, "layer must be a non-empty string")
+@ensure(lambda result: 0.0 <= result <= 1.0, "density must be between 0 and 1")
+@ensure(lambda result: not np.isnan(result), "density must not be NaN")
 def layer_density(network: Any, layer: str) -> float:
     """
     Calculate layer density (ρₐ).
@@ -56,6 +77,12 @@ def layer_density(network: Any, layer: str) -> float:
 
     Reference:
         Kivelä et al. (2014), J. Complex Networks 2(3), 203-271
+    
+    Contracts:
+        - Precondition: network must not be None
+        - Precondition: layer must be a non-empty string
+        - Postcondition: result is in [0, 1] (fundamental property of density)
+        - Postcondition: result is not NaN
     """
     # Get nodes and edges in the specified layer
     layer_nodes = set()
@@ -84,6 +111,12 @@ def layer_density(network: Any, layer: str) -> float:
     return float(density)
 
 
+@require(lambda network: network is not None, "network must not be None")
+@require(lambda network: hasattr(network, 'get_edges'), "network must have get_edges method")
+@require(lambda layer_i: isinstance(layer_i, str) and len(layer_i) > 0, "layer_i must be a non-empty string")
+@require(lambda layer_j: isinstance(layer_j, str) and len(layer_j) > 0, "layer_j must be a non-empty string")
+@ensure(lambda result: result >= 0.0, "coupling strength must be non-negative")
+@ensure(lambda result: not np.isnan(result), "coupling strength must not be NaN")
 def inter_layer_coupling_strength(network: Any, layer_i: str, layer_j: str) -> float:
     """
     Calculate inter-layer coupling strength (C^αβ).
@@ -110,6 +143,12 @@ def inter_layer_coupling_strength(network: Any, layer_i: str, layer_j: str) -> f
 
     Reference:
         De Domenico et al. (2013), Physical Review X 3(4), 041022
+    
+    Contracts:
+        - Precondition: network must not be None
+        - Precondition: layer_i and layer_j must be non-empty strings
+        - Postcondition: result is non-negative (weights are non-negative)
+        - Postcondition: result is not NaN
     """
     coupling_weights = []
 
@@ -126,6 +165,11 @@ def inter_layer_coupling_strength(network: Any, layer_i: str, layer_j: str) -> f
     return float(np.mean(coupling_weights))
 
 
+@require(lambda network: network is not None, "network must not be None")
+@require(lambda network: hasattr(network, 'get_nodes') and hasattr(network, 'get_edges'), "network must have get_nodes and get_edges methods")
+@require(lambda node: node is not None, "node must not be None")
+@ensure(lambda result: 0.0 <= result <= 1.0, "activity must be between 0 and 1")
+@ensure(lambda result: not np.isnan(result), "activity must not be NaN")
 def node_activity(network: Any, node: Any) -> float:
     """
     Calculate node activity (aᵢ).
@@ -151,6 +195,12 @@ def node_activity(network: Any, node: Any) -> float:
 
     Reference:
         Kivelä et al. (2014), J. Complex Networks 2(3), 203-271
+    
+    Contracts:
+        - Precondition: network must not be None
+        - Precondition: node must not be None
+        - Postcondition: result is in [0, 1] (fraction of layers)
+        - Postcondition: result is not NaN
     """
     # Get all layers
     all_layers = set()
