@@ -43,6 +43,7 @@ htmlcov/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.hypothesis/
 
 # Benchmark results
 benchmark-*.json
