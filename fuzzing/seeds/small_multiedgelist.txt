@@ -1,0 +1,5 @@
+n1 l1 n2 l2 1.0
+n2 l1 n3 l2 2.0
+n3 l2 n4 l1 1.5
+nodeA layerA nodeB layerB 3.0
+nodeB layerB nodeC layerA 2.5
