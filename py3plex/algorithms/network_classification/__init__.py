@@ -3,6 +3,7 @@
 # label propagation algorithms:
 import multiprocessing as mp  # initialize the MP part
 import time
+from typing import Any, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -11,7 +12,7 @@ from sklearn.metrics import f1_score
 from sklearn.model_selection import ShuffleSplit
 
 
-def label_propagation_normalization(matrix):
+def label_propagation_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
     matrix = matrix.tocsr()
     try:
         matrix.setdiag(0)
@@ -25,30 +26,30 @@ def label_propagation_normalization(matrix):
 
 
 # suggested as part of the hinmine..
-def normalize_initial_matrix_freq(mat):
+def normalize_initial_matrix_freq(mat: np.ndarray) -> np.ndarray:
     sums = np.sum(mat, axis=0)
     mat = mat / sums
     return mat
 
 
-def normalize_amplify_freq(mat):
+def normalize_amplify_freq(mat: np.ndarray) -> np.ndarray:
     sums = np.sum(mat, axis=0)
     mat = mat * sums
     return mat
 
 
-def normalize_exp(mat):
+def normalize_exp(mat: np.ndarray) -> np.ndarray:
     return np.exp(mat)
 
 
 def label_propagation(
-    graph_matrix,
-    class_matrix,
-    alpha,
-    epsilon=1e-12,
-    max_steps=100000,
-    normalization="freq",
-):
+    graph_matrix: sp.spmatrix,
+    class_matrix: np.ndarray,
+    alpha: float,
+    epsilon: float = 1e-12,
+    max_steps: int = 100000,
+    normalization: str = "freq",
+) -> np.ndarray:
 
     # This method assumes the label-propagation normalization and a symmetric matrix with no rank sinks.
     diff = np.inf
@@ -75,14 +76,14 @@ def label_propagation(
 
 
 def validate_label_propagation(
-    core_network,
-    labels,
-    dataset_name="test",
-    repetitions=5,
-    normalization_scheme="basic",
-    alpha_value=0.001,
-    random_seed=123,
-):
+    core_network: sp.spmatrix,
+    labels: np.ndarray,
+    dataset_name: str = "test",
+    repetitions: int = 5,
+    normalization_scheme: str = "basic",
+    alpha_value: float = 0.001,
+    random_seed: int = 123,
+) -> pd.DataFrame:
 
     try:
         labels = labels.todense()
@@ -112,7 +113,7 @@ def validate_label_propagation(
                     normalization=normalization_scheme,
                 )
 
-                y_test = [[] for _ in range(labels.shape[0])]
+                y_test: List[List[Any]] = [[] for _ in range(labels.shape[0])]
                 cy = sp.csr_matrix(labels).tocoo()
                 for i, b in zip(cy.row, cy.col):
                     y_test[i].append(b)
@@ -150,6 +151,6 @@ def validate_label_propagation(
     return df
 
 
-def label_propagation_tf():
+def label_propagation_tf() -> None:
     # todo..
     pass

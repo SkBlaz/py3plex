@@ -1,12 +1,19 @@
 # node ranking algorithms
 import multiprocessing as mp
+from typing import Any, Generator, List, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
 import scipy.sparse as sp
 
+# Global variables for multiprocessing (set by run_PPR)
+__graph_matrix: sp.spmatrix
+damping_hyper: float
+spread_step_hyper: int
+spread_percent_hyper: float
 
-def stochastic_normalization(matrix):
+
+def stochastic_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
     matrix = matrix.tolil()
 
     try:
@@ -25,7 +32,7 @@ def stochastic_normalization(matrix):
     return matrix
 
 
-def page_rank_kernel(index_row):
+def page_rank_kernel(index_row: int) -> Tuple[int, np.ndarray]:
 
     # call as results = p.map(pr_kernel, batch)
     pr = sparse_page_rank(
@@ -48,15 +55,15 @@ def page_rank_kernel(index_row):
 
 
 def sparse_page_rank(
-    matrix,
-    start_nodes,
-    epsilon=1e-6,
-    max_steps=100000,
-    damping=0.5,
-    spread_step=10,
-    spread_percent=0.3,
-    try_shrink=True,
-):
+    matrix: sp.spmatrix,
+    start_nodes: Union[List[int], range],
+    epsilon: float = 1e-6,
+    max_steps: int = 100000,
+    damping: float = 0.5,
+    spread_step: int = 10,
+    spread_percent: float = 0.3,
+    try_shrink: bool = True,
+) -> np.ndarray:
 
     assert (len(start_nodes)) > 0
 
@@ -116,15 +123,15 @@ def sparse_page_rank(
 
 
 def run_PPR(
-    network,
-    cores=None,
-    jobs=None,
-    damping=0.85,
-    spread_step=10,
-    spread_percent=0.3,
-    targets=None,
-    parallel=True,
-):
+    network: sp.spmatrix,
+    cores: Optional[int] = None,
+    jobs: Optional[List[range]] = None,
+    damping: float = 0.85,
+    spread_step: int = 10,
+    spread_percent: float = 0.3,
+    targets: Optional[List[int]] = None,
+    parallel: bool = True,
+) -> Generator[Union[Tuple[int, np.ndarray], List[Tuple[int, np.ndarray]]], None, None]:
 
     # normalize the matrix
 
@@ -163,13 +170,13 @@ def run_PPR(
                 yield results
 
 
-def hubs_and_authorities(graph):
-    return nx.hits_scipy(graph)
+def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
+    return nx.hits_scipy(graph)  # type: ignore[no-any-return]
 
 
-def hub_matrix(graph):
+def hub_matrix(graph: nx.Graph) -> np.ndarray:
     return nx.hub_matrix(graph)
 
 
-def authority_matrix(graph):
+def authority_matrix(graph: nx.Graph) -> np.ndarray:
     return nx.authority_matrix(graph)
