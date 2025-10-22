@@ -19,10 +19,16 @@ from typing import Literal, Union
 
 import numpy as np
 import scipy.sparse as sp
+from icontract import require, ensure
 
 logger = logging.getLogger(__name__)
 
 
+@require(lambda edges: len(edges) > 0, "edges must not be empty")
+@require(lambda reducer: reducer in {"sum", "mean", "max"}, "reducer must be one of: sum, mean, max")
+@ensure(lambda result: result is not None, "result must not be None")
+@ensure(lambda result, edges: _validate_node_preservation(result, edges), "aggregation preserves node union")
+@ensure(lambda result: _validate_no_negative_weights(result), "all weights must be non-negative")
 def aggregate_layers(
     edges: Union[np.ndarray, list],
     weight_col: Union[str, int] = "w",
@@ -243,3 +249,41 @@ def _aggregate_mean(
     unique_cols = unique_ids % n
 
     return sp.coo_matrix((mean_data, (unique_rows, unique_cols)), shape=(n, n))
+
+
+# Helper functions for contract validation
+def _validate_node_preservation(result: Union[sp.csr_matrix, np.ndarray], edges: np.ndarray) -> bool:
+    """
+    Validate that aggregation preserves the union of all nodes from input edges.
+    
+    This is a core invariant: no nodes should be lost during aggregation.
+    The result matrix size should encompass all node IDs from the input.
+    """
+    if isinstance(edges, list):
+        edges = np.array(edges)
+    
+    if edges.ndim != 2 or edges.shape[1] < 3:
+        return True  # Skip validation for malformed input
+    
+    # Get max node ID from edges (columns 1 and 2 are source and target)
+    max_node = max(edges[:, 1].max(), edges[:, 2].max())
+    
+    # Check result matrix size
+    if isinstance(result, sp.csr_matrix):
+        return result.shape[0] > max_node and result.shape[1] > max_node
+    else:
+        return result.shape[0] > max_node and result.shape[1] > max_node
+
+
+def _validate_no_negative_weights(result: Union[sp.csr_matrix, np.ndarray]) -> bool:
+    """
+    Validate that all edge weights are non-negative.
+    
+    This is a fundamental invariant: aggregation with sum/mean/max of non-negative
+    weights should never produce negative weights.
+    """
+    if isinstance(result, sp.csr_matrix):
+        return np.all(result.data >= 0)
+    else:
+        return np.all(result >= 0)
+

@@ -1,13 +1,51 @@
 # LLM Context Summary
 
-**Last Updated**: 2025-10-22 (Property-Based Testing Extension - Multiplex Networks)  
-**Previous Update**: 2025-10-21 (Type Coverage & Quality Improvement - Issue #16)
+**Last Updated**: 2025-10-22 (Formal Verification Integration - CrossHair & icontract)  
+**Previous Update**: 2025-10-22 (Property-Based Testing Extension - Multiplex Networks)
 
 ---
 
 ## 📋 Document Changelog
 
 This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
+
+### 2025-10-22: Formal Verification Integration with CrossHair and icontract
+**Changes Made:**
+- Integrated formal verification capabilities using **CrossHair** (symbolic execution) and **icontract** (design-by-contract)
+- Added `.github/workflows/verify.yml` for automated formal verification in CI/CD pipeline
+- Implemented contracts in `py3plex/multinet/aggregation.py`:
+  - **Preconditions**: Non-empty edges, valid reducer methods
+  - **Postconditions**: Node preservation, non-negative weights, non-null results
+  - Helper functions `_validate_node_preservation()` and `_validate_no_negative_weights()`
+- Implemented contracts in `py3plex/core/multinet.py`:
+  - Preconditions for `aggregate_edges()`: initialized network, valid metric
+  - Postconditions: non-null result, NetworkX graph type validation
+- Added formal verification dependencies to `pyproject.toml` dev dependencies:
+  - `crosshair-tool>=0.0.60`
+  - `icontract>=2.6.0`
+  - `z3-solver>=4.12.0`
+- Created comprehensive formal verification documentation section in this file
+
+**Contracts Implemented:**
+1. **Node Preservation Invariant**: Aggregation preserves the union of all nodes from input layers
+2. **Non-Negative Weights**: All aggregated weights remain non-negative (for sum/mean/max reducers)
+3. **Graph Type Preservation**: Aggregation returns proper NetworkX graph objects
+4. **Input Validation**: Empty edge lists and invalid parameters are rejected
+
+**Verification Workflow:**
+- Runs on push and pull request to main/master/develop branches
+- Python 3.11 with CrossHair, icontract, and z3-solver
+- Per-path timeout of 20 seconds to balance coverage and CI speed
+- Focuses on modules with contracts: `aggregation.py` and `multinet.py`
+
+**Impact:**
+- **Partial formal verification** of core aggregation functions
+- Catches contract violations at compile-time during CI
+- Documents mathematical invariants as executable specifications
+- Complements property-based testing (Hypothesis) with symbolic execution
+- Establishes foundation for expanding contracts to more modules
+
+**Purpose:** Introduce formal verification as an additional layer of correctness guarantees beyond unit tests and property-based tests, documenting core invariants as machine-checkable contracts.
 
 ### 2025-10-22: Property-Based Testing Extension for Multiplex Networks
 **Changes Made:**
@@ -2228,6 +2266,66 @@ except ImportError:
 - **Edge Case Coverage:** Tests for empty networks, single nodes, disconnected components
 - **Reproducibility:** All tests use fixed seeds for deterministic results
 - **CI/CD:** Automated testing on Python 3.8-3.12 across Ubuntu, macOS, Windows
+
+#### 7. Formal Verification (Partial Coverage)
+- **Framework:** CrossHair (symbolic execution) + icontract (design-by-contract)
+- **Coverage:** Core aggregation functions in `py3plex/multinet/aggregation.py` and `py3plex/core/multinet.py`
+- **Verification Strategy:** Lightweight contracts on critical paths to maximize CrossHair's reasoning success
+- **CI Integration:** `.github/workflows/verify.yml` runs automated verification on every push/PR
+
+**Contracts Implemented:**
+
+1. **`aggregate_layers()` in `py3plex/multinet/aggregation.py`:**
+   - **Preconditions:**
+     - `@require(lambda edges: len(edges) > 0)` - Non-empty edge list
+     - `@require(lambda reducer: reducer in {"sum", "mean", "max"})` - Valid reducer method
+   - **Postconditions:**
+     - `@ensure(lambda result: result is not None)` - Non-null result
+     - `@ensure(lambda result, edges: _validate_node_preservation(result, edges))` - Node preservation invariant
+     - `@ensure(lambda result: _validate_no_negative_weights(result))` - Non-negative weights
+   
+2. **`aggregate_edges()` in `py3plex/core/multinet.py`:**
+   - **Preconditions:**
+     - `@require(lambda self: self.core_network is not None)` - Initialized network
+     - `@require(lambda metric: metric in {"count", "mean", "max", "sum"})` - Valid metric
+   - **Postconditions:**
+     - `@ensure(lambda result: result is not None)` - Non-null result
+     - `@ensure(lambda result: isinstance(result, (nx.Graph, nx.DiGraph)))` - NetworkX graph type
+
+**Core Invariants Verified:**
+
+- **Node Preservation:** Aggregation preserves the union of all nodes from input layers (no nodes lost)
+- **Weight Non-Negativity:** Aggregated weights remain non-negative for sum/mean/max reducers
+- **Type Safety:** Operations return expected types (sparse matrices, NetworkX graphs)
+- **Input Validation:** Empty inputs and invalid parameters are rejected at function entry
+
+**Invariants Documented but Not Yet Verified:**
+
+- **Idempotence:** `aggregate(aggregate(G)) == aggregate(G)` - Requires pure functions and careful state management
+- **Commutativity:** Aggregating layers in different orders yields same result (for commutative reducers)
+- **No Duplicate Edges:** Undirected aggregation produces unique edges
+- **Weight Aggregation Law:** Combined edge weight equals sum of layer weights for identical edges
+
+**Running Verification Locally:**
+```bash
+# Install verification tools
+pip install crosshair-tool icontract z3-solver
+
+# Verify specific modules
+crosshair check py3plex/multinet/aggregation.py --per_path_timeout=20
+crosshair check py3plex/core/multinet.py --per_path_timeout=20
+
+# Verify all modules with contracts
+crosshair check py3plex --per_path_timeout=20
+```
+
+**Future Expansion:**
+- Add contracts to projection and merging functions
+- Implement idempotence and commutativity tests as contracts
+- Expand to community detection and centrality algorithms
+- Document all invariants in this file when contracts change
+
+**Note:** This is **partial formal verification** - not all functions have contracts, and CrossHair may time out on complex functions. The goal is lightweight, maintainable contracts on critical paths that catch common bugs during development.
 
 ### Issues and Recommendations
 

@@ -56,6 +56,9 @@ dev = [
     "mypy>=1.0",
     "types-six>=1.16.0",  # Type stubs for six library (mypy)
     "pre-commit>=3.0",
+    "crosshair-tool>=0.0.60",  # Formal verification
+    "icontract>=2.6.0",  # Design by contract
+    "z3-solver>=4.12.0",  # SMT solver for CrossHair
 ]
 # Optional: Infomap for advanced community detection
 infomap = [
