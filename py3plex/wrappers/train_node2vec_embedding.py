@@ -4,6 +4,7 @@ import multiprocessing as mp
 import os
 import time
 from subprocess import call
+from typing import Any, Dict, List, Optional, Tuple
 
 from sklearn import linear_model
 from sklearn.multiclass import OneVsRestClassifier
@@ -17,17 +18,29 @@ logger = get_logger(__name__)
 
 
 def call_node2vec_binary(
-    input_graph,
-    output_graph,
-    p=1,
-    q=1,
-    dimension=128,
-    directed=False,
-    weighted=True,
-    binary="./node2vec",
-):
-
-    input_params = []
+    input_graph: str,
+    output_graph: str,
+    p: float = 1,
+    q: float = 1,
+    dimension: int = 128,
+    directed: bool = False,
+    weighted: bool = True,
+    binary: str = "./node2vec",
+) -> None:
+    """
+    Call the Node2Vec C++ binary with specified parameters.
+    
+    Args:
+        input_graph: Path to input graph file
+        output_graph: Path to output embedding file
+        p: Return parameter
+        q: In-out parameter
+        dimension: Embedding dimension
+        directed: Whether graph is directed
+        weighted: Whether graph is weighted
+        binary: Path to node2vec binary
+    """
+    input_params: List[str] = []
     input_params.append(binary)
     input_params.append("-i:" + input_graph)
     input_params.append("-o:" + output_graph)
@@ -44,17 +57,32 @@ def call_node2vec_binary(
 
 
 def n2v_embedding(
-    G,
-    targets,
-    verbose=False,
-    sample_size=0.5,
-    outfile_name="test.emb",
-    p=-100,
-    q=-100,
-    binary_path="./node2vec",
-    parameter_range=None,
-    embedding_dimension=128,
-):
+    G: Any,
+    targets: Any,
+    verbose: bool = False,
+    sample_size: float = 0.5,
+    outfile_name: str = "test.emb",
+    p: float = -100,
+    q: float = -100,
+    binary_path: str = "./node2vec",
+    parameter_range: Optional[List[float]] = None,
+    embedding_dimension: int = 128,
+) -> None:
+    """
+    Train Node2Vec embeddings with parameter optimization.
+    
+    Args:
+        G: NetworkX graph
+        targets: Target labels for nodes
+        verbose: Whether to print verbose output
+        sample_size: Sample size for training
+        outfile_name: Output embedding file name
+        p: Return parameter (negative value triggers grid search)
+        q: In-out parameter (negative value triggers grid search)
+        binary_path: Path to node2vec binary
+        parameter_range: Range of parameters to search
+        embedding_dimension: Dimension of embeddings
+    """
 
     # construct the embedding and return the binary..
     # ./node2vec -i:graph/karate.edgelist -o:emb/karate.emb -l:3 -d:24 -p:0.3 -dr -v
@@ -93,7 +121,7 @@ def n2v_embedding(
 
     vals = parameter_range
     copt = 0
-    cset = [0, 0]
+    cset: List[float] = [0.0, 0.0]
 
     if float(p) > -100 and float(q) > -100:
         logger.info("Running specific config of N2V.")
@@ -117,7 +145,7 @@ def n2v_embedding(
                 )
                 logger.debug("Parsing %s", outfile_name)
                 rdict = benchmark_node_classification(
-                    outfile_name, graph, targets, percent=float(sample_size)
+                    outfile_name, G, targets, percent=float(sample_size)
                 )
 
                 mi, ma, misd, masd = rdict[float(sample_size)]
@@ -152,31 +180,52 @@ def n2v_embedding(
 
 
 def learn_embedding(
-    core_network,
-    labels=None,
-    ssize=0.5,
-    embedding_outfile="out.emb",
-    p=0.1,
-    q=0.1,
-    binary_path="./node2vec",
-    parameter_range="[0.25,0.50,1,2,4]",
-):
+    core_network: Any,
+    labels: Optional[List[Any]] = None,
+    ssize: float = 0.5,
+    embedding_outfile: str = "out.emb",
+    p: float = 0.1,
+    q: float = 0.1,
+    binary_path: str = "./node2vec",
+    parameter_range: str = "[0.25,0.50,1,2,4]",
+) -> Tuple[str, float]:
+    """
+    Learn node embeddings for a network.
+    
+    Args:
+        core_network: NetworkX graph
+        labels: Node labels
+        ssize: Sample size
+        embedding_outfile: Output file for embeddings
+        p: Return parameter
+        q: In-out parameter
+        binary_path: Path to node2vec binary
+        parameter_range: String representation of parameter range list
+        
+    Returns:
+        Tuple of (method_name, elapsed_time)
+    """
     if labels is None:
         labels = []
     start = time.time()
-    parameter_range = ast.literal_eval(parameter_range)
-    if self.method == "default_n2v":
+    parameter_range_list = ast.literal_eval(parameter_range)
+    # Note: This function appears to be incomplete - self.method and self.vb are undefined
+    # This seems to be a method that was extracted from a class but not properly refactored
+    method = "default_n2v"  # Default value since self.method is not available
+    verbose = True  # Default value since self.vb is not available
+    
+    if method == "default_n2v":
         n2v_embedding(
             core_network,
             targets=labels,
             sample_size=ssize,
-            verbose=self.vb,
+            verbose=verbose,
             outfile_name=embedding_outfile,
             p=p,
             q=q,
             binary_path=binary_path,
-            parameter_range=parameter_range,
+            parameter_range=parameter_range_list,
         )
     end = time.time()
     elapsed = end - start
-    return (self.method, elapsed)
+    return (method, elapsed)

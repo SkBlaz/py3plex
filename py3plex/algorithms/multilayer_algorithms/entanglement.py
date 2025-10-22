@@ -6,6 +6,7 @@ Description: Loads a Detangler JSON format graph and compute unweighted entangle
 import itertools
 import math
 import sys
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 from scipy import spatial
@@ -18,7 +19,17 @@ logger.info("Python version: %s", sys.version)
 
 
 # Build the R and C matrix
-def build_occurrence_matrix(network):
+def build_occurrence_matrix(network: Any) -> Tuple[np.ndarray, List[Any]]:
+    """
+    Build occurrence matrix from multilayer network.
+    
+    Args:
+        network: Multilayer network object
+        
+    Returns:
+        Tuple of (c_matrix, layers) where c_matrix is the normalized occurrence matrix
+        and layers is the list of layer names
+    """
 
     multiedges = network.get_edges()
     layers = []
@@ -35,8 +46,9 @@ def build_occurrence_matrix(network):
     nb_layers = len(layers)
     r_matrix = np.zeros((nb_layers, nb_layers)).astype(float)
 
-    def count_overlap(overlap):
-        prev_layers = []
+    def count_overlap(overlap: List[List[Any]]) -> None:
+        """Count overlaps between layers."""
+        prev_layers: List[int] = []
         for e in overlap:
             layer = e[2]
             layer_index = layers.index(layer)
@@ -49,7 +61,7 @@ def build_occurrence_matrix(network):
 
     current_edge = None
     flat_pairs = 0.0
-    overlap = []
+    overlap: List[List[Any]] = []
 
     for e in edge_list:
         node_pair = [e[0], e[1]]
@@ -75,27 +87,46 @@ def build_occurrence_matrix(network):
 
 
 # proceeds with block decomposition
-def compute_blocks(c_matrix):
+def compute_blocks(c_matrix: np.ndarray) -> Tuple[List[List[int]], List[np.ndarray]]:
+    """
+    Compute block decomposition of occurrence matrix.
+    
+    Args:
+        c_matrix: Occurrence matrix
+        
+    Returns:
+        Tuple of (indices, blocks) where indices are the layer indices in each block
+        and blocks are the submatrices for each block
+    """
     c_sparse = csgraph_from_dense(c_matrix)
     nb_components, labels = connected_components(
         c_sparse, directed=False, return_labels=True
     )
 
-    v2i = {}
+    v2i: Dict[Any, List[int]] = {}
     for i, v in enumerate(labels):
         v2i[v] = v2i.get(v, []) + [i]
 
-    blocks = []
-    indices = []
-    for v, i in v2i.items():
-        indices.append(i)
-        blocks.append(c_matrix[np.ix_(i, i)])
+    blocks: List[np.ndarray] = []
+    indices: List[List[int]] = []
+    for v, idx_list in v2i.items():
+        indices.append(idx_list)
+        blocks.append(c_matrix[np.ix_(idx_list, idx_list)])
 
     return indices, blocks
 
 
 # computes entanglement for one block
-def compute_entanglement(block_matrix):
+def compute_entanglement(block_matrix: np.ndarray) -> Tuple[List[float], List[float]]:
+    """
+    Compute entanglement metrics for a block.
+    
+    Args:
+        block_matrix: Block submatrix
+        
+    Returns:
+        Tuple of ([intensity, homogeneity, normalized_homogeneity], gamma_layers)
+    """
     eigenvals, eigenvects = np.linalg.eig(block_matrix)
     max_eigenval = max(eigenvals.real)
     index_first_eigenvect = np.argmax(eigenvals)
@@ -126,7 +157,16 @@ def compute_entanglement(block_matrix):
     ], gamma_layers
 
 
-def compute_entanglement_analysis(network):
+def compute_entanglement_analysis(network: Any) -> List[Dict[str, Any]]:
+    """
+    Compute full entanglement analysis for a multilayer network.
+    
+    Args:
+        network: Multilayer network object
+        
+    Returns:
+        List of block analysis dictionaries with entanglement metrics
+    """
 
     matrix, layers = build_occurrence_matrix(network)
     indices, blocks = compute_blocks(matrix)
