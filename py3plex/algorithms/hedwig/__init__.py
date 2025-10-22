@@ -4,7 +4,7 @@ import multiprocessing as mp
 import os
 import time
 from datetime import datetime
-from typing import Any
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from tqdm import tqdm
 
@@ -15,12 +15,12 @@ from .learners import HeuristicLearner, OptimalLearner
 from .stats import Validate, adjustment, scorefunctions, significance
 
 # Global variables for multiprocessing (set by run_learner)
-arguments: dict = {}
+arguments: Dict[str, Any] = {}
 knowledgebase: Any = None
 validator_object: Any = None
 
 
-def _parameters_report(args, start, time_taken):
+def _parameters_report(args: Dict[str, Any], start: str, time_taken: float) -> str:
     sep = "-" * 40 + "\n"
     rep = (
         DESCRIPTION
@@ -42,7 +42,11 @@ def _parameters_report(args, start, time_taken):
     return rep
 
 
-def generate_rules_report(kwargs, rules_per_target, human=lambda label, rule: label):
+def generate_rules_report(
+    kwargs: Dict[str, Any],
+    rules_per_target: List[Tuple[Any, List[Any]]],
+    human: Callable[[Any, Any], Any] = lambda label, rule: label,
+) -> str:
     rules_report = ""
     for _, rules in rules_per_target:
 
@@ -60,7 +64,12 @@ def generate_rules_report(kwargs, rules_per_target, human=lambda label, rule: la
     return rules_report
 
 
-def run(kwargs, cli=True, generator_tag=False, num_threads="all"):
+def run(
+    kwargs: Dict[str, Any],
+    cli: bool = True,
+    generator_tag: bool = False,
+    num_threads: Union[str, int] = "all",
+) -> List[Tuple[Any, List[Any]]]:
 
     # change non-default settings. This is useful for func calls
 
@@ -114,12 +123,12 @@ def run(kwargs, cli=True, generator_tag=False, num_threads="all"):
     return rules_per_target
 
 
-def build_graph(kwargs):
+def build_graph(kwargs: Dict[str, Any]) -> Any:
     data = kwargs["data"]
     data.split(".")[0]
 
     # Walk the dir to find BK files
-    ontology_list = []
+    ontology_list: List[str] = []
     for root, _sub_folders, files in os.walk(kwargs["bk_dir"]):
         ontology_list.extend(os.path.join(root, f) for f in files)
 
@@ -136,7 +145,7 @@ def build_graph(kwargs):
     return graph
 
 
-def rule_kernel(target):
+def rule_kernel(target: Any) -> Tuple[Any, List[Any]]:
 
     # find exact rule map
     # if target:
@@ -172,14 +181,20 @@ def rule_kernel(target):
     return (target, rules)
 
 
-def run_learner(kwargs, kb, validator, generator=False, num_threads="all"):
+def run_learner(
+    kwargs: Dict[str, Any],
+    kb: ExperimentKB,
+    validator: Validate,
+    generator: bool = False,
+    num_threads: Union[str, int] = "all",
+) -> List[Tuple[Any, List[Any]]]:
 
     if kb.is_discrete_target():
         targets = list(kb.class_values if not kwargs["target"] else [kwargs["target"]])
     else:
         targets = [None]
 
-    rules_per_target = []
+    rules_per_target: List[Tuple[Any, List[Any]]] = []
 
     if num_threads != 0:
         global knowledgebase
@@ -192,15 +207,15 @@ def run_learner(kwargs, kb, validator, generator=False, num_threads="all"):
         if num_threads == "all":
             step = mp.cpu_count()  # number of parallel processes
         else:
-            step = num_threads
+            step = int(num_threads)
         jobs = [range(n)[i : i + step] for i in range(0, n, step)]  # generate jobs
 
         rules_per_target = []
         pbar = tqdm(total=len(targets))
         for batch in jobs:
             with mp.Pool(processes=step) as p:
-                batch = [targets[x] for x in batch]
-                results = p.map(rule_kernel, batch)
+                batch_list = [targets[x] for x in batch]
+                results = p.map(rule_kernel, batch_list)
                 pbar.update(step)
                 for rule in results:
                     rules_per_target.append(rule)

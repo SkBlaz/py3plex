@@ -4,7 +4,7 @@
 
 from os import makedirs
 from os.path import exists
-from typing import Any, List
+from typing import Any, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,7 +15,7 @@ from ...logging_config import get_logger
 logger = get_logger(__name__)
 
 
-def center(width, n):
+def center(width: float, n: int) -> Tuple[float, float]:
     """
     Computes free space on the figure on both sides.
     :param width:
@@ -31,8 +31,11 @@ def center(width, n):
 
 
 def diagram(
-    list_of_algorithms, the_algorithm_candidate, output_figure_file, fontsize=10
-):
+    list_of_algorithms: List[Tuple[str, float]],
+    the_algorithm_candidate: Optional[str],
+    output_figure_file: Optional[str],
+    fontsize: int = 10,
+) -> Optional[str]:
     """
     Draws critical distance diagram for Nemenyi or Bonferroni-Dunn post-hoc test.
     The diagram is shown if output_figure_file is None, and saved otherwise
@@ -96,14 +99,16 @@ def diagram(
     rc("text", usetex=True)
     rc("font", **fontProperties)
 
-    def name_length(name):
+    def name_length(name: str) -> float:
         length_converter = 2
         return len(name) / length_converter + names_lines_space
 
     # figure dimensions
     x_min, x_max = inf, -inf
-    for i, [alg_description, alg_rank] in enumerate(sorted_algos_copy):
-        m = alg_rank + (2 * int(i >= n // 2) - 1) * name_length(alg_description)
+    for i, alg_rank_tuple in enumerate(sorted_algos_copy):
+        alg_desc: str = alg_rank_tuple[0]
+        alg_r: float = alg_rank_tuple[1]
+        m = alg_r + (2 * int(i >= n // 2) - 1) * name_length(alg_desc)
         x_max = max(x_max, m)
         x_min = min(x_min, m)
     x_left = x_min
@@ -125,7 +130,7 @@ def diagram(
         ylim=(y_min, max(y_max, 3)),
     )
 
-    def plot_algorithm(algorithm_index, algorithm, avg_rank):
+    def plot_algorithm(algorithm_index: int, algorithm: str, avg_rank: float) -> None:
         if algorithm_index < n // 2:
             # go left
             sign = -1
@@ -154,33 +159,33 @@ def diagram(
             fontsize=font_size,
         )
 
-    def plot_critical_distance():
+    def plot_critical_distance() -> None:
         y = critical_distance_offset
         x0 = 1
         plt.plot(
-            [x0, critical_distance + x0],
+            [x0, critical_distance + x0],  # type: ignore[name-defined]
             [y, y],
             "|r",
             markersize=12,
             markeredgecolor="r",
             markeredgewidth=2,
         )
-        plt.plot([x0, critical_distance + x0], [y, y], "r", linewidth=2)
+        plt.plot([x0, critical_distance + x0], [y, y], "r", linewidth=2)  # type: ignore[name-defined]
         ax.text(
             x0,
             y + names_lines_space,
-            "{}: {:.4f}".format("critical distance", critical_distance),
+            "{}: {:.4f}".format("critical distance", critical_distance),  # type: ignore[name-defined]
             horizontalalignment="left",
             color="r",
             fontsize=font_size,
         )
 
-    def algorithm_groups():
+    def algorithm_groups() -> List[Tuple[int, int]]:
         sorted_ranks = [t[1] for t in sorted_algorithms]  # only ranks
         intervals = set()
         for start in range(len(sorted_ranks)):
             for end in range(start + 1, len(sorted_ranks)):
-                if sorted_ranks[end] - sorted_ranks[start] < critical_distance:
+                if sorted_ranks[end] - sorted_ranks[start] < critical_distance:  # type: ignore[name-defined]
                     if the_index is None:
                         intervals.add((start, end))
                     elif start == the_index or end == the_index:
@@ -202,15 +207,17 @@ def diagram(
             groups = [(groups[0][0], groups[-1][1])]
         return groups
 
-    def plot_groups(intervals):
+    def plot_groups(intervals: List[Tuple[int, int]]) -> None:
         k = len(intervals)
-        start, end = 0, inter_lines_space + first_level_height
+        start_h, end_h = 0, inter_lines_space + first_level_height
         heights = [
-            start * (1 - t / (k + 1)) + end * t / (k + 1) for t in range(1, k + 1)
+            start_h * (1 - t / (k + 1)) + end_h * t / (k + 1) for t in range(1, k + 1)
         ]
         colours = ["|r", "r"] if the_index is None else ["|b", "b"]
-        for ind, [ind1, ind2] in enumerate(intervals):
-            y = heights[ind]
+        for ind, interval_tuple in enumerate(intervals):
+            ind1: int = interval_tuple[0]
+            ind2: int = interval_tuple[1]
+            y = heights[ind]  # float from the list
             start = sorted_algorithms[ind1][1] - min(deltas[ind1], link_length_bonus)
             end = sorted_algorithms[ind2][1] + min(deltas[ind2 + 1], link_length_bonus)
             plt.plot(
@@ -245,8 +252,8 @@ def diagram(
     # algorithm ranks line
     plt.plot([1, n], [0, 0], "k")
     # algorithm descriptions
-    for i, alg_rank in enumerate(sorted_algos_copy):
-        plot_algorithm(i, alg_rank[0], alg_rank[1])
+    for i, alg_rank_tuple in enumerate(sorted_algos_copy):
+        plot_algorithm(i, alg_rank_tuple[0], alg_rank_tuple[1])
     # critical distance
 
     #    plot_critical_distance()
@@ -269,7 +276,7 @@ def diagram(
     return output_figure_file
 
 
-def remove_backslash(file_name):
+def remove_backslash(file_name: str) -> str:
     ch_list = []
     for ch in file_name:
         if ch != "\\":
@@ -323,14 +330,14 @@ results: List[Any] = []
 
 
 def plot_critical_distance(
-    fname,
-    groupby=None,
-    groupby_target="macro_F",
-    outfile="./micro_cd.pdf",
-    aggregator="mean",
-    crit_dist=False,
-    fontsize=10,
-):
+    fname: Any,
+    groupby: Optional[List[str]] = None,
+    groupby_target: str = "macro_F",
+    outfile: str = "./micro_cd.pdf",
+    aggregator: str = "mean",
+    crit_dist: bool = False,
+    fontsize: int = 10,
+) -> None:
 
     import operator
     from collections import defaultdict
@@ -360,8 +367,8 @@ def plot_critical_distance(
     avranks = list(clf_score.values())
     pairs = list(zip(names, avranks))
     if crit_dist:
-        cd = Orange.evaluation.compute_CD(
-            avranks[0 : (len(avranks) - 1)], comparisons, alpha="0.05"
+        cd = Orange.evaluation.compute_CD(  # type: ignore[name-defined]
+            avranks[0 : (len(avranks) - 1)], comparisons, alpha="0.05"  # type: ignore[name-defined]
         )
     else:
         cd = None
