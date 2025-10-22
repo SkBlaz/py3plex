@@ -12,7 +12,29 @@ from typing import Any, Dict, List, Optional
 
 import networkx as nx
 
+# Optional formal verification support
+try:
+    from icontract import require, ensure
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    ICONTRACT_AVAILABLE = False
 
+
+@require(lambda input_network: input_network is not None, "input_network must not be None")
+@require(lambda input_network: isinstance(input_network, (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)), 
+         "input_network must be a NetworkX graph")
+@ensure(lambda result: isinstance(result, dict), "result must be a dictionary")
+@ensure(lambda result: all(isinstance(v, (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)) for v in result.values()),
+        "all values in result must be NetworkX graphs")
 def split_to_layers(input_network: nx.Graph) -> Dict[Any, nx.Graph]:
     """
     Split a multilayer network into separate layer subgraphs.
@@ -22,6 +44,12 @@ def split_to_layers(input_network: nx.Graph) -> Dict[Any, nx.Graph]:
 
     Returns:
         Dictionary mapping layer names to their corresponding subgraphs.
+        
+    Contracts:
+        - Precondition: input_network must not be None
+        - Precondition: input_network must be a NetworkX graph
+        - Postcondition: result is a dictionary
+        - Postcondition: all values are NetworkX graphs
 
     Example:
         >>> network = nx.Graph()
@@ -46,6 +74,11 @@ def split_to_layers(input_network: nx.Graph) -> Dict[Any, nx.Graph]:
     return subgraph_dictionary
 
 
+@require(lambda input_network: input_network is not None, "input_network must not be None")
+@require(lambda input_network: isinstance(input_network, (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)),
+         "input_network must be a NetworkX graph")
+@ensure(lambda result: isinstance(result, (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)),
+        "result must be a NetworkX graph")
 def add_mpx_edges(input_network: nx.Graph) -> nx.Graph:
     """
     Add multiplex edges between corresponding nodes across layers.
@@ -58,6 +91,11 @@ def add_mpx_edges(input_network: nx.Graph) -> nx.Graph:
 
     Returns:
         Network with added multiplex edges between corresponding nodes.
+        
+    Contracts:
+        - Precondition: input_network must not be None
+        - Precondition: input_network must be a NetworkX graph
+        - Postcondition: result is a NetworkX graph
 
     Example:
         >>> network = nx.Graph()
