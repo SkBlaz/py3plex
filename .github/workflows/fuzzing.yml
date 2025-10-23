@@ -1,0 +1,93 @@
+name: Fuzzing
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  # Fast property-based tests run on every commit/PR
+  property-tests:
+    name: Property-Based Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip --timeout 120
+          pip install --timeout 120 --retries 3 pytest hypothesis
+          pip install --timeout 120 --retries 3 networkx numpy scipy tqdm || true
+          pip install -e . || true
+      
+      - name: Run property-based fuzzing tests
+        run: |
+          pytest tests/test_fuzzing_properties.py -v --tb=short
+        continue-on-error: false
+      
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: hypothesis-failures
+          path: .hypothesis/
+          retention-days: 7
+
+  # Atheris fuzzing only on main branches to save CI resources
+  atheris-fuzzing:
+    name: Atheris Fuzzing (Quick)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip --timeout 120
+          pip install --timeout 120 --retries 3 atheris
+          pip install --timeout 120 --retries 3 networkx numpy scipy tqdm || true
+          pip install -e . || true
+      
+      - name: Run quick fuzzing campaign (60 seconds)
+        run: |
+          bash fuzzing/run_fuzzing.sh 60
+        continue-on-error: true
+      
+      - name: Check for crashes
+        id: check_crashes
+        run: |
+          if ls fuzzing/crashes/crash-* 1>/dev/null 2>&1; then
+            echo "crashes_found=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Crashes found during fuzzing!"
+            exit 1
+          else
+            echo "crashes_found=false" >> $GITHUB_OUTPUT
+            echo "✅ No crashes found"
+          fi
+      
+      - name: Upload crash artifacts
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: fuzzing-crashes
+          path: |
+            fuzzing/crashes/
+            fuzzing/*.log
+          retention-days: 7
