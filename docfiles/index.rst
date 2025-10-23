@@ -178,6 +178,7 @@ Documentation Contents
    networkx_interop
    algorithm_guide
    performance
+   performance_guide
 
 .. toctree::
    :maxdepth: 2
