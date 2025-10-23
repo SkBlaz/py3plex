@@ -8,6 +8,7 @@ from typing import Any, List, Optional, Union
 import networkx as nx
 import numpy as np
 
+from py3plex import config
 from py3plex.core.nx_compat import nx_info
 from py3plex.logging_config import get_logger
 
@@ -119,8 +120,8 @@ def draw_multilayer_default(
     start_location_network = 0
     start_location_background = 0
     color = 0
-    shadow_size = 0.5
-    circle_size = 1.05
+    shadow_size = config.MULTILAYER_SHADOW_SIZE
+    circle_size = config.MULTILAYER_CIRCLE_SIZE
 
     for network in network_list:
         if remove_isolated_nodes:
@@ -192,8 +193,8 @@ def draw_multilayer_default(
         else:
             pass
 
-        start_location_network += 1.5  # type: ignore[assignment]
-        start_location_background += 1.5  # type: ignore[assignment]
+        start_location_network += config.MULTILAYER_LAYER_OFFSET  # type: ignore[assignment]
+        start_location_background += config.MULTILAYER_LAYER_OFFSET  # type: ignore[assignment]
         # if len(network.nodes()) > 10000:
         #     correction=10
         # else:

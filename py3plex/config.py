@@ -35,6 +35,11 @@ DEFAULT_LAYER_EDGE_WIDTH: float = 0.3
 BACKGROUND_SHAPES: List[str] = ["circle", "rectangle", "none"]
 DEFAULT_BACKGROUND_SHAPE: str = "circle"
 
+# Multilayer visualization geometry
+MULTILAYER_SHADOW_SIZE: float = 0.5  # Shadow offset for background shapes
+MULTILAYER_CIRCLE_SIZE: float = 1.05  # Radius for circular layer backgrounds
+MULTILAYER_LAYER_OFFSET: float = 1.5  # Spacing between consecutive layers
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Color Schemes
 # ─────────────────────────────────────────────────────────────────────────────
