@@ -32,7 +32,7 @@ pip install git+https://github.com/SkBlaz/py3plex.git
 **Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
-* [LLM Guide](docs/LLM_GUIDE.md) - Quick reference for AI assistants helping users
+* [LLM Guide](LLM.md) - Quick reference for AI assistants and UX improvements (see "LLM Quick Reference for UX Improvements" section)
 * [Installation Guide](https://skblaz.github.io/py3plex/installation.html) - Complete installation documentation
 * [CSV Loading Tutorial](https://skblaz.github.io/py3plex/tutorials/csv_loading.html) - Load data from CSV files
 
