@@ -27,6 +27,14 @@ from py3plex.exceptions import (
     VisualizationError,
 )
 
+# Import profiling utilities for easy access
+from py3plex.profiling import (
+    profile_performance,
+    timed_section,
+    benchmark,
+    get_monitor,
+)
+
 __all__ = [
     # Version info
     "__version__",
@@ -46,4 +54,9 @@ __all__ = [
     "EmbeddingError",
     "ConversionError",
     "IncompatibleNetworkError",
+    # Profiling utilities
+    "profile_performance",
+    "timed_section",
+    "benchmark",
+    "get_monitor",
 ]
