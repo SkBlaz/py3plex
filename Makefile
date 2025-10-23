@@ -3,7 +3,7 @@
 # Production-Grade Makefile for Development, Testing, and Publishing
 # ─────────────────────────────────────────────────────────────────────────────
 
-.PHONY: help setup dev-install format lint test coverage benchmark docs clean build publish api-check ci test-all fuzz-quick fuzz fuzz-long fuzz-docker
+.PHONY: help setup dev-install format lint test coverage benchmark docs clean build publish api-check ci test-all fuzz-property fuzz-quick fuzz fuzz-long fuzz-docker
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Variables
@@ -44,16 +44,17 @@ help: ## Display all available commands with descriptions
 	@printf "$(COLOR_BOLD)════════════════════════════════════════════════════════════════$(COLOR_RESET)\n\n"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(COLOR_GREEN)%-15s$(COLOR_RESET) %s\n", $$1, $$2}'
 	@printf "\n$(COLOR_BOLD)Example usage:$(COLOR_RESET)\n"
-	@printf "  make setup        # Initial setup\n"
-	@printf "  make format       # Format code\n"
-	@printf "  make lint         # Run linters\n"
-	@printf "  make test         # Run tests\n"
-	@printf "  make benchmark    # Run benchmarks\n"
-	@printf "  make test-all     # Run ALL checks (lint + test + benchmark)\n"
-	@printf "  make ci           # Run CI checks (lint + test)\n"
-	@printf "  make docs         # Build Sphinx documentation\n"
-	@printf "  make docs-pdf     # Generate PDF from master documentation\n"
-	@printf "  make docs-check   # Check API consistency\n\n"
+	@printf "  make setup          # Initial setup\n"
+	@printf "  make format         # Format code\n"
+	@printf "  make lint           # Run linters\n"
+	@printf "  make test           # Run tests\n"
+	@printf "  make fuzz-property  # Run property-based fuzzing\n"
+	@printf "  make benchmark      # Run benchmarks\n"
+	@printf "  make test-all       # Run ALL checks (lint + test + benchmark)\n"
+	@printf "  make ci             # Run CI checks (lint + test)\n"
+	@printf "  make docs           # Build Sphinx documentation\n"
+	@printf "  make docs-pdf       # Generate PDF from master documentation\n"
+	@printf "  make docs-check     # Check API consistency\n\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Environment Setup
@@ -268,7 +269,17 @@ benchmark: ## Run performance benchmarks with pytest-benchmark
 # ─────────────────────────────────────────────────────────────────────────────
 # Fuzzing
 # ─────────────────────────────────────────────────────────────────────────────
-fuzz-quick: ## Run quick fuzzing test (1 minute)
+fuzz-property: ## Run property-based fuzzing tests (fast, no atheris required)
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running property-based fuzzing tests...$(COLOR_RESET)\n"
+	@if [ ! -d "$(VENV)" ] && ! command -v pytest > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ Neither virtual environment nor global tools found. Run 'make setup' first.$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(COLOR_GREEN)✓ Running Hypothesis property tests...$(COLOR_RESET)\n"
+	@$(PYTEST) tests/test_fuzzing_properties.py -v --tb=short || true
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Property-based fuzzing complete!$(COLOR_RESET)\n"
+
+fuzz-quick: ## Run quick atheris fuzzing test (1 minute)
 	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running quick fuzzing test (60 seconds)...$(COLOR_RESET)\n"
 	@if ! $(PYTHON) -c "import atheris" 2>/dev/null; then \
 		printf "$(COLOR_RED)✗ Atheris not installed. Install with: pip install atheris$(COLOR_RESET)\n"; \
