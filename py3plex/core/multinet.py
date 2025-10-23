@@ -1,6 +1,7 @@
 # This is the main data structure container
 
 import itertools
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -69,34 +70,42 @@ class multi_layer_network:
     # constructor
     def __init__(
         self,
-        verbose=True,
-        network_type="multilayer",
-        directed=True,
-        dummy_layer="null",
-        label_delimiter="---",
-        coupling_weight=1,
-    ):
+        verbose: bool = True,
+        network_type: str = "multilayer",
+        directed: bool = True,
+        dummy_layer: str = "null",
+        label_delimiter: str = "---",
+        coupling_weight: Union[int, float] = 1,
+    ) -> None:
         """Class initializer
 
         This is the main class initializer method. User here specifies the type of the network, as well as other global parameters.
 
+        Args:
+            verbose: Enable verbose logging output
+            network_type: Type of network ('multilayer', 'multiplex', etc.)
+            directed: Whether the network is directed
+            dummy_layer: Name for dummy/placeholder layer
+            label_delimiter: Delimiter used to separate layer names in node labels
+            coupling_weight: Default weight for inter-layer edges
+
         """
         # initialize the class
-        self.coupling_weight = coupling_weight
-        self.layer_name_map = {}
-        self.layer_inverse_name_map = {}
-        self.core_network = None
-        self.directed = directed
-        self.node_order_in_matrix = None
-        self.dummy_layer = dummy_layer
-        self.numeric_core_network = None
-        self.labels = None
-        self.embedding = None
-        self.verbose = verbose
-        self.network_type = network_type  # assing network type
-        self.sparse_enabled = False
-        self.hinmine_network = None
-        self.label_delimiter = label_delimiter
+        self.coupling_weight: Union[int, float] = coupling_weight
+        self.layer_name_map: Dict[str, int] = {}
+        self.layer_inverse_name_map: Dict[int, str] = {}
+        self.core_network: Optional[Union[nx.MultiGraph, nx.MultiDiGraph]] = None
+        self.directed: bool = directed
+        self.node_order_in_matrix: Optional[List[Any]] = None
+        self.dummy_layer: str = dummy_layer
+        self.numeric_core_network: Optional[Any] = None
+        self.labels: Optional[Any] = None
+        self.embedding: Optional[Any] = None
+        self.verbose: bool = verbose
+        self.network_type: str = network_type  # assing network type
+        self.sparse_enabled: bool = False
+        self.hinmine_network: Optional[Any] = None
+        self.label_delimiter: str = label_delimiter
 
     def __getitem__(self, i, j=None):
         # for node in self.core_network.nodes():
@@ -128,19 +137,24 @@ class multi_layer_network:
             self.ground_truth_communities[node] = com
 
     def load_network(
-        self, input_file=None, directed=False, input_type="gml", label_delimiter="---"
-    ):
+        self,
+        input_file: Optional[str] = None,
+        directed: bool = False,
+        input_type: str = "gml",
+        label_delimiter: str = "---",
+    ) -> "multi_layer_network":
         """Main network loader
 
         This method loads and prepares a given network.
 
         Args:
-            param1: network name
-            param2: direction
-            param3: input_type
+            input_file: Path to the network file to load
+            directed: Whether the network is directed
+            input_type: Format of the input file ('gml', 'graphml', 'edgelist', 'gpickle', etc.)
+            label_delimiter: Delimiter used to separate layer names in node labels
 
         Returns:
-             self.core_network along with self.labels(optional), self.activity etc.
+             Self for method chaining. Populates self.core_network, self.labels, and self.activity
 
         """
 
@@ -471,8 +485,21 @@ class multi_layer_network:
                     for layer, count in sorted(nodes_per_layer.items()):
                         logger.info(f"  Layer '{layer}': {count} nodes")
 
-    def get_edges(self, data=False, multiplex_edges=False):
-        """A method for obtaining a network's edges"""
+    def get_edges(
+        self, data: bool = False, multiplex_edges: bool = False
+    ) -> Any:
+        """A method for obtaining a network's edges
+        
+        Args:
+            data: If True, return edge data along with edge tuples
+            multiplex_edges: If True, include coupling edges in multiplex networks
+            
+        Yields:
+            Edge tuples, optionally with data
+            
+        Raises:
+            Exception: If network type is not specified
+        """
         if self.network_type == "multilayer":
             for edge in self.core_network.edges(data=data):
                 yield edge
@@ -489,8 +516,15 @@ class multi_layer_network:
         else:
             raise Exception("Specify network type!  e.g., multilayer_network")
 
-    def get_nodes(self, data=False):
-        """A method for obtaining a network's nodes"""
+    def get_nodes(self, data: bool = False) -> Any:
+        """A method for obtaining a network's nodes
+        
+        Args:
+            data: If True, return node data along with node identifiers
+            
+        Yields:
+            Node identifiers, optionally with data
+        """
 
         yield from self.core_network.nodes(data=data)
 
@@ -894,7 +928,9 @@ class multi_layer_network:
         else:
             self.core_network = nx.MultiGraph(self.core_network)
 
-    def add_edges(self, edge_dict_list, input_type="dict"):
+    def add_edges(
+        self, edge_dict_list: Union[List[Dict], List[List], Tuple], input_type: str = "dict"
+    ) -> None:
         """A method for adding edges.. Types are:
         dict,list or px_edge. See examples for further use.
 
@@ -903,6 +939,13 @@ class multi_layer_network:
         list = [[n1,t1,n2,t2] ...]
 
         px_edge = ((n1,t1)(n2,t2))
+        
+        Args:
+            edge_dict_list: Edge data in dict, list, or px_edge format
+            input_type: Format of edge data ('dict', 'list', or 'px_edge')
+            
+        Raises:
+            Exception: If input_type is not valid
         """
 
         self._initiate_network()
@@ -927,8 +970,18 @@ class multi_layer_network:
         else:
             raise Exception("Please, use dict or list input.")
 
-    def remove_edges(self, edge_dict_list, input_type="list"):
-        """A method for removing edges.."""
+    def remove_edges(
+        self, edge_dict_list: Union[List[Dict], List[List]], input_type: str = "list"
+    ) -> None:
+        """A method for removing edges..
+        
+        Args:
+            edge_dict_list: Edge data in dict or list format
+            input_type: Format of edge data ('dict' or 'list')
+            
+        Raises:
+            Exception: If input_type is not valid
+        """
 
         if input_type == "dict":
             self._generic_edge_dict_manipulator(edge_dict_list, "remove_edge", raw=True)
@@ -937,8 +990,15 @@ class multi_layer_network:
         else:
             raise Exception("Please, use dict or list input.")
 
-    def add_nodes(self, node_dict_list, input_type="dict"):
-        """A method for adding nodes.."""
+    def add_nodes(
+        self, node_dict_list: Union[List[Dict], Dict], input_type: str = "dict"
+    ) -> None:
+        """A method for adding nodes..
+        
+        Args:
+            node_dict_list: Node data in dict format
+            input_type: Format of node data ('dict')
+        """
 
         self._initiate_network()
 
