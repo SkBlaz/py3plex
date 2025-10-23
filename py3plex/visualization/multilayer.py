@@ -37,6 +37,164 @@ except ImportError:
     plotly_import = False
 
 
+def _get_background_colors(background_color: str, num_networks: int, alphalevel: float) -> tuple:
+    """Get background color palette for multilayer visualization.
+    
+    Args:
+        background_color: Color scheme ("default", "rainbow", or None)
+        num_networks: Number of networks/layers to color
+        alphalevel: Original alpha level (modified if background_color is None)
+        
+    Returns:
+        tuple: (color_list, modified_alphalevel)
+    """
+    if background_color == "default":
+        color_list = colors.linear_gradient("#4286f4", n=num_networks)["hex"]
+    elif background_color == "rainbow":
+        color_list = colors.colors_default
+    elif background_color is None:
+        color_list = colors.colors_default
+        alphalevel = 0
+    else:
+        color_list = colors.colors_default
+    return color_list, alphalevel
+
+
+def _get_network_colors(networks_color: str, num_networks: int) -> List[str]:
+    """Get network color palette for multilayer visualization.
+    
+    Args:
+        networks_color: Color scheme ("rainbow" or "black")
+        num_networks: Number of networks/layers to color
+        
+    Returns:
+        List[str]: List of color codes
+    """
+    if networks_color == "rainbow":
+        return colors.colors_default
+    elif networks_color == "black":
+        return ["black"] * num_networks
+    else:
+        return colors.colors_default
+
+
+def _preprocess_network(
+    network: nx.Graph,
+    remove_isolated_nodes: bool,
+    verbose: bool
+) -> tuple:
+    """Preprocess a single network layer before drawing.
+    
+    Args:
+        network: NetworkX graph to preprocess
+        remove_isolated_nodes: Whether to remove isolated nodes
+        verbose: Whether to log network information
+        
+    Returns:
+        tuple: (processed_network, positions, degrees)
+    """
+    # Remove isolated nodes if requested
+    if remove_isolated_nodes:
+        isolates = list(nx.isolates(network))
+        network = network.copy()
+        network.remove_nodes_from(isolates)
+
+    # Log network info if verbose
+    if verbose:
+        logger.info(nx_info(network))
+    
+    # Calculate degrees
+    degrees = dict(nx.degree(nx.Graph(network)))
+    
+    # Remove nodes without positions
+    no_position = []
+    for node in network.nodes(data=True):
+        if "pos" not in node[1]:
+            no_position.append(node[0])
+
+    if len(no_position) > 0:
+        network = network.copy()
+        network.remove_nodes_from(no_position)
+
+    # Get positions
+    positions = nx.get_node_attributes(network, "pos")
+    
+    return network, positions, degrees
+
+
+def _compute_node_sizes(
+    degrees: dict,
+    node_size: int,
+    scale_by_size: bool
+) -> List[float]:
+    """Compute node sizes based on degrees and scaling preference.
+    
+    Args:
+        degrees: Dictionary of node degrees
+        node_size: Base node size
+        scale_by_size: Whether to scale by degree
+        
+    Returns:
+        List[float]: List of node sizes
+    """
+    if scale_by_size:
+        node_sizes = [vx * node_size for vx in degrees.values()]
+    else:
+        node_sizes = [node_size for _ in degrees.values()]
+
+    # Fallback to default size if all sizes are zero
+    if np.sum(node_sizes) == 0:
+        node_sizes = [node_size for _ in degrees.values()]
+    
+    return node_sizes
+
+
+def _draw_background_shape(
+    shape_subplot: Any,
+    background_shape: str,
+    start_location: float,
+    alphalevel: float,
+    facecolor: str,
+    rectanglex: float = 1,
+    rectangley: float = 1,
+) -> None:
+    """Draw background shape for a single layer.
+    
+    Args:
+        shape_subplot: Matplotlib axis to draw on
+        background_shape: Shape type ("rectangle" or "circle")
+        start_location: Starting position for the shape
+        alphalevel: Transparency level
+        facecolor: Color for the shape
+        rectanglex: Rectangle width (if shape is rectangle)
+        rectangley: Rectangle height (if shape is rectangle)
+    """
+    shadow_size = config.MULTILAYER_SHADOW_SIZE
+    circle_size = config.MULTILAYER_CIRCLE_SIZE
+    
+    if background_shape == "rectangle":
+        shape_subplot.add_patch(
+            Rectangle(
+                (start_location, start_location),
+                rectanglex,
+                rectangley,
+                alpha=alphalevel,
+                linestyle="dotted",
+                fill=True,
+                facecolor=facecolor,
+            )
+        )
+    elif background_shape == "circle":
+        shape_subplot.add_patch(
+            Circle(
+                (start_location + shadow_size, start_location + shadow_size),
+                circle_size,
+                color=facecolor,
+                alpha=alphalevel,
+            )
+        )
+
+
 def draw_multilayer_default(
     network_list: List[nx.Graph],
     display: bool = True,
@@ -58,103 +216,59 @@ def draw_multilayer_default(
     node_font_size: int = 5,
     scale_by_size: bool = False,
 ) -> None:
-    """Core multilayer drawing method
+    """Core multilayer drawing method.
 
     Args:
-    network_list (list): a list of networks
-    display (bool): Whether to display or not (directly)
-    node_size (int): size of the nodes
-    alphalevel (float): transparency level
-    rectanglex (float): size of rectangles (background) (horizontal part)
-    rectangley (float): size of vertical parts of rectangles
-    background_shape (string): Background shape, either circle or rectangle
-    background_color (string): Background color
-    networks_color (string): Color of individual networks
-    labels (bool): Display labels?
-    arrowsize (float): Sizes of individual arrows
-    label_position (int): position of labels  (diagonal right)
-    verbose (bool): Verbose printout?
-    remove_isolated_nodes (bool): Remove isolated nodes?
-    axis (bools): axis are displayed
-    edge_size (float): Size of edges
-    node_labels (bool): Display node labels?
-    node_font_size (int): Size of the font
-    scale_by_size (bool): Scale nodes according to their degrees?
+        network_list: List of NetworkX graphs to visualize
+        display: Whether to display the plot directly
+        node_size: Base size of nodes
+        alphalevel: Transparency level for background shapes
+        rectanglex: Width of rectangular backgrounds
+        rectangley: Height of rectangular backgrounds
+        background_shape: Background shape type ("circle" or "rectangle")
+        background_color: Background color scheme ("default", "rainbow", or None)
+        networks_color: Network color scheme ("rainbow" or "black")
+        labels: Layer labels to display
+        arrowsize: Size of edge arrows
+        label_position: Position offset for layer labels
+        verbose: Whether to log network information
+        remove_isolated_nodes: Whether to remove isolated nodes
+        axis: Matplotlib axis to draw on (None for current axis)
+        edge_size: Width of edges
+        node_labels: Whether to display node labels
+        node_font_size: Font size for node labels
+        scale_by_size: Whether to scale node size by degree
 
     Returns:
         None
     """
-    #    main_figure = plt.figure()
-    #    shape_subplot = main_figure.add_subplot(111)
-
     shape_subplot = plt.gca()
-    if background_color == "default":
+    
+    # Get color palettes
+    facecolor_list_background, alphalevel = _get_background_colors(
+        background_color, len(network_list), alphalevel
+    )
+    facecolor_list = _get_network_colors(networks_color, len(network_list))
 
-        facecolor_list_background = colors.linear_gradient(
-            "#4286f4", n=len(network_list)
-        )["hex"]
-
-    elif background_color == "rainbow":
-
-        facecolor_list_background = colors.colors_default
-
-    elif background_color is None:
-
-        facecolor_list_background = colors.colors_default
-        alphalevel = 0
-
-    else:
-        pass
-
-    if networks_color == "rainbow":
-
-        facecolor_list = colors.colors_default
-
-    elif networks_color == "black":
-
-        facecolor_list = ["black"] * len(network_list)
-
-    else:
-        pass
-
+    # Initialize layer positions
     start_location_network = 0
     start_location_background = 0
-    color = 0
-    shadow_size = config.MULTILAYER_SHADOW_SIZE
-    circle_size = config.MULTILAYER_CIRCLE_SIZE
 
-    for network in network_list:
-        if remove_isolated_nodes:
-            isolates = list(nx.isolates(network))
-            network = network.copy()
-            network.remove_nodes_from(isolates)
+    # Draw each layer
+    for color, network in enumerate(network_list):
+        # Preprocess network
+        network, positions, degrees = _preprocess_network(
+            network, remove_isolated_nodes, verbose
+        )
+        
+        # Offset positions for this layer
+        for node in positions:
+            positions[node] = (
+                positions[node][0] + start_location_network,
+                positions[node][1] + start_location_network
+            )
 
-        if verbose:
-            logger.info(nx_info(network))
-        degrees = dict(nx.degree(nx.Graph(network)))
-        cntr = 0
-        cntr_all = 0
-        no_position = []
-        all_positions = []
-        for node in network.nodes(data=True):
-            if "pos" not in node[1]:
-                no_position.append(node[0])
-                cntr += 1
-            else:
-                all_positions.append(node[1]["pos"])
-                cntr_all += 1
-
-        if len(no_position) > 0:
-            network = network.copy()
-            network.remove_nodes_from(no_position)
-
-        positions = nx.get_node_attributes(network, "pos")
-        cntr = 0
-
-        for node, position in positions.items():
-            position += start_location_network
-
-        # this is the default delay for matplotlib canvas
+        # Draw layer label if provided
         if labels:
             try:
                 plt.text(
@@ -165,56 +279,25 @@ def draw_multilayer_default(
             except Exception as es:
                 logger.error("Error setting label: %s", es)
 
-        if background_shape == "rectangle":
-            shape_subplot.add_patch(
-                Rectangle(
-                    (start_location_background, start_location_background),
-                    rectanglex,
-                    rectangley,
-                    alpha=alphalevel,
-                    linestyle="dotted",
-                    fill=True,
-                    facecolor=facecolor_list_background[color],
-                )
-            )
+        # Draw background shape
+        _draw_background_shape(
+            shape_subplot,
+            background_shape,
+            start_location_background,
+            alphalevel,
+            facecolor_list_background[color],
+            rectanglex,
+            rectangley,
+        )
 
-        elif background_shape == "circle":
-            shape_subplot.add_patch(
-                Circle(
-                    (
-                        start_location_background + shadow_size,
-                        start_location_background + shadow_size,
-                    ),
-                    circle_size,
-                    color=facecolor_list_background[color],
-                    alpha=alphalevel,
-                )
-            )
-        else:
-            pass
-
+        # Update positions for next layer
         start_location_network += config.MULTILAYER_LAYER_OFFSET  # type: ignore[assignment]
         start_location_background += config.MULTILAYER_LAYER_OFFSET  # type: ignore[assignment]
-        # if len(network.nodes()) > 10000:
-        #     correction=10
-        # else:
-        #     correction = 1
 
-        if scale_by_size:
-            node_sizes = [vx * node_size for vx in degrees.values()]
-        else:
-            node_sizes = [node_size for vx in degrees.values()]
+        # Compute node sizes
+        node_sizes = _compute_node_sizes(degrees, node_size, scale_by_size)
 
-        if np.sum(node_sizes) == 0:
-            node_sizes = [node_size for vx in degrees.values()]
-
-        #        node_sizes = [(np.log(v) * node_size)/correction if v > 400 else node_size/correction for v in degrees.values()]
-
-        # cntr+=1
-        # for position in positions:
-        #     if cntr<15:
-        #         print(positions[position][0], positions[position][1])
-
+        # Draw the network
         drawing_machinery.draw(
             network,
             positions,
@@ -226,7 +309,6 @@ def draw_multilayer_default(
             ax=axis,
             font_size=node_font_size,
         )
-        color += 1
 
     if display:
         plt.show()
