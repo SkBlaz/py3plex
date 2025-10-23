@@ -1,0 +1,23 @@
+# Missing columns
+n1 l1
+# Extra tabs
+n1	l1	n2	l2	1.0	extra	data
+# Non-numeric weight
+n1 l1 n2 l2 abc
+# Negative weight
+n1 l1 n2 l2 -1.0
+# Huge integer
+n1 l1 n2 l2 999999999999999999999999
+# Unicode nodes
+café layerß späm layer2 1.0
+# Emoji nodes  
+😀 layer1 😁 layer2 1.0
+# Very long token
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa l1 b l2 1.0
+# Empty lines
+
+# Null bytes (if supported)
+
+# Mixed delimiters
+n1,l1,n2,l2,1.0
+n1;l1;n2;l2;1.0

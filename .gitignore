@@ -69,3 +69,11 @@ bin/node2vec
 bin/*.exe
 bin/*.dll
 _build_test/
+
+# Fuzzing artifacts
+fuzzing/crashes/
+fuzzing/*.log
+crash-*
+leak-*
+timeout-*
+slow-unit-*

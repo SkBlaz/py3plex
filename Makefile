@@ -3,7 +3,7 @@
 # Production-Grade Makefile for Development, Testing, and Publishing
 # ─────────────────────────────────────────────────────────────────────────────
 
-.PHONY: help setup dev-install format lint test coverage benchmark docs clean build publish api-check ci test-all
+.PHONY: help setup dev-install format lint test coverage benchmark docs clean build publish api-check ci test-all fuzz-quick fuzz fuzz-long fuzz-docker
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Variables
@@ -264,6 +264,43 @@ benchmark: ## Run performance benchmarks with pytest-benchmark
 	@printf "$(COLOR_GREEN)✓ Running aggregation benchmarks...$(COLOR_RESET)\n"
 	@$(PYTEST) benchmarks/bench_aggregation.py --benchmark-only -v || true
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Benchmarks complete!$(COLOR_RESET)\n"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Fuzzing
+# ─────────────────────────────────────────────────────────────────────────────
+fuzz-quick: ## Run quick fuzzing test (1 minute)
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running quick fuzzing test (60 seconds)...$(COLOR_RESET)\n"
+	@if ! $(PYTHON) -c "import atheris" 2>/dev/null; then \
+		printf "$(COLOR_RED)✗ Atheris not installed. Install with: pip install atheris$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@bash fuzzing/run_fuzzing.sh 60
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Quick fuzzing test complete!$(COLOR_RESET)\n"
+
+fuzz: ## Run standard fuzzing campaign (5 minutes)
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running fuzzing campaign (300 seconds)...$(COLOR_RESET)\n"
+	@if ! $(PYTHON) -c "import atheris" 2>/dev/null; then \
+		printf "$(COLOR_RED)✗ Atheris not installed. Install with: pip install atheris$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@bash fuzzing/run_fuzzing.sh 300
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Fuzzing campaign complete!$(COLOR_RESET)\n"
+
+fuzz-long: ## Run extended fuzzing campaign (1 hour)
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running extended fuzzing campaign (3600 seconds)...$(COLOR_RESET)\n"
+	@if ! $(PYTHON) -c "import atheris" 2>/dev/null; then \
+		printf "$(COLOR_RED)✗ Atheris not installed. Install with: pip install atheris$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@bash fuzzing/run_fuzzing.sh 3600
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Extended fuzzing complete!$(COLOR_RESET)\n"
+
+fuzz-docker: ## Build and run fuzzing in Docker with ASAN
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Building fuzzing Docker container...$(COLOR_RESET)\n"
+	@docker build -t py3plex-fuzzing -f fuzzing/Dockerfile .
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running fuzzing in Docker...$(COLOR_RESET)\n"
+	@docker run py3plex-fuzzing
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Docker fuzzing complete!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CI Integration
