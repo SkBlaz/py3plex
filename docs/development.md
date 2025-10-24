@@ -90,6 +90,12 @@ make coverage
 ```bash
 # Build documentation
 make docs
+
+# Check API documentation consistency
+make docs-check
+
+# Check type annotation coverage
+make type-coverage
 ```
 
 #### Build & Publish
@@ -179,6 +185,39 @@ The project uses several tools for maintaining code quality:
 - **isort**: Import sorting (`isort py3plex/`)
 - **Mypy**: Type checking (`mypy py3plex/ --ignore-missing-imports`)
 - **Pytest**: Testing with coverage
+
+### Type Coverage
+
+The project tracks type annotation coverage using mypy. Current coverage is **65.91%** (17,444 of 26,465 lines precisely typed).
+
+#### Checking Type Coverage
+
+```bash
+# View type coverage report with verbose output
+make type-coverage
+
+# Or run directly with JSON output
+python docs/check_type_coverage.py --json type-coverage.json --verbose
+```
+
+#### Interpreting Results
+
+The type coverage report shows:
+- **Total Lines of Code**: All lines in the py3plex package
+- **Precisely Typed**: Lines with complete and accurate type annotations
+- **Imprecisely Typed**: Lines with missing or incomplete type annotations (including `Any` types)
+
+The report also displays the top 20 most imprecise modules, helping prioritize areas for improvement.
+
+#### Improving Type Coverage
+
+When adding new code:
+1. Add type hints to function signatures: `def func(x: int, y: str) -> bool:`
+2. Use generic types for collections: `List[str]`, `Dict[str, int]`
+3. Avoid `Any` type when possible
+4. Run `make type-coverage` to check your improvements
+
+The GitHub Actions workflow automatically tracks type coverage on PRs and provides feedback.
 
 ### Configuration
 
