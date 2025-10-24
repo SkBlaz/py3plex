@@ -25,28 +25,15 @@ pip install git+https://github.com/SkBlaz/py3plex.git
 
 **Note**: The Git version includes the latest features and bug fixes. PyPI version is deprecated.
 
-**Behind a corporate firewall?** See [Installation Guide](https://skblaz.github.io/py3plex/installation.html) for troubleshooting.
-
 **Recommended**: Use a virtual environment (venv or conda) to manage dependencies.
 
 **Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
-* [LLM Guide](LLM.md) - Quick reference for AI assistants and UX improvements (see "LLM Quick Reference for UX Improvements" section)
-* [Installation Guide](https://skblaz.github.io/py3plex/installation.html) - Complete installation documentation
-* [CSV Loading Tutorial](https://skblaz.github.io/py3plex/tutorials/csv_loading.html) - Load data from CSV files
 
 ### CLI Tool
 
 Py3plex includes a command-line interface for multilayer network analysis. See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
-
-Quick example:
-
-```bash
-py3plex create --nodes 50 --layers 2 --output network.graphml
-py3plex community network.graphml --algorithm louvain
-py3plex --help  # See all available commands
-```
 
 
 ### Requirements
