@@ -188,7 +188,7 @@ The project uses several tools for maintaining code quality:
 
 ### Type Coverage
 
-The project tracks type annotation coverage using mypy. Current coverage is **65.91%** (17,444 of 26,465 lines precisely typed).
+The project tracks type annotation coverage using mypy.
 
 #### Checking Type Coverage
 
