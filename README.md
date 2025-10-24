@@ -15,9 +15,26 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 ![Customization](example_images/part1.png)
 ## Getting Started
 
+### Installation (Git-Only Method)
+
+⚠️ **IMPORTANT**: Py3plex is **no longer available on PyPI**. Install from GitHub:
+
+```bash
+pip install git+https://github.com/SkBlaz/py3plex.git
+```
+
+**Note**: The Git version includes the latest features and bug fixes. PyPI version is deprecated.
+
+**Behind a corporate firewall?** See [Installation Guide](https://skblaz.github.io/py3plex/installation.html) for troubleshooting.
+
+**Recommended**: Use a virtual environment (venv or conda) to manage dependencies.
+
 **Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
+* [LLM Guide](LLM.md) - Quick reference for AI assistants and UX improvements (see "LLM Quick Reference for UX Improvements" section)
+* [Installation Guide](https://skblaz.github.io/py3plex/installation.html) - Complete installation documentation
+* [CSV Loading Tutorial](https://skblaz.github.io/py3plex/tutorials/csv_loading.html) - Load data from CSV files
 
 ### CLI Tool
 

@@ -173,14 +173,19 @@ Documentation Contents
    multilayer_concepts
    recipes
    visualization
+   visualization_guide
+   dependencies_guide
+   networkx_interop
    algorithm_guide
    performance
+   performance_guide
 
 .. toctree::
    :maxdepth: 2
    :caption: Tutorials
 
    tutorials/cli_usage
+   tutorials/csv_loading
    tutorials/multilayer_centrality
    tutorials/multilayer_modularity
    tutorials/community_detection
