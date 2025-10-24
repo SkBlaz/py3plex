@@ -184,6 +184,16 @@ docs-check: ## Check API documentation consistency
 	@python docs/check_api_consistency.py --verbose
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ API consistency check complete!$(COLOR_RESET)\n"
 
+type-coverage: ## Check type annotation coverage with mypy
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Checking type annotation coverage...$(COLOR_RESET)\n"
+	@if ! command -v mypy > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ mypy not found. Install with: pip install mypy lxml$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(COLOR_GREEN)✓ Running type coverage analysis...$(COLOR_RESET)\n"
+	@python docs/check_type_coverage.py --verbose
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Type coverage check complete!$(COLOR_RESET)\n"
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Cleanup
 # ─────────────────────────────────────────────────────────────────────────────
