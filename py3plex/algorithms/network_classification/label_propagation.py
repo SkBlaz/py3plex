@@ -2,7 +2,7 @@
 
 # label propagation algorithms:
 import time
-from typing import List, Union
+from typing import List, Union, cast
 
 import numpy as np
 import pandas as pd
@@ -70,7 +70,7 @@ def normalize_exp(mat: np.ndarray) -> np.ndarray:
     Returns:
         Exponentially normalized matrix
     """
-    return np.exp(mat)
+    return cast(np.ndarray, np.exp(mat))
 
 
 def normalize_none(mat: np.ndarray) -> np.ndarray:
@@ -162,7 +162,7 @@ def validate_label_propagation(
     """
 
     try:
-        labels = labels.todense()
+        labels = labels.todense()  # type: ignore[union-attr]
     except AttributeError:
         pass
 

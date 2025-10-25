@@ -1,6 +1,6 @@
 # node ranking algorithms
 import multiprocessing as mp
-from typing import Any, Generator, List, Optional, Tuple, Union
+from typing import Any, Generator, List, Optional, Tuple, Union, cast
 
 import networkx as nx
 import numpy as np
@@ -99,12 +99,12 @@ def sparse_page_rank(
             start_rank = start_rank[which]
             rank_vec = rank_vec[which]
             matrix = matrix[:, which][which, :]
-    diff = np.Inf
+    diff: Union[float, Any] = np.inf
     steps = 0
     while diff > epsilon and steps < max_steps:  # not converged yet
         steps += 1
         new_rank = matrix.dot(rank_vec)
-        rank_sum = np.sum(new_rank)
+        rank_sum: float = np.sum(new_rank)
         if rank_sum < 0.999999999:
             new_rank += start_rank * (1 - rank_sum)
         new_rank = damping * new_rank + (1 - damping) * start_rank
@@ -116,10 +116,10 @@ def sparse_page_rank(
         rank_vec = rank_vec.T[0]  # this works for both python versions
         ret[which] = rank_vec
         ret[start_nodes] = 0
-        return ret.flatten()
+        return cast(np.ndarray, ret.flatten())
     else:
         rank_vec[start_nodes] = 0
-        return rank_vec.flatten()
+        return cast(np.ndarray, rank_vec.flatten())
 
 
 def run_PPR(
@@ -175,8 +175,8 @@ def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
 
 
 def hub_matrix(graph: nx.Graph) -> np.ndarray:
-    return nx.hub_matrix(graph)
+    return cast(np.ndarray, nx.hub_matrix(graph))
 
 
 def authority_matrix(graph: nx.Graph) -> np.ndarray:
-    return nx.authority_matrix(graph)
+    return cast(np.ndarray, nx.authority_matrix(graph))

@@ -11,7 +11,7 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import networkx as nx
 import numpy as np
@@ -900,7 +900,7 @@ def cmd_convert(args: argparse.Namespace) -> int:
         return 1
 
 
-def main(argv=None) -> int:
+def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
     Args:

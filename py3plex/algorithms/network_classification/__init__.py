@@ -3,7 +3,7 @@
 # label propagation algorithms:
 import multiprocessing as mp  # initialize the MP part
 import time
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union, cast
 
 import numpy as np
 import pandas as pd
@@ -39,7 +39,7 @@ def normalize_amplify_freq(mat: np.ndarray) -> np.ndarray:
 
 
 def normalize_exp(mat: np.ndarray) -> np.ndarray:
-    return np.exp(mat)
+    return cast(np.ndarray, np.exp(mat))
 
 
 def label_propagation(
@@ -77,7 +77,7 @@ def label_propagation(
 
 def validate_label_propagation(
     core_network: sp.spmatrix,
-    labels: np.ndarray,
+    labels: Union[np.ndarray, sp.spmatrix],
     dataset_name: str = "test",
     repetitions: int = 5,
     normalization_scheme: str = "basic",
@@ -86,7 +86,7 @@ def validate_label_propagation(
 ) -> pd.DataFrame:
 
     try:
-        labels = labels.todense()
+        labels = labels.todense()  # type: ignore[union-attr]
     except AttributeError:
         pass
 

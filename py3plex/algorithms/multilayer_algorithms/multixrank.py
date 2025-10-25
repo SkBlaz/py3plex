@@ -15,7 +15,7 @@ References:
     - Docs: https://multixrank-doc.readthedocs.io/
 """
 
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 import scipy.sparse as sp
@@ -94,15 +94,15 @@ class MultiXRank:
         """
         # Convert to sparse if needed
         if not sp.issparse(supra_adjacency):
-            supra_adjacency = sp.csr_matrix(supra_adjacency)
+            supra_adjacency_sparse = sp.csr_matrix(supra_adjacency)
         else:
-            supra_adjacency = supra_adjacency.tocsr()
+            supra_adjacency_sparse = supra_adjacency.tocsr()  # type: ignore[union-attr]
 
-        if supra_adjacency.shape[0] != supra_adjacency.shape[1]:
+        if supra_adjacency_sparse.shape[0] != supra_adjacency_sparse.shape[1]:
             raise ValueError(f"Supra-adjacency matrix for '{name}' must be square")
 
-        self.multiplexes[name] = supra_adjacency
-        self._multiplex_dims[name] = supra_adjacency.shape[0]
+        self.multiplexes[name] = supra_adjacency_sparse
+        self._multiplex_dims[name] = supra_adjacency_sparse.shape[0]
 
         if node_order is None:
             node_order = list(range(supra_adjacency.shape[0]))
@@ -136,25 +136,25 @@ class MultiXRank:
 
         # Convert to sparse if needed
         if not sp.issparse(bipartite_matrix):
-            bipartite_matrix = sp.csr_matrix(bipartite_matrix)
+            bipartite_matrix_sparse = sp.csr_matrix(bipartite_matrix)
         else:
-            bipartite_matrix = bipartite_matrix.tocsr()
+            bipartite_matrix_sparse = bipartite_matrix.tocsr()  # type: ignore[union-attr]
 
         # Verify dimensions match
         expected_rows = self._multiplex_dims[multiplex_from]
         expected_cols = self._multiplex_dims[multiplex_to]
 
-        if bipartite_matrix.shape != (expected_rows, expected_cols):
+        if bipartite_matrix_sparse.shape != (expected_rows, expected_cols):
             raise ValueError(
-                f"Bipartite block dimensions {bipartite_matrix.shape} don't match "
+                f"Bipartite block dimensions {bipartite_matrix_sparse.shape} don't match "
                 f"expected ({expected_rows}, {expected_cols})"
             )
 
         # Apply weight if specified
         if weight != 1.0:
-            bipartite_matrix = bipartite_matrix * weight
+            bipartite_matrix_sparse = bipartite_matrix_sparse * weight
 
-        self.bipartite_blocks[(multiplex_from, multiplex_to)] = bipartite_matrix
+        self.bipartite_blocks[(multiplex_from, multiplex_to)] = bipartite_matrix_sparse
 
         if self.verbose:
             logger.info(
@@ -273,7 +273,7 @@ class MultiXRank:
 
         # Identify dangling columns (zero out-degree)
         dangling = col_sums == 0
-        n_dangling = np.sum(dangling)
+        n_dangling: int = int(np.sum(dangling))
 
         if n_dangling > 0 and self.verbose:
             logger.warning(f"Found {n_dangling} dangling nodes (zero out-degree)")
@@ -286,7 +286,7 @@ class MultiXRank:
 
             # Add uniform column for each dangling node
             rows = np.tile(np.arange(n_nodes), n_dangling)
-            cols = np.repeat(dangling_idx, n_nodes)
+            cols: Any = np.repeat(dangling_idx, n_nodes)
             data = np.ones(n_nodes * n_dangling) / n_nodes
 
             dangling_matrix = sp.csr_matrix((data, (rows, cols)), shape=matrix.shape)
@@ -400,7 +400,7 @@ class MultiXRank:
                 f"(L1 diff: {diff:.2e})"
             )
 
-        return p
+        return cast(np.ndarray, p)
 
     def _convert_seed_nodes_to_global(
         self,

@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from typing import Any
 
 from ..logging_config import get_logger
 
@@ -14,7 +15,7 @@ sns.set_style("whitegrid")
 palette = "Set3"
 
 
-def plot_core_macro(fname):
+def plot_core_macro(fname: pd.DataFrame) -> int:
     """
     A very simple visualization of the results..
     """
@@ -32,7 +33,7 @@ def plot_core_macro(fname):
     return 1
 
 
-def plot_core_micro(fname):
+def plot_core_micro(fname: pd.DataFrame) -> int:
     """
     A very simple visualization of the results..
     """
@@ -46,7 +47,7 @@ palette = "Set3"
 cnames = ["percent_train", "micro_F", "macro_F", "setting", "dataset", "time"]
 
 
-def plot_core_macro_box(fname):
+def plot_core_macro_box(fname: str) -> int:
 
     fnamex = pd.read_csv(fname, sep=" ")
     logger.debug("DataFrame loaded:\n%s", fnamex)
@@ -58,7 +59,7 @@ def plot_core_macro_box(fname):
     return 1
 
 
-def plot_core_micro_grid(fname):
+def plot_core_micro_grid(fname: str) -> None:
 
     fnamex = pd.read_csv(fname, sep=" ")
     fnamex.columns = cnames
@@ -67,7 +68,7 @@ def plot_core_micro_grid(fname):
     plt.show()
 
 
-def plot_core_macro_gg(fnamex):
+def plot_core_macro_gg(fnamex: pd.DataFrame) -> None:
     logger.debug("DataFrame columns: %s", fnamex.columns)
     fx = fnamex.groupby(["setting"])["macro_F"].mean().sort_values().index.values
     g = sns.FacetGrid(fnamex, col="dataset", hue="setting", col_wrap=3)
@@ -85,7 +86,7 @@ def plot_core_macro_gg(fnamex):
     plt.show()
 
 
-def plot_core_micro_gg(fnamex):
+def plot_core_micro_gg(fnamex: pd.DataFrame) -> None:
 
     fx = fnamex.groupby(["setting"])["micro_F"].mean().sort_values().index.values
     logger.debug("DataFrame columns: %s", fnamex.columns)
@@ -104,7 +105,7 @@ def plot_core_micro_gg(fnamex):
     plt.show()
 
 
-def plot_core_time_gg(fname):
+def plot_core_time_gg(fname: str) -> None:
 
     fnamex = pd.read_csv(fname, sep=" ")
     fnamex.columns = cnames
@@ -119,13 +120,13 @@ def plot_core_time_gg(fname):
     # plt.show()
 
 
-def plot_core_variability(fname):
+def plot_core_variability(fname: str) -> None:
 
     fname = pd.read_csv(fname, separator=" ")
     # for each dataset, take all variability and get it to a box plot
 
 
-def plot_core_time(fnamex):
+def plot_core_time(fnamex: pd.DataFrame) -> int:
 
     fnamex.columns = cnames
     logger.debug("DataFrame head:\n%s", fnamex.head())
@@ -134,7 +135,7 @@ def plot_core_time(fnamex):
     return 1
 
 
-def plot_critical_distance(fname, num_algo=14):
+def plot_critical_distance(fname: str, num_algo: int = 14) -> None:
 
     import operator
     from collections import defaultdict
@@ -216,7 +217,7 @@ def plot_critical_distance(fname, num_algo=14):
     plt.show()
 
 
-def plot_mean_times(fn):
+def plot_mean_times(fn: pd.DataFrame) -> None:
 
     # for each dataset, plot times.
     fx = fnamex.groupby(["setting"])["time"].mean().sort_values().index.values
@@ -232,7 +233,7 @@ def plot_mean_times(fn):
     plt.show()
 
 
-def plot_robustness(infile):
+def plot_robustness(infile: pd.DataFrame) -> None:
 
     logger.debug("Input DataFrame head:\n%s", infile.head())
     #    infile['percent_train'] = pd.to_numeric(infile['percent_train'])
@@ -259,7 +260,7 @@ def plot_robustness(infile):
     # plt.show()
 
 
-def generic_grouping(fname, score_name, threshold=1, percentages=True):
+def generic_grouping(fname: pd.DataFrame, score_name: str, threshold: float = 1.0, percentages: bool = True) -> pd.DataFrame:
     fname = fname[fname["percent_train"] < threshold]
     sub1 = fname[["percent_train", score_name, "setting", "dataset"]]
     if percentages:

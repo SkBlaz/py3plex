@@ -24,6 +24,7 @@ import numpy as np
 import scipy.sparse as sp
 from scipy.sparse import identity
 from scipy.sparse.linalg import eigs, expm_multiply, spsolve
+from typing import cast
 
 from py3plex.exceptions import Py3plexMatrixError
 
@@ -141,14 +142,14 @@ def communicability_centrality(
 
     # Normalize if requested
     if normalize:
-        total = np.sum(centralities)
+        total: float = np.sum(centralities)
         if total > 0:
             centralities = centralities / total
         else:
             # If all centralities are zero, set uniform distribution
             centralities = np.ones(n) / n
 
-    return centralities
+    return cast(np.ndarray, centralities)
 
 
 def katz_centrality(
@@ -208,16 +209,16 @@ def katz_centrality(
             if n <= 2:
                 dense_matrix = supra_matrix.toarray()
                 eigenvals = np.linalg.eigvals(dense_matrix)
-                lambda_max = np.max(np.abs(eigenvals))
+                lambda_max: float = float(np.max(np.abs(eigenvals)))
             else:
                 # Compute largest eigenvalue using sparse methods
                 eigenvals, _ = eigs(supra_matrix, k=1, which="LM", tol=tol)
-                lambda_max = np.abs(eigenvals[0])
+                lambda_max = float(np.abs(eigenvals[0]))
 
             if lambda_max < 1e-10:
                 # Matrix is essentially zero, return uniform distribution
                 centralities = np.ones(n) / n
-                return centralities
+                return cast(np.ndarray, centralities)
 
             alpha = 0.85 / lambda_max
         except (ArithmeticError, ValueError, RuntimeError, TypeError) as e:
@@ -265,14 +266,14 @@ def katz_centrality(
     centralities = np.maximum(centralities, 0)
 
     # Normalize to sum to 1
-    total = np.sum(centralities)
+    total: float = np.sum(centralities)
     if total > 0:
         centralities = centralities / total
     else:
         # If all centralities are zero, set uniform distribution
         centralities = np.ones(n) / n
 
-    return centralities
+    return cast(np.ndarray, centralities)
 
 
 __all__ = [
