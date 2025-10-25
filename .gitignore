@@ -77,3 +77,4 @@ crash-*
 leak-*
 timeout-*
 slow-unit-*
+doc-coverage.json
