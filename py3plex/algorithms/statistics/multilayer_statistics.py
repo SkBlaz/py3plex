@@ -520,7 +520,7 @@ def multilayer_clustering_coefficient(
             if not network.directed:
                 neighbors[nl2].add(nl1)
 
-    def count_triangles(node_layer):
+    def count_triangles(node_layer: Tuple[Any, Any]) -> Tuple[int, int]:
         """Count triangles involving a node-layer pair."""
         if node_layer not in neighbors:
             return 0, 0
