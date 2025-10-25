@@ -18,7 +18,7 @@ Louvain Algorithm
 * Non-overlapping communities
 * Modularity optimization
 
-**Complexity:** :math:`O(n \\log n)` where :math:`n` is the number of nodes
+**Complexity:** :math:`O(n \log n)` where :math:`n` is the number of nodes
 
 **Usage:**
 
@@ -49,7 +49,7 @@ Infomap Algorithm
 * Hierarchical community detection
 * Information-theoretic optimization
 
-**Complexity:** :math:`O(m \\log n)` where :math:`m` is edges, :math:`n` is nodes
+**Complexity:** :math:`O(m \log n)` where :math:`m` is edges, :math:`n` is nodes
 
 **Usage:**
 
@@ -176,7 +176,7 @@ Betweenness Centrality
 * Information flow bottlenecks
 * Critical path analysis
 
-**Complexity:** :math:`O(nm)` for unweighted, :math:`O(nm + n^2 \\log n)` for weighted
+**Complexity:** :math:`O(nm)` for unweighted, :math:`O(nm + n^2 \log n)` for weighted
 
 **Usage:**
 
@@ -247,7 +247,7 @@ Versatility Centrality
 * Cross-layer influence
 * Multi-context analysis
 
-**Complexity:** :math:`O(m \\times L)` where :math:`L` is number of layers
+**Complexity:** :math:`O(m \times L)` where :math:`L` is number of layers
 
 **Usage:**
 
@@ -278,7 +278,7 @@ Basic Statistics
 Multilayer Statistics
 ~~~~~~~~~~~~~~~~~~~~~
 
-**Layer density** - :math:`O(m_\\alpha)` per layer:
+**Layer density** - :math:`O(m_\alpha)` per layer:
 
 .. code-block:: python
 
@@ -297,7 +297,7 @@ Multilayer Statistics
 
     overlap = mls.edge_overlap(network, 'layer1', 'layer2')
 
-**Versatility centrality** - :math:`O(m \\times L)`:
+**Versatility centrality** - :math:`O(m \times L)`:
 
 .. code-block:: python
 
@@ -308,9 +308,9 @@ Path-based Measures
 
 **Warning:** These are computationally expensive for large networks
 
-* **Diameter** - :math:`O(nm)` or :math:`O(n^2 \\log n)`
-* **Average shortest path** - :math:`O(nm)` or :math:`O(n^2 \\log n)`
-* **Betweenness centrality** - :math:`O(nm)` or :math:`O(nm + n^2 \\log n)`
+* **Diameter** - :math:`O(nm)` or :math:`O(n^2 \log n)`
+* **Average shortest path** - :math:`O(nm)` or :math:`O(n^2 \log n)`
+* **Betweenness centrality** - :math:`O(nm)` or :math:`O(nm + n^2 \log n)`
 
 **Recommendation:** Limit to networks with <5,000 nodes for interactive analysis
 
@@ -327,7 +327,7 @@ Node2Vec
 * Node classification
 * Similarity computation
 
-**Complexity:** :math:`O(r \\times l \\times |V|)` where :math:`r` is walks per node, :math:`l` is walk length
+**Complexity:** :math:`O(r \times l \times |V|)` where :math:`r` is walks per node, :math:`l` is walk length
 
 **Parameters:**
 
@@ -366,7 +366,7 @@ DeepWalk
 * Same as Node2Vec but simpler (uniform random walks)
 * Faster than Node2Vec
 
-**Complexity:** :math:`O(r \\times l \\times |V|)`
+**Complexity:** :math:`O(r \times l \times |V|)`
 
 **Usage:**
 

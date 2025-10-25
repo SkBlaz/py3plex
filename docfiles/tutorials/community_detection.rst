@@ -62,7 +62,7 @@ Parameters
 Advantages
 ~~~~~~~~~~
 
-* Very fast: :math:`O(n \\log n)`
+* Very fast: :math:`O(n \log n)`
 * Scales to millions of nodes
 * BSD license (commercial-friendly)
 * Well-established and widely used
@@ -221,15 +221,15 @@ Multilayer modularity is defined as:
 
 .. math::
 
-    Q^{ML} = \\frac{1}{2\\mu} \\sum_{ij\\alpha\\beta} \\left[ (A_{ij}^{[\\alpha]} - \\gamma_{\\alpha} P_{ij}^{[\\alpha]})\\delta_{\\alpha\\beta} + \\omega_{\\alpha\\beta}\\delta_{ij} \\right] \\delta(g_{i}^{[\\alpha]}, g_{j}^{[\\beta]})
+    Q^{ML} = \frac{1}{2\mu} \sum_{ij\alpha\beta} \left[ (A_{ij}^{[\alpha]} - \gamma_{\alpha} P_{ij}^{[\alpha]})\delta_{\alpha\beta} + \omega_{\alpha\beta}\delta_{ij} \right] \delta(g_{i}^{[\alpha]}, g_{j}^{[\beta]})
 
 Where:
 
-* :math:`A_{ij}^{[\\alpha]}` is the adjacency matrix of layer :math:`\\alpha`
-* :math:`P_{ij}^{[\\alpha]}` is the null model (e.g., configuration model)
-* :math:`\\gamma_{\\alpha}` is the resolution parameter for layer :math:`\\alpha`
-* :math:`\\omega_{\\alpha\\beta}` is the coupling strength between layers
-* :math:`\\delta(g_{i}^{[\\alpha]}, g_{j}^{[\\beta]})` is 1 if nodes are in the same community, 0 otherwise
+* :math:`A_{ij}^{[\alpha]}` is the adjacency matrix of layer :math:`\alpha`
+* :math:`P_{ij}^{[\alpha]}` is the null model (e.g., configuration model)
+* :math:`\gamma_{\alpha}` is the resolution parameter for layer :math:`\alpha`
+* :math:`\omega_{\alpha\beta}` is the coupling strength between layers
+* :math:`\delta(g_{i}^{[\alpha]}, g_{j}^{[\beta]})` is 1 if nodes are in the same community, 0 otherwise
 
 Advantages
 ~~~~~~~~~~
