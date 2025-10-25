@@ -256,13 +256,15 @@ def timed_section(name: str, log_level: str = "info"):
         def __init__(self, section_name: str, level: str):
             self.name = section_name
             self.level = level
-            self.start = None
+            self.start: Optional[float] = None
         
         def __enter__(self):
             self.start = time.perf_counter()
             return self
         
         def __exit__(self, exc_type, exc_val, exc_tb):
+            if self.start is None:
+                return False
             elapsed = time.perf_counter() - self.start
             
             log_func = getattr(logger, self.level, logger.info)

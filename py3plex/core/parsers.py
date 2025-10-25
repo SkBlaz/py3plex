@@ -4,7 +4,7 @@ import glob
 import gzip
 import itertools
 import json
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -446,8 +446,8 @@ def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
         Tuple of (embedding matrix, embedding indices)
     """
 
-    embedding_matrix = []
-    embedding_indices = []
+    embedding_matrix: List[List[str]] = []
+    embedding_indices: List[str] = []
     with open(input_name) as IN:
         for line in IN:
             parts = line.strip().split()
@@ -456,9 +456,9 @@ def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
             else:
                 embedding_matrix.append(parts[1:])
                 embedding_indices.append(parts[0])
-    embedding_matrix = np.matrix(embedding_matrix)
-    embedding_indices = np.array(embedding_indices)
-    return (embedding_matrix, embedding_indices)
+    embedding_matrix_np = np.matrix(embedding_matrix)
+    embedding_indices_np = np.array(embedding_indices)
+    return (embedding_matrix_np, embedding_indices_np)
 
 
 def parse_multiedge_tuple_list(
@@ -804,7 +804,7 @@ def save_multiedgelist(
         return None
 
 
-def save_edgelist(input_network, output_file, attributes=False):
+def save_edgelist(input_network: nx.Graph, output_file: str, attributes: bool = False) -> None:
     fh = open(output_file, "wb")
     input_network = nx.convert_node_labels_to_integers(
         input_network, first_label=0, ordering="default", label_attribute=None

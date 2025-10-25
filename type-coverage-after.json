@@ -1,0 +1,9 @@
+{
+  "total_loc": 0,
+  "precise_loc": 0,
+  "imprecise_loc": 0,
+  "precise_percent": 100.0,
+  "imprecise_percent": 0.0,
+  "badge_url": "https://img.shields.io/badge/type_coverage-100.0%25-brightgreen",
+  "modules": []
+}

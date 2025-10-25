@@ -551,7 +551,7 @@ def supra_adjacency_matrix_plot(matrix: np.ndarray, display: bool = False) -> No
         matrix: Supra-adjacency matrix to plot
         display: Whether to display the plot immediately
     """
-    plt.imshow(matrix, interpolation="nearest", cmap=plt.cm.binary)
+    plt.imshow(matrix, interpolation="nearest", cmap="binary")
     if display:
         plt.show()
 

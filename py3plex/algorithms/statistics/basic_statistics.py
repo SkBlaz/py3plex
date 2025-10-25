@@ -25,7 +25,7 @@ except ImportError:
 
 
 @require(lambda top_n: top_n > 0, "top_n must be positive")
-@ensure(lambda result: len(result) <= top_n, "result size must not exceed top_n")
+@ensure(lambda result, top_n: len(result) <= top_n, "result size must not exceed top_n")
 @ensure(lambda result: all(isinstance(v, int) and v >= 0 for v in result.values()), 
         "all degree values must be non-negative integers")
 def identify_n_hubs(
