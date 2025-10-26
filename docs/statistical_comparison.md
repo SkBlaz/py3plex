@@ -174,6 +174,7 @@ print(density_results)
 ### Example 3: Bootstrap Confidence Intervals
 
 ```python
+import numpy as np
 from py3plex.algorithms.statistics.stats_comparison import bootstrap_confidence_interval
 
 def avg_clustering(network):

@@ -6,7 +6,6 @@ This script demonstrates how to use py3plex's statistical comparison framework
 to compare multilayer networks and detect statistically significant differences.
 """
 
-import numpy as np
 from py3plex.core import multinet
 from py3plex.algorithms.statistics.stats_comparison import compare_multilayer_networks
 
