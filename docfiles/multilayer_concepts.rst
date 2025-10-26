@@ -316,17 +316,17 @@ The **supra-adjacency matrix** is a block matrix representation of a multilayer 
 
 .. math::
 
-    \\mathbf{S} = \\begin{bmatrix}
-    A_1 & C_{12} & \\cdots & C_{1L} \\\\
-    C_{21} & A_2 & \\cdots & C_{2L} \\\\
-    \\vdots & \\vdots & \\ddots & \\vdots \\\\
-    C_{L1} & C_{L2} & \\cdots & A_L
-    \\end{bmatrix}
+    \mathbf{S} = \begin{bmatrix}
+    A_1 & C_{12} & \cdots & C_{1L} \\
+    C_{21} & A_2 & \cdots & C_{2L} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    C_{L1} & C_{L2} & \cdots & A_L
+    \end{bmatrix}
 
 Where:
 
-* :math:`A_\\alpha` is the adjacency matrix of layer :math:`\\alpha`
-* :math:`C_{\\alpha\\beta}` is the coupling matrix between layers :math:`\\alpha` and :math:`\\beta`
+* :math:`A_\alpha` is the adjacency matrix of layer :math:`\alpha`
+* :math:`C_{\alpha\beta}` is the coupling matrix between layers :math:`\alpha` and :math:`\beta`
 
 Construction in py3plex
 ~~~~~~~~~~~~~~~~~~~~~~~
