@@ -4281,3 +4281,138 @@ The py3plex codebase is **production-ready** with the following characteristics:
 ---
 
 **End of Document** - Thank you for reading! For questions or improvements, please open an issue on GitHub.
+
+---
+
+## Statistical Comparison Framework Implementation (2025-10-26)
+
+### Overview
+Added comprehensive statistical comparison framework for multilayer networks, enabling quantitative comparison of network ensembles and experimental conditions.
+
+### Files Added
+- **Core Module**: `py3plex/algorithms/statistics/stats_comparison.py` (650 lines)
+  - Main function: `compare_multilayer_networks()`
+  - Bootstrap CI: `bootstrap_confidence_interval()`
+  - Helper functions for metric extraction and statistical tests
+
+- **Test Suite**: `tests/test_stats_comparison.py` (540 lines, 26 tests)
+  - All tests passing
+  - Coverage: Basic comparisons, multi-group, all test types, corrections, edge cases
+
+- **Documentation**: `docfiles/statistical_comparison.rst`
+  - RST format for Sphinx integration
+  - API reference, examples, best practices
+
+- **Examples**:
+  - `examples/statistical_comparison_example.ipynb` (7 examples, 11 code cells)
+  - `examples/compare_multilayer_networks_example.py` (working script)
+
+### Features Implemented
+
+#### Statistical Tests (5 types)
+1. **Permutation test** - Non-parametric, general purpose
+2. **t-test** - Parametric, 2 groups
+3. **Mann-Whitney U** - Non-parametric, 2 groups
+4. **ANOVA** - Parametric, multiple groups
+5. **Kruskal-Wallis H** - Non-parametric, multiple groups
+
+#### Effect Size Calculations
+- **Cohen's d** - For pairwise comparisons
+- **Eta-squared** - For multi-group comparisons
+
+#### Multiple Comparison Corrections (3 methods)
+1. **Bonferroni** - Conservative, family-wise error rate
+2. **Holm-Bonferroni** - Sequential Bonferroni
+3. **FDR (Benjamini-Hochberg)** - Recommended, balances power and control
+
+#### Supported Metrics (6 built-in + custom)
+1. `density` - Layer density
+2. `average_degree` - Mean node degree
+3. `clustering` - Clustering coefficient
+4. `node_activity` - Node activity across layers
+5. `coupling_strength` - Inter-layer coupling
+6. `entropy` - Entropy of multiplexity
+7. **Custom metrics** - User-defined functions supported
+
+### API Design
+
+```python
+compare_multilayer_networks(
+    networks: List[MultilayerNetwork],
+    metrics: List[str] = ['average_degree', 'density', 'clustering'],
+    test: str = 'permutation',
+    n_permutations: int = 1000,
+    alpha: float = 0.05,
+    correction: str = 'fdr_bh',
+    node_mapping: Optional[Dict] = None,
+    layer_scope: str = 'both',
+    custom_metrics: Optional[Dict[str, Callable]] = None,
+) -> pd.DataFrame
+```
+
+**Returns**: Pandas DataFrame with columns:
+- `metric`, `layer`, `statistic`, `p_value`, `adjusted_p_value`
+- `effect_size`, `significant`, `mean_group_0`, `mean_group_1`, ...
+
+### Testing Results
+- ✅ 26/26 new tests pass
+- ✅ 30/30 existing multilayer statistics tests pass (no regressions)
+- ✅ 0 security vulnerabilities (CodeQL)
+- ✅ All examples verified and working
+
+### Integration
+- **Seamless integration** with existing `multilayer_statistics` module
+- **Pandas DataFrame output** for easy manipulation
+- **Flexible metric system** supporting custom functions
+- **Comprehensive error handling** for edge cases
+
+### Use Cases
+1. **Biological Networks**: Compare disease vs. healthy protein interactions
+2. **Social Networks**: Analyze pre/post intervention differences
+3. **Temporal Networks**: Compare snapshots across time periods
+4. **Network Ensembles**: Statistical validation of network properties
+
+### Documentation Status
+- ✅ RST documentation in `docfiles/statistical_comparison.rst`
+- ✅ API reference with all parameters documented
+- ✅ 7 working examples in Jupyter notebook
+- ✅ Python script example with multiple scenarios
+- ✅ Best practices guide for test selection
+- ✅ Use case examples for different domains
+
+### Performance Characteristics
+- **Permutation test**: O(n_perm × n_networks × n_metrics)
+- **Parametric tests**: O(n_networks × n_metrics)
+- **Bootstrap CI**: O(n_bootstrap × n_networks)
+
+Typical performance:
+- Comparing 2 networks with 3 metrics: < 1 second
+- Permutation test (1000 perms): 1-2 seconds
+- Bootstrap CI (1000 samples): 1-2 seconds
+
+### Quality Assurance
+- ✅ Code review feedback addressed
+- ✅ Examples double-verified
+- ✅ No unused imports or dead code
+- ✅ Follows existing codebase patterns
+- ✅ Comprehensive docstrings with examples
+- ✅ Type hints not added (following existing module patterns)
+
+### References
+1. Kivelä et al. (2014) - Multilayer network definitions
+2. Good (2013) - Permutation testing methodology
+3. Efron & Tibshirani (1994) - Bootstrap methods
+4. Benjamini & Hochberg (1995) - FDR correction
+
+### Future Enhancements (Not Implemented)
+The following were mentioned in the original issue but intentionally not implemented in this PR:
+- Network distance metrics (Jensen-Shannon, spectral distance, graph edit distance)
+- Layer alignment tests
+- Temporal multilayer networks with repeated measures
+- Null model generation with degree preservation
+- Visualization integration (distribution plots, heatmaps)
+- Parallelization for large-scale comparisons
+
+These features can be added in future PRs as extensions to the framework.
+
+---
