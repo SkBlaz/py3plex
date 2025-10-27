@@ -1,19 +1,19 @@
 Community Detection
 ===================
 
-py3plex provides wrappers for community detection algorithms optimized for multilayer networks.
+py3plex provides **wrappers for community detection algorithms** optimized for **multilayer networks**.
 
 Supported Algorithms
 --------------------
 
-- **Infomap** - Information-theoretic, supports overlapping communities
-- **Louvain** - Modularity optimization
-- **Label Propagation** - Semi-supervised learning
+- **Infomap** - **Information-theoretic**, supports overlapping communities
+- **Louvain** - **Modularity optimization**
+- **Label Propagation** - **Semi-supervised learning**
 
 Basic Usage
 -----------
 
-**Louvain**:
+**Louvain:**
 
 .. code-block:: python
 
@@ -40,10 +40,10 @@ Basic Usage
 Examples
 --------
 
-See detailed examples:
+See **detailed examples**:
 
-- ``example_community_detection.py`` - Basic community detection
-- ``example_community_multiplex.py`` - Multiplex community detection
-- ``example_community_visualization.py`` - Visualizing communities
+- ``example_community_detection.py`` - **Basic community detection**
+- ``example_community_multiplex.py`` - **Multiplex community detection**
+- ``example_community_visualization.py`` - **Visualizing communities**
 
 Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples
