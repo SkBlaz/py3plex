@@ -4,8 +4,8 @@
 Analysis Recipes & Workflows
 ****************************
 
-This guide provides practical recipes for common analysis workflows in py3plex. 
-Each recipe is a complete, ready-to-use solution for a real-world task.
+This guide provides **practical recipes** for **common analysis workflows** in py3plex. 
+Each recipe is a **complete, ready-to-use solution** for a real-world task.
 
 .. contents:: Recipe Index
    :local:
@@ -18,7 +18,7 @@ Data Import & Setup
 Recipe 1: Load Network from Multiple File Formats
 ==================================================
 
-**Task:** Load multilayer networks from various file formats (edgelist, GraphML, CSV).
+**Task:** Load **multilayer networks** from various **file formats** (edgelist, GraphML, CSV).
 
 .. code-block:: python
 
@@ -48,13 +48,13 @@ Recipe 1: Load Network from Multiple File Formats
     # Verify the network
     network.basic_stats()
 
-**When to use:** Starting any analysis project with external data.
+**When to use:** Starting any **analysis project** with external data.
 
 
 Recipe 2: Create Synthetic Benchmark Networks
 ==============================================
 
-**Task:** Generate synthetic multilayer networks for testing algorithms.
+**Task:** Generate **synthetic multilayer networks** for **testing algorithms**.
 
 .. code-block:: python
 
@@ -75,13 +75,13 @@ Recipe 2: Create Synthetic Benchmark Networks
     
     network.basic_stats()
 
-**When to use:** Algorithm validation, testing, benchmarking, or when real data is unavailable.
+**When to use:** **Algorithm validation**, **testing**, **benchmarking**, or when real data is unavailable.
 
 
 Recipe 3: Convert Between Network Formats
 ==========================================
 
-**Task:** Export networks to different formats for use in other tools.
+**Task:** Export networks to **different formats** for use in **other tools**.
 
 .. code-block:: python
 
