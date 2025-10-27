@@ -1,7 +1,7 @@
 Citation and References
 =======================
 
-If you use py3plex in your research, please cite our work.
+If you use py3plex in your research, please **cite our work**.
 
 Primary Citation
 ----------------
@@ -29,7 +29,7 @@ Primary Citation
 Conference Paper
 ----------------
 
-For the initial algorithmic work:
+For the **initial algorithmic work**:
 
 .. code-block:: bibtex
 
@@ -50,7 +50,7 @@ For the initial algorithmic work:
 Algorithm-Specific Citations
 -----------------------------
 
-When using specific algorithms, please also cite the original papers:
+When using **specific algorithms**, please also cite the **original papers**:
 
 Multilayer Modularity
 ~~~~~~~~~~~~~~~~~~~~~
@@ -151,7 +151,7 @@ DeepWalk
 Multilayer Network Theory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Foundational papers on multilayer networks:
+**Foundational papers** on multilayer networks:
 
 .. code-block:: bibtex
 
@@ -201,9 +201,9 @@ Foundational papers on multilayer networks:
 Complete Citation List
 ----------------------
 
-For a comprehensive list of all algorithms and their citations, see:
+For a **comprehensive list** of all algorithms and their citations, see:
 
-* `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ - Complete list with DOIs
+* `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ - **Complete list with DOIs**
 
 Acknowledgments
 ---------------
@@ -220,15 +220,15 @@ py3plex is developed and maintained by:
 Funding and Support
 ~~~~~~~~~~~~~~~~~~~
 
-This work has been supported by:
+This work has been **supported by**:
 
-* Jožef Stefan Institute, Ljubljana, Slovenia
-* Slovenian Research Agency (research program P2-0103)
+* **Jožef Stefan Institute**, Ljubljana, Slovenia
+* **Slovenian Research Agency** (research program P2-0103)
 
 External Libraries
 ~~~~~~~~~~~~~~~~~~
 
-py3plex builds upon excellent open-source libraries:
+py3plex builds upon **excellent open-source libraries**:
 
 * **NetworkX** - Graph data structures and algorithms
 * **NumPy** - Numerical computing
@@ -272,12 +272,12 @@ py3plex is released under the **MIT License**.
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 
-**Note:** Some bundled algorithms may have different licenses:
+**Note:** Some bundled algorithms may have **different licenses**:
 
-* Infomap community detection code: AGPLv3
-* Louvain community detection: BSD-3-Clause
+* Infomap community detection code: **AGPLv3**
+* Louvain community detection: **BSD-3-Clause**
 
-See ``README.md`` for detailed license compatibility information.
+See ``README.md`` for **detailed license compatibility** information.
 
 Contact
 -------

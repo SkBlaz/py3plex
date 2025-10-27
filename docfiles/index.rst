@@ -10,12 +10,12 @@ Py3plex Documentation
    :target: https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml
    :alt: Code Quality
 
-**py3plex** enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.
+**py3plex** enables scalable analysis and visualization of **multilayer** and **multiplex** networks in Python, supporting complex network modeling across diverse scientific and applied domains.
 
 Overview
 ========
 
-py3plex is a lightweight Python library designed specifically for analyzing and visualizing heterogeneous and multilayer networks. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:
+py3plex is a **lightweight Python library** designed specifically for analyzing and visualizing **heterogeneous** and **multilayer networks**. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:
 
 * Multiple node types
 * Multiple edge types  
@@ -27,13 +27,13 @@ py3plex is a lightweight Python library designed specifically for analyzing and 
 
 **Key Features:**
 
-* Native support for multiplex and multilayer network structures
-* Diagonal projection visualization for large multilayer networks
-* Comprehensive multilayer centrality measures
-* Community detection across network layers
-* Network decomposition and feature extraction
-* Semantic enrichment with external knowledge bases
-* Integration with NetworkX, igraph, and other graph libraries
+* **Native support** for multiplex and multilayer network structures
+* **Diagonal projection visualization** for large multilayer networks
+* **Comprehensive multilayer centrality measures**
+* **Community detection** across network layers
+* **Network decomposition** and feature extraction
+* **Semantic enrichment** with external knowledge bases
+* **Integration** with NetworkX, igraph, and other graph libraries
 
 Installation
 ============
@@ -125,20 +125,20 @@ Why py3plex?
 ============
 
 **vs. NetworkX:**
-NetworkX excels at single-layer homogeneous networks but lacks native multilayer support. py3plex builds on NetworkX while adding:
+NetworkX excels at **single-layer homogeneous networks** but lacks native multilayer support. py3plex builds on NetworkX while adding:
 
-* Native multilayer data structures
-* Layer-aware algorithms
-* Specialized multilayer visualizations
-* Heterogeneous network decomposition
+* **Native multilayer data structures**
+* **Layer-aware algorithms**
+* **Specialized multilayer visualizations**
+* **Heterogeneous network decomposition**
 
 **vs. Other Multilayer Tools:**
 py3plex provides:
 
-* Lightweight and easy to integrate
-* Comprehensive statistical measures (17+ multilayer metrics)
-* Publication-ready visualizations
-* Active development and research backing
+* **Lightweight** and easy to integrate
+* **Comprehensive statistical measures** (17+ multilayer metrics)
+* **Publication-ready visualizations**
+* **Active development** and research backing
 
 Use Cases
 =========

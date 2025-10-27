@@ -1,7 +1,7 @@
 Performance and Scalability
 ============================
 
-This guide provides best practices for optimizing py3plex performance and scaling to large networks.
+This guide provides **best practices** for optimizing py3plex performance and scaling to **large networks**.
 
 Memory Management
 -----------------
@@ -21,10 +21,10 @@ Sparse vs Dense Matrices
 
 **Memory requirements:**
 
-* **Sparse:** :math:`O(m)` where :math:`m` is number of edges
-* **Dense:** :math:`O(n^2)` where :math:`n` is total nodes across layers
+* **Sparse:** :math:`O(m)` where :math:`m` is **number of edges**
+* **Dense:** :math:`O(n^2)` where :math:`n` is **total nodes across layers**
 
-**Rule of thumb:** Use sparse for networks with >1,000 nodes or density <10%
+**Rule of thumb:** Use **sparse** for networks with >1,000 nodes or density <10%
 
 Matrix Construction Optimization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,7 +49,7 @@ Efficient Network Construction
 Batch Operations
 ~~~~~~~~~~~~~~~~
 
-Add nodes and edges in batches rather than one at a time:
+Add nodes and edges in **batches** rather than one at a time:
 
 .. code-block:: python
 
@@ -82,7 +82,7 @@ Algorithm Selection
 Time Complexity Guidelines
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Choose algorithms based on network size:
+Choose algorithms based on **network size**:
 
 .. list-table::
    :header-rows: 1
@@ -114,10 +114,10 @@ Avoid Expensive Operations
 
 **O(n²) or worse complexity:**
 
-* Full betweenness centrality
-* All-pairs shortest paths
-* Closeness centrality on large networks
-* Dense matrix operations
+* **Full betweenness centrality**
+* **All-pairs shortest paths**
+* **Closeness centrality** on large networks
+* **Dense matrix operations**
 
 **Alternative approaches:**
 
@@ -157,7 +157,7 @@ py3plex operations can often be parallelized:
 NumPy Vectorization
 ~~~~~~~~~~~~~~~~~~~
 
-Use vectorized operations instead of loops:
+Use **vectorized operations** instead of loops:
 
 .. code-block:: python
 
@@ -181,7 +181,7 @@ Visualization Optimization
 Layout Computation
 ~~~~~~~~~~~~~~~~~~
 
-Layout algorithms have varying complexity:
+Layout algorithms have **varying complexity**:
 
 .. list-table::
    :header-rows: 1
