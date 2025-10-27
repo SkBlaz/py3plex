@@ -9,18 +9,18 @@ Basic Installation
 Install from GitHub (Recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The latest version is always available on GitHub:
+The **latest version** is always available on GitHub:
 
 .. code-block:: bash
 
     pip install git+https://github.com/SkBlaz/py3plex.git
 
-This installs the core py3plex library with all required dependencies.
+This installs the **core py3plex library** with all required dependencies.
 
 Install from Source
 ~~~~~~~~~~~~~~~~~~~
 
-For development or to access the latest features:
+For **development** or to access the **latest features**:
 
 .. code-block:: bash
 
@@ -28,17 +28,17 @@ For development or to access the latest features:
     cd py3plex
     pip install -e .
 
-The ``-e`` flag installs in "editable" mode, so changes to the source code are immediately available.
+The ``-e`` flag installs in **"editable" mode**, so changes to the source code are immediately available.
 
 Optional Dependencies
 ---------------------
 
-py3plex offers several optional feature sets that can be installed separately:
+py3plex offers several **optional feature sets** that can be installed separately:
 
 Advanced Community Detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Install Infomap for advanced overlapping community detection:
+Install **Infomap** for advanced overlapping community detection:
 
 .. code-block:: bash
 
@@ -47,7 +47,7 @@ Install Infomap for advanced overlapping community detection:
 Additional Algorithms
 ~~~~~~~~~~~~~~~~~~~~~
 
-Install extra community detection algorithms (Louvain, cdlib):
+Install **extra community detection algorithms** (Louvain, cdlib):
 
 .. code-block:: bash
 
@@ -56,7 +56,7 @@ Install extra community detection algorithms (Louvain, cdlib):
 Advanced Visualization
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Install Plotly and igraph for interactive and advanced visualizations:
+Install **Plotly and igraph** for interactive and advanced visualizations:
 
 .. code-block:: bash
 
@@ -74,7 +74,7 @@ Install multiple feature sets at once:
 Development Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-For contributors, install with development tools (testing, linting):
+For **contributors**, install with development tools (testing, linting):
 
 .. code-block:: bash
 
@@ -115,40 +115,40 @@ py3plex is cross-platform and tested on:
 Core Dependencies
 ~~~~~~~~~~~~~~~~~
 
-These are automatically installed with py3plex:
+These are **automatically installed** with py3plex:
 
-* ``networkx>=2.5`` - Graph data structures and algorithms
-* ``numpy>=0.8`` - Numerical computing
-* ``scipy>=1.1.0`` - Scientific computing and sparse matrices
-* ``pandas`` - Data manipulation
-* ``matplotlib`` - Static visualization
-* ``scikit-learn`` - Machine learning utilities
-* ``tqdm`` - Progress bars
-* ``rdflib>=0.1`` - Semantic web support
-* ``bitarray>=2.0.0`` - Efficient boolean arrays
+* ``networkx>=2.5`` - **Graph data structures** and algorithms
+* ``numpy>=0.8`` - **Numerical computing**
+* ``scipy>=1.1.0`` - **Scientific computing** and sparse matrices
+* ``pandas`` - **Data manipulation**
+* ``matplotlib`` - **Static visualization**
+* ``scikit-learn`` - **Machine learning** utilities
+* ``tqdm`` - **Progress bars**
+* ``rdflib>=0.1`` - **Semantic web** support
+* ``bitarray>=2.0.0`` - **Efficient boolean arrays**
 
 External Binaries (Optional)
 -----------------------------
 
-**Note:** As of October 2025, py3plex no longer bundles external binaries to reduce repository size and improve licensing clarity.
+**Note:** As of October 2025, py3plex **no longer bundles external binaries** to reduce repository size and improve licensing clarity.
 
 Infomap Community Detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For advanced community detection using Infomap:
+For **advanced community detection** using Infomap:
 
-**Option 1:** Use the bundled Python implementation (recommended):
+**Option 1:** Use the bundled **Python implementation** (recommended):
 
 .. code-block:: bash
 
     pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
 
-**Option 2:** Download the C++ binary from the official source:
+**Option 2:** Download the **C++ binary** from the official source:
 
 * Website: https://www.mapequation.org/infomap/
-* Follow platform-specific installation instructions
+* Follow **platform-specific** installation instructions
 
-**Alternative:** Use the built-in Louvain algorithm (no binary needed):
+**Alternative:** Use the **built-in Louvain algorithm** (no binary needed):
 
 .. code-block:: python
 
@@ -158,9 +158,9 @@ For advanced community detection using Infomap:
 Node2Vec Embeddings
 ~~~~~~~~~~~~~~~~~~~
 
-For Node2Vec node embeddings, use pure Python alternatives:
+For **Node2Vec node embeddings**, use pure Python alternatives:
 
-**Option 1:** Use pecanpy (fast parallel implementation):
+**Option 1:** Use **pecanpy** (fast parallel implementation):
 
 .. code-block:: bash
 
@@ -172,14 +172,14 @@ For Node2Vec node embeddings, use pure Python alternatives:
 
     pip install node2vec
 
-**Option 3:** Use py3plex's built-in random walk implementation:
+**Option 3:** Use py3plex's **built-in random walk** implementation:
 
 .. code-block:: python
 
     from py3plex.algorithms.general.walkers import node2vec_walk, generate_walks
     walks = generate_walks(network.core_network, num_walks=10, walk_length=80)
 
-See ``bin/README.md`` for detailed installation instructions and alternatives.
+See ``bin/README.md`` for **detailed installation instructions** and alternatives.
 
 Virtual Environment Setup
 --------------------------

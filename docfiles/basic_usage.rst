@@ -4,6 +4,8 @@ Quick Start Guide
 Installation
 ************
 
+**Install py3plex:**
+
 .. code:: bash
 
     pip install git+https://github.com/SkBlaz/py3plex.git
@@ -11,7 +13,7 @@ Installation
 Basic Usage
 ***********
 
-Import the library:
+**Import the library:**
 
 .. code:: python
 
@@ -20,14 +22,14 @@ Import the library:
 Loading Networks
 ****************
 
-**From edge lists**:
+**From edge lists:**
 
 .. code:: python
 
     network = multinet.multi_layer_network().load_network(
         "./datasets/test.edgelist", directed=False, input_type="edgelist")
 
-**From multilayer edge lists** (format: node1 layer1 node2 layer2 weight):
+**From multilayer edge lists** (format: **node1 layer1 node2 layer2 weight**):
 
 .. code:: python
 
@@ -44,6 +46,8 @@ Loading Networks
 Network Operations
 ******************
 
+**Basic operations:**
+
 .. code:: python
 
     # Get network statistics
@@ -55,11 +59,11 @@ Network Operations
 For More Examples
 *****************
 
-See the ``examples/`` directory for detailed usage patterns:
+See the ``examples/`` directory for **detailed usage patterns**:
 
-- ``example_multilayer_visualization.py`` - Visualization techniques
-- ``example_IO.py`` - Loading/saving networks
-- ``example_manipulation.py`` - Network manipulation
-- ``example_multilayer_functionality.py`` - Core functionality
+- ``example_multilayer_visualization.py`` - **Visualization techniques**
+- ``example_IO.py`` - **Loading/saving networks**
+- ``example_manipulation.py`` - **Network manipulation**
+- ``example_multilayer_functionality.py`` - **Core functionality**
 
 Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples

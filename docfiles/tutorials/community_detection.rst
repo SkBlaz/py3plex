@@ -1,22 +1,22 @@
 Community Detection Tutorial
 =============================
 
-This tutorial demonstrates community detection algorithms for multilayer networks using py3plex.
+This tutorial demonstrates **community detection algorithms** for **multilayer networks** using py3plex.
 
 Overview
 --------
 
-Community detection identifies groups of nodes that are more densely connected to each other than to the rest of the network. For multilayer networks, communities can span multiple layers, accounting for both intra-layer and inter-layer structure.
+Community detection identifies **groups of nodes** that are more **densely connected** to each other than to the rest of the network. For **multilayer networks**, communities can **span multiple layers**, accounting for both **intra-layer** and **inter-layer** structure.
 
 Supported Algorithms
 --------------------
 
-py3plex provides several community detection algorithms:
+py3plex provides **several community detection algorithms**:
 
-* **Louvain** - Fast modularity optimization (recommended for most use cases)
-* **Infomap** - Flow-based community detection (requires external binary)
-* **Label Propagation** - Semi-supervised approach with known seed communities
-* **Multilayer Modularity** - True multilayer community detection (Mucha et al. 2010)
+* **Louvain** - **Fast modularity optimization** (recommended for most use cases)
+* **Infomap** - **Flow-based** community detection (requires external binary)
+* **Label Propagation** - **Semi-supervised** approach with known seed communities
+* **Multilayer Modularity** - **True multilayer** community detection (Mucha et al. 2010)
 
 Louvain Algorithm
 -----------------
@@ -24,7 +24,7 @@ Louvain Algorithm
 Basic Usage
 ~~~~~~~~~~~
 
-Fastest algorithm for large networks:
+**Fastest algorithm** for large networks:
 
 .. code-block:: python
 
@@ -55,24 +55,24 @@ Parameters
 
 **Resolution parameter:**
 
-* ``resolution=1.0`` - Standard modularity
-* ``resolution>1.0`` - More, smaller communities
-* ``resolution<1.0`` - Fewer, larger communities
+* ``resolution=1.0`` - **Standard modularity**
+* ``resolution>1.0`` - **More, smaller communities**
+* ``resolution<1.0`` - **Fewer, larger communities**
 
 Advantages
 ~~~~~~~~~~
 
-* Very fast: :math:`O(n \log n)`
-* Scales to millions of nodes
-* BSD license (commercial-friendly)
-* Well-established and widely used
+* **Very fast**: :math:`O(n \log n)`
+* **Scales to millions** of nodes
+* **BSD license** (commercial-friendly)
+* **Well-established** and widely used
 
 Disadvantages
 ~~~~~~~~~~~~~
 
-* Non-deterministic (random initialization)
-* Cannot find overlapping communities
-* Resolution limit issues
+* **Non-deterministic** (random initialization)
+* **Cannot find overlapping** communities
+* **Resolution limit** issues
 
 Infomap Algorithm
 -----------------

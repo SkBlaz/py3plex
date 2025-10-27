@@ -1,19 +1,19 @@
 10-Minute Tutorial: Getting Started with Py3plex
 =================================================
 
-This tutorial provides a quick introduction to py3plex, covering the most common tasks you'll need to work with multilayer networks.
+This tutorial provides a **quick introduction** to py3plex, covering the **most common tasks** you'll need to work with multilayer networks.
 
 What You'll Learn
 -----------------
 
-In just 10 minutes, you'll learn how to:
+In just **10 minutes**, you'll learn how to:
 
-1. Create and load multilayer networks
-2. Perform basic network analysis
-3. Compute multilayer statistics
-4. Detect communities
-5. Perform random walks for embeddings
-6. Visualize your networks
+1. **Create and load** multilayer networks
+2. Perform **basic network analysis**
+3. Compute **multilayer statistics**
+4. Detect **communities**
+5. Perform **random walks** for embeddings
+6. **Visualize** your networks
 
 Prerequisites
 -------------
@@ -27,7 +27,7 @@ Make sure py3plex is installed:
 1. Creating Your First Multilayer Network (2 minutes)
 ------------------------------------------------------
 
-Let's start by creating a simple multilayer network from scratch:
+Let's start by creating a **simple multilayer network** from scratch:
 
 .. code-block:: python
 
@@ -63,7 +63,7 @@ Let's start by creating a simple multilayer network from scratch:
 2. Loading Networks from Files (1 minute)
 ------------------------------------------
 
-Py3plex supports multiple input formats. Here's how to load from an edge list:
+Py3plex supports **multiple input formats**. Here's how to load from an edge list:
 
 .. code-block:: python
 
@@ -82,10 +82,10 @@ Py3plex supports multiple input formats. Here's how to load from an edge list:
 
 **Supported formats:**
 
-- ``multiedgelist``: source, target, layer
-- ``edgelist``: simple source, target pairs
-- ``gpickle``: NetworkX pickle format
-- ``gml``, ``graphml``: Standard graph formats
+- ``multiedgelist``: **source, target, layer**
+- ``edgelist``: **simple source, target pairs**
+- ``gpickle``: **NetworkX pickle** format
+- ``gml``, ``graphml``: **Standard graph** formats
 
 3. Exploring Network Structure (2 minutes)
 -------------------------------------------

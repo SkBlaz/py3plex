@@ -1,14 +1,14 @@
 Development Guide
 ==================
 
-This guide covers development workflows, Makefile commands, testing, and contributing to py3plex.
+This guide covers **development workflows**, **Makefile commands**, **testing**, and **contributing** to py3plex.
 
 **View the full development guide**: `development.md <https://github.com/SkBlaz/py3plex/blob/master/docs/development.md>`_
 
 Getting Started
 ---------------
 
-Clone the repository and install in development mode:
+**Clone the repository** and install in **development mode**:
 
 .. code-block:: bash
 
@@ -24,7 +24,7 @@ Clone the repository and install in development mode:
 Makefile Commands
 -----------------
 
-The project includes a production-grade Makefile for streamlined development:
+The project includes a **production-grade Makefile** for streamlined development:
 
 .. code-block:: bash
 
@@ -56,20 +56,20 @@ The project includes a production-grade Makefile for streamlined development:
 
 Key Features:
 
-- **Smart tool detection**: Uses ``.venv/bin/`` tools if available, otherwise falls back to global tools
-- **Colorized output**: Clear success/warning/error messages
-- **Cross-platform**: Works on Linux and macOS
+- **Smart tool detection**: Uses ``.venv/bin/`` tools if available, otherwise falls back to **global tools**
+- **Colorized output**: Clear **success/warning/error** messages
+- **Cross-platform**: Works on **Linux** and **macOS**
 
 Testing
 -------
 
-Quick testing:
+**Quick testing:**
 
 .. code-block:: bash
 
     python run_tests.py
 
-Development testing with pytest:
+**Development testing** with pytest:
 
 .. code-block:: bash
 
