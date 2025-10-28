@@ -820,3 +820,77 @@ class TestCLIIntegration:
         )
         assert result == 0
         assert viz_file.exists()
+
+
+class TestCLISelftest:
+    """Test the 'selftest' command."""
+
+    def test_selftest_basic(self, capsys):
+        """Test that selftest runs successfully."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "[py3plex::selftest]" in captured.out
+        assert "All tests completed successfully" in captured.out
+
+    def test_selftest_verbose(self, capsys):
+        """Test selftest with verbose flag."""
+        result = cli.main(["selftest", "--verbose"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "[py3plex::selftest]" in captured.out
+        assert "numpy:" in captured.out
+        assert "networkx:" in captured.out
+
+    def test_selftest_checks_dependencies(self, capsys):
+        """Test that selftest checks core dependencies."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Core dependencies" in captured.out
+        assert "[✓]" in captured.out
+
+    def test_selftest_checks_graph_creation(self, capsys):
+        """Test that selftest checks graph creation."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Graph creation" in captured.out
+
+    def test_selftest_checks_visualization(self, capsys):
+        """Test that selftest checks visualization module."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Visualization module" in captured.out
+
+    def test_selftest_checks_multilayer(self, capsys):
+        """Test that selftest checks multilayer network creation."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "multilayer" in captured.out.lower()
+
+    def test_selftest_checks_community(self, capsys):
+        """Test that selftest checks community detection."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Community detection" in captured.out
+
+    def test_selftest_checks_io(self, capsys):
+        """Test that selftest checks file I/O."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "File I/O" in captured.out
+
+    def test_selftest_summary(self, capsys):
+        """Test that selftest provides summary."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "TEST SUMMARY" in captured.out
+        assert "Tests passed:" in captured.out
+        assert "Time elapsed:" in captured.out
+
