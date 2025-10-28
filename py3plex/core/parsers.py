@@ -828,16 +828,9 @@ def save_edgelist(input_network: nx.Graph, output_file: str, attributes: bool = 
     if is_multilayer:
         # Save in multilayer format: node1 layer1 node2 layer2 (space-separated)
         for edge in input_network.edges(data=attributes):
-            if attributes and len(edge) > 2:
-                n1, l1 = edge[0]
-                n2, l2 = edge[1]
-                edge_data = edge[2]
-                # Format with attributes if needed
-                fh.write(f"{n1} {l1} {n2} {l2}\n")
-            else:
-                n1, l1 = edge[0]
-                n2, l2 = edge[1]
-                fh.write(f"{n1} {l1} {n2} {l2}\n")
+            n1, l1 = edge[0]
+            n2, l2 = edge[1]
+            fh.write(f"{n1} {l1} {n2} {l2}\n")
     else:
         # For regular networks, convert to integers as before
         input_network = nx.convert_node_labels_to_integers(
