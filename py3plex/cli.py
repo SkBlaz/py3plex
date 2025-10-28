@@ -83,14 +83,17 @@ def _get_layer_names(network: "multinet.multi_layer_network") -> List[str]:
             # Nodes are tuples of (node_id, layer_name)
             if isinstance(node, tuple) and len(node) >= 2:
                 layers.add(node[1])
-    except (AttributeError, StopIteration):
+    except (AttributeError, TypeError):
         # If get_nodes fails, try getting from core_network directly
+        # AttributeError: if get_nodes is not available or core_network is None
+        # TypeError: if the network structure is unexpected
         try:
             for node in network.core_network.nodes():
                 if isinstance(node, tuple) and len(node) >= 2:
                     layers.add(node[1])
-        except Exception:
-            pass
+        except (AttributeError, TypeError) as e:
+            # Log the error for debugging but continue
+            logger.debug(f"Could not extract layer names: {e}")
     
     return sorted(list(layers))
 
@@ -863,9 +866,15 @@ def cmd_visualize(args: argparse.Namespace) -> int:
             )
 
             plt.figure(figsize=(args.width, args.height))
-            # layer_graphs is already a list of graphs
+            # layer_graphs can be either a list or dict depending on get_layers return format
+            # Convert to list if it's a dict
+            if isinstance(layer_graphs, list):
+                graph_list = layer_graphs
+            else:
+                graph_list = list(layer_graphs.values())
+            
             multilayer.draw_multilayer_default(
-                layer_graphs if isinstance(layer_graphs, list) else list(layer_graphs.values()),
+                graph_list,
                 display=False,
                 labels=layer_names,
             )
