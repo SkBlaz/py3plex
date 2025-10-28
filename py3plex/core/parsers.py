@@ -564,10 +564,10 @@ def parse_multiplex_folder(
                         }
                     )
 
-    time_series_tuples = pd.DataFrame()
-    time_series_tuples = time_series_tuples.append(
-        time_series_tuples, ignore_index=True
-    )
+    if time_series_tuples:
+        time_series_tuples = pd.DataFrame(time_series_tuples)
+    else:
+        time_series_tuples = pd.DataFrame()
 
     #    nodes_file = [x for x in names if "nodes.txt" in x]
 
@@ -704,7 +704,7 @@ def load_edge_activity_raw(
                     "timestamp": timestamp,
                 }
             )
-    outframe = outframe.append(time_series_tuples, ignore_index=True)
+    outframe = pd.concat([outframe, pd.DataFrame(time_series_tuples)], ignore_index=True)
     return outframe
 
 
