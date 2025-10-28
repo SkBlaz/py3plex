@@ -802,14 +802,45 @@ def save_multiedgelist(
 
 
 def save_edgelist(input_network: nx.Graph, output_file: str, attributes: bool = False) -> None:
-    fh = open(output_file, "wb")
-    input_network = nx.convert_node_labels_to_integers(
-        input_network, first_label=0, ordering="default", label_attribute=None
-    )
-    if attributes:
-        pass
+    """Save network to edgelist format.
+    
+    For multilayer networks (where nodes are tuples of (node_id, layer)),
+    saves in format: node1 layer1 node2 layer2
+    
+    For regular networks, saves in format: node1 node2
+    """
+    # Check if this is a multilayer network by examining node structure
+    is_multilayer = False
+    if input_network.number_of_nodes() > 0:
+        sample_node = next(iter(input_network.nodes()))
+        # Multilayer nodes are tuples of (node_id, layer)
+        is_multilayer = isinstance(sample_node, tuple) and len(sample_node) == 2
+    
+    fh = open(output_file, "w")
+    
+    if is_multilayer:
+        # Save in multilayer format: node1 layer1 node2 layer2
+        for edge in input_network.edges(data=attributes):
+            if attributes and len(edge) > 2:
+                n1, l1 = edge[0]
+                n2, l2 = edge[1]
+                edge_data = edge[2]
+                # Format with attributes if needed
+                fh.write(f"{n1}\t{l1}\t{n2}\t{l2}\n")
+            else:
+                n1, l1 = edge[0]
+                n2, l2 = edge[1]
+                fh.write(f"{n1}\t{l1}\t{n2}\t{l2}\n")
     else:
-        nx.write_edgelist(input_network, fh, data=False)
+        # For regular networks, convert to integers as before
+        input_network = nx.convert_node_labels_to_integers(
+            input_network, first_label=0, ordering="default", label_attribute=None
+        )
+        # Save in simple format: node1 node2
+        for edge in input_network.edges():
+            fh.write(f"{edge[0]} {edge[1]}\n")
+    
+    fh.close()
     logger.info("Finished writing the network..")
 
 
