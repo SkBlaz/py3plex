@@ -1,6 +1,7 @@
 # This is the main data structure container
 
 import itertools
+from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import networkx as nx
