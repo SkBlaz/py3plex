@@ -317,7 +317,7 @@ print(f"API Version: {py3plex.__api_version__}")
 
 - **GitHub Issues**: https://github.com/SkBlaz/py3plex/issues
 - **Discussions**: https://github.com/SkBlaz/py3plex/discussions
-- **Documentation**: https://py3plex.readthedocs.io
+- **Documentation**: https://skblaz.github.io/py3plex/
 
 ---
 

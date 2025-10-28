@@ -159,6 +159,6 @@ To ensure reproducible results:
 ## Getting Help
 
 - **Examples**: See `examples/` directory for working code
-- **API Docs**: https://py3plex.readthedocs.io
+- **API Docs**: https://skblaz.github.io/py3plex/
 - **Issues**: https://github.com/SkBlaz/py3plex/issues
 - **Papers**: Check `README.md` for citation information
