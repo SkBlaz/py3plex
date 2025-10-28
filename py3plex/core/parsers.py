@@ -563,8 +563,6 @@ def parse_multiplex_folder(
                             "timestamp": timestamp,
                         }
                     )
-
-    if time_series_tuples:
         time_series_tuples = pd.DataFrame(time_series_tuples)
     else:
         time_series_tuples = pd.DataFrame()
@@ -703,7 +701,8 @@ def load_edge_activity_raw(
                     "timestamp": timestamp,
                 }
             )
-    return pd.DataFrame(time_series_tuples)
+    outframe = pd.DataFrame(time_series_tuples)
+    return outframe
 
 
 def load_edge_activity_file(
