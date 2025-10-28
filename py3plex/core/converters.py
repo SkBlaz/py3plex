@@ -111,7 +111,7 @@ def prepare_for_visualization(
     layout_parameters: Optional[Dict[str, Any]] = None,
     verbose: bool = True,
     multiplex: bool = False,
-) -> Tuple[List[Any], Dict[Any, nx.Graph], Any]:
+) -> Tuple[List[Any], List[nx.Graph], Any]:
     """
     This functions takes a multilayer object and returns individual layers, their names, as well as multilayer edges spanning over multiple layers.
 
@@ -124,7 +124,10 @@ def prepare_for_visualization(
         multiplex: Whether to treat as multiplex network
 
     Returns:
-        tuple: (layer_names, layer_networks, multiedges)
+        tuple: (layer_names, layer_networks_list, multiedges)
+            - layer_names: List of layer names
+            - layer_networks_list: List of NetworkX graph objects for each layer
+            - multiedges: Dictionary of edges spanning multiple layers
 
     """
 
@@ -167,7 +170,8 @@ def prepare_for_visualization(
             pass
 
     names_list: List[Any] = list(networks.keys())
-    return (names_list, networks, multiedges)
+    networks_list: List[nx.Graph] = list(networks.values())
+    return (names_list, networks_list, multiedges)
 
 
 def prepare_for_visualization_hairball(multinet, compute_layouts=False):
