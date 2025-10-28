@@ -614,7 +614,7 @@ def cmd_centrality(args: argparse.Namespace) -> int:
         elif args.measure == "eigenvector":
             try:
                 centrality = nx.eigenvector_centrality(G, max_iter=1000)
-            except Exception:
+            except (nx.PowerIterationFailedConvergence, nx.NetworkXError, ValueError):
                 logger.warning("Eigenvector centrality failed, using degree instead")
                 centrality = dict(G.degree())
         elif args.measure == "pagerank":
@@ -916,8 +916,13 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     Returns:
         Exit code (0 for success)
     """
+    import importlib
     import tempfile
     import time
+
+    # Set matplotlib backend early, before any imports that might use it
+    import matplotlib
+    matplotlib.use("Agg")  # Non-interactive backend
 
     verbose = args.verbose
     test_results = []
@@ -939,7 +944,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
     for dep_name in deps:
         try:
-            module = __import__(dep_name)
+            module = importlib.import_module(dep_name)
             deps[dep_name] = getattr(module, "__version__", "unknown")
             if verbose:
                 print(f"   ✓ {dep_name}: {deps[dep_name]}")
@@ -990,8 +995,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     print("\n3. Testing visualization module...")
     viz_status = False
     try:
-        import matplotlib
-        matplotlib.use("Agg")  # Non-interactive backend
+        from py3plex.visualization import multilayer as _  # noqa: F401
 
         print("   [✓] Visualization module initialized")
         if verbose:
