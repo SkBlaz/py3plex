@@ -13,9 +13,27 @@ import pandas as pd
 from py3plex.exceptions import ParsingError
 from py3plex.logging_config import get_logger
 
+# Optional formal verification support
+try:
+    from icontract import require, ensure
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    ICONTRACT_AVAILABLE = False
+
 logger = get_logger(__name__)
 
 
+@require(lambda file_path: isinstance(file_path, str), "file_path must be a string")
+@require(lambda file_path: len(file_path) > 0, "file_path must not be empty")
 def validate_file_exists(file_path: str) -> None:
     """Validate that a file exists and is readable.
     
@@ -24,6 +42,9 @@ def validate_file_exists(file_path: str) -> None:
         
     Raises:
         ParsingError: If file doesn't exist or isn't readable
+        
+    Contracts:
+        - Precondition: file_path must be a non-empty string
     """
     if not os.path.exists(file_path):
         raise ParsingError(
@@ -47,6 +68,12 @@ def validate_file_exists(file_path: str) -> None:
         )
 
 
+@require(lambda file_path: isinstance(file_path, str), "file_path must be a string")
+@require(lambda file_path: len(file_path) > 0, "file_path must not be empty")
+@require(lambda required_columns: isinstance(required_columns, list), "required_columns must be a list")
+@require(lambda required_columns: len(required_columns) > 0, "required_columns must not be empty")
+@require(lambda required_columns: all(isinstance(col, str) for col in required_columns), 
+         "all required_columns must be strings")
 def validate_csv_columns(
     file_path: str,
     required_columns: List[str],
@@ -58,9 +85,13 @@ def validate_csv_columns(
         file_path: Path to CSV file
         required_columns: List of column names that must be present
         optional_columns: List of column names that are optional
-        
+    
     Raises:
         ParsingError: If required columns are missing
+        
+    Contracts:
+        - Precondition: file_path must be a non-empty string
+        - Precondition: required_columns must be a non-empty list of strings
     """
     try:
         # Read just the first row to check columns
@@ -106,6 +137,10 @@ def validate_csv_columns(
         )
 
 
+@require(lambda file_path: isinstance(file_path, str), "file_path must be a string")
+@require(lambda file_path: len(file_path) > 0, "file_path must not be empty")
+@require(lambda delimiter: delimiter is None or isinstance(delimiter, str), 
+         "delimiter must be None or a string")
 def validate_multiedgelist_format(
     file_path: str,
     delimiter: str = None
@@ -118,6 +153,10 @@ def validate_multiedgelist_format(
         
     Raises:
         ParsingError: If file format is invalid
+        
+    Contracts:
+        - Precondition: file_path must be a non-empty string
+        - Precondition: delimiter must be None or a string
     """
     validate_file_exists(file_path)
     
@@ -167,6 +206,10 @@ def validate_multiedgelist_format(
                 break
 
 
+@require(lambda file_path: isinstance(file_path, str), "file_path must be a string")
+@require(lambda file_path: len(file_path) > 0, "file_path must not be empty")
+@require(lambda delimiter: delimiter is None or isinstance(delimiter, str), 
+         "delimiter must be None or a string")
 def validate_edgelist_format(
     file_path: str,
     delimiter: str = None
@@ -179,6 +222,10 @@ def validate_edgelist_format(
         
     Raises:
         ParsingError: If file format is invalid
+        
+    Contracts:
+        - Precondition: file_path must be a non-empty string
+        - Precondition: delimiter must be None or a string
     """
     validate_file_exists(file_path)
     
@@ -228,6 +275,10 @@ def validate_edgelist_format(
                 break
 
 
+@require(lambda input_type: isinstance(input_type, str), "input_type must be a string")
+@require(lambda input_type: len(input_type) > 0, "input_type must not be empty")
+@require(lambda valid_types: valid_types is None or isinstance(valid_types, set), 
+         "valid_types must be None or a set")
 def validate_input_type(
     input_type: str,
     valid_types: Optional[Set[str]] = None
@@ -240,6 +291,10 @@ def validate_input_type(
         
     Raises:
         ParsingError: If input_type is not valid
+        
+    Contracts:
+        - Precondition: input_type must be a non-empty string
+        - Precondition: valid_types must be None or a set
     """
     if valid_types is None:
         valid_types = {
@@ -265,6 +320,9 @@ def validate_input_type(
         )
 
 
+@require(lambda file_path: isinstance(file_path, str), "file_path must be a string")
+@require(lambda input_type: isinstance(input_type, str), "input_type must be a string")
+@require(lambda input_type: len(input_type) > 0, "input_type must not be empty")
 def validate_network_data(
     file_path: str,
     input_type: str
@@ -280,6 +338,10 @@ def validate_network_data(
         
     Raises:
         ParsingError: If validation fails
+        
+    Contracts:
+        - Precondition: file_path must be a string
+        - Precondition: input_type must be a non-empty string
     """
     # Validate input type
     validate_input_type(input_type)
