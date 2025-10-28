@@ -691,7 +691,6 @@ def load_edge_activity_raw(
     """
 
     time_series_tuples = []
-    outframe = pd.DataFrame()
     with open(activity_file, "r+") as acf:
         for line in acf:
             n1, n2, timestamp, layer_name = line.strip().split(" ")
@@ -704,10 +703,7 @@ def load_edge_activity_raw(
                     "timestamp": timestamp,
                 }
             )
-    outframe = pd.concat(
-        [outframe, pd.DataFrame(time_series_tuples)], ignore_index=True
-    )
-    return outframe
+    return pd.DataFrame(time_series_tuples)
 
 
 def load_edge_activity_file(
