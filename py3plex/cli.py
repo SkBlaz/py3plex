@@ -147,10 +147,17 @@ Examples:
   py3plex convert network.graphml --output network.json
   
   # Aggregate multilayer network into single layer
-  py3plex aggregate network.edgelist --method sum --output aggregated.graphml
+  py3plex aggregate network.edgelist --method sum --output aggregated.edgelist
 
-Note: The recommended format for multilayer networks is the edgelist format (.edgelist or .txt).
-      GraphML (.graphml) and other formats are also supported.
+Note: The recommended format for multilayer networks is the multiedgelist/edgelist format 
+      (.edgelist or .txt). GraphML (.graphml) and other formats are also supported.
+
+For detailed help on any command, run:
+  py3plex <command> --help
+  
+Example:
+  py3plex create --help    # Shows all options for creating networks
+  py3plex help             # Shows this help information
 
 For more information, visit: https://github.com/SkBlaz/py3plex
         """,
@@ -161,6 +168,11 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # HELP command
+    help_parser = subparsers.add_parser(
+        "help", help="Show detailed help information about py3plex"
+    )
 
     # CREATE command
     create_parser = subparsers.add_parser(
@@ -176,7 +188,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--type",
         choices=["random", "er", "ba", "ws"],
         default="random",
-        help="Network type: random (default), er (Erdős-Rényi), ba (Barabási-Albert), ws (Watts-Strogatz)",
+        help="Network type - Possible values: 'random' (random network, default), 'er' (Erdős-Rényi), 'ba' (Barabási-Albert preferential attachment), 'ws' (Watts-Strogatz small-world)",
     )
     create_parser.add_argument(
         "--probability",
@@ -188,7 +200,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--output",
         "-o",
         required=True,
-        help="Output file (recommended: .edgelist or .txt; also supports .graphml, .gexf, .gpickle)",
+        help="Output file path (recommended format: .edgelist or .txt for multiedgelist; also supports .graphml, .gexf, .gpickle)",
     )
     create_parser.add_argument("--seed", type=int, help="Random seed for reproducibility")
 
@@ -217,7 +229,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "-a",
         choices=["louvain", "infomap", "label_prop"],
         default="louvain",
-        help="Community detection algorithm (default: louvain)",
+        help="Community detection algorithm - Possible values: 'louvain' (Louvain method, default), 'infomap' (Infomap algorithm), 'label_prop' (Label propagation)",
     )
     community_parser.add_argument(
         "--output", "-o", help="Output file for community assignments (JSON)"
@@ -239,7 +251,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "-m",
         choices=["degree", "betweenness", "closeness", "eigenvector", "pagerank"],
         default="degree",
-        help="Centrality measure (default: degree)",
+        help="Centrality measure - Possible values: 'degree' (degree centrality, default), 'betweenness' (betweenness centrality), 'closeness' (closeness centrality), 'eigenvector' (eigenvector centrality), 'pagerank' (PageRank)",
     )
     centrality_parser.add_argument(
         "--output", "-o", help="Output file for centrality scores (JSON)"
@@ -266,7 +278,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
             "edge_overlap",
         ],
         default="all",
-        help="Statistic to compute (default: all)",
+        help="Statistic to compute - Possible values: 'all' (compute all statistics, default), 'density' (network density), 'clustering' (clustering coefficient), 'layer_density' (density per layer), 'node_activity' (node activity across layers), 'versatility' (versatility centrality), 'edge_overlap' (edge overlap between layers)",
     )
     stats_parser.add_argument(
         "--layer", help="Specific layer for layer-specific statistics"
@@ -290,7 +302,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--layout",
         choices=["spring", "circular", "kamada_kawai", "multilayer"],
         default="multilayer",
-        help="Layout algorithm (default: multilayer)",
+        help="Layout algorithm - Possible values: 'spring' (force-directed spring layout), 'circular' (circular layout), 'kamada_kawai' (Kamada-Kawai force layout), 'multilayer' (specialized multilayer layout, default)",
     )
     viz_parser.add_argument(
         "--width", type=int, default=12, help="Figure width in inches (default: 12)"
@@ -308,7 +320,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--method",
         choices=["sum", "mean", "max", "min"],
         default="sum",
-        help="Aggregation method for edge weights (default: sum)",
+        help="Aggregation method for edge weights - Possible values: 'sum' (sum weights, default), 'mean' (average weights), 'max' (maximum weight), 'min' (minimum weight)",
     )
     aggregate_parser.add_argument(
         "--output", "-o", required=True, help="Output file for aggregated network"
@@ -323,7 +335,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--output",
         "-o",
         required=True,
-        help="Output file (format determined by extension: .graphml, .gexf, .gpickle, .json)",
+        help="Output file path - Format determined by extension: .graphml (GraphML), .gexf (GEXF), .gpickle (NetworkX pickle), .json (JSON)",
     )
 
     # SELFTEST command
@@ -959,6 +971,21 @@ def cmd_convert(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_help(args: argparse.Namespace) -> int:
+    """Show detailed help information.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    # Create parser and show its help
+    parser = create_parser()
+    parser.print_help()
+    return 0
+
+
 def cmd_selftest(args: argparse.Namespace) -> int:
     """Run self-test to verify installation and core functionality.
 
@@ -1210,6 +1237,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # Dispatch to command handlers
     command_handlers = {
+        "help": cmd_help,
         "create": cmd_create,
         "load": cmd_load,
         "community": cmd_community,
