@@ -60,6 +60,23 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
     return network
 
 
+def _get_layer_names(network: "multinet.multi_layer_network") -> List[str]:
+    """Extract unique layer names from a multilayer network.
+    
+    Args:
+        network: py3plex multi_layer_network object
+        
+    Returns:
+        List of unique layer names
+    """
+    layers = set()
+    for node in network.get_nodes():
+        # Nodes are tuples of (node_id, layer_name)
+        if isinstance(node, tuple) and len(node) >= 2:
+            layers.add(node[1])
+    return sorted(list(layers))
+
+
 def _determine_input_type(file_path: str) -> str:
     """Determine network input type from file extension.
 
@@ -92,23 +109,48 @@ def create_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Create a simple multilayer network
-  py3plex create --nodes 100 --layers 3 --output network.graphml
+  # Create a random multilayer network with 100 nodes and 3 layers
+  py3plex create --nodes 100 --layers 3 --type random --probability 0.1 --output network.edgelist
+  
+  # Create an Erdős-Rényi multilayer network
+  py3plex create --nodes 50 --layers 2 --type er --probability 0.05 --output network.edgelist
+  
+  # Load and display network information
+  py3plex load network.edgelist --info
+  
+  # Compute basic statistics for a network
+  py3plex load network.edgelist --stats
+  
+  # Get comprehensive multilayer statistics
+  py3plex stats network.edgelist --measure all
+  
+  # Compute specific statistics (layer density, clustering, etc.)
+  py3plex stats network.edgelist --measure layer_density
+  py3plex stats network.edgelist --measure node_activity
+  
+  # Visualize a network with multilayer layout
+  py3plex visualize network.edgelist --output network.png --layout multilayer
+  
+  # Visualize using NetworkX layouts
+  py3plex visualize network.edgelist --output network.png --layout spring
+  
+  # Detect communities using different algorithms
+  py3plex community network.edgelist --algorithm louvain --output communities.json
+  py3plex community network.edgelist --algorithm label_prop --output communities.json
+  
+  # Compute node centrality measures
+  py3plex centrality network.edgelist --measure degree --top 20 --output centrality.json
+  py3plex centrality network.edgelist --measure betweenness --output centrality.json
+  
+  # Convert between formats
+  py3plex convert network.edgelist --output network.graphml
+  py3plex convert network.graphml --output network.json
+  
+  # Aggregate multilayer network into single layer
+  py3plex aggregate network.edgelist --method sum --output aggregated.graphml
 
-  # Load and analyze a network
-  py3plex load network.graphml --stats
-
-  # Detect communities using Louvain
-  py3plex community network.graphml --algorithm louvain --output communities.json
-
-  # Compute centrality measures
-  py3plex centrality network.graphml --measure degree --output centrality.json
-
-  # Visualize a network
-  py3plex visualize network.graphml --output network.png
-
-  # Get multilayer statistics
-  py3plex stats network.graphml --measure all --output stats.json
+Note: The recommended format for multilayer networks is the edgelist format (.edgelist or .txt).
+      GraphML (.graphml) and other formats are also supported.
 
 For more information, visit: https://github.com/SkBlaz/py3plex
         """,
@@ -146,7 +188,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--output",
         "-o",
         required=True,
-        help="Output file (supports .graphml, .gexf, .gpickle)",
+        help="Output file (recommended: .edgelist or .txt; also supports .graphml, .gexf, .gpickle)",
     )
     create_parser.add_argument("--seed", type=int, help="Random seed for reproducibility")
 
@@ -416,7 +458,8 @@ def cmd_create(args: argparse.Namespace) -> int:
         logger.info(f"Network saved to {args.output}")
         logger.info(f"  Nodes: {network.core_network.number_of_nodes()}")
         logger.info(f"  Edges: {network.core_network.number_of_edges()}")
-        logger.info(f"  Layers: {len(network.get_layers())}")
+        layers = _get_layer_names(network)
+        logger.info(f"  Layers: {len(layers)} ({', '.join(layers)})")
 
         return 0
     except Exception as e:
@@ -440,10 +483,11 @@ def cmd_load(args: argparse.Namespace) -> int:
         output_data = {}
 
         if args.info or not args.stats:
+            layers = _get_layer_names(network)
             info = {
                 "nodes": network.core_network.number_of_nodes(),
                 "edges": network.core_network.number_of_edges(),
-                "layers": network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers()),
+                "layers": layers,
                 "directed": network.directed,
             }
             output_data["info"] = info
@@ -459,7 +503,7 @@ def cmd_load(args: argparse.Namespace) -> int:
 
             stats: Dict[str, Any] = {}
             try:
-                layers = network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers())
+                layers = _get_layer_names(network)
                 if layers:
                     stats["layer_densities"] = {
                         layer: float(mls.layer_density(network, layer))
@@ -668,7 +712,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
         from py3plex.algorithms.statistics import multilayer_statistics as mls
 
         stats: Dict[str, Any] = {}
-        layers = network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers())
+        layers = _get_layer_names(network)
 
         logger.info("Computing multilayer statistics...")
 
@@ -780,11 +824,18 @@ def cmd_visualize(args: argparse.Namespace) -> int:
         if args.layout == "multilayer":
             from py3plex.visualization import multilayer
 
+            # Get the layer networks from the multilayer object
+            layer_names, layer_graphs, multiedges = network.get_layers(
+                style="diagonal", 
+                compute_layouts="force",
+                verbose=False
+            )
+
             plt.figure(figsize=(args.width, args.height))
             multilayer.draw_multilayer_default(
-                [network],
+                list(layer_graphs.values()),
                 display=False,
-                labels=True,
+                labels=layer_names,
             )
         else:
             # Use NetworkX layouts
@@ -884,13 +935,14 @@ def cmd_convert(args: argparse.Namespace) -> int:
             nx.write_gpickle(network.core_network, str(output_path))
         elif output_path.suffix == ".json":
             # Custom JSON export with network info
+            layers = _get_layer_names(network)
             data = {
                 "nodes": [str(n) for n in network.core_network.nodes()],
                 "edges": [
                     {"source": str(u), "target": str(v)}
                     for u, v in network.core_network.edges()
                 ],
-                "layers": network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers()),
+                "layers": layers,
                 "directed": network.directed,
             }
             with open(output_path, "w") as f:
