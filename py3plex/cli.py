@@ -23,6 +23,76 @@ from py3plex.logging_config import get_logger
 logger = get_logger(__name__)
 
 
+def _normalize_network_nodes(network: "multinet.multi_layer_network") -> "multinet.multi_layer_network":
+    """Normalize network nodes from string representations to tuples.
+    
+    When loading from GraphML, nodes are stored as strings like "('node1', 'layer1')".
+    This function converts them back to proper tuples so statistics functions work correctly.
+    
+    Args:
+        network: Network with potentially string-formatted nodes
+        
+    Returns:
+        Network with tuple nodes
+    """
+    import ast
+    import networkx as nx
+    
+    # Check if nodes need normalization
+    sample_node = next(iter(network.core_network.nodes()), None)
+    if sample_node is None or isinstance(sample_node, tuple):
+        # Already in correct format or empty
+        return network
+    
+    # Create a mapping from string nodes to tuple nodes
+    node_mapping = {}
+    for node in network.core_network.nodes():
+        if isinstance(node, str):
+            try:
+                parsed = ast.literal_eval(node)
+                if isinstance(parsed, tuple):
+                    node_mapping[node] = parsed
+                else:
+                    # Keep as-is if not a tuple string
+                    node_mapping[node] = node
+            except (ValueError, SyntaxError):
+                # Keep as-is if parsing fails
+                node_mapping[node] = node
+        else:
+            node_mapping[node] = node
+    
+    # Only relabel if we found string nodes to convert
+    if any(isinstance(k, str) and k != v for k, v in node_mapping.items()):
+        network.core_network = nx.relabel_nodes(network.core_network, node_mapping, copy=True)
+    
+    return network
+
+
+def _parse_node(node: Any) -> tuple:
+    """Parse a node that might be a tuple or string representation of a tuple.
+    
+    Args:
+        node: Node that can be a tuple or string
+        
+    Returns:
+        Tuple representation of the node
+    """
+    import ast
+    if isinstance(node, tuple):
+        return node
+    elif isinstance(node, str):
+        try:
+            # Handle string representations like "('node1', 'layer1')"
+            parsed = ast.literal_eval(node)
+            if isinstance(parsed, tuple):
+                return parsed
+        except (ValueError, SyntaxError):
+            pass
+    # If we can't parse it, return as-is wrapped in tuple
+    return (node,)
+
+
+
 def _load_network(file_path: str) -> "multinet.multi_layer_network":
     """Load a network from file, handling different formats.
 
@@ -45,6 +115,8 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
         # The core_network is a NetworkX graph, so we can assign directly
         network.core_network = G
         network.directed = G.is_directed()
+        # Normalize nodes from string representations back to tuples
+        network = _normalize_network_nodes(network)
     elif input_path.suffix == ".gpickle":
         network.load_network(file_path, input_type="gpickle")
     else:
@@ -86,10 +158,28 @@ def _get_layer_names(network: "multinet.multi_layer_network") -> List[str]:
         List of unique layer names
     """
     layers = set()
-    for node in network.get_nodes():
-        # Nodes are tuples of (node_id, layer_name)
-        if isinstance(node, tuple) and len(node) >= 2:
-            layers.add(node[1])
+    
+    # Handle case where core_network might not be initialized
+    if network.core_network is None:
+        return []
+    
+    try:
+        for node in network.get_nodes():
+            # Nodes are tuples of (node_id, layer_name)
+            if isinstance(node, tuple) and len(node) >= 2:
+                layers.add(node[1])
+    except (AttributeError, TypeError):
+        # If get_nodes fails, try getting from core_network directly
+        # AttributeError: if get_nodes is not available or core_network is None
+        # TypeError: if the network structure is unexpected
+        try:
+            for node in network.core_network.nodes():
+                if isinstance(node, tuple) and len(node) >= 2:
+                    layers.add(node[1])
+        except (AttributeError, TypeError) as e:
+            # Log the error for debugging but continue
+            logger.debug(f"Could not extract layer names: {e}")
+    
     return sorted(list(layers))
 
 
@@ -163,10 +253,17 @@ Examples:
   py3plex convert network.graphml --output network.json
   
   # Aggregate multilayer network into single layer
-  py3plex aggregate network.edgelist --method sum --output aggregated.graphml
+  py3plex aggregate network.edgelist --method sum --output aggregated.edgelist
 
-Note: The recommended format for multilayer networks is the edgelist format (.edgelist or .txt).
-      GraphML (.graphml) and other formats are also supported.
+Note: The recommended format for multilayer networks is the multiedgelist/edgelist format 
+      (.edgelist or .txt). GraphML (.graphml) and other formats are also supported.
+
+For detailed help on any command, run:
+  py3plex <command> --help
+  
+Example:
+  py3plex create --help    # Shows all options for creating networks
+  py3plex help             # Shows this help information
 
 For more information, visit: https://github.com/SkBlaz/py3plex
         """,
@@ -177,6 +274,11 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # HELP command
+    help_parser = subparsers.add_parser(
+        "help", help="Show detailed help information about py3plex"
+    )
 
     # CREATE command
     create_parser = subparsers.add_parser(
@@ -192,7 +294,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--type",
         choices=["random", "er", "ba", "ws"],
         default="random",
-        help="Network type: random (default), er (Erdős-Rényi), ba (Barabási-Albert), ws (Watts-Strogatz)",
+        help="Network type - Possible values: 'random' (random network, default), 'er' (Erdős-Rényi), 'ba' (Barabási-Albert preferential attachment), 'ws' (Watts-Strogatz small-world)",
     )
     create_parser.add_argument(
         "--probability",
@@ -204,7 +306,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--output",
         "-o",
         required=True,
-        help="Output file (recommended: .edgelist or .txt; also supports .graphml, .gexf, .gpickle)",
+        help="Output file path (recommended format: .edgelist or .txt for multiedgelist; also supports .graphml, .gexf, .gpickle)",
     )
     create_parser.add_argument("--seed", type=int, help="Random seed for reproducibility")
 
@@ -233,7 +335,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "-a",
         choices=["louvain", "infomap", "label_prop"],
         default="louvain",
-        help="Community detection algorithm (default: louvain)",
+        help="Community detection algorithm - Possible values: 'louvain' (Louvain method, default), 'infomap' (Infomap algorithm), 'label_prop' (Label propagation)",
     )
     community_parser.add_argument(
         "--output", "-o", help="Output file for community assignments (JSON)"
@@ -255,7 +357,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "-m",
         choices=["degree", "betweenness", "closeness", "eigenvector", "pagerank"],
         default="degree",
-        help="Centrality measure (default: degree)",
+        help="Centrality measure - Possible values: 'degree' (degree centrality, default), 'betweenness' (betweenness centrality), 'closeness' (closeness centrality), 'eigenvector' (eigenvector centrality), 'pagerank' (PageRank)",
     )
     centrality_parser.add_argument(
         "--output", "-o", help="Output file for centrality scores (JSON)"
@@ -282,7 +384,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
             "edge_overlap",
         ],
         default="all",
-        help="Statistic to compute (default: all)",
+        help="Statistic to compute - Possible values: 'all' (compute all statistics, default), 'density' (network density), 'clustering' (clustering coefficient), 'layer_density' (density per layer), 'node_activity' (node activity across layers), 'versatility' (versatility centrality), 'edge_overlap' (edge overlap between layers)",
     )
     stats_parser.add_argument(
         "--layer", help="Specific layer for layer-specific statistics"
@@ -306,7 +408,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--layout",
         choices=["spring", "circular", "kamada_kawai", "multilayer"],
         default="multilayer",
-        help="Layout algorithm (default: multilayer)",
+        help="Layout algorithm - Possible values: 'spring' (force-directed spring layout), 'circular' (circular layout), 'kamada_kawai' (Kamada-Kawai force layout), 'multilayer' (specialized multilayer layout, default)",
     )
     viz_parser.add_argument(
         "--width", type=int, default=12, help="Figure width in inches (default: 12)"
@@ -324,7 +426,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--method",
         choices=["sum", "mean", "max", "min"],
         default="sum",
-        help="Aggregation method for edge weights (default: sum)",
+        help="Aggregation method for edge weights - Possible values: 'sum' (sum weights, default), 'mean' (average weights), 'max' (maximum weight), 'min' (minimum weight)",
     )
     aggregate_parser.add_argument(
         "--output", "-o", required=True, help="Output file for aggregated network"
@@ -339,7 +441,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--output",
         "-o",
         required=True,
-        help="Output file (format determined by extension: .graphml, .gexf, .gpickle, .json)",
+        help="Output file path - Format determined by extension: .graphml (GraphML), .gexf (GEXF), .gpickle (NetworkX pickle), .json (JSON)",
     )
 
     # SELFTEST command
@@ -463,10 +565,11 @@ def cmd_create(args: argparse.Namespace) -> int:
             elif output_path.suffix == ".gpickle":
                 network.save_network(str(output_path), output_type="gpickle")
             elif output_path.suffix in [".edgelist", ".txt"]:
-                network.save_network(str(output_path), output_type="edgelist")
+                # Use multiedgelist format to preserve layer information
+                network.save_network(str(output_path), output_type="multiedgelist")
             else:
-                logger.warning(f"Unsupported format '{output_path.suffix}', using GraphML")
-                nx.write_graphml(network.core_network, str(output_path.with_suffix(".graphml")))
+                logger.warning(f"Unsupported format '{output_path.suffix}', using multiedgelist")
+                network.save_network(str(output_path.with_suffix(".edgelist")), output_type="multiedgelist")
         except Exception as e:
             logger.warning(f"Error saving with native format, trying alternate method: {e}")
             nx.write_graphml(network.core_network, str(output_path))
@@ -848,8 +951,15 @@ def cmd_visualize(args: argparse.Namespace) -> int:
             )
 
             plt.figure(figsize=(args.width, args.height))
+            # layer_graphs can be either a list or dict depending on get_layers return format
+            # Convert to list if it's a dict
+            if isinstance(layer_graphs, list):
+                graph_list = layer_graphs
+            else:
+                graph_list = list(layer_graphs.values())
+            
             multilayer.draw_multilayer_default(
-                list(layer_graphs.values()),
+                graph_list,
                 display=False,
                 labels=layer_names,
             )
@@ -973,6 +1083,21 @@ def cmd_convert(args: argparse.Namespace) -> int:
     except Exception as e:
         logger.error(f"Error converting network: {e}")
         return 1
+
+
+def cmd_help(args: argparse.Namespace) -> int:
+    """Show detailed help information.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    # Create parser and show its help
+    parser = create_parser()
+    parser.print_help()
+    return 0
 
 
 def cmd_selftest(args: argparse.Namespace) -> int:
@@ -1226,6 +1351,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # Dispatch to command handlers
     command_handlers = {
+        "help": cmd_help,
         "create": cmd_create,
         "load": cmd_load,
         "community": cmd_community,
