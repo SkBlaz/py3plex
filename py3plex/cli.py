@@ -8,7 +8,6 @@ with full coverage of main algorithms.
 
 import argparse
 import json
-import logging
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -26,16 +25,16 @@ logger = get_logger(__name__)
 
 def _load_network(file_path: str) -> "multinet.multi_layer_network":
     """Load a network from file, handling different formats.
-    
+
     Args:
         file_path: Path to the network file
-        
+
     Returns:
         Loaded multi_layer_network object
     """
     network = multinet.multi_layer_network()
     input_path = Path(file_path)
-    
+
     # For formats not directly supported by py3plex, load with NetworkX first
     if input_path.suffix in [".graphml", ".gexf"]:
         if input_path.suffix == ".graphml":
@@ -52,21 +51,21 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
         # Try as GML or edgelist
         try:
             network.load_network(file_path, input_type="gml")
-        except:
+        except Exception:
             try:
                 network.load_network(file_path, input_type="edgelist")
             except Exception as e:
                 raise ValueError(f"Could not load network from {file_path}: {e}")
-    
+
     return network
 
 
 def _determine_input_type(file_path: str) -> str:
     """Determine network input type from file extension.
-    
+
     Args:
         file_path: Path to the input file
-        
+
     Returns:
         Input type string for load_network
     """
@@ -285,6 +284,14 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         help="Output file (format determined by extension: .graphml, .gexf, .gpickle, .json)",
     )
 
+    # SELFTEST command
+    selftest_parser = subparsers.add_parser(
+        "selftest", help="Run self-test to verify installation and core functionality"
+    )
+    selftest_parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Show detailed output"
+    )
+
     return parser
 
 
@@ -337,7 +344,7 @@ def cmd_create(args: argparse.Namespace) -> int:
                 # Barabási-Albert preferential attachment
                 m = max(1, int(args.nodes * args.probability))
                 edges_dict = []
-                degrees = {i: 0 for i in range(args.nodes)}
+                degrees = dict.fromkeys(range(args.nodes), 0)
 
                 # Start with a small complete graph
                 for i in range(min(m + 1, args.nodes)):
@@ -607,7 +614,7 @@ def cmd_centrality(args: argparse.Namespace) -> int:
         elif args.measure == "eigenvector":
             try:
                 centrality = nx.eigenvector_centrality(G, max_iter=1000)
-            except:
+            except Exception:
                 logger.warning("Eigenvector centrality failed, using degree instead")
                 centrality = dict(G.degree())
         elif args.measure == "pagerank":
@@ -663,7 +670,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
         stats: Dict[str, Any] = {}
         layers = network.get_layers()[0] if isinstance(network.get_layers(), tuple) else list(network.get_layers())
 
-        logger.info(f"Computing multilayer statistics...")
+        logger.info("Computing multilayer statistics...")
 
         if args.measure in ["all", "density", "layer_density"] and layers:
             stats["layer_densities"] = {}
@@ -724,17 +731,17 @@ def cmd_stats(args: argparse.Namespace) -> int:
             logger.info(f"  Clustering Coefficient: {stats['clustering_coefficient']:.4f}")
 
         if "node_activity_sample" in stats:
-            logger.info(f"  Node Activity (sample):")
+            logger.info("  Node Activity (sample):")
             for node, activity in list(stats["node_activity_sample"].items())[:5]:
                 logger.info(f"    {node}: {activity:.4f}")
 
         if "versatility_top10" in stats:
-            logger.info(f"  Versatility Centrality (top 10):")
+            logger.info("  Versatility Centrality (top 10):")
             for node, score in list(stats["versatility_top10"].items())[:5]:
                 logger.info(f"    {node}: {score:.4f}")
 
         if "edge_overlap" in stats:
-            logger.info(f"  Edge Overlap:")
+            logger.info("  Edge Overlap:")
             for pair, overlap in stats["edge_overlap"].items():
                 logger.info(f"    {pair}: {overlap:.4f}")
 
@@ -773,7 +780,7 @@ def cmd_visualize(args: argparse.Namespace) -> int:
         if args.layout == "multilayer":
             from py3plex.visualization import multilayer
 
-            fig = plt.figure(figsize=(args.width, args.height))
+            plt.figure(figsize=(args.width, args.height))
             multilayer.draw_multilayer_default(
                 [network],
                 display=False,
@@ -788,7 +795,7 @@ def cmd_visualize(args: argparse.Namespace) -> int:
             elif args.layout == "kamada_kawai":
                 pos = nx.kamada_kawai_layout(network.core_network)
 
-            fig = plt.figure(figsize=(args.width, args.height))
+            plt.figure(figsize=(args.width, args.height))
             nx.draw(
                 network.core_network,
                 pos,
@@ -838,7 +845,7 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
         elif output_path.suffix == ".gpickle":
             nx.write_gpickle(aggregated, str(output_path))
         else:
-            logger.warning(f"Unsupported format, using GraphML")
+            logger.warning("Unsupported format, using GraphML")
             nx.write_graphml(aggregated, str(output_path.with_suffix(".graphml")))
 
         logger.info(f"Aggregated network saved to {args.output}")
@@ -900,6 +907,232 @@ def cmd_convert(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_selftest(args: argparse.Namespace) -> int:
+    """Run self-test to verify installation and core functionality.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    import tempfile
+    import time
+
+    verbose = args.verbose
+    test_results = []
+    start_time = time.time()
+
+    print("[py3plex::selftest] Starting py3plex self-test...")
+    print()
+
+    # Test 1: Core dependencies
+    print("1. Checking core dependencies...")
+    deps_status = True
+    deps = {
+        "numpy": None,
+        "networkx": None,
+        "matplotlib": None,
+        "scipy": None,
+        "pandas": None,
+    }
+
+    for dep_name in deps:
+        try:
+            module = __import__(dep_name)
+            deps[dep_name] = getattr(module, "__version__", "unknown")
+            if verbose:
+                print(f"   ✓ {dep_name}: {deps[dep_name]}")
+        except ImportError as e:
+            deps_status = False
+            print(f"   ✗ {dep_name}: NOT FOUND - {e}")
+
+    if deps_status:
+        print("   [✓] Core dependencies OK")
+    else:
+        print("   [✗] Some dependencies missing")
+    test_results.append(("Core dependencies", deps_status))
+
+    # Test 2: Graph creation
+    print("\n2. Testing graph creation...")
+    graph_status = False
+    try:
+        network = multinet.multi_layer_network()
+
+        # Add nodes
+        nodes = [{"source": f"node{i}", "type": "layer1"} for i in range(10)]
+        network.add_nodes(nodes, input_type="dict")
+
+        # Add edges
+        edges = [
+            {"source": f"node{i}", "target": f"node{i+1}",
+             "source_type": "layer1", "target_type": "layer1"}
+            for i in range(9)
+        ]
+        network.add_edges(edges, input_type="dict")
+
+        if network.core_network.number_of_nodes() == 10:
+            print("   [✓] Graph creation successful")
+            if verbose:
+                print(f"      Nodes: {network.core_network.number_of_nodes()}")
+                print(f"      Edges: {network.core_network.number_of_edges()}")
+            graph_status = True
+        else:
+            print("   [✗] Graph creation failed: unexpected node count")
+    except Exception as e:
+        print(f"   [✗] Graph creation failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+    test_results.append(("Graph creation", graph_status))
+
+    # Test 3: Visualization module
+    print("\n3. Testing visualization module...")
+    viz_status = False
+    try:
+        import matplotlib
+        matplotlib.use("Agg")  # Non-interactive backend
+
+        print("   [✓] Visualization module initialized")
+        if verbose:
+            print(f"      Matplotlib backend: {matplotlib.get_backend()}")
+        viz_status = True
+    except Exception as e:
+        print(f"   [✗] Visualization module error: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+    test_results.append(("Visualization module", viz_status))
+
+    # Test 4: Multilayer network example
+    print("\n4. Creating example multilayer graph...")
+    multilayer_status = False
+    try:
+        network = multinet.multi_layer_network()
+
+        # Create two layers
+        for layer_idx in range(2):
+            layer_name = f"layer{layer_idx + 1}"
+            nodes = [{"source": f"node{i}", "type": layer_name} for i in range(5)]
+            network.add_nodes(nodes, input_type="dict")
+
+            # Add some edges
+            for i in range(4):
+                network.add_edges([{
+                    "source": f"node{i}",
+                    "target": f"node{i+1}",
+                    "source_type": layer_name,
+                    "target_type": layer_name,
+                }], input_type="dict")
+
+        layers = network.get_layers()
+        layer_list = layers[0] if isinstance(layers, tuple) else list(layers)
+
+        if len(layer_list) >= 2:
+            print("   [✓] Example multilayer graph created")
+            if verbose:
+                print(f"      Layers: {len(layer_list)}")
+                print(f"      Total nodes: {network.core_network.number_of_nodes()}")
+                print(f"      Total edges: {network.core_network.number_of_edges()}")
+            multilayer_status = True
+        else:
+            print("   [✗] Multilayer graph creation failed: insufficient layers")
+    except Exception as e:
+        print(f"   [✗] Multilayer graph creation failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+    test_results.append(("Multilayer graph", multilayer_status))
+
+    # Test 5: Community detection
+    print("\n5. Testing community detection...")
+    community_status = False
+    try:
+        from py3plex.algorithms.community_detection import community_wrapper
+
+        # Create simple test graph
+        G = nx.karate_club_graph()
+        partition = community_wrapper.louvain_communities(G)
+
+        if partition and len(set(partition.values())) > 1:
+            print("   [✓] Community detection test passed")
+            if verbose:
+                print(f"      Communities found: {len(set(partition.values()))}")
+            community_status = True
+        else:
+            print("   [✗] Community detection failed: no communities found")
+    except Exception as e:
+        print(f"   [✗] Community detection failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+    test_results.append(("Community detection", community_status))
+
+    # Test 6: File I/O
+    print("\n6. Testing file I/O...")
+    io_status = False
+    try:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_file = Path(tmpdir) / "test_network.graphml"
+
+            # Create and save network
+            network = multinet.multi_layer_network()
+            nodes = [{"source": f"node{i}", "type": "test_layer"} for i in range(5)]
+            network.add_nodes(nodes, input_type="dict")
+
+            edges = [
+                {"source": f"node{i}", "target": f"node{i+1}",
+                 "source_type": "test_layer", "target_type": "test_layer"}
+                for i in range(4)
+            ]
+            network.add_edges(edges, input_type="dict")
+
+            # Save
+            nx.write_graphml(network.core_network, str(test_file))
+
+            # Load
+            loaded_network = multinet.multi_layer_network()
+            G = nx.read_graphml(str(test_file))
+            loaded_network.core_network = G
+
+            if loaded_network.core_network.number_of_nodes() == 5:
+                print("   [✓] File I/O test passed")
+                if verbose:
+                    print(f"      Test file: {test_file.name}")
+                io_status = True
+            else:
+                print("   [✗] File I/O test failed: node count mismatch")
+    except Exception as e:
+        print(f"   [✗] File I/O test failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+    test_results.append(("File I/O", io_status))
+
+    # Performance summary
+    elapsed = time.time() - start_time
+    print(f"\n{'='*60}")
+    print("📊 TEST SUMMARY")
+    print(f"{'='*60}")
+
+    passed = sum(1 for _, status in test_results if status)
+    total = len(test_results)
+
+    for test_name, status in test_results:
+        status_icon = "✓" if status else "✗"
+        print(f"  [{status_icon}] {test_name}")
+
+    print(f"\n  Tests passed: {passed}/{total}")
+    print(f"  Time elapsed: {elapsed:.2f}s")
+
+    if passed == total:
+        print("\n[✓] All tests completed successfully!")
+        return 0
+    else:
+        print(f"\n[✗] {total - passed} test(s) failed")
+        return 1
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
@@ -918,7 +1151,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # Configure logging level based on verbosity (if added)
     # This allows for future --verbose/-v and --quiet/-q flags
-    
+
     # Dispatch to command handlers
     command_handlers = {
         "create": cmd_create,
@@ -929,6 +1162,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "visualize": cmd_visualize,
         "aggregate": cmd_aggregate,
         "convert": cmd_convert,
+        "selftest": cmd_selftest,
     }
 
     handler = command_handlers.get(args.command)
