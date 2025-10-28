@@ -660,7 +660,6 @@ class multi_layer_network:
         node_first_names = edge_df.node_first.values
         node_second_names = edge_df.node_second.values
         layer_names = edge_df.layer_name.values
-        defaultdict(list)
         edges = []
         for enx, _en in enumerate(node_first_names):
             edge = (
