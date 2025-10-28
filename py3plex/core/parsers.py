@@ -563,11 +563,9 @@ def parse_multiplex_folder(
                             "timestamp": timestamp,
                         }
                     )
-
-    time_series_tuples = pd.DataFrame()
-    time_series_tuples = time_series_tuples.append(
-        time_series_tuples, ignore_index=True
-    )
+        time_series_tuples = pd.DataFrame(time_series_tuples)
+    else:
+        time_series_tuples = pd.DataFrame()
 
     #    nodes_file = [x for x in names if "nodes.txt" in x]
 
@@ -691,7 +689,6 @@ def load_edge_activity_raw(
     """
 
     time_series_tuples = []
-    outframe = pd.DataFrame()
     with open(activity_file, "r+") as acf:
         for line in acf:
             n1, n2, timestamp, layer_name = line.strip().split(" ")
@@ -704,7 +701,7 @@ def load_edge_activity_raw(
                     "timestamp": timestamp,
                 }
             )
-    outframe = outframe.append(time_series_tuples, ignore_index=True)
+    outframe = pd.DataFrame(time_series_tuples)
     return outframe
 
 
