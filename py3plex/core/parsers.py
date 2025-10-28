@@ -704,7 +704,9 @@ def load_edge_activity_raw(
                     "timestamp": timestamp,
                 }
             )
-    outframe = pd.concat([outframe, pd.DataFrame(time_series_tuples)], ignore_index=True)
+    outframe = pd.concat(
+        [outframe, pd.DataFrame(time_series_tuples)], ignore_index=True
+    )
     return outframe
 
 
