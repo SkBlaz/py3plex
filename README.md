@@ -23,6 +23,13 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 pip install git+https://github.com/SkBlaz/py3plex.git
 ```
 
+and
+
+```
+py3plex selftest
+```
+To verify installation.
+
 **Note**: The Git version includes the latest features and bug fixes. PyPI version is deprecated.
 
 **Recommended**: Use a virtual environment (venv or conda) to manage dependencies.
