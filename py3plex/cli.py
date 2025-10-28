@@ -48,14 +48,17 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
     elif input_path.suffix == ".gpickle":
         network.load_network(file_path, input_type="gpickle")
     else:
-        # Try as GML or edgelist
+        # Try as multiedgelist first (preserves layer info), then GML, then simple edgelist
         try:
-            network.load_network(file_path, input_type="gml")
+            network.load_network(file_path, input_type="multiedgelist")
         except Exception:
             try:
-                network.load_network(file_path, input_type="edgelist")
-            except Exception as e:
-                raise ValueError(f"Could not load network from {file_path}: {e}")
+                network.load_network(file_path, input_type="gml")
+            except Exception:
+                try:
+                    network.load_network(file_path, input_type="edgelist")
+                except Exception as e:
+                    raise ValueError(f"Could not load network from {file_path}: {e}")
 
     return network
 
@@ -70,10 +73,25 @@ def _get_layer_names(network: "multinet.multi_layer_network") -> List[str]:
         List of unique layer names
     """
     layers = set()
-    for node in network.get_nodes():
-        # Nodes are tuples of (node_id, layer_name)
-        if isinstance(node, tuple) and len(node) >= 2:
-            layers.add(node[1])
+    
+    # Handle case where core_network might not be initialized
+    if network.core_network is None:
+        return []
+    
+    try:
+        for node in network.get_nodes():
+            # Nodes are tuples of (node_id, layer_name)
+            if isinstance(node, tuple) and len(node) >= 2:
+                layers.add(node[1])
+    except (AttributeError, StopIteration):
+        # If get_nodes fails, try getting from core_network directly
+        try:
+            for node in network.core_network.nodes():
+                if isinstance(node, tuple) and len(node) >= 2:
+                    layers.add(node[1])
+        except Exception:
+            pass
+    
     return sorted(list(layers))
 
 
@@ -459,10 +477,11 @@ def cmd_create(args: argparse.Namespace) -> int:
             elif output_path.suffix == ".gpickle":
                 network.save_network(str(output_path), output_type="gpickle")
             elif output_path.suffix in [".edgelist", ".txt"]:
-                network.save_network(str(output_path), output_type="edgelist")
+                # Use multiedgelist format to preserve layer information
+                network.save_network(str(output_path), output_type="multiedgelist")
             else:
-                logger.warning(f"Unsupported format '{output_path.suffix}', using GraphML")
-                nx.write_graphml(network.core_network, str(output_path.with_suffix(".graphml")))
+                logger.warning(f"Unsupported format '{output_path.suffix}', using multiedgelist")
+                network.save_network(str(output_path.with_suffix(".edgelist")), output_type="multiedgelist")
         except Exception as e:
             logger.warning(f"Error saving with native format, trying alternate method: {e}")
             nx.write_graphml(network.core_network, str(output_path))
@@ -844,8 +863,9 @@ def cmd_visualize(args: argparse.Namespace) -> int:
             )
 
             plt.figure(figsize=(args.width, args.height))
+            # layer_graphs is already a list of graphs
             multilayer.draw_multilayer_default(
-                list(layer_graphs.values()),
+                layer_graphs if isinstance(layer_graphs, list) else list(layer_graphs.values()),
                 display=False,
                 labels=layer_names,
             )
