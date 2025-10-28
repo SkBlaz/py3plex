@@ -23,6 +23,76 @@ from py3plex.logging_config import get_logger
 logger = get_logger(__name__)
 
 
+def _normalize_network_nodes(network: "multinet.multi_layer_network") -> "multinet.multi_layer_network":
+    """Normalize network nodes from string representations to tuples.
+    
+    When loading from GraphML, nodes are stored as strings like "('node1', 'layer1')".
+    This function converts them back to proper tuples so statistics functions work correctly.
+    
+    Args:
+        network: Network with potentially string-formatted nodes
+        
+    Returns:
+        Network with tuple nodes
+    """
+    import ast
+    import networkx as nx
+    
+    # Check if nodes need normalization
+    sample_node = next(iter(network.core_network.nodes()), None)
+    if sample_node is None or isinstance(sample_node, tuple):
+        # Already in correct format or empty
+        return network
+    
+    # Create a mapping from string nodes to tuple nodes
+    node_mapping = {}
+    for node in network.core_network.nodes():
+        if isinstance(node, str):
+            try:
+                parsed = ast.literal_eval(node)
+                if isinstance(parsed, tuple):
+                    node_mapping[node] = parsed
+                else:
+                    # Keep as-is if not a tuple string
+                    node_mapping[node] = node
+            except (ValueError, SyntaxError):
+                # Keep as-is if parsing fails
+                node_mapping[node] = node
+        else:
+            node_mapping[node] = node
+    
+    # Only relabel if we found string nodes to convert
+    if any(isinstance(k, str) and k != v for k, v in node_mapping.items()):
+        network.core_network = nx.relabel_nodes(network.core_network, node_mapping, copy=True)
+    
+    return network
+
+
+def _parse_node(node: Any) -> tuple:
+    """Parse a node that might be a tuple or string representation of a tuple.
+    
+    Args:
+        node: Node that can be a tuple or string
+        
+    Returns:
+        Tuple representation of the node
+    """
+    import ast
+    if isinstance(node, tuple):
+        return node
+    elif isinstance(node, str):
+        try:
+            # Handle string representations like "('node1', 'layer1')"
+            parsed = ast.literal_eval(node)
+            if isinstance(parsed, tuple):
+                return parsed
+        except (ValueError, SyntaxError):
+            pass
+    # If we can't parse it, return as-is wrapped in tuple
+    return (node,)
+
+
+
 def _load_network(file_path: str) -> "multinet.multi_layer_network":
     """Load a network from file, handling different formats.
 
@@ -45,6 +115,8 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
         # The core_network is a NetworkX graph, so we can assign directly
         network.core_network = G
         network.directed = G.is_directed()
+        # Normalize nodes from string representations back to tuples
+        network = _normalize_network_nodes(network)
     elif input_path.suffix == ".gpickle":
         network.load_network(file_path, input_type="gpickle")
     else:
@@ -71,9 +143,9 @@ def _get_layer_names(network: "multinet.multi_layer_network") -> List[str]:
     """
     layers = set()
     for node in network.get_nodes():
-        # Nodes are tuples of (node_id, layer_name)
-        if isinstance(node, tuple) and len(node) >= 2:
-            layers.add(node[1])
+        parsed_node = _parse_node(node)
+        if len(parsed_node) >= 2:
+            layers.add(parsed_node[1])
     return sorted(list(layers))
 
 
