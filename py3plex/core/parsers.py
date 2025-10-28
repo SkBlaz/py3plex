@@ -809,28 +809,35 @@ def save_edgelist(input_network: nx.Graph, output_file: str, attributes: bool = 
     
     For regular networks, saves in format: node1 node2
     """
+    # Handle case where network is None or empty
+    if input_network is None or input_network.number_of_nodes() == 0:
+        # Just create an empty file
+        with open(output_file, "w") as fh:
+            pass
+        logger.info("Finished writing the network..")
+        return
+    
     # Check if this is a multilayer network by examining node structure
     is_multilayer = False
-    if input_network.number_of_nodes() > 0:
-        sample_node = next(iter(input_network.nodes()))
-        # Multilayer nodes are tuples of (node_id, layer)
-        is_multilayer = isinstance(sample_node, tuple) and len(sample_node) == 2
+    sample_node = next(iter(input_network.nodes()))
+    # Multilayer nodes are tuples of (node_id, layer)
+    is_multilayer = isinstance(sample_node, tuple) and len(sample_node) == 2
     
     fh = open(output_file, "w")
     
     if is_multilayer:
-        # Save in multilayer format: node1 layer1 node2 layer2
+        # Save in multilayer format: node1 layer1 node2 layer2 (space-separated)
         for edge in input_network.edges(data=attributes):
             if attributes and len(edge) > 2:
                 n1, l1 = edge[0]
                 n2, l2 = edge[1]
                 edge_data = edge[2]
                 # Format with attributes if needed
-                fh.write(f"{n1}\t{l1}\t{n2}\t{l2}\n")
+                fh.write(f"{n1} {l1} {n2} {l2}\n")
             else:
                 n1, l1 = edge[0]
                 n2, l2 = edge[1]
-                fh.write(f"{n1}\t{l1}\t{n2}\t{l2}\n")
+                fh.write(f"{n1} {l1} {n2} {l2}\n")
     else:
         # For regular networks, convert to integers as before
         input_network = nx.convert_node_labels_to_integers(

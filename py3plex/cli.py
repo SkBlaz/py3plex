@@ -48,12 +48,28 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
     elif input_path.suffix == ".gpickle":
         network.load_network(file_path, input_type="gpickle")
     else:
-        # Try as GML or edgelist
+        # For .edgelist and .txt files, try to detect format
+        # Try multiedgelist first (4 columns: node1 layer1 node2 layer2)
+        # Then fall back to simple edgelist (2 columns: node1 node2)
         try:
-            network.load_network(file_path, input_type="gml")
+            # Peek at the first line to determine format
+            with open(file_path, 'r') as f:
+                first_line = f.readline().strip()
+                if first_line:
+                    parts = first_line.split()
+                    if len(parts) >= 4:
+                        # Likely multilayer format
+                        network.load_network(file_path, input_type="multiedgelist")
+                    else:
+                        # Simple edgelist
+                        network.load_network(file_path, input_type="edgelist")
+                else:
+                    # Empty file
+                    pass
         except Exception:
+            # Try GML as last resort
             try:
-                network.load_network(file_path, input_type="edgelist")
+                network.load_network(file_path, input_type="gml")
             except Exception as e:
                 raise ValueError(f"Could not load network from {file_path}: {e}")
 
