@@ -3,7 +3,7 @@
 # draw multi layered network, takes .nx object list as input
 
 # imports first
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -196,7 +196,7 @@ def _draw_background_shape(
 
 
 def draw_multilayer_default(
-    network_list: List[nx.Graph],
+    network_list: Union[List[nx.Graph], Dict[Any, nx.Graph]],
     display: bool = True,
     node_size: int = 10,
     alphalevel: float = 0.13,
@@ -219,7 +219,7 @@ def draw_multilayer_default(
     """Core multilayer drawing method.
 
     Args:
-        network_list: List of NetworkX graphs to visualize
+        network_list: List of NetworkX graphs to visualize (or dict of layer_name -> graph)
         display: Whether to display the plot directly
         node_size: Base size of nodes
         alphalevel: Transparency level for background shapes
@@ -242,6 +242,10 @@ def draw_multilayer_default(
     Returns:
         None
     """
+    # Convert dict to list if necessary
+    if isinstance(network_list, dict):
+        network_list = list(network_list.values())
+    
     shape_subplot = plt.gca()
     
     # Get color palettes
