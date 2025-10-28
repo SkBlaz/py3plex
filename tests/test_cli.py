@@ -822,6 +822,119 @@ class TestCLIIntegration:
         assert viz_file.exists()
 
 
+class TestCLIGraphMLStatistics:
+    """Test statistics computation for GraphML-loaded networks (issue fix)."""
+
+    @pytest.fixture
+    def graphml_network(self, tmp_path):
+        """Create a network, save as GraphML, and return the file path."""
+        network = multinet.multi_layer_network()
+
+        # Add nodes in multiple layers
+        for layer in ["layer1", "layer2", "layer3"]:
+            nodes_dict = [{"source": f"node{i}", "type": layer} for i in range(10)]
+            network.add_nodes(nodes_dict, input_type="dict")
+
+            # Add edges
+            edges_dict = []
+            for i in range(8):
+                edges_dict.append({
+                    "source": f"node{i}",
+                    "target": f"node{i+1}",
+                    "source_type": layer,
+                    "target_type": layer,
+                })
+            network.add_edges(edges_dict, input_type="dict")
+
+        output_file = tmp_path / "graphml_stats_test.graphml"
+        nx.write_graphml(network.core_network, str(output_file))
+        return output_file
+
+    def test_load_graphml_stats_no_error(self, graphml_network):
+        """Test that loading GraphML and computing stats doesn't error (regression test)."""
+        # This was the bug: stats computation failed with "too many values to unpack"
+        result = cli.main(["load", str(graphml_network), "--stats"])
+        assert result == 0
+
+    def test_load_graphml_stats_computes_layer_densities(self, graphml_network, capsys, caplog):
+        """Test that layer densities are computed correctly for GraphML networks."""
+        result = cli.main(["load", str(graphml_network), "--stats"])
+        assert result == 0
+        
+        # Check logs for layer density information
+        log_output = caplog.text
+        # Should show layer densities for all layers
+        assert "layer1:" in log_output
+        assert "layer2:" in log_output
+        assert "layer3:" in log_output
+
+    def test_load_graphml_stats_computes_all_metrics(self, graphml_network, capsys, caplog):
+        """Test that all basic statistics are computed for GraphML networks."""
+        result = cli.main(["load", str(graphml_network), "--stats"])
+        assert result == 0
+        
+        # Check logs for statistics
+        log_output = caplog.text
+        # Check all statistics are present
+        assert "Layer Densities:" in log_output
+        assert "Avg Clustering:" in log_output
+        assert "Avg Degree:" in log_output
+        assert "Max Degree:" in log_output
+        
+    def test_load_graphml_stats_to_json(self, graphml_network, tmp_path):
+        """Test that statistics from GraphML networks can be saved to JSON."""
+        output_file = tmp_path / "graphml_stats.json"
+        result = cli.main(
+            ["load", str(graphml_network), "--stats", "--output", str(output_file)]
+        )
+        assert result == 0
+        assert output_file.exists()
+
+        # Verify JSON structure
+        with open(output_file) as f:
+            data = json.load(f)
+            assert "statistics" in data
+            stats = data["statistics"]
+            assert "layer_densities" in stats
+            assert "clustering_coefficient" in stats
+            assert "avg_degree" in stats
+            assert "max_degree" in stats
+            # Check that we have all three layers
+            assert len(stats["layer_densities"]) == 3
+
+    def test_create_graphml_load_stats_workflow(self, tmp_path):
+        """Test full workflow: create network and save as edgelist, convert to graphml, load and compute stats."""
+        # Create network as edgelist
+        network_file = tmp_path / "workflow.edgelist"
+        result = cli.main(
+            [
+                "create",
+                "--nodes",
+                "50",
+                "--layers",
+                "3",
+                "--probability",
+                "0.1",
+                "--output",
+                str(network_file),
+                "--seed",
+                "42",
+            ]
+        )
+        assert result == 0
+
+        # Convert to graphml
+        graphml_file = tmp_path / "workflow.graphml"
+        result = cli.main(
+            ["convert", str(network_file), "--output", str(graphml_file)]
+        )
+        assert result == 0
+
+        # Load graphml and compute stats (this would fail before the fix)
+        result = cli.main(["load", str(graphml_file), "--stats"])
+        assert result == 0
+
+
 class TestCLISelftest:
     """Test the 'selftest' command."""
 
