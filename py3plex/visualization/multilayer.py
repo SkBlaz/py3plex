@@ -272,7 +272,7 @@ def draw_multilayer_default(
                 positions[node][1] + start_location_network
             )
         
-        # Update the node attributes in the graph so that draw_multiedges can access the offset positions
+        # Update node attributes so draw_multiedges can access offset positions
         nx.set_node_attributes(network, positions, "pos")
 
         # Draw layer label if provided
