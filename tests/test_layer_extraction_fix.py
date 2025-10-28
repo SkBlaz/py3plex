@@ -7,8 +7,8 @@ AttributeError when iterating over the results.
 """
 
 import logging
-logger = logging.getLogger()
-logger.level = logging.DEBUG
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 # Core imports
 from py3plex.core import multinet
@@ -86,7 +86,7 @@ def test_get_layers_returns_list_of_graphs():
     assert len(names) == len(networks), \
         f"Names and networks should have same length. Got {len(names)} names and {len(networks)} networks"
     
-    logging.info(f"Successfully extracted {len(networks)} layers")
+    logger.info(f"Successfully extracted {len(networks)} layers")
 
 
 @pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="Required dependencies not available")
@@ -118,24 +118,24 @@ def test_layer_extraction_with_statistics():
         statistics_computed += 1
     
     assert statistics_computed > 0, "Should have computed statistics for at least one layer"
-    logging.info(f"Successfully computed statistics for {statistics_computed} layers")
+    logger.info(f"Successfully computed statistics for {statistics_computed} layers")
 
 
 if __name__ == "__main__":
     # Allow running without pytest
     if DEPENDENCIES_AVAILABLE:
-        logging.info("Running test_get_layers_returns_list_of_graphs...")
+        logger.info("Running test_get_layers_returns_list_of_graphs...")
         try:
             test_get_layers_returns_list_of_graphs()
-            logging.info("✓ test_get_layers_returns_list_of_graphs passed")
+            logger.info("✓ test_get_layers_returns_list_of_graphs passed")
         except AssertionError as e:
-            logging.error(f"✗ test_get_layers_returns_list_of_graphs failed: {e}")
+            logger.error(f"✗ test_get_layers_returns_list_of_graphs failed: {e}")
         
-        logging.info("Running test_layer_extraction_with_statistics...")
+        logger.info("Running test_layer_extraction_with_statistics...")
         try:
             test_layer_extraction_with_statistics()
-            logging.info("✓ test_layer_extraction_with_statistics passed")
+            logger.info("✓ test_layer_extraction_with_statistics passed")
         except AssertionError as e:
-            logging.error(f"✗ test_layer_extraction_with_statistics failed: {e}")
+            logger.error(f"✗ test_layer_extraction_with_statistics failed: {e}")
     else:
-        logging.warning("Dependencies not available, skipping tests")
+        logger.warning("Dependencies not available, skipping tests")
