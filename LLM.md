@@ -4591,3 +4591,112 @@ While all identified bugs are fixed, ongoing testing should consider:
 - Fixes #257: Identify cornercases related to creation of multilayer objects
 - Tests available in: `tests/test_multilayer_cornercases.py`
 
+
+---
+
+## Tutorial Validation Script (October 2025)
+
+**Last Updated**: 2025-10-29  
+**Script**: `validate_tutorials.py`
+
+### Overview
+
+Created a comprehensive validation script to ensure multilayer network tutorials and examples work correctly after the corner case bug fixes. This provides automated verification that all example patterns and use cases function properly.
+
+### Validation Checks
+
+The script performs 8 validation checks:
+
+1. **File Structure**: Verifies all tutorial/example files exist
+   - 6 multilayer example files
+   - Core test file (test_multilayer_cornercases.py)
+
+2. **Syntax**: Validates Python syntax of all tutorial files
+   - Uses `py_compile` to check for syntax errors
+   - Ensures examples are syntactically correct
+
+3. **Dependencies**: Checks that required packages are available
+   - NetworkX, NumPy, SciPy, Pandas
+   - Gracefully handles missing dependencies
+
+4. **Imports**: Validates py3plex modules can be imported
+   - Tests `py3plex.core.multinet`
+   - Tests `py3plex.core.random_generators`
+   - Verifies `multi_layer_network` class availability
+
+5. **Corner Case Fixes**: Validates all 11 bug fixes work correctly
+   - Empty network initialization
+   - Adding nodes/edges without layer information (dummy layer usage)
+   - Multiple node addition
+   - Duplicate node handling (idempotency)
+   - Empty network layer splitting
+   - Empty node list handling
+   - Loading empty NetworkX graphs
+
+6. **Basic Operations**: Tests common multilayer operations
+   - Creating networks with edges
+   - Getting nodes and edges
+   - Extracting subnetworks by layer
+   - Converting to JSON
+
+7. **Corner Case Test Suite**: Runs all 49 corner case tests
+   - Validates regression prevention
+   - Ensures all fixes remain functional
+
+8. **Example Patterns**: Validates common patterns used in tutorials
+   - Basic initialization
+   - Custom parameters
+   - Manual edge/node addition
+   - List format edges
+
+### Running the Validation
+
+```bash
+# Basic validation (checks syntax and structure)
+python validate_tutorials.py
+
+# Full validation (requires dependencies)
+pip install networkx numpy scipy pandas
+python validate_tutorials.py
+```
+
+### Validation Results
+
+**All 8 validation checks pass** ✅
+
+```
+VALIDATION SUMMARY
+  ✓ PASS     File Structure
+  ✓ PASS     Syntax
+  ✓ PASS     Dependencies
+  ✓ PASS     Imports
+  ✓ PASS     Corner Case Fixes
+  ✓ PASS     Basic Operations
+  ✓ PASS     Corner Case Tests
+  ✓ PASS     Example Patterns
+```
+
+### Value
+
+1. **Automated Verification**: Quickly validate that tutorials work after code changes
+2. **Regression Prevention**: Catch breaking changes before they affect users
+3. **Documentation Quality**: Ensure examples demonstrate correct usage
+4. **Onboarding**: New contributors can verify their environment setup
+5. **CI/CD Integration**: Can be integrated into continuous integration pipelines
+
+### Integration with Existing Validation
+
+This script complements the existing `validate_multilayer.py` script:
+
+- `validate_multilayer.py`: Validates multilayer modularity implementation
+- `validate_tutorials.py`: Validates tutorials and corner case fixes
+
+Both scripts follow the same structure and output format for consistency.
+
+### Related Files
+
+- Script: `validate_tutorials.py`
+- Tests: `tests/test_multilayer_cornercases.py`
+- Examples: `examples/example_multilayer_*.py`
+- Related validation: `validate_multilayer.py`
+
