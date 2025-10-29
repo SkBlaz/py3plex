@@ -331,11 +331,10 @@ def leiden_multilayer(
             import networkx as nx
             is_networkx = all(isinstance(g, (nx.Graph, nx.DiGraph)) for g in graph_layers)
         except ImportError:
-            is_networkx = False
+            pass  # networkx not available, will treat as matrices
         
         if is_networkx:
-            # NetworkX graphs
-            import networkx as nx
+            # NetworkX graphs (nx already imported above)
             for layer_idx, G in enumerate(graph_layers):
                 layer_name = f"L{layer_idx}"
                 for u, v, data in G.edges(data=True):
