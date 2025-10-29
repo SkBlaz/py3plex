@@ -302,6 +302,14 @@ def leiden_multilayer(
     # Import here to avoid circular dependencies
     from .multilayer_modularity import multilayer_modularity
     
+    # Check for unsupported features
+    if parallel:
+        import warnings
+        warnings.warn(
+            "Parallel processing is not yet implemented. Running in sequential mode.",
+            FutureWarning
+        )
+    
     # Set random state
     if seed is not None:
         random_state = np.random.RandomState(seed)
