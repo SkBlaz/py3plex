@@ -310,7 +310,7 @@ r = mls.resilience(network, 'coupling_removal', perturbation_param=0.5)
 
 ## Usage Example
 
-See `examples/example_multilayer_statistics.py` for a comprehensive demonstration.
+See `examples/centrality_and_statistics/example_multilayer_statistics.py` for a comprehensive demonstration.
 
 ```python
 from py3plex.core import multinet

@@ -221,7 +221,7 @@ resilience_coupling = mls.resilience(network, 'coupling_removal', perturbation_p
 print(f"Resilience after removing 50% of inter-layer edges: {resilience_coupling:.3f}")
 ```
 
-**Available Statistics**: For a complete list of all 17 multilayer statistics (including supra-Laplacian spectrum, algebraic connectivity, and multilayer clustering), see `py3plex/algorithms/statistics/README_MULTILAYER_STATISTICS.md` or run `python examples/example_multilayer_statistics.py`.
+**Available Statistics**: For a complete list of all 17 multilayer statistics (including supra-Laplacian spectrum, algebraic connectivity, and multilayer clustering), see `py3plex/algorithms/statistics/README_MULTILAYER_STATISTICS.md` or run `python examples/centrality_and_statistics/example_multilayer_statistics.py`.
 
 ## 6. Community Detection (2 minutes)
 

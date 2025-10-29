@@ -23,7 +23,7 @@ def validate_file_structure():
         'py3plex/algorithms/community_detection/__init__.py',
         'tests/test_multilayer_modularity.py',
         'docs/multilayer_modularity_tutorial.md',
-        'examples/example_multilayer_modularity.py',
+        'examples/multilayer/example_multilayer_modularity.py',
     ]
     
     all_exist = True
@@ -49,7 +49,7 @@ def validate_syntax():
         'py3plex/algorithms/community_detection/multilayer_modularity.py',
         'py3plex/algorithms/community_detection/multilayer_benchmark.py',
         'tests/test_multilayer_modularity.py',
-        'examples/example_multilayer_modularity.py',
+        'examples/multilayer/example_multilayer_modularity.py',
     ]
     
     all_valid = True
@@ -170,7 +170,7 @@ def validate_documentation():
     
     doc_files = [
         ('docs/multilayer_modularity_tutorial.md', 5000),
-        ('examples/example_multilayer_modularity.py', 5000),
+        ('examples/multilayer/example_multilayer_modularity.py', 5000),
     ]
     
     all_valid = True
