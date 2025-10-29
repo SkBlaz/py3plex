@@ -330,9 +330,9 @@ def validate_input_type(
         raise ParsingError(
             f"Invalid input_type: '{input_type}'\n"
             f"\n"
-            f"Valid input types:\n"
-            + "\n".join(f"  - {t}" for t in sorted(valid_types))
-            + "\n\n"
+            f"Valid input types:\n" +
+            "\n".join(f"  - {t}" for t in sorted(valid_types)) +
+            "\n\n"
             "Most common formats:\n"
             "  - 'multiedgelist': Multilayer edge list (source target layer weight)\n"
             "  - 'edgelist': Simple edge list (source target weight)\n"

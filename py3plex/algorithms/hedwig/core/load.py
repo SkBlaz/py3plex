@@ -192,7 +192,8 @@ def _md5_checksum(paths):
 
 
 def _load_cached_graph(fn):
-    g = cPickle.load(open(fn))
+    with open(fn, "rb") as f:
+        g = cPickle.load(f)
     return g
 
 

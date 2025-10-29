@@ -509,11 +509,16 @@ def _compute_cohens_d(group1: List[float], group2: List[float]) -> float:
     """
     if len(group1) == 0 or len(group2) == 0:
         return 0.0
-
+    
+    n1, n2 = len(group1), len(group2)
+    
+    # Need at least 2 samples per group for pooled std calculation
+    if n1 < 2 or n2 < 2:
+        return 0.0
+    
     mean1, mean2 = np.mean(group1), np.mean(group2)
     std1, std2 = np.std(group1, ddof=1), np.std(group2, ddof=1)
-    n1, n2 = len(group1), len(group2)
-
+    
     # Pooled standard deviation
     pooled_std = np.sqrt(((n1 - 1) * std1**2 + (n2 - 1) * std2**2) / (n1 + n2 - 2))
 
@@ -521,6 +526,7 @@ def _compute_cohens_d(group1: List[float], group2: List[float]) -> float:
         return 0.0
 
     return (mean1 - mean2) / pooled_std
+
 
 
 def _compute_eta_squared(groups: List[List[float]]) -> float:
