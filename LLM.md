@@ -4108,3 +4108,990 @@ Both scripts follow the same structure and output format for consistency.
 - Examples: `examples/example_multilayer_*.py`
 - Related validation: `validate_multilayer.py`
 
+
+---
+
+## Appendix A: Complete Changelog
+
+All notable changes to py3plex are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+### [Unreleased]
+
+#### Added
+- CHANGELOG.md to track changes systematically
+- Python 3.12 support in CI test matrix
+- Optional dependency groups in pyproject.toml: `[infomap]`, `[algos]`, `[viz]`
+- README.md section documenting optional dependencies installation
+- Type hints coverage increased to 65.4% (70 of 107 maintainable modules)
+- Custom exception types module (`py3plex/exceptions.py`) with 13 domain-specific exceptions
+- Pre-commit hooks configuration
+- Logging infrastructure across core modules
+- Unified random seeding helper (`get_rng()` in `py3plex.utils`)
+- Seed parameters added to layout algorithms (`compute_force_directed_layout`, `compute_random_layout`)
+- Seed parameter added to `infomap_communities()` wrapper
+- Algorithm selection guide (`docs/algorithm_selection_guide.md`)
+- Complexity documentation for key algorithms (louvain_multilayer)
+- `bin/README.md` with installation instructions for external binaries
+- **NEW**: Centralized configuration module (`py3plex/config.py`) with visualization, color schemes, and layout settings
+- **NEW**: Deprecation utilities (`deprecated` decorator and `warn_if_deprecated()` in `py3plex.utils`)
+- **NEW**: `__api_version__` attribute in main package for downstream tool compatibility
+- **NEW**: CODEOWNERS file for GitHub code review automation
+- **NEW**: Algorithm citations document with proper academic references
+- **NEW**: Color-blind safe color palettes (ColorBrewer and Wong palettes)
+- **NEW**: Validation utility (`validate_multilayer_input()`) for input sanity checks
+- **NEW**: Comprehensive test suite for config module and API improvements
+
+#### Changed
+- Modern build system with pyproject.toml (PEP 517/518/621 compliance)
+- Comprehensive Makefile-based development workflow
+- Sphinx documentation version updated to 0.95a (from 0.80)
+- Updated all dependencies to modern versions compatible with Python 3.8+
+  - numpy 1.19+, scipy 1.5+, matplotlib 3.3+, gensim 4.0+, scikit-learn 0.24+
+- Converted 170 of 229 print statements to logging (74% completion)
+- Fixed all 50 bare except clauses with specific exception types
+- Removed 8 wildcard imports (from 9 to 1)
+- Examples updated to handle missing binaries gracefully with try/except blocks
+- Default binary paths changed from `../bin/` to `.` (assumes in PATH or current directory)
+- Enhanced `__init__.py` with proper module docstring and version exports
+
+#### Removed
+- **BREAKING**: Bundled Infomap and Node2Vec binaries (~5MB reduction)
+  - **Migration**: Install binaries separately or use pure Python alternatives
+  - See README.md "External Binaries" section for installation instructions
+- **plotnine dependency**: Removed plotnine requirement, replaced with matplotlib for embedding visualization
+  - All visualization functionality preserved using matplotlib which is already a core dependency
+  - No API changes to `visualize_embedding()` function
+  - Louvain algorithm remains available as a built-in alternative to Infomap
+
+#### Fixed
+- Boolean logic in edge rendering for multilayer networks (Issue #19)
+- NetworkX 3.x compatibility issues
+- Node2Vec binary validation with better error messages
+- Permission checks for external binaries
+
+### [0.95a] - 2025
+
+#### Added
+- Modern packaging with pyproject.toml
+- CI with code quality checks (ruff, black, isort, mypy)
+- Multi-Python version testing (3.8-3.11)
+- NetworkX 3.x compatibility
+- Partial seed support (multilayer_modularity)
+- Sparse supra-adjacency matrix support (default)
+
+#### Changed
+- Minimum Python version set to 3.8
+- Build backend switched to setuptools with PEP 517/518 compliance
+
+---
+
+## Appendix B: Development Guide
+
+### Getting Started with Development
+
+#### Initial Setup
+
+Clone the repository and install in development mode:
+
+```bash
+git clone https://github.com/SkBlaz/py3plex.git
+cd py3plex
+
+# Setup development environment (creates .venv and installs dependencies)
+make setup
+
+# Install package in editable mode with dev dependencies
+make dev-install
+```
+
+#### Learning py3plex
+
+**New to py3plex?** Explore the 50+ examples in the `examples/` directory demonstrating various features and use cases.
+
+### Makefile Commands
+
+For a streamlined development experience, use the provided Makefile. The Makefile provides a unified entrypoint for all development, testing, and publishing workflows.
+
+#### Key Features
+
+- **Smart tool detection**: Automatically uses tools from `.venv/bin/` if available, otherwise falls back to globally installed tools (enabling CI compatibility)
+- **Colorized output**: ANSI color codes for better readability (green for success, yellow for warnings, red for errors)
+- **Virtual environment management**: `make setup` creates `.venv` and installs all dependencies
+- **Cross-platform**: Works on Linux and macOS
+
+#### Available Commands
+
+##### Environment Setup
+
+```bash
+# View all available commands
+make help
+
+# Create virtual environment and install dependencies
+make setup
+
+# Install package in editable mode with dev dependencies
+make dev-install
+```
+
+##### Code Quality
+
+```bash
+# Auto-format code with isort, black, and ruff
+make format
+
+# Run linters and type checker
+make lint
+```
+
+##### Testing
+
+```bash
+# Run tests with coverage
+make test
+
+# Open coverage report in browser
+make coverage
+
+# Run benchmarks
+make benchmark
+```
+
+##### Documentation
+
+```bash
+# Build documentation
+make docs
+```
+
+##### Build & Publish
+
+```bash
+# Clean build artifacts and caches
+make clean
+
+# Build distribution packages
+make build
+
+# Publish to PyPI (requires TWINE_USERNAME and TWINE_PASSWORD)
+make publish
+```
+
+##### Verification & CI
+
+```bash
+# Verify API exports
+make api-check
+
+# Run CI checks (lint + test)
+make ci
+
+# Run all tests, benchmarks, and linting (comprehensive check)
+make test-all
+```
+
+### Development Workflow
+
+1. `make setup` - Initial environment setup (one-time)
+2. `make dev-install` - Install package in editable mode
+3. `make format` - Auto-format code before committing
+4. `make lint` - Check code quality
+5. `make test` - Run tests with coverage
+6. `make ci` - Full CI checks before pushing
+
+### Testing
+
+#### Quick Testing
+
+The simplest way to run tests:
+
+```bash
+python run_tests.py
+```
+
+#### Development Testing with pytest
+
+For more control and features:
+
+```bash
+# Install dev dependencies (if not already done)
+pip install -e ".[dev]"
+
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=py3plex --cov-report=html
+
+# Run specific test file
+pytest tests/test_core.py
+
+# Run with verbose output
+pytest -v
+
+# Run tests matching a pattern
+pytest -k "test_network"
+```
+
+#### Using the Makefile
+
+```bash
+# Run tests with coverage (recommended)
+make test
+
+# Open HTML coverage report
+make coverage
+```
+
+### Code Quality
+
+#### Tools
+
+The project uses several tools for maintaining code quality:
+
+- **Black**: Code formatting (`black py3plex/`)
+- **Ruff**: Fast linting (`ruff check py3plex/ --fix`)
+- **isort**: Import sorting (`isort py3plex/`)
+- **Mypy**: Type checking (`mypy py3plex/ --ignore-missing-imports`)
+- **Pytest**: Testing with coverage
+
+#### Configuration
+
+All tools are configured in `pyproject.toml`. The Makefile provides convenient commands for running them.
+
+#### Pre-commit Hooks
+
+Optional but recommended:
+
+```bash
+# Install dev dependencies
+pip install -e ".[dev]"
+
+# Setup pre-commit hooks
+pre-commit install
+
+# Run pre-commit manually on all files
+pre-commit run --all-files
+```
+
+#### Formatting Your Code
+
+Before committing:
+
+```bash
+make format
+```
+
+This runs:
+1. `isort` - Sorts imports
+2. `black` - Formats code
+3. `ruff --fix` - Applies automatic fixes
+
+#### Checking Code Quality
+
+```bash
+make lint
+```
+
+This runs:
+1. `ruff` - Linting
+2. `isort --check-only` - Import order check
+3. `black --check` - Format check
+4. `mypy` - Type checking
+
+### CI/CD
+
+The project uses GitHub Actions for continuous integration:
+
+- **Tests workflow**: Runs on Python 3.8-3.12 with full and minimal dependencies
+- **Code quality workflow**: Runs linting, formatting checks, and type checking
+- **Tutorial validation workflow**: Validates tutorials and examples
+- **Benchmarks workflow**: Runs performance benchmarks
+- **Documentation workflow**: Checks documentation coverage
+- **Fuzzing workflow**: Runs fuzzing tests for robustness
+
+All workflows use Makefile commands for consistency with local development.
+
+### Documentation
+
+#### Building Documentation
+
+Documentation is built using Sphinx:
+
+```bash
+# Using Makefile (recommended)
+make docs
+
+# Manual build
+cd docfiles
+sphinx-build -b html . _build/html
+```
+
+The built documentation will be in `docfiles/_build/html/`.
+
+#### Documentation Structure
+
+- `docfiles/`: Source ReStructuredText files and Sphinx configuration
+- `examples/`: Executable example scripts (primary learning resource)
+- API documentation is auto-generated from docstrings
+
+#### Adding Documentation
+
+1. Update or create `.rst` files in `docfiles/`
+2. Add example scripts to `examples/` with inline comments
+3. Rebuild documentation with `make docs`
+
+---
+
+## Appendix C: Contributing Guidelines
+
+Thank you for considering contributing to py3plex! This section provides guidelines and best practices for contributing to the project.
+
+### Code of Conduct
+
+We are committed to providing a welcoming and inclusive environment. Please be respectful and constructive in all interactions.
+
+### Getting Started
+
+#### Prerequisites
+
+- Python 3.8 or higher
+- Git
+- Basic knowledge of network science and Python
+
+#### Setting Up Development Environment
+
+1. Fork the repository on GitHub
+2. Clone your fork:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/py3plex.git
+   cd py3plex
+   ```
+
+3. Set up the development environment:
+   ```bash
+   make setup
+   make dev-install
+   ```
+
+4. Activate the virtual environment:
+   ```bash
+   source .venv/bin/activate  # Linux/macOS
+   # or
+   .venv\Scripts\activate  # Windows
+   ```
+
+### Branch Strategy
+
+- `main`: Stable release branch
+- `develop`: Development branch for integration
+- Feature branches: `feature/your-feature-name`
+- Bugfix branches: `bugfix/issue-number-description`
+
+### Making Changes
+
+1. Create a new branch from `develop`:
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git checkout -b feature/my-feature
+   ```
+
+2. Make your changes following the code standards
+
+3. Test your changes:
+   ```bash
+   make test
+   ```
+
+4. Format and lint your code:
+   ```bash
+   make format
+   make lint
+   ```
+
+5. Commit with clear messages:
+   ```bash
+   git add .
+   git commit -m "Add feature: brief description"
+   ```
+
+6. Push to your fork:
+   ```bash
+   git push origin feature/my-feature
+   ```
+
+7. Create a Pull Request on GitHub
+
+### Code Standards
+
+#### Style Guide (PEP 8)
+
+- **Line length**: Maximum 88 characters (Black formatter default)
+- **Indentation**: 4 spaces (no tabs)
+- **Imports**: Grouped by standard library, third-party, and internal
+  ```python
+  import os
+  import sys
+  
+  import numpy as np
+  import networkx as nx
+  
+  from py3plex.core import multinet
+  from py3plex.logging_config import get_logger
+  ```
+- **Naming conventions**:
+  - Functions: `snake_case`
+  - Classes: `PascalCase`
+  - Constants: `UPPER_CASE`
+  - Private: `_leading_underscore`
+
+#### Type Hints (Required)
+
+All new functions and methods must include type hints:
+
+```python
+from typing import Dict, List, Optional
+
+def process_network(
+    network: nx.Graph,
+    layers: List[str],
+    threshold: float = 0.5
+) -> Dict[str, int]:
+    """Process a multilayer network.
+    
+    Args:
+        network: NetworkX graph to process
+        layers: List of layer identifiers
+        threshold: Edge weight threshold (default: 0.5)
+        
+    Returns:
+        Dictionary mapping layers to node counts
+        
+    Raises:
+        ValueError: If threshold is not between 0 and 1
+    """
+    if not 0 <= threshold <= 1:
+        raise ValueError("Threshold must be between 0 and 1")
+    # ... implementation ...
+```
+
+#### Docstring Style (NumPy/Google)
+
+Use NumPy or Google-style docstrings consistently:
+
+```python
+def my_function(param1: int, param2: str) -> bool:
+    """
+    Brief description of function.
+    
+    More detailed description if needed. Explain the purpose,
+    behavior, and any important implementation details.
+    
+    Args:
+        param1: Description of param1
+        param2: Description of param2
+        
+    Returns:
+        Description of return value
+        
+    Raises:
+        ValueError: When invalid input is provided
+        NetworkError: When network operation fails
+        
+    Example:
+        >>> result = my_function(42, "test")
+        >>> print(result)
+        True
+        
+    Note:
+        Additional notes or warnings for users.
+    """
+    # Implementation
+    pass
+```
+
+#### Error Handling
+
+Use py3plex's custom exception types:
+
+```python
+from py3plex.exceptions import (
+    NetworkConstructionError,
+    InvalidLayerError,
+    VisualizationError,
+)
+
+def add_layer(network, layer_id):
+    if layer_id in network.layers:
+        raise InvalidLayerError(f"Layer '{layer_id}' already exists")
+    
+    try:
+        # ... operation ...
+    except KeyError as e:
+        raise NetworkConstructionError(
+            f"Failed to add layer: {e}"
+        ) from e
+```
+
+Never use bare `except:` clauses. Always catch specific exceptions.
+
+#### Logging
+
+Use structured logging instead of print statements:
+
+```python
+from py3plex.logging_config import get_logger
+
+logger = get_logger(__name__)
+
+def my_function():
+    logger.info("Starting operation")
+    logger.debug("Detailed debug information")
+    logger.warning("Warning message")
+    logger.error("Error occurred")
+```
+
+#### Configuration
+
+Use the centralized config module for defaults:
+
+```python
+from py3plex import config
+
+def visualize_network(
+    network,
+    node_size: int = None,
+    color_palette: str = None
+):
+    # Use config defaults if not provided
+    node_size = node_size or config.DEFAULT_NODE_SIZE
+    colors = config.get_color_palette(
+        color_palette or config.DEFAULT_COLOR_PALETTE
+    )
+    # ... implementation ...
+```
+
+#### Deprecation Warnings
+
+When deprecating features, use the deprecation utilities:
+
+```python
+from py3plex.utils import deprecated, warn_if_deprecated
+
+@deprecated(
+    reason="This function is obsolete",
+    version="0.95a",
+    alternative="new_function()"
+)
+def old_function():
+    pass
+
+def my_function(old_param=None, new_param=None):
+    if old_param is not None:
+        warn_if_deprecated(
+            "old_param",
+            "Use new_param instead",
+            "new_param"
+        )
+```
+
+### Algorithm Citations
+
+When implementing algorithms, **always** cite the original publication:
+
+1. Add citation to function/class docstring:
+   ```python
+   def louvain_communities(G):
+       """
+       Detect communities using the Louvain algorithm.
+       
+       This implements the algorithm described in:
+       Blondel, V. D., et al. (2008). Fast unfolding of communities 
+       in large networks. Journal of Statistical Mechanics: Theory 
+       and Experiment, 2008(10), P10008.
+       https://doi.org/10.1088/1742-5468/2008/10/P10008
+       
+       Args:
+           G: NetworkX graph
+           
+       Returns:
+           Community assignment dictionary
+       """
+   ```
+
+2. Include reference in your PR description
+
+### Testing
+
+#### Writing Tests
+
+- Place tests in `tests/` directory
+- Use `test_*.py` naming convention
+- Group related tests in classes
+- Use descriptive test names
+
+```python
+import pytest
+from py3plex.core import multinet
+
+class TestMultilayerNetwork:
+    """Tests for multilayer network operations."""
+    
+    def test_network_creation(self):
+        """Test basic network creation."""
+        mlnet = multinet.multi_layer_network()
+        assert mlnet is not None
+        
+    def test_layer_addition(self):
+        """Test adding layers to network."""
+        mlnet = multinet.multi_layer_network()
+        mlnet.add_layer(nx.Graph(), layer_id=0)
+        assert mlnet.get_number_of_layers() == 1
+```
+
+#### Running Tests
+
+```bash
+# Run all tests
+make test
+
+# Run specific test file
+pytest tests/test_core_functionality.py
+
+# Run with coverage
+pytest tests/ --cov=py3plex --cov-report=html
+```
+
+#### Test Coverage
+
+- Aim for 85%+ coverage for new code
+- Mock external dependencies (Infomap, Node2Vec)
+- Test both success and error cases
+- Test edge cases and boundary conditions
+
+### Pull Request Process
+
+#### Before Submitting
+
+1. ✅ All tests pass: `make test`
+2. ✅ Code is formatted: `make format`
+3. ✅ Linting passes: `make lint`
+4. ✅ Documentation is updated
+5. ✅ Type hints are complete
+6. ✅ Docstrings follow NumPy/Google style
+
+#### PR Description Template
+
+```markdown
+## Description
+Brief description of changes
+
+## Related Issue
+Fixes #123
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Documentation update
+- [ ] Refactoring
+- [ ] Performance improvement
+
+## Testing
+- [ ] All existing tests pass
+- [ ] Added new tests for changes
+- [ ] Manual testing performed
+
+## Checklist
+- [ ] Code follows style guidelines
+- [ ] Type hints added
+- [ ] Docstrings added/updated
+- [ ] Documentation updated
+- [ ] Tests added/updated
+```
+
+#### Review Process
+
+1. Maintainers will review your PR
+2. Address review comments
+3. Once approved, maintainers will merge
+
+### Issue Guidelines
+
+#### Reporting Bugs
+
+Use the bug report template and include:
+
+- **Description**: Clear description of the bug
+- **Steps to reproduce**: Minimal code example
+- **Expected behavior**: What should happen
+- **Actual behavior**: What actually happens
+- **Environment**: Python version, OS, py3plex version
+
+#### Feature Requests
+
+Use the feature request template and include:
+
+- **Problem**: What problem does this solve?
+- **Proposed solution**: How should it work?
+- **Alternatives**: What alternatives have you considered?
+- **Additional context**: Any other relevant information
+
+#### Questions
+
+For questions, please use GitHub Discussions rather than issues.
+
+### Recognition
+
+Contributors will be acknowledged in:
+- GitHub contributors page
+- Publication acknowledgments (when applicable)
+
+Thank you for contributing to py3plex! 🎉
+
+---
+
+## Appendix D: Architecture Overview
+
+### System Architecture
+
+Py3plex is designed as a modular library for multilayer network analysis and visualization. The architecture follows a layered approach:
+
+```
+┌─────────────────────────────────────────┐
+│         User-Facing APIs                │
+│  (CLI, Python API, Examples)            │
+└─────────────────────────────────────────┘
+                 │
+┌─────────────────────────────────────────┐
+│      High-Level Algorithms              │
+│  (Community Detection, Centrality,      │
+│   Modularity, Embeddings)               │
+└─────────────────────────────────────────┘
+                 │
+┌─────────────────────────────────────────┐
+│       Core Data Structures              │
+│  (multi_layer_network, Parsers,         │
+│   Converters, Random Generators)        │
+└─────────────────────────────────────────┘
+                 │
+┌─────────────────────────────────────────┐
+│      Utilities & Infrastructure         │
+│  (Logging, Config, Exceptions,          │
+│   Validation, Deprecation)              │
+└─────────────────────────────────────────┘
+                 │
+┌─────────────────────────────────────────┐
+│      External Dependencies              │
+│  (NetworkX, NumPy, SciPy, Matplotlib)   │
+└─────────────────────────────────────────┘
+```
+
+### Core Components
+
+#### 1. Data Structures (`py3plex/core/`)
+
+- **`multinet.py`**: Core `multi_layer_network` class
+  - Multilayer network representation
+  - Layer management (add, remove, slice)
+  - Node and edge operations
+  - Conversion to/from various formats
+
+- **`parsers.py`**: Network import/export
+  - GML, gpickle, matrix formats
+  - NetworkX integration
+  - Temporal edge information
+
+- **`converters.py`**: Format conversions
+  - Layout computation
+  - Graph transformations
+
+- **`random_generators.py`**: Network generation
+  - Random multilayer networks
+  - Erdős-Rényi models
+  - Multiplex networks
+
+#### 2. Algorithms (`py3plex/algorithms/`)
+
+- **`community_detection/`**: Community detection algorithms
+  - Louvain (multilayer variant)
+  - Leiden (multilayer variant)
+  - Infomap integration (optional)
+  - Label propagation
+
+- **`statistics/`**: Statistical analysis
+  - Basic network statistics
+  - Multilayer-specific metrics
+  - Power law analysis
+  - Critical distances
+
+- **`hedwig/`**: Rule learning integration
+  - Supervised learning on networks
+  - Pattern discovery
+
+#### 3. Visualization (`py3plex/visualization/`)
+
+- **Layout algorithms**: Force-directed, hierarchical, circular
+- **Color palettes**: Color-blind safe options
+- **Multilayer-specific layouts**: Diagonal projection
+- **Integration with matplotlib**
+
+#### 4. Utilities (`py3plex/`)
+
+- **`config.py`**: Centralized configuration
+  - Default values for visualization
+  - Color schemes
+  - Layout parameters
+
+- **`exceptions.py`**: Custom exception types
+  - Domain-specific errors
+  - Better error messages
+
+- **`logging_config.py`**: Structured logging
+  - Module-level loggers
+  - Configurable log levels
+
+- **`utils.py`**: Common utilities
+  - Deprecation decorators
+  - Random seeding
+  - Validation helpers
+
+### Design Patterns
+
+#### 1. Builder Pattern
+The `multi_layer_network` class uses a builder-like pattern for network construction:
+
+```python
+mlnet = multi_layer_network()
+mlnet.add_layer(nx.Graph(), layer_id=0)
+mlnet.add_nodes([(1, 0), (2, 0)])
+mlnet.add_edges([(1, 2, 0)])
+```
+
+#### 2. Strategy Pattern
+Algorithm modules use strategy pattern for different implementations:
+
+```python
+# Different community detection strategies
+louvain_communities(network)
+leiden_communities(network)
+infomap_communities(network)
+```
+
+#### 3. Factory Pattern
+Random network generation uses factory pattern:
+
+```python
+# Factory for different network types
+random_multilayer_ER(layers, nodes, p)
+random_multiplex_ER(layers, nodes, p)
+```
+
+### Data Flow
+
+#### Network Creation Flow
+
+```
+User Input → Parser → multi_layer_network → Algorithm → Results
+```
+
+#### Visualization Flow
+
+```
+multi_layer_network → Layout Computation → Coordinate Generation → Matplotlib Rendering
+```
+
+### Configuration Management
+
+Py3plex uses a centralized configuration system (`config.py`):
+
+- **Default values**: Node sizes, colors, layouts
+- **Color palettes**: Multiple schemes including color-blind safe
+- **Extensibility**: Users can override defaults
+
+### Error Handling Strategy
+
+1. **Custom Exceptions**: Domain-specific exception types
+2. **Validation**: Input validation at API boundaries
+3. **Logging**: Structured logging for debugging
+4. **Graceful Degradation**: Fallback to defaults when possible
+
+### Testing Strategy
+
+1. **Unit Tests**: Test individual functions/methods
+2. **Integration Tests**: Test component interactions
+3. **Performance Tests**: Benchmark critical operations
+4. **Fuzzing**: Random input testing for robustness
+5. **Tutorial Validation**: Ensure examples work
+
+### External Dependencies Strategy
+
+1. **Core Dependencies**: NumPy, NetworkX, SciPy (required)
+2. **Optional Dependencies**: Grouped by feature (infomap, algos, viz)
+3. **Binary Dependencies**: Removed from repo, user-installed
+4. **Compatibility**: Support Python 3.8-3.12, NetworkX 2.x-3.x
+
+---
+
+## Appendix E: External Binaries Guide
+
+Py3plex previously bundled Infomap and Node2Vec binaries. These have been removed to:
+
+1. Reduce repository size (~5MB)
+2. Improve licensing clarity (AGPL vs BSD)
+3. Support cross-platform compatibility
+4. Simplify maintenance
+
+### Installation Options
+
+#### Option 1: Use Python Alternatives (Recommended)
+
+**For Community Detection (Infomap alternative):**
+```bash
+pip install python-louvain  # Louvain community detection (already included)
+# Or use the built-in Louvain: from py3plex.algorithms.community_detection import louvain_communities
+```
+
+**For Node Embeddings (Node2Vec alternative):**
+```bash
+pip install node2vec  # Pure Python implementation
+# Or
+pip install pecanpy  # Fast parallel implementation
+```
+
+#### Option 2: Install Binaries Manually
+
+**Infomap:**
+1. Download from: https://www.mapequation.org/infomap/
+2. Place the binary in PATH or specify path in your code:
+   ```python
+   infomap_communities(network, binary="./bin/Infomap")
+   ```
+
+**Node2Vec:**
+1. Download/compile from: https://github.com/snap-stanford/snap/tree/master/examples/node2vec
+2. Place the binary in PATH or specify path in your code:
+   ```python
+   n2v_embedding(G, targets, binary_path="./bin/node2vec")
+   ```
+
+### Using in Code
+
+The library will provide clear error messages if binaries are missing, along with suggestions for alternatives.
+
+Example error:
+```
+FileNotFoundError: Node2Vec binary not found at './node2vec'. 
+Please provide a valid path to the Node2Vec binary, 
+or consider using pure Python alternatives like 'node2vec' or 'pecanpy' packages: 
+pip install node2vec
+```
+
+### License Considerations
+
+- **Infomap**: Released under AGPL-3.0 license (copyleft, requires open-source distribution)
+- **Node2Vec**: Released under BSD-style license (permissive)
+- **py3plex core**: Released under MIT license (permissive)
+
+If you need to use Infomap, ensure your project is compatible with AGPL licensing terms or use the Louvain alternative instead.
+

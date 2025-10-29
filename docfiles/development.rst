@@ -3,7 +3,7 @@ Development Guide
 
 This guide covers **development workflows**, **Makefile commands**, **testing**, and **contributing** to py3plex.
 
-**View the full development guide**: `development.md <https://github.com/SkBlaz/py3plex/blob/master/docs/development.md>`_
+**View the full development guide**: `LLM.md Appendix B <https://github.com/SkBlaz/py3plex/blob/master/LLM.md>`_
 
 Getting Started
 ---------------

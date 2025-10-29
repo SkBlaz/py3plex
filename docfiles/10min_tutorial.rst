@@ -460,9 +460,9 @@ Next Steps
 
 Now that you've completed this tutorial, explore more advanced features:
 
-- **Multilayer Statistics**: See ``py3plex/algorithms/statistics/README_MULTILAYER_STATISTICS.md`` for all 17 statistics
-- **Multilayer Modularity**: See ``docs/multilayer_modularity_tutorial.md``
-- **Multilayer Centrality**: See ``docs/multilayer_centrality_tutorial.md``
+- **Multilayer Statistics**: Documentation available in ``LLM.md``
+- **Multilayer Modularity**: See examples in ``examples/`` directory
+- **Multilayer Centrality**: See examples in ``examples/`` directory
 - **More Examples**: Check the ``examples/`` directory for 40+ examples
 - **Full Documentation**: Visit https://skblaz.github.io/py3plex/
 

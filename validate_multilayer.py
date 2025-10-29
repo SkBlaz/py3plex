@@ -22,7 +22,7 @@ def validate_file_structure():
         'py3plex/algorithms/community_detection/multilayer_benchmark.py',
         'py3plex/algorithms/community_detection/__init__.py',
         'tests/test_multilayer_modularity.py',
-        'docs/multilayer_modularity_tutorial.md',
+        # 'docs/multilayer_modularity_tutorial.md',  # Moved to LLM.md
         'examples/multilayer/example_multilayer_modularity.py',
     ]
     
@@ -169,7 +169,7 @@ def validate_documentation():
     print("\nValidating documentation...")
     
     doc_files = [
-        ('docs/multilayer_modularity_tutorial.md', 5000),
+        # ('docs/multilayer_modularity_tutorial.md', 5000),  # Moved to LLM.md
         ('examples/multilayer/example_multilayer_modularity.py', 5000),
     ]
     

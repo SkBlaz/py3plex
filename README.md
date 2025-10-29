@@ -87,6 +87,22 @@ See `bin/README.md` for detailed installation instructions and alternatives.
 
 For any errors, please open an issue!
 
+## Recent Changes
+
+**Version 0.95a highlights:**
+- ⚠️ **BREAKING**: Removed bundled Infomap and Node2Vec binaries (~5MB reduction)
+  - Install separately or use pure Python alternatives (see "External Binaries" above)
+- Modern build system with pyproject.toml (PEP 517/518/621 compliance)
+- Python 3.12 support and NetworkX 3.x compatibility
+- Type hints coverage increased to 65.4%
+- Comprehensive Makefile-based development workflow
+- Pre-commit hooks and improved code quality tools
+- Custom exception types module with 13 domain-specific exceptions
+- Centralized configuration module for visualization and layout settings
+- Removed plotnine dependency (replaced with matplotlib)
+
+For complete changelog and detailed changes, see [LLM.md](./LLM.md).
+
 ### Testing
 
 **Quick start** - Run all tests, benchmarks, and linting (single entrypoint that ensures all CI passes):
@@ -105,8 +121,6 @@ make lint       # Run linters only
 ```bash
 python run_tests.py
 ```
-
-For more testing options and development workflows, see [docs/development.md](docs/development.md).
 
 For comprehensive project context, development status, and guidance for maintainers and LLMs, see [LLM.md](./LLM.md).
 
@@ -144,9 +158,41 @@ pytest tests/test_performance_core.py --benchmark-only --benchmark-json=benchmar
 
 Benchmark results are automatically collected in CI and made available as workflow artifacts. The benchmark badge above shows the current status of performance tests.
 
-### Contributions
+### Development and Contributing
 
-We welcome contributions! See [docs/development.md](docs/development.md) for development guidelines, testing procedures, and code quality standards.
+We welcome contributions! For comprehensive development guidelines, see [LLM.md](./LLM.md).
+
+**Quick Start for Contributors:**
+
+1. Fork the repository and clone:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/py3plex.git
+   cd py3plex
+   ```
+
+2. Set up development environment:
+   ```bash
+   make setup        # Create virtual environment and install dependencies
+   make dev-install  # Install package in editable mode with dev dependencies
+   ```
+
+3. Make changes and test:
+   ```bash
+   make format  # Auto-format code (isort, black, ruff)
+   make lint    # Run linters and type checker
+   make test    # Run tests with coverage
+   ```
+
+4. Submit a pull request with clear description
+
+**Code Standards:**
+- Follow PEP 8 (enforced by `black` and `ruff`)
+- Add type hints to all new functions
+- Use NumPy/Google-style docstrings
+- Write tests for new features (aim for 85%+ coverage)
+- Update documentation as needed
+
+For detailed guidelines on contributing, code style, testing, and architecture, see [LLM.md](./LLM.md).
 
 
 # Citations

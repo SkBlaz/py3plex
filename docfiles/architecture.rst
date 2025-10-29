@@ -601,5 +601,4 @@ See Also
 
 * :doc:`contributing` - Contributing guidelines
 * :doc:`development` - Development workflow
-* `LLM.md <https://github.com/SkBlaz/py3plex/blob/master/LLM.md>`_ - Comprehensive context for maintainers
-* `ARCHITECTURE.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ARCHITECTURE.md>`_ - Additional architecture notes
+* `LLM.md <https://github.com/SkBlaz/py3plex/blob/master/LLM.md>`_ - Comprehensive context including architecture details
