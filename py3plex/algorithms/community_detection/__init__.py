@@ -17,11 +17,17 @@ from .multilayer_modularity import (
     louvain_multilayer,
     multilayer_modularity,
 )
+from .leiden_multilayer import (
+    leiden_multilayer,
+    LeidenResult,
+)
 
 __all__ = [
     "multilayer_modularity",
     "build_supra_modularity_matrix",
     "louvain_multilayer",
+    "leiden_multilayer",
+    "LeidenResult",
     "generate_multilayer_lfr",
     "generate_coupled_er_multilayer",
     "generate_sbm_multilayer",
