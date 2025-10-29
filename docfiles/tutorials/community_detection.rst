@@ -451,4 +451,4 @@ Next Steps
 * :doc:`multilayer_centrality` - Centrality measures tutorial
 * :doc:`multilayer_modularity` - Multilayer modularity details
 * :doc:`../algorithm_guide` - Algorithm selection guide
-* Examples in ``examples/example_community_detection.py``
+* Examples in ``examples/community_detection/example_community_detection.py``

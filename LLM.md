@@ -1473,7 +1473,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
     - **Algorithm**: Prime-based layer signatures with cycle encoding
     - **Testing**: 10 test cases in `tests/test_incidence_gadget_encoding.py`
     - **Documentation**: `docfiles/tutorials/incidence_gadget_encoding.rst`
-    - **Example**: `examples/example_incidence_gadget_encoding.py`
+    - **Example**: `examples/multilayer/example_incidence_gadget_encoding.py`
     - **Status**: COMPLETED - Lossless multiplex transformation
 
 16. **Issue #135: Basic Stats Node Counting** (Closed: 2025-10-18)
@@ -2135,7 +2135,7 @@ mxr, scores = multixrank_from_py3plex_networks(
 - Consistency between sparse and dense methods
 - 22 test cases passing (2 performance benchmarks skipped by default)
 
-**Example**: See `examples/example_multixrank.py` for detailed usage demonstrating:
+**Example**: See `examples/decomposition_and_classification/example_multixrank.py` for detailed usage demonstrating:
 1. Two multiplexes with bipartite connections
 2. Integration with py3plex multi_layer_network objects
 3. Detailed supra-adjacency construction with 2-layer multiplex
@@ -2231,7 +2231,7 @@ walk_ml = layer_specific_random_walk(
 
 **Documentation**: 
 - API reference: `docfiles/random_walks.rst` (15KB comprehensive guide with examples)
-- Examples: `examples/example_random_walks.py` (demonstrates all features with statistical validation)
+- Examples: `examples/dynamics/example_random_walks.py` (demonstrates all features with statistical validation)
 
 ### Community Detection
 - **Louvain algorithm**: Modularity optimization for non-overlapping communities (`community_louvain.py`)
@@ -2327,7 +2327,7 @@ recovered = network.from_homogeneous_hypergraph(H)
 
 **Testing**: Comprehensive test suite in `tests/test_incidence_gadget_encoding.py` validates encoding/decoding, layer preservation, and edge cases (10 test cases, all passing).
 
-**Example**: See `examples/example_incidence_gadget_encoding.py` for detailed demonstrations including:
+**Example**: See `examples/multilayer/example_incidence_gadget_encoding.py` for detailed demonstrations including:
 - Basic encoding/decoding workflow
 - Social network multiplex example
 - Cycle structure analysis
