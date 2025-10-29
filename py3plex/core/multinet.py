@@ -541,7 +541,7 @@ class multi_layer_network:
             n2_name = edge[1][0]
             n2_type = edge[1][1]
             edge_type = edge[2].get("type")
-            edge[2].get("weight")
+            edge_weight = edge[2].get("weight")
             edge_obj = {
                 "source": n1_name,
                 "target": n2_name,
@@ -549,6 +549,8 @@ class multi_layer_network:
                 "source_type": n1_type,
                 "target_type": n2_type,
             }
+            if edge_weight is not None:
+                edge_obj["weight"] = edge_weight
             all_edges.append(edge_obj)
 
         self.add_edges(all_edges)

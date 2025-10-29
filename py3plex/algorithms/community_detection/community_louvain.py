@@ -474,18 +474,18 @@ def __renumber(dictionary):
 
 def load_binary(data):
     """Load binary graph as used by the cpp implementation of this algorithm"""
-    data = open(data, "rb")
-
-    reader = array.array("I")
-    reader.fromfile(data, 1)
-    num_nodes = reader.pop()
-    reader = array.array("I")
-    reader.fromfile(data, num_nodes)
-    cum_deg = reader.tolist()
-    num_links = reader.pop()
-    reader = array.array("I")
-    reader.fromfile(data, num_links)
-    links = reader.tolist()
+    with open(data, "rb") as f:
+        reader = array.array("I")
+        reader.fromfile(f, 1)
+        num_nodes = reader.pop()
+        reader = array.array("I")
+        reader.fromfile(f, num_nodes)
+        cum_deg = reader.tolist()
+        num_links = reader.pop()
+        reader = array.array("I")
+        reader.fromfile(f, num_links)
+        links = reader.tolist()
+    
     graph = nx.Graph()
     graph.add_nodes_from(range(num_nodes))
     prec_deg = 0

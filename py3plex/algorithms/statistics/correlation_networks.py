@@ -58,7 +58,10 @@ def default_correlation_to_network(
         Binary adjacency matrix
     """
     if preprocess == "standard":
-        matrix = (matrix - np.mean(matrix, axis=0)) / np.std(matrix, axis=0)
+        std = np.std(matrix, axis=0)
+        # Avoid division by zero for columns with constant values
+        std = np.where(std == 0, 1, std)
+        matrix = (matrix - np.mean(matrix, axis=0)) / std
 
     optimal_threshold = pick_threshold(matrix)
     logger.info("Rsq threshold %s", optimal_threshold)

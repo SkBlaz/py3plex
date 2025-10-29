@@ -310,13 +310,13 @@ def validate_input_type(
             f"\n"
             f"Valid input types:\n" +
             "\n".join(f"  - {t}" for t in sorted(valid_types)) +
-            f"\n\n"
-            f"Most common formats:\n"
-            f"  - 'multiedgelist': Multilayer edge list (source target layer weight)\n"
-            f"  - 'edgelist': Simple edge list (source target weight)\n"
-            f"  - 'graphml': GraphML XML format\n"
-            f"  - 'gml': Graph Modeling Language\n"
-            f"  - 'gpickle': NetworkX pickle format\n"
+            "\n\n"
+            "Most common formats:\n"
+            "  - 'multiedgelist': Multilayer edge list (source target layer weight)\n"
+            "  - 'edgelist': Simple edge list (source target weight)\n"
+            "  - 'graphml': GraphML XML format\n"
+            "  - 'gml': Graph Modeling Language\n"
+            "  - 'gpickle': NetworkX pickle format\n"
         )
 
 
