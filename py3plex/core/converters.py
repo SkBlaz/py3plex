@@ -241,5 +241,9 @@ def prepare_for_parsing(multinet):
             multiedges["default_inter"].append(edge)
             logger.debug("Multiedge parsing error: %s", err)
 
-    names, networks = zip(*networks.items())
+    # Handle empty networks gracefully
+    if networks:
+        names, networks = zip(*networks.items())
+    else:
+        names, networks = (), ()
     return (names, networks, multiedges)
