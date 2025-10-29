@@ -1,5 +1,5 @@
 # node ranking algorithms
-from typing import Any, List, Optional, Tuple, Union, cast
+from typing import Any, List, Tuple, Union, cast
 
 import networkx as nx
 import numpy as np
@@ -23,10 +23,10 @@ import scipy.sparse as sp
 
 def stochastic_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
     """Normalize a sparse matrix stochastically.
-    
+
     Args:
         matrix: Sparse matrix to normalize
-        
+
     Returns:
         Stochastically normalized sparse matrix
     """
@@ -45,10 +45,10 @@ def stochastic_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
 
 def stochastic_normalization_hin(matrix: sp.spmatrix) -> sp.spmatrix:
     """Normalize a heterogeneous information network matrix stochastically.
-    
+
     Args:
         matrix: Sparse matrix to normalize
-        
+
     Returns:
         Stochastically normalized sparse matrix
     """
@@ -67,12 +67,12 @@ def stochastic_normalization_hin(matrix: sp.spmatrix) -> sp.spmatrix:
 
 def modularity(G: nx.Graph, communities: Any, weight: str = "weight") -> int:
     """Calculate modularity (placeholder).
-    
+
     Args:
         G: NetworkX graph
         communities: Community structure
         weight: Edge weight attribute
-        
+
     Returns:
         Modularity value (currently returns 1)
     """
@@ -111,14 +111,14 @@ def modularity(G: nx.Graph, communities: Any, weight: str = "weight") -> int:
 
 def page_rank_kernel(index_row: int) -> Tuple[int, np.ndarray]:
     """PageRank kernel for parallel computation.
-    
-    Note: This function expects global variables G, damping_hyper, 
+
+    Note: This function expects global variables G, damping_hyper,
     spread_step_hyper, spread_percent_hyper, and graph to be defined.
     It's designed for use with multiprocessing.Pool.map().
-    
+
     Args:
         index_row: Row index to compute PageRank for
-        
+
     Returns:
         Tuple of (index, PageRank vector)
     """
@@ -154,7 +154,7 @@ def sparse_page_rank(
     try_shrink: bool = False,
 ) -> np.ndarray:
     """Compute sparse PageRank with personalization.
-    
+
     Args:
         matrix: Sparse adjacency matrix (column-stochastic)
         start_nodes: List of starting node indices for personalization (can be range or None)
@@ -164,7 +164,7 @@ def sparse_page_rank(
         spread_step: Maximum steps for spread calculation
         spread_percent: Percentage threshold for spread
         try_shrink: Whether to try matrix shrinking optimization
-        
+
     Returns:
         PageRank vector
     """
@@ -228,10 +228,10 @@ def sparse_page_rank(
 
 def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
     """Compute hubs and authorities scores using HITS algorithm.
-    
+
     Args:
         graph: NetworkX graph
-        
+
     Returns:
         Tuple of (hubs dictionary, authorities dictionary)
     """
@@ -240,10 +240,10 @@ def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
 
 def hub_matrix(graph: nx.Graph) -> sp.spmatrix:
     """Get the hub matrix of a graph.
-    
+
     Args:
         graph: NetworkX graph
-        
+
     Returns:
         Hub matrix
     """
@@ -252,10 +252,10 @@ def hub_matrix(graph: nx.Graph) -> sp.spmatrix:
 
 def authority_matrix(graph: nx.Graph) -> sp.spmatrix:
     """Get the authority matrix of a graph.
-    
+
     Args:
         graph: NetworkX graph
-        
+
     Returns:
         Authority matrix
     """

@@ -13,23 +13,30 @@ import numpy as np
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure
+    from icontract import ensure, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 
-@ensure(lambda result: isinstance(result, np.random.Generator), 
-        "result must be a numpy random Generator")
+@ensure(
+    lambda result: isinstance(result, np.random.Generator),
+    "result must be a numpy random Generator",
+)
 def get_rng(
     seed: Optional[Union[int, np.random.Generator]] = None,
 ) -> np.random.Generator:
@@ -65,7 +72,7 @@ def get_rng(
 
     Contracts:
         - Postcondition: result is a NumPy random Generator
-        
+
     Note:
         Uses numpy.random.Generator (modern API introduced in NumPy 1.17)
         rather than the legacy numpy.random.RandomState API.
@@ -162,7 +169,7 @@ def validate_multilayer_input(network_data: Any) -> None:
 
     Raises:
         ValueError: If the network data is invalid
-        
+
     Contracts:
         - Precondition: network_data must not be None
 

@@ -23,27 +23,30 @@ from py3plex.logging_config import get_logger
 logger = get_logger(__name__)
 
 
-def _normalize_network_nodes(network: "multinet.multi_layer_network") -> "multinet.multi_layer_network":
+def _normalize_network_nodes(
+    network: "multinet.multi_layer_network",
+) -> "multinet.multi_layer_network":
     """Normalize network nodes from string representations to tuples.
-    
+
     When loading from GraphML, nodes are stored as strings like "('node1', 'layer1')".
     This function converts them back to proper tuples so statistics functions work correctly.
-    
+
     Args:
         network: Network with potentially string-formatted nodes
-        
+
     Returns:
         Network with tuple nodes
     """
     import ast
+
     import networkx as nx
-    
+
     # Check if nodes need normalization
     sample_node = next(iter(network.core_network.nodes()), None)
     if sample_node is None or isinstance(sample_node, tuple):
         # Already in correct format or empty
         return network
-    
+
     # Create a mapping from string nodes to tuple nodes
     node_mapping = {}
     for node in network.core_network.nodes():
@@ -60,24 +63,27 @@ def _normalize_network_nodes(network: "multinet.multi_layer_network") -> "multin
                 node_mapping[node] = node
         else:
             node_mapping[node] = node
-    
+
     # Only relabel if we found string nodes to convert
     if any(isinstance(k, str) and k != v for k, v in node_mapping.items()):
-        network.core_network = nx.relabel_nodes(network.core_network, node_mapping, copy=True)
-    
+        network.core_network = nx.relabel_nodes(
+            network.core_network, node_mapping, copy=True
+        )
+
     return network
 
 
 def _parse_node(node: Any) -> tuple:
     """Parse a node that might be a tuple or string representation of a tuple.
-    
+
     Args:
         node: Node that can be a tuple or string
-        
+
     Returns:
         Tuple representation of the node
     """
     import ast
+
     if isinstance(node, tuple):
         return node
     elif isinstance(node, str):
@@ -90,7 +96,6 @@ def _parse_node(node: Any) -> tuple:
             pass
     # If we can't parse it, return as-is wrapped in tuple
     return (node,)
-
 
 
 def _load_network(file_path: str) -> "multinet.multi_layer_network":
@@ -125,7 +130,7 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
         # Simple edgelist format: 2 columns (node1 node2)
         try:
             # Peek at the first line to determine format
-            with open(file_path, 'r') as f:
+            with open(file_path) as f:
                 first_line = f.readline().strip()
                 if first_line:
                     parts = first_line.split()
@@ -150,19 +155,19 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
 
 def _get_layer_names(network: "multinet.multi_layer_network") -> List[str]:
     """Extract unique layer names from a multilayer network.
-    
+
     Args:
         network: py3plex multi_layer_network object
-        
+
     Returns:
         List of unique layer names
     """
     layers = set()
-    
+
     # Handle case where core_network might not be initialized
     if network.core_network is None:
         return []
-    
+
     try:
         for node in network.get_nodes():
             # Nodes are tuples of (node_id, layer_name)
@@ -179,8 +184,8 @@ def _get_layer_names(network: "multinet.multi_layer_network") -> List[str]:
         except (AttributeError, TypeError) as e:
             # Log the error for debugging but continue
             logger.debug(f"Could not extract layer names: {e}")
-    
-    return sorted(list(layers))
+
+    return sorted(layers)
 
 
 def _determine_input_type(file_path: str) -> str:
@@ -217,50 +222,50 @@ def create_parser() -> argparse.ArgumentParser:
 Examples:
   # Create a random multilayer network with 100 nodes and 3 layers
   py3plex create --nodes 100 --layers 3 --type random --probability 0.1 --output network.edgelist
-  
+
   # Create an Erdős-Rényi multilayer network
   py3plex create --nodes 50 --layers 2 --type er --probability 0.05 --output network.edgelist
-  
+
   # Load and display network information
   py3plex load network.edgelist --info
-  
+
   # Compute basic statistics for a network
   py3plex load network.edgelist --stats
-  
+
   # Get comprehensive multilayer statistics
   py3plex stats network.edgelist --measure all
-  
+
   # Compute specific statistics (layer density, clustering, etc.)
   py3plex stats network.edgelist --measure layer_density
   py3plex stats network.edgelist --measure node_activity
-  
+
   # Visualize a network with multilayer layout
   py3plex visualize network.edgelist --output network.png --layout multilayer
-  
+
   # Visualize using NetworkX layouts
   py3plex visualize network.edgelist --output network.png --layout spring
-  
+
   # Detect communities using different algorithms
   py3plex community network.edgelist --algorithm louvain --output communities.json
   py3plex community network.edgelist --algorithm label_prop --output communities.json
-  
+
   # Compute node centrality measures
   py3plex centrality network.edgelist --measure degree --top 20 --output centrality.json
   py3plex centrality network.edgelist --measure betweenness --output centrality.json
-  
+
   # Convert between formats
   py3plex convert network.edgelist --output network.graphml
   py3plex convert network.graphml --output network.json
-  
+
   # Aggregate multilayer network into single layer
   py3plex aggregate network.edgelist --method sum --output aggregated.edgelist
 
-Note: The recommended format for multilayer networks is the multiedgelist/edgelist format 
+Note: The recommended format for multilayer networks is the multiedgelist/edgelist format
       (.edgelist or .txt). GraphML (.graphml) and other formats are also supported.
 
 For detailed help on any command, run:
   py3plex <command> --help
-  
+
 Example:
   py3plex create --help    # Shows all options for creating networks
   py3plex help             # Shows this help information
@@ -269,16 +274,12 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         """,
     )
 
-    parser.add_argument(
-        "--version", action="version", version=f"py3plex {__version__}"
-    )
+    parser.add_argument("--version", action="version", version=f"py3plex {__version__}")
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # HELP command
-    help_parser = subparsers.add_parser(
-        "help", help="Show detailed help information about py3plex"
-    )
+    subparsers.add_parser("help", help="Show detailed help information about py3plex")
 
     # CREATE command
     create_parser = subparsers.add_parser(
@@ -308,7 +309,9 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         required=True,
         help="Output file path (recommended format: .edgelist or .txt for multiedgelist; also supports .graphml, .gexf, .gpickle)",
     )
-    create_parser.add_argument("--seed", type=int, help="Random seed for reproducibility")
+    create_parser.add_argument(
+        "--seed", type=int, help="Random seed for reproducibility"
+    )
 
     # LOAD command
     load_parser = subparsers.add_parser(
@@ -321,9 +324,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     load_parser.add_argument(
         "--stats", action="store_true", help="Display basic statistics"
     )
-    load_parser.add_argument(
-        "--output", "-o", help="Save output to file (JSON format)"
-    )
+    load_parser.add_argument("--output", "-o", help="Save output to file (JSON format)")
 
     # COMMUNITY command
     community_parser = subparsers.add_parser(
@@ -362,9 +363,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     centrality_parser.add_argument(
         "--output", "-o", help="Output file for centrality scores (JSON)"
     )
-    centrality_parser.add_argument(
-        "--top", type=int, help="Show only top N nodes"
-    )
+    centrality_parser.add_argument("--top", type=int, help="Show only top N nodes")
 
     # STATS command
     stats_parser = subparsers.add_parser(
@@ -470,9 +469,12 @@ def cmd_create(args: argparse.Namespace) -> int:
         if args.seed is not None:
             random.seed(args.seed)
             import numpy as np
+
             np.random.seed(args.seed)
 
-        logger.info(f"Creating {args.type} multilayer network with {args.nodes} nodes and {args.layers} layers...")
+        logger.info(
+            f"Creating {args.type} multilayer network with {args.nodes} nodes and {args.layers} layers..."
+        )
 
         network = multinet.multi_layer_network()
 
@@ -481,7 +483,9 @@ def cmd_create(args: argparse.Namespace) -> int:
             layer_name = f"layer{layer_idx + 1}"
 
             # Add nodes to this layer using dict format
-            nodes_dict = [{"source": f"node{i}", "type": layer_name} for i in range(args.nodes)]
+            nodes_dict = [
+                {"source": f"node{i}", "type": layer_name} for i in range(args.nodes)
+            ]
             network.add_nodes(nodes_dict, input_type="dict")
 
             # Add edges based on network type
@@ -491,12 +495,14 @@ def cmd_create(args: argparse.Namespace) -> int:
                 for i in range(args.nodes):
                     for j in range(i + 1, args.nodes):
                         if random.random() < args.probability:
-                            edges_dict.append({
-                                "source": f"node{i}",
-                                "target": f"node{j}",
-                                "source_type": layer_name,
-                                "target_type": layer_name,
-                            })
+                            edges_dict.append(
+                                {
+                                    "source": f"node{i}",
+                                    "target": f"node{j}",
+                                    "source_type": layer_name,
+                                    "target_type": layer_name,
+                                }
+                            )
                 if edges_dict:
                     network.add_edges(edges_dict, input_type="dict")
 
@@ -510,12 +516,14 @@ def cmd_create(args: argparse.Namespace) -> int:
                 for i in range(min(m + 1, args.nodes)):
                     degrees[i] = m
                     for j in range(i + 1, min(m + 1, args.nodes)):
-                        edges_dict.append({
-                            "source": f"node{i}",
-                            "target": f"node{j}",
-                            "source_type": layer_name,
-                            "target_type": layer_name,
-                        })
+                        edges_dict.append(
+                            {
+                                "source": f"node{i}",
+                                "target": f"node{j}",
+                                "source_type": layer_name,
+                                "target_type": layer_name,
+                            }
+                        )
 
                 # Add remaining nodes with preferential attachment
                 for i in range(m + 1, args.nodes):
@@ -526,12 +534,14 @@ def cmd_create(args: argparse.Namespace) -> int:
                         targets = random.choices(range(i), weights=probs, k=min(m, i))
 
                     for target in targets:
-                        edges_dict.append({
-                            "source": f"node{i}",
-                            "target": f"node{target}",
-                            "source_type": layer_name,
-                            "target_type": layer_name,
-                        })
+                        edges_dict.append(
+                            {
+                                "source": f"node{i}",
+                                "target": f"node{target}",
+                                "source_type": layer_name,
+                                "target_type": layer_name,
+                            }
+                        )
                         degrees[i] += 1
                         degrees[target] += 1
 
@@ -540,18 +550,22 @@ def cmd_create(args: argparse.Namespace) -> int:
 
             elif args.type == "ws":
                 # Watts-Strogatz small-world
-                k = max(2, int(args.nodes * args.probability / 2) * 2)  # Ensure k is even
+                k = max(
+                    2, int(args.nodes * args.probability / 2) * 2
+                )  # Ensure k is even
                 edges_dict = []
                 # Create ring lattice
                 for i in range(args.nodes):
                     for j in range(1, k // 2 + 1):
                         target = (i + j) % args.nodes
-                        edges_dict.append({
-                            "source": f"node{i}",
-                            "target": f"node{target}",
-                            "source_type": layer_name,
-                            "target_type": layer_name,
-                        })
+                        edges_dict.append(
+                            {
+                                "source": f"node{i}",
+                                "target": f"node{target}",
+                                "source_type": layer_name,
+                                "target_type": layer_name,
+                            }
+                        )
                 if edges_dict:
                     network.add_edges(edges_dict, input_type="dict")
 
@@ -568,10 +582,17 @@ def cmd_create(args: argparse.Namespace) -> int:
                 # Use multiedgelist format to preserve layer information
                 network.save_network(str(output_path), output_type="multiedgelist")
             else:
-                logger.warning(f"Unsupported format '{output_path.suffix}', using multiedgelist")
-                network.save_network(str(output_path.with_suffix(".edgelist")), output_type="multiedgelist")
+                logger.warning(
+                    f"Unsupported format '{output_path.suffix}', using multiedgelist"
+                )
+                network.save_network(
+                    str(output_path.with_suffix(".edgelist")),
+                    output_type="multiedgelist",
+                )
         except Exception as e:
-            logger.warning(f"Error saving with native format, trying alternate method: {e}")
+            logger.warning(
+                f"Error saving with native format, trying alternate method: {e}"
+            )
             nx.write_graphml(network.core_network, str(output_path))
 
         logger.info(f"Network saved to {args.output}")
@@ -614,7 +635,9 @@ def cmd_load(args: argparse.Namespace) -> int:
             logger.info("\nNetwork Information:")
             logger.info(f"  Nodes: {info['nodes']}")
             logger.info(f"  Edges: {info['edges']}")
-            logger.info(f"  Layers: {len(info['layers'])} ({', '.join(info['layers'])})")
+            logger.info(
+                f"  Layers: {len(info['layers'])} ({', '.join(info['layers'])})"
+            )
             logger.info(f"  Directed: {info['directed']}")
 
         if args.stats:
@@ -636,7 +659,9 @@ def cmd_load(args: argparse.Namespace) -> int:
 
                 # Degree distribution
                 degrees = dict(network.core_network.degree())
-                stats["avg_degree"] = float(sum(degrees.values()) / len(degrees)) if degrees else 0
+                stats["avg_degree"] = (
+                    float(sum(degrees.values()) / len(degrees)) if degrees else 0
+                )
                 stats["max_degree"] = int(max(degrees.values())) if degrees else 0
 
             except Exception as e:
@@ -649,7 +674,9 @@ def cmd_load(args: argparse.Namespace) -> int:
                 logger.info("  Layer Densities:")
                 for layer, density in stats["layer_densities"].items():
                     logger.info(f"    {layer}: {density:.4f}")
-            logger.info(f"  Avg Clustering: {stats.get('clustering_coefficient', 0):.4f}")
+            logger.info(
+                f"  Avg Clustering: {stats.get('clustering_coefficient', 0):.4f}"
+            )
             logger.info(f"  Avg Degree: {stats.get('avg_degree', 0):.2f}")
             logger.info(f"  Max Degree: {stats.get('max_degree', 0)}")
 
@@ -685,7 +712,11 @@ def cmd_community(args: argparse.Namespace) -> int:
             from py3plex.algorithms.community_detection import community_wrapper
 
             # Convert to undirected if needed
-            G = network.core_network.to_undirected() if network.core_network.is_directed() else network.core_network
+            G = (
+                network.core_network.to_undirected()
+                if network.core_network.is_directed()
+                else network.core_network
+            )
             partition = community_wrapper.louvain_communities(G)
             communities = {str(node): int(comm) for node, comm in partition.items()}
 
@@ -695,7 +726,11 @@ def cmd_community(args: argparse.Namespace) -> int:
 
                 partition = community_wrapper.infomap_communities(network)
                 communities = {
-                    str(node): int(comm) if isinstance(comm, (int, np.integer)) else int(comm[0])
+                    str(node): (
+                        int(comm)
+                        if isinstance(comm, (int, np.integer))
+                        else int(comm[0])
+                    )
                     for node, comm in partition.items()
                 }
             except Exception as e:
@@ -722,7 +757,9 @@ def cmd_community(args: argparse.Namespace) -> int:
         for comm_id in communities.values():
             comm_sizes[comm_id] = comm_sizes.get(comm_id, 0) + 1
 
-        logger.info(f"Community sizes: min={min(comm_sizes.values())}, max={max(comm_sizes.values())}, avg={sum(comm_sizes.values())/len(comm_sizes):.1f}")
+        logger.info(
+            f"Community sizes: min={min(comm_sizes.values())}, max={max(comm_sizes.values())}, avg={sum(comm_sizes.values())/len(comm_sizes):.1f}"
+        )
 
         output_data = {
             "algorithm": args.algorithm,
@@ -747,6 +784,7 @@ def cmd_community(args: argparse.Namespace) -> int:
     except Exception as e:
         logger.error(f"Error detecting communities: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -766,7 +804,11 @@ def cmd_centrality(args: argparse.Namespace) -> int:
 
         logger.info(f"Computing {args.measure} centrality...")
 
-        G = network.core_network.to_undirected() if network.directed else network.core_network
+        G = (
+            network.core_network.to_undirected()
+            if network.directed
+            else network.core_network
+        )
 
         if args.measure == "degree":
             centrality = dict(G.degree())
@@ -784,12 +826,16 @@ def cmd_centrality(args: argparse.Namespace) -> int:
             centrality = nx.pagerank(G)
 
         # Convert to serializable format
-        centrality_data = {str(node): float(score) for node, score in centrality.items()}
+        centrality_data = {
+            str(node): float(score) for node, score in centrality.items()
+        }
 
         # Sort by centrality
         sorted_nodes = sorted(centrality_data.items(), key=lambda x: x[1], reverse=True)
 
-        logger.info(f"\nTop {min(args.top or 10, len(sorted_nodes))} nodes by {args.measure} centrality:")
+        logger.info(
+            f"\nTop {min(args.top or 10, len(sorted_nodes))} nodes by {args.measure} centrality:"
+        )
         for node, score in sorted_nodes[: args.top or 10]:
             logger.info(f"  {node}: {score:.6f}")
 
@@ -811,6 +857,7 @@ def cmd_centrality(args: argparse.Namespace) -> int:
     except Exception as e:
         logger.error(f"Error computing centrality: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -847,7 +894,9 @@ def cmd_stats(args: argparse.Namespace) -> int:
         if args.measure in ["all", "clustering"]:
             try:
                 G_undirected = network.core_network.to_undirected()
-                stats["clustering_coefficient"] = float(nx.average_clustering(G_undirected))
+                stats["clustering_coefficient"] = float(
+                    nx.average_clustering(G_undirected)
+                )
             except Exception as e:
                 logger.warning(f"Could not compute clustering: {e}")
 
@@ -858,7 +907,9 @@ def cmd_stats(args: argparse.Namespace) -> int:
                 stats["node_activity_sample"] = {}
                 for node in sample_nodes:
                     # Extract base node name (remove layer suffix)
-                    base_node = str(node).split("---")[0] if "---" in str(node) else str(node)
+                    base_node = (
+                        str(node).split("---")[0] if "---" in str(node) else str(node)
+                    )
                     activity = mls.node_activity(network, base_node)
                     stats["node_activity_sample"][str(node)] = float(activity)
             except Exception as e:
@@ -866,9 +917,13 @@ def cmd_stats(args: argparse.Namespace) -> int:
 
         if args.measure in ["all", "versatility"]:
             try:
-                versatility = mls.versatility_centrality(network, centrality_type="degree")
+                versatility = mls.versatility_centrality(
+                    network, centrality_type="degree"
+                )
                 # Sample top nodes
-                sorted_vers = sorted(versatility.items(), key=lambda x: x[1], reverse=True)[:10]
+                sorted_vers = sorted(
+                    versatility.items(), key=lambda x: x[1], reverse=True
+                )[:10]
                 stats["versatility_top10"] = {str(k): float(v) for k, v in sorted_vers}
             except Exception as e:
                 logger.warning(f"Could not compute versatility: {e}")
@@ -891,7 +946,9 @@ def cmd_stats(args: argparse.Namespace) -> int:
                 logger.info(f"    {layer}: {density:.4f}")
 
         if "clustering_coefficient" in stats:
-            logger.info(f"  Clustering Coefficient: {stats['clustering_coefficient']:.4f}")
+            logger.info(
+                f"  Clustering Coefficient: {stats['clustering_coefficient']:.4f}"
+            )
 
         if "node_activity_sample" in stats:
             logger.info("  Node Activity (sample):")
@@ -917,6 +974,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
     except Exception as e:
         logger.error(f"Error computing statistics: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -937,6 +995,7 @@ def cmd_visualize(args: argparse.Namespace) -> int:
         logger.info(f"Generating visualization with {args.layout} layout...")
 
         import matplotlib
+
         matplotlib.use("Agg")  # Non-interactive backend
         import matplotlib.pyplot as plt
 
@@ -945,9 +1004,7 @@ def cmd_visualize(args: argparse.Namespace) -> int:
 
             # Get the layer networks from the multilayer object
             layer_names, layer_graphs, multiedges = network.get_layers(
-                style="diagonal", 
-                compute_layouts="force",
-                verbose=False
+                style="diagonal", compute_layouts="force", verbose=False
             )
 
             plt.figure(figsize=(args.width, args.height))
@@ -957,7 +1014,7 @@ def cmd_visualize(args: argparse.Namespace) -> int:
                 graph_list = layer_graphs
             else:
                 graph_list = list(layer_graphs.values())
-            
+
             multilayer.draw_multilayer_default(
                 graph_list,
                 display=False,
@@ -991,6 +1048,7 @@ def cmd_visualize(args: argparse.Namespace) -> int:
     except Exception as e:
         logger.error(f"Error creating visualization: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -1033,6 +1091,7 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
     except Exception as e:
         logger.error(f"Error aggregating network: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -1115,6 +1174,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
     # Set matplotlib backend early, before any imports that might use it
     import matplotlib
+
     matplotlib.use("Agg")  # Non-interactive backend
 
     verbose = args.verbose
@@ -1163,8 +1223,12 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
         # Add edges
         edges = [
-            {"source": f"node{i}", "target": f"node{i+1}",
-             "source_type": "layer1", "target_type": "layer1"}
+            {
+                "source": f"node{i}",
+                "target": f"node{i+1}",
+                "source_type": "layer1",
+                "target_type": "layer1",
+            }
             for i in range(9)
         ]
         network.add_edges(edges, input_type="dict")
@@ -1181,6 +1245,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         print(f"   [✗] Graph creation failed: {e}")
         if verbose:
             import traceback
+
             traceback.print_exc()
     test_results.append(("Graph creation", graph_status))
 
@@ -1198,6 +1263,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         print(f"   [✗] Visualization module error: {e}")
         if verbose:
             import traceback
+
             traceback.print_exc()
     test_results.append(("Visualization module", viz_status))
 
@@ -1215,12 +1281,17 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
             # Add some edges
             for i in range(4):
-                network.add_edges([{
-                    "source": f"node{i}",
-                    "target": f"node{i+1}",
-                    "source_type": layer_name,
-                    "target_type": layer_name,
-                }], input_type="dict")
+                network.add_edges(
+                    [
+                        {
+                            "source": f"node{i}",
+                            "target": f"node{i+1}",
+                            "source_type": layer_name,
+                            "target_type": layer_name,
+                        }
+                    ],
+                    input_type="dict",
+                )
 
         layers = network.get_layers()
         layer_list = layers[0] if isinstance(layers, tuple) else list(layers)
@@ -1238,6 +1309,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         print(f"   [✗] Multilayer graph creation failed: {e}")
         if verbose:
             import traceback
+
             traceback.print_exc()
     test_results.append(("Multilayer graph", multilayer_status))
 
@@ -1262,6 +1334,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         print(f"   [✗] Community detection failed: {e}")
         if verbose:
             import traceback
+
             traceback.print_exc()
     test_results.append(("Community detection", community_status))
 
@@ -1278,8 +1351,12 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             network.add_nodes(nodes, input_type="dict")
 
             edges = [
-                {"source": f"node{i}", "target": f"node{i+1}",
-                 "source_type": "test_layer", "target_type": "test_layer"}
+                {
+                    "source": f"node{i}",
+                    "target": f"node{i+1}",
+                    "source_type": "test_layer",
+                    "target_type": "test_layer",
+                }
                 for i in range(4)
             ]
             network.add_edges(edges, input_type="dict")
@@ -1303,6 +1380,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         print(f"   [✗] File I/O test failed: {e}")
         if verbose:
             import traceback
+
             traceback.print_exc()
     test_results.append(("File I/O", io_status))
 

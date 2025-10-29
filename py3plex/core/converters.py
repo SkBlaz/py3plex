@@ -13,29 +13,41 @@ from py3plex.visualization.layout_algorithms import (
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure
+    from icontract import ensure, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 logger = get_logger(__name__)
 
 
 @require(lambda network: network is not None, "network must not be None")
-@require(lambda network: network.number_of_nodes() > 0, "network must have at least one node")
-@require(lambda compute_layouts: compute_layouts in {"force", "random", "custom_coordinates"}, 
-         "compute_layouts must be 'force', 'random', or 'custom_coordinates'")
-@ensure(lambda network, result: all('pos' in network.nodes[n] for n in network.nodes()), 
-        "all nodes must have 'pos' attribute after layout computation")
+@require(
+    lambda network: network.number_of_nodes() > 0, "network must have at least one node"
+)
+@require(
+    lambda compute_layouts: compute_layouts
+    in {"force", "random", "custom_coordinates"},
+    "compute_layouts must be 'force', 'random', or 'custom_coordinates'",
+)
+@ensure(
+    lambda network, result: all("pos" in network.nodes[n] for n in network.nodes()),
+    "all nodes must have 'pos' attribute after layout computation",
+)
 def compute_layout(
     network: nx.Graph,
     compute_layouts: str,
@@ -53,7 +65,7 @@ def compute_layout(
 
     Returns:
         Network with 'pos' attribute added to nodes
-    
+
     Contracts:
         - Precondition: network must not be None and must have at least one node
         - Precondition: compute_layouts must be a valid algorithm name

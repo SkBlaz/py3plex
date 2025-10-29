@@ -18,28 +18,37 @@ from .supporting import add_mpx_edges
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure
+    from icontract import ensure, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 logger = get_logger(__name__)
 
 
-@require(lambda file_name: isinstance(file_name, str) and len(file_name) > 0, 
-         "file_name must be a non-empty string")
+@require(
+    lambda file_name: isinstance(file_name, str) and len(file_name) > 0,
+    "file_name must be a non-empty string",
+)
 @ensure(lambda result: result[0] is not None, "result graph must not be None")
-@ensure(lambda result: isinstance(result[0], (nx.MultiGraph, nx.MultiDiGraph)), 
-        "result must be a MultiGraph or MultiDiGraph")
+@ensure(
+    lambda result: isinstance(result[0], (nx.MultiGraph, nx.MultiDiGraph)),
+    "result must be a MultiGraph or MultiDiGraph",
+)
 def parse_gml(
     file_name: str, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
@@ -52,7 +61,7 @@ def parse_gml(
 
     Returns:
         Tuple of (multigraph, possible labels)
-    
+
     Contracts:
         - Precondition: file_name must be a non-empty string
         - Postcondition: result graph is not None
@@ -86,7 +95,10 @@ def parse_gml(
 
 
 @require(lambda nx_object: nx_object is not None, "nx_object must not be None")
-@require(lambda nx_object: isinstance(nx_object, nx.Graph), "nx_object must be a NetworkX graph")
+@require(
+    lambda nx_object: isinstance(nx_object, nx.Graph),
+    "nx_object must be a NetworkX graph",
+)
 @ensure(lambda result: result[0] is not None, "result graph must not be None")
 def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
     """
@@ -98,7 +110,7 @@ def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
 
     Returns:
         Tuple of (graph, None)
-    
+
     Contracts:
         - Precondition: nx_object must not be None
         - Precondition: nx_object must be a NetworkX graph
@@ -108,8 +120,10 @@ def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
     return (nx_object, None)
 
 
-@require(lambda file_name: isinstance(file_name, str) and len(file_name) > 0, 
-         "file_name must be a non-empty string")
+@require(
+    lambda file_name: isinstance(file_name, str) and len(file_name) > 0,
+    "file_name must be a non-empty string",
+)
 @ensure(lambda result: result[0] is not None, "network must not be None")
 def parse_matrix(file_name: str, directed: bool) -> Tuple[Any, Any]:
     """
@@ -121,7 +135,7 @@ def parse_matrix(file_name: str, directed: bool) -> Tuple[Any, Any]:
 
     Returns:
         Tuple of (network, group) from the .mat file
-    
+
     Contracts:
         - Precondition: file_name must be a non-empty string
         - Postcondition: network must not be None
@@ -167,22 +181,26 @@ def parse_matrix_to_nx(file_name: str, directed: bool) -> Union[nx.Graph, nx.DiG
     return (G_final, None)
 
 
-@require(lambda file_name: isinstance(file_name, str) and len(file_name) > 0, 
-         "file_name must be a non-empty string")
+@require(
+    lambda file_name: isinstance(file_name, str) and len(file_name) > 0,
+    "file_name must be a non-empty string",
+)
 @ensure(lambda result: result[0] is not None, "result graph must not be None")
-@ensure(lambda result: isinstance(result[0], (nx.MultiGraph, nx.MultiDiGraph)), 
-        "result must be a MultiGraph or MultiDiGraph")
+@ensure(
+    lambda result: isinstance(result[0], (nx.MultiGraph, nx.MultiDiGraph)),
+    "result must be a MultiGraph or MultiDiGraph",
+)
 def parse_gpickle(
     file_name: str, directed: bool = False, layer_separator: Union[str, None] = None
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     A parser for generic Gpickle as stored by Py3plex.
-    
+
     Args:
         file_name: Path to gpickle file
         directed: Whether to create directed graph
         layer_separator: Optional separator for layer parsing
-    
+
     Contracts:
         - Precondition: file_name must be a non-empty string
         - Postcondition: result graph is not None
@@ -411,9 +429,7 @@ def parse_edgelist_multi_types(
     return (G, None)
 
 
-def parse_spin_edgelist(
-    input_name: str, directed: bool
-) -> Tuple[nx.Graph, None]:
+def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None]:
 
     G = nx.Graph()
     with open(input_name) as IN:
@@ -438,10 +454,10 @@ def parse_spin_edgelist(
 def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
     """
     Loader for generic embedding as outputed by GenSim
-    
+
     Args:
         input_name: Path to embedding file
-        
+
     Returns:
         Tuple of (embedding matrix, embedding indices)
     """
@@ -466,7 +482,7 @@ def parse_multiedge_tuple_list(
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
     Parse a list of edge tuples into a multilayer network.
-    
+
     Args:
         network: List of edge tuples (node_first, node_second, layer_first, layer_second, weight)
         directed: Whether to create directed graph
@@ -606,14 +622,14 @@ def parse_network(
 ) -> Tuple[Any, Any, Any]:
     """
     A wrapper method for available parsers!
-    
+
     Args:
         input_name: Path to network file or network object
         f_type: Type of file format to parse
         directed: Whether to create directed graph
         label_delimiter: Optional delimiter for labels
         network_type: Type of network (multilayer or multiplex)
-        
+
     Returns:
         Tuple of (parsed_network, labels, time_series)
     """
@@ -674,16 +690,14 @@ def parse_network(
         raise Exception("Please, specify heterogeneous network type.")
 
 
-def load_edge_activity_raw(
-    activity_file: str, layer_mappings: dict
-) -> pd.DataFrame:
+def load_edge_activity_raw(activity_file: str, layer_mappings: dict) -> pd.DataFrame:
     """
     Basic parser for loading generic activity files. Here, temporal edges are given as tuples -> this can be easily transformed for example into a pandas dataframe!
-    
+
     Args:
         activity_file: Path to activity file
         layer_mappings: Dictionary mapping layer names to IDs
-        
+
     Returns:
         DataFrame with edge activity data
     """
@@ -759,7 +773,7 @@ def save_multiedgelist(
 ) -> Union[Tuple[Dict[Any, str], Dict[Any, str]], None]:
     """
     Save multiedgelist -- as n1, l1, n2, l2, w
-    
+
     Returns:
         When encode_with_ints is True, returns tuple of (node_encodings, type_encodings)
         Otherwise returns None
@@ -801,12 +815,14 @@ def save_multiedgelist(
         return None
 
 
-def save_edgelist(input_network: nx.Graph, output_file: str, attributes: bool = False) -> None:
+def save_edgelist(
+    input_network: nx.Graph, output_file: str, attributes: bool = False
+) -> None:
     """Save network to edgelist format.
-    
+
     For multilayer networks (where nodes are tuples of (node_id, layer)),
     saves in format: node1 layer1 node2 layer2
-    
+
     For regular networks, saves in format: node1 node2
     """
     # Handle case where network is None or empty
@@ -816,15 +832,15 @@ def save_edgelist(input_network: nx.Graph, output_file: str, attributes: bool = 
             pass
         logger.info("Finished writing the network..")
         return
-    
+
     # Check if this is a multilayer network by examining node structure
     is_multilayer = False
     sample_node = next(iter(input_network.nodes()))
     # Multilayer nodes are tuples of (node_id, layer)
     is_multilayer = isinstance(sample_node, tuple) and len(sample_node) == 2
-    
+
     fh = open(output_file, "w")
-    
+
     if is_multilayer:
         # Save in multilayer format: node1 layer1 node2 layer2 (space-separated)
         for edge in input_network.edges(data=attributes):
@@ -839,7 +855,7 @@ def save_edgelist(input_network: nx.Graph, output_file: str, attributes: bool = 
         # Save in simple format: node1 node2
         for edge in input_network.edges():
             fh.write(f"{edge[0]} {edge[1]}\n")
-    
+
     fh.close()
     logger.info("Finished writing the network..")
 

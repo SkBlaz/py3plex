@@ -9,18 +9,23 @@ from .multinet import itertools, multi_layer_network
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure
+    from icontract import ensure, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 
@@ -33,16 +38,16 @@ def random_multilayer_ER(
 ) -> Any:  # Returns multi_layer_network
     """
     Generate random multilayer Erdős-Rényi network.
-    
+
     Args:
         n: Number of nodes (must be positive)
         l: Number of layers (must be positive)
         p: Edge probability in [0, 1]
         directed: If True, generate directed network
-        
+
     Returns:
         multi_layer_network object
-        
+
     Contracts:
         - Precondition: n > 0 - must have at least one node
         - Precondition: l > 0 - must have at least one layer
@@ -78,16 +83,16 @@ def random_multiplex_ER(
 ) -> Any:  # Returns multi_layer_network
     """
     Generate random multiplex Erdős-Rényi network.
-    
+
     Args:
         n: Number of nodes (must be positive)
         l: Number of layers (must be positive)
         p: Edge probability in [0, 1]
         directed: If True, generate directed network
-        
+
     Returns:
         multi_layer_network object
-        
+
     Contracts:
         - Precondition: n > 0 - must have at least one node
         - Precondition: l > 0 - must have at least one layer
@@ -116,7 +121,10 @@ def random_multiplex_ER(
 @require(lambda m: m > 0, "number of layers must be positive")
 @require(lambda d: 0 <= d <= 1, "dropout parameter must be in [0, 1]")
 @ensure(lambda result: result is not None, "result must not be None")
-@ensure(lambda result: isinstance(result, nx.MultiGraph), "result must be a NetworkX MultiGraph")
+@ensure(
+    lambda result: isinstance(result, nx.MultiGraph),
+    "result must be a NetworkX MultiGraph",
+)
 def random_multiplex_generator(n: int, m: int, d: float = 0.9) -> nx.MultiGraph:
     """
     Generate a multiplex network from a random bipartite graph.
@@ -128,7 +136,7 @@ def random_multiplex_generator(n: int, m: int, d: float = 0.9) -> nx.MultiGraph:
 
     Returns:
         Generated multiplex network as a MultiGraph
-        
+
     Contracts:
         - Precondition: n > 0 - must have at least one node
         - Precondition: m > 0 - must have at least one layer

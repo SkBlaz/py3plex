@@ -19,7 +19,7 @@ def visualize_embedding(multinet, labels=None, verbose=True):
         dfr = pd.DataFrame(X_embedded, columns=["dim1", "dim2"])
         dfr["labels"] = label_vector
         print(dfr.head())
-        
+
         # Create scatter plot with matplotlib
         plt.figure(figsize=(8, 6))
         for label in dfr["labels"].unique():
@@ -29,7 +29,7 @@ def visualize_embedding(multinet, labels=None, verbose=True):
                 dfr.loc[mask, "dim2"],
                 label=label,
                 s=20,
-                alpha=0.7
+                alpha=0.7,
             )
         plt.xlabel("dim1")
         plt.ylabel("dim2")
@@ -41,7 +41,7 @@ def visualize_embedding(multinet, labels=None, verbose=True):
         X_embedded = TSNE(n_components=2).fit_transform(X)
         dfr = pd.DataFrame(X_embedded, columns=["dim1", "dim2"])
         print(dfr.head())
-        
+
         # Create scatter plot with matplotlib
         plt.figure(figsize=(8, 6))
         plt.scatter(dfr["dim1"], dfr["dim2"], s=20, alpha=0.7)

@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from typing import Any
 
 from ..logging_config import get_logger
 
@@ -260,7 +259,12 @@ def plot_robustness(infile: pd.DataFrame) -> None:
     # plt.show()
 
 
-def generic_grouping(fname: pd.DataFrame, score_name: str, threshold: float = 1.0, percentages: bool = True) -> pd.DataFrame:
+def generic_grouping(
+    fname: pd.DataFrame,
+    score_name: str,
+    threshold: float = 1.0,
+    percentages: bool = True,
+) -> pd.DataFrame:
     fname = fname[fname["percent_train"] < threshold]
     sub1 = fname[["percent_train", score_name, "setting", "dataset"]]
     if percentages:
