@@ -326,20 +326,24 @@ def leiden_multilayer(
         network = multinet.multi_layer_network(directed=False)
         
         # Check if networkx graphs or matrices
+        is_networkx = False
         try:
             import networkx as nx
-            if all(isinstance(g, (nx.Graph, nx.DiGraph)) for g in graph_layers):
-                # NetworkX graphs
-                for layer_idx, G in enumerate(graph_layers):
-                    layer_name = f"L{layer_idx}"
-                    for u, v, data in G.edges(data=True):
-                        w = data.get(weight, 1.0)
-                        network.add_edge(u, layer_name, v, layer_name, w)
-                layers = [f"L{i}" for i in range(len(graph_layers))]
-            else:
-                raise ValueError("Unsupported list input type")
+            is_networkx = all(isinstance(g, (nx.Graph, nx.DiGraph)) for g in graph_layers)
         except ImportError:
-            # Not networkx graphs, assume matrices
+            is_networkx = False
+        
+        if is_networkx:
+            # NetworkX graphs
+            import networkx as nx
+            for layer_idx, G in enumerate(graph_layers):
+                layer_name = f"L{layer_idx}"
+                for u, v, data in G.edges(data=True):
+                    w = data.get(weight, 1.0)
+                    network.add_edge(u, layer_name, v, layer_name, w)
+            layers = [f"L{i}" for i in range(len(graph_layers))]
+        else:
+            # Assume matrices (numpy arrays or scipy sparse)
             for layer_idx, adj_matrix in enumerate(graph_layers):
                 layer_name = f"L{layer_idx}"
                 if sp.issparse(adj_matrix):
@@ -350,7 +354,7 @@ def leiden_multilayer(
                     for j in range(i + 1, n_nodes):
                         if adj_matrix[i, j] > 0:
                             network.add_edge(i, layer_name, j, layer_name, adj_matrix[i, j])
-                layers = [f"L{i}" for i in range(len(graph_layers))]
+            layers = [f"L{i}" for i in range(len(graph_layers))]
         
         node_layer_list = list(network.get_nodes())
         supra_matrix = network.get_supra_adjacency_matrix()
@@ -532,9 +536,9 @@ def leiden_multilayer(
             if lyr == layer
         }
         if layer_communities:
-            # Calculate single-layer modularity
+            # Calculate single-layer modularity (no inter-layer coupling)
             layer_mod = multilayer_modularity(
-                network, communities,
+                network, layer_communities,
                 {layer: gamma_dict[layer]}, np.zeros((n_layers, n_layers)), weight
             )
             layer_modularity[layer] = layer_mod
