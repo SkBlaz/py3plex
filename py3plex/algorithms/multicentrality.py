@@ -12,7 +12,29 @@ from typing import Any, Dict
 
 import numpy as np
 
+# Optional formal verification support
+try:
+    from icontract import require, ensure
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    ICONTRACT_AVAILABLE = False
 
+
+@require(lambda multinet: multinet is not None, "multinet must not be None")
+@require(lambda normalized: isinstance(normalized, bool), "normalized must be a bool")
+@require(lambda check_multiplex: isinstance(check_multiplex, bool), "check_multiplex must be a bool")
+@ensure(lambda result: isinstance(result, dict), "result must be a dictionary")
+@ensure(lambda result: all(isinstance(v, (int, float)) for v in result.values()), 
+        "all result values must be numeric")
 def multiplex_participation_coefficient(
     multinet: Any, normalized: bool = True, check_multiplex: bool = True
 ) -> Dict[Any, float]:
@@ -56,6 +78,11 @@ def multiplex_participation_coefficient(
     - Harooni, M., et al. (2025). "Centrality in Multilayer Networks: Accurate 
       Measurements with MultiNetPy." The Journal of Supercomputing, 81(1), 92.
       DOI: 10.1007/s11227-025-07197-8
+      
+    Contracts:
+        - Precondition: multinet must not be None
+        - Precondition: normalized and check_multiplex must be booleans
+        - Postcondition: returns a dictionary with numeric values
     """
     
     # Get layers from the multiplex network

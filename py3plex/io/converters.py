@@ -11,10 +11,31 @@ from typing import Any, Dict, Literal
 
 from .schema import Edge, Layer, MultiLayerGraph, Node
 
+# Optional formal verification support
+try:
+    from icontract import require, ensure
+    ICONTRACT_AVAILABLE = True
+except ImportError:
+    # Create no-op decorators when icontract is not available
+    def require(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def ensure(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    ICONTRACT_AVAILABLE = False
+
 # Type hints for projection modes
 ProjectionMode = Literal["union", "intersection", "multiplex"]
 
 
+@require(lambda graph: graph is not None, "graph must not be None")
+@require(lambda graph: isinstance(graph, MultiLayerGraph), "graph must be a MultiLayerGraph")
+@require(lambda mode: mode in ("union", "intersection", "multiplex"), 
+         "mode must be 'union', 'intersection', or 'multiplex'")
+@ensure(lambda result: result is not None, "result must not be None")
 def to_networkx(
     graph: MultiLayerGraph,
     mode: ProjectionMode = "union",
@@ -34,6 +55,11 @@ def to_networkx(
 
     Raises:
         ImportError: If NetworkX is not installed
+        
+    Contracts:
+        - Precondition: graph must not be None and must be a MultiLayerGraph
+        - Precondition: mode must be a valid projection mode
+        - Postcondition: returns a non-None NetworkX graph
     """
     try:
         import networkx as nx
@@ -128,6 +154,12 @@ def to_networkx(
     return G
 
 
+@require(lambda G: G is not None, "G must not be None")
+@require(lambda mode: mode in ("union", "multiplex"), "mode must be 'union' or 'multiplex'")
+@require(lambda default_layer: isinstance(default_layer, str), "default_layer must be a string")
+@require(lambda default_layer: len(default_layer) > 0, "default_layer must not be empty")
+@ensure(lambda result: result is not None, "result must not be None")
+@ensure(lambda result: isinstance(result, MultiLayerGraph), "result must be a MultiLayerGraph")
 def from_networkx(
     G: Any,
     mode: ProjectionMode = "multiplex",
@@ -150,6 +182,12 @@ def from_networkx(
     Raises:
         ImportError: If NetworkX is not installed
         ValueError: If mode is invalid or graph structure is incompatible
+        
+    Contracts:
+        - Precondition: G must not be None
+        - Precondition: mode must be 'union' or 'multiplex'
+        - Precondition: default_layer must be a non-empty string
+        - Postcondition: returns a MultiLayerGraph
     """
     try:
         import networkx as nx
@@ -271,6 +309,11 @@ def from_networkx(
     return graph
 
 
+@require(lambda graph: graph is not None, "graph must not be None")
+@require(lambda graph: isinstance(graph, MultiLayerGraph), "graph must be a MultiLayerGraph")
+@require(lambda mode: mode in ("union", "intersection", "multiplex"), 
+         "mode must be 'union', 'intersection', or 'multiplex'")
+@ensure(lambda result: result is not None, "result must not be None")
 def to_igraph(graph: MultiLayerGraph, mode: ProjectionMode = "multiplex") -> Any:
     """
     Convert MultiLayerGraph to igraph graph.
@@ -284,6 +327,11 @@ def to_igraph(graph: MultiLayerGraph, mode: ProjectionMode = "multiplex") -> Any
 
     Raises:
         ImportError: If igraph is not installed
+        
+    Contracts:
+        - Precondition: graph must not be None and must be a MultiLayerGraph
+        - Precondition: mode must be a valid projection mode
+        - Postcondition: returns a non-None igraph graph
     """
     try:
         import igraph as ig
@@ -382,6 +430,12 @@ def to_igraph(graph: MultiLayerGraph, mode: ProjectionMode = "multiplex") -> Any
     return g
 
 
+@require(lambda g: g is not None, "g must not be None")
+@require(lambda mode: mode in ("union", "multiplex"), "mode must be 'union' or 'multiplex'")
+@require(lambda default_layer: isinstance(default_layer, str), "default_layer must be a string")
+@require(lambda default_layer: len(default_layer) > 0, "default_layer must not be empty")
+@ensure(lambda result: result is not None, "result must not be None")
+@ensure(lambda result: isinstance(result, MultiLayerGraph), "result must be a MultiLayerGraph")
 def from_igraph(
     g: Any,
     mode: ProjectionMode = "multiplex",
@@ -400,6 +454,12 @@ def from_igraph(
 
     Raises:
         ImportError: If igraph is not installed
+        
+    Contracts:
+        - Precondition: g must not be None
+        - Precondition: mode must be 'union' or 'multiplex'
+        - Precondition: default_layer must be a non-empty string
+        - Postcondition: returns a MultiLayerGraph
     """
     try:
         import igraph as ig  # noqa: F401
