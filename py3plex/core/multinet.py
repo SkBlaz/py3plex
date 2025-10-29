@@ -793,10 +793,11 @@ class multi_layer_network:
         """
 
         if isinstance(edge_dict_list, dict):
-            edge_dict = edge_dict_list
+            # Work with a copy to avoid mutating the original dictionary
+            edge_dict = edge_dict_list.copy()
             if (
-                "source_type" in edge_dict_list.keys()
-                and "target_type" in edge_dict_list.keys()
+                "source_type" in edge_dict.keys()
+                and "target_type" in edge_dict.keys()
             ):
                 edge_dict["u_for_edge"] = (
                     edge_dict["source"],
@@ -810,14 +811,17 @@ class multi_layer_network:
                 edge_dict["u_for_edge"] = (edge_dict["source"], self.dummy_layer)
                 edge_dict["v_for_edge"] = (edge_dict["target"], self.dummy_layer)
 
-            del edge_dict["target"]
-            del edge_dict["source"]
-            del edge_dict["target_type"]
-            del edge_dict["source_type"]
+            # Remove keys only if they exist
+            edge_dict.pop("target", None)
+            edge_dict.pop("source", None)
+            edge_dict.pop("target_type", None)
+            edge_dict.pop("source_type", None)
             eval("self.core_network." + target_function + "(**edge_dict)")
 
         else:
-            for edge_dict in edge_dict_list:
+            for edge_dict_item in edge_dict_list:
+                # Work with a copy to avoid mutating the original dictionary
+                edge_dict = edge_dict_item.copy()
 
                 if (
                     "source_type" in edge_dict.keys()
@@ -835,10 +839,11 @@ class multi_layer_network:
                     edge_dict["u_for_edge"] = (edge_dict["source"], self.dummy_layer)
                     edge_dict["v_for_edge"] = (edge_dict["target"], self.dummy_layer)
 
-                del edge_dict["target"]
-                del edge_dict["source"]
-                del edge_dict["target_type"]
-                del edge_dict["source_type"]
+                # Remove keys only if they exist
+                edge_dict.pop("target", None)
+                edge_dict.pop("source", None)
+                edge_dict.pop("target_type", None)
+                edge_dict.pop("source_type", None)
                 eval("self.core_network." + target_function + "(**edge_dict)")
 
     def _generic_edge_list_manipulator(self, edge_list, target_function, raw=False):
@@ -879,20 +884,26 @@ class multi_layer_network:
         """
 
         if isinstance(node_dict_list, dict):
-            node_dict = node_dict_list
-            node_dict["node_for_adding"] = node_dict["source"]
+            # Work with a copy to avoid mutating the original dictionary
+            node_dict = node_dict_list.copy()
 
             if "type" in node_dict.keys():
                 node_dict["node_for_adding"] = (node_dict["source"], node_dict["type"])
             else:
                 node_dict["node_for_adding"] = (node_dict["source"], self.dummy_layer)
-            del node_dict["source"]
-            del node_dict["type"]
+            
+            # Remove keys only if they exist
+            node_dict.pop("source", None)
+            node_dict.pop("type", None)
             nname = node_dict["node_for_adding"]
             eval("self.core_network." + target_function + f"({nname})")
 
         else:
-            for node_dict in node_dict_list:
+            # Handle list of node dictionaries
+            for node_dict_item in node_dict_list:
+                # Work with a copy to avoid mutating the original dictionary
+                node_dict = node_dict_item.copy()
+                
                 if "type" in node_dict.keys():
                     node_dict["node_for_adding"] = (
                         node_dict["source"],
@@ -903,10 +914,12 @@ class multi_layer_network:
                         node_dict["source"],
                         self.dummy_layer,
                     )
-            del node_dict["source"]
-            del node_dict["type"]
-            nname = node_dict["node_for_adding"]
-            eval("self.core_network." + target_function + f"({nname})")
+                
+                # Remove keys only if they exist
+                node_dict.pop("source", None)
+                node_dict.pop("type", None)
+                nname = node_dict["node_for_adding"]
+                eval("self.core_network." + target_function + f"({nname})")
 
     def _generic_node_list_manipulator(self, node_list, target_function):
         """
