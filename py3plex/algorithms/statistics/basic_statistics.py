@@ -9,25 +9,32 @@ import pandas as pd
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure
+    from icontract import ensure, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 
 @require(lambda top_n: top_n > 0, "top_n must be positive")
 @ensure(lambda result, top_n: len(result) <= top_n, "result size must not exceed top_n")
-@ensure(lambda result: all(isinstance(v, int) and v >= 0 for v in result.values()), 
-        "all degree values must be non-negative integers")
+@ensure(
+    lambda result: all(isinstance(v, int) and v >= 0 for v in result.values()),
+    "all degree values must be non-negative integers",
+)
 def identify_n_hubs(
     G: nx.Graph, top_n: int = 100, node_type: Optional[str] = None
 ) -> Dict[Any, int]:
@@ -41,7 +48,7 @@ def identify_n_hubs(
 
     Returns:
         Dictionary mapping node identifiers to their degree values
-    
+
     Contracts:
         - Precondition: top_n must be positive
         - Postcondition: result has at most top_n entries

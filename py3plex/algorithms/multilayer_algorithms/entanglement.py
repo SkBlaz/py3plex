@@ -22,10 +22,10 @@ logger.info("Python version: %s", sys.version)
 def build_occurrence_matrix(network: Any) -> Tuple[np.ndarray, List[Any]]:
     """
     Build occurrence matrix from multilayer network.
-    
+
     Args:
         network: Multilayer network object
-        
+
     Returns:
         Tuple of (c_matrix, layers) where c_matrix is the normalized occurrence matrix
         and layers is the list of layer names
@@ -90,10 +90,10 @@ def build_occurrence_matrix(network: Any) -> Tuple[np.ndarray, List[Any]]:
 def compute_blocks(c_matrix: np.ndarray) -> Tuple[List[List[int]], List[np.ndarray]]:
     """
     Compute block decomposition of occurrence matrix.
-    
+
     Args:
         c_matrix: Occurrence matrix
-        
+
     Returns:
         Tuple of (indices, blocks) where indices are the layer indices in each block
         and blocks are the submatrices for each block
@@ -120,10 +120,10 @@ def compute_blocks(c_matrix: np.ndarray) -> Tuple[List[List[int]], List[np.ndarr
 def compute_entanglement(block_matrix: np.ndarray) -> Tuple[List[float], List[float]]:
     """
     Compute entanglement metrics for a block.
-    
+
     Args:
         block_matrix: Block submatrix
-        
+
     Returns:
         Tuple of ([intensity, homogeneity, normalized_homogeneity], gamma_layers)
     """
@@ -160,10 +160,10 @@ def compute_entanglement(block_matrix: np.ndarray) -> Tuple[List[float], List[fl
 def compute_entanglement_analysis(network: Any) -> List[Dict[str, Any]]:
     """
     Compute full entanglement analysis for a multilayer network.
-    
+
     Args:
         network: Multilayer network object
-        
+
     Returns:
         List of block analysis dictionaries with entanglement metrics
     """

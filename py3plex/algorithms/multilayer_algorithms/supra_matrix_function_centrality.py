@@ -20,11 +20,12 @@ Authors: py3plex contributors
 Date: October 2025 (Phase II)
 """
 
+from typing import cast
+
 import numpy as np
 import scipy.sparse as sp
 from scipy.sparse import identity
 from scipy.sparse.linalg import eigs, expm_multiply, spsolve
-from typing import cast
 
 from py3plex.exceptions import Py3plexMatrixError
 
@@ -221,7 +222,7 @@ def katz_centrality(
                 return cast(np.ndarray, centralities)
 
             alpha = 0.85 / lambda_max
-        except (ArithmeticError, ValueError, RuntimeError, TypeError) as e:
+        except (ArithmeticError, ValueError, RuntimeError, TypeError):
             # Fallback: use small default alpha if eigenvalue computation fails
             alpha = 0.01
     else:
@@ -235,7 +236,7 @@ def katz_centrality(
             else:
                 eigenvals, _ = eigs(supra_matrix, k=1, which="LM", tol=tol)
                 lambda_max = np.abs(eigenvals[0])
-            
+
             if alpha >= 1.0 / lambda_max:
                 raise Py3plexMatrixError(
                     f"Alpha ({alpha}) must be less than 1/lambda_max ({1.0/lambda_max:.6f})"
@@ -250,7 +251,7 @@ def katz_centrality(
 
     try:
         centralities = spsolve(identity_matrix - alpha * supra_matrix, b)
-    except (np.linalg.LinAlgError, RuntimeError, ValueError) as e:
+    except (np.linalg.LinAlgError, RuntimeError, ValueError):
         # Fallback: use series approximation if sparse solve fails
         # x = sum_{k=0}^{inf} (alpha * A)^k * b
         centralities = b.copy()

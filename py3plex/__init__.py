@@ -29,10 +29,10 @@ from py3plex.exceptions import (
 
 # Import profiling utilities for easy access
 from py3plex.profiling import (
-    profile_performance,
-    timed_section,
     benchmark,
     get_monitor,
+    profile_performance,
+    timed_section,
 )
 
 __all__ = [

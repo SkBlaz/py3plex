@@ -4,7 +4,7 @@ import multiprocessing as mp
 import os
 import time
 from subprocess import call
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from sklearn import linear_model
 from sklearn.multiclass import OneVsRestClassifier
@@ -29,7 +29,7 @@ def call_node2vec_binary(
 ) -> None:
     """
     Call the Node2Vec C++ binary with specified parameters.
-    
+
     Args:
         input_graph: Path to input graph file
         output_graph: Path to output embedding file
@@ -70,7 +70,7 @@ def n2v_embedding(
 ) -> None:
     """
     Train Node2Vec embeddings with parameter optimization.
-    
+
     Args:
         G: NetworkX graph
         targets: Target labels for nodes
@@ -109,12 +109,10 @@ def n2v_embedding(
             "Graph has %d edges and %d nodes.", number_of_edges, number_of_nodes
         )
 
-    f = open(tmp_graph, "w+")
-
-    # f.write(str(number_of_nodes)+" "+str(number_of_edges)+"\n")
-    for e in G.edges(data=True):
-        f.write(str(e[0]) + " " + str(e[1]) + " " + str(float(e[2]["weight"])) + "\n")
-    f.close()
+    with open(tmp_graph, "w+") as f:
+        # f.write(str(number_of_nodes)+" "+str(number_of_edges)+"\n")
+        for e in G.edges(data=True):
+            f.write(str(e[0]) + " " + str(e[1]) + " " + str(float(e[2]["weight"])) + "\n")
 
     if verbose:
         logger.info("N2V training phase..")
@@ -191,7 +189,7 @@ def learn_embedding(
 ) -> Tuple[str, float]:
     """
     Learn node embeddings for a network.
-    
+
     Args:
         core_network: NetworkX graph
         labels: Node labels
@@ -201,7 +199,7 @@ def learn_embedding(
         q: In-out parameter
         binary_path: Path to node2vec binary
         parameter_range: String representation of parameter range list
-        
+
     Returns:
         Tuple of (method_name, elapsed_time)
     """
@@ -213,7 +211,7 @@ def learn_embedding(
     # This seems to be a method that was extracted from a class but not properly refactored
     method = "default_n2v"  # Default value since self.method is not available
     verbose = True  # Default value since self.vb is not available
-    
+
     if method == "default_n2v":
         n2v_embedding(
             core_network,

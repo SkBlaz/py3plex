@@ -10,18 +10,23 @@ from typing import Callable, Dict, List, Optional, Union
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure
+    from icontract import ensure, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 from .exceptions import FormatUnsupportedError
@@ -36,11 +41,15 @@ _READERS: Dict[str, ReaderFunc] = {}
 _WRITERS: Dict[str, WriterFunc] = {}
 
 
-@require(lambda format_name: isinstance(format_name, str) and len(format_name) > 0, 
-         "format_name must be a non-empty string")
+@require(
+    lambda format_name: isinstance(format_name, str) and len(format_name) > 0,
+    "format_name must be a non-empty string",
+)
 @require(lambda reader_func: callable(reader_func), "reader_func must be callable")
-@ensure(lambda format_name: format_name.lower() in _READERS, 
-        "reader must be registered after call")
+@ensure(
+    lambda format_name: format_name.lower() in _READERS,
+    "reader must be registered after call",
+)
 def register_reader(format_name: str, reader_func: ReaderFunc) -> None:
     """
     Register a reader function for a specific format.
@@ -54,7 +63,7 @@ def register_reader(format_name: str, reader_func: ReaderFunc) -> None:
         ...     # Custom reading logic
         ...     return MultiLayerGraph(...)
         >>> register_reader('myformat', my_reader)
-    
+
     Contracts:
         - Precondition: format_name must be a non-empty string
         - Precondition: reader_func must be callable
@@ -63,11 +72,15 @@ def register_reader(format_name: str, reader_func: ReaderFunc) -> None:
     _READERS[format_name.lower()] = reader_func
 
 
-@require(lambda format_name: isinstance(format_name, str) and len(format_name) > 0, 
-         "format_name must be a non-empty string")
+@require(
+    lambda format_name: isinstance(format_name, str) and len(format_name) > 0,
+    "format_name must be a non-empty string",
+)
 @require(lambda writer_func: callable(writer_func), "writer_func must be callable")
-@ensure(lambda format_name: format_name.lower() in _WRITERS, 
-        "writer must be registered after call")
+@ensure(
+    lambda format_name: format_name.lower() in _WRITERS,
+    "writer must be registered after call",
+)
 def register_writer(format_name: str, writer_func: WriterFunc) -> None:
     """
     Register a writer function for a specific format.
@@ -81,7 +94,7 @@ def register_writer(format_name: str, writer_func: WriterFunc) -> None:
         ...     # Custom writing logic
         ...     pass
         >>> register_writer('myformat', my_writer)
-    
+
     Contracts:
         - Precondition: format_name must be a non-empty string
         - Precondition: writer_func must be callable
@@ -91,10 +104,14 @@ def register_writer(format_name: str, writer_func: WriterFunc) -> None:
 
 
 @ensure(lambda result: isinstance(result, dict), "result must be a dictionary")
-@ensure(lambda read, result: not read or "read" in result, 
-        "result must contain 'read' key when read=True")
-@ensure(lambda write, result: not write or "write" in result, 
-        "result must contain 'write' key when write=True")
+@ensure(
+    lambda read, result: not read or "read" in result,
+    "result must contain 'read' key when read=True",
+)
+@ensure(
+    lambda write, result: not write or "write" in result,
+    "result must contain 'write' key when write=True",
+)
 def supported_formats(read: bool = True, write: bool = True) -> Dict[str, List[str]]:
     """
     Get list of supported formats for read and/or write operations.
@@ -110,7 +127,7 @@ def supported_formats(read: bool = True, write: bool = True) -> Dict[str, List[s
         >>> formats = supported_formats()
         >>> print(formats)
         {'read': ['json', 'jsonl', 'csv'], 'write': ['json', 'jsonl', 'csv']}
-    
+
     Contracts:
         - Postcondition: result is a dictionary
         - Postcondition: result contains 'read' key when read=True

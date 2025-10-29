@@ -13,10 +13,10 @@ from sklearn.model_selection import ShuffleSplit
 
 def label_propagation_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
     """Normalize a matrix for label propagation.
-    
+
     Args:
         matrix: Sparse matrix to normalize
-        
+
     Returns:
         Normalized sparse matrix
     """
@@ -35,10 +35,10 @@ def label_propagation_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
 # suggested as part of the hinmine..
 def normalize_initial_matrix_freq(mat: np.ndarray) -> np.ndarray:
     """Normalize matrix by frequency.
-    
+
     Args:
         mat: Matrix to normalize
-        
+
     Returns:
         Normalized matrix
     """
@@ -49,10 +49,10 @@ def normalize_initial_matrix_freq(mat: np.ndarray) -> np.ndarray:
 
 def normalize_amplify_freq(mat: np.ndarray) -> np.ndarray:
     """Normalize and amplify matrix by frequency.
-    
+
     Args:
         mat: Matrix to normalize
-        
+
     Returns:
         Normalized and amplified matrix
     """
@@ -63,10 +63,10 @@ def normalize_amplify_freq(mat: np.ndarray) -> np.ndarray:
 
 def normalize_exp(mat: np.ndarray) -> np.ndarray:
     """Apply exponential normalization.
-    
+
     Args:
         mat: Matrix to normalize
-        
+
     Returns:
         Exponentially normalized matrix
     """
@@ -75,10 +75,10 @@ def normalize_exp(mat: np.ndarray) -> np.ndarray:
 
 def normalize_none(mat: np.ndarray) -> np.ndarray:
     """No normalization (identity function).
-    
+
     Args:
         mat: Matrix to return unchanged
-        
+
     Returns:
         Original matrix
     """
@@ -94,7 +94,7 @@ def label_propagation(
     normalization: Union[str, List[str]] = "freq",
 ) -> np.ndarray:
     """Propagate labels through a graph.
-    
+
     Args:
         graph_matrix: Sparse graph adjacency matrix
         class_matrix: Initial class label matrix
@@ -102,7 +102,7 @@ def label_propagation(
         epsilon: Convergence threshold
         max_steps: Maximum number of iterations
         normalization: Normalization scheme(s) to apply
-        
+
     Returns:
         Propagated label matrix
     """
@@ -110,10 +110,10 @@ def label_propagation(
     # This method assumes the label-propagation normalization and a symmetric matrix with no rank sinks.
 
     funHash = {
-        "freq": "normalize_initial_matrix_freq",
-        "freqAmplify": "normalize_amplify_freq",
-        "exp": "normalize_exp",
-        "basic": "normalize_none",
+        "freq": normalize_initial_matrix_freq,
+        "freqAmplify": normalize_amplify_freq,
+        "exp": normalize_exp,
+        "basic": normalize_none,
     }
 
     diff = np.inf
@@ -121,8 +121,8 @@ def label_propagation(
     current_labels = class_matrix
 
     for candidate in normalization:
-        fun_string = funHash[candidate] + "(current_labels)"
-        current_labels = eval(fun_string)
+        normalization_func = funHash[candidate]
+        current_labels = normalization_func(current_labels)
 
     while diff > epsilon and steps < max_steps:
         steps += 1
@@ -146,7 +146,7 @@ def validate_label_propagation(
     verbose: bool = False,
 ) -> pd.DataFrame:
     """Validate label propagation with cross-validation.
-    
+
     Args:
         core_network: Sparse network adjacency matrix
         labels: Label matrix
@@ -156,7 +156,7 @@ def validate_label_propagation(
         alpha_value: Alpha parameter for propagation
         random_seed: Random seed for reproducibility
         verbose: Whether to print progress
-        
+
     Returns:
         DataFrame with validation results
     """
@@ -232,7 +232,7 @@ def validate_label_propagation(
 
 def label_propagation_tf() -> None:
     """TensorFlow-based label propagation (TODO: implement).
-    
+
     Placeholder for future TensorFlow implementation.
     """
     # todo..

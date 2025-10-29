@@ -9,22 +9,29 @@ import numpy as np
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure, invariant
+    from icontract import ensure, invariant, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def invariant(*args, **kwargs):
         def decorator(cls):
             return cls
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 from py3plex.logging_config import get_logger
@@ -486,18 +493,16 @@ class multi_layer_network:
                     for layer, count in sorted(nodes_per_layer.items()):
                         logger.info(f"  Layer '{layer}': {count} nodes")
 
-    def get_edges(
-        self, data: bool = False, multiplex_edges: bool = False
-    ) -> Any:
+    def get_edges(self, data: bool = False, multiplex_edges: bool = False) -> Any:
         """A method for obtaining a network's edges
-        
+
         Args:
             data: If True, return edge data along with edge tuples
             multiplex_edges: If True, include coupling edges in multiplex networks
-            
+
         Yields:
             Edge tuples, optionally with data
-            
+
         Raises:
             Exception: If network type is not specified
         """
@@ -519,10 +524,10 @@ class multi_layer_network:
 
     def get_nodes(self, data: bool = False) -> Any:
         """A method for obtaining a network's nodes
-        
+
         Args:
             data: If True, return node data along with node identifiers
-            
+
         Yields:
             Node identifiers, optionally with data
         """
@@ -584,10 +589,18 @@ class multi_layer_network:
         tmp_net.core_network = subnetwork
         return tmp_net
 
-    @require(lambda self: self.core_network is not None, "core_network must be initialized")
-    @require(lambda metric: metric in {"count", "mean", "max", "sum"}, "metric must be valid aggregation method")
+    @require(
+        lambda self: self.core_network is not None, "core_network must be initialized"
+    )
+    @require(
+        lambda metric: metric in {"count", "mean", "max", "sum"},
+        "metric must be valid aggregation method",
+    )
     @ensure(lambda result: result is not None, "result must not be None")
-    @ensure(lambda result: isinstance(result, (nx.Graph, nx.DiGraph)), "result must be a NetworkX graph")
+    @ensure(
+        lambda result: isinstance(result, (nx.Graph, nx.DiGraph)),
+        "result must be a NetworkX graph",
+    )
     def aggregate_edges(self, metric="count", normalize_by="degree"):
         """Edge aggregation method
 
@@ -797,10 +810,7 @@ class multi_layer_network:
         if isinstance(edge_dict_list, dict):
             # Work with a copy to avoid mutating the original dictionary
             edge_dict = edge_dict_list.copy()
-            if (
-                "source_type" in edge_dict.keys()
-                and "target_type" in edge_dict.keys()
-            ):
+            if "source_type" in edge_dict.keys() and "target_type" in edge_dict.keys():
                 edge_dict["u_for_edge"] = (
                     edge_dict["source"],
                     edge_dict["source_type"],
@@ -893,7 +903,7 @@ class multi_layer_network:
                 node_dict["node_for_adding"] = (node_dict["source"], node_dict["type"])
             else:
                 node_dict["node_for_adding"] = (node_dict["source"], self.dummy_layer)
-            
+
             # Remove keys only if they exist
             node_dict.pop("source", None)
             node_dict.pop("type", None)
@@ -905,7 +915,7 @@ class multi_layer_network:
             for node_dict_item in node_dict_list:
                 # Work with a copy to avoid mutating the original dictionary
                 node_dict = node_dict_item.copy()
-                
+
                 if "type" in node_dict.keys():
                     node_dict["node_for_adding"] = (
                         node_dict["source"],
@@ -916,7 +926,7 @@ class multi_layer_network:
                         node_dict["source"],
                         self.dummy_layer,
                     )
-                
+
                 # Remove keys only if they exist
                 node_dict.pop("source", None)
                 node_dict.pop("type", None)
@@ -944,7 +954,9 @@ class multi_layer_network:
             self.core_network = nx.MultiGraph(self.core_network)
 
     def add_edges(
-        self, edge_dict_list: Union[List[Dict], List[List], Tuple], input_type: str = "dict"
+        self,
+        edge_dict_list: Union[List[Dict], List[List], Tuple],
+        input_type: str = "dict",
     ) -> None:
         """A method for adding edges.. Types are:
         dict,list or px_edge. See examples for further use.
@@ -954,11 +966,11 @@ class multi_layer_network:
         list = [[n1,t1,n2,t2] ...]
 
         px_edge = ((n1,t1)(n2,t2))
-        
+
         Args:
             edge_dict_list: Edge data in dict, list, or px_edge format
             input_type: Format of edge data ('dict', 'list', or 'px_edge')
-            
+
         Raises:
             Exception: If input_type is not valid
         """
@@ -989,11 +1001,11 @@ class multi_layer_network:
         self, edge_dict_list: Union[List[Dict], List[List]], input_type: str = "list"
     ) -> None:
         """A method for removing edges..
-        
+
         Args:
             edge_dict_list: Edge data in dict or list format
             input_type: Format of edge data ('dict' or 'list')
-            
+
         Raises:
             Exception: If input_type is not valid
         """
@@ -1009,7 +1021,7 @@ class multi_layer_network:
         self, node_dict_list: Union[List[Dict], Dict], input_type: str = "dict"
     ) -> None:
         """A method for adding nodes..
-        
+
         Args:
             node_dict_list: Node data in dict format
             input_type: Format of node data ('dict')
@@ -1483,11 +1495,9 @@ class multi_layer_network:
         if not os.path.exists(out_folder):
             os.makedirs(out_folder)
 
-        file = open(edgelist_file, "w")
-
-        for el in outstruct:
-            file.write(" ".join([str(x) for x in el]) + "\n")
-        file.close()
+        with open(edgelist_file, "w") as file:
+            for el in outstruct:
+                file.write(" ".join([str(x) for x in el]) + "\n")
 
         inverse_nodes = {a: b for b, a in node_dict.items()}
         #        inverse_layers = {a:b for b,a in layer_mappings.items()}

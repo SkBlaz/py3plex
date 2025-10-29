@@ -37,14 +37,16 @@ except ImportError:
     plotly_import = False
 
 
-def _get_background_colors(background_color: str, num_networks: int, alphalevel: float) -> tuple:
+def _get_background_colors(
+    background_color: str, num_networks: int, alphalevel: float
+) -> tuple:
     """Get background color palette for multilayer visualization.
-    
+
     Args:
         background_color: Color scheme ("default", "rainbow", or None)
         num_networks: Number of networks/layers to color
         alphalevel: Original alpha level (modified if background_color is None)
-        
+
     Returns:
         tuple: (color_list, modified_alphalevel)
     """
@@ -62,11 +64,11 @@ def _get_background_colors(background_color: str, num_networks: int, alphalevel:
 
 def _get_network_colors(networks_color: str, num_networks: int) -> List[str]:
     """Get network color palette for multilayer visualization.
-    
+
     Args:
         networks_color: Color scheme ("rainbow" or "black")
         num_networks: Number of networks/layers to color
-        
+
     Returns:
         List[str]: List of color codes
     """
@@ -79,17 +81,15 @@ def _get_network_colors(networks_color: str, num_networks: int) -> List[str]:
 
 
 def _preprocess_network(
-    network: nx.Graph,
-    remove_isolated_nodes: bool,
-    verbose: bool
+    network: nx.Graph, remove_isolated_nodes: bool, verbose: bool
 ) -> tuple:
     """Preprocess a single network layer before drawing.
-    
+
     Args:
         network: NetworkX graph to preprocess
         remove_isolated_nodes: Whether to remove isolated nodes
         verbose: Whether to log network information
-        
+
     Returns:
         tuple: (processed_network, positions, degrees)
     """
@@ -102,10 +102,10 @@ def _preprocess_network(
     # Log network info if verbose
     if verbose:
         logger.info(nx_info(network))
-    
+
     # Calculate degrees
     degrees = dict(nx.degree(nx.Graph(network)))
-    
+
     # Remove nodes without positions
     no_position = []
     for node in network.nodes(data=True):
@@ -118,22 +118,20 @@ def _preprocess_network(
 
     # Get positions
     positions = nx.get_node_attributes(network, "pos")
-    
+
     return network, positions, degrees
 
 
 def _compute_node_sizes(
-    degrees: dict,
-    node_size: int,
-    scale_by_size: bool
+    degrees: dict, node_size: int, scale_by_size: bool
 ) -> List[float]:
     """Compute node sizes based on degrees and scaling preference.
-    
+
     Args:
         degrees: Dictionary of node degrees
         node_size: Base node size
         scale_by_size: Whether to scale by degree
-        
+
     Returns:
         List[float]: List of node sizes
     """
@@ -145,7 +143,7 @@ def _compute_node_sizes(
     # Fallback to default size if all sizes are zero
     if np.sum(node_sizes) == 0:
         node_sizes = [node_size for _ in degrees.values()]
-    
+
     return node_sizes
 
 
@@ -159,7 +157,7 @@ def _draw_background_shape(
     rectangley: float = 1,
 ) -> None:
     """Draw background shape for a single layer.
-    
+
     Args:
         shape_subplot: Matplotlib axis to draw on
         background_shape: Shape type ("rectangle" or "circle")
@@ -171,7 +169,7 @@ def _draw_background_shape(
     """
     shadow_size = config.MULTILAYER_SHADOW_SIZE
     circle_size = config.MULTILAYER_CIRCLE_SIZE
-    
+
     if background_shape == "rectangle":
         shape_subplot.add_patch(
             Rectangle(
@@ -245,9 +243,9 @@ def draw_multilayer_default(
     # Convert dict to list if necessary
     if isinstance(network_list, dict):
         network_list = list(network_list.values())
-    
+
     shape_subplot = plt.gca()
-    
+
     # Get color palettes
     facecolor_list_background, alphalevel = _get_background_colors(
         background_color, len(network_list), alphalevel
@@ -264,14 +262,14 @@ def draw_multilayer_default(
         network, positions, degrees = _preprocess_network(
             network, remove_isolated_nodes, verbose
         )
-        
+
         # Offset positions for this layer
         for node in positions:
             positions[node] = (
                 positions[node][0] + start_location_network,
-                positions[node][1] + start_location_network
+                positions[node][1] + start_location_network,
             )
-        
+
         # Update node attributes so draw_multiedges can access offset positions
         nx.set_node_attributes(network, positions, "pos")
 
@@ -336,7 +334,7 @@ def draw_multiedges(
     resolution: float = 0.001,
 ) -> None:
     """Draw edges connecting multiple layers.
-    
+
     Args:
         network_list: List of NetworkX graphs (layers) or dict of layer_name -> graph
         multi_edge_tuple: Tuple specifying edges to draw
@@ -354,7 +352,7 @@ def draw_multiedges(
     # Convert dict to list if necessary
     if isinstance(network_list, dict):
         network_list = list(network_list.values())
-    
+
     # indices are correct network positions
     #    main_figure = plt.figure()
     #    shape_subplot = main_figure.add_subplot(111)
@@ -458,7 +456,7 @@ def generate_random_multiedges(
     pheight: float = 1,
 ) -> None:
     """Generate and draw random multi-layer edges.
-    
+
     Args:
         network_list: List of NetworkX graphs (layers)
         random_edges: Number of random edges to generate
@@ -538,10 +536,10 @@ def generate_random_multiedges(
 
 def generate_random_networks(number_of_networks: int) -> List[nx.Graph]:
     """Generate random networks for testing.
-    
+
     Args:
         number_of_networks: Number of random networks to generate
-        
+
     Returns:
         List of NetworkX graphs with random layouts
     """
@@ -557,7 +555,7 @@ def generate_random_networks(number_of_networks: int) -> List[nx.Graph]:
 
 def supra_adjacency_matrix_plot(matrix: np.ndarray, display: bool = False) -> None:
     """Plot a supra-adjacency matrix.
-    
+
     Args:
         matrix: Supra-adjacency matrix to plot
         display: Whether to display the plot immediately
@@ -569,7 +567,7 @@ def supra_adjacency_matrix_plot(matrix: np.ndarray, display: bool = False) -> No
 
 def onclick(event: Any) -> None:
     """Handle mouse click events on plots.
-    
+
     Args:
         event: Matplotlib event object
     """
@@ -757,14 +755,14 @@ def interactive_hairball_plot(
     colorscale: str = "Rainbow",
 ) -> Union[bool, Any]:
     """Create an interactive 3D hairball plot using Plotly.
-    
+
     Args:
         G: NetworkX graph to visualize
         nsizes: Node sizes
         final_color_mapping: Mapping of nodes to colors
         pos: Node positions
         colorscale: Color scale to use
-        
+
     Returns:
         False if plotly not available, otherwise plotly figure object
     """

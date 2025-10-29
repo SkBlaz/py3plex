@@ -4,13 +4,13 @@ This module implements community detection.
 
 import array
 import random
+from typing import Dict, List, Optional
 
 import networkx as nx
 
 # coding=utf-8
 
 
-from typing import Any, Dict, List, Optional, Union
 
 
 class Status:
@@ -404,9 +404,7 @@ def generate_dendrogram(
     return status_list[:]
 
 
-def induced_graph(
-    partition: Dict, graph: nx.Graph, weight: str = "weight"
-) -> nx.Graph:
+def induced_graph(partition: Dict, graph: nx.Graph, weight: str = "weight") -> nx.Graph:
     """Produce the graph where nodes are the communities
 
     there is a link of weight w between communities if the sum of the weights

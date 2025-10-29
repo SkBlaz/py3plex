@@ -10,18 +10,23 @@ import networkx as nx
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure
+    from icontract import ensure, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 # NetworkX version check
@@ -41,7 +46,7 @@ def nx_info(G: nx.Graph) -> str:
 
     Returns:
         str: Network information
-        
+
     Contracts:
         - Precondition: G must not be None and must be a NetworkX graph
         - Postcondition: returns a non-empty string
@@ -83,7 +88,7 @@ def nx_read_gpickle(path: str) -> nx.Graph:
 
     Returns:
         NetworkX graph
-        
+
     Contracts:
         - Precondition: path must be a non-empty string
         - Postcondition: returns a NetworkX graph
@@ -108,7 +113,7 @@ def nx_write_gpickle(G: nx.Graph, path: str) -> None:
     Args:
         G: NetworkX graph
         path: File path
-        
+
     Contracts:
         - Precondition: G must not be None and must be a NetworkX graph
         - Precondition: path must be a non-empty string
@@ -148,7 +153,7 @@ def nx_to_scipy_sparse_matrix(
 
     Returns:
         scipy sparse matrix
-        
+
     Contracts:
         - Precondition: G must not be None and must be a NetworkX graph
         - Precondition: weight must be a non-empty string
@@ -183,8 +188,13 @@ def is_string_like(obj: Any) -> bool:
 
 
 @require(lambda A: A is not None, "A must not be None")
-@require(lambda edge_attribute: isinstance(edge_attribute, str), "edge_attribute must be a string")
-@require(lambda edge_attribute: len(edge_attribute) > 0, "edge_attribute must not be empty")
+@require(
+    lambda edge_attribute: isinstance(edge_attribute, str),
+    "edge_attribute must be a string",
+)
+@require(
+    lambda edge_attribute: len(edge_attribute) > 0, "edge_attribute must not be empty"
+)
 @ensure(lambda result: result is not None, "result must not be None")
 @ensure(lambda result: isinstance(result, nx.Graph), "result must be a NetworkX graph")
 def nx_from_scipy_sparse_matrix(
@@ -204,7 +214,7 @@ def nx_from_scipy_sparse_matrix(
 
     Returns:
         NetworkX graph
-        
+
     Contracts:
         - Precondition: A must not be None
         - Precondition: edge_attribute must be a non-empty string

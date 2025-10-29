@@ -8,18 +8,23 @@ import numpy as np
 
 # Optional formal verification support
 try:
-    from icontract import require, ensure
+    from icontract import ensure, require
+
     ICONTRACT_AVAILABLE = True
 except ImportError:
     # Create no-op decorators when icontract is not available
     def require(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     def ensure(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
     ICONTRACT_AVAILABLE = False
 
 from py3plex.core.nx_compat import nx_info
@@ -42,8 +47,10 @@ except ImportError:
 @require(lambda gravity: gravity >= 0, "gravity must be non-negative")
 @require(lambda scalingRatio: scalingRatio > 0, "scalingRatio must be positive")
 @ensure(lambda result: isinstance(result, dict), "result must be a dictionary")
-@ensure(lambda g, result: len(result) == g.number_of_nodes(), 
-        "result must have positions for all nodes")
+@ensure(
+    lambda g, result: len(result) == g.number_of_nodes(),
+    "result must have positions for all nodes",
+)
 def compute_force_directed_layout(
     g: nx.Graph,
     layout_parameters: Optional[Dict[str, Any]] = None,
@@ -77,7 +84,7 @@ def compute_force_directed_layout(
     Note:
         For large networks (>1000 nodes), this may be slow. Consider using
         faster layouts (circular, random, spectral) or matrix visualization.
-    
+
     Contracts:
         - Precondition: graph must not be None and be a NetworkX graph
         - Precondition: graph must have at least one node
@@ -172,8 +179,10 @@ def compute_force_directed_layout(
 @require(lambda g: isinstance(g, nx.Graph), "g must be a NetworkX graph")
 @require(lambda g: g.number_of_nodes() > 0, "graph must have at least one node")
 @ensure(lambda result: isinstance(result, dict), "result must be a dictionary")
-@ensure(lambda g, result: len(result) == g.number_of_nodes(), 
-        "result must have positions for all nodes")
+@ensure(
+    lambda g, result: len(result) == g.number_of_nodes(),
+    "result must have positions for all nodes",
+)
 def compute_random_layout(
     g: nx.Graph, seed: Optional[int] = None
 ) -> Dict[Any, np.ndarray]:
@@ -186,7 +195,7 @@ def compute_random_layout(
 
     Returns:
         Dictionary mapping nodes to 2D positions
-    
+
     Contracts:
         - Precondition: graph must not be None and be a NetworkX graph
         - Precondition: graph must have at least one node
