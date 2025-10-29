@@ -395,7 +395,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 - Network conversion test suite (Issue #177, 8 tests)
 - CLI logging conversion: 78 print statements → structured logging
 
-**📦 Complete Changelog**: See [CHANGELOG.md](CHANGELOG.md) for full history
+**📦 Complete Changelog**: See [LLM.md Appendix A](LLM.md Appendix A) for full history
 
 ---
 
@@ -672,8 +672,8 @@ nx_graph = network.core_network
 - **GitHub**: https://github.com/SkBlaz/py3plex
 - **Examples**: https://github.com/SkBlaz/py3plex/tree/main/examples
 - **Paper**: Škrlj et al. (2019), Applied Network Science
-- **Full Changelog**: [CHANGELOG.md](CHANGELOG.md)
-- **Master Documentation**: [MASTER_DOCUMENTATION.md](MASTER_DOCUMENTATION.md)
+- **Full Changelog**: [LLM.md Appendix A](LLM.md Appendix A)
+- **Master Documentation**: [LLM.md (this file)](LLM.md (this file))
 
 ---
 
@@ -725,11 +725,11 @@ py3plex --help  # See all commands
 
 - **Main README:** `/README.md` - Project overview and quick start
 - **This File:** `/LLM.md` - Comprehensive LLM context (you are here)
-- **Development Guide:** `/docs/development.md` - Development workflow
-- **Master Documentation:** `/docs/MASTER_DOCUMENTATION.md` - Publication-quality docs
+- **Development Guide:** `/LLM.md Appendix B` - Development workflow
+- **Master Documentation:** `/LLM.md (consolidated)` - Publication-quality docs
 - **Architecture:** `/docs/ARCHITECTURE.md` - System design
-- **Contributing:** `/docs/CONTRIBUTING.md` - Contribution guidelines
-- **Changelog:** `/CHANGELOG.md` - Version history
+- **Contributing:** `/LLM.md Appendix C` - Contribution guidelines
+- **Changelog:** `/LLM.md Appendix A` - Version history
 
 ### Key Statistics (As of 2025-10-23)
 
@@ -820,7 +820,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 
 6. **Issue #155: Master Documentation** (Closed: 2025-10-19)
    - **Achievement**: Created comprehensive publication-quality documentation
-   - **Result**: `MASTER_DOCUMENTATION.md` with complete API reference, examples, citations
+   - **Result**: `LLM.md (this file)` with complete API reference, examples, citations
    - **Tools**: PDF generation script, API consistency checker, Makefile integration
    - **Status**: COMPLETED - World-class documentation ready
 
@@ -1044,7 +1044,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
   - Badge color: Orange (20-40% range)
 
 ### Master Documentation (2025-10-19)
-- **NEW: MASTER_DOCUMENTATION.md** - Comprehensive, publication-quality documentation covering:
+- **NEW: LLM.md (this file)** - Comprehensive, publication-quality documentation covering:
   - Complete overview of Py3plex capabilities and architecture
   - Quick start with minimal working examples
   - In-depth core module documentation with full API references
@@ -1247,7 +1247,7 @@ py3plex/
 ├── benchmarks/                       → Performance benchmarks and config examples
 │   └── config_benchmark.py           → Config usage and network creation benchmarks
 ├── README.md                         → Project introduction and quick start (minimalistic)
-├── CHANGELOG.md                      → Version history and change tracking
+├── LLM.md Appendix A                      → Version history and change tracking
 └── LLM.md                            → Comprehensive context for LLMs and maintainers
 ```
 
@@ -1758,7 +1758,7 @@ recovered = network.from_homogeneous_hypergraph(H)
 
 **Testing**: Use `make test-all` to run the complete test suite including all tests, benchmarks, and linting. This is the **single entrypoint that ensures all build CI will pass**. For individual components, use `make test` for tests only, `make benchmark` for benchmarks only, or `make lint` for linting only. Tests are in the `tests/` directory. CI runs on Python 3.8-3.12 across Ubuntu, macOS, and Windows.
 
-**Development Workflow**: See `docs/development.md` for comprehensive development guide including Makefile commands, testing, and contributing guidelines.
+**Development Workflow**: See `LLM.md Appendix B` for comprehensive development guide including Makefile commands, testing, and contributing guidelines.
 
 **Key Commands**:
 ```bash
@@ -1796,7 +1796,7 @@ py3plex visualize network.graphml --layout multilayer --output viz.png
 
 **Key Resources:**
 
-- **Master Documentation**: [docs/MASTER_DOCUMENTATION.md](docs/MASTER_DOCUMENTATION.md) - **NEW: Comprehensive, publication-quality documentation** (October 2025)
+- **Master Documentation**: [LLM.md (consolidated)](LLM.md (consolidated)) - **NEW: Comprehensive, publication-quality documentation** (October 2025)
 - **Comprehensive Documentation**: [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/) - Sphinx-generated, auto-deployed
 - **README.md**: Minimalistic introduction, installation, quick start
 - **LLM.md**: This file - comprehensive context for LLMs and maintainers
@@ -1811,7 +1811,7 @@ py3plex visualize network.graphml --layout multilayer --output viz.png
 
 For new users getting started with Py3plex:
 
-1. **Master Documentation** (`docs/MASTER_DOCUMENTATION.md`) - Best starting point:
+1. **Master Documentation** (`LLM.md (consolidated)`) - Best starting point:
    - Complete overview of Py3plex capabilities
    - Installation guide and requirements
    - Quick start with minimal working examples (with expected outputs)
@@ -1895,7 +1895,7 @@ Primary documentation in ``docfiles/`` directory (33 ReStructuredText files, com
 
 **Markdown Guides** (``docs/`` directory - complementary documentation):
 
-- **MASTER_DOCUMENTATION.md**: **NEW: Comprehensive, publication-quality documentation** (October 2025)
+- **LLM.md (this file)**: **NEW: Comprehensive, publication-quality documentation** (October 2025)
 - **development.md**: Development workflow with Makefile commands
 - **algorithm_selection_guide.md**: Algorithm selection guide
 - **ALGORITHM_CITATIONS.md**: Academic references with DOIs (referenced from RST docs via external links)
@@ -1917,7 +1917,7 @@ Primary documentation in ``docfiles/`` directory (33 ReStructuredText files, com
 
 **Documentation Priority** (October 2025 update):
 
-1. **Master Documentation** (`docs/MASTER_DOCUMENTATION.md`) - **NEW: Comprehensive, publication-quality** (October 2025)
+1. **Master Documentation** (`LLM.md (consolidated)`) - **NEW: Comprehensive, publication-quality** (October 2025)
 2. **Sphinx RST documentation** (`docfiles/*.rst`) - Primary API reference, most current and cleanest
 3. **LLM.md** (this file) - Comprehensive overview and context (updated October 2025)
 4. `examples/` directory - Working code examples (52 files)
@@ -1962,7 +1962,7 @@ Primary documentation in ``docfiles/`` directory (33 ReStructuredText files, com
 6. Corresponding test file to understand expected behavior
 
 **For documentation tasks:**
-1. `docs/MASTER_DOCUMENTATION.md` - Publication-quality documentation
+1. `LLM.md (consolidated)` - Publication-quality documentation
 2. `docfiles/*.rst` - Sphinx RST documentation (33 files)
 3. **Documentation** section (this file) - Documentation structure and tooling
 4. `docs/DOCUMENTATION_OVERVIEW.md` - Complete documentation guide
@@ -2222,7 +2222,7 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 - ✅ Type hints (65.4% coverage, 70/107 modules)
 - ✅ Modern build system (pyproject.toml, Makefile)
 - ✅ Logging infrastructure
-- ✅ CHANGELOG.md created
+- ✅ LLM.md Appendix A created
 - ✅ Coverage badge and Codecov integration
 - ✅ Automatic documentation building (GitHub Actions + Pages)
 - ✅ Mypy type checking enforced in CI (100% clean - all 112 source files pass)
@@ -2270,7 +2270,7 @@ The library excels in scenarios requiring: (1) visualization of networks too com
   - `docs/ALGORITHM_CITATIONS.md` - Academic references with DOIs
   - `docs/ARCHITECTURE.md` - System architecture and design patterns
   - `docs/LAYOUT_COORDINATES.md` - Visualization coordinate conventions
-  - `docs/CONTRIBUTING.md` - Contribution guidelines and code standards
+  - `LLM.md Appendix C` - Contribution guidelines and code standards
   - `docs/QUICK_REFERENCE.md` - Common operations cheat sheet
 - ✅ **Code Ownership**: `.github/CODEOWNERS` for automated PR reviews
 - ✅ **Testing**: New test suite for config module and benchmarks
@@ -2479,7 +2479,7 @@ This section tracks when major sections of this document were last significantly
 - Documentation structure
 
 **May Need Updates:**
-- Specific version numbers (check CHANGELOG.md for latest)
+- Specific version numbers (check LLM.md Appendix A for latest)
 - External tool versions and links
 - Performance metrics (re-run benchmarks for current numbers)
 - Code examples (verify against latest API)
@@ -2528,7 +2528,7 @@ This index helps you quickly find information for common tasks.
 → See [Documentation](#documentation) section
 
 **...contribute code:**
-→ See [Development Environment](#development-environment) and `/docs/CONTRIBUTING.md`
+→ See [Development Environment](#development-environment) and `/LLM.md Appendix C`
 
 **...understand the architecture:**
 → See [Architecture and Data Flow](#architecture-and-data-flow) and [Key Files](#key-files)
@@ -2563,9 +2563,9 @@ This index helps you quickly find information for common tasks.
 **File Path:** `/LLM.md` (root directory)  
 **Related Files:**
 - `/README.md` - Project overview (minimalistic)
-- `/docs/MASTER_DOCUMENTATION.md` - Publication-quality documentation
-- `/docs/development.md` - Development workflow
-- `/CHANGELOG.md` - Version history
+- `/LLM.md (consolidated)` - Publication-quality documentation
+- `/LLM.md Appendix B` - Development workflow
+- `/LLM.md Appendix A` - Version history
 - `/docs/ARCHITECTURE.md` - System architecture
 
 **Versioning:**
@@ -2648,7 +2648,7 @@ class CentralityComputationError(AlgorithmError):
 - **Mathematical Notation:** Formulas included in docstrings (e.g., multilayer statistics)
 - **Inline Examples:** Working code snippets in docstrings
 - **RST Documentation:** 33 high-quality files with 9/10 rating
-- **Master Documentation:** Publication-quality `MASTER_DOCUMENTATION.md`
+- **Master Documentation:** Publication-quality `LLM.md (this file)`
 
 **Example from `multilayer_statistics.py`:**
 ```python
@@ -3668,7 +3668,7 @@ The py3plex codebase is **production-ready** with the following characteristics:
 - Documentation structure (high quality, 9/10 rating)
 
 **For New Contributors:**
-- Start with `LLM.md`, `MASTER_DOCUMENTATION.md`, and `CONTRIBUTING.md`
+- Start with `LLM.md`, `LLM.md (this file)`, and `CONTRIBUTING.md`
 - Follow existing patterns (Google-style docstrings, PEP 8 formatting)
 - Add tests for all new functionality
 - Use `make test-all` before submitting (ensures CI passes)
@@ -4118,7 +4118,7 @@ All notable changes to py3plex are documented here. The format is based on [Keep
 ### [Unreleased]
 
 #### Added
-- CHANGELOG.md to track changes systematically
+- LLM.md Appendix A to track changes systematically
 - Python 3.12 support in CI test matrix
 - Optional dependency groups in pyproject.toml: `[infomap]`, `[algos]`, `[viz]`
 - README.md section documenting optional dependencies installation

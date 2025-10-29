@@ -60,7 +60,7 @@ Py3plex includes a command-line interface for multilayer network analysis. See t
 - Use pure Python alternatives: `pip install node2vec` or `pip install pecanpy`
 - Or download the C++ binary from: https://github.com/snap-stanford/snap
 
-See `bin/README.md` for detailed installation instructions and alternatives.
+See the "External Binaries" section below or [LLM.md](./LLM.md) Appendix E for detailed installation instructions and alternatives.
 
 ### License Compatibility
 
