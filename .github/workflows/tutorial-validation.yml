@@ -64,7 +64,7 @@ jobs:
         # Verify imports work before running
         python -c "from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer; print('✓ Import successful')"
         cd examples
-        python tutorial_10min.py
+        python benchmarks_and_tutorials/tutorial_10min.py
         echo "✅ Tutorial validation completed successfully"
       timeout-minutes: 10
       env:

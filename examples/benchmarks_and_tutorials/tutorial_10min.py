@@ -50,7 +50,7 @@ def example_2_load_network():
 
     # Determine the correct path to datasets
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(script_dir)
+    repo_root = os.path.dirname(os.path.dirname(script_dir))
     dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
 
     if not os.path.exists(dataset_path):
@@ -284,7 +284,7 @@ def example_7_visualization(network, partition=None):
 
         # Create output directory
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        output_dir = os.path.join(os.path.dirname(script_dir), "example_images")
+        output_dir = os.path.join(os.path.dirname(os.path.dirname(script_dir)), "example_images")
         os.makedirs(output_dir, exist_ok=True)
 
         # Simple visualization
@@ -347,7 +347,7 @@ def complete_example():
 
     # Determine the correct path to datasets
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(script_dir)
+    repo_root = os.path.dirname(os.path.dirname(script_dir))
     dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
 
     if not os.path.exists(dataset_path):
