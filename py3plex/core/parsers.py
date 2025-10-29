@@ -785,33 +785,30 @@ def save_multiedgelist(
         unique_node_types = {n[1] for n in input_network.nodes()}
         node_encodings = {real: str(enc) for enc, real in enumerate(unique_nodes)}
         type_encodings = {real: str(enc) for enc, real in enumerate(unique_node_types)}
-        fh = open(output_file, "w+")
-
-        for edge in input_network.edges(data=True):
-            n1, l1 = edge[0]
-            n2, l2 = edge[1]
-            fh.write(
-                "\t".join(
-                    [
-                        node_encodings[n1],
-                        type_encodings[l1],
-                        node_encodings[n2],
-                        type_encodings[l2],
-                    ]
+        with open(output_file, "w+") as fh:
+            for edge in input_network.edges(data=True):
+                n1, l1 = edge[0]
+                n2, l2 = edge[1]
+                fh.write(
+                    "\t".join(
+                        [
+                            node_encodings[n1],
+                            type_encodings[l1],
+                            node_encodings[n2],
+                            type_encodings[l2],
+                        ]
+                    )
+                    + "\n"
                 )
-                + "\n"
-            )
-        fh.close()
 
         return (node_encodings, type_encodings)
 
     else:
-        fh = open(output_file, "w+")
-        for edge in input_network.edges(data=True):
-            n1, l1 = edge[0]
-            n2, l2 = edge[1]
-            fh.write("\t".join([n1, l1, n2, l2]) + "\n")
-        fh.close()
+        with open(output_file, "w+") as fh:
+            for edge in input_network.edges(data=True):
+                n1, l1 = edge[0]
+                n2, l2 = edge[1]
+                fh.write("\t".join([n1, l1, n2, l2]) + "\n")
         return None
 
 
@@ -839,24 +836,22 @@ def save_edgelist(
     # Multilayer nodes are tuples of (node_id, layer)
     is_multilayer = isinstance(sample_node, tuple) and len(sample_node) == 2
 
-    fh = open(output_file, "w")
+    with open(output_file, "w") as fh:
+        if is_multilayer:
+            # Save in multilayer format: node1 layer1 node2 layer2 (space-separated)
+            for edge in input_network.edges(data=attributes):
+                n1, l1 = edge[0]
+                n2, l2 = edge[1]
+                fh.write(f"{n1} {l1} {n2} {l2}\n")
+        else:
+            # For regular networks, convert to integers as before
+            input_network = nx.convert_node_labels_to_integers(
+                input_network, first_label=0, ordering="default", label_attribute=None
+            )
+            # Save in simple format: node1 node2
+            for edge in input_network.edges():
+                fh.write(f"{edge[0]} {edge[1]}\n")
 
-    if is_multilayer:
-        # Save in multilayer format: node1 layer1 node2 layer2 (space-separated)
-        for edge in input_network.edges(data=attributes):
-            n1, l1 = edge[0]
-            n2, l2 = edge[1]
-            fh.write(f"{n1} {l1} {n2} {l2}\n")
-    else:
-        # For regular networks, convert to integers as before
-        input_network = nx.convert_node_labels_to_integers(
-            input_network, first_label=0, ordering="default", label_attribute=None
-        )
-        # Save in simple format: node1 node2
-        for edge in input_network.edges():
-            fh.write(f"{edge[0]} {edge[1]}\n")
-
-    fh.close()
     logger.info("Finished writing the network..")
 
 

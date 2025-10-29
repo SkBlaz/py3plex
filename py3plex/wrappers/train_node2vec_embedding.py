@@ -109,12 +109,10 @@ def n2v_embedding(
             "Graph has %d edges and %d nodes.", number_of_edges, number_of_nodes
         )
 
-    f = open(tmp_graph, "w+")
-
-    # f.write(str(number_of_nodes)+" "+str(number_of_edges)+"\n")
-    for e in G.edges(data=True):
-        f.write(str(e[0]) + " " + str(e[1]) + " " + str(float(e[2]["weight"])) + "\n")
-    f.close()
+    with open(tmp_graph, "w+") as f:
+        # f.write(str(number_of_nodes)+" "+str(number_of_edges)+"\n")
+        for e in G.edges(data=True):
+            f.write(str(e[0]) + " " + str(e[1]) + " " + str(float(e[2]["weight"])) + "\n")
 
     if verbose:
         logger.info("N2V training phase..")

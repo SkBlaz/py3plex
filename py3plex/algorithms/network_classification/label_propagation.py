@@ -110,10 +110,10 @@ def label_propagation(
     # This method assumes the label-propagation normalization and a symmetric matrix with no rank sinks.
 
     funHash = {
-        "freq": "normalize_initial_matrix_freq",
-        "freqAmplify": "normalize_amplify_freq",
-        "exp": "normalize_exp",
-        "basic": "normalize_none",
+        "freq": normalize_initial_matrix_freq,
+        "freqAmplify": normalize_amplify_freq,
+        "exp": normalize_exp,
+        "basic": normalize_none,
     }
 
     diff = np.inf
@@ -121,8 +121,8 @@ def label_propagation(
     current_labels = class_matrix
 
     for candidate in normalization:
-        fun_string = funHash[candidate] + "(current_labels)"
-        current_labels = eval(fun_string)
+        normalization_func = funHash[candidate]
+        current_labels = normalization_func(current_labels)
 
     while diff > epsilon and steps < max_steps:
         steps += 1

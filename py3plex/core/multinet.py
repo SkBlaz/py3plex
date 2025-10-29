@@ -1493,11 +1493,9 @@ class multi_layer_network:
         if not os.path.exists(out_folder):
             os.makedirs(out_folder)
 
-        file = open(edgelist_file, "w")
-
-        for el in outstruct:
-            file.write(" ".join([str(x) for x in el]) + "\n")
-        file.close()
+        with open(edgelist_file, "w") as file:
+            for el in outstruct:
+                file.write(" ".join([str(x) for x in el]) + "\n")
 
         inverse_nodes = {a: b for b, a in node_dict.items()}
         #        inverse_layers = {a:b for b,a in layer_mappings.items()}
