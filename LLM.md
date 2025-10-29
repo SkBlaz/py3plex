@@ -11,8 +11,8 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 
 ### 2025-10-29: CrossHair Pure Function Analysis (Current)
 **Changes Made:**
-- Identified 27 pure/deterministic functions suitable for CrossHair symbolic testing
-- Created `crosshair_test.py` automated CLI tool for testing identified functions
+- Identified 26 pure/deterministic functions suitable for CrossHair symbolic testing
+- Created `tests/test_crosshair_pure_functions.py` test file for automated testing
 - Functions meet strict criteria: complete type hints, no I/O, no global state, < 80 lines
 - Coverage across 7 module categories: Statistics, Converters, Parsers, Generators, Utils, Visualization
 
@@ -64,40 +64,34 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 3. Reasonably sized (typically < 80 lines)
 4. Deterministic behavior with consistent outputs
 
-**crosshair_test.py CLI Tool:**
-- `--list`: Display all testable functions grouped by module
-- `--test <module>`: Test specific module (e.g., `py3plex.utils`)
-- `--test-all`: Test all 27 identified functions
-- `--timeout <seconds>`: Configure timeout per condition (default: 5s)
+**Test File: tests/test_crosshair_pure_functions.py**
+- 21 test cases validating all identified pure functions
+- Tests verify type hints, callability, and basic functionality
+- Integrated with existing pytest CI infrastructure
+- Documents the 26 pure functions with selection criteria
 
 **Usage Examples:**
 ```bash
-# List all testable functions
-python crosshair_test.py --list
+# Run the test file
+pytest tests/test_crosshair_pure_functions.py -v
 
-# Test specific module
-python crosshair_test.py --test py3plex.utils
-
-# Test all functions
-python crosshair_test.py --test-all
-
-# Direct CrossHair usage
+# Direct CrossHair usage on identified functions
 crosshair check py3plex.utils.get_rng
 crosshair watch py3plex.algorithms.statistics.basic_statistics
 ```
 
 **Impact:**
-- **Formal Verification:** 27 functions ready for symbolic testing
-- **Quality Assurance:** Automated tool for continuous verification
-- **Developer Tools:** Simple CLI interface for testing
-- **Documentation:** Clear mapping of testable functions
-- **Next Steps:** Add contracts, integrate into CI/CD, document edge cases
+- **Formal Verification:** 26 functions ready for symbolic testing
+- **Quality Assurance:** Automated tests for continuous verification
+- **CI Integration:** Tests run with existing pytest infrastructure
+- **Documentation:** Clear mapping of testable functions in test file
+- **Next Steps:** Add contracts, run CrossHair in CI, document edge cases
 
 **Code Quality:**
-- Total functions identified: 27 across 10 modules
-- CLI tool: 216 lines with comprehensive functionality
-- Zero breaking changes: All additions are new files
-- Follows existing patterns: Consistent with py3plex dev tools
+- Total functions identified: 26 across 10 modules
+- Test file: 340+ lines with comprehensive test coverage
+- Zero breaking changes: All additions are new test file
+- Follows existing patterns: Consistent with py3plex test conventions
 
 **Purpose:** Address Issue #259 "crossHair - improve" by identifying and documenting pure/deterministic functions suitable for CrossHair symbolic testing, focusing on math, graph, and utility modules.
 
