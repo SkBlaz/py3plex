@@ -14,15 +14,11 @@ jobs:
       fail-fast: false  # Don't cancel other jobs if one fails
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
         exclude:
           # Skip some combinations to reduce CI time
           - os: macos-latest
-            python-version: "3.8"
-          - os: macos-latest
             python-version: "3.9"
-          - os: windows-latest
-            python-version: "3.8"
           - os: windows-latest
             python-version: "3.9"
 
@@ -152,17 +148,17 @@ jobs:
   test-minimal:
     runs-on: ubuntu-latest
     timeout-minutes: 20  # Shorter timeout for minimal test
-    name: "Test with minimal dependencies (Python 3.8)"
+    name: "Test with minimal dependencies (Python 3.9)"
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       timeout-minutes: 2
 
-    - name: Set up Python 3.8
+    - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
-        python-version: "3.8"
+        python-version: "3.9"
       timeout-minutes: 3
 
     - name: Install minimal dependencies

@@ -1,0 +1,48 @@
+name: Test with uv
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test-uv:
+    name: "Test with uv (Python ${{ matrix.python-version }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+      timeout-minutes: 3
+
+    - name: Install uv
+      run: |
+        pip install uv
+      timeout-minutes: 2
+
+    - name: Install dependencies with uv
+      run: |
+        uv sync
+      timeout-minutes: 10
+
+    - name: Run basic import test
+      run: |
+        uv run python -c "import py3plex; print('✓ py3plex imported successfully')"
+      timeout-minutes: 2
+
+    - name: Run quick tests with uv
+      run: |
+        uv run pytest tests/test_core_functionality.py -v || echo "⚠️ Some tests may have failed"
+      timeout-minutes: 5

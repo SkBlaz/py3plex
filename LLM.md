@@ -462,8 +462,14 @@ Input (CSV/GraphML/GML)
 
 ### Installation
 ```bash
-# Git-only installation (PyPI deprecated)
+# Traditional pip-based installation (Git-only, PyPI deprecated)
 pip install git+https://github.com/SkBlaz/py3plex.git
+
+# Or use uv for faster installation (recommended)
+pip install uv
+git clone https://github.com/SkBlaz/py3plex.git
+cd py3plex
+uv sync  # Fast, reproducible installation using lock file
 
 # Verify installation
 py3plex selftest
