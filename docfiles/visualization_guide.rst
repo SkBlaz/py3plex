@@ -565,7 +565,7 @@ Next Steps
 - :doc:`basic_usage_analysis` - Analyze network properties
 - :doc:`community_detection` - Detect communities for coloring
 - :doc:`performance` - Optimize for large networks
-- :doc:`/tutorials/csv_loading` - Load data from CSV
+- :doc:`tutorials/csv_loading` - Load data from CSV
 
 For more examples, see the `visualization examples <https://github.com/SkBlaz/py3plex/tree/main/examples>`_ 
 in the GitHub repository.

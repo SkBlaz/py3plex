@@ -79,6 +79,20 @@ Basic Usage
     subgraph = calc.subgraph_centrality()
     k_core = calc.multiplex_k_core()
 
+**Example Output:**
+
+.. code-block:: python
+
+    print("Layer degrees:", layer_degrees)
+    # Layer degrees: {'L1': {'A': 1, 'B': 2, 'C': 1}, 'L2': {'A': 1, 'C': 1}}
+    
+    print("Overlapping degrees:", overlapping_degrees)
+    # Overlapping degrees: {'A': 2, 'B': 2, 'C': 2}
+    
+    print("Participation coefficient:", participation)
+    # Participation coefficient: {'A': 1.0, 'B': 0.0, 'C': 1.0}
+    # (Node B only appears in one layer, so participation is 0)
+
 
 Computing All Centralities
 --------------------------

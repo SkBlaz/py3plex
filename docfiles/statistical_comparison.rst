@@ -64,6 +64,14 @@ Quick Start
 
     print(results)
 
+**Expected Output (pandas DataFrame):**
+
+.. code-block:: text
+
+       metric layer  statistic   p_value  adjusted_p_value  effect_size  significant  mean_group_0  mean_group_1
+    0  density    L1      0.250     0.132             0.132        0.500        False         1.000         0.667
+    1  average_degree  L1  0.667     0.215             0.215        0.816        False         2.000         1.333
+
 API Reference
 -------------
 

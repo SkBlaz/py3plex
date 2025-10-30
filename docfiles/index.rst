@@ -197,6 +197,7 @@ Documentation Contents
    algorithm_guide
    performance
    performance_guide
+   statistical_comparison
 
 .. toctree::
    :maxdepth: 2
