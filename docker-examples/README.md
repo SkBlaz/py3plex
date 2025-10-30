@@ -59,6 +59,7 @@ Process multiple networks (save as `batch-process.sh`):
 ```bash
 #!/bin/bash
 # Process multiple networks in batch
+set -e
 
 DATA_DIR=$(pwd)/../data
 mkdir -p $DATA_DIR
@@ -199,6 +200,7 @@ Compare different network types:
 ```bash
 #!/bin/bash
 # compare-networks.sh
+set -e
 
 DATA_DIR=$(pwd)/../data
 mkdir -p $DATA_DIR
