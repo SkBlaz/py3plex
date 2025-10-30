@@ -293,7 +293,17 @@ def versatility(
         # Use power iteration (faster, works well for most cases)
         x = _power_iteration(S, tol=tol, max_iter=max_iter, seed=seed)
     
-    # Reshape to (N, L) - Fortran order to match block structure
+    # Validate eigenvector dimension matches expected size
+    if len(x) != N * L:
+        raise ValueError(
+            f"Eigenvector length {len(x)} does not match expected size N*L = {N*L}. "
+            "This indicates an internal error in eigenvector computation."
+        )
+    
+    # Reshape to (N, L) with Fortran order
+    # Fortran order ensures node indices within each layer are contiguous in memory,
+    # matching how the supra-adjacency was constructed with bmat() where the first
+    # N entries correspond to layer 0, next N to layer 1, etc.
     X = x.reshape((N, L), order='F')
     
     # Contract over layers: sum across layer dimension

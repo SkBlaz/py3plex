@@ -260,8 +260,10 @@ class TestVersatility(unittest.TestCase):
         self.assertEqual(v.shape, (3,))
         self.assertEqual(X.shape, (3, 2))
         
-        # Verify that v is the sum of X over layers
-        np.testing.assert_array_almost_equal(v / v.sum(), X.sum(axis=1) / X.sum())
+        # Verify that v is the sum of X over layers (both normalized)
+        # Since versatility normalizes v, we need to compare normalized versions
+        v_unnorm = X.sum(axis=1)
+        np.testing.assert_array_almost_equal(v, v_unnorm / v_unnorm.sum())
     
     @skip_if_no_deps
     def test_normalization_options(self):
