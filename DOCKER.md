@@ -233,6 +233,23 @@ services:
 
 ## Troubleshooting
 
+### Testing the Docker Setup
+
+To verify your Docker setup is working correctly, use the included test script:
+
+```bash
+# Run the test script
+./test-docker-setup.sh
+```
+
+This script will:
+- Check Docker installation
+- Verify all Docker-related files exist
+- Build the Docker image
+- Run basic py3plex commands (--version, help, selftest)
+- Test volume mounting and file creation
+- Clean up test artifacts
+
 ### Permission Issues
 
 If you encounter permission issues with mounted volumes:
