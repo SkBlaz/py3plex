@@ -60,8 +60,6 @@ Py3plex includes a command-line interface for multilayer network analysis. See t
 - Use pure Python alternatives: `pip install node2vec` or `pip install pecanpy`
 - Or download the C++ binary from: https://github.com/snap-stanford/snap
 
-See the "External Binaries" section below or [LLM.md](./LLM.md) Appendix E for detailed installation instructions and alternatives.
-
 ### License Compatibility
 
 **Main Library**: py3plex is distributed under the **MIT License** (permissive, commercial-friendly).
@@ -86,22 +84,6 @@ See the "External Binaries" section below or [LLM.md](./LLM.md) Appendix E for d
 - **When in doubt**: Use alternative algorithms (Louvain, label propagation) which are BSD/MIT licensed
 
 For any errors, please open an issue!
-
-## Recent Changes
-
-**Version 0.95a highlights:**
-- ⚠️ **BREAKING**: Removed bundled Infomap and Node2Vec binaries (~5MB reduction)
-  - Install separately or use pure Python alternatives (see "External Binaries" above)
-- Modern build system with pyproject.toml (PEP 517/518/621 compliance)
-- Python 3.12 support and NetworkX 3.x compatibility
-- Type hints coverage increased to 65.4%
-- Comprehensive Makefile-based development workflow
-- Pre-commit hooks and improved code quality tools
-- Custom exception types module with 13 domain-specific exceptions
-- Centralized configuration module for visualization and layout settings
-- Removed plotnine dependency (replaced with matplotlib)
-
-For complete changelog and detailed changes, see [LLM.md](./LLM.md).
 
 ### Testing
 
@@ -158,41 +140,9 @@ pytest tests/test_performance_core.py --benchmark-only --benchmark-json=benchmar
 
 Benchmark results are automatically collected in CI and made available as workflow artifacts. The benchmark badge above shows the current status of performance tests.
 
-### Development and Contributing
+### Contributions
 
-We welcome contributions! For comprehensive development guidelines, see [LLM.md](./LLM.md).
-
-**Quick Start for Contributors:**
-
-1. Fork the repository and clone:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/py3plex.git
-   cd py3plex
-   ```
-
-2. Set up development environment:
-   ```bash
-   make setup        # Create virtual environment and install dependencies
-   make dev-install  # Install package in editable mode with dev dependencies
-   ```
-
-3. Make changes and test:
-   ```bash
-   make format  # Auto-format code (isort, black, ruff)
-   make lint    # Run linters and type checker
-   make test    # Run tests with coverage
-   ```
-
-4. Submit a pull request with clear description
-
-**Code Standards:**
-- Follow PEP 8 (enforced by `black` and `ruff`)
-- Add type hints to all new functions
-- Use NumPy/Google-style docstrings
-- Write tests for new features (aim for 85%+ coverage)
-- Update documentation as needed
-
-For detailed guidelines on contributing, code style, testing, and architecture, see [LLM.md](./LLM.md).
+We welcome contributions! See the [online documentation](https://skblaz.github.io/py3plex/) for development guidelines, testing procedures, and code quality standards.
 
 
 # Citations

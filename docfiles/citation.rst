@@ -203,7 +203,7 @@ Complete Citation List
 
 For a **comprehensive list** of all algorithms and their citations, see:
 
-* `LLM.md <https://github.com/SkBlaz/py3plex/blob/master/LLM.md>`_ - **Complete project context, algorithm citations, and development guide**
+* `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ - **Complete list with DOIs**
 
 Acknowledgments
 ---------------
@@ -315,6 +315,6 @@ See Also
 --------
 
 * :doc:`acknowledgements` - Full acknowledgments
-* `LLM.md <https://github.com/SkBlaz/py3plex/blob/master/LLM.md>`_ - Complete project context and algorithm citations
+* `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ - Complete algorithm citations with DOIs
 * `py3plex GitHub <https://github.com/SkBlaz/py3plex>`_ - Source code and issues
 * `Applied Network Science paper <https://doi.org/10.1007/s41109-019-0203-7>`_ - Primary publication

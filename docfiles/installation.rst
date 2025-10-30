@@ -179,7 +179,7 @@ For **Node2Vec node embeddings**, use pure Python alternatives:
     from py3plex.algorithms.general.walkers import node2vec_walk, generate_walks
     walks = generate_walks(network.core_network, num_walks=10, walk_length=80)
 
-See ``README.md`` or ``LLM.md`` for **detailed installation instructions** and alternatives.
+See ``bin/README.md`` for **detailed installation instructions** and alternatives.
 
 Virtual Environment Setup
 --------------------------
