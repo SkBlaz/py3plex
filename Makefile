@@ -3,7 +3,7 @@
 # Production-Grade Makefile for Development, Testing, and Publishing
 # ─────────────────────────────────────────────────────────────────────────────
 
-.PHONY: help setup dev-install format lint test coverage benchmark docs clean build publish api-check ci test-all fuzz-property fuzz-quick fuzz fuzz-long fuzz-docker
+.PHONY: help setup dev-install setup-uv dev-install-uv uv-sync format lint test coverage benchmark docs clean build publish api-check ci test-all fuzz-property fuzz-quick fuzz fuzz-long fuzz-docker
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Variables
@@ -44,7 +44,8 @@ help: ## Display all available commands with descriptions
 	@printf "$(COLOR_BOLD)════════════════════════════════════════════════════════════════$(COLOR_RESET)\n\n"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(COLOR_GREEN)%-15s$(COLOR_RESET) %s\n", $$1, $$2}'
 	@printf "\n$(COLOR_BOLD)Example usage:$(COLOR_RESET)\n"
-	@printf "  make setup          # Initial setup\n"
+	@printf "  make setup          # Initial setup (pip-based)\n"
+	@printf "  make setup-uv       # Initial setup (uv-based, faster)\n"
 	@printf "  make format         # Format code\n"
 	@printf "  make lint           # Run linters\n"
 	@printf "  make test           # Run tests\n"
@@ -89,6 +90,40 @@ dev-install: ## Install package in editable mode with dev dependencies
 	@printf "$(COLOR_GREEN)✓ Installing package with dev dependencies...$(COLOR_RESET)\n"
 	@$(VENV_PIP) install -e ".[dev]"
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Development installation complete!$(COLOR_RESET)\n"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# UV-based Environment Setup (faster alternative to pip)
+# ─────────────────────────────────────────────────────────────────────────────
+setup-uv: ## Create virtual environment and install dependencies using uv (fast)
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Setting up development environment with uv...$(COLOR_RESET)\n"
+	@if ! command -v uv > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ uv not found. Install with: pip install uv$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(COLOR_GREEN)✓ Creating virtual environment with uv...$(COLOR_RESET)\n"
+	@uv venv $(VENV)
+	@printf "$(COLOR_GREEN)✓ Installing dependencies from lock file...$(COLOR_RESET)\n"
+	@uv sync
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Setup complete! Activate with: source $(VENV)/bin/activate$(COLOR_RESET)\n"
+
+dev-install-uv: ## Install package in editable mode with dev dependencies using uv
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Installing package in development mode with uv...$(COLOR_RESET)\n"
+	@if ! command -v uv > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ uv not found. Install with: pip install uv$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(COLOR_GREEN)✓ Installing package with dev dependencies...$(COLOR_RESET)\n"
+	@uv sync --all-extras
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Development installation complete!$(COLOR_RESET)\n"
+
+uv-sync: ## Sync dependencies with uv.lock file (update virtual environment)
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Syncing dependencies with uv...$(COLOR_RESET)\n"
+	@if ! command -v uv > /dev/null 2>&1; then \
+		printf "$(COLOR_RED)✗ uv not found. Install with: pip install uv$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@uv sync
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Dependencies synced!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Code Formatting

@@ -19,16 +19,46 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 ⚠️ **IMPORTANT**: Py3plex is **no longer available on PyPI**. Install from GitHub:
 
+#### Option 1: Using pip (traditional)
+
 ```bash
 pip install git+https://github.com/SkBlaz/py3plex.git
 ```
 
-and
+#### Option 2: Using uv (faster, recommended)
 
+[uv](https://github.com/astral-sh/uv) is a modern, fast Python package installer written in Rust. It provides significantly faster dependency resolution and installation.
+
+```bash
+# Install uv if you haven't already
+pip install uv
+
+# Clone the repository
+git clone https://github.com/SkBlaz/py3plex.git
+cd py3plex
+
+# Install with uv (fast, uses lock file for reproducible builds)
+uv sync
+
+# Or install with all optional dependencies
+uv sync --all-extras
 ```
+
+**Using Make for development setup:**
+
+```bash
+# Traditional pip-based setup
+make setup
+
+# Or use uv-based setup (faster)
+make setup-uv
+```
+
+After installation, verify it works:
+
+```bash
 py3plex selftest
 ```
-To verify installation.
 
 **Note**: The Git version includes the latest features and bug fixes. PyPI version is deprecated.
 
@@ -45,7 +75,7 @@ Py3plex includes a command-line interface for multilayer network analysis. See t
 
 ### Requirements
 
-- Python 3.8 or higher
+- Python 3.9 or higher
 - NetworkX, NumPy, SciPy, and other dependencies (automatically installed)
 
 ### External Binaries (Optional)

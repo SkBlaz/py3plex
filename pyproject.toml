@@ -7,7 +7,7 @@ name = "py3plex"
 version = "0.95a"
 description = "A Multilayer network analysis python3 library"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
     {name = "Blaž Škrlj", email = "blaz.skrlj@ijs.si"}
