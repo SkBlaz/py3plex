@@ -32,15 +32,15 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Visualization",
 ]
 dependencies = [
-    "numpy>=1.19.0",  # Minimum for Python 3.8+
-    "rdflib>=6.0.0",  # Modern version with Python 3.8+ support
-    "scipy>=1.5.0",  # Minimum for Python 3.8+
+    "numpy>=1.19.0",  # Minimum for Python 3.9+
+    "rdflib>=6.0.0",  # Modern version with Python 3.9+ support
+    "scipy>=1.5.0",  # Minimum for Python 3.9+
     "networkx>=2.5",  # Already reasonable
     "cython>=0.29.0",  # Modern version
     "tqdm>=4.40.0",  # Modern version with better features
-    "matplotlib>=3.3.0",  # Minimum for Python 3.8+
+    "matplotlib>=3.3.0",  # Minimum for Python 3.9+
     "gensim>=4.0.0",  # Modern version
-    "scikit-learn>=0.24.0",  # Minimum for Python 3.8+
+    "scikit-learn>=0.24.0",  # Minimum for Python 3.9+
     "bitarray>=2.0.0",  # Already modern
     "seaborn>=0.11.0",  # Modern version
 ]

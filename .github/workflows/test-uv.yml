@@ -22,7 +22,7 @@ jobs:
       timeout-minutes: 2
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
       timeout-minutes: 3
@@ -44,5 +44,6 @@ jobs:
 
     - name: Run quick tests with uv
       run: |
-        uv run pytest tests/test_core_functionality.py -v || echo "⚠️ Some tests may have failed"
+        uv run pytest tests/test_core_functionality.py -v
       timeout-minutes: 5
+      continue-on-error: true  # Don't fail workflow if tests have issues
