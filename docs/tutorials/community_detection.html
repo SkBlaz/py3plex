@@ -57,14 +57,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Community Detection Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
@@ -124,6 +134,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra-Adjacency Matrices</a></li>
@@ -137,6 +148,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul>
@@ -176,26 +189,26 @@
              
   <section id="community-detection-tutorial">
 <h1>Community Detection Tutorial<a class="headerlink" href="#community-detection-tutorial" title="Link to this heading"></a></h1>
-<p>This tutorial demonstrates community detection algorithms for multilayer networks using py3plex.</p>
+<p>This tutorial demonstrates <strong>community detection algorithms</strong> for <strong>multilayer networks</strong> using py3plex.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>Community detection identifies groups of nodes that are more densely connected to each other than to the rest of the network. For multilayer networks, communities can span multiple layers, accounting for both intra-layer and inter-layer structure.</p>
+<p>Community detection identifies <strong>groups of nodes</strong> that are more <strong>densely connected</strong> to each other than to the rest of the network. For <strong>multilayer networks</strong>, communities can <strong>span multiple layers</strong>, accounting for both <strong>intra-layer</strong> and <strong>inter-layer</strong> structure.</p>
 </section>
 <section id="supported-algorithms">
 <h2>Supported Algorithms<a class="headerlink" href="#supported-algorithms" title="Link to this heading"></a></h2>
-<p>py3plex provides several community detection algorithms:</p>
+<p>py3plex provides <strong>several community detection algorithms</strong>:</p>
 <ul class="simple">
-<li><p><strong>Louvain</strong> - Fast modularity optimization (recommended for most use cases)</p></li>
-<li><p><strong>Infomap</strong> - Flow-based community detection (requires external binary)</p></li>
-<li><p><strong>Label Propagation</strong> - Semi-supervised approach with known seed communities</p></li>
-<li><p><strong>Multilayer Modularity</strong> - True multilayer community detection (Mucha et al. 2010)</p></li>
+<li><p><strong>Louvain</strong> - <strong>Fast modularity optimization</strong> (recommended for most use cases)</p></li>
+<li><p><strong>Infomap</strong> - <strong>Flow-based</strong> community detection (requires external binary)</p></li>
+<li><p><strong>Label Propagation</strong> - <strong>Semi-supervised</strong> approach with known seed communities</p></li>
+<li><p><strong>Multilayer Modularity</strong> - <strong>True multilayer</strong> community detection (Mucha et al. 2010)</p></li>
 </ul>
 </section>
 <section id="louvain-algorithm">
 <h2>Louvain Algorithm<a class="headerlink" href="#louvain-algorithm" title="Link to this heading"></a></h2>
 <section id="basic-usage">
 <h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
-<p>Fastest algorithm for large networks:</p>
+<p><strong>Fastest algorithm</strong> for large networks:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
 
@@ -223,26 +236,26 @@
 </div>
 <p><strong>Resolution parameter:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">resolution=1.0</span></code> - Standard modularity</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">resolution&gt;1.0</span></code> - More, smaller communities</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">resolution&lt;1.0</span></code> - Fewer, larger communities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution=1.0</span></code> - <strong>Standard modularity</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution&gt;1.0</span></code> - <strong>More, smaller communities</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution&lt;1.0</span></code> - <strong>Fewer, larger communities</strong></p></li>
 </ul>
 </section>
 <section id="advantages">
 <h3>Advantages<a class="headerlink" href="#advantages" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Very fast: <span class="math notranslate nohighlight">\(O(n \\log n)\)</span></p></li>
-<li><p>Scales to millions of nodes</p></li>
-<li><p>BSD license (commercial-friendly)</p></li>
-<li><p>Well-established and widely used</p></li>
+<li><p><strong>Very fast</strong>: <span class="math notranslate nohighlight">\(O(n \log n)\)</span></p></li>
+<li><p><strong>Scales to millions</strong> of nodes</p></li>
+<li><p><strong>BSD license</strong> (commercial-friendly)</p></li>
+<li><p><strong>Well-established</strong> and widely used</p></li>
 </ul>
 </section>
 <section id="disadvantages">
 <h3>Disadvantages<a class="headerlink" href="#disadvantages" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Non-deterministic (random initialization)</p></li>
-<li><p>Cannot find overlapping communities</p></li>
-<li><p>Resolution limit issues</p></li>
+<li><p><strong>Non-deterministic</strong> (random initialization)</p></li>
+<li><p><strong>Cannot find overlapping</strong> communities</p></li>
+<li><p><strong>Resolution limit</strong> issues</p></li>
 </ul>
 </section>
 </section>
@@ -384,14 +397,14 @@
 <h3>Mathematical Formulation<a class="headerlink" href="#mathematical-formulation" title="Link to this heading"></a></h3>
 <p>Multilayer modularity is defined as:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}Q^{ML} = \\frac{1}{2\\mu} \\sum_{ij\\alpha\\beta} \\left[ (A_{ij}^{[\\alpha]} - \\gamma_{\\alpha} P_{ij}^{[\\alpha]})\\delta_{\\alpha\\beta} + \\omega_{\\alpha\\beta}\\delta_{ij} \\right] \\delta(g_{i}^{[\\alpha]}, g_{j}^{[\\beta]})\end{split}\]</div>
+\[Q^{ML} = \frac{1}{2\mu} \sum_{ij\alpha\beta} \left[ (A_{ij}^{[\alpha]} - \gamma_{\alpha} P_{ij}^{[\alpha]})\delta_{\alpha\beta} + \omega_{\alpha\beta}\delta_{ij} \right] \delta(g_{i}^{[\alpha]}, g_{j}^{[\beta]})\]</div>
 <p>Where:</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(A_{ij}^{[\\alpha]}\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\\alpha\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(P_{ij}^{[\\alpha]}\)</span> is the null model (e.g., configuration model)</p></li>
-<li><p><span class="math notranslate nohighlight">\(\\gamma_{\\alpha}\)</span> is the resolution parameter for layer <span class="math notranslate nohighlight">\(\\alpha\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(\\omega_{\\alpha\\beta}\)</span> is the coupling strength between layers</p></li>
-<li><p><span class="math notranslate nohighlight">\(\\delta(g_{i}^{[\\alpha]}, g_{j}^{[\\beta]})\)</span> is 1 if nodes are in the same community, 0 otherwise</p></li>
+<li><p><span class="math notranslate nohighlight">\(A_{ij}^{[\alpha]}\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\alpha\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(P_{ij}^{[\alpha]}\)</span> is the null model (e.g., configuration model)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\gamma_{\alpha}\)</span> is the resolution parameter for layer <span class="math notranslate nohighlight">\(\alpha\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\omega_{\alpha\beta}\)</span> is the coupling strength between layers</p></li>
+<li><p><span class="math notranslate nohighlight">\(\delta(g_{i}^{[\alpha]}, g_{j}^{[\beta]})\)</span> is 1 if nodes are in the same community, 0 otherwise</p></li>
 </ul>
 </section>
 <section id="id6">
@@ -615,7 +628,7 @@
 <li><p><a class="reference internal" href="multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality measures tutorial</p></li>
 <li><p><a class="reference internal" href="multilayer_modularity.html"><span class="doc">Multilayer Modularity and Community Detection</span></a> - Multilayer modularity details</p></li>
 <li><p><a class="reference internal" href="../algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> - Algorithm selection guide</p></li>
-<li><p>Examples in <code class="docutils literal notranslate"><span class="pre">examples/example_community_detection.py</span></code></p></li>
+<li><p>Examples in <code class="docutils literal notranslate"><span class="pre">examples/community_detection/example_community_detection.py</span></code></p></li>
 </ul>
 </section>
 </section>

@@ -1,12 +1,12 @@
 Architecture and Design
 =======================
 
-This document describes the system architecture, design patterns, and extension points of py3plex.
+This document describes the **system architecture**, **design patterns**, and **extension points** of py3plex.
 
 System Overview
 ---------------
 
-py3plex is built as a modular, layered architecture with clear separation of concerns:
+py3plex is built as a **modular, layered architecture** with clear separation of concerns:
 
 .. code-block:: text
 
@@ -55,19 +55,19 @@ Core Layer
 
 **Key Components:**
 
-* ``multinet.py`` - The ``multi_layer_network`` class
-* ``parsers.py`` - Input/output for various formats
-* ``converters.py`` - Format conversion utilities
-* ``random_generators.py`` - Random network generators
-* ``HINMINE/`` - Heterogeneous network decomposition
+* ``multinet.py`` - The ``multi_layer_network`` **class**
+* ``parsers.py`` - **Input/output** for various formats
+* ``converters.py`` - **Format conversion** utilities
+* ``random_generators.py`` - **Random network** generators
+* ``HINMINE/`` - **Heterogeneous network decomposition**
 
 **Responsibilities:**
 
-* Network construction and manipulation
-* File I/O (GraphML, GML, GEXF, edge lists, etc.)
-* Layer management
-* Matrix representations (adjacency, supra-adjacency)
-* NetworkX integration
+* **Network construction** and manipulation
+* **File I/O** (GraphML, GML, GEXF, edge lists, etc.)
+* **Layer management**
+* **Matrix representations** (adjacency, supra-adjacency)
+* **NetworkX integration**
 
 **Design Pattern:** **Facade Pattern** - ``multi_layer_network`` provides a unified interface to complex NetworkX operations
 
@@ -78,19 +78,19 @@ Algorithms Layer
 
 **Key Components:**
 
-* ``community_detection/`` - Community detection algorithms
-* ``statistics/`` - Network statistics and metrics
-* ``multilayer_algorithms/`` - Multilayer-specific algorithms
-* ``node_ranking/`` - Centrality and ranking measures
-* ``general/`` - General-purpose algorithms (random walks, etc.)
+* ``community_detection/`` - **Community detection** algorithms
+* ``statistics/`` - **Network statistics** and metrics
+* ``multilayer_algorithms/`` - **Multilayer-specific** algorithms
+* ``node_ranking/`` - **Centrality** and ranking measures
+* ``general/`` - **General-purpose** algorithms (random walks, etc.)
 
 **Responsibilities:**
 
-* Community detection (Louvain, Infomap, Label Propagation)
-* Statistical analysis (17+ multilayer metrics)
-* Centrality computation (degree, betweenness, PageRank, etc.)
-* Random walks and embeddings
-* Network decomposition
+* **Community detection** (Louvain, Infomap, Label Propagation)
+* **Statistical analysis** (17+ multilayer metrics)
+* **Centrality computation** (degree, betweenness, PageRank, etc.)
+* **Random walks** and embeddings
+* **Network decomposition**
 
 **Design Pattern:** **Strategy Pattern** - Different algorithms implement common interfaces
 

@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Development Guide" href="development.html" />
-    <link rel="prev" title="API Documentation" href="apidocs.html" /> 
+    <link rel="prev" title="Community Detection" href="community_detection.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -56,17 +56,28 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
@@ -80,6 +91,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul class="current">
@@ -171,7 +184,7 @@
              
   <section id="contributing-to-py3plex">
 <h1>Contributing to py3plex<a class="headerlink" href="#contributing-to-py3plex" title="Link to this heading"></a></h1>
-<p>We welcome contributions to py3plex! This guide explains how to contribute effectively.</p>
+<p>We <strong>welcome contributions</strong> to py3plex! This guide explains how to contribute effectively.</p>
 <section id="ways-to-contribute">
 <h2>Ways to Contribute<a class="headerlink" href="#ways-to-contribute" title="Link to this heading"></a></h2>
 <p>You can contribute in many ways:</p>
@@ -206,7 +219,7 @@
 </section>
 <section id="development-setup">
 <h3>Development Setup<a class="headerlink" href="#development-setup" title="Link to this heading"></a></h3>
-<p>Install in development mode with all dependencies:</p>
+<p>Install in <strong>development mode</strong> with all dependencies:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create virtual environment</span>
 python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
 <span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
@@ -217,10 +230,10 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </div>
 <p>This installs:</p>
 <ul class="simple">
-<li><p>Core dependencies</p></li>
-<li><p>Testing tools (pytest, coverage)</p></li>
-<li><p>Linting tools (black, ruff, isort, mypy)</p></li>
-<li><p>Documentation tools (sphinx)</p></li>
+<li><p><strong>Core dependencies</strong></p></li>
+<li><p><strong>Testing tools</strong> (pytest, coverage)</p></li>
+<li><p><strong>Linting tools</strong> (black, ruff, isort, mypy)</p></li>
+<li><p><strong>Documentation tools</strong> (sphinx)</p></li>
 </ul>
 </section>
 </section>
@@ -228,7 +241,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h2>
 <section id="create-a-branch">
 <h3>Create a Branch<a class="headerlink" href="#create-a-branch" title="Link to this heading"></a></h3>
-<p>Always create a new branch for your work:</p>
+<p>Always create a <strong>new branch</strong> for your work:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-new-feature
 <span class="c1"># or</span>
 git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>fix/issue-123
@@ -238,10 +251,10 @@ git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </
 <section id="make-changes">
 <h3>Make Changes<a class="headerlink" href="#make-changes" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
-<li><p>Write your code following our coding standards (see below)</p></li>
-<li><p>Add or update tests</p></li>
-<li><p>Update documentation</p></li>
-<li><p>Run linters and tests</p></li>
+<li><p>Write your code following our <strong>coding standards</strong> (see below)</p></li>
+<li><p>Add or update <strong>tests</strong></p></li>
+<li><p>Update <strong>documentation</strong></p></li>
+<li><p>Run <strong>linters</strong> and <strong>tests</strong></p></li>
 </ol>
 </section>
 <section id="run-tests">
@@ -268,7 +281,7 @@ mypy<span class="w"> </span>py3plex
 </section>
 <section id="commit-changes">
 <h3>Commit Changes<a class="headerlink" href="#commit-changes" title="Link to this heading"></a></h3>
-<p>Write clear, descriptive commit messages:</p>
+<p>Write <strong>clear, descriptive commit messages</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
 git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add feature X to support Y</span>
 
@@ -283,12 +296,12 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/my-new-feature
 </pre></div>
 </div>
-<p>Then create a Pull Request on GitHub with:</p>
+<p>Then create a <strong>Pull Request</strong> on GitHub with:</p>
 <ul class="simple">
-<li><p>Clear title describing the change</p></li>
-<li><p>Description of what changed and why</p></li>
-<li><p>Reference to related issues (e.g., “Fixes #123”)</p></li>
-<li><p>Screenshots for UI changes</p></li>
+<li><p><strong>Clear title</strong> describing the change</p></li>
+<li><p><strong>Description</strong> of what changed and why</p></li>
+<li><p><strong>Reference to related issues</strong> (e.g., “Fixes #123”)</p></li>
+<li><p><strong>Screenshots</strong> for UI changes</p></li>
 </ul>
 </section>
 </section>
@@ -382,7 +395,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </section>
 <section id="type-hints">
 <h3>Type Hints<a class="headerlink" href="#type-hints" title="Link to this heading"></a></h3>
-<p>Add type hints to improve code clarity:</p>
+<p>Add <strong>type hints</strong> to improve code clarity:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">py3plex.core.multinet</span> <span class="kn">import</span> <span class="n">multi_layer_network</span>
 
@@ -400,7 +413,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <h2>Testing Guidelines<a class="headerlink" href="#testing-guidelines" title="Link to this heading"></a></h2>
 <section id="test-requirements">
 <h3>Test Requirements<a class="headerlink" href="#test-requirements" title="Link to this heading"></a></h3>
-<p>All new code should include tests:</p>
+<p>All new code should include <strong>tests</strong>:</p>
 <ul class="simple">
 <li><p><strong>Unit tests</strong> for individual functions</p></li>
 <li><p><strong>Integration tests</strong> for workflows</p></li>
@@ -443,7 +456,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </section>
 <section id="test-coverage">
 <h3>Test Coverage<a class="headerlink" href="#test-coverage" title="Link to this heading"></a></h3>
-<p>Aim for high test coverage:</p>
+<p>Aim for <strong>high test coverage</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run tests with coverage</span>
 pytest<span class="w"> </span>--cov<span class="o">=</span>py3plex<span class="w"> </span>--cov-report<span class="o">=</span>html
 
@@ -652,7 +665,7 @@ Returns -0.5
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="apidocs.html" class="btn btn-neutral float-left" title="API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="community_detection.html" class="btn btn-neutral float-left" title="Community Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="development.html" class="btn btn-neutral float-right" title="Development Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

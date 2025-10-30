@@ -1,7 +1,7 @@
 Network Visualization
 =====================
 
-py3plex provides specialized visualization for multilayer networks.
+py3plex provides **specialized visualization** for multilayer networks.
 
 Basic Visualization
 -------------------
@@ -19,7 +19,7 @@ Basic Visualization
     
     network.visualize_network(style="hairball")
 
-**Diagonal multilayer layout** (py3plex specialty):
+**Diagonal multilayer layout** (py3plex **specialty**):
 
 .. code-block:: python
 
@@ -28,11 +28,11 @@ Basic Visualization
 Examples
 --------
 
-For detailed visualization examples, see:
+For **detailed visualization examples**, see:
 
-- ``example_multilayer_visualization.py`` - Core visualization techniques
-- ``example_visualization.py`` - Various plotting styles
-- ``example_community_visualization.py`` - Community detection visualization
-- ``example_supra_adjacency.py`` - Supra-adjacency matrices
+- ``example_multilayer_visualization.py`` - **Core visualization techniques**
+- ``example_visualization.py`` - **Various plotting styles**
+- ``example_community_visualization.py`` - **Community detection visualization**
+- ``example_supra_adjacency.py`` - **Supra-adjacency matrices**
 
 Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples

@@ -56,17 +56,28 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
@@ -80,6 +91,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul class="current">
@@ -128,11 +141,11 @@
              
   <section id="development-guide">
 <h1>Development Guide<a class="headerlink" href="#development-guide" title="Link to this heading"></a></h1>
-<p>This guide covers development workflows, Makefile commands, testing, and contributing to py3plex.</p>
+<p>This guide covers <strong>development workflows</strong>, <strong>Makefile commands</strong>, <strong>testing</strong>, and <strong>contributing</strong> to py3plex.</p>
 <p><strong>View the full development guide</strong>: <a class="reference external" href="https://github.com/SkBlaz/py3plex/blob/master/docs/development.md">development.md</a></p>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<p>Clone the repository and install in development mode:</p>
+<p><strong>Clone the repository</strong> and install in <strong>development mode</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 
@@ -146,7 +159,7 @@ make<span class="w"> </span>dev-install
 </section>
 <section id="makefile-commands">
 <h2>Makefile Commands<a class="headerlink" href="#makefile-commands" title="Link to this heading"></a></h2>
-<p>The project includes a production-grade Makefile for streamlined development:</p>
+<p>The project includes a <strong>production-grade Makefile</strong> for streamlined development:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View all available commands</span>
 make<span class="w"> </span><span class="nb">help</span>
 
@@ -176,18 +189,18 @@ make<span class="w"> </span>ci<span class="w">             </span><span class="c
 </div>
 <p>Key Features:</p>
 <ul class="simple">
-<li><p><strong>Smart tool detection</strong>: Uses <code class="docutils literal notranslate"><span class="pre">.venv/bin/</span></code> tools if available, otherwise falls back to global tools</p></li>
-<li><p><strong>Colorized output</strong>: Clear success/warning/error messages</p></li>
-<li><p><strong>Cross-platform</strong>: Works on Linux and macOS</p></li>
+<li><p><strong>Smart tool detection</strong>: Uses <code class="docutils literal notranslate"><span class="pre">.venv/bin/</span></code> tools if available, otherwise falls back to <strong>global tools</strong></p></li>
+<li><p><strong>Colorized output</strong>: Clear <strong>success/warning/error</strong> messages</p></li>
+<li><p><strong>Cross-platform</strong>: Works on <strong>Linux</strong> and <strong>macOS</strong></p></li>
 </ul>
 </section>
 <section id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
-<p>Quick testing:</p>
+<p><strong>Quick testing:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run_tests.py
 </pre></div>
 </div>
-<p>Development testing with pytest:</p>
+<p><strong>Development testing</strong> with pytest:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
 pytest
 

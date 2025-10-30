@@ -49,6 +49,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#basic-installation">Basic Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#install-from-github-recommended">Install from GitHub (Recommended)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-from-source">Install from Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-installation-alternative">Docker Installation (Alternative)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#optional-dependencies">Optional Dependencies</a><ul>
@@ -104,17 +105,28 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
@@ -128,6 +140,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul>
@@ -172,43 +186,74 @@
 <h2>Basic Installation<a class="headerlink" href="#basic-installation" title="Link to this heading"></a></h2>
 <section id="install-from-github-recommended">
 <h3>Install from GitHub (Recommended)<a class="headerlink" href="#install-from-github-recommended" title="Link to this heading"></a></h3>
-<p>The latest version is always available on GitHub:</p>
+<p>The <strong>latest version</strong> is always available on GitHub:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
 </pre></div>
 </div>
-<p>This installs the core py3plex library with all required dependencies.</p>
+<p>This installs the <strong>core py3plex library</strong> with all required dependencies.</p>
 </section>
 <section id="install-from-source">
 <h3>Install from Source<a class="headerlink" href="#install-from-source" title="Link to this heading"></a></h3>
-<p>For development or to access the latest features:</p>
+<p>For <strong>development</strong> or to access the <strong>latest features</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag installs in “editable” mode, so changes to the source code are immediately available.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag installs in <strong>“editable” mode</strong>, so changes to the source code are immediately available.</p>
+</section>
+<section id="docker-installation-alternative">
+<h3>Docker Installation (Alternative)<a class="headerlink" href="#docker-installation-alternative" title="Link to this heading"></a></h3>
+<p>For a <strong>containerized environment</strong> with all dependencies pre-installed, use Docker:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+
+<span class="c1"># Build the Docker image</span>
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
+
+<span class="c1"># Run py3plex commands</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>--version
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>selftest
+</pre></div>
+</div>
+<p><strong>Benefits of Docker installation:</strong></p>
+<ul class="simple">
+<li><p><strong>No Python environment setup</strong> required</p></li>
+<li><p><strong>All dependencies pre-installed</strong> and tested</p></li>
+<li><p><strong>Consistent environment</strong> across different systems</p></li>
+<li><p><strong>Isolated from system Python</strong> installation</p></li>
+</ul>
+<p>See <a class="reference internal" href="tutorials/docker_usage.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation including:</p>
+<ul class="simple">
+<li><p>Building and running the container</p></li>
+<li><p>Working with data files via volume mounts</p></li>
+<li><p>Docker Compose usage</p></li>
+<li><p>Helper scripts (<code class="docutils literal notranslate"><span class="pre">py3plex-docker.sh</span></code>)</p></li>
+<li><p>Batch processing and CI/CD integration</p></li>
+</ul>
 </section>
 </section>
 <section id="optional-dependencies">
 <h2>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h2>
-<p>py3plex offers several optional feature sets that can be installed separately:</p>
+<p>py3plex offers several <strong>optional feature sets</strong> that can be installed separately:</p>
 <section id="advanced-community-detection">
 <h3>Advanced Community Detection<a class="headerlink" href="#advanced-community-detection" title="Link to this heading"></a></h3>
-<p>Install Infomap for advanced overlapping community detection:</p>
+<p>Install <strong>Infomap</strong> for advanced overlapping community detection:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
 </pre></div>
 </div>
 </section>
 <section id="additional-algorithms">
 <h3>Additional Algorithms<a class="headerlink" href="#additional-algorithms" title="Link to this heading"></a></h3>
-<p>Install extra community detection algorithms (Louvain, cdlib):</p>
+<p>Install <strong>extra community detection algorithms</strong> (Louvain, cdlib):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>algos<span class="o">]</span>
 </pre></div>
 </div>
 </section>
 <section id="advanced-visualization">
 <h3>Advanced Visualization<a class="headerlink" href="#advanced-visualization" title="Link to this heading"></a></h3>
-<p>Install Plotly and igraph for interactive and advanced visualizations:</p>
+<p>Install <strong>Plotly and igraph</strong> for interactive and advanced visualizations:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
 </pre></div>
 </div>
@@ -222,7 +267,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="development-installation">
 <h3>Development Installation<a class="headerlink" href="#development-installation" title="Link to this heading"></a></h3>
-<p>For contributors, install with development tools (testing, linting):</p>
+<p>For <strong>contributors</strong>, install with development tools (testing, linting):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
@@ -261,36 +306,36 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="core-dependencies">
 <h3>Core Dependencies<a class="headerlink" href="#core-dependencies" title="Link to this heading"></a></h3>
-<p>These are automatically installed with py3plex:</p>
+<p>These are <strong>automatically installed</strong> with py3plex:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">networkx&gt;=2.5</span></code> - Graph data structures and algorithms</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy&gt;=0.8</span></code> - Numerical computing</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">scipy&gt;=1.1.0</span></code> - Scientific computing and sparse matrices</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pandas</span></code> - Data manipulation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> - Static visualization</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> - Machine learning utilities</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tqdm</span></code> - Progress bars</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rdflib&gt;=0.1</span></code> - Semantic web support</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bitarray&gt;=2.0.0</span></code> - Efficient boolean arrays</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">networkx&gt;=2.5</span></code> - <strong>Graph data structures</strong> and algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy&gt;=0.8</span></code> - <strong>Numerical computing</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scipy&gt;=1.1.0</span></code> - <strong>Scientific computing</strong> and sparse matrices</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pandas</span></code> - <strong>Data manipulation</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> - <strong>Static visualization</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> - <strong>Machine learning</strong> utilities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tqdm</span></code> - <strong>Progress bars</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rdflib&gt;=0.1</span></code> - <strong>Semantic web</strong> support</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitarray&gt;=2.0.0</span></code> - <strong>Efficient boolean arrays</strong></p></li>
 </ul>
 </section>
 </section>
 <section id="external-binaries-optional">
 <h2>External Binaries (Optional)<a class="headerlink" href="#external-binaries-optional" title="Link to this heading"></a></h2>
-<p><strong>Note:</strong> As of October 2025, py3plex no longer bundles external binaries to reduce repository size and improve licensing clarity.</p>
+<p><strong>Note:</strong> As of October 2025, py3plex <strong>no longer bundles external binaries</strong> to reduce repository size and improve licensing clarity.</p>
 <section id="infomap-community-detection">
 <h3>Infomap Community Detection<a class="headerlink" href="#infomap-community-detection" title="Link to this heading"></a></h3>
-<p>For advanced community detection using Infomap:</p>
-<p><strong>Option 1:</strong> Use the bundled Python implementation (recommended):</p>
+<p>For <strong>advanced community detection</strong> using Infomap:</p>
+<p><strong>Option 1:</strong> Use the bundled <strong>Python implementation</strong> (recommended):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
 </pre></div>
 </div>
-<p><strong>Option 2:</strong> Download the C++ binary from the official source:</p>
+<p><strong>Option 2:</strong> Download the <strong>C++ binary</strong> from the official source:</p>
 <ul class="simple">
 <li><p>Website: <a class="reference external" href="https://www.mapequation.org/infomap/">https://www.mapequation.org/infomap/</a></p></li>
-<li><p>Follow platform-specific installation instructions</p></li>
+<li><p>Follow <strong>platform-specific</strong> installation instructions</p></li>
 </ul>
-<p><strong>Alternative:</strong> Use the built-in Louvain algorithm (no binary needed):</p>
+<p><strong>Alternative:</strong> Use the <strong>built-in Louvain algorithm</strong> (no binary needed):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 </pre></div>
@@ -298,8 +343,8 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="node2vec-embeddings">
 <h3>Node2Vec Embeddings<a class="headerlink" href="#node2vec-embeddings" title="Link to this heading"></a></h3>
-<p>For Node2Vec node embeddings, use pure Python alternatives:</p>
-<p><strong>Option 1:</strong> Use pecanpy (fast parallel implementation):</p>
+<p>For <strong>Node2Vec node embeddings</strong>, use pure Python alternatives:</p>
+<p><strong>Option 1:</strong> Use <strong>pecanpy</strong> (fast parallel implementation):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pecanpy
 </pre></div>
 </div>
@@ -307,12 +352,12 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>node2vec
 </pre></div>
 </div>
-<p><strong>Option 3:</strong> Use py3plex’s built-in random walk implementation:</p>
+<p><strong>Option 3:</strong> Use py3plex’s <strong>built-in random walk</strong> implementation:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">node2vec_walk</span><span class="p">,</span> <span class="n">generate_walks</span>
 <span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See <code class="docutils literal notranslate"><span class="pre">bin/README.md</span></code> for detailed installation instructions and alternatives.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">bin/README.md</span></code> for <strong>detailed installation instructions</strong> and alternatives.</p>
 </section>
 </section>
 <section id="virtual-environment-setup">

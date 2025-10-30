@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NetworkX Interoperability Guide &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Algorithm Selection Guide" href="algorithm_guide.html" />
+    <link rel="prev" title="Dependency Management and Troubleshooting" href="dependencies_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">NetworkX Interoperability Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-networkx-interoperability">Why NetworkX Interoperability?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export-to-networkx">Export to NetworkX</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-export">Basic Export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-gets-exported">What Gets Exported</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#attribute-preservation">Attribute Preservation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#layer-information">Layer Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#weight-preservation">Weight Preservation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-networkx-algorithms">Using NetworkX Algorithms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shortest-paths">Shortest Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centrality-measures">Centrality Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#community-detection">Community Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connectivity">Connectivity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#integration-with-external-tools">Integration with External Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-gephi">Export to Gephi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-cytoscape">Export to Cytoscape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convert-to-igraph">Convert to igraph</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#py3plex-networkx-tensorly">Py3plex → NetworkX → TensorLy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#complete-workflow">Complete Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supra-adjacency-matrix">Supra-Adjacency Matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#import-from-networkx">Import from NetworkX</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-py3plex-network-from-networkx">Create Py3plex Network from NetworkX</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#practical-examples">Practical Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-1-network-statistics-pipeline">Example 1: Network Statistics Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-multilayer-pagerank">Example 2: Multilayer PageRank</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-3-export-for-gephi-visualization">Example 3: Export for Gephi Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">NetworkX Interoperability Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/networkx_interop.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="networkx-interoperability-guide">
+<h1>NetworkX Interoperability Guide<a class="headerlink" href="#networkx-interoperability-guide" title="Link to this heading"></a></h1>
+<p>This guide covers converting between Py3plex and NetworkX formats, preserving attributes,
+and integrating with external tools.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#why-networkx-interoperability" id="id1">Why NetworkX Interoperability?</a></p></li>
+<li><p><a class="reference internal" href="#export-to-networkx" id="id2">Export to NetworkX</a></p>
+<ul>
+<li><p><a class="reference internal" href="#basic-export" id="id3">Basic Export</a></p></li>
+<li><p><a class="reference internal" href="#what-gets-exported" id="id4">What Gets Exported</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#attribute-preservation" id="id5">Attribute Preservation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#layer-information" id="id6">Layer Information</a></p></li>
+<li><p><a class="reference internal" href="#weight-preservation" id="id7">Weight Preservation</a></p></li>
+<li><p><a class="reference internal" href="#custom-attributes" id="id8">Custom Attributes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-networkx-algorithms" id="id9">Using NetworkX Algorithms</a></p>
+<ul>
+<li><p><a class="reference internal" href="#shortest-paths" id="id10">Shortest Paths</a></p></li>
+<li><p><a class="reference internal" href="#centrality-measures" id="id11">Centrality Measures</a></p></li>
+<li><p><a class="reference internal" href="#community-detection" id="id12">Community Detection</a></p></li>
+<li><p><a class="reference internal" href="#connectivity" id="id13">Connectivity</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#integration-with-external-tools" id="id14">Integration with External Tools</a></p>
+<ul>
+<li><p><a class="reference internal" href="#export-to-gephi" id="id15">Export to Gephi</a></p></li>
+<li><p><a class="reference internal" href="#export-to-cytoscape" id="id16">Export to Cytoscape</a></p></li>
+<li><p><a class="reference internal" href="#convert-to-igraph" id="id17">Convert to igraph</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#py3plex-networkx-tensorly" id="id18">Py3plex → NetworkX → TensorLy</a></p>
+<ul>
+<li><p><a class="reference internal" href="#complete-workflow" id="id19">Complete Workflow</a></p></li>
+<li><p><a class="reference internal" href="#supra-adjacency-matrix" id="id20">Supra-Adjacency Matrix</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#import-from-networkx" id="id21">Import from NetworkX</a></p>
+<ul>
+<li><p><a class="reference internal" href="#create-py3plex-network-from-networkx" id="id22">Create Py3plex Network from NetworkX</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#practical-examples" id="id23">Practical Examples</a></p>
+<ul>
+<li><p><a class="reference internal" href="#example-1-network-statistics-pipeline" id="id24">Example 1: Network Statistics Pipeline</a></p></li>
+<li><p><a class="reference internal" href="#example-2-multilayer-pagerank" id="id25">Example 2: Multilayer PageRank</a></p></li>
+<li><p><a class="reference internal" href="#example-3-export-for-gephi-visualization" id="id26">Example 3: Export for Gephi Visualization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#next-steps" id="id27">Next Steps</a></p></li>
+</ul>
+</nav>
+<section id="why-networkx-interoperability">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Why NetworkX Interoperability?</a><a class="headerlink" href="#why-networkx-interoperability" title="Link to this heading"></a></h2>
+<p>Py3plex uses NetworkX as its underlying graph backend, which provides:</p>
+<ul class="simple">
+<li><p><strong>Compatibility</strong> with hundreds of NetworkX algorithms</p></li>
+<li><p><strong>Easy export</strong> to other tools (Gephi, Cytoscape, graph-tool)</p></li>
+<li><p><strong>Integration</strong> with scientific Python ecosystem (NumPy, SciPy, pandas)</p></li>
+<li><p><strong>Standard formats</strong> (GraphML, GEXF, GML, etc.)</p></li>
+</ul>
+</section>
+<section id="export-to-networkx">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Export to NetworkX</a><a class="headerlink" href="#export-to-networkx" title="Link to this heading"></a></h2>
+<section id="basic-export">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Basic Export</a><a class="headerlink" href="#basic-export" title="Link to this heading"></a></h3>
+<p>Convert Py3plex multilayer network to NetworkX graph:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Export to NetworkX MultiGraph</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>  <span class="c1"># Direct access</span>
+
+<span class="c1"># OR use conversion method (equivalent)</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">to_nx_network</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NetworkX graph: </span><span class="si">{</span><span class="n">nx_graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2"> nodes, &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nx_graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="what-gets-exported">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">What Gets Exported</a><a class="headerlink" href="#what-gets-exported" title="Link to this heading"></a></h3>
+<p>When exporting to NetworkX, <strong>all attributes are preserved</strong>:</p>
+<p><strong>Node attributes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> - Layer name</p></li>
+<li><p>Custom attributes added via <code class="docutils literal notranslate"><span class="pre">add_nodes()</span></code></p></li>
+</ul>
+<p><strong>Edge attributes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">weight</span></code> - Edge weight (default 1.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> - Edge type (e.g., ‘coupling’ for inter-layer edges)</p></li>
+<li><p>Custom attributes added via <code class="docutils literal notranslate"><span class="pre">add_edges()</span></code></p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access NetworkX graph</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Inspect node attributes</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">))[:</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node: </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Attributes: </span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Inspect edge attributes</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">))[:</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge: </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Attributes: </span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="attribute-preservation">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Attribute Preservation</a><a class="headerlink" href="#attribute-preservation" title="Link to this heading"></a></h2>
+<section id="layer-information">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Layer Information</a><a class="headerlink" href="#layer-information" title="Link to this heading"></a></h3>
+<p>Layer information is encoded in node tuples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Py3plex stores nodes as tuples: (node_id, layer_name)</span>
+
+<span class="c1"># Example node: (&#39;A&#39;, &#39;layer1&#39;)</span>
+<span class="c1"># - node_id: &#39;A&#39;</span>
+<span class="c1"># - layer_name: &#39;layer1&#39;</span>
+
+<span class="c1"># Iterate over nodes and extract layer info</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nx_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+    <span class="n">node_id</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">node</span>  <span class="c1"># Unpack tuple</span>
+    <span class="n">node_type</span> <span class="o">=</span> <span class="n">nx_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>  <span class="c1"># Should equal layer</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2"> in layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> (type=</span><span class="si">{</span><span class="n">node_type</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="weight-preservation">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Weight Preservation</a><a class="headerlink" href="#weight-preservation" title="Link to this heading"></a></h3>
+<p>Edge weights are preserved as edge attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Get edge weights</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">nx_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># Default to 1.0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: weight=</span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-attributes">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Custom Attributes</a><a class="headerlink" href="#custom-attributes" title="Link to this heading"></a></h3>
+<p>Any custom attributes you add are preserved:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Add edges with custom attributes</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;importance&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;importance&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">}],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Export to NetworkX</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Custom attributes are preserved</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">nx_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  color: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  importance: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;importance&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="using-networkx-algorithms">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Using NetworkX Algorithms</a><a class="headerlink" href="#using-networkx-algorithms" title="Link to this heading"></a></h2>
+<p>All NetworkX algorithms work directly on Py3plex networks:</p>
+<section id="shortest-paths">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Shortest Paths</a><a class="headerlink" href="#shortest-paths" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use NetworkX shortest path algorithm</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Find shortest path between two node-layer tuples</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shortest path: </span><span class="si">{</span><span class="s1">&#39; -&gt; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Path length</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path_length</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path length: </span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="n">nx</span><span class="o">.</span><span class="n">NetworkXNoPath</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No path exists between these nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="centrality-measures">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Centrality Measures</a><a class="headerlink" href="#centrality-measures" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Degree centrality</span>
+<span class="n">degree_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+<span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">degree_cent</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 5 nodes by degree centrality:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">centrality</span> <span class="ow">in</span> <span class="n">top_nodes</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">centrality</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Betweenness centrality</span>
+<span class="n">between_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Closeness centrality</span>
+<span class="n">close_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">closeness_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># PageRank</span>
+<span class="n">pagerank</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">pagerank</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="community-detection">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Community Detection</a><a class="headerlink" href="#community-detection" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">networkx.algorithms</span> <span class="kn">import</span> <span class="n">community</span>
+
+<span class="c1"># Greedy modularity communities</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community</span><span class="o">.</span><span class="n">greedy_modularity_communities</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">communities</span><span class="p">)</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">communities</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="connectivity">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Connectivity</a><a class="headerlink" href="#connectivity" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Check if network is connected</span>
+<span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Network is connected&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Network has multiple components&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Find connected components</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of components: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Component </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="integration-with-external-tools">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Integration with External Tools</a><a class="headerlink" href="#integration-with-external-tools" title="Link to this heading"></a></h2>
+<section id="export-to-gephi">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Export to Gephi</a><a class="headerlink" href="#export-to-gephi" title="Link to this heading"></a></h3>
+<p>Gephi is a popular network visualization tool. Export Py3plex networks to GEXF format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Export to GEXF (Gephi format)</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_gexf</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;network_for_gephi.gexf&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Exported to network_for_gephi.gexf&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Open in Gephi: File → Open → network_for_gephi.gexf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="export-to-cytoscape">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Export to Cytoscape</a><a class="headerlink" href="#export-to-cytoscape" title="Link to this heading"></a></h3>
+<p>Cytoscape is a bioinformatics network analysis tool. Export to GraphML:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Export to GraphML (Cytoscape format)</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;network_for_cytoscape.graphml&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Exported to network_for_cytoscape.graphml&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Open in Cytoscape: File → Import → Network from File&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="convert-to-igraph">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Convert to igraph</a><a class="headerlink" href="#convert-to-igraph" title="Link to this heading"></a></h3>
+<p>igraph is a fast C-based network analysis library:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Requires: pip install python-igraph</span>
+<span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Convert NetworkX to igraph</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Method 1: Via GraphML</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;temp.graphml&quot;</span><span class="p">)</span>
+<span class="n">ig_graph</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Read_GraphML</span><span class="p">(</span><span class="s2">&quot;temp.graphml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Method 2: Via edge list (faster)</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+
+<span class="n">ig_graph</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">ig_graph</span><span class="o">.</span><span class="n">add_vertices</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
+<span class="n">ig_graph</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+
+<span class="c1"># Map node names to indices</span>
+<span class="n">node_to_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)}</span>
+<span class="n">ig_edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">node_to_idx</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">node_to_idx</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>
+<span class="n">ig_graph</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">ig_edges</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Converted to igraph: </span><span class="si">{</span><span class="n">ig_graph</span><span class="o">.</span><span class="n">vcount</span><span class="p">()</span><span class="si">}</span><span class="s2"> vertices, </span><span class="si">{</span><span class="n">ig_graph</span><span class="o">.</span><span class="n">ecount</span><span class="p">()</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use igraph algorithms</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">ig_graph</span><span class="o">.</span><span class="n">community_multilevel</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">communities</span><span class="p">)</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="py3plex-networkx-tensorly">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Py3plex → NetworkX → TensorLy</a><a class="headerlink" href="#py3plex-networkx-tensorly" title="Link to this heading"></a></h2>
+<section id="complete-workflow">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Complete Workflow</a><a class="headerlink" href="#complete-workflow" title="Link to this heading"></a></h3>
+<p>Convert multilayer network to tensor representation for tensor decomposition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Step 1: Load multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 2: Get NetworkX graph</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Step 3: Extract layer information</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nx_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()))</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nx_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()))</span>
+
+<span class="n">n_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+<span class="n">n_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network: </span><span class="si">{</span><span class="n">n_nodes</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="n">n_layers</span><span class="si">}</span><span class="s2"> layers&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 4: Create 3D adjacency tensor (nodes × layers × nodes)</span>
+<span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">))</span>
+
+<span class="c1"># Create mappings</span>
+<span class="n">node_to_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)}</span>
+<span class="n">layer_to_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">layer</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layers</span><span class="p">)}</span>
+
+<span class="c1"># Fill tensor</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">u_id</span><span class="p">,</span> <span class="n">u_layer</span><span class="p">),</span> <span class="p">(</span><span class="n">v_id</span><span class="p">,</span> <span class="n">v_layer</span><span class="p">),</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">nx_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">u_layer</span> <span class="o">==</span> <span class="n">v_layer</span><span class="p">:</span>  <span class="c1"># Intra-layer edge</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">node_to_idx</span><span class="p">[</span><span class="n">u_id</span><span class="p">]</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">node_to_idx</span><span class="p">[</span><span class="n">v_id</span><span class="p">]</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">layer_to_idx</span><span class="p">[</span><span class="n">u_layer</span><span class="p">]</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="n">tensor</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight</span>
+        <span class="n">tensor</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight</span>  <span class="c1"># Undirected</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tensor shape: </span><span class="si">{</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Non-zero entries: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 5: Use TensorLy for decomposition</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">tensorly</span> <span class="k">as</span> <span class="nn">tl</span>
+    <span class="kn">from</span> <span class="nn">tensorly.decomposition</span> <span class="kn">import</span> <span class="n">tucker</span><span class="p">,</span> <span class="n">parafac</span>
+
+    <span class="c1"># Tucker decomposition</span>
+    <span class="n">core</span><span class="p">,</span> <span class="n">factors</span> <span class="o">=</span> <span class="n">tucker</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">tensor</span><span class="p">),</span> <span class="n">rank</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ Tucker decomposition complete&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Core tensor shape: </span><span class="si">{</span><span class="n">core</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Factor matrices: </span><span class="si">{</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">factors</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># PARAFAC/CP decomposition</span>
+    <span class="n">factors_cp</span> <span class="o">=</span> <span class="n">parafac</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">tensor</span><span class="p">),</span> <span class="n">rank</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ PARAFAC decomposition complete&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Rank: 5&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✗ TensorLy not installed&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Install: pip install tensorly&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="supra-adjacency-matrix">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Supra-Adjacency Matrix</a><a class="headerlink" href="#supra-adjacency-matrix" title="Link to this heading"></a></h3>
+<p>Convert to supra-adjacency matrix for tensor analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
+
+<span class="c1"># Get supra-adjacency matrix</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Supra-adjacency matrix: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sparsity: </span><span class="si">{</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">supra_adj</span><span class="o">.</span><span class="n">nnz</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert to dense (if small enough)</span>
+<span class="k">if</span> <span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+    <span class="n">dense_supra</span> <span class="o">=</span> <span class="n">supra_adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+    <span class="c1"># Use for analysis</span>
+    <span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvals</span><span class="p">(</span><span class="n">dense_supra</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Largest eigenvalue: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="import-from-networkx">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Import from NetworkX</a><a class="headerlink" href="#import-from-networkx" title="Link to this heading"></a></h2>
+<section id="create-py3plex-network-from-networkx">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Create Py3plex Network from NetworkX</a><a class="headerlink" href="#create-py3plex-network-from-networkx" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([</span>
+    <span class="p">((</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}),</span>
+    <span class="p">((</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}),</span>
+    <span class="p">((</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">}),</span>
+<span class="p">])</span>
+
+<span class="c1"># Import to Py3plex</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;nx&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Imported </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="practical-examples">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Practical Examples</a><a class="headerlink" href="#practical-examples" title="Link to this heading"></a></h2>
+<section id="example-1-network-statistics-pipeline">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Example 1: Network Statistics Pipeline</a><a class="headerlink" href="#example-1-network-statistics-pipeline" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Compute various statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Network Statistics ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edges: </span><span class="si">{</span><span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Density: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">G</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Degree statistics</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">degrees</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max degree: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">degrees</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Clustering</span>
+<span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">clustering</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average clustering: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">clustering</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">clustering</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Connected components</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_directed</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connected components: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2-multilayer-pagerank">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Example 2: Multilayer PageRank</a><a class="headerlink" href="#example-2-multilayer-pagerank" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Compute PageRank on multilayer network</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+<span class="n">pagerank</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">pagerank</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">)</span>
+
+<span class="c1"># Group by layer</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">pagerank</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">layer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node_id</span><span class="p">,</span> <span class="n">score</span><span class="p">))</span>
+
+<span class="c1"># Print top nodes per layer</span>
+<span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 5 nodes in </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_nodes</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3-export-for-gephi-visualization">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Example 3: Export for Gephi Visualization</a><a class="headerlink" href="#example-3-export-for-gephi-visualization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load and process network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add community detection results</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Add community as node attribute</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;community&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comm_id</span>
+
+<span class="c1"># Export to GEXF with communities</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_gexf</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="s2">&quot;network_with_communities.gexf&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Exported to GEXF with community information&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Open in Gephi and color by &#39;community&#39; attribute&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="next-steps">
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">Next Steps</a><a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="basic_usage_analysis.html"><span class="doc">Network Analysis</span></a> - Network analysis methods</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection</span></a> - Community detection algorithms</p></li>
+<li><p><a class="reference internal" href="visualization_guide.html"><span class="doc">Visualization Guide</span></a> - Visualization options</p></li>
+<li><p><a class="reference internal" href="tutorials/csv_loading.html"><span class="doc">CSV Data Loading Examples</span></a> - Load data from CSV</p></li>
+</ul>
+<p>For more examples, see the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/main/examples">examples/ directory</a>
+in the GitHub repository.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dependencies_guide.html" class="btn btn-neutral float-left" title="Dependency Management and Troubleshooting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="algorithm_guide.html" class="btn btn-neutral float-right" title="Algorithm Selection Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

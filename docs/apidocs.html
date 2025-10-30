@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contributing to py3plex" href="contributing.html" />
+    <link rel="next" title="Network Construction" href="core.html" />
     <link rel="prev" title="Node Embeddings" href="learning3.html" /> 
 </head>
 
@@ -56,17 +56,28 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
@@ -97,8 +108,32 @@
 <li class="toctree-l2"><a class="reference internal" href="#visualization">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#wrappers">Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-o-operations">I/O Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#profiling-utilities">Profiling Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logging-configuration">Logging Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-o-schema-and-validation">I/O Schema and Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hedwig-rule-learning">Hedwig Rule Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#force-atlas-2-visualization">Force Atlas 2 Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#embedding-visualization">Embedding Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#network-generation-and-benchmarking">Network Generation and Benchmarking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-statistics-and-analysis">Additional Statistics and Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#community-detection-advanced">Community Detection Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#node-ranking-and-classification">Node Ranking and Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#embeddings-and-wrappers">Embeddings and Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#network-motifs-and-patterns">Network Motifs and Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hinmine-data-structures">HINMINE Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validation-utilities">Validation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#network-comparison-and-testing">Network Comparison and Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hedwig-learning-algorithms">Hedwig Learning Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hedwig-statistics-and-scoring">Hedwig Statistics and Scoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hedwig-core-components">Hedwig Core Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-series-and-temporal-analysis">Time Series and Temporal Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-visualization">Advanced Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#link-prediction">Link Prediction</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul>
@@ -183,7 +218,75 @@
 </section>
 <section id="i-o-operations">
 <h2>I/O Operations<a class="headerlink" href="#i-o-operations" title="Link to this heading"></a></h2>
-<p>For the complete auto-generated API documentation, see the AUTOGEN_results directory after building the docs.</p>
+<p>For the complete auto-generated API documentation, see the AUTOGEN_results directory after building the docs.
+Aggregation and Network Operations
+———————————-</p>
+</section>
+<section id="profiling-utilities">
+<h2>Profiling Utilities<a class="headerlink" href="#profiling-utilities" title="Link to this heading"></a></h2>
+</section>
+<section id="logging-configuration">
+<h2>Logging Configuration<a class="headerlink" href="#logging-configuration" title="Link to this heading"></a></h2>
+</section>
+<section id="i-o-schema-and-validation">
+<h2>I/O Schema and Validation<a class="headerlink" href="#i-o-schema-and-validation" title="Link to this heading"></a></h2>
+</section>
+<section id="hedwig-rule-learning">
+<h2>Hedwig Rule Learning<a class="headerlink" href="#hedwig-rule-learning" title="Link to this heading"></a></h2>
+</section>
+<section id="force-atlas-2-visualization">
+<h2>Force Atlas 2 Visualization<a class="headerlink" href="#force-atlas-2-visualization" title="Link to this heading"></a></h2>
+</section>
+<section id="embedding-visualization">
+<h2>Embedding Visualization<a class="headerlink" href="#embedding-visualization" title="Link to this heading"></a></h2>
+</section>
+<section id="network-generation-and-benchmarking">
+<h2>Network Generation and Benchmarking<a class="headerlink" href="#network-generation-and-benchmarking" title="Link to this heading"></a></h2>
+</section>
+<section id="additional-statistics-and-analysis">
+<h2>Additional Statistics and Analysis<a class="headerlink" href="#additional-statistics-and-analysis" title="Link to this heading"></a></h2>
+</section>
+<section id="community-detection-advanced">
+<h2>Community Detection Advanced<a class="headerlink" href="#community-detection-advanced" title="Link to this heading"></a></h2>
+</section>
+<section id="node-ranking-and-classification">
+<h2>Node Ranking and Classification<a class="headerlink" href="#node-ranking-and-classification" title="Link to this heading"></a></h2>
+</section>
+<section id="embeddings-and-wrappers">
+<h2>Embeddings and Wrappers<a class="headerlink" href="#embeddings-and-wrappers" title="Link to this heading"></a></h2>
+</section>
+<section id="network-motifs-and-patterns">
+<h2>Network Motifs and Patterns<a class="headerlink" href="#network-motifs-and-patterns" title="Link to this heading"></a></h2>
+</section>
+<section id="hinmine-data-structures">
+<h2>HINMINE Data Structures<a class="headerlink" href="#hinmine-data-structures" title="Link to this heading"></a></h2>
+</section>
+<section id="command-line-interface">
+<h2>Command-Line Interface<a class="headerlink" href="#command-line-interface" title="Link to this heading"></a></h2>
+</section>
+<section id="validation-utilities">
+<h2>Validation Utilities<a class="headerlink" href="#validation-utilities" title="Link to this heading"></a></h2>
+</section>
+<section id="network-comparison-and-testing">
+<h2>Network Comparison and Testing<a class="headerlink" href="#network-comparison-and-testing" title="Link to this heading"></a></h2>
+</section>
+<section id="hedwig-learning-algorithms">
+<h2>Hedwig Learning Algorithms<a class="headerlink" href="#hedwig-learning-algorithms" title="Link to this heading"></a></h2>
+</section>
+<section id="hedwig-statistics-and-scoring">
+<h2>Hedwig Statistics and Scoring<a class="headerlink" href="#hedwig-statistics-and-scoring" title="Link to this heading"></a></h2>
+</section>
+<section id="hedwig-core-components">
+<h2>Hedwig Core Components<a class="headerlink" href="#hedwig-core-components" title="Link to this heading"></a></h2>
+</section>
+<section id="time-series-and-temporal-analysis">
+<h2>Time Series and Temporal Analysis<a class="headerlink" href="#time-series-and-temporal-analysis" title="Link to this heading"></a></h2>
+</section>
+<section id="advanced-visualization">
+<h2>Advanced Visualization<a class="headerlink" href="#advanced-visualization" title="Link to this heading"></a></h2>
+</section>
+<section id="link-prediction">
+<h2>Link Prediction<a class="headerlink" href="#link-prediction" title="Link to this heading"></a></h2>
 </section>
 </section>
 
@@ -192,7 +295,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="learning3.html" class="btn btn-neutral float-left" title="Node Embeddings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing to py3plex" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="core.html" class="btn btn-neutral float-right" title="Network Construction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

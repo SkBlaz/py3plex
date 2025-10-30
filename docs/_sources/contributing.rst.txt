@@ -1,7 +1,7 @@
 Contributing to py3plex
 =======================
 
-We welcome contributions to py3plex! This guide explains how to contribute effectively.
+We **welcome contributions** to py3plex! This guide explains how to contribute effectively.
 
 Ways to Contribute
 ------------------
@@ -39,7 +39,7 @@ Fork and Clone
 Development Setup
 ~~~~~~~~~~~~~~~~~
 
-Install in development mode with all dependencies:
+Install in **development mode** with all dependencies:
 
 .. code-block:: bash
 
@@ -52,10 +52,10 @@ Install in development mode with all dependencies:
 
 This installs:
 
-* Core dependencies
-* Testing tools (pytest, coverage)
-* Linting tools (black, ruff, isort, mypy)
-* Documentation tools (sphinx)
+* **Core dependencies**
+* **Testing tools** (pytest, coverage)
+* **Linting tools** (black, ruff, isort, mypy)
+* **Documentation tools** (sphinx)
 
 Development Workflow
 --------------------
@@ -63,7 +63,7 @@ Development Workflow
 Create a Branch
 ~~~~~~~~~~~~~~~
 
-Always create a new branch for your work:
+Always create a **new branch** for your work:
 
 .. code-block:: bash
 
@@ -74,10 +74,10 @@ Always create a new branch for your work:
 Make Changes
 ~~~~~~~~~~~~
 
-1. Write your code following our coding standards (see below)
-2. Add or update tests
-3. Update documentation
-4. Run linters and tests
+1. Write your code following our **coding standards** (see below)
+2. Add or update **tests**
+3. Update **documentation**
+4. Run **linters** and **tests**
 
 Run Tests
 ~~~~~~~~~
@@ -106,7 +106,7 @@ Run Linters
 Commit Changes
 ~~~~~~~~~~~~~~
 
-Write clear, descriptive commit messages:
+Write **clear, descriptive commit messages**:
 
 .. code-block:: bash
 
@@ -124,12 +124,12 @@ Push and Create PR
 
     git push origin feature/my-new-feature
 
-Then create a Pull Request on GitHub with:
+Then create a **Pull Request** on GitHub with:
 
-* Clear title describing the change
-* Description of what changed and why
-* Reference to related issues (e.g., "Fixes #123")
-* Screenshots for UI changes
+* **Clear title** describing the change
+* **Description** of what changed and why
+* **Reference to related issues** (e.g., "Fixes #123")
+* **Screenshots** for UI changes
 
 Coding Standards
 ----------------
@@ -227,7 +227,7 @@ Use **NumPy-style docstrings** for all public functions and classes:
 Type Hints
 ~~~~~~~~~~
 
-Add type hints to improve code clarity:
+Add **type hints** to improve code clarity:
 
 .. code-block:: python
 
@@ -247,7 +247,7 @@ Testing Guidelines
 Test Requirements
 ~~~~~~~~~~~~~~~~~
 
-All new code should include tests:
+All new code should include **tests**:
 
 * **Unit tests** for individual functions
 * **Integration tests** for workflows
@@ -292,7 +292,7 @@ Use pytest for testing:
 Test Coverage
 ~~~~~~~~~~~~~
 
-Aim for high test coverage:
+Aim for **high test coverage**:
 
 .. code-block:: bash
 

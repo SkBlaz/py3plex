@@ -1,7 +1,7 @@
 Random Network Generation
 =========================
 
-Generate synthetic multilayer networks for testing and benchmarking.
+Generate **synthetic multilayer networks** for testing and benchmarking.
 
 .. code-block:: python
 

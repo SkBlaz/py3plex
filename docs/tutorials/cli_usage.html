@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Multilayer Network Centrality Measures" href="multilayer_centrality.html" />
-    <link rel="prev" title="Performance and Scalability" href="../performance.html" /> 
+    <link rel="next" title="Docker Usage Guide" href="docker_usage.html" />
+    <link rel="prev" title="Statistical Comparison Framework" href="../statistical_comparison.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -56,9 +56,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
@@ -123,10 +130,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra-Adjacency Matrices</a></li>
@@ -140,6 +151,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul>
@@ -190,6 +203,17 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>--help
 </pre></div>
 </div>
+<p><strong>Alternative: Using Docker</strong></p>
+<p>If you prefer Docker, the CLI is also available via the Docker container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the Docker image</span>
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
+
+<span class="c1"># Run CLI commands</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>--help
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--output<span class="w"> </span>/data/network.edgelist
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="docker_usage.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation.</p>
 </section>
 <section id="getting-help">
 <h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
@@ -620,8 +644,8 @@ py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../performance.html" class="btn btn-neutral float-left" title="Performance and Scalability" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="multilayer_centrality.html" class="btn btn-neutral float-right" title="Multilayer Network Centrality Measures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../statistical_comparison.html" class="btn btn-neutral float-left" title="Statistical Comparison Framework" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="docker_usage.html" class="btn btn-neutral float-right" title="Docker Usage Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
