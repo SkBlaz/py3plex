@@ -60,8 +60,6 @@ Py3plex includes a command-line interface for multilayer network analysis. See t
 - Use pure Python alternatives: `pip install node2vec` or `pip install pecanpy`
 - Or download the C++ binary from: https://github.com/snap-stanford/snap
 
-See `bin/README.md` for detailed installation instructions and alternatives.
-
 ### License Compatibility
 
 **Main Library**: py3plex is distributed under the **MIT License** (permissive, commercial-friendly).
@@ -106,8 +104,6 @@ make lint       # Run linters only
 python run_tests.py
 ```
 
-For more testing options and development workflows, see [docs/development.md](docs/development.md).
-
 For comprehensive project context, development status, and guidance for maintainers and LLMs, see [LLM.md](./LLM.md).
 
 ### Performance Benchmarks
@@ -146,7 +142,7 @@ Benchmark results are automatically collected in CI and made available as workfl
 
 ### Contributions
 
-We welcome contributions! See [docs/development.md](docs/development.md) for development guidelines, testing procedures, and code quality standards.
+We welcome contributions! See the [online documentation](https://skblaz.github.io/py3plex/) for development guidelines, testing procedures, and code quality standards.
 
 
 # Citations
