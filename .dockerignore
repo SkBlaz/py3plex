@@ -1,0 +1,92 @@
+# Git and version control
+.git
+.gitignore
+.github
+
+# Python artifacts
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing and coverage
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+htmlcov/
+.hypothesis/
+coverage.json
+type-coverage-*.json
+
+# Documentation build
+docs/_build/
+docs/_sources/
+docfiles/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
+tmp/
+temp/
+
+# Examples and datasets (can be large)
+examples/
+datasets/
+multilayer_datasets/
+benchmarks/
+example_images/
+
+# Repository maintenance
+clean_repo.sh
+files.txt
+fuzzing/
+background_knowledge/
+
+# CI/CD
+.pre-commit-config.yaml
+
+# Documentation source (included but can be excluded if needed)
+# LLM.md
+
+# Tests (excluded from production container)
+tests/
+run_tests.py
+validate_*.py

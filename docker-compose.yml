@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  py3plex:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: py3plex:latest
+    container_name: py3plex
+    # Mount current directory to /data in container for file I/O
+    volumes:
+      - ./data:/data
+    # Override default command
+    command: help
+    # For interactive usage
+    stdin_open: true
+    tty: true
+
+# Example usage:
+# Build the image:
+#   docker-compose build
+#
+# Run py3plex commands:
+#   docker-compose run --rm py3plex --version
+#   docker-compose run --rm py3plex selftest
+#   docker-compose run --rm py3plex create --nodes 100 --layers 3 --output /data/network.edgelist
+#   docker-compose run --rm py3plex load /data/network.edgelist --info
+#
+# Or use docker directly:
+#   docker run --rm -v $(pwd)/data:/data py3plex:latest --version
+#   docker run --rm -v $(pwd)/data:/data py3plex:latest selftest
