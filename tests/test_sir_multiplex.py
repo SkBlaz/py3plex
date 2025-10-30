@@ -61,9 +61,9 @@ class TestSIRMultiplexDiscrete(unittest.TestCase):
             total = result.S[i] + result.I[i] + result.R[i]
             self.assertEqual(total, N, f"Conservation violated at step {i}")
         
-        # Epidemic should eventually die out or reach steady state
-        self.assertTrue(result.I[-1] <= result.I[0] or result.R[-1] > 0,
-                       "Epidemic should progress or die out")
+        # Epidemic should progress (some recoveries or growth in infections)
+        self.assertTrue(result.R[-1] > 0 or result.I[-1] > result.I[0],
+                       "Epidemic should show some activity")
         
         # No negative counts
         self.assertTrue(np.all(result.S >= 0))

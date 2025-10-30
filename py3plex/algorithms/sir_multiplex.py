@@ -384,8 +384,12 @@ def simulate_sir_multiplex_gillespie(
     
     t = 0.0
     
+    # Check if import rate is active (for loop continuation)
+    has_import = callable(import_rate) or float(import_rate) > 0
+    
     # Main Gillespie loop
-    while t < t_max and I_hist[-1] > 0:
+    # Continue while time permits and either infections exist or imports are possible
+    while t < t_max:
         # Compute total rates
         susceptible = (X == 0)
         infected = (X == 1)
@@ -404,8 +408,15 @@ def simulate_sir_multiplex_gillespie(
         # Total rate
         total_rate = infection_rate_total + recovery_rate_total + import_rate_total
         
+        # Stop if no events are possible
         if total_rate <= 0:
-            break  # No more events possible
+            # No infected and no imports possible
+            if I_hist[-1] == 0 and not has_import:
+                break
+            # Or nothing can happen anymore
+            if n_susceptible == 0 and I_hist[-1] == 0:
+                break
+            break
         
         # Sample time to next event
         dt = rng.exponential(1.0 / total_rate)
