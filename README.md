@@ -8,6 +8,7 @@
 [![Formal Verification](https://github.com/SkBlaz/py3plex/actions/workflows/verify.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/verify.yml)
 [![Fuzzing](https://github.com/SkBlaz/py3plex/actions/workflows/fuzzing.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/fuzzing.yml)
 ![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
+![Docker](https://img.shields.io/badge/Docker-Available-blue)
 
 Heterogeneous networks are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
@@ -37,6 +38,76 @@ To verify installation.
 **Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
+
+### Docker Installation (Alternative)
+
+Py3plex is also available as a Docker container, which includes all dependencies pre-installed. This is the easiest way to get started without managing Python environments.
+
+**Build the Docker image:**
+```bash
+# Clone the repository first
+git clone https://github.com/SkBlaz/py3plex.git
+cd py3plex
+
+# Build the image
+docker build -t py3plex:latest .
+```
+
+**Using with docker-compose (recommended):**
+```bash
+# Build the image
+docker-compose build
+
+# Run py3plex commands
+docker-compose run --rm py3plex --version
+docker-compose run --rm py3plex selftest
+docker-compose run --rm py3plex help
+
+# Create a network (output saved to ./data/)
+docker-compose run --rm py3plex create --nodes 100 --layers 3 --output /data/network.edgelist
+
+# Analyze the network
+docker-compose run --rm py3plex load /data/network.edgelist --info
+docker-compose run --rm py3plex stats /data/network.edgelist --measure all
+```
+
+**Using with docker run:**
+```bash
+# Create a data directory for inputs/outputs
+mkdir -p data
+
+# Run py3plex commands (mount data directory)
+docker run --rm -v $(pwd)/data:/data py3plex:latest --version
+docker run --rm -v $(pwd)/data:/data py3plex:latest selftest
+
+# Create and analyze networks
+docker run --rm -v $(pwd)/data:/data py3plex:latest create --nodes 100 --layers 3 --output /data/network.edgelist
+docker run --rm -v $(pwd)/data:/data py3plex:latest load /data/network.edgelist --info
+
+# Visualize network
+docker run --rm -v $(pwd)/data:/data py3plex:latest visualize /data/network.edgelist --output /data/network.png
+```
+
+**Note**: The `-v $(pwd)/data:/data` flag mounts your local `data` directory to `/data` in the container, allowing you to access input files and save outputs.
+
+**Helper Script (Optional):**
+
+For convenience, you can use the included `py3plex-docker.sh` helper script:
+
+```bash
+# Make it executable (first time only)
+chmod +x py3plex-docker.sh
+
+# Run py3plex commands easily
+./py3plex-docker.sh --version
+./py3plex-docker.sh selftest
+./py3plex-docker.sh create --nodes 100 --layers 3 --output /data/network.edgelist
+./py3plex-docker.sh load /data/network.edgelist --info
+```
+
+The script automatically handles Docker image building and volume mounting.
+
+For more detailed Docker usage instructions, see [DOCKER.md](DOCKER.md).
 
 ### CLI Tool
 

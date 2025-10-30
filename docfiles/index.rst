@@ -45,6 +45,24 @@ Install from GitHub
 
     pip install git+https://github.com/SkBlaz/py3plex.git
 
+Docker Installation (Alternative)
+----------------------------------
+
+Py3plex is also available as a Docker container with all dependencies pre-installed:
+
+.. code-block:: bash
+
+    # Clone and build
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    docker build -t py3plex:latest .
+
+    # Run commands
+    docker run --rm py3plex:latest --version
+    docker run --rm py3plex:latest selftest
+
+See :doc:`tutorials/docker_usage` for complete Docker documentation.
+
 Install from source for development
 ------------------------------------
 
@@ -185,6 +203,7 @@ Documentation Contents
    :caption: Tutorials
 
    tutorials/cli_usage
+   tutorials/docker_usage
    tutorials/csv_loading
    tutorials/multilayer_centrality
    tutorials/multilayer_modularity
