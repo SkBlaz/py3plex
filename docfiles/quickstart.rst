@@ -3,6 +3,31 @@ Quickstart Guide
 
 This guide gets you started with py3plex quickly. For a more comprehensive introduction, see the :doc:`10min_tutorial`.
 
+Quick Start with Docker
+-----------------------
+
+If you prefer using Docker, you can get started immediately without installing Python dependencies:
+
+.. code-block:: bash
+
+    # Clone and build
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    docker build -t py3plex:latest .
+    
+    # Create a data directory for files
+    mkdir -p data
+    
+    # Create a simple multilayer network
+    docker run --rm -v $(pwd)/data:/data py3plex:latest \
+      create --nodes 50 --layers 3 --output /data/network.edgelist
+    
+    # Analyze it
+    docker run --rm -v $(pwd)/data:/data py3plex:latest \
+      load /data/network.edgelist --info
+
+**For complete Docker documentation**, see :doc:`tutorials/docker_usage`.
+
 Creating Your First Multilayer Network
 ---------------------------------------
 

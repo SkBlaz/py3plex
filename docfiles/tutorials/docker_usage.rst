@@ -245,6 +245,123 @@ You can extend the ``docker-compose.yml`` to include related services:
         command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
         working_dir: /notebooks
 
+Helper Scripts
+--------------
+
+The repository includes convenient helper scripts to simplify Docker usage.
+
+py3plex-docker.sh
+~~~~~~~~~~~~~~~~~
+
+A wrapper script that simplifies running py3plex commands via Docker:
+
+.. code-block:: bash
+
+    # The script automatically handles:
+    # - Docker installation checks
+    # - Image building (if needed)
+    # - Data directory creation
+    # - Volume mounting
+    
+    # Usage examples:
+    ./py3plex-docker.sh --version
+    ./py3plex-docker.sh selftest
+    ./py3plex-docker.sh create --nodes 100 --layers 3 --output /data/network.edgelist
+    ./py3plex-docker.sh load /data/network.edgelist --info
+
+**Features:**
+
+* Automatically checks if Docker is installed
+* Prompts to build the image if it doesn't exist
+* Creates the ``data/`` directory if needed
+* Mounts the local ``data/`` directory to ``/data`` in the container
+* Passes all arguments directly to py3plex
+
+**Script location:** ``py3plex-docker.sh`` in the repository root
+
+test-docker-setup.sh
+~~~~~~~~~~~~~~~~~~~~
+
+A comprehensive test script to validate your Docker setup:
+
+.. code-block:: bash
+
+    # Run the validation script
+    ./test-docker-setup.sh
+
+**What it tests:**
+
+1. Docker installation verification
+2. Dockerfile existence check
+3. .dockerignore existence check
+4. docker-compose.yml existence check
+5. Docker image build process
+6. Container version command
+7. Container help command
+8. Container selftest
+9. Volume mounting and file creation
+
+The script provides colored output (✓ PASS / ✗ FAIL) and a summary report.
+
+**Script location:** ``test-docker-setup.sh`` in the repository root
+
+Docker Configuration Files
+--------------------------
+
+.dockerignore
+~~~~~~~~~~~~~
+
+The ``.dockerignore`` file controls which files are excluded from the Docker build context:
+
+**Key exclusions:**
+
+* **Git and version control**: ``.git/``, ``.github/``, ``.gitignore``
+* **Python artifacts**: ``__pycache__/``, ``*.pyc``, ``dist/``, ``build/``
+* **Virtual environments**: ``venv/``, ``env/``
+* **Testing and coverage**: ``.pytest_cache/``, ``htmlcov/``, ``coverage.*``
+* **Documentation builds**: ``docs/_build/``, ``docfiles/``
+* **Examples and datasets**: ``examples/``, ``datasets/``, ``multilayer_datasets/``
+* **Development files**: ``tests/``, ``run_tests.py``, ``validate_*.py``
+
+**Why this matters:**
+
+* **Faster builds**: Smaller build context means faster Docker builds
+* **Smaller images**: Excludes unnecessary files from the final image
+* **Security**: Prevents accidental inclusion of sensitive files
+* **Efficiency**: Only includes files needed to run py3plex
+
+The ``.dockerignore`` file is located in the repository root.
+
+docker-examples Directory
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``docker-examples/`` directory contains ready-to-use example scripts and workflows:
+
+**Available examples:**
+
+* **Basic network analysis** - Creating and analyzing networks
+* **Community detection** - Using Louvain and other algorithms
+* **Centrality analysis** - Computing various centrality measures
+* **Batch processing** - Processing multiple networks
+* **CI/CD integration** - GitHub Actions and GitLab CI examples
+* **Custom analysis scripts** - Python script templates
+
+**Accessing examples:**
+
+.. code-block:: bash
+
+    # Navigate to the examples directory
+    cd docker-examples
+    
+    # View the README
+    cat README.md
+    
+    # Run example scripts
+    ./batch-process.sh
+    ./complete-pipeline.sh
+
+See ``docker-examples/README.md`` for detailed documentation of all examples.
+
 Troubleshooting
 ---------------
 
@@ -508,8 +625,10 @@ Additional Resources
 
 * `Py3plex Documentation <https://skblaz.github.io/py3plex/>`_
 * :doc:`CLI Tutorial <cli_usage>`
+* `Docker Examples <https://github.com/SkBlaz/py3plex/tree/master/docker-examples>`_ - Ready-to-use Docker workflow examples
 * `Docker Documentation <https://docs.docker.com/>`_
 * `Docker Compose Documentation <https://docs.docker.com/compose/>`_
+* `DOCKER.md <https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md>`_ - Main Docker guide in the repository
 
 Support
 -------

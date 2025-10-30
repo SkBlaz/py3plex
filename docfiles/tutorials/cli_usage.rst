@@ -18,6 +18,21 @@ After installation, verify the CLI is available:
 
     py3plex --help
 
+**Alternative: Using Docker**
+
+If you prefer Docker, the CLI is also available via the Docker container:
+
+.. code-block:: bash
+
+    # Build the Docker image
+    docker build -t py3plex:latest .
+    
+    # Run CLI commands
+    docker run --rm py3plex:latest --help
+    docker run --rm -v $(pwd)/data:/data py3plex:latest create --nodes 100 --output /data/network.edgelist
+
+See :doc:`docker_usage` for complete Docker documentation.
+
 Getting Help
 ------------
 

@@ -30,6 +30,39 @@ For **development** or to access the **latest features**:
 
 The ``-e`` flag installs in **"editable" mode**, so changes to the source code are immediately available.
 
+Docker Installation (Alternative)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For a **containerized environment** with all dependencies pre-installed, use Docker:
+
+.. code-block:: bash
+
+    # Clone the repository
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    
+    # Build the Docker image
+    docker build -t py3plex:latest .
+    
+    # Run py3plex commands
+    docker run --rm py3plex:latest --version
+    docker run --rm py3plex:latest selftest
+
+**Benefits of Docker installation:**
+
+* **No Python environment setup** required
+* **All dependencies pre-installed** and tested
+* **Consistent environment** across different systems
+* **Isolated from system Python** installation
+
+See :doc:`tutorials/docker_usage` for complete Docker documentation including:
+
+* Building and running the container
+* Working with data files via volume mounts
+* Docker Compose usage
+* Helper scripts (``py3plex-docker.sh``)
+* Batch processing and CI/CD integration
+
 Optional Dependencies
 ---------------------
 
