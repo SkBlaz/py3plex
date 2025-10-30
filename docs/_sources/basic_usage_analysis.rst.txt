@@ -24,6 +24,17 @@ Basic Iteration
     for node in network.get_nodes(data=True):
         print(node)
 
+**Expected Output** (example edges and nodes):
+
+.. code-block:: text
+
+    ('A_layer1', 'B_layer1', {'weight': 1.0, 'source': 'A', 'target': 'B', 'layer': 'layer1'})
+    ('B_layer1', 'C_layer1', {'weight': 1.0, 'source': 'B', 'target': 'C', 'layer': 'layer1'})
+    ...
+    ('A_layer1', {'type': 'layer1', 'name': 'A'})
+    ('B_layer1', {'type': 'layer1', 'name': 'B'})
+    ...
+
 Subnetworks
 ===========
 
@@ -49,6 +60,12 @@ py3plex networks are compatible with NetworkX:
     # Use any NetworkX function
     centralities = network.monoplex_nx_wrapper("degree_centrality")
     print(centralities)
+
+**Expected Output** (node centrality values):
+
+.. code-block:: text
+
+    {'A_layer1': 0.5, 'B_layer1': 1.0, 'C_layer1': 0.5, ...}
 
 For More Examples
 *****************

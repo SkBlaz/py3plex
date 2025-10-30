@@ -55,17 +55,28 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
@@ -79,6 +90,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul>
@@ -122,10 +135,10 @@
 </a>
 <a class="reference external image-reference" href="https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml"><img alt="Code Quality" src="https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg" />
 </a>
-<p><strong>py3plex</strong> enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.</p>
+<p><strong>py3plex</strong> enables scalable analysis and visualization of <strong>multilayer</strong> and <strong>multiplex</strong> networks in Python, supporting complex network modeling across diverse scientific and applied domains.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>py3plex is a lightweight Python library designed specifically for analyzing and visualizing heterogeneous and multilayer networks. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:</p>
+<p>py3plex is a <strong>lightweight Python library</strong> designed specifically for analyzing and visualizing <strong>heterogeneous</strong> and <strong>multilayer networks</strong>. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:</p>
 <ul class="simple">
 <li><p>Multiple node types</p></li>
 <li><p>Multiple edge types</p></li>
@@ -136,13 +149,13 @@
 <p><strong>Target Users:</strong> Researchers in network science, computational biology, complex systems, social network analysis, and applied network modeling.</p>
 <p><strong>Key Features:</strong></p>
 <ul class="simple">
-<li><p>Native support for multiplex and multilayer network structures</p></li>
-<li><p>Diagonal projection visualization for large multilayer networks</p></li>
-<li><p>Comprehensive multilayer centrality measures</p></li>
-<li><p>Community detection across network layers</p></li>
-<li><p>Network decomposition and feature extraction</p></li>
-<li><p>Semantic enrichment with external knowledge bases</p></li>
-<li><p>Integration with NetworkX, igraph, and other graph libraries</p></li>
+<li><p><strong>Native support</strong> for multiplex and multilayer network structures</p></li>
+<li><p><strong>Diagonal projection visualization</strong> for large multilayer networks</p></li>
+<li><p><strong>Comprehensive multilayer centrality measures</strong></p></li>
+<li><p><strong>Community detection</strong> across network layers</p></li>
+<li><p><strong>Network decomposition</strong> and feature extraction</p></li>
+<li><p><strong>Semantic enrichment</strong> with external knowledge bases</p></li>
+<li><p><strong>Integration</strong> with NetworkX, igraph, and other graph libraries</p></li>
 </ul>
 </section>
 <section id="installation">
@@ -152,6 +165,21 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
 </pre></div>
 </div>
+</section>
+<section id="docker-installation-alternative">
+<h3>Docker Installation (Alternative)<a class="headerlink" href="#docker-installation-alternative" title="Link to this heading"></a></h3>
+<p>Py3plex is also available as a Docker container with all dependencies pre-installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone and build</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
+
+<span class="c1"># Run commands</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>--version
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>selftest
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="tutorials/docker_usage.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation.</p>
 </section>
 <section id="install-from-source-for-development">
 <h3>Install from source for development<a class="headerlink" href="#install-from-source-for-development" title="Link to this heading"></a></h3>
@@ -228,20 +256,20 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <section id="why-py3plex">
 <h2>Why py3plex?<a class="headerlink" href="#why-py3plex" title="Link to this heading"></a></h2>
 <p><strong>vs. NetworkX:</strong>
-NetworkX excels at single-layer homogeneous networks but lacks native multilayer support. py3plex builds on NetworkX while adding:</p>
+NetworkX excels at <strong>single-layer homogeneous networks</strong> but lacks native multilayer support. py3plex builds on NetworkX while adding:</p>
 <ul class="simple">
-<li><p>Native multilayer data structures</p></li>
-<li><p>Layer-aware algorithms</p></li>
-<li><p>Specialized multilayer visualizations</p></li>
-<li><p>Heterogeneous network decomposition</p></li>
+<li><p><strong>Native multilayer data structures</strong></p></li>
+<li><p><strong>Layer-aware algorithms</strong></p></li>
+<li><p><strong>Specialized multilayer visualizations</strong></p></li>
+<li><p><strong>Heterogeneous network decomposition</strong></p></li>
 </ul>
 <p><strong>vs. Other Multilayer Tools:</strong>
 py3plex provides:</p>
 <ul class="simple">
-<li><p>Lightweight and easy to integrate</p></li>
-<li><p>Comprehensive statistical measures (17+ multilayer metrics)</p></li>
-<li><p>Publication-ready visualizations</p></li>
-<li><p>Active development and research backing</p></li>
+<li><p><strong>Lightweight</strong> and easy to integrate</p></li>
+<li><p><strong>Comprehensive statistical measures</strong> (17+ multilayer metrics)</p></li>
+<li><p><strong>Publication-ready visualizations</strong></p></li>
+<li><p><strong>Active development</strong> and research backing</p></li>
 </ul>
 </section>
 <section id="use-cases">
@@ -274,6 +302,7 @@ py3plex provides:</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#quick-start-with-docker">Quick Start with Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#creating-your-first-multilayer-network">Creating Your First Multilayer Network</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#loading-networks-from-files">Loading Networks from Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-network-analysis">Basic Network Analysis</a></li>
@@ -345,9 +374,56 @@ py3plex provides:</p>
 <li class="toctree-l2"><a class="reference internal" href="multilayer_concepts.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#data-import-setup">Data Import &amp; Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#network-exploration-analysis">Network Exploration &amp; Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#centrality-node-importance">Centrality &amp; Node Importance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#community-detection">Community Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#visualization">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#advanced-workflows">Advanced Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#performance-optimization">Performance &amp; Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#tips-best-practices">Tips &amp; Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#common-issues-solutions">Common Issues &amp; Solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#further-reading">Further Reading</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="visualization.html#basic-visualization">Basic Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="visualization.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#preset-visualization-modes">Preset Visualization Modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#layout-options">Layout Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#auto-scaling-features">Auto-Scaling Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#customization-options">Customization Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#exporting-visualizations">Exporting Visualizations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#interactive-visualizations">Interactive Visualizations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#performance-tips">Performance Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization_guide.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dependencies_guide.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies_guide.html#optional-dependencies">Optional Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies_guide.html#dependency-troubleshooting">Dependency Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies_guide.html#llm-friendly-dependency-guidance">LLM-Friendly Dependency Guidance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies_guide.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dependencies_guide.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#why-networkx-interoperability">Why NetworkX Interoperability?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#export-to-networkx">Export to NetworkX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#attribute-preservation">Attribute Preservation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#using-networkx-algorithms">Using NetworkX Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#integration-with-external-tools">Integration with External Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#py3plex-networkx-tensorly">Py3plex → NetworkX → TensorLy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#import-from-networkx">Import from NetworkX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#practical-examples">Practical Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networkx_interop.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a><ul>
@@ -360,6 +436,22 @@ py3plex provides:</p>
 <li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#algorithm-comparison-table">Algorithm Comparison Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#citation-guidelines">Citation Guidelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#algorithm-categories">Algorithm Categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#community-detection-algorithms">Community Detection Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#centrality-measures">Centrality Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#network-statistics">Network Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#node-ranking-classification">Node Ranking &amp; Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#random-walks-embeddings">Random Walks &amp; Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#visualization-algorithms">Visualization Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#benchmark-utilities">Benchmark &amp; Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#algorithm-selection-guide">Algorithm Selection Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#algorithm-dependencies">Algorithm Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#common-algorithm-workflows">Common Algorithm Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#further-reading">Further Reading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#citation-information">Citation Information</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a><ul>
@@ -375,6 +467,34 @@ py3plex provides:</p>
 <li class="toctree-l2"><a class="reference internal" href="performance.html#benchmarking-examples">Benchmarking Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="performance.html#next-steps">Next Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="performance.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#network-scale-guidelines">Network Scale Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#sparse-matrix-backend">Sparse Matrix Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#network-sampling">Network Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#algorithm-optimization">Algorithm Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#parallel-processing">Parallel Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#visualization-optimization">Visualization Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#memory-management">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#batch-processing">Batch Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#benchmark-results">Benchmark Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#alternative-tools-for-scale">Alternative Tools for Scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#quick-performance-checklist">Quick Performance Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance_guide.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#see-also">See Also</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical_comparison.html#references">References</a></li>
 </ul>
 </li>
 </ul>
@@ -400,6 +520,33 @@ py3plex provides:</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/cli_usage.html#see-also">See Also</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#building-the-image">Building the Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#running-commands">Running Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#working-with-files">Working with Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#advanced-usage">Advanced Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#helper-scripts">Helper Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#docker-configuration-files">Docker Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#practical-examples">Practical Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#ci-cd-integration">CI/CD Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/docker_usage.html#support">Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/csv_loading.html#standard-csv-schema">Standard CSV Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/csv_loading.html#creating-csv-from-pandas-dataframe">Creating CSV from Pandas DataFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/csv_loading.html#alternative-formats">Alternative Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/csv_loading.html#common-issues-and-solutions">Common Issues and Solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/csv_loading.html#complete-example-workflow">Complete Example Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/csv_loading.html#validation-before-loading">Validation Before Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/csv_loading.html#tips-and-best-practices">Tips and Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/csv_loading.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#supported-centrality-measures">Supported Centrality Measures</a></li>
@@ -410,6 +557,18 @@ py3plex provides:</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#performance-considerations">Performance Considerations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#example-applications">Example Applications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#analysis-components">Analysis Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#working-with-results">Working with Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#see-also">See Also</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/meta_flow_report.html#references">References</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a><ul>
@@ -456,6 +615,18 @@ py3plex provides:</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/network_decomposition.html#best-practices">Best Practices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/network_decomposition.html#references">References</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/network_decomposition.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#what-is-incidence-gadget-encoding">What is Incidence Gadget Encoding?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#understanding-the-output">Understanding the Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#advanced-usage">Advanced Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#technical-details">Technical Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#see-also">See Also</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html#example-scripts">Example Scripts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a><ul>
@@ -516,6 +687,41 @@ py3plex provides:</p>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#visualization">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#wrappers">Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#i-o-operations">I/O Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#profiling-utilities">Profiling Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#logging-configuration">Logging Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#i-o-schema-and-validation">I/O Schema and Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hedwig-rule-learning">Hedwig Rule Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#force-atlas-2-visualization">Force Atlas 2 Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#embedding-visualization">Embedding Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#network-generation-and-benchmarking">Network Generation and Benchmarking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#additional-statistics-and-analysis">Additional Statistics and Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#community-detection-advanced">Community Detection Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#node-ranking-and-classification">Node Ranking and Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#embeddings-and-wrappers">Embeddings and Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#network-motifs-and-patterns">Network Motifs and Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hinmine-data-structures">HINMINE Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#validation-utilities">Validation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#network-comparison-and-testing">Network Comparison and Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hedwig-learning-algorithms">Hedwig Learning Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hedwig-statistics-and-scoring">Hedwig Statistics and Scoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hedwig-core-components">Hedwig Core Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#time-series-and-temporal-analysis">Time Series and Temporal Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#advanced-visualization">Advanced Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#link-prediction">Link Prediction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#supported-input-formats">Supported Input Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#multilayer-conventions">Multilayer Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="community_detection.html#supported-algorithms">Supported Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community_detection.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community_detection.html#examples">Examples</a></li>
 </ul>
 </li>
 </ul>

@@ -312,14 +312,14 @@ References
 See Also
 --------
 
-* :doc:`network_decomposition` - Alternative network transformation techniques
-* :doc:`multilayer_centrality` - Centrality measures for multiplex networks
-* :doc:`community_detection` - Community detection in multilayer networks
+* :doc:`./network_decomposition` - Alternative network transformation techniques
+* :doc:`./multilayer_centrality` - Centrality measures for multiplex networks
+* :doc:`./community_detection` - Community detection in multilayer networks
 
 Example Scripts
 ---------------
 
-See ``examples/example_incidence_gadget_encoding.py`` for complete demonstrations:
+See ``examples/multilayer/example_incidence_gadget_encoding.py`` for complete demonstrations:
 
 * Basic encoding and decoding workflow
 * Social network multiplex example  

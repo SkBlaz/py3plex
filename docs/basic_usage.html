@@ -63,17 +63,28 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
@@ -87,6 +98,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul>
@@ -128,25 +141,26 @@
 <h1>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading"></a></h1>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p><strong>Install py3plex:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
 </pre></div>
 </div>
 </section>
 <section id="basic-usage">
 <h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
-<p>Import the library:</p>
+<p><strong>Import the library:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 </pre></div>
 </div>
 </section>
 <section id="loading-networks">
 <h2>Loading Networks<a class="headerlink" href="#loading-networks" title="Link to this heading"></a></h2>
-<p><strong>From edge lists</strong>:</p>
+<p><strong>From edge lists:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="s2">&quot;./datasets/test.edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>From multilayer edge lists</strong> (format: node1 layer1 node2 layer2 weight):</p>
+<p><strong>From multilayer edge lists</strong> (format: <strong>node1 layer1 node2 layer2 weight</strong>):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="s2">&quot;./datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
 </pre></div>
@@ -159,6 +173,7 @@
 </section>
 <section id="network-operations">
 <h2>Network Operations<a class="headerlink" href="#network-operations" title="Link to this heading"></a></h2>
+<p><strong>Basic operations:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get network statistics</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
@@ -169,12 +184,12 @@
 </section>
 <section id="for-more-examples">
 <h2>For More Examples<a class="headerlink" href="#for-more-examples" title="Link to this heading"></a></h2>
-<p>See the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory for detailed usage patterns:</p>
+<p>See the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory for <strong>detailed usage patterns</strong>:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_visualization.py</span></code> - Visualization techniques</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_IO.py</span></code> - Loading/saving networks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_manipulation.py</span></code> - Network manipulation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_functionality.py</span></code> - Core functionality</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_visualization.py</span></code> - <strong>Visualization techniques</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_IO.py</span></code> - <strong>Loading/saving networks</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_manipulation.py</span></code> - <strong>Network manipulation</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_functionality.py</span></code> - <strong>Core functionality</strong></p></li>
 </ul>
 <p>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p>
 </section>

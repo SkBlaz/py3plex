@@ -1,0 +1,1128 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Roadmap &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Performance and Scalability" href="performance.html" />
+    <link rel="prev" title="Algorithm Selection Guide" href="algorithm_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithm Roadmap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#algorithm-categories">Algorithm Categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#community-detection-algorithms">Community Detection Algorithms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#louvain-algorithm">Louvain Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#infomap-algorithm">Infomap Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-louvain">Multilayer Louvain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#leiden-multilayer">Leiden Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#norc-algorithm">NoRC Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#community-measures">Community Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#community-ranking">Community Ranking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-benchmarks">Multilayer Benchmarks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#centrality-measures">Centrality Measures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multilayercentrality-class">MultilayerCentrality Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hubs-and-authorities-hits">Hubs and Authorities (HITS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#versatility-centrality">Versatility Centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supra-matrix-function-centralities">Supra Matrix Function Centralities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multixrank">MultiXRank</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-statistics">Network Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-statistics">Multilayer Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-statistics-detailed">Multilayer Statistics (Detailed)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#topology-analysis">Topology Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#correlation-networks">Correlation Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enrichment-analysis">Enrichment Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#statistical-comparison">Statistical Comparison</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#power-law-analysis">Power Law Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#node-ranking-classification">Node Ranking &amp; Classification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#node-ranking">Node Ranking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#label-propagation">Label Propagation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#personalized-pagerank-ppr">Personalized PageRank (PPR)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#random-walks-embeddings">Random Walks &amp; Embeddings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#random-walk-primitives">Random Walk Primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node2vec-embedding">Node2Vec Embedding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deepwalk-embedding">DeepWalk Embedding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entanglement-analysis">Entanglement Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#visualization-algorithms">Visualization Algorithms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#layout-algorithms">Layout Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-visualization">Multilayer Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drawing-machinery">Drawing Machinery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#color-schemes">Color Schemes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#embedding-visualization">Embedding Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#benchmark-utilities">Benchmark &amp; Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#network-classification-benchmark">Network Classification Benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#benchmark-visualizations">Benchmark Visualizations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#algorithm-selection-guide">Algorithm Selection Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#by-task-type">By Task Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#by-network-size">By Network Size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#by-network-type">By Network Type</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#algorithm-dependencies">Algorithm Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-algorithm-workflows">Common Algorithm Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#community-detection-workflow">Community Detection Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centrality-analysis-workflow">Centrality Analysis Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#embedding-workflow">Embedding Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#statistical-analysis-workflow">Statistical Analysis Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further Reading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#citation-information">Citation Information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation and References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Algorithm Roadmap</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/algorithm_roadmap.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="algorithm-roadmap">
+<h1>Algorithm Roadmap<a class="headerlink" href="#algorithm-roadmap" title="Link to this heading"></a></h1>
+<p>This page provides a <strong>comprehensive overview</strong> of all algorithms implemented in py3plex, organized by category and showing relationships between different methods.</p>
+<p><strong>Purpose:</strong> Help you quickly find the right algorithm for your multilayer network analysis task.</p>
+<section id="algorithm-categories">
+<h2>Algorithm Categories<a class="headerlink" href="#algorithm-categories" title="Link to this heading"></a></h2>
+<p>The algorithms in py3plex are organized into these main categories:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> - Finding community structure</p></li>
+<li><p><a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a> - Computing node importance</p></li>
+<li><p><a class="reference internal" href="#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a> - Network-level metrics</p></li>
+<li><p><a class="reference internal" href="#node-ranking-classification"><span class="std std-ref">Node Ranking &amp; Classification</span></a> - Ranking and classification methods</p></li>
+<li><p><a class="reference internal" href="#random-walks-embeddings"><span class="std std-ref">Random Walks &amp; Embeddings</span></a> - Random walk-based methods</p></li>
+<li><p><a class="reference internal" href="#visualization-algorithms"><span class="std std-ref">Visualization Algorithms</span></a> - Layout and rendering</p></li>
+<li><p><a class="reference internal" href="#benchmark-utilities"><span class="std std-ref">Benchmark &amp; Utilities</span></a> - Testing and evaluation</p></li>
+</ol>
+</section>
+<section id="community-detection-algorithms">
+<span id="id1"></span><h2>Community Detection Algorithms<a class="headerlink" href="#community-detection-algorithms" title="Link to this heading"></a></h2>
+<p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.community_detection</span></code></p>
+<p>These algorithms identify groups of densely connected nodes (communities) in multilayer networks.</p>
+<section id="louvain-algorithm">
+<span id="id2"></span><h3>Louvain Algorithm<a class="headerlink" href="#louvain-algorithm" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">community_detection.community_louvain</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">best_partition(graph,</span> <span class="pre">partition,</span> <span class="pre">weight,</span> <span class="pre">resolution,</span> <span class="pre">randomize,</span> <span class="pre">random_state)</span></code> - Main entry point</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_dendrogram(graph,</span> <span class="pre">partition,</span> <span class="pre">weight,</span> <span class="pre">resolution,</span> <span class="pre">randomize,</span> <span class="pre">random_state)</span></code> - Hierarchical communities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">modularity(partition,</span> <span class="pre">graph,</span> <span class="pre">weight)</span></code> - Calculate modularity score</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">partition_at_level(dendrogram,</span> <span class="pre">level)</span></code> - Extract partition at specific level</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">induced_graph(partition,</span> <span class="pre">graph,</span> <span class="pre">weight)</span></code> - Create quotient graph</p></li>
+</ul>
+<p><strong>Best for:</strong> Fast community detection on large single-layer networks</p>
+<p><strong>Complexity:</strong> O(n log n)</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a> (multilayer extension)</p></li>
+<li><p><a class="reference internal" href="#leiden-algorithm"><span class="std std-ref">Leiden Algorithm</span></a> (improved Louvain)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="infomap-algorithm">
+<h3>Infomap Algorithm<a class="headerlink" href="#infomap-algorithm" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">community_detection.community_wrapper</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">infomap_communities(network_input,</span> <span class="pre">binary_path,</span> <span class="pre">arguments)</span></code> - Main entry point</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_infomap(network,</span> <span class="pre">binary_path,</span> <span class="pre">arguments)</span></code> - Execute Infomap binary</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parse_infomap(outfile)</span></code> - Parse Infomap output</p></li>
+</ul>
+<p><strong>Best for:</strong> Flow-based community detection, hierarchical structure</p>
+<p><strong>Complexity:</strong> O(m log n) where m is edges, n is nodes</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (faster alternative)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="multilayer-louvain">
+<span id="id3"></span><h3>Multilayer Louvain<a class="headerlink" href="#multilayer-louvain" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">community_detection.multilayer_modularity</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">louvain_multilayer(supra_adj,</span> <span class="pre">omega,</span> <span class="pre">resolution,</span> <span class="pre">seed)</span></code> - Multilayer Louvain</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_modularity(supra_adj,</span> <span class="pre">partition,</span> <span class="pre">omega)</span></code> - Calculate multilayer modularity</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build_supra_modularity_matrix(network,</span> <span class="pre">omega)</span></code> - Build modularity matrix</p></li>
+</ul>
+<p><strong>Best for:</strong> Community detection across multiple layers with inter-layer coupling</p>
+<p><strong>Complexity:</strong> O(n² L) where L is number of layers</p>
+<p><strong>Algorithm details:</strong> Implements Mucha et al. (2010) multilayer modularity optimization</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (single-layer version)</p></li>
+<li><p><a class="reference internal" href="#leiden-multilayer"><span class="std std-ref">Leiden Algorithm</span></a> (alternative optimizer)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="leiden-multilayer">
+<span id="leiden-algorithm"></span><span id="id4"></span><h3>Leiden Algorithm<a class="headerlink" href="#leiden-multilayer" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">community_detection.leiden_multilayer</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">leiden_multilayer(supra_adj,</span> <span class="pre">omega,</span> <span class="pre">resolution,</span> <span class="pre">n_iterations,</span> <span class="pre">seed)</span></code> - Main entry point</p></li>
+</ul>
+<p><strong>Data structures:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LeidenResult</span></code> - Holds partition results with modularity score</p></li>
+</ul>
+<p><strong>Best for:</strong> More stable community detection than Louvain</p>
+<p><strong>Complexity:</strong> O(n log n) with better quality guarantees</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (predecessor)</p></li>
+<li><p><a class="reference internal" href="#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a> (multilayer extension)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="norc-algorithm">
+<h3>NoRC Algorithm<a class="headerlink" href="#norc-algorithm" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">community_detection.NoRC</span></code> and <code class="docutils literal notranslate"><span class="pre">community_detection.community_wrapper</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NoRC_communities(network,</span> <span class="pre">alpha)</span></code> - Wrapper function</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NoRC_communities_main(matrix,</span> <span class="pre">alpha)</span></code> - Core implementation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">page_rank_kernel(index_row)</span></code> - PageRank computation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_tree(centers)</span></code> - Build community hierarchy</p></li>
+</ul>
+<p><strong>Best for:</strong> Networks with overlapping communities</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#community-ranking"><span class="std std-ref">Community Ranking</span></a> (related approach)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="community-measures">
+<h3>Community Measures<a class="headerlink" href="#community-measures" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">community_detection.community_measures</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">modularity(network,</span> <span class="pre">partition,</span> <span class="pre">weight)</span></code> - Calculate modularity</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size_distribution(network_partition)</span></code> - Community size distribution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">number_of_communities(network_partition)</span></code> - Count communities</p></li>
+</ul>
+<p><strong>Purpose:</strong> Evaluate quality of community partitions</p>
+<p><strong>Related algorithms:</strong> All community detection algorithms above</p>
+</section>
+<section id="community-ranking">
+<span id="id5"></span><h3>Community Ranking<a class="headerlink" href="#community-ranking" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">community_detection.community_ranking</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">page_rank_kernel(index_row)</span></code> - PageRank-based ranking</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_tree(centers)</span></code> - Build ranking tree</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return_infomap_communities(network)</span></code> - Get Infomap communities</p></li>
+</ul>
+<p><strong>Best for:</strong> Ranking nodes within detected communities</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a> (general ranking)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="multilayer-benchmarks">
+<h3>Multilayer Benchmarks<a class="headerlink" href="#multilayer-benchmarks" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">community_detection.multilayer_benchmark</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_multilayer_lfr(n_nodes,</span> <span class="pre">n_layers,</span> <span class="pre">avg_degree,</span> <span class="pre">...)</span></code> - LFR benchmark</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_coupled_er_multilayer(n_nodes,</span> <span class="pre">n_layers,</span> <span class="pre">p_intra,</span> <span class="pre">p_inter)</span></code> - ER benchmark</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_sbm_multilayer(sizes,</span> <span class="pre">p_matrix,</span> <span class="pre">n_layers,</span> <span class="pre">...)</span></code> - SBM benchmark</p></li>
+</ul>
+<p><strong>Purpose:</strong> Generate synthetic multilayer networks with known community structure for testing</p>
+<p><strong>Related algorithms:</strong> All community detection algorithms</p>
+</section>
+</section>
+<section id="centrality-measures">
+<span id="centrality-measures-algorithms"></span><h2>Centrality Measures<a class="headerlink" href="#centrality-measures" title="Link to this heading"></a></h2>
+<p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.multilayer_algorithms.centrality</span></code></p>
+<p>These algorithms measure the importance or influence of nodes in multilayer networks.</p>
+<section id="multilayercentrality-class">
+<h3>MultilayerCentrality Class<a class="headerlink" href="#multilayercentrality-class" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">multilayer_algorithms.centrality.MultilayerCentrality</span></code></p>
+<p><strong>Main class for computing various centrality measures.</strong></p>
+<section id="basic-centrality-measures">
+<h4>Basic Centrality Measures<a class="headerlink" href="#basic-centrality-measures" title="Link to this heading"></a></h4>
+<p><strong>Methods:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">overlapping_degree_centrality()</span></code> - Sum of degrees across all layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_specific_degree_centrality(layer)</span></code> - Degree within specific layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_degree_centrality()</span></code> - Supra-adjacency degree</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">average_degree_centrality()</span></code> - Average degree across layers</p></li>
+</ul>
+<p><strong>Best for:</strong> Quick importance ranking, well-connected node identification</p>
+<p><strong>Complexity:</strong> O(n + m) where n is nodes, m is edges</p>
+<dl class="simple">
+<dt><strong>Related measures:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a> (cross-layer activity)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="eigenvector-based-measures">
+<h4>Eigenvector-Based Measures<a class="headerlink" href="#eigenvector-based-measures" title="Link to this heading"></a></h4>
+<p><strong>Methods:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multiplex_eigenvector_centrality(max_iter,</span> <span class="pre">tol)</span></code> - Eigenvector centrality</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pagerank_centrality(alpha,</span> <span class="pre">max_iter,</span> <span class="pre">tol)</span></code> - PageRank</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">katz_centrality(alpha,</span> <span class="pre">beta,</span> <span class="pre">max_iter,</span> <span class="pre">tol)</span></code> - Katz centrality</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">communicability_centrality(beta)</span></code> - Communicability centrality</p></li>
+</ul>
+<p><strong>Best for:</strong> Influence measure, recursive importance, prestige ranking</p>
+<p><strong>Complexity:</strong> O(m) per iteration, typically converges quickly</p>
+<dl class="simple">
+<dt><strong>Related measures:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#hubs-authorities"><span class="std std-ref">Hubs and Authorities (HITS)</span></a> (directed networks)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="path-based-measures">
+<h4>Path-Based Measures<a class="headerlink" href="#path-based-measures" title="Link to this heading"></a></h4>
+<p><strong>Methods:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_betweenness_centrality()</span></code> - Betweenness across layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_closeness_centrality()</span></code> - Closeness across layers</p></li>
+</ul>
+<p><strong>Best for:</strong> Bridge identification, broadcasting efficiency</p>
+<p><strong>Complexity:</strong> O(nm) for unweighted, O(nm + n² log n) for weighted</p>
+<p><strong>Warning:</strong> Expensive for large networks (&gt;1000 nodes)</p>
+<dl class="simple">
+<dt><strong>Related measures:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#centrality-all"><span class="std std-ref">Utility Functions</span></a> (batch computation)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="hubs-and-authorities-hits">
+<span id="hubs-authorities"></span><h3>Hubs and Authorities (HITS)<a class="headerlink" href="#hubs-and-authorities-hits" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">node_ranking.node_ranking.hubs_and_authorities</span></code></p>
+<p><strong>Best for:</strong> Ranking nodes in directed networks (authority = important destination, hub = important source)</p>
+<dl class="simple">
+<dt><strong>Related measures:</strong></dt><dd><ul class="simple">
+<li><p>PageRank in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+</ul>
+</dd>
+</dl>
+<section id="utility-functions">
+<span id="centrality-all"></span><h4>Utility Functions<a class="headerlink" href="#utility-functions" title="Link to this heading"></a></h4>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_all_centralities(network,</span> <span class="pre">include_path_based,</span> <span class="pre">include_advanced)</span></code> - Compute multiple measures</p></li>
+</ul>
+<p><strong>Purpose:</strong> Batch computation of multiple centrality measures</p>
+</section>
+</section>
+<section id="versatility-centrality">
+<span id="id6"></span><h3>Versatility Centrality<a class="headerlink" href="#versatility-centrality" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">algorithms.statistics.multilayer_statistics.versatility_centrality</span></code></p>
+<p><strong>Function:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">versatility_centrality(network,</span> <span class="pre">centrality_type)</span></code> - Cross-layer versatility measure</p></li>
+</ul>
+<p><strong>Best for:</strong> Measuring how uniformly a node’s importance is distributed across layers</p>
+<p><strong>Complexity:</strong> O(m × L) where L is number of layers</p>
+<dl class="simple">
+<dt><strong>Related measures:</strong></dt><dd><ul class="simple">
+<li><p>All centrality measures in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="supra-matrix-function-centralities">
+<h3>Supra Matrix Function Centralities<a class="headerlink" href="#supra-matrix-function-centralities" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">multilayer_algorithms.supra_matrix_function_centrality</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">communicability_centrality(supra_matrix,</span> <span class="pre">beta)</span></code> - Matrix exponential based</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">katz_centrality(supra_matrix,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">max_iter,</span> <span class="pre">tol)</span></code> - Resolvent based</p></li>
+</ul>
+<p><strong>Best for:</strong> Advanced centrality using matrix functions on supra-adjacency</p>
+<p><strong>Complexity:</strong> Depends on matrix operations, typically O(n²) or O(n³)</p>
+<dl class="simple">
+<dt><strong>Related measures:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a> (standard measures)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="multixrank">
+<h3>MultiXRank<a class="headerlink" href="#multixrank" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">multilayer_algorithms.multixrank</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multixrank_from_py3plex_networks(networks,</span> <span class="pre">config)</span></code> - MultiXRank algorithm</p></li>
+</ul>
+<p><strong>Best for:</strong> Ranking in multiplex heterogeneous networks with bipartite layers</p>
+<p><strong>Algorithm details:</strong> Extends PageRank to multiplex/heterogeneous networks</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p>PageRank in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="network-statistics">
+<span id="network-statistics-algorithms"></span><h2>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading"></a></h2>
+<p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics</span></code></p>
+<p>These algorithms compute various statistical properties of multilayer networks.</p>
+<section id="multilayer-statistics">
+<h3>Multilayer Statistics<a class="headerlink" href="#multilayer-statistics" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">statistics.multilayer_statistics</span></code></p>
+<p><strong>Layer-level measures:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_density(network,</span> <span class="pre">layer)</span></code> - Density of specific layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edge_overlap(network,</span> <span class="pre">layer_i,</span> <span class="pre">layer_j)</span></code> - Edge overlap between layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inter_layer_coupling_strength(network,</span> <span class="pre">layer_i,</span> <span class="pre">layer_j)</span></code> - Coupling strength</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inter_layer_degree_correlation(network,</span> <span class="pre">layer_i,</span> <span class="pre">layer_j)</span></code> - Degree correlation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inter_layer_assortativity(network,</span> <span class="pre">layer_i,</span> <span class="pre">layer_j)</span></code> - Assortativity between layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_similarity(network,</span> <span class="pre">layer_i,</span> <span class="pre">layer_j,</span> <span class="pre">method)</span></code> - Layer similarity</p></li>
+</ul>
+<p><strong>Node-level measures:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">node_activity(network,</span> <span class="pre">node)</span></code> - Activity across layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">degree_vector(network,</span> <span class="pre">node,</span> <span class="pre">weighted)</span></code> - Degree vector across layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_clustering_coefficient(network,</span> <span class="pre">node)</span></code> - Multilayer clustering</p></li>
+</ul>
+<p><strong>Network-level measures:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">interdependence(network,</span> <span class="pre">sample_size)</span></code> - Network interdependence</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">supra_laplacian_spectrum(network,</span> <span class="pre">k)</span></code> - Spectral properties</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">algebraic_connectivity(network)</span></code> - Second smallest Laplacian eigenvalue</p></li>
+</ul>
+<p><strong>Best for:</strong> Understanding multilayer network structure and properties</p>
+<p><strong>Complexity:</strong> Varies by measure, typically O(n) to O(n²)</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (simpler measures)</p></li>
+<li><p><a class="reference internal" href="#topology-measures"><span class="std std-ref">Topology Analysis</span></a> (topological properties)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="multilayer-statistics-detailed">
+<span id="id7"></span><span id="basic-statistics"></span><h3>Multilayer Statistics (Detailed)<a class="headerlink" href="#multilayer-statistics-detailed" title="Link to this heading"></a></h3>
+<p>See the full section above for complete details on multilayer statistics functions.</p>
+</section>
+<section id="id8">
+<h3>Basic Statistics<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">statistics.basic_statistics</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">identify_n_hubs(network,</span> <span class="pre">n,</span> <span class="pre">metric)</span></code> - Find top-n hub nodes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">core_network_statistics(network)</span></code> - Comprehensive network statistics</p></li>
+</ul>
+<p><strong>Best for:</strong> Quick network overview, hub identification</p>
+<p><strong>Complexity:</strong> O(n + m) for most measures</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#id7"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (advanced measures)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="topology-analysis">
+<span id="topology-measures"></span><h3>Topology Analysis<a class="headerlink" href="#topology-analysis" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">statistics.topology</span></code></p>
+<p>Functions for analyzing topological properties of networks.</p>
+<p><strong>Purpose:</strong> Study structural properties like degree distributions, connected components, etc.</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="correlation-networks">
+<h3>Correlation Networks<a class="headerlink" href="#correlation-networks" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">statistics.correlation_networks</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">default_correlation_to_network(correlation_matrix,</span> <span class="pre">threshold)</span></code> - Convert correlation matrix to network</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pick_threshold(matrix)</span></code> - Automatically select threshold</p></li>
+</ul>
+<p><strong>Best for:</strong> Creating networks from correlation/similarity matrices</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a> (analysis after construction)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="enrichment-analysis">
+<h3>Enrichment Analysis<a class="headerlink" href="#enrichment-analysis" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">statistics.enrichment_modules</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_enrichment(term_dataset,</span> <span class="pre">annotation_database,</span> <span class="pre">...)</span></code> - General enrichment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fet_enrichment_generic(...)</span></code> - Fisher’s exact test enrichment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fet_enrichment_terms(...)</span></code> - Term enrichment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fet_enrichment_uniprot(...)</span></code> - UniProt annotation enrichment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">calculate_pval(term,</span> <span class="pre">alternative)</span></code> - p-value calculation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiple_test_correction(input_dataset)</span></code> - FDR correction</p></li>
+</ul>
+<p><strong>Best for:</strong> Finding over-represented terms/annotations in network communities</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> (provides communities for enrichment)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="statistical-comparison">
+<h3>Statistical Comparison<a class="headerlink" href="#statistical-comparison" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">statistics.stats_comparison</span></code></p>
+<p><strong>Functions:</strong> Various statistical tests for comparing networks or algorithms</p>
+<dl class="simple">
+<dt><strong>Related modules:</strong></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">statistics.bayesiantests</span></code> - Bayesian statistical tests</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">statistics.bayesian_distances</span></code> - Bayesian distance measures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">statistics.critical_distances</span></code> - Critical difference diagrams</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Best for:</strong> Comparing performance of different algorithms or network properties</p>
+</section>
+<section id="power-law-analysis">
+<h3>Power Law Analysis<a class="headerlink" href="#power-law-analysis" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">statistics.powerlaw</span></code></p>
+<p>Functions for testing and fitting power law distributions in networks.</p>
+<p><strong>Best for:</strong> Analyzing degree distributions, checking for scale-free properties</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (degree distributions)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="node-ranking-classification">
+<span id="id9"></span><h2>Node Ranking &amp; Classification<a class="headerlink" href="#node-ranking-classification" title="Link to this heading"></a></h2>
+<p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.node_ranking</span></code> and <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.network_classification</span></code></p>
+<section id="node-ranking">
+<span id="node-ranking-algorithms"></span><h3>Node Ranking<a class="headerlink" href="#node-ranking" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">node_ranking.node_ranking</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sparse_page_rank(graph,</span> <span class="pre">alpha,</span> <span class="pre">personalization,</span> <span class="pre">max_iter,</span> <span class="pre">tol)</span></code> - Sparse PageRank</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hubs_and_authorities(graph)</span></code> - HITS algorithm</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hub_matrix(graph)</span></code> - Hub matrix computation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">authority_matrix(graph)</span></code> - Authority matrix computation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stochastic_normalization(matrix)</span></code> - Normalize for random walks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stochastic_normalization_hin(matrix)</span></code> - Normalize for heterogeneous networks</p></li>
+</ul>
+<p><strong>Best for:</strong> Ranking nodes by importance in directed networks</p>
+<p><strong>Complexity:</strong> O(m) per iteration for PageRank, O(nm) for HITS</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p>PageRank in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+<li><p><a class="reference internal" href="#label-propagation"><span class="std std-ref">Label Propagation</span></a> (classification)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="label-propagation">
+<span id="id10"></span><h3>Label Propagation<a class="headerlink" href="#label-propagation" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">network_classification.label_propagation</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">label_propagation(adjacency,</span> <span class="pre">labels,</span> <span class="pre">alpha,</span> <span class="pre">max_iter,</span> <span class="pre">tol,</span> <span class="pre">normalization)</span></code> - Main algorithm</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_label_propagation(...)</span></code> - Validation function</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label_propagation_normalization(matrix)</span></code> - Normalization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalize_initial_matrix_freq(mat)</span></code> - Frequency normalization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalize_amplify_freq(mat)</span></code> - Amplified normalization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalize_exp(mat)</span></code> - Exponential normalization</p></li>
+</ul>
+<p><strong>Best for:</strong> Semi-supervised node classification</p>
+<p><strong>Complexity:</strong> O(m × i) where i is number of iterations</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#ppr-algorithm"><span class="std std-ref">Personalized PageRank (PPR)</span></a> (personalized version)</p></li>
+<li><p>Label propagation in <a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="personalized-pagerank-ppr">
+<span id="ppr-algorithm"></span><h3>Personalized PageRank (PPR)<a class="headerlink" href="#personalized-pagerank-ppr" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">network_classification.PPR</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">construct_PPR_matrix(graph_matrix,</span> <span class="pre">parallel)</span></code> - Build PPR matrix</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">construct_PPR_matrix_targets(graph_matrix,</span> <span class="pre">targets,</span> <span class="pre">parallel)</span></code> - PPR for specific targets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_ppr(...)</span></code> - Validation function</p></li>
+</ul>
+<p><strong>Best for:</strong> Local network exploration, personalized node ranking</p>
+<p><strong>Complexity:</strong> O(n²) for dense computation, can be approximated</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#label-propagation"><span class="std std-ref">Label Propagation</span></a> (similar propagation mechanism)</p></li>
+<li><p>PageRank in <a class="reference internal" href="#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="random-walks-embeddings">
+<span id="id11"></span><h2>Random Walks &amp; Embeddings<a class="headerlink" href="#random-walks-embeddings" title="Link to this heading"></a></h2>
+<p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.general</span></code> and <code class="docutils literal notranslate"><span class="pre">py3plex.wrappers</span></code></p>
+<section id="random-walk-primitives">
+<span id="id12"></span><h3>Random Walk Primitives<a class="headerlink" href="#random-walk-primitives" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">general.walkers</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">basic_random_walk(graph,</span> <span class="pre">start_node,</span> <span class="pre">walk_length)</span></code> - Simple random walk</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">node2vec_walk(graph,</span> <span class="pre">start_node,</span> <span class="pre">walk_length,</span> <span class="pre">p,</span> <span class="pre">q)</span></code> - Biased random walk</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_walks(graph,</span> <span class="pre">num_walks,</span> <span class="pre">walk_length,</span> <span class="pre">strategy,</span> <span class="pre">...)</span></code> - Generate multiple walks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">general_random_walk(G,</span> <span class="pre">start_node,</span> <span class="pre">iterations,</span> <span class="pre">teleportation_prob)</span></code> - Random walk with restart</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_specific_random_walk(network,</span> <span class="pre">start_node,</span> <span class="pre">start_layer,</span> <span class="pre">walk_length,</span> <span class="pre">...)</span></code> - Multilayer walk</p></li>
+</ul>
+<p><strong>Best for:</strong> Foundation for embedding algorithms, network exploration</p>
+<p><strong>Complexity:</strong> O(L) per walk where L is walk length</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a> (uses these walks)</p></li>
+<li><p><a class="reference internal" href="#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a> (uses these walks)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="node2vec-embedding">
+<span id="id13"></span><h3>Node2Vec Embedding<a class="headerlink" href="#node2vec-embedding" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">wrappers.node2vec_embedding</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_embeddings(graph,</span> <span class="pre">dimensions,</span> <span class="pre">walk_length,</span> <span class="pre">num_walks,</span> <span class="pre">p,</span> <span class="pre">q,</span> <span class="pre">...)</span></code> - Generate embeddings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">train_node2vec(graph,</span> <span class="pre">...)</span></code> - Training wrapper</p></li>
+</ul>
+<p><strong>Best for:</strong> Feature learning, link prediction, node classification</p>
+<p><strong>Complexity:</strong> O(r × l × V) where r is walks per node, l is walk length, V is number of vertices</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code>: Return parameter (controls backtracking)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code>: In-out parameter (controls exploration vs exploitation)</p></li>
+</ul>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a> (special case with p=1, q=1)</p></li>
+<li><p><a class="reference internal" href="#random-walk-primitives"><span class="std std-ref">Random Walk Primitives</span></a> (underlying walks)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="deepwalk-embedding">
+<span id="id14"></span><h3>DeepWalk Embedding<a class="headerlink" href="#deepwalk-embedding" title="Link to this heading"></a></h3>
+<p><strong>Implementation:</strong> Node2Vec with p=1, q=1</p>
+<p><strong>Best for:</strong> Simpler alternative to Node2Vec with uniform random walks</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a> (generalization)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="entanglement-analysis">
+<h3>Entanglement Analysis<a class="headerlink" href="#entanglement-analysis" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">multilayer_algorithms.entanglement</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_entanglement_analysis(network)</span></code> - Full entanglement analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build_occurrence_matrix(network)</span></code> - Build node-layer occurrence matrix</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_blocks(c_matrix)</span></code> - Compute block structure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_entanglement(block_matrix)</span></code> - Calculate entanglement metrics</p></li>
+</ul>
+<p><strong>Best for:</strong> Analyzing node-layer participation patterns</p>
+<p><strong>Purpose:</strong> Measure how nodes are entangled across layers</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a> (similar cross-layer analysis)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="visualization-algorithms">
+<span id="id15"></span><h2>Visualization Algorithms<a class="headerlink" href="#visualization-algorithms" title="Link to this heading"></a></h2>
+<p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">py3plex.visualization</span></code></p>
+<section id="layout-algorithms">
+<span id="id16"></span><h3>Layout Algorithms<a class="headerlink" href="#layout-algorithms" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">visualization.layout_algorithms</span></code></p>
+<p><strong>Available layouts:</strong></p>
+<ul class="simple">
+<li><p>Force-directed layouts (Spring, Fruchterman-Reingold)</p></li>
+<li><p>Circular layout</p></li>
+<li><p>Spectral layout</p></li>
+<li><p>Hierarchical layout</p></li>
+<li><p>Diagonal projection (multilayer-specific)</p></li>
+</ul>
+<p><strong>Best for:</strong> Positioning nodes for visualization</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#multilayer-visualization"><span class="std std-ref">Multilayer Visualization</span></a> (uses these layouts)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="multilayer-visualization">
+<span id="id17"></span><h3>Multilayer Visualization<a class="headerlink" href="#multilayer-visualization" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">visualization.multilayer</span></code></p>
+<p><strong>Main functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">draw_multilayer_default(networks,</span> <span class="pre">...)</span></code> - Default multilayer drawing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hairball_plot(network,</span> <span class="pre">layout_algorithm)</span></code> - Single-layer projection</p></li>
+<li><p>Diagonal projection plotting</p></li>
+<li><p>Layer-separated visualization</p></li>
+</ul>
+<p><strong>Best for:</strong> Visualizing multilayer network structure</p>
+<dl class="simple">
+<dt><strong>Scalability:</strong></dt><dd><ul class="simple">
+<li><p>Diagonal projection: 10,000+ nodes</p></li>
+<li><p>Force-directed: &lt;5,000 nodes</p></li>
+<li><p>Matrix view: 100,000+ nodes</p></li>
+</ul>
+</dd>
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#layout-algorithms"><span class="std std-ref">Layout Algorithms</span></a> (positioning)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="drawing-machinery">
+<h3>Drawing Machinery<a class="headerlink" href="#drawing-machinery" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">visualization.drawing_machinery</span></code></p>
+<p>Low-level drawing functions and utilities.</p>
+<p><strong>Purpose:</strong> Support functions for rendering networks</p>
+</section>
+<section id="color-schemes">
+<h3>Color Schemes<a class="headerlink" href="#color-schemes" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">visualization.colors</span></code></p>
+<p>Functions for generating color schemes for communities, layers, node types.</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> (uses colors)</p></li>
+<li><p><a class="reference internal" href="#multilayer-visualization"><span class="std std-ref">Multilayer Visualization</span></a> (uses colors)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="embedding-visualization">
+<h3>Embedding Visualization<a class="headerlink" href="#embedding-visualization" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">visualization.embedding_visualization</span></code></p>
+<p>Functions for visualizing node embeddings in 2D/3D space.</p>
+<p><strong>Best for:</strong> Visualizing results of embedding algorithms</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p></li>
+<li><p><a class="reference internal" href="#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="benchmark-utilities">
+<span id="id18"></span><h2>Benchmark &amp; Utilities<a class="headerlink" href="#benchmark-utilities" title="Link to this heading"></a></h2>
+<section id="network-classification-benchmark">
+<h3>Network Classification Benchmark<a class="headerlink" href="#network-classification-benchmark" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">general.benchmark_classification</span></code></p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">evaluate_oracle_F1(probs,</span> <span class="pre">Y_real)</span></code> - Evaluate classification performance</p></li>
+</ul>
+<p><strong>Best for:</strong> Evaluating node classification algorithms</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#label-propagation"><span class="std std-ref">Label Propagation</span></a></p></li>
+<li><p><a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="benchmark-visualizations">
+<h3>Benchmark Visualizations<a class="headerlink" href="#benchmark-visualizations" title="Link to this heading"></a></h3>
+<p><strong>Path:</strong> <code class="docutils literal notranslate"><span class="pre">visualization.benchmark_visualizations</span></code></p>
+<p>Functions for visualizing algorithm comparison results.</p>
+<dl class="simple">
+<dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
+<li><p>All algorithms (for benchmarking)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="algorithm-selection-guide">
+<h2>Algorithm Selection Guide<a class="headerlink" href="#algorithm-selection-guide" title="Link to this heading"></a></h2>
+<p>This section helps you choose the right algorithm category based on your task.</p>
+<section id="by-task-type">
+<h3>By Task Type<a class="headerlink" href="#by-task-type" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Community Detection:</strong></dt><dd><p>→ See <a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a></p>
+</dd>
+<dt><strong>Node Importance:</strong></dt><dd><p>→ See <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p>
+</dd>
+<dt><strong>Node Classification:</strong></dt><dd><p>→ See <a class="reference internal" href="#label-propagation"><span class="std std-ref">Label Propagation</span></a> or <a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p>
+</dd>
+<dt><strong>Network Comparison:</strong></dt><dd><p>→ See <a class="reference internal" href="#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a></p>
+</dd>
+<dt><strong>Feature Learning:</strong></dt><dd><p>→ See <a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p>
+</dd>
+<dt><strong>Visualization:</strong></dt><dd><p>→ See <a class="reference internal" href="#visualization-algorithms"><span class="std std-ref">Visualization Algorithms</span></a></p>
+</dd>
+</dl>
+</section>
+<section id="by-network-size">
+<h3>By Network Size<a class="headerlink" href="#by-network-size" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Small (&lt;1,000 nodes):</strong></dt><dd><ul class="simple">
+<li><p>All algorithms work well</p></li>
+<li><p>Can use expensive path-based measures</p></li>
+<li><p>All visualization methods</p></li>
+</ul>
+</dd>
+<dt><strong>Medium (1,000-10,000 nodes):</strong></dt><dd><ul class="simple">
+<li><p>Use Louvain over Infomap</p></li>
+<li><p>Avoid full betweenness centrality</p></li>
+<li><p>Use diagonal projection for visualization</p></li>
+</ul>
+</dd>
+<dt><strong>Large (10,000-100,000 nodes):</strong></dt><dd><ul class="simple">
+<li><p>Degree-based measures only</p></li>
+<li><p>Louvain or label propagation</p></li>
+<li><p>Matrix visualizations</p></li>
+</ul>
+</dd>
+<dt><strong>Very Large (&gt;100,000 nodes):</strong></dt><dd><ul class="simple">
+<li><p>Degree, PageRank only</p></li>
+<li><p>Label propagation for communities</p></li>
+<li><p>Sparse matrix operations essential</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="by-network-type">
+<h3>By Network Type<a class="headerlink" href="#by-network-type" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Single-layer networks:</strong></dt><dd><ul class="simple">
+<li><p>Standard algorithms: Louvain, PageRank, betweenness</p></li>
+<li><p>See <a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> and <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+</ul>
+</dd>
+<dt><strong>Multiplex/multilayer networks:</strong></dt><dd><ul class="simple">
+<li><p>Multilayer-specific: <a class="reference internal" href="#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a>, <a class="reference internal" href="#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a></p></li>
+<li><p>Layer statistics: <a class="reference internal" href="#id7"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a></p></li>
+<li><p>Cross-layer measures</p></li>
+</ul>
+</dd>
+<dt><strong>Directed networks:</strong></dt><dd><ul class="simple">
+<li><p>PageRank, HITS algorithm</p></li>
+<li><p>See <a class="reference internal" href="#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a></p></li>
+</ul>
+</dd>
+<dt><strong>Weighted networks:</strong></dt><dd><ul class="simple">
+<li><p>All algorithms support weights</p></li>
+<li><p>Specify <code class="docutils literal notranslate"><span class="pre">weight</span></code> parameter</p></li>
+</ul>
+</dd>
+<dt><strong>Temporal networks:</strong></dt><dd><ul class="simple">
+<li><p>Layer-based representation</p></li>
+<li><p>Time-respecting random walks: <a class="reference internal" href="#random-walk-primitives"><span class="std std-ref">Random Walk Primitives</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="algorithm-dependencies">
+<h2>Algorithm Dependencies<a class="headerlink" href="#algorithm-dependencies" title="Link to this heading"></a></h2>
+<p>This diagram shows how algorithms depend on each other:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Basic Network Operations
+        |
+        ├── Random Walks ──────────────┬─→ Node2Vec/DeepWalk
+        |                              |
+        ├── Centrality Measures ───────┼─→ Versatility
+        |                              |
+        ├── Community Detection ───────┼─→ Community Measures
+        |   |                          |
+        |   ├─→ Modularity             └─→ Enrichment Analysis
+        |   └─→ Community Ranking
+        |
+        ├── Statistics ────────────────┬─→ Benchmarks
+        |                              └─→ Comparisons
+        |
+        └── Embeddings ────────────────┬─→ Visualization
+                                       └─→ Classification
+</pre></div>
+</div>
+</section>
+<section id="common-algorithm-workflows">
+<h2>Common Algorithm Workflows<a class="headerlink" href="#common-algorithm-workflows" title="Link to this heading"></a></h2>
+<section id="community-detection-workflow">
+<h3>Community Detection Workflow<a class="headerlink" href="#community-detection-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Detect communities</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">())</span>
+
+<span class="c1"># 2. Evaluate quality</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">multilayer_modularity</span>
+<span class="n">quality</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(),</span> <span class="n">communities</span><span class="p">)</span>
+
+<span class="c1"># 3. Analyze communities</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.enrichment_modules</span> <span class="kn">import</span> <span class="n">compute_enrichment</span>
+
+<span class="c1"># 4. Visualize</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">communities</span><span class="o">=</span><span class="n">communities</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="centrality-analysis-workflow">
+<h3>Centrality Analysis Workflow<a class="headerlink" href="#centrality-analysis-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Compute centralities</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">MultilayerCentrality</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># 2. Multiple measures</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">overlapping_degree_centrality</span><span class="p">()</span>
+<span class="n">pagerank</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">pagerank_centrality</span><span class="p">()</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_betweenness_centrality</span><span class="p">()</span>
+
+<span class="c1"># 3. Cross-layer analysis</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+
+<span class="c1"># 4. Identify hubs</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.basic_statistics</span> <span class="kn">import</span> <span class="n">identify_n_hubs</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="n">identify_n_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="embedding-workflow">
+<h3>Embedding Workflow<a class="headerlink" href="#embedding-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Generate walks</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                      <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;node2vec&#39;</span><span class="p">)</span>
+
+<span class="c1"># 2. Learn embeddings</span>
+<span class="kn">from</span> <span class="nn">py3plex.wrappers.node2vec_embedding</span> <span class="kn">import</span> <span class="n">generate_embeddings</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">generate_embeddings</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+                                 <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># 3. Use for classification</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.network_classification.label_propagation</span> <span class="kn">import</span> <span class="n">label_propagation</span>
+<span class="c1"># Or use embeddings directly with sklearn</span>
+</pre></div>
+</div>
+</section>
+<section id="statistical-analysis-workflow">
+<h3>Statistical Analysis Workflow<a class="headerlink" href="#statistical-analysis-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Layer-level statistics</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+
+<span class="c1"># 2. Node-level statistics</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">important_nodes</span><span class="p">:</span>
+    <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+    <span class="n">degree_vec</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">degree_vector</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+
+<span class="c1"># 3. Network-level statistics</span>
+<span class="n">interdep</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">interdependence</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">connectivity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">algebraic_connectivity</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<p>For detailed usage examples and parameter descriptions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> - Algorithm selection guide with complexity analysis</p></li>
+<li><p><a class="reference internal" href="tutorials/community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Community detection examples</p></li>
+<li><p><a class="reference internal" href="tutorials/multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality computation examples</p></li>
+<li><p><a class="reference internal" href="performance_guide.html"><span class="doc">Performance and Scalability Best Practices</span></a> - Performance optimization tips</p></li>
+<li><p><a class="reference internal" href="apidocs.html"><span class="doc">API Documentation</span></a> - Complete API reference</p></li>
+</ul>
+</section>
+<section id="citation-information">
+<h2>Citation Information<a class="headerlink" href="#citation-information" title="Link to this heading"></a></h2>
+<p>When using specific algorithm families, please cite the original papers:</p>
+<dl class="simple">
+<dt><strong>Louvain &amp; Multilayer Modularity:</strong></dt><dd><p>Blondel et al. (2008), Mucha et al. (2010)</p>
+</dd>
+<dt><strong>Node2Vec:</strong></dt><dd><p>Grover &amp; Leskovec (2016)</p>
+</dd>
+<dt><strong>Infomap:</strong></dt><dd><p>Rosvall &amp; Bergstrom (2008)</p>
+</dd>
+</dl>
+<p>See <a class="reference internal" href="citation.html"><span class="doc">Citation and References</span></a> for complete citation information and BibTeX entries.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="algorithm_guide.html" class="btn btn-neutral float-left" title="Algorithm Selection Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="performance.html" class="btn btn-neutral float-right" title="Performance and Scalability" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

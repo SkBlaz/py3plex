@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Command-Line Interface (CLI) Tutorial" href="tutorials/cli_usage.html" />
-    <link rel="prev" title="Algorithm Selection Guide" href="algorithm_guide.html" /> 
+    <link rel="next" title="Performance and Scalability Best Practices" href="performance_guide.html" />
+    <link rel="prev" title="Algorithm Roadmap" href="algorithm_roadmap.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,8 +57,13 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Performance and Scalability</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#memory-management">Memory Management</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sparse-vs-dense-matrices">Sparse vs Dense Matrices</a></li>
@@ -113,14 +118,20 @@
 <li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
@@ -134,6 +145,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul>
@@ -173,7 +186,7 @@
              
   <section id="performance-and-scalability">
 <h1>Performance and Scalability<a class="headerlink" href="#performance-and-scalability" title="Link to this heading"></a></h1>
-<p>This guide provides best practices for optimizing py3plex performance and scaling to large networks.</p>
+<p>This guide provides <strong>best practices</strong> for optimizing py3plex performance and scaling to <strong>large networks</strong>.</p>
 <section id="memory-management">
 <h2>Memory Management<a class="headerlink" href="#memory-management" title="Link to this heading"></a></h2>
 <section id="sparse-vs-dense-matrices">
@@ -188,10 +201,10 @@
 </div>
 <p><strong>Memory requirements:</strong></p>
 <ul class="simple">
-<li><p><strong>Sparse:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is number of edges</p></li>
-<li><p><strong>Dense:</strong> <span class="math notranslate nohighlight">\(O(n^2)\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is total nodes across layers</p></li>
+<li><p><strong>Sparse:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is <strong>number of edges</strong></p></li>
+<li><p><strong>Dense:</strong> <span class="math notranslate nohighlight">\(O(n^2)\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is <strong>total nodes across layers</strong></p></li>
 </ul>
-<p><strong>Rule of thumb:</strong> Use sparse for networks with &gt;1,000 nodes or density &lt;10%</p>
+<p><strong>Rule of thumb:</strong> Use <strong>sparse</strong> for networks with &gt;1,000 nodes or density &lt;10%</p>
 </section>
 <section id="matrix-construction-optimization">
 <h3>Matrix Construction Optimization<a class="headerlink" href="#matrix-construction-optimization" title="Link to this heading"></a></h3>
@@ -213,7 +226,7 @@
 <h2>Efficient Network Construction<a class="headerlink" href="#efficient-network-construction" title="Link to this heading"></a></h2>
 <section id="batch-operations">
 <h3>Batch Operations<a class="headerlink" href="#batch-operations" title="Link to this heading"></a></h3>
-<p>Add nodes and edges in batches rather than one at a time:</p>
+<p>Add nodes and edges in <strong>batches</strong> rather than one at a time:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bad: Individual additions</span>
 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edge_list</span><span class="p">:</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">4</span><span class="p">]]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
@@ -242,7 +255,7 @@
 <h2>Algorithm Selection<a class="headerlink" href="#algorithm-selection" title="Link to this heading"></a></h2>
 <section id="time-complexity-guidelines">
 <h3>Time Complexity Guidelines<a class="headerlink" href="#time-complexity-guidelines" title="Link to this heading"></a></h3>
-<p>Choose algorithms based on network size:</p>
+<p>Choose algorithms based on <strong>network size</strong>:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30.0%" />
@@ -285,10 +298,10 @@
 <h3>Avoid Expensive Operations<a class="headerlink" href="#avoid-expensive-operations" title="Link to this heading"></a></h3>
 <p><strong>O(n²) or worse complexity:</strong></p>
 <ul class="simple">
-<li><p>Full betweenness centrality</p></li>
-<li><p>All-pairs shortest paths</p></li>
-<li><p>Closeness centrality on large networks</p></li>
-<li><p>Dense matrix operations</p></li>
+<li><p><strong>Full betweenness centrality</strong></p></li>
+<li><p><strong>All-pairs shortest paths</strong></p></li>
+<li><p><strong>Closeness centrality</strong> on large networks</p></li>
+<li><p><strong>Dense matrix operations</strong></p></li>
 </ul>
 <p><strong>Alternative approaches:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instead of betweenness on full network</span>
@@ -324,7 +337,7 @@
 </section>
 <section id="numpy-vectorization">
 <h3>NumPy Vectorization<a class="headerlink" href="#numpy-vectorization" title="Link to this heading"></a></h3>
-<p>Use vectorized operations instead of loops:</p>
+<p>Use <strong>vectorized operations</strong> instead of loops:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># Bad: Python loop</span>
@@ -346,7 +359,7 @@
 <h2>Visualization Optimization<a class="headerlink" href="#visualization-optimization" title="Link to this heading"></a></h2>
 <section id="layout-computation">
 <h3>Layout Computation<a class="headerlink" href="#layout-computation" title="Link to this heading"></a></h3>
-<p>Layout algorithms have varying complexity:</p>
+<p>Layout algorithms have <strong>varying complexity</strong>:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25.0%" />
@@ -704,8 +717,8 @@ python<span class="w"> </span>config_benchmark.py
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="algorithm_guide.html" class="btn btn-neutral float-left" title="Algorithm Selection Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tutorials/cli_usage.html" class="btn btn-neutral float-right" title="Command-Line Interface (CLI) Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="algorithm_roadmap.html" class="btn btn-neutral float-left" title="Algorithm Roadmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="performance_guide.html" class="btn btn-neutral float-right" title="Performance and Scalability Best Practices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -10,12 +10,12 @@ Py3plex Documentation
    :target: https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml
    :alt: Code Quality
 
-**py3plex** enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.
+**py3plex** enables scalable analysis and visualization of **multilayer** and **multiplex** networks in Python, supporting complex network modeling across diverse scientific and applied domains.
 
 Overview
 ========
 
-py3plex is a lightweight Python library designed specifically for analyzing and visualizing heterogeneous and multilayer networks. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:
+py3plex is a **lightweight Python library** designed specifically for analyzing and visualizing **heterogeneous** and **multilayer networks**. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:
 
 * Multiple node types
 * Multiple edge types  
@@ -27,13 +27,13 @@ py3plex is a lightweight Python library designed specifically for analyzing and 
 
 **Key Features:**
 
-* Native support for multiplex and multilayer network structures
-* Diagonal projection visualization for large multilayer networks
-* Comprehensive multilayer centrality measures
-* Community detection across network layers
-* Network decomposition and feature extraction
-* Semantic enrichment with external knowledge bases
-* Integration with NetworkX, igraph, and other graph libraries
+* **Native support** for multiplex and multilayer network structures
+* **Diagonal projection visualization** for large multilayer networks
+* **Comprehensive multilayer centrality measures**
+* **Community detection** across network layers
+* **Network decomposition** and feature extraction
+* **Semantic enrichment** with external knowledge bases
+* **Integration** with NetworkX, igraph, and other graph libraries
 
 Installation
 ============
@@ -44,6 +44,24 @@ Install from GitHub
 .. code-block:: bash
 
     pip install git+https://github.com/SkBlaz/py3plex.git
+
+Docker Installation (Alternative)
+----------------------------------
+
+Py3plex is also available as a Docker container with all dependencies pre-installed:
+
+.. code-block:: bash
+
+    # Clone and build
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    docker build -t py3plex:latest .
+
+    # Run commands
+    docker run --rm py3plex:latest --version
+    docker run --rm py3plex:latest selftest
+
+See :doc:`tutorials/docker_usage` for complete Docker documentation.
 
 Install from source for development
 ------------------------------------
@@ -125,20 +143,20 @@ Why py3plex?
 ============
 
 **vs. NetworkX:**
-NetworkX excels at single-layer homogeneous networks but lacks native multilayer support. py3plex builds on NetworkX while adding:
+NetworkX excels at **single-layer homogeneous networks** but lacks native multilayer support. py3plex builds on NetworkX while adding:
 
-* Native multilayer data structures
-* Layer-aware algorithms
-* Specialized multilayer visualizations
-* Heterogeneous network decomposition
+* **Native multilayer data structures**
+* **Layer-aware algorithms**
+* **Specialized multilayer visualizations**
+* **Heterogeneous network decomposition**
 
 **vs. Other Multilayer Tools:**
 py3plex provides:
 
-* Lightweight and easy to integrate
-* Comprehensive statistical measures (17+ multilayer metrics)
-* Publication-ready visualizations
-* Active development and research backing
+* **Lightweight** and easy to integrate
+* **Comprehensive statistical measures** (17+ multilayer metrics)
+* **Publication-ready visualizations**
+* **Active development** and research backing
 
 Use Cases
 =========
@@ -171,19 +189,30 @@ Documentation Contents
    basic_usage_analysis
    basic_usage_analysis_multiplex
    multilayer_concepts
+   recipes
    visualization
+   visualization_guide
+   dependencies_guide
+   networkx_interop
    algorithm_guide
+   algorithm_roadmap
    performance
+   performance_guide
+   statistical_comparison
 
 .. toctree::
    :maxdepth: 2
    :caption: Tutorials
 
    tutorials/cli_usage
+   tutorials/docker_usage
+   tutorials/csv_loading
    tutorials/multilayer_centrality
+   tutorials/meta_flow_report
    tutorials/multilayer_modularity
    tutorials/community_detection
    tutorials/network_decomposition
+   tutorials/incidence_gadget_encoding
    multilayer_centrality_matrix_functions
    random_walks
    supra
@@ -201,6 +230,8 @@ Documentation Contents
    :caption: API Reference
 
    apidocs
+   core
+   community_detection
 
 .. toctree::
    :maxdepth: 2

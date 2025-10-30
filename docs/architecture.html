@@ -56,17 +56,28 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/docker_usage.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/csv_loading.html">CSV Data Loading Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_centrality.html">Multilayer Network Centrality Measures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/meta_flow_report.html">Meta Flow Report - Comprehensive Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multilayer_modularity.html">Multilayer Modularity and Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/network_decomposition.html">Network Decomposition Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/incidence_gadget_encoding.html">Incidence Gadget Encoding Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
@@ -80,6 +91,8 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Network Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul class="current">
@@ -180,10 +193,10 @@
              
   <section id="architecture-and-design">
 <h1>Architecture and Design<a class="headerlink" href="#architecture-and-design" title="Link to this heading"></a></h1>
-<p>This document describes the system architecture, design patterns, and extension points of py3plex.</p>
+<p>This document describes the <strong>system architecture</strong>, <strong>design patterns</strong>, and <strong>extension points</strong> of py3plex.</p>
 <section id="system-overview">
 <h2>System Overview<a class="headerlink" href="#system-overview" title="Link to this heading"></a></h2>
-<p>py3plex is built as a modular, layered architecture with clear separation of concerns:</p>
+<p>py3plex is built as a <strong>modular, layered architecture</strong> with clear separation of concerns:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────┐
 │          High-Level Interfaces (Wrappers)           │
 │  node2vec_embedding, benchmark_nodes                │
@@ -228,19 +241,19 @@
 <p><strong>Purpose:</strong> Fundamental data structures and I/O operations</p>
 <p><strong>Key Components:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">multinet.py</span></code> - The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">parsers.py</span></code> - Input/output for various formats</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">converters.py</span></code> - Format conversion utilities</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">random_generators.py</span></code> - Random network generators</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">HINMINE/</span></code> - Heterogeneous network decomposition</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multinet.py</span></code> - The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> <strong>class</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parsers.py</span></code> - <strong>Input/output</strong> for various formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">converters.py</span></code> - <strong>Format conversion</strong> utilities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">random_generators.py</span></code> - <strong>Random network</strong> generators</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HINMINE/</span></code> - <strong>Heterogeneous network decomposition</strong></p></li>
 </ul>
 <p><strong>Responsibilities:</strong></p>
 <ul class="simple">
-<li><p>Network construction and manipulation</p></li>
-<li><p>File I/O (GraphML, GML, GEXF, edge lists, etc.)</p></li>
-<li><p>Layer management</p></li>
-<li><p>Matrix representations (adjacency, supra-adjacency)</p></li>
-<li><p>NetworkX integration</p></li>
+<li><p><strong>Network construction</strong> and manipulation</p></li>
+<li><p><strong>File I/O</strong> (GraphML, GML, GEXF, edge lists, etc.)</p></li>
+<li><p><strong>Layer management</strong></p></li>
+<li><p><strong>Matrix representations</strong> (adjacency, supra-adjacency)</p></li>
+<li><p><strong>NetworkX integration</strong></p></li>
 </ul>
 <p><strong>Design Pattern:</strong> <strong>Facade Pattern</strong> - <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> provides a unified interface to complex NetworkX operations</p>
 </section>
@@ -249,19 +262,19 @@
 <p><strong>Purpose:</strong> Network analysis algorithms optimized for multilayer networks</p>
 <p><strong>Key Components:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">community_detection/</span></code> - Community detection algorithms</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">statistics/</span></code> - Network statistics and metrics</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_algorithms/</span></code> - Multilayer-specific algorithms</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">node_ranking/</span></code> - Centrality and ranking measures</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">general/</span></code> - General-purpose algorithms (random walks, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community_detection/</span></code> - <strong>Community detection</strong> algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">statistics/</span></code> - <strong>Network statistics</strong> and metrics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_algorithms/</span></code> - <strong>Multilayer-specific</strong> algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">node_ranking/</span></code> - <strong>Centrality</strong> and ranking measures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">general/</span></code> - <strong>General-purpose</strong> algorithms (random walks, etc.)</p></li>
 </ul>
 <p><strong>Responsibilities:</strong></p>
 <ul class="simple">
-<li><p>Community detection (Louvain, Infomap, Label Propagation)</p></li>
-<li><p>Statistical analysis (17+ multilayer metrics)</p></li>
-<li><p>Centrality computation (degree, betweenness, PageRank, etc.)</p></li>
-<li><p>Random walks and embeddings</p></li>
-<li><p>Network decomposition</p></li>
+<li><p><strong>Community detection</strong> (Louvain, Infomap, Label Propagation)</p></li>
+<li><p><strong>Statistical analysis</strong> (17+ multilayer metrics)</p></li>
+<li><p><strong>Centrality computation</strong> (degree, betweenness, PageRank, etc.)</p></li>
+<li><p><strong>Random walks</strong> and embeddings</p></li>
+<li><p><strong>Network decomposition</strong></p></li>
 </ul>
 <p><strong>Design Pattern:</strong> <strong>Strategy Pattern</strong> - Different algorithms implement common interfaces</p>
 </section>

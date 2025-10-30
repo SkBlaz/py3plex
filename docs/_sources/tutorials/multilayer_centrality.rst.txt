@@ -2,13 +2,13 @@ Multilayer Network Centrality Measures
 ======================================
 
 
-This tutorial demonstrates how to compute various centrality measures for multilayer and multiplex networks using py3plex.
+This tutorial demonstrates how to compute **various centrality measures** for **multilayer** and **multiplex** networks using py3plex.
 
 Overview
 --------
 
 
-The `py3plex.algorithms.multilayer_algorithms.centrality` module provides comprehensive implementations of centrality measures specifically designed for multilayer networks. These measures follow standard definitions from multilayer network analysis literature.
+The `py3plex.algorithms.multilayer_algorithms.centrality` module provides **comprehensive implementations** of centrality measures specifically designed for **multilayer networks**. These measures follow **standard definitions** from multilayer network analysis literature.
 
 Supported Centrality Measures
 -----------------------------
@@ -18,36 +18,36 @@ Supported Centrality Measures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-* **Layer-specific degree/strength**: Centrality computed within individual layers
-* **Supra degree/strength**: Centrality on the full supra-adjacency matrix
-* **Overlapping degree/strength**: Node-level aggregation across all layers
-* **Participation coefficient**: Measures how evenly a node's connections are distributed across layers
+* **Layer-specific degree/strength**: Centrality computed **within individual layers**
+* **Supra degree/strength**: Centrality on the **full supra-adjacency matrix**
+* **Overlapping degree/strength**: **Node-level aggregation** across all layers
+* **Participation coefficient**: Measures how **evenly** a node's connections are distributed across layers
 
 2. Eigenvector-type Measures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-* **Multiplex eigenvector centrality**: Principal eigenvector of the supra-adjacency matrix
-* **Eigenvector versatility**: Node-level aggregation of eigenvector centrality
-* **Katz-Bonacich centrality**: Weighted sum of walks on the supra-graph
-* **PageRank centrality**: Random walk centrality on the supra-graph
+* **Multiplex eigenvector centrality**: **Principal eigenvector** of the supra-adjacency matrix
+* **Eigenvector versatility**: **Node-level aggregation** of eigenvector centrality
+* **Katz-Bonacich centrality**: **Weighted sum of walks** on the supra-graph
+* **PageRank centrality**: **Random walk** centrality on the supra-graph
 
 3. Path-based Measures
 ~~~~~~~~~~~~~~~~~~~~~~
 
 
-* **Multilayer closeness centrality**: Based on shortest paths in the supra-graph
-* **Multilayer betweenness centrality**: Fraction of shortest paths passing through each node-layer
+* **Multilayer closeness centrality**: Based on **shortest paths** in the supra-graph
+* **Multilayer betweenness centrality**: Fraction of **shortest paths** passing through each node-layer
 
 4. Advanced Measures
 ~~~~~~~~~~~~~~~~~~~~
 
 
-* **HITS centrality**: Hubs and authorities (equals eigenvector for undirected networks)
-* **Current-flow closeness/betweenness**: Based on electrical current flow through the network
-* **Subgraph centrality**: Counts closed walks via matrix exponential
-* **Total communicability**: Sum of matrix exponential entries
-* **Multiplex k-core**: Core decomposition of the multilayer network
+* **HITS centrality**: **Hubs and authorities** (equals eigenvector for undirected networks)
+* **Current-flow closeness/betweenness**: Based on **electrical current flow** through the network
+* **Subgraph centrality**: Counts **closed walks** via matrix exponential
+* **Total communicability**: Sum of **matrix exponential** entries
+* **Multiplex k-core**: **Core decomposition** of the multilayer network
 
 Basic Usage
 -----------
@@ -79,12 +79,26 @@ Basic Usage
     subgraph = calc.subgraph_centrality()
     k_core = calc.multiplex_k_core()
 
+**Example Output:**
+
+.. code-block:: python
+
+    print("Layer degrees:", layer_degrees)
+    # Layer degrees: {'L1': {'A': 1, 'B': 2, 'C': 1}, 'L2': {'A': 1, 'C': 1}}
+    
+    print("Overlapping degrees:", overlapping_degrees)
+    # Overlapping degrees: {'A': 2, 'B': 2, 'C': 2}
+    
+    print("Participation coefficient:", participation)
+    # Participation coefficient: {'A': 1.0, 'B': 0.0, 'C': 1.0}
+    # (Node B only appears in one layer, so participation is 0)
+
 
 Computing All Centralities
 --------------------------
 
 
-For convenience, you can compute all available centrality measures at once:
+For convenience, you can compute **all available centrality measures** at once:
 
 .. code-block:: python
 
@@ -106,7 +120,7 @@ Aggregation Methods
 -------------------
 
 
-The module provides several methods to aggregate node-layer centralities to node-level centralities:
+The module provides **several methods** to aggregate node-layer centralities to node-level centralities:
 
 .. code-block:: python
 
@@ -187,26 +201,26 @@ Performance Considerations
 --------------------------
 
 
-* **Path-based measures** (closeness, betweenness) are computationally expensive as they require shortest path computations on the entire supra-graph
-* **Advanced measures** (current-flow, communicability, k-core) involve matrix operations that can be costly for large networks
-* **Matrix exponential** computations (subgraph centrality, communicability) are particularly expensive
-* For large networks, consider using only degree-based and eigenvector-based measures
-* Use `include_path_based=False` and `include_advanced=False` (defaults) in `compute_all_centralities()` for better performance
+* **Path-based measures** (closeness, betweenness) are **computationally expensive** as they require shortest path computations on the entire supra-graph
+* **Advanced measures** (current-flow, communicability, k-core) involve **matrix operations** that can be costly for large networks
+* **Matrix exponential** computations (subgraph centrality, communicability) are **particularly expensive**
+* For **large networks**, consider using only degree-based and eigenvector-based measures
+* Use `include_path_based=False` and `include_advanced=False` (defaults) in `compute_all_centralities()` for **better performance**
 
 Example Applications
 --------------------
 
 
-1. **Social network analysis**: Identify influential users across different communication platforms
-2. **Transportation networks**: Find critical stations/stops across different transport modes
-3. **Biological networks**: Analyze protein interactions across different cellular conditions
-4. **Infrastructure networks**: Study robustness of multilayer utility networks
+1. **Social network analysis**: Identify **influential users** across different communication platforms
+2. **Transportation networks**: Find **critical stations/stops** across different transport modes
+3. **Biological networks**: Analyze **protein interactions** across different cellular conditions
+4. **Infrastructure networks**: Study **robustness** of multilayer utility networks
 
 References
 ----------
 
 
-The implementations follow standard definitions from multilayer network analysis literature, particularly:
+The implementations follow **standard definitions** from multilayer network analysis literature, particularly:
 
-* Kivelä, M., Arenas, A., Barthelemy, M., Gleeson, J. P., Moreno, Y., & Porter, M. A. (2014). Multilayer networks. Journal of complex networks, 2(3), 203-271.
-* Boccaletti, S., Bianconi, G., Criado, R., Del Genio, C. I., Gómez-Gardenes, J., Romance, M., ... & Zanin, M. (2014). The structure and dynamics of multilayer networks. Physics Reports, 544(1), 1-122.
+* Kivelä, M., Arenas, A., Barthelemy, M., Gleeson, J. P., Moreno, Y., & Porter, M. A. (2014). **Multilayer networks**. Journal of complex networks, 2(3), 203-271.
+* Boccaletti, S., Bianconi, G., Criado, R., Del Genio, C. I., Gómez-Gardenes, J., Romance, M., ... & Zanin, M. (2014). **The structure and dynamics of multilayer networks**. Physics Reports, 544(1), 1-122.
