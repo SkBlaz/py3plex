@@ -208,6 +208,7 @@ Documentation Contents
    tutorials/docker_usage
    tutorials/csv_loading
    tutorials/multilayer_centrality
+   tutorials/meta_flow_report
    tutorials/multilayer_modularity
    tutorials/community_detection
    tutorials/network_decomposition

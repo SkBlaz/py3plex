@@ -39,6 +39,19 @@ To verify installation.
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
 
+### Key Features
+
+**🆕 Meta Flow Report** - Run comprehensive multilayer network analysis with a single function call:
+
+```python
+from py3plex.algorithms.meta_flow_report import run_meta_analysis
+
+# Analyze centralities, communities, and statistics at once
+results = run_meta_analysis(network)
+```
+
+See the [Meta Flow Report Tutorial](https://skblaz.github.io/py3plex/tutorials/meta_flow_report.html) and [`example_meta_flow_report.py`](examples/centrality_and_statistics/example_meta_flow_report.py) for details.
+
 ### CLI Tool
 
 Py3plex includes a command-line interface for multilayer network analysis. See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
