@@ -25,9 +25,16 @@ def create_multiplex_network(N, seed=42):
     A1 = scipy.sparse.csr_matrix((np.ones(len(edges1)), (row1, col1)), shape=(N, N))
     
     # Layer 2: Random network (distant contacts)
-    edges2 = [(i, j) for i in range(N) for j in range(N) 
-              if i != j and np.random.random() < 0.1]
-    if edges2:
+    # Sample a fixed number of edges for efficiency
+    n_edges = int(N * (N - 1) * 0.1 / 2)  # ~10% density
+    possible_edges = [(i, j) for i in range(N) for j in range(i+1, N)]
+    if n_edges > 0 and possible_edges:
+        selected = np.random.choice(len(possible_edges), 
+                                   size=min(n_edges, len(possible_edges)), 
+                                   replace=False)
+        edges2 = [possible_edges[i] for i in selected]
+        # Add reverse edges for symmetry
+        edges2 += [(j, i) for i, j in edges2]
         row2, col2 = zip(*edges2)
         A2 = scipy.sparse.csr_matrix((np.ones(len(edges2)), (row2, col2)), shape=(N, N))
     else:
