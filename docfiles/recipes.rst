@@ -48,6 +48,18 @@ Recipe 1: Load Network from Multiple File Formats
     # Verify the network
     network.basic_stats()
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Number of nodes: 3
+    Number of edges: 3
+    Number of unique nodes (as node-layer tuples): 5
+    Number of unique node IDs (across all layers): 3
+    Nodes per layer:
+      Layer 'layer1': 3 nodes
+      Layer 'layer2': 2 nodes
+
 **When to use:** Starting any **analysis project** with external data.
 
 
@@ -143,6 +155,26 @@ Recipe 4: Quick Network Summary
     # Get unique nodes (nodes may appear in multiple layers)
     unique_nodes = set([n[0] for n in nodes])
     print(f"Unique nodes: {len(unique_nodes)}")
+
+**Expected Output:**
+
+.. code-block:: text
+
+    === Basic Statistics ===
+    Number of nodes: 250
+    Number of edges: 180
+    Number of unique nodes (as node-layer tuples): 250
+    Number of unique node IDs (across all layers): 120
+    Nodes per layer:
+      Layer 'collaboration': 85 nodes
+      Layer 'citation': 90 nodes
+      Layer 'coauthor': 75 nodes
+    
+    Layers: ['collaboration', 'citation', 'coauthor']
+    Number of layers: 3
+    Total nodes: 250
+    Total edges: 180
+    Unique nodes: 120
 
 **When to use:** Initial data exploration, quality checks, reporting.
 
