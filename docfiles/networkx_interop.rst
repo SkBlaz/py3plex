@@ -524,7 +524,7 @@ Next Steps
 - :doc:`basic_usage_analysis` - Network analysis methods
 - :doc:`community_detection` - Community detection algorithms
 - :doc:`visualization_guide` - Visualization options
-- :doc:`/tutorials/csv_loading` - Load data from CSV
+- :doc:`tutorials/csv_loading` - Load data from CSV
 
 For more examples, see the `examples/ directory <https://github.com/SkBlaz/py3plex/tree/main/examples>`_ 
 in the GitHub repository.

@@ -563,7 +563,7 @@ Next Steps
 
 - :doc:`installation` - Full installation guide
 - :doc:`quickstart` - Get started with Py3plex
-- :doc:`/tutorials/csv_loading` - Load your data
+- :doc:`tutorials/csv_loading` - Load your data
 - :doc:`visualization_guide` - Create visualizations
 
 For installation help, open an issue on `GitHub Issues <https://github.com/SkBlaz/py3plex/issues>`_.

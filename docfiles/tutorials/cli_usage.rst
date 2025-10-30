@@ -543,6 +543,6 @@ See Also
 
 * :doc:`../quickstart` - Python API quickstart
 * :doc:`../10min_tutorial` - 10-minute Python tutorial
-* :doc:`community_detection` - Community detection algorithms in detail
-* :doc:`multilayer_centrality` - Centrality measures for multilayer networks
+* :doc:`./community_detection` - Community detection algorithms in detail
+* :doc:`./multilayer_centrality` - Centrality measures for multilayer networks
 * :doc:`../index` - Main documentation index

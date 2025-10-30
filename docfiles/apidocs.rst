@@ -266,7 +266,7 @@ Profiling Utilities
    :show-inheritance:
 
 Logging Configuration
---------------------
+---------------------
 
 .. automodule:: py3plex.logging_config
    :members:
@@ -323,7 +323,7 @@ Force Atlas 2 Visualization
    :show-inheritance:
 
 Embedding Visualization
-----------------------
+-----------------------
 
 .. automodule:: py3plex.visualization.embedding_visualization.embedding_visualization
    :members:
@@ -417,7 +417,7 @@ HINMINE Data Structures
    :show-inheritance:
 
 Command-Line Interface
----------------------
+----------------------
 
 .. automodule:: py3plex.cli
    :members:
@@ -425,7 +425,7 @@ Command-Line Interface
    :show-inheritance:
 
 Validation Utilities
--------------------
+--------------------
 
 .. automodule:: py3plex.validation
    :members:
@@ -482,7 +482,7 @@ Hedwig Statistics and Scoring
    :show-inheritance:
 
 Hedwig Core Components
----------------------
+----------------------
 
 .. automodule:: py3plex.algorithms.hedwig.core.converters
    :members:
@@ -508,7 +508,7 @@ Time Series and Temporal Analysis
    :show-inheritance:
 
 Advanced Visualization
----------------------
+----------------------
 
 .. automodule:: py3plex.visualization.hairballs
    :members:
@@ -521,7 +521,7 @@ Advanced Visualization
    :show-inheritance:
 
 Link Prediction
---------------
+---------------
 
 .. automodule:: py3plex.algorithms.link_prediction.link_prediction
    :members:

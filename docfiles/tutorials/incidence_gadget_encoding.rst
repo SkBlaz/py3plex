@@ -312,9 +312,9 @@ References
 See Also
 --------
 
-* :doc:`network_decomposition` - Alternative network transformation techniques
-* :doc:`multilayer_centrality` - Centrality measures for multiplex networks
-* :doc:`community_detection` - Community detection in multilayer networks
+* :doc:`./network_decomposition` - Alternative network transformation techniques
+* :doc:`./multilayer_centrality` - Centrality measures for multiplex networks
+* :doc:`./community_detection` - Community detection in multilayer networks
 
 Example Scripts
 ---------------
