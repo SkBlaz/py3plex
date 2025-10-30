@@ -1,7 +1,7 @@
 # Py3plex - LLM Context Summary
 
-**Last Updated**: 2025-10-30 (Documentation Improvements - RST Link Fixes)  
-**Previous Update**: 2025-10-29 (CrossHair Pure Function Analysis - Issue #259)
+**Last Updated**: 2025-10-30 (Versatility Implementation - Multilayer Eigenvector Centrality)  
+**Previous Update**: 2025-10-30 (Documentation Improvements - RST Link Fixes)
 
 ---
 
@@ -9,7 +9,53 @@
 
 This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
 
-### 2025-10-30: Documentation Improvements (Current)
+### 2025-10-30: Versatility Implementation (Current)
+**Changes Made:**
+- Implemented versatility (multilayer eigenvector centrality) feature
+- Added `py3plex/algorithms/multilayer_algorithms/versatility.py` module
+- Created comprehensive test suite in `tests/test_versatility.py` (23 tests, all passing)
+- Added example script `examples/centrality_and_statistics/example_versatility.py`
+- Updated README.md with versatility section and references
+- Updated module exports in `py3plex/algorithms/multilayer_algorithms/__init__.py`
+
+**Versatility Module Components:**
+- `build_supra_adjacency()`: Constructs (N·L)×(N·L) supra-adjacency matrix from layer adjacencies and interlayer couplings
+- `versatility()`: Main API computing multilayer eigenvector centrality via power iteration or scipy.sparse.linalg.eigs
+- `versatility_katz()`: Damping-based fallback for reducible/disconnected graphs using Katz centrality
+- `_power_iteration()`: Helper function for efficient eigenvector computation on sparse matrices
+
+**Key Features:**
+- Supports scalar interlayer coupling (omega), dict-based custom couplings, or full interlayer arrays
+- Handles directed/undirected, weighted/unweighted networks
+- Robust handling of nodes absent from some layers (zero rows/columns)
+- Multiple normalization options (l1, l2, none)
+- Optional per-layer score return for detailed analysis
+- Comprehensive error handling with informative messages
+
+**Test Coverage (T1-T5 from spec):**
+- T1: Single layer equals standard eigenvector centrality ✓
+- T2: Layer permutation invariance ✓
+- T3: Omega sweep shows smooth blending behavior ✓
+- T4: Missing nodes handled without NaNs ✓
+- T5: Directed weighted networks converge correctly ✓
+- Plus 18 additional edge case and validation tests
+
+**Documentation & Examples:**
+- 7 comprehensive examples demonstrating various use cases
+- References to De Domenico et al. (2013, 2015) papers
+- Clear docstrings with mathematical formulation and usage examples
+- README section explaining versatility concept and differentiating from heuristic approaches
+
+**Impact:**
+- **New Capability:** Py3plex now supports state-of-the-art multilayer eigenvector centrality
+- **Scientific Rigor:** Implementation follows canonical tensor/supra-matrix formulation from literature
+- **Robustness:** Handles edge cases (disconnected components, missing nodes, various graph types)
+- **Performance:** Sparse matrix operations support networks with ~10^6 non-zeros
+- **Usability:** Clean, typed Python API consistent with existing py3plex patterns
+
+**Purpose:** Implement versatility feature as specified in issue, providing a principled method for ranking nodes by their importance across multiple interconnected network layers.
+
+### 2025-10-30: Documentation Improvements (Previous)
 **Changes Made:**
 - Fixed 18 broken internal :doc: references across RST documentation files
 - Fixed 7 title underline formatting issues in apidocs.rst
