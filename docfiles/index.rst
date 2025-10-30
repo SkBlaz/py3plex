@@ -195,6 +195,7 @@ Documentation Contents
    dependencies_guide
    networkx_interop
    algorithm_guide
+   algorithm_roadmap
    performance
    performance_guide
    statistical_comparison
