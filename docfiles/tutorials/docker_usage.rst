@@ -332,35 +332,7 @@ The ``.dockerignore`` file controls which files are excluded from the Docker bui
 
 The ``.dockerignore`` file is located in the repository root.
 
-docker-examples Directory
-~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``docker-examples/`` directory contains ready-to-use example scripts and workflows:
-
-**Available examples:**
-
-* **Basic network analysis** - Creating and analyzing networks
-* **Community detection** - Using Louvain and other algorithms
-* **Centrality analysis** - Computing various centrality measures
-* **Batch processing** - Processing multiple networks
-* **CI/CD integration** - GitHub Actions and GitLab CI examples
-* **Custom analysis scripts** - Python script templates
-
-**Accessing examples:**
-
-.. code-block:: bash
-
-    # Navigate to the examples directory
-    cd docker-examples
-    
-    # View the README
-    cat README.md
-    
-    # Run example scripts
-    ./batch-process.sh
-    ./complete-pipeline.sh
-
-See ``docker-examples/README.md`` for detailed documentation of all examples.
 
 Troubleshooting
 ---------------
@@ -539,6 +511,113 @@ Process multiple networks (save as ``batch-process.sh``):
 
     echo "Done! Results in $DATA_DIR"
 
+Custom Analysis Script
+~~~~~~~~~~~~~~~~~~~~~~
+
+Create a Python script (``analysis.py``) and run it in the container:
+
+**Python script:**
+
+.. code-block:: python
+
+    # analysis.py
+    from py3plex.core import multinet
+    from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+    # Load network
+    network = multinet.multi_layer_network()
+    network.load_network("/data/network.edgelist", input_type="multiedgelist")
+
+    # Compute statistics
+    layers = ["layer1", "layer2", "layer3"]
+    for layer in layers:
+        density = mls.layer_density(network, layer)
+        print(f"{layer} density: {density:.4f}")
+
+    print("Analysis complete!")
+
+**Run it:**
+
+.. code-block:: bash
+
+    # Copy script to data directory
+    cp analysis.py data/
+
+    # Run in container
+    docker run --rm -v $(pwd)/data:/data \
+      --entrypoint python py3plex:latest /data/analysis.py
+
+Complete Analysis Pipeline
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A comprehensive analysis pipeline:
+
+.. code-block:: bash
+
+    #!/bin/bash
+    # complete-pipeline.sh
+    set -e
+
+    DATA_DIR=$(pwd)/data
+    mkdir -p $DATA_DIR
+
+    echo "Step 1: Creating network..."
+    docker run --rm -v $DATA_DIR:/data py3plex:latest \
+      create --nodes 200 --layers 3 --type ba --probability 0.05 \
+      --output /data/network.edgelist
+
+    echo "Step 2: Computing statistics..."
+    docker run --rm -v $DATA_DIR:/data py3plex:latest \
+      stats /data/network.edgelist --measure all \
+      --output /data/stats.json
+
+    echo "Step 3: Detecting communities..."
+    docker run --rm -v $DATA_DIR:/data py3plex:latest \
+      community /data/network.edgelist --algorithm louvain \
+      --output /data/communities.json
+
+    echo "Step 4: Computing centrality..."
+    docker run --rm -v $DATA_DIR:/data py3plex:latest \
+      centrality /data/network.edgelist --measure pagerank \
+      --top 20 --output /data/centrality.json
+
+    echo "Step 5: Visualizing..."
+    docker run --rm -v $DATA_DIR:/data py3plex:latest \
+      visualize /data/network.edgelist --output /data/network.png \
+      --layout multilayer --width 16 --height 12
+
+    echo "Pipeline complete! Check $DATA_DIR for results."
+
+Comparative Network Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Compare different network types:
+
+.. code-block:: bash
+
+    #!/bin/bash
+    # compare-networks.sh
+    set -e
+
+    DATA_DIR=$(pwd)/data
+    mkdir -p $DATA_DIR
+
+    TYPES=("random" "er" "ba" "ws")
+
+    for type in "${TYPES[@]}"; do
+      echo "Creating $type network..."
+      docker run --rm -v $DATA_DIR:/data py3plex:latest \
+        create --nodes 100 --layers 3 --type $type --probability 0.1 \
+        --output /data/network_${type}.edgelist
+      
+      echo "Analyzing $type network..."
+      docker run --rm -v $DATA_DIR:/data py3plex:latest \
+        stats /data/network_${type}.edgelist --measure all \
+        --output /data/stats_${type}.json
+    done
+
+    echo "Comparison complete!"
+
 CI/CD Integration
 -----------------
 
@@ -625,7 +704,6 @@ Additional Resources
 
 * `Py3plex Documentation <https://skblaz.github.io/py3plex/>`_
 * :doc:`CLI Tutorial <cli_usage>`
-* `Docker Examples <https://github.com/SkBlaz/py3plex/tree/master/docker-examples>`_ - Ready-to-use Docker workflow examples
 * `Docker Documentation <https://docs.docker.com/>`_
 * `Docker Compose Documentation <https://docs.docker.com/compose/>`_
 * `DOCKER.md <https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md>`_ - Main Docker guide in the repository
