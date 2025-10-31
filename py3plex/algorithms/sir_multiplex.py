@@ -19,10 +19,26 @@ Model:
   or via independent-trial complement (discrete-time)
 """
 
+from __future__ import annotations
 from dataclasses import dataclass
-from typing import Callable, Optional
-import numpy as np
-import scipy.sparse
+from typing import Callable, Optional, Any
+import warnings
+
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    NUMPY_AVAILABLE = False
+    np = None
+    warnings.warn("numpy not available, SIR epidemic simulator will not work")
+
+try:
+    import scipy.sparse
+    SCIPY_AVAILABLE = True
+except ImportError:
+    SCIPY_AVAILABLE = False
+    scipy = None
+    warnings.warn("scipy not available, SIR epidemic simulator will not work")
 
 
 @dataclass
@@ -40,27 +56,27 @@ class EpidemicResult:
         events: Optional list of tuples (t, event_type, node_id, layer_or_None) if requested
         meta: Dictionary with simulation metadata (parameters, N, L, dt/t_max, rng_seed)
     """
-    times: np.ndarray
-    S: np.ndarray
-    I: np.ndarray
-    R: np.ndarray
-    states: Optional[np.ndarray] = None
-    incidence_by_layer: Optional[np.ndarray] = None
+    times: Any  # np.ndarray when available
+    S: Any  # np.ndarray when available
+    I: Any  # np.ndarray when available
+    R: Any  # np.ndarray when available
+    states: Optional[Any] = None  # np.ndarray when available
+    incidence_by_layer: Optional[Any] = None  # np.ndarray when available
     events: Optional[list] = None
     meta: dict = None
 
 
 def simulate_sir_multiplex_discrete(
-    A_layers: list[scipy.sparse.csr_matrix],
-    beta: np.ndarray | float,
-    gamma: np.ndarray | float,
+    A_layers: list,  # scipy.sparse.csr_matrix when available
+    beta,  # np.ndarray | float when available
+    gamma,  # np.ndarray | float when available
     *,
-    layer_weights: Optional[np.ndarray] = None,
+    layer_weights: Optional = None,  # np.ndarray when available
     dt: float = 1.0,
     steps: int = 100,
-    initial_state: Optional[np.ndarray] = None,
-    initial_infected: Optional[np.ndarray] = None,
-    import_rate: float | Callable[[int], float] = 0.0,
+    initial_state: Optional = None,  # np.ndarray when available
+    initial_infected: Optional = None,  # np.ndarray when available
+    import_rate = 0.0,  # float | Callable[[int], float]
     rng_seed: int = 0,
     return_event_log: bool = False,
     return_layer_incidence: bool = False
@@ -94,7 +110,15 @@ def simulate_sir_multiplex_discrete(
         
     Raises:
         ValueError: If input dimensions are inconsistent or values are invalid
+        ImportError: If numpy or scipy are not available
     """
+    # Check dependencies
+    if not NUMPY_AVAILABLE or not SCIPY_AVAILABLE:
+        raise ImportError(
+            "SIR epidemic simulator requires numpy and scipy. "
+            "Please install them: pip install numpy scipy"
+        )
+    
     # Validate inputs
     if not A_layers:
         raise ValueError("A_layers must contain at least one adjacency matrix")
@@ -261,15 +285,15 @@ def simulate_sir_multiplex_discrete(
 
 
 def simulate_sir_multiplex_gillespie(
-    A_layers: list[scipy.sparse.csr_matrix],
-    beta: np.ndarray | float,
-    gamma: np.ndarray | float,
+    A_layers: list,  # scipy.sparse.csr_matrix when available
+    beta,  # np.ndarray | float when available
+    gamma,  # np.ndarray | float when available
     *,
-    layer_weights: Optional[np.ndarray] = None,
+    layer_weights: Optional = None,  # np.ndarray when available
     t_max: float = 100.0,
-    initial_state: Optional[np.ndarray] = None,
-    initial_infected: Optional[np.ndarray] = None,
-    import_rate: float | Callable[[float], float] = 0.0,
+    initial_state: Optional = None,  # np.ndarray when available
+    initial_infected: Optional = None,  # np.ndarray when available
+    import_rate = 0.0,  # float | Callable[[float], float]
     rng_seed: int = 0,
     return_event_log: bool = True,
     return_layer_incidence: bool = False
@@ -299,7 +323,17 @@ def simulate_sir_multiplex_gillespie(
         
     Returns:
         EpidemicResult with event-driven trajectories
+        
+    Raises:
+        ImportError: If numpy or scipy are not available
     """
+    # Check dependencies
+    if not NUMPY_AVAILABLE or not SCIPY_AVAILABLE:
+        raise ImportError(
+            "SIR epidemic simulator requires numpy and scipy. "
+            "Please install them: pip install numpy scipy"
+        )
+    
     # Validate inputs
     if not A_layers:
         raise ValueError("A_layers must contain at least one adjacency matrix")
@@ -575,10 +609,10 @@ def simulate_sir_multiplex_gillespie(
 
 
 def basic_reproduction_number(
-    A_layers: list[scipy.sparse.csr_matrix],
-    beta: np.ndarray | float,
+    A_layers: list,  # scipy.sparse.csr_matrix when available
+    beta,  # np.ndarray | float when available
     gamma: float,
-    layer_weights: Optional[np.ndarray] = None
+    layer_weights: Optional = None  # np.ndarray when available
 ) -> float:
     """
     Compute basic reproduction number R0 as a proxy using spectral radius.
@@ -596,7 +630,17 @@ def basic_reproduction_number(
         
     Returns:
         Approximate R0 value
+        
+    Raises:
+        ImportError: If numpy or scipy are not available
     """
+    # Check dependencies
+    if not NUMPY_AVAILABLE or not SCIPY_AVAILABLE:
+        raise ImportError(
+            "SIR epidemic simulator requires numpy and scipy. "
+            "Please install them: pip install numpy scipy"
+        )
+    
     L = len(A_layers)
     N = A_layers[0].shape[0]
     
