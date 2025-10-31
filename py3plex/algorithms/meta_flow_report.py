@@ -58,28 +58,66 @@ class MetaFlowReport:
     def compute_centralities(
         self,
         include_path_based: bool = False,
-        include_advanced: bool = False
+        include_advanced: bool = False,
+        wf_improved: bool = True
     ) -> Dict[str, Any]:
         """
         Compute multiple centrality measures at once.
         
+        By default, computes fast centrality measures:
+        - Degree-based: layer_degree, layer_strength, supra_degree, supra_strength,
+          overlapping_degree, overlapping_strength, participation_coefficient
+        - Eigenvector-based: multiplex_eigenvector, eigenvector_versatility,
+          katz_bonacich, pagerank
+        
         Args:
-            include_path_based: Include computationally expensive path-based measures
-            include_advanced: Include advanced measures (HITS, current-flow, etc.)
+            include_path_based: If True, also compute path-based measures (betweenness,
+                               closeness). These are computationally expensive O(n^3).
+                               Default: False (skipped).
+            include_advanced: If True, also compute advanced measures (HITS, 
+                             current-flow, communicability, k-core). These are
+                             computationally expensive. Default: False (skipped).
+            wf_improved: For closeness centrality, use Wasserman-Faust improved
+                        scaling (affects disconnected graphs). Default: True.
             
         Returns:
-            Dictionary containing all computed centrality measures
+            Dictionary containing all computed centrality measures with keys
+            corresponding to measure names.
+            
+        Note:
+            Path-based and advanced measures are EXPENSIVE for large networks.
+            The function will emit a note about which centralities were computed.
         """
         try:
             from py3plex.algorithms.multilayer_algorithms.centrality import (
                 compute_all_centralities
             )
             
+            import logging
+            logger = logging.getLogger(__name__)
+            
             centralities = compute_all_centralities(
                 self.network,
                 include_path_based=include_path_based,
-                include_advanced=include_advanced
+                include_advanced=include_advanced,
+                wf_improved=wf_improved
             )
+            
+            # Log information about which centralities were computed
+            centrality_types = ["degree-based", "eigenvector-based"]
+            if include_path_based:
+                centrality_types.append("path-based")
+            if include_advanced:
+                centrality_types.append("advanced")
+            
+            logger.info(f"Computed centralities: {', '.join(centrality_types)}")
+            if not include_path_based:
+                logger.info("Note: Path-based measures (betweenness, closeness) were skipped. "
+                           "Set include_path_based=True to compute them.")
+            if not include_advanced:
+                logger.info("Note: Advanced measures (HITS, communicability, k-core) were skipped. "
+                           "Set include_advanced=True to compute them.")
+            
             return centralities
         except ImportError as e:
             warnings.warn(f"Could not compute centralities: {e}")
@@ -232,6 +270,7 @@ class MetaFlowReport:
         include_statistics: bool = True,
         include_path_based: bool = False,
         include_advanced: bool = False,
+        wf_improved: bool = True,
         community_methods: Optional[List[str]] = None,
         gamma: float = 1.0,
         omega: float = 1.0
@@ -249,6 +288,7 @@ class MetaFlowReport:
             include_statistics: Whether to compute network statistics
             include_path_based: Include path-based centralities (computationally expensive)
             include_advanced: Include advanced measures (computationally expensive)
+            wf_improved: For closeness centrality, use Wasserman-Faust improved scaling
             community_methods: List of community detection methods to use
             gamma: Resolution parameter for community detection
             omega: Inter-layer coupling strength
@@ -265,7 +305,8 @@ class MetaFlowReport:
             print("Computing centrality measures...")
             results['centralities'] = self.compute_centralities(
                 include_path_based=include_path_based,
-                include_advanced=include_advanced
+                include_advanced=include_advanced,
+                wf_improved=wf_improved
             )
         
         if include_communities:
@@ -454,6 +495,7 @@ def run_meta_analysis(
     include_statistics: bool = True,
     include_path_based: bool = False,
     include_advanced: bool = False,
+    wf_improved: bool = True,
     print_summary: bool = True,
     **kwargs
 ) -> Dict[str, Any]:
@@ -465,16 +507,24 @@ def run_meta_analysis(
     
     Args:
         network: py3plex multi_layer_network object
-        include_centralities: Whether to compute centrality measures
-        include_communities: Whether to run community detection
-        include_statistics: Whether to compute network statistics
-        include_path_based: Include path-based centralities (computationally expensive)
-        include_advanced: Include advanced measures (computationally expensive)
-        print_summary: Whether to print a summary of results
+        include_centralities: Whether to compute centrality measures. Default: True.
+                             Always includes degree-based and eigenvector-based measures.
+        include_communities: Whether to run community detection. Default: True.
+        include_statistics: Whether to compute network statistics. Default: True.
+        include_path_based: Include path-based centralities (betweenness, closeness).
+                           COMPUTATIONALLY EXPENSIVE. Default: False (skipped).
+        include_advanced: Include advanced measures (HITS, communicability, k-core).
+                         COMPUTATIONALLY EXPENSIVE. Default: False (skipped).
+        wf_improved: For closeness centrality, use Wasserman-Faust improved scaling.
+                    Default: True.
+        print_summary: Whether to print a summary of results. Default: True.
         **kwargs: Additional arguments passed to run_all_analyses
         
     Returns:
-        Dictionary containing all analysis results
+        Dictionary containing all analysis results with keys:
+        - 'centralities': dict of centrality measures (if include_centralities=True)
+        - 'communities': dict of community detection results (if include_communities=True)
+        - 'statistics': dict of network statistics (if include_statistics=True)
         
     Example:
         >>> from py3plex.core import multinet
@@ -486,9 +536,21 @@ def run_meta_analysis(
         ...     ['B', 'L1', 'C', 'L1', 1],
         ... ], input_type='list')
         >>> 
+        >>> # Fast analysis (degree and eigenvector centralities only)
         >>> results = run_meta_analysis(network)
+        >>> 
+        >>> # Full analysis (includes expensive path-based measures)
+        >>> results_full = run_meta_analysis(network, include_path_based=True, include_advanced=True)
+    
+    Note:
+        By default, only FAST centrality measures are computed. Path-based and
+        advanced measures require explicit opt-in via include_path_based=True
+        and include_advanced=True flags.
     """
     report = MetaFlowReport(network)
+    
+    # Pass wf_improved through to centrality computation
+    kwargs['wf_improved'] = wf_improved
     
     results = report.run_all_analyses(
         include_centralities=include_centralities,
