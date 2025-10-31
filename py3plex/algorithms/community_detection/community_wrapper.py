@@ -23,7 +23,7 @@ def run_infomap(
 ) -> None:
 
     import os
-    from subprocess import call
+    import subprocess
 
     # Check if binary exists and is executable
     if not os.path.exists(binary):
@@ -56,7 +56,7 @@ def run_infomap(
                 "-i multiplex",
                 "-N " + str(iterations),
             ] + seed_args
-            call(cmd)
+            subprocess.run(cmd, check=True)
         else:
             if overlapping:
                 cmd = [
@@ -66,10 +66,10 @@ def run_infomap(
                     "-N " + str(iterations),
                     "--overlapping",
                 ] + seed_args
-                call(cmd)
+                subprocess.run(cmd, check=True)
             else:
                 cmd = [binary, infile, "out/", "-N " + str(iterations)] + seed_args
-                call(cmd)
+                subprocess.run(cmd, check=True)
     else:
         if multiplex:
             cmd = [
@@ -80,7 +80,7 @@ def run_infomap(
                 "-N " + str(iterations),
                 "--silent",
             ] + seed_args
-            call(cmd)
+            subprocess.run(cmd, check=True)
         else:
             if overlapping:
                 cmd = [
@@ -91,7 +91,7 @@ def run_infomap(
                     "--overlapping",
                     "--silent",
                 ] + seed_args
-                call(cmd)
+                subprocess.run(cmd, check=True)
             else:
                 cmd = [
                     binary,
@@ -100,7 +100,7 @@ def run_infomap(
                     "-N " + str(iterations),
                     "--silent",
                 ] + seed_args
-                call(cmd)
+                subprocess.run(cmd, check=True)
 
 
 def infomap_communities(
@@ -170,9 +170,28 @@ def infomap_communities(
         seed=seed,
     )
 
-    partition = parse_infomap(
-        "out/" + edgelist_file.split("/")[-1].split(".")[0] + ".tree"
-    )
+    # Construct the expected output path based on input filename
+    # Infomap typically writes to: <output_dir>/<input_basename>.tree
+    input_basename = os.path.splitext(os.path.basename(edgelist_file))[0]
+    output_tree_path = os.path.join("out", input_basename + ".tree")
+    
+    # Verify the output file exists before parsing
+    if not os.path.exists(output_tree_path):
+        # Try to find any .tree file in the output directory
+        import glob
+        tree_files = glob.glob("out/*.tree")
+        if tree_files:
+            output_tree_path = tree_files[0]
+            if verbose:
+                print(f"INFO: Using tree file: {output_tree_path}")
+        else:
+            raise FileNotFoundError(
+                f"Infomap output file not found at expected path: {output_tree_path}. "
+                f"The Infomap binary may have failed or written output to a different location. "
+                f"Please check the 'out/' directory for .tree files."
+            )
+    
+    partition = parse_infomap(output_tree_path)
     partition = {inverse_node_map[k]: v for k, v in partition.items()}
     non_mapped = set(graph.get_nodes()).difference(partition.keys())
 
