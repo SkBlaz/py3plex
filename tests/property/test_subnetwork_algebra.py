@@ -55,17 +55,15 @@ def test_subnetwork_by_layers_idempotent(num_nodes, num_layers):
     # Select a subset of layers
     subset_layers = [f"layer{i}" for i in range(min(2, num_layers))]
     
-    # Apply subnetwork once
+    # Apply subnetwork once - returns a multi_layer_network
     subnet1 = mlnet.subnetwork(subset_layers, subset_by="layers")
-    nodes1 = set(subnet1.nodes())  # NetworkX graph method
-    edges1 = set(subnet1.edges())  # NetworkX graph method
+    nodes1 = set(subnet1.get_nodes())
+    edges1 = set(subnet1.get_edges())
     
     # Apply subnetwork twice (idempotence)
-    # Create a new multi_layer_network from the subnet, then apply subnetwork again
-    # For simplicity, just check that applying subgraph again gives same result
-    subnet2 = subnet1.subgraph([n for n in subnet1.nodes() if n[1] in subset_layers])
-    nodes2 = set(subnet2.nodes())
-    edges2 = set(subnet2.edges())
+    subnet2 = subnet1.subnetwork(subset_layers, subset_by="layers")
+    nodes2 = set(subnet2.get_nodes())
+    edges2 = set(subnet2.get_edges())
     
     # Should be the same (idempotence)
     assert nodes1 == nodes2, "Nodes changed after second subnetwork"
@@ -116,9 +114,9 @@ def test_subnetwork_union_contains_parts(num_nodes, num_layers):
     subnet_B = mlnet.subnetwork(layers_B, subset_by="layers")
     subnet_union = mlnet.subnetwork(layers_A + layers_B, subset_by="layers")
     
-    nodes_A = set(subnet_A.nodes())
-    nodes_B = set(subnet_B.nodes())
-    nodes_union = set(subnet_union.nodes())
+    nodes_A = set(subnet_A.core_network.nodes())
+    nodes_B = set(subnet_B.core_network.nodes())
+    nodes_union = set(subnet_union.core_network.nodes())
     
     # Union should contain both
     assert nodes_A.issubset(nodes_union), "Union doesn't contain A nodes"
@@ -166,10 +164,10 @@ def test_subnetwork_monotonicity_by_layers(num_nodes, num_layers):
     subnet_A = mlnet.subnetwork(layers_A, subset_by="layers")
     subnet_B = mlnet.subnetwork(layers_B, subset_by="layers")
     
-    nodes_A = set(subnet_A.nodes())
-    nodes_B = set(subnet_B.nodes())
-    edges_A = set(subnet_A.edges())
-    edges_B = set(subnet_B.edges())
+    nodes_A = set(subnet_A.core_network.nodes())
+    nodes_B = set(subnet_B.core_network.nodes())
+    edges_A = set(subnet_A.core_network.edges())
+    edges_B = set(subnet_B.core_network.edges())
     
     # A should be subset of B
     assert nodes_A.issubset(nodes_B), "Monotonicity violated for nodes"
@@ -204,7 +202,7 @@ def test_subnetwork_by_node_names_preserves_layers(num_nodes):
     
     # Check that selected nodes appear in all layers
     for node_name in selected_nodes:
-        node_layers = [n[1] for n in subnet.nodes() if n[0] == node_name]
+        node_layers = [n[1] for n in subnet.core_network.nodes() if n[0] == node_name]
         # Should appear in at least one layer (may not be all if no edges added)
         assert len(node_layers) > 0, f"Node {node_name} not found in subnetwork"
 
@@ -295,12 +293,12 @@ def test_split_to_layers_idempotent(num_nodes):
     
     # Split once
     mlnet.split_to_layers(style="none")
-    layer_names_1 = mlnet.layer_names.copy()
+    layer_names_1 = list(mlnet.layer_names)
     node_counts_1 = [len(list(layer.nodes())) for layer in mlnet.separate_layers]
     
     # Split again
     mlnet.split_to_layers(style="none")
-    layer_names_2 = mlnet.layer_names.copy()
+    layer_names_2 = list(mlnet.layer_names)
     node_counts_2 = [len(list(layer.nodes())) for layer in mlnet.separate_layers]
     
     # Should be the same
@@ -332,7 +330,7 @@ def test_subnetwork_preserves_node_count_bounds(num_nodes):
     
     # Create subnetwork with one layer
     subnet = mlnet.subnetwork(["layer0"], subset_by="layers")
-    subnet_node_count = subnet.number_of_nodes()
+    subnet_node_count = subnet.core_network.number_of_nodes()
     
     # Subnetwork should have fewer or equal nodes
     assert subnet_node_count <= original_node_count, \
