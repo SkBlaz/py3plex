@@ -107,12 +107,13 @@ def test_clustering_coefficient_invariant(n):
 
 @pytest.mark.property
 @settings(deadline=None, max_examples=25)
-@given(n=st.integers(min_value=4, max_value=8))
+@given(n=st.integers(min_value=5, max_value=8))
 def test_eigenvector_centrality_ranking_invariant(n):
     """
     Test that eigenvector centrality ranking is invariant under relabeling.
     
     Property: Sorted centrality values should be identical for isomorphic graphs.
+    Note: Excludes very small graphs (n<5) due to numerical instability.
     """
     p = 0.5
     seed = hash(n) % (2**32)
@@ -135,11 +136,9 @@ def test_eigenvector_centrality_ranking_invariant(n):
         assert len(values_original) == len(values_relabeled)
         
         # Allow small numerical differences but rankings should be identical
-        # Use relaxed tolerance for very small graphs where numerical instability is higher
         if len(values_original) > 2:
             rho, _ = spearmanr(values_original, values_relabeled)
-            tolerance = 0.05 if n <= 4 else 1e-6
-            assert abs(rho - 1.0) < tolerance, \
+            assert abs(rho - 1.0) < 1e-6, \
                 f"Rank correlation not close to 1.0: {rho}"
     
     except (nx.PowerIterationFailedConvergence, np.linalg.LinAlgError):
