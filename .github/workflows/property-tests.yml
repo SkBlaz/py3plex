@@ -61,7 +61,7 @@ jobs:
     
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: property-test-results-${{ matrix.os }}-${{ matrix.python-version }}
         path: |
@@ -115,7 +115,7 @@ jobs:
     
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: property-test-results-slow
         path: |
