@@ -152,7 +152,7 @@ class TestMultiLayerNetworkStateful(MultiLayerNetworkStateMachine.TestCase):
 @given(
     num_nodes=st.integers(min_value=2, max_value=15),
     num_layers=st.integers(min_value=1, max_value=3),
-    p=st.floats(min_value=0.01, max_value=1.0),  # Avoid very small p to prevent division by zero
+    p=st.floats(min_value=0.01, max_value=1.0),  # Avoid very small p to prevent issues in NetworkX
 )
 def test_random_multilayer_er_and_iterate(num_nodes, num_layers, p):
     """
