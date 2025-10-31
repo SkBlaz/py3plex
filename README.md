@@ -1,5 +1,6 @@
 # *Py3Plex* - a library for analysis and visualization of heterogeneous networks
 
+[![CI](https://github.com/SkBlaz/py3plex/actions/workflows/ci.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/ci.yml)
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 [![Tutorial](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml)
 [![Code Quality](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml)

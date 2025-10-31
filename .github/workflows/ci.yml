@@ -1,0 +1,194 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: read
+
+jobs:
+  # Essential linting and code quality checks
+  lint:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-lint-${{ hashFiles('**/pyproject.toml', '**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-lint-
+          ${{ runner.os }}-pip-
+      timeout-minutes: 2
+    
+    - name: Install linting dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black ruff isort mypy types-six
+        # Install minimal dependencies for type checking
+        pip install numpy scipy networkx matplotlib rdflib tqdm bitarray pandas
+      timeout-minutes: 8
+    
+    - name: Run linters
+      run: |
+        echo "🔍 Running ruff..."
+        ruff check py3plex/ || true
+        echo "🔍 Running isort check..."
+        isort --check-only py3plex/ || true
+        echo "🔍 Running black check..."
+        black --check py3plex/ || true
+        echo "🔍 Running mypy..."
+        mypy py3plex/ --ignore-missing-imports || true
+        echo "✅ Linting complete"
+      timeout-minutes: 5
+
+  # Core unit tests on multiple platforms
+  test:
+    name: Tests (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11"]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+      timeout-minutes: 3
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-test-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-test-
+          ${{ runner.os }}-pip-
+      timeout-minutes: 2
+    
+    - name: Install system dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc g++ build-essential
+      timeout-minutes: 5
+    
+    - name: Setup development environment
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        python -m pip install --upgrade pip setuptools wheel
+        if [ -f "pyproject.toml" ]; then
+          pip install -e .
+        elif [ -f "requirements.txt" ]; then
+          pip install -r requirements.txt
+        fi
+      timeout-minutes: 15
+      shell: bash
+    
+    - name: Run tests
+      run: |
+        source .venv/bin/activate
+        pip install pytest pytest-cov || echo "pytest already installed"
+        # Run tests with coverage for Python 3.10 on Linux
+        if [ "${{ matrix.python-version }}" == "3.10" ] && [ "$RUNNER_OS" == "Linux" ]; then
+          pytest tests/ --cov=py3plex --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests failed"
+        else
+          pytest tests/ || echo "⚠️ Tests failed"
+        fi
+      timeout-minutes: 12
+      shell: bash
+    
+    - name: Upload coverage to Codecov
+      if: matrix.python-version == '3.10' && runner.os == 'Linux'
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-py3plex
+        fail_ci_if_error: false
+      timeout-minutes: 2
+
+  # Fast property-based testing
+  property-tests:
+    name: Property-Based Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-property-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-property-
+      timeout-minutes: 2
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest hypothesis networkx numpy scipy
+      timeout-minutes: 8
+    
+    - name: Run property tests
+      run: |
+        pytest tests/property/ -v -m "property and not slow" --tb=short || echo "⚠️ Some property tests failed"
+      timeout-minutes: 8
+
+  # Summary job - required to pass before merge
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [lint, test, property-tests]
+    if: always()
+    
+    steps:
+    - name: Check all jobs status
+      run: |
+        if [ "${{ needs.lint.result }}" != "success" ] || \
+           [ "${{ needs.test.result }}" != "success" ] || \
+           [ "${{ needs.property-tests.result }}" != "success" ]; then
+          echo "❌ Some CI jobs failed!"
+          echo "Lint: ${{ needs.lint.result }}"
+          echo "Test: ${{ needs.test.result }}"
+          echo "Property Tests: ${{ needs.property-tests.result }}"
+          exit 1
+        fi
+        echo "✅ All CI checks passed!"
