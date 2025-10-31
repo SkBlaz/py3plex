@@ -109,7 +109,7 @@ def test_random_er_node_count(N, L):
     Property: Network should have N nodes per layer.
     """
     p = 0.5
-    mlnet = random_multilayer_ER(N=N, L=L, p=p, directed=False)
+    mlnet = random_multilayer_ER(n=N, l=L, p=p, directed=False)
     
     # Total nodes should be N * L (assuming each node appears in each layer)
     total_nodes = mlnet.core_network.number_of_nodes()
@@ -136,7 +136,7 @@ def test_random_er_layer_count(N, L):
     Property: split_to_layers should produce L layers.
     """
     p = 0.5
-    mlnet = random_multilayer_ER(N=N, L=L, p=p, directed=False)
+    mlnet = random_multilayer_ER(n=N, l=L, p=p, directed=False)
     
     # Split to layers
     mlnet.split_to_layers(style="none")
@@ -159,7 +159,7 @@ def test_random_er_nonnegative_counts(N, L, p):
     
     Property: Node count >= 0, edge count >= 0.
     """
-    mlnet = random_multilayer_ER(N=N, L=L, p=p, directed=False)
+    mlnet = random_multilayer_ER(n=N, l=L, p=p, directed=False)
     
     node_count = mlnet.core_network.number_of_nodes()
     edge_count = mlnet.core_network.number_of_edges()
@@ -181,7 +181,7 @@ def test_random_er_extreme_p_values(N, L):
     Property: p=0 gives no edges, p=1 gives complete graphs per layer.
     """
     # Test p=0 (no edges)
-    mlnet_empty = random_multilayer_ER(N=N, L=L, p=0.0, directed=False)
+    mlnet_empty = random_multilayer_ER(n=N, l=L, p=0.0, directed=False)
     mlnet_empty.split_to_layers(style="none")
     
     for layer in mlnet_empty.separate_layers:
@@ -192,7 +192,7 @@ def test_random_er_extreme_p_values(N, L):
             f"Expected 0 edges with p=0, got {edge_count}"
     
     # Test p=1 (complete graphs)
-    mlnet_complete = random_multilayer_ER(N=N, L=L, p=1.0, directed=False)
+    mlnet_complete = random_multilayer_ER(n=N, l=L, p=1.0, directed=False)
     mlnet_complete.split_to_layers(style="none")
     
     expected_edges_complete = N * (N - 1) // 2
@@ -217,7 +217,7 @@ def test_random_er_single_layer_matches_nx(N):
     seed = 42
     
     # Generate with py3plex
-    mlnet = random_multilayer_ER(N=N, L=1, p=p, directed=False)
+    mlnet = random_multilayer_ER(n=N, l=1, p=p, directed=False)
     mlnet.split_to_layers(style="none")
     
     py3plex_edges = mlnet.separate_layers[0].number_of_edges()
@@ -255,7 +255,7 @@ def test_random_er_layers_independent(N, L, p):
     Property: Edge counts across layers should have variance consistent
     with independent sampling.
     """
-    mlnet = random_multilayer_ER(N=N, L=L, p=p, directed=False)
+    mlnet = random_multilayer_ER(n=N, l=L, p=p, directed=False)
     mlnet.split_to_layers(style="none")
     
     # Get edge counts per layer
@@ -285,7 +285,7 @@ def test_random_er_produces_valid_network(N, L, p):
     
     Property: All basic network operations work on generated networks.
     """
-    mlnet = random_multilayer_ER(N=N, L=L, p=p, directed=False)
+    mlnet = random_multilayer_ER(n=N, l=L, p=p, directed=False)
     
     # Should be able to get nodes
     nodes = list(mlnet.get_nodes())

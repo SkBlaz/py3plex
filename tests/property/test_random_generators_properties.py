@@ -29,9 +29,9 @@ def test_random_multilayer_er_basic_invariants(num_nodes, num_layers, p, directe
     - core_network exists and is valid
     """
     net = random_generators.random_multilayer_ER(
-        num_nodes=num_nodes,
-        num_layers=num_layers,
-        probability=p,
+        n=num_nodes,
+        l=num_layers,
+        p=p,
         directed=directed
     )
     
@@ -59,9 +59,9 @@ def test_random_multilayer_er_empty_with_zero_probability(num_nodes, num_layers)
     Property: With p=0, intra-layer edges should be 0 (only inter-layer may exist).
     """
     net = random_generators.random_multilayer_ER(
-        num_nodes=num_nodes,
-        num_layers=num_layers,
-        probability=0.0,
+        n=num_nodes,
+        l=num_layers,
+        p=0.0,
         directed=False
     )
     
@@ -85,9 +85,9 @@ def test_random_multilayer_er_p1_produces_dense_network(num_nodes, num_layers, d
     Property: With p=1, each layer should be complete or near-complete.
     """
     net = random_generators.random_multilayer_ER(
-        num_nodes=num_nodes,
-        num_layers=num_layers,
-        probability=1.0,
+        n=num_nodes,
+        l=num_layers,
+        p=1.0,
         directed=directed
     )
     
@@ -120,9 +120,9 @@ def test_random_multilayer_er_has_layers(num_nodes, num_layers, p):
     Property: Network should have layer information stored.
     """
     net = random_generators.random_multilayer_ER(
-        num_nodes=num_nodes,
-        num_layers=num_layers,
-        probability=p,
+        n=num_nodes,
+        l=num_layers,
+        p=p,
         directed=False
     )
     
@@ -148,9 +148,9 @@ def test_random_multilayer_er_single_layer(num_nodes, p):
     Property: Single-layer network should behave like ER random graph.
     """
     net = random_generators.random_multilayer_ER(
-        num_nodes=num_nodes,
-        num_layers=1,
-        probability=p,
+        n=num_nodes,
+        l=1,
+        p=p,
         directed=False
     )
     
@@ -186,9 +186,9 @@ def test_random_multilayer_er_directed_flag(num_nodes, num_layers, directed):
     Property: Generated network should be directed if flag is True.
     """
     net = random_generators.random_multilayer_ER(
-        num_nodes=num_nodes,
-        num_layers=num_layers,
-        probability=0.3,
+        n=num_nodes,
+        l=num_layers,
+        p=0.3,
         directed=directed
     )
     
