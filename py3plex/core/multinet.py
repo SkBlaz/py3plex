@@ -1180,7 +1180,7 @@ class multi_layer_network:
                         one_row.append(adj_mat)
 
                 whole_mat.append(np.hstack(list(one_row)))
-            vectors = np.vstack(list(whole_mat))
+            vectors = np.vstack(whole_mat)
             self.numeric_core_network = vectors
             self.node_order_in_matrix = all_nodes
 
