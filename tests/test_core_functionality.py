@@ -185,15 +185,17 @@ def test_basic_visualizati4():
                             curve_height=5,
                             linmod="upper",
                             linewidth=0.4)
-        elif edge_type == "refers_to":
-            draw_multiedges(graphs,
-                            edges,
-                            alphachannel=0.2,
-                            linepoints=":",
-                            linecolor="green",
-                            curve_height=5,
-                            linmod="upper",
-                            linewidth=0.3)
+        # Note: Second condition was duplicate "refers_to" - likely a different edge type intended
+        # Commented out to avoid unreachable code. Verify the actual edge type in the dataset.
+        # elif edge_type == "FIXME_UNKNOWN_EDGE_TYPE":
+        #     draw_multiedges(graphs,
+        #                     edges,
+        #                     alphachannel=0.2,
+        #                     linepoints=":",
+        #                     linecolor="green",
+        #                     curve_height=5,
+        #                     linmod="upper",
+        #                     linewidth=0.3)
         elif edge_type == "belongs_to":
             draw_multiedges(graphs,
                             edges,
@@ -303,6 +305,9 @@ def test_basic_animation():
         np.random.seed(42)
         fig = plt.figure()
         folder_tmp_files = "datasets/animation"
+        
+        # Ensure the animation directory exists
+        os.makedirs(folder_tmp_files, exist_ok=True)
 
         def animate(mnod):
             try:
@@ -318,7 +323,7 @@ def test_basic_animation():
                     return
                     
                 fx = ER_multilayer.visualize_network(show=False)
-                plt.savefig("{}{}.png".format(folder_tmp_files, mnod))
+                plt.savefig(os.path.join(folder_tmp_files, f"{mnod}.png"))
             except Exception as e:
                 logging.warning(f"Animation frame {mnod} failed: {e}")
 
@@ -331,7 +336,7 @@ def test_basic_animation():
         import os
         created_files = []
         for p in imrange:
-            filepath = "{}{}.png".format(folder_tmp_files, p)
+            filepath = os.path.join(folder_tmp_files, f"{p}.png")
             if os.path.exists(filepath):
                 created_files.append(p)
         
@@ -342,7 +347,7 @@ def test_basic_animation():
         myimages = []
         for p in created_files:
             try:
-                img = mgimg.imread("{}{}.png".format(folder_tmp_files, p))
+                img = mgimg.imread(os.path.join(folder_tmp_files, f"{p}.png"))
                 imgplot = plt.imshow(img)
                 myimages.append([imgplot])
             except Exception as e:

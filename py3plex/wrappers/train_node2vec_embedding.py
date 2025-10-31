@@ -2,6 +2,8 @@
 import ast
 import multiprocessing as mp
 import os
+import shutil
+import tempfile
 import time
 from subprocess import call
 from typing import Any, List, Optional, Tuple
@@ -62,8 +64,8 @@ def n2v_embedding(
     verbose: bool = False,
     sample_size: float = 0.5,
     outfile_name: str = "test.emb",
-    p: float = -100,
-    q: float = -100,
+    p: Optional[float] = None,
+    q: Optional[float] = None,
     binary_path: str = "./node2vec",
     parameter_range: Optional[List[float]] = None,
     embedding_dimension: int = 128,
@@ -77,8 +79,8 @@ def n2v_embedding(
         verbose: Whether to print verbose output
         sample_size: Sample size for training
         outfile_name: Output embedding file name
-        p: Return parameter (negative value triggers grid search)
-        q: In-out parameter (negative value triggers grid search)
+        p: Return parameter (None triggers grid search)
+        q: In-out parameter (None triggers grid search)
         binary_path: Path to node2vec binary
         parameter_range: Range of parameters to search
         embedding_dimension: Dimension of embeddings
@@ -96,10 +98,9 @@ def n2v_embedding(
     len(G.nodes())
 
     # get the graph..
-    if not os.path.exists("tmp"):
-        os.makedirs("tmp")
-
-    tmp_graph = "tmp/tmpgraph.edges"
+    # Use a temporary directory for intermediate files
+    tmp_dir = tempfile.mkdtemp(prefix="py3plex_n2v_")
+    tmp_graph = os.path.join(tmp_dir, "tmpgraph.edges")
 
     number_of_nodes = len(G.nodes())
     number_of_edges = len(G.edges())
@@ -121,10 +122,10 @@ def n2v_embedding(
     copt = 0
     cset: List[float] = [0.0, 0.0]
 
-    if float(p) > -100 and float(q) > -100:
+    if p is not None and q is not None:
         logger.info("Running specific config of N2V.")
         call_node2vec_binary(
-            tmp_graph, outfile_name, p=p, q=q, directed=False, weighted=True
+            tmp_graph, outfile_name, p=p, q=q, directed=False, weighted=True, binary=binary_path
         )
 
     else:
@@ -156,7 +157,9 @@ def n2v_embedding(
                 else:
                     logger.debug("Current optimum %s", ma)
 
-                call(["rm", "-rf", outfile_name])  # when updatedin delete the file
+                # Remove the temporary embedding file after evaluation
+                if os.path.exists(outfile_name):
+                    os.remove(outfile_name)
 
         logger.info("Final iteration phase..")
 
@@ -167,14 +170,16 @@ def n2v_embedding(
             q=cset[1],
             directed=False,
             weighted=True,
-            binary="./node2vec",
+            binary=binary_path,
         )
 
         with open(outfile_name) as f:
             fl = f.readline()
             logger.info("Resulting dimensions: %s", fl)
 
-        call(["rm", "-rf", "tmp"])
+    # Clean up temporary directory
+    if os.path.exists(tmp_dir):
+        shutil.rmtree(tmp_dir)
 
 
 def learn_embedding(

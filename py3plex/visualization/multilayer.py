@@ -16,8 +16,11 @@ logger = get_logger(__name__)
 
 try:
     from matplotlib.patches import Circle, Rectangle
+    MATPLOTLIB_PATCHES_AVAILABLE = True
 except ImportError:
-    pass
+    MATPLOTLIB_PATCHES_AVAILABLE = False
+    Circle = None
+    Rectangle = None
 
 import random
 
@@ -167,6 +170,12 @@ def _draw_background_shape(
         rectanglex: Rectangle width (if shape is rectangle)
         rectangley: Rectangle height (if shape is rectangle)
     """
+    if not MATPLOTLIB_PATCHES_AVAILABLE:
+        raise ImportError(
+            "matplotlib.patches is not available. "
+            "Please install matplotlib to use background shapes in multilayer visualization."
+        )
+    
     shadow_size = config.MULTILAYER_SHADOW_SIZE
     circle_size = config.MULTILAYER_CIRCLE_SIZE
 
