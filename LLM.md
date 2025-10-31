@@ -1,7 +1,7 @@
 # Py3plex - LLM Context Summary
 
-**Last Updated**: 2025-10-30 (Versatility Implementation - Multilayer Eigenvector Centrality)  
-**Previous Update**: 2025-10-30 (Documentation Improvements - RST Link Fixes)
+**Last Updated**: 2025-10-31 (Root Directory Cleanup)  
+**Previous Update**: 2025-10-30 (Versatility Implementation - Multilayer Eigenvector Centrality)
 
 ---
 
@@ -9,7 +9,30 @@
 
 This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
 
-### 2025-10-30: Versatility Implementation (Current)
+### 2025-10-31: Root Directory Cleanup (Current)
+**Changes Made:**
+- Cleaned up root directory to be minimalistic and professional
+- Removed test/validation scripts: `validate_multilayer.py`, `validate_tutorials.py`, `run_tests.py`
+- Removed test artifacts: `coverage.json`, `type-coverage-before.json`, `type-coverage-after.json`, `files.txt`
+- Removed helper scripts: `clean_repo.sh`, `py3plex-docker.sh`, `test-docker-setup.sh`
+- Removed `DOCKER.md` from root (comprehensive Docker documentation exists in `docfiles/tutorials/docker_usage.rst`)
+
+**Root Directory Now Contains Only:**
+- Essential build/config: `.dockerignore`, `.gitignore`, `.pre-commit-config.yaml`, `Dockerfile`, `docker-compose.yml`, `MANIFEST.in`, `Makefile`, `pyproject.toml`, `pytest.ini`, `requirements.txt`, `setup.py`
+- Essential documentation: `LICENSE`, `README.md`, `LLM.md`
+
+**Docker Documentation Location:**
+- Comprehensive Docker guide: `docfiles/tutorials/docker_usage.rst` (builds to `docs/tutorials/docker_usage.html`)
+- Docker configuration files: `Dockerfile`, `docker-compose.yml`, `.dockerignore` (kept at root per standard practice)
+
+**Impact:**
+- **Professional Appearance:** Root directory is now clean and minimalistic
+- **Maintainability:** Easier to navigate and understand project structure
+- **Standard Practice:** Follows common open-source project organization
+
+**Purpose:** Clean up root directory by removing test remnants and helper scripts, keeping only essential build/config files and documentation (LLM.md, README.md, LICENSE).
+
+### 2025-10-30: Versatility Implementation (Previous)
 **Changes Made:**
 - Implemented versatility (multilayer eigenvector centrality) feature
 - Added `py3plex/algorithms/multilayer_algorithms/versatility.py` module
