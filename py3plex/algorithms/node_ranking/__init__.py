@@ -1,6 +1,6 @@
 # node ranking algorithms
 import multiprocessing as mp
-from typing import Any, Generator, List, Optional, Tuple, Union
+from typing import Generator, List, Optional, Tuple, Union
 
 import numpy as np
 import scipy.sparse as sp

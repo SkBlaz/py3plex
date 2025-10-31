@@ -67,4 +67,12 @@ def call_node2vec_binary(
     
     logger.info("Node2vec parameters: %s", " ".join(input_params))
     call(input_params)
-    call(["rm", "-rf", "tmp/*"])
+    
+    # Clean up temporary files safely
+    import shutil
+    tmp_dir = "tmp"
+    if os.path.exists(tmp_dir) and os.path.isdir(tmp_dir):
+        try:
+            shutil.rmtree(tmp_dir)
+        except OSError:
+            pass  # Ignore errors if directory doesn't exist or can't be removed
