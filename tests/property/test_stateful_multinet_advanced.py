@@ -291,8 +291,8 @@ def test_multiple_input_formats_equivalent():
         "target_type": "l1"
     }], input_type="dict")
     
-    # Add same edges using list format
-    mlnet_list.add_edges([["a", "l1", "b", "l1"]], input_type="list")
+    # Add same edges using list format (needs 5 elements: node1, layer1, node2, layer2, weight)
+    mlnet_list.add_edges([["a", "l1", "b", "l1", 1]], input_type="list")
     
     # Both should have same structure
     assert mlnet_dict.core_network.number_of_nodes() == mlnet_list.core_network.number_of_nodes()
