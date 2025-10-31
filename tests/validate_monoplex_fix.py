@@ -47,19 +47,22 @@ def validate_monoplex_nx_wrapper_fix():
         print("  FAIL: kwargs initialization not found")
         return False
     
-    # Check 3: kwargs is forwarded to NetworkX call
-    print("\n✓ Check 3: kwargs is forwarded to NetworkX call")
-    if "**kwargs" in content and "nx." in content:
-        # Check if the eval statement includes **kwargs
-        pattern = r'eval\(["\']nx\.\s*["\'].*\*\*kwargs'
-        if re.search(pattern, content):
-            print("  PASS: kwargs is forwarded to NetworkX function")
-        else:
-            print("  FAIL: kwargs forwarding pattern not found")
-            return False
+    # Check 3: kwargs is forwarded to NetworkX call (using getattr, not eval)
+    print("\n✓ Check 3: kwargs is forwarded to NetworkX call safely")
+    if "getattr(nx, method)" in content and "**kwargs" in content:
+        print("  PASS: kwargs is forwarded using safe getattr method")
+    elif "eval" in content and "**kwargs" in content:
+        print("  WARNING: Uses eval (security concern), but kwargs is forwarded")
     else:
         print("  FAIL: kwargs forwarding not found in NetworkX call")
         return False
+    
+    # Check 3b: Method validation exists
+    print("\n✓ Check 3b: Method validation exists")
+    if "hasattr(nx, method)" in content:
+        print("  PASS: Method validation present")
+    else:
+        print("  INFO: No method validation (optional)")
     
     # Check 4: Docstring has been improved
     print("\n✓ Check 4: Docstring has been improved")

@@ -811,6 +811,9 @@ class multi_layer_network:
         Returns:
             The result of the NetworkX function call.
             
+        Raises:
+            AttributeError: If the specified method does not exist in NetworkX.
+            
         Example:
             # Unweighted betweenness centrality
             centralities = network.monoplex_nx_wrapper("betweenness_centrality")
@@ -825,7 +828,14 @@ class multi_layer_network:
 
         if kwargs is None:
             kwargs = {}
-        result = eval("nx." + method + "(self.core_network, **kwargs)")
+        
+        # Validate that the method exists in NetworkX
+        if not hasattr(nx, method):
+            raise AttributeError(f"NetworkX has no method '{method}'")
+        
+        # Get the NetworkX function and call it safely
+        nx_function = getattr(nx, method)
+        result = nx_function(self.core_network, **kwargs)
         return result
 
     def _generic_edge_dict_manipulator(self, edge_dict_list, target_function):

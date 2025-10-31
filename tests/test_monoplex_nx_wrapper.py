@@ -121,5 +121,13 @@ class TestMonoplexNxWrapper(unittest.TestCase):
         self.assertGreater(len(result), 0)
 
 
+    def test_invalid_method_raises_error(self):
+        """Test that invalid method name raises AttributeError."""
+        with self.assertRaises(AttributeError) as context:
+            self.network.monoplex_nx_wrapper("nonexistent_centrality_function")
+        
+        self.assertIn("NetworkX has no method", str(context.exception))
+
+
 if __name__ == "__main__":
     unittest.main()
