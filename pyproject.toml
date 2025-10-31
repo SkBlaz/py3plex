@@ -195,6 +195,7 @@ addopts = [
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
+    "property: property-based tests using Hypothesis",
 ]
 timeout = 300
 
