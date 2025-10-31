@@ -30,8 +30,8 @@ def pick_threshold(matrix: np.ndarray) -> float:
         np.fill_diagonal(tmp_array, 0)  # self loops
         rw_sum = np.sum(tmp_array, axis=0)
         count_dict = Counter(rw_sum)
-        key_counts = np.log(list(count_dict.keys()))
-        counts = np.log(list(count_dict.values()))
+        key_counts = np.log(np.fromiter(count_dict.keys(), dtype=float))
+        counts = np.log(np.fromiter(count_dict.values(), dtype=float))
         slope, intercept, r_value, p_value, std_err = stats.linregress(
             key_counts, counts
         )

@@ -405,8 +405,8 @@ class multi_layer_network:
         components = len(
             list(nx.connected_components(self.core_network.to_undirected()))
         )
-        node_degree_vector = list(dict(nx.degree(self.core_network)).values())
-        mean_degree = np.mean(node_degree_vector)
+        node_degree_vector = dict(nx.degree(self.core_network)).values()
+        mean_degree = np.mean(list(node_degree_vector))
         return {
             "Number of layers": unique_layers,
             "Nodes": nodes,

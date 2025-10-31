@@ -136,13 +136,13 @@ def calculate_importance_chi(classes, universal_set, linked_nodes, n, **kwargs):
 
 def np_calculate_importance_chi(predicted, label_matrix, actual_pos_nums):
     tp = predicted * label_matrix
-    predicted_pos_num = np.count_nonzero(predicted)  # TODO: speed this up!
+    # Use sum() for binary arrays - faster than count_nonzero()
+    predicted_pos_num = np.sum(predicted, dtype=np.int64)
     tp_nums = np.ones((1, label_matrix.shape[0])).dot(tp)
     fp_nums = predicted_pos_num - tp_nums
     fn_nums = actual_pos_nums - tp_nums
     tn_nums = label_matrix.shape[0] - tp_nums - fp_nums - fn_nums
     tmp = tp_nums * tn_nums - fp_nums * fn_nums
-    # TODO: alternative: tp_nums = count something greater than 0.
     top = tmp * tmp
     bot = (
         predicted_pos_num * (fn_nums + tn_nums) * actual_pos_nums * (tn_nums + fp_nums)
