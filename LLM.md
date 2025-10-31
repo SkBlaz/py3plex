@@ -4090,7 +4090,7 @@ While all identified bugs are fixed, ongoing testing should consider:
 ## Tutorial Validation Script (October 2025)
 
 **Last Updated**: 2025-10-29  
-**Script**: `validate_tutorials.py`
+**Script**: `tests/validate_tutorials.py`
 
 ### Overview
 
@@ -4146,11 +4146,11 @@ The script performs 8 validation checks:
 
 ```bash
 # Basic validation (checks syntax and structure)
-python validate_tutorials.py
+python tests/validate_tutorials.py
 
 # Full validation (requires dependencies)
 pip install networkx numpy scipy pandas
-python validate_tutorials.py
+python tests/validate_tutorials.py
 ```
 
 ### Validation Results
@@ -4179,17 +4179,17 @@ VALIDATION SUMMARY
 
 ### Integration with Existing Validation
 
-This script complements the existing `validate_multilayer.py` script:
+This script complements the existing `tests/validate_multilayer.py` script:
 
-- `validate_multilayer.py`: Validates multilayer modularity implementation
-- `validate_tutorials.py`: Validates tutorials and corner case fixes
+- `tests/validate_multilayer.py`: Validates multilayer modularity implementation
+- `tests/validate_tutorials.py`: Validates tutorials and corner case fixes
 
 Both scripts follow the same structure and output format for consistency.
 
 ### Related Files
 
-- Script: `validate_tutorials.py`
+- Script: `tests/validate_tutorials.py`
 - Tests: `tests/test_multilayer_cornercases.py`
 - Examples: `examples/example_multilayer_*.py`
-- Related validation: `validate_multilayer.py`
+- Related validation: `tests/validate_multilayer.py`
 
