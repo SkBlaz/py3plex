@@ -5,6 +5,24 @@ Multilayer/Multiplex Network Centrality Measures
 This module implements various centrality measures for multilayer and multiplex networks,
 following standard definitions from multilayer network analysis literature.
 
+Weight Handling Notes:
+----------------------
+For path-based centralities (betweenness, closeness):
+- Edge weights from the supra-adjacency matrix are converted to distances (inverse of weight)
+- NetworkX algorithms use these distances for shortest path computation
+- betweenness_centrality: weight parameter specifies the edge attribute for path computation
+- closeness_centrality: distance parameter specifies the edge attribute for path computation
+
+For disconnected graphs:
+- closeness_centrality uses wf_improved parameter (Wasserman-Faust scaling) by default
+- When wf_improved=True, scores are normalized by reachable nodes only
+- When wf_improved=False, unreachable nodes contribute infinite distance
+
+Weight Constraints:
+- Weights should be positive (> 0) for shortest path algorithms
+- Zero or negative weights will cause undefined behavior
+- For unweighted analysis, use weighted=False parameters
+
 Authors: py3plex contributors
 Date: 2025
 """
@@ -476,7 +494,7 @@ class MultilayerCentrality:
 
     # ==================== PATH-BASED MEASURES ====================
 
-    def multilayer_closeness_centrality(self, normalized=True):
+    def multilayer_closeness_centrality(self, normalized=True, wf_improved=True):
         """
         Compute closeness centrality on the supra-graph.
 
@@ -487,6 +505,11 @@ class MultilayerCentrality:
 
         Args:
             normalized: Whether to normalize by (n-1).
+            wf_improved: If True, use Wasserman-Faust improved closeness scaling
+                        for disconnected graphs. Default is True. This affects
+                        the magnitude and ordering of scores in graphs with
+                        multiple components (e.g., low interlayer coupling).
+                        See NetworkX documentation for details.
 
         Returns:
             dict: {(node, layer): closeness_centrality}
@@ -495,6 +518,11 @@ class MultilayerCentrality:
             This implementation uses NetworkX's shortest path algorithms on
             the supra-graph representation. For large networks, this can be
             computationally expensive.
+            
+            The wf_improved parameter controls how closeness is computed for
+            nodes that cannot reach all other nodes. When True (default),
+            uses the Wasserman-Faust formula that considers reachable nodes
+            only, making scores comparable across disconnected components.
         """
         # Convert supra-adjacency matrix to NetworkX graph
         supra_matrix = self._get_supra_adjacency_matrix()
@@ -526,13 +554,13 @@ class MultilayerCentrality:
         # Compute closeness centrality
         try:
             if self.network.directed:
-                nx_closeness = nx.closeness_centrality(G, distance="weight")
+                nx_closeness = nx.closeness_centrality(G, distance="weight", wf_improved=wf_improved)
             else:
-                nx_closeness = nx.closeness_centrality(G, distance="weight")
+                nx_closeness = nx.closeness_centrality(G, distance="weight", wf_improved=wf_improved)
         except (nx.NetworkXError, KeyError, ZeroDivisionError):
             # Fallback: use unweighted distances
             try:
-                nx_closeness = nx.closeness_centrality(G)
+                nx_closeness = nx.closeness_centrality(G, wf_improved=wf_improved)
             except (nx.NetworkXError, ZeroDivisionError):
                 # If graph is disconnected, compute for each component
                 nx_closeness = {}
@@ -563,6 +591,11 @@ class MultilayerCentrality:
         Note:
             This is computationally expensive for large networks as it
             requires computing shortest paths between all pairs of nodes.
+            
+            Weight handling: Edge weights from the supra-adjacency matrix are
+            converted to distances (1/weight) for shortest path computation.
+            Weights must be positive (> 0). Zero or negative weights will
+            cause undefined behavior.
         """
         # Convert supra-adjacency matrix to NetworkX graph
         supra_matrix = self._get_supra_adjacency_matrix()
@@ -954,17 +987,35 @@ class MultilayerCentrality:
         return aggregated
 
 
-def compute_all_centralities(network, include_path_based=False, include_advanced=False):
+def compute_all_centralities(network, include_path_based=False, include_advanced=False, wf_improved=True):
     """
     Compute all available centrality measures for a multilayer network.
 
     Args:
         network: py3plex multi_layer_network object
         include_path_based: Whether to include computationally expensive path-based measures
-        include_advanced: Whether to include advanced measures (HITS, current-flow, communicability, k-core)
+                           (betweenness, closeness). Default: False
+        include_advanced: Whether to include advanced measures (HITS, current-flow, 
+                         communicability, k-core). Default: False
+        wf_improved: If True, use Wasserman-Faust improved scaling for closeness
+                    centrality in disconnected graphs. Default: True
 
     Returns:
-        dict: Dictionary containing all computed centrality measures
+        dict: Dictionary containing all computed centrality measures with keys:
+              - Degree-based: "layer_degree", "layer_strength", "supra_degree",
+                "supra_strength", "overlapping_degree", "overlapping_strength",
+                "participation_coefficient", "participation_coefficient_strength"
+              - Eigenvector-based: "multiplex_eigenvector", "eigenvector_versatility",
+                "katz_bonacich", "pagerank"
+              - Path-based (if include_path_based=True): "closeness", "betweenness"
+              - Advanced (if include_advanced=True): "hits", "current_flow_closeness",
+                "current_flow_betweenness", "subgraph_centrality",
+                "total_communicability", "multiplex_k_core"
+    
+    Note:
+        Path-based and advanced measures are computationally expensive for large
+        networks. Use include_path_based and include_advanced flags to control
+        which measures are computed.
     """
     calc = MultilayerCentrality(network)
     results = {}
@@ -991,7 +1042,7 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
 
     # Path-based measures (optional due to computational cost)
     if include_path_based:
-        results["closeness"] = calc.multilayer_closeness_centrality()
+        results["closeness"] = calc.multilayer_closeness_centrality(wf_improved=wf_improved)
         results["betweenness"] = calc.multilayer_betweenness_centrality()
 
     # Advanced measures (optional due to computational cost)
