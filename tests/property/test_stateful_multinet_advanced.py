@@ -237,7 +237,6 @@ TestAdvancedMultiLayerStateful = AdvancedMultiLayerStateMachine.TestCase
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
 def test_remove_nodes_preserves_consistency():
     """
     Test that removing nodes maintains consistency.
@@ -274,7 +273,6 @@ def test_remove_nodes_preserves_consistency():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
 def test_multiple_input_formats_equivalent():
     """
     Test that dict and list input formats produce equivalent structures.
@@ -302,7 +300,6 @@ def test_multiple_input_formats_equivalent():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=30)
 def test_network_type_preserved():
     """
     Test that network type is preserved through operations.
