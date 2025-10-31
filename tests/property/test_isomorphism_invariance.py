@@ -11,7 +11,6 @@ import numpy as np
 import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
-from scipy.stats import spearmanr
 
 from py3plex.core.multinet import multi_layer_network
 from py3plex.algorithms.multilayer_algorithms.versatility import versatility
@@ -112,7 +111,7 @@ def test_eigenvector_centrality_ranking_invariant(n):
     """
     Test that eigenvector centrality ranking is invariant under relabeling.
     
-    Property: Spearman rank correlation between original and mapped scores = 1.
+    Property: Sorted centrality values should be identical for isomorphic graphs.
     """
     p = 0.5
     seed = hash(n) % (2**32)
@@ -130,7 +129,8 @@ def test_eigenvector_centrality_ranking_invariant(n):
         ec_relabeled = nx.eigenvector_centrality_numpy(H, max_iter=1000)
         values_relabeled = sorted(ec_relabeled.values())
         
-        # Compare sorted values
+        # Compare sorted values directly (element-wise)
+        # For isomorphic graphs, the sorted centrality values must be identical
         assert len(values_original) == len(values_relabeled)
         
         # Allow small numerical differences but rankings should be identical
