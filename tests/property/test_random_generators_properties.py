@@ -117,7 +117,7 @@ def test_random_multilayer_er_has_layers(num_nodes, num_layers, p):
     """
     Test that generated network has layer structure.
     
-    Property: Network should have layer information stored.
+    Property: Network should have layer information stored in nodes.
     """
     net = random_generators.random_multilayer_ER(
         n=num_nodes,
@@ -126,13 +126,14 @@ def test_random_multilayer_er_has_layers(num_nodes, num_layers, p):
         directed=False
     )
     
-    # Check that layer mapping exists
-    assert hasattr(net, 'layer_name_map'), \
-        "Network should have layer_name_map attribute"
+    # Split to layers to verify layer structure
+    net.split_to_layers(style="none")
     
-    # Should have num_layers layers
-    assert len(net.layer_name_map) >= num_layers, \
-        f"Expected {num_layers} layers, got {len(net.layer_name_map)}"
+    # Should have min(num_nodes, num_layers) layers after splitting
+    # (can't have more layers than nodes)
+    expected_layers = min(num_nodes, num_layers)
+    assert len(net.separate_layers) >= expected_layers, \
+        f"Expected at least {expected_layers} layers, got {len(net.separate_layers)}"
 
 
 @pytest.mark.property

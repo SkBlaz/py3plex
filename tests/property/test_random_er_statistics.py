@@ -28,37 +28,42 @@ def test_random_er_edge_count_bounds(N, L, p):
     Test that random ER networks have edge counts within expected bounds.
     
     Property: For each layer, edge count should be close to expected
-    value E[m] = p * N * (N-1) / 2 for undirected graphs.
+    value E[m] = p * n_layer * (n_layer-1) / 2 for undirected graphs,
+    where n_layer is the number of nodes in that layer.
     Uses Chebyshev's inequality for wide bounds.
     """
     # Generate network
-    mlnet = random_multilayer_ER(N=N, L=L, p=p, directed=False)
+    mlnet = random_multilayer_ER(n=N, l=L, p=p, directed=False)
     
     # Split to layers
     mlnet.split_to_layers(style="none")
     
-    # Expected edge count per layer (undirected)
-    expected_edges = p * N * (N - 1) / 2
-    
-    # Standard deviation for binomial: sqrt(n * p * (1-p))
-    # where n = N*(N-1)/2 is number of possible edges
-    n_possible = N * (N - 1) // 2
-    std_edges = np.sqrt(n_possible * p * (1 - p))
-    
-    # Use wide bounds (Chebyshev: within k standard deviations with prob >= 1 - 1/k^2)
-    # Use k=5 for very wide bounds (96% confidence)
-    k = 5
-    lower_bound = max(0, expected_edges - k * std_edges)
-    upper_bound = expected_edges + k * std_edges
-    
     # Check each layer
     for layer in mlnet.separate_layers:
+        nodes_in_layer = layer.number_of_nodes()
         edge_count = layer.number_of_edges()
         
+        # Expected edge count for this layer (undirected)
+        expected_edges = p * nodes_in_layer * (nodes_in_layer - 1) / 2
+        
+        # Standard deviation for binomial: sqrt(n * p * (1-p))
+        # where n = nodes_in_layer*(nodes_in_layer-1)/2 is number of possible edges
+        n_possible = nodes_in_layer * (nodes_in_layer - 1) // 2
+        if n_possible == 0:
+            # Single node layer, skip
+            continue
+        std_edges = np.sqrt(n_possible * p * (1 - p))
+        
+        # Use wide bounds (Chebyshev: within k standard deviations with prob >= 1 - 1/k^2)
+        # Use k=5 for very wide bounds (96% confidence)
+        k = 5
+        lower_bound = max(0, expected_edges - k * std_edges)
+        upper_bound = expected_edges + k * std_edges
+        
         assert edge_count >= lower_bound, \
-            f"Edge count {edge_count} below lower bound {lower_bound}"
+            f"Edge count {edge_count} below lower bound {lower_bound} for layer with {nodes_in_layer} nodes"
         assert edge_count <= upper_bound, \
-            f"Edge count {edge_count} above upper bound {upper_bound}"
+            f"Edge count {edge_count} above upper bound {upper_bound} for layer with {nodes_in_layer} nodes"
 
 
 @pytest.mark.property
@@ -78,8 +83,8 @@ def test_random_er_monotonicity_in_p(N, L):
     p_high = 0.5
     
     # Generate networks with different p values
-    mlnet_low = random_multilayer_ER(N=N, L=L, p=p_low, directed=False)
-    mlnet_high = random_multilayer_ER(N=N, L=L, p=p_high, directed=False)
+    mlnet_low = random_multilayer_ER(n=N, l=L, p=p_low, directed=False)
+    mlnet_high = random_multilayer_ER(n=N, l=L, p=p_high, directed=False)
     
     # Count total edges
     edges_low = len(list(mlnet_low.get_edges()))
@@ -133,7 +138,8 @@ def test_random_er_layer_count(N, L):
     """
     Test that generated networks have correct layer count.
     
-    Property: split_to_layers should produce L layers.
+    Property: split_to_layers should produce min(N, L) layers
+    (can't have more layers than nodes).
     """
     p = 0.5
     mlnet = random_multilayer_ER(n=N, l=L, p=p, directed=False)
@@ -141,9 +147,10 @@ def test_random_er_layer_count(N, L):
     # Split to layers
     mlnet.split_to_layers(style="none")
     
-    # Should have L layers
-    assert len(mlnet.separate_layers) == L, \
-        f"Layer count mismatch: {len(mlnet.separate_layers)} != {L}"
+    # Should have min(N, L) layers
+    expected = min(N, L)
+    assert len(mlnet.separate_layers) == expected, \
+        f"Layer count mismatch: {len(mlnet.separate_layers)} != {expected}"
 
 
 @pytest.mark.property
@@ -195,13 +202,13 @@ def test_random_er_extreme_p_values(N, L):
     mlnet_complete = random_multilayer_ER(n=N, l=L, p=1.0, directed=False)
     mlnet_complete.split_to_layers(style="none")
     
-    expected_edges_complete = N * (N - 1) // 2
-    
     for layer in mlnet_complete.separate_layers:
+        nodes_in_layer = layer.number_of_nodes()
         edge_count = layer.number_of_edges()
-        # Should have complete graph edges
+        # Each layer should be a complete graph for its nodes
+        expected_edges_complete = nodes_in_layer * (nodes_in_layer - 1) // 2
         assert edge_count == expected_edges_complete, \
-            f"Expected {expected_edges_complete} edges with p=1, got {edge_count}"
+            f"Expected {expected_edges_complete} edges with p=1 for {nodes_in_layer} nodes, got {edge_count}"
 
 
 @pytest.mark.property
