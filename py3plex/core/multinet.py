@@ -797,9 +797,35 @@ class multi_layer_network:
                 self.core_network = nx.MultiGraph()
 
     def monoplex_nx_wrapper(self, method, kwargs=None):
-        """a generic networkx function wrapper"""
+        """
+        A generic networkx function wrapper.
+        
+        Args:
+            method (str): Name of the NetworkX function to call (e.g., 'degree_centrality', 'betweenness_centrality')
+            kwargs (dict, optional): Keyword arguments to pass to the NetworkX function.
+                                     For example, for betweenness_centrality you can pass:
+                                     - weight: Edge attribute to use as weight
+                                     - normalized: Whether to normalize betweenness values
+                                     - distance: Edge attribute to use as distance (for closeness_centrality)
+        
+        Returns:
+            The result of the NetworkX function call.
+            
+        Example:
+            # Unweighted betweenness centrality
+            centralities = network.monoplex_nx_wrapper("betweenness_centrality")
+            
+            # Weighted betweenness centrality
+            centralities = network.monoplex_nx_wrapper("betweenness_centrality", kwargs={"weight": "weight"})
+            
+            # With multiple parameters
+            centralities = network.monoplex_nx_wrapper("betweenness_centrality", 
+                                                       kwargs={"weight": "weight", "normalized": True})
+        """
 
-        result = eval("nx." + method + "(self.core_network)")
+        if kwargs is None:
+            kwargs = {}
+        result = eval("nx." + method + "(self.core_network, **kwargs)")
         return result
 
     def _generic_edge_dict_manipulator(self, edge_dict_list, target_function):
