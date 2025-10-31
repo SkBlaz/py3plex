@@ -165,6 +165,14 @@ class multi_layer_network:
              Self for method chaining. Populates self.core_network, self.labels, and self.activity
 
         """
+        # crosshair: analysis_kind=asserts
+        # Precondition: input_type must be from supported set
+        SUPPORTED = {"edgelist", "multiedgelist", "multiplex_edges", "gml", "gpickle", "graphml", "nx", "sparse"}
+        assert input_type in SUPPORTED, f"input_type must be one of {SUPPORTED}, got {input_type}"
+        
+        # Precondition: if not nx type, input_file should be provided
+        if input_type != "nx":
+            assert input_file is not None, "input_file must be provided for non-nx input types"
 
         self.input_file = input_file
         self.input_type = input_type
@@ -185,6 +193,16 @@ class multi_layer_network:
         if self.network_type == "multiplex":
             self.monitor("Checking multiplex edges..")
             self._couple_all_edges()
+
+        # Postconditions: core_network should be valid
+        assert self.core_network is not None, "core_network must be initialized"
+        assert self.core_network.number_of_nodes() >= 0, "node count must be non-negative"
+        assert self.core_network.number_of_edges() >= 0, "edge count must be non-negative"
+        
+        # Postcondition: if directed=False, graph should be undirected
+        if not directed and self.core_network is not None:
+            assert not isinstance(self.core_network, (nx.DiGraph, nx.MultiDiGraph)), \
+                "core_network should not be directed when directed=False"
 
         return self
 

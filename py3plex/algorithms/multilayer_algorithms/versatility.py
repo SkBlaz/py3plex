@@ -271,11 +271,24 @@ def versatility(
         - De Domenico et al. (2013) Physical Review X 3, 041022
         - De Domenico et al. (2015) Nature Communications 6, 6868
     """
+    # crosshair: analysis_kind=asserts
+    # Preconditions
+    assert len(A_layers) > 0, "At least one layer is required"
+    assert isinstance(interlayer, (int, float, dict, np.ndarray)), \
+        "interlayer must be scalar, dict, or array"
+    if isinstance(interlayer, (int, float)):
+        assert interlayer >= 0.0, "interlayer coupling must be non-negative"
+    
     if not A_layers:
         raise ValueError("At least one layer is required")
     
     N = A_layers[0].shape[0]
     L = len(A_layers)
+    
+    # Precondition: all layers must be square and same size
+    for i, layer in enumerate(A_layers):
+        assert layer.shape[0] == layer.shape[1], f"Layer {i} must be square"
+        assert layer.shape[0] == N, f"Layer {i} must have size {N}"
     
     # Build supra-adjacency matrix
     S = build_supra_adjacency(A_layers, interlayer)
@@ -316,6 +329,16 @@ def versatility(
         v = v / np.linalg.norm(v)
     elif normalize is not None:
         raise ValueError(f"Invalid normalize option: {normalize}. Use 'l1', 'l2', or None")
+    
+    # Postconditions
+    assert isinstance(v, np.ndarray), "Result must be numpy array"
+    assert v.shape == (N,), f"Result shape must be ({N},), got {v.shape}"
+    assert np.all(np.isfinite(v)), "All values must be finite"
+    
+    if normalize == "l1":
+        assert np.isclose(np.sum(np.abs(v)), 1.0, atol=1e-6), "L1 norm should be 1"
+    elif normalize == "l2":
+        assert np.isclose(np.linalg.norm(v), 1.0, atol=1e-6), "L2 norm should be 1"
     
     if return_layer_scores:
         return v, X
