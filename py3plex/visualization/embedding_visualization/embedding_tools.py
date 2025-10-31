@@ -56,5 +56,5 @@ def layout_positions_to_json(position_dict):
 
     outlist = []
     for k, v in position_dict.items():
-        outlist.append({node_names: k, dim1: v[0], dim2: v[1]})
+        outlist.append({"node_names": k, "dim1": v[0], "dim2": v[1]})
     return outlist
