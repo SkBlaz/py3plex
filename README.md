@@ -39,40 +39,6 @@ To verify installation.
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
 
-### Key Features
-
-**🆕 Meta Flow Report** - Run comprehensive multilayer network analysis with a single function call:
-
-```python
-from py3plex.algorithms.meta_flow_report import run_meta_analysis
-
-# Analyze centralities, communities, and statistics at once
-results = run_meta_analysis(network)
-```
-
-See the [Meta Flow Report Tutorial](https://skblaz.github.io/py3plex/tutorials/meta_flow_report.html) and [`example_meta_flow_report.py`](examples/centrality_and_statistics/example_meta_flow_report.py) for details.
-
-**🆕 Versatility (Multilayer Eigenvector Centrality)** - Rank nodes by their importance across multiple network layers:
-
-```python
-from py3plex.algorithms.multilayer_algorithms.versatility import versatility
-import scipy.sparse as sp
-
-# Create layer adjacency matrices
-layer1 = sp.csr_matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]])
-layer2 = sp.csr_matrix([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
-
-# Compute versatility with interlayer coupling omega=0.1
-v = versatility([layer1, layer2], interlayer=0.1, normalize="l1")
-# Returns per-node scores aggregated across layers
-```
-
-Versatility implements the multilayer eigenvector centrality formulation from De Domenico et al. (2013, 2015), computing the dominant eigenvector on the supra-adjacency matrix and contracting over layers. This differs from heuristic layer-by-layer averaging by properly accounting for interlayer coupling. See [`example_versatility.py`](examples/centrality_and_statistics/example_versatility.py) for detailed examples.
-
-**References:**
-- De Domenico et al. (2013) "Mathematical Formulation of Multilayer Networks" *Physical Review X* 3, 041022
-- De Domenico et al. (2015) "Ranking in interconnected multilayer networks reveals versatile nodes" *Nature Communications* 6, 6868
-
 ### CLI Tool
 
 Py3plex includes a command-line interface for multilayer network analysis. See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
