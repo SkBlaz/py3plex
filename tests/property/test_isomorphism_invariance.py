@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
+from scipy.stats import spearmanr
 
 from py3plex.core.multinet import multi_layer_network
 from py3plex.algorithms.multilayer_algorithms.versatility import versatility
