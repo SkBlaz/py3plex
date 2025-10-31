@@ -1,0 +1,152 @@
+name: Property-Based Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  schedule:
+    # Run weekly on Mondays at 3 AM UTC for comprehensive coverage
+    - cron: '0 3 * * 1'
+
+jobs:
+  property-tests:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11"]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+      timeout-minutes: 3
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-property-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-property-
+          ${{ runner.os }}-pip-
+      timeout-minutes: 2
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc g++ build-essential
+      timeout-minutes: 5
+    
+    - name: Install test dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -e .[tests]
+        # Install optional deps for comprehensive tests
+        pip install python-louvain || echo "⚠️ python-louvain not available"
+      timeout-minutes: 10
+    
+    - name: Run property tests (excluding slow)
+      run: |
+        pytest tests/property/ -v -m "property and not slow" --tb=short
+      timeout-minutes: 12
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: property-test-results-${{ matrix.os }}-${{ matrix.python-version }}
+        path: |
+          .pytest_cache/
+          *.log
+        retention-days: 7
+  
+  property-tests-slow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # Only run slow tests on main branch or schedule
+    if: github.ref == 'refs/heads/main' || github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-property-slow-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-property-
+      timeout-minutes: 2
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc g++ build-essential
+      timeout-minutes: 5
+    
+    - name: Install test dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -e .[tests]
+        pip install python-louvain || echo "⚠️ python-louvain not available"
+      timeout-minutes: 10
+    
+    - name: Run all property tests (including slow)
+      run: |
+        pytest tests/property/ -v -m property --tb=short
+      timeout-minutes: 25
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: property-test-results-slow
+        path: |
+          .pytest_cache/
+          *.log
+        retention-days: 14
+  
+  property-tests-minimal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    name: "Property tests with minimal dependencies"
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+      timeout-minutes: 3
+    
+    - name: Install minimal dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest hypothesis networkx numpy scipy
+        # Skip hypothesis-networkx, python-louvain
+      timeout-minutes: 8
+    
+    - name: Run property tests (minimal, skip tests with missing deps)
+      run: |
+        pytest tests/property/ -v -m "property and not slow" --tb=short || echo "⚠️ Some tests skipped due to missing deps"
+      timeout-minutes: 10

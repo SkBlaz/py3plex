@@ -62,6 +62,17 @@ dev = [
     "atheris>=2.3.0",  # Coverage-guided fuzzing
     "hypothesis>=6.0",  # Property-based testing
 ]
+# Testing dependencies (for property-based and integration tests)
+tests = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "hypothesis>=6.0",
+    "hypothesis-networkx>=0.2.0",  # Hypothesis strategies for NetworkX graphs
+    "networkx>=2.5",
+    "numpy>=1.19.0",
+    "scipy>=1.5.0",
+    "python-louvain>=0.16",  # For community detection tests (optional, guarded)
+]
 # Optional: Infomap for advanced community detection
 infomap = [
     "infomap>=2.0.0",
