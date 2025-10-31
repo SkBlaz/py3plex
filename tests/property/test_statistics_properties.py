@@ -40,7 +40,7 @@ def test_layer_density_bounds(n, p):
     # Add edges in multilayer format: (node1, layer1, node2, layer2, weight)
     edges = []
     for u, v in G.edges():
-        edges.append((str(u), layer_name, str(v), layer_name, 1))
+        edges.append([str(u), layer_name, str(v), layer_name, 1])
     
     # Also add all nodes (even isolated ones)
     for node in G.nodes():
@@ -115,7 +115,7 @@ def test_layer_density_complete_layer(n):
     edges = []
     for i in range(n):
         for j in range(i + 1, n):
-            edges.append((str(i), layer_name, str(j), layer_name, 1))
+            edges.append([str(i), layer_name, str(j), layer_name, 1])
     
     network.add_edges(edges, input_type='list')
     
@@ -156,7 +156,7 @@ def test_layer_density_consistency(n, m):
     # Add edges in multilayer format
     edges = []
     for u, v in G.edges():
-        edges.append((str(u), layer_name, str(v), layer_name, 1))
+        edges.append([str(u), layer_name, str(v), layer_name, 1])
     
     # Add isolated nodes
     for node in G.nodes():
@@ -200,7 +200,7 @@ def test_layer_density_probabilistic(n, p):
     # Add edges
     edges = []
     for u, v in G.edges():
-        edges.append((str(u), layer_name, str(v), layer_name, 1))
+        edges.append([str(u), layer_name, str(v), layer_name, 1])
     
     network.add_edges(edges, input_type='list')
     

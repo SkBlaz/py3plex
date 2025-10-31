@@ -286,7 +286,7 @@ def test_versatility_nonnegative_weights_nonnegative_result(n):
     assert A.min() >= 0
     
     # Compute versatility
-    v = versatility([A], interlayer=0.0, normalize="none")
+    v = versatility([A], interlayer=0.0, normalize=None)
     
     # For connected strongly connected graph, eigenvector should be non-negative
     # (by Perron-Frobenius)
@@ -317,7 +317,7 @@ def test_versatility_normalization_options(n):
     A = nx.to_scipy_sparse_array(G, nodelist=nodelist, format="csr")
     
     # Test each normalization
-    for norm in ["l1", "l2", "none"]:
+    for norm in ["l1", "l2", None]:
         v = versatility([A], interlayer=0.0, normalize=norm)
         
         # All should be finite
@@ -329,4 +329,4 @@ def test_versatility_normalization_options(n):
             assert np.isclose(np.sum(np.abs(v)), 1.0, atol=1e-5)
         elif norm == "l2":
             assert np.isclose(np.linalg.norm(v), 1.0, atol=1e-5)
-        # 'none' has no specific constraint
+        # None has no specific constraint
