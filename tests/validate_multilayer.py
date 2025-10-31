@@ -27,7 +27,7 @@ def validate_file_structure():
     ]
     
     all_exist = True
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     for file_path in required_files:
         full_path = os.path.join(base_dir, file_path)
         exists = os.path.exists(full_path)
@@ -53,7 +53,7 @@ def validate_syntax():
     ]
     
     all_valid = True
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     for file_path in files_to_check:
         full_path = os.path.join(base_dir, file_path)
         try:
@@ -174,7 +174,7 @@ def validate_documentation():
     ]
     
     all_valid = True
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     for doc_file, min_size in doc_files:
         full_path = os.path.join(base_dir, doc_file)
         if os.path.exists(full_path):

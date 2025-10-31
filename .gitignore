@@ -32,6 +32,7 @@ tests/out/
 tests/custom_dir/
 tests/*.txt
 tests/*.png
+files.txt
 
 # Virtual environment
 .venv/
@@ -44,6 +45,9 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 .hypothesis/
+coverage.json
+type-coverage.json
+type-coverage-*.json
 
 # Benchmark results
 benchmark-*.json
