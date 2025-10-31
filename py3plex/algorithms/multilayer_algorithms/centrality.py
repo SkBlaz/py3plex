@@ -553,10 +553,7 @@ class MultilayerCentrality:
 
         # Compute closeness centrality
         try:
-            if self.network.directed:
-                nx_closeness = nx.closeness_centrality(G, distance="weight", wf_improved=wf_improved)
-            else:
-                nx_closeness = nx.closeness_centrality(G, distance="weight", wf_improved=wf_improved)
+            nx_closeness = nx.closeness_centrality(G, distance="weight", wf_improved=wf_improved)
         except (nx.NetworkXError, KeyError, ZeroDivisionError):
             # Fallback: use unweighted distances
             try:

@@ -9,6 +9,7 @@ This module tests the high-likelihood issues mentioned in the problem statement:
 """
 
 import unittest
+import warnings
 
 # Handle missing dependencies gracefully
 try:
@@ -23,7 +24,7 @@ except ImportError as e:
     multinet = None
     MultilayerCentrality = None
     DEPENDENCIES_AVAILABLE = False
-    print(f"Warning: {e}")
+    warnings.warn(f"Dependencies not available: {e}")
 
 
 def skip_if_no_deps(test_func):

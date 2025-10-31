@@ -93,6 +93,9 @@ class MetaFlowReport:
                 compute_all_centralities
             )
             
+            import logging
+            logger = logging.getLogger(__name__)
+            
             centralities = compute_all_centralities(
                 self.network,
                 include_path_based=include_path_based,
@@ -100,20 +103,20 @@ class MetaFlowReport:
                 wf_improved=wf_improved
             )
             
-            # Emit a note about which centralities were computed
+            # Log information about which centralities were computed
             centrality_types = ["degree-based", "eigenvector-based"]
             if include_path_based:
                 centrality_types.append("path-based")
             if include_advanced:
                 centrality_types.append("advanced")
             
-            print(f"Computed centralities: {', '.join(centrality_types)}")
+            logger.info(f"Computed centralities: {', '.join(centrality_types)}")
             if not include_path_based:
-                print("Note: Path-based measures (betweenness, closeness) were skipped. "
-                      "Set include_path_based=True to compute them.")
+                logger.info("Note: Path-based measures (betweenness, closeness) were skipped. "
+                           "Set include_path_based=True to compute them.")
             if not include_advanced:
-                print("Note: Advanced measures (HITS, communicability, k-core) were skipped. "
-                      "Set include_advanced=True to compute them.")
+                logger.info("Note: Advanced measures (HITS, communicability, k-core) were skipped. "
+                           "Set include_advanced=True to compute them.")
             
             return centralities
         except ImportError as e:
