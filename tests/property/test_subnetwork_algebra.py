@@ -57,15 +57,17 @@ def test_subnetwork_by_layers_idempotent(num_nodes, num_layers):
     
     # Apply subnetwork once
     subnet1 = mlnet.subnetwork(subset_layers, subset_by="layers")
-    nodes1 = set(subnet1.nodes())
-    edges1 = set(subnet1.edges())
+    nodes1 = set(subnet1.nodes())  # NetworkX graph method
+    edges1 = set(subnet1.edges())  # NetworkX graph method
     
     # Apply subnetwork twice (idempotence)
+    # Create a new multi_layer_network from the subnet, then apply subnetwork again
+    # For simplicity, just check that applying subgraph again gives same result
     subnet2 = subnet1.subgraph([n for n in subnet1.nodes() if n[1] in subset_layers])
     nodes2 = set(subnet2.nodes())
     edges2 = set(subnet2.edges())
     
-    # Should be the same
+    # Should be the same (idempotence)
     assert nodes1 == nodes2, "Nodes changed after second subnetwork"
     assert edges1 == edges2, "Edges changed after second subnetwork"
 
