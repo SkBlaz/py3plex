@@ -4,7 +4,7 @@ from collections import defaultdict
 
 import rdflib
 
-from .term_parsers import parse_gaf_file
+from py3plex.algorithms.term_parsers import parse_gaf_file
 
 
 def convert_mapping_to_rdf(

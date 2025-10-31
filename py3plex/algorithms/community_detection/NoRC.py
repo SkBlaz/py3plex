@@ -13,14 +13,18 @@ import numpy as np
 import scipy.sparse as sp
 import tqdm
 from numpy.lib.stride_tricks import as_strided
-from scipy.cluster.hierarchy import fcluster, linkage
+from scipy.cluster.hierarchy import fcluster
 
 # import community
 from sklearn.cluster import MiniBatchKMeans
 
 from py3plex.core.nx_compat import nx_info, nx_to_scipy_sparse_matrix
-
-from .node_ranking import modularity, sparse_page_rank, stochastic_normalization
+from py3plex.algorithms.node_ranking.node_ranking import (
+    modularity,
+    sparse_page_rank,
+    stochastic_normalization,
+)
+from .clustering_utils import create_tree
 
 global _RANK_GRAPH
 
@@ -45,27 +49,6 @@ def page_rank_kernel(index_row):
         return (index_row, pr)
     else:
         return (index_row, np.zeros(_RANK_GRAPH.shape[1]))
-
-
-def create_tree(centers):
-    clusters = {}
-    to_merge = linkage(centers, method="single")
-    for i, merge in enumerate(to_merge):
-        if merge[0] <= len(to_merge):
-            # if it is an original point read it from the centers array
-            a = centers[int(merge[0]) - 1]
-        else:
-            # other wise read the cluster that has been created
-            a = clusters[int(merge[0])]
-
-        if merge[1] <= len(to_merge):
-            b = centers[int(merge[1]) - 1]
-        else:
-            b = clusters[int(merge[1])]
-        # the clusters are 1-indexed by scipy
-        clusters[1 + i + len(to_merge)] = {"children": [a, b]}
-        # ^ you could optionally store other info here (e.g distances)
-    return clusters
 
 
 def sum(X, v):

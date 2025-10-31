@@ -15,47 +15,9 @@ from py3plex.core.nx_compat import nx_info
 
 from ..logging_config import get_logger
 from .benchmark_nodes import benchmark_node_classification
+from .node2vec_utils import call_node2vec_binary
 
 logger = get_logger(__name__)
-
-
-def call_node2vec_binary(
-    input_graph: str,
-    output_graph: str,
-    p: float = 1,
-    q: float = 1,
-    dimension: int = 128,
-    directed: bool = False,
-    weighted: bool = True,
-    binary: str = "./node2vec",
-) -> None:
-    """
-    Call the Node2Vec C++ binary with specified parameters.
-
-    Args:
-        input_graph: Path to input graph file
-        output_graph: Path to output embedding file
-        p: Return parameter
-        q: In-out parameter
-        dimension: Embedding dimension
-        directed: Whether graph is directed
-        weighted: Whether graph is weighted
-        binary: Path to node2vec binary
-    """
-    input_params: List[str] = []
-    input_params.append(binary)
-    input_params.append("-i:" + input_graph)
-    input_params.append("-o:" + output_graph)
-    input_params.append("-d:" + str(dimension))
-    input_params.append("-p:" + str(p))
-    input_params.append("-q:" + str(q))
-    input_params.append("-v")
-    logger.info("Node2vec parameters: %s", " ".join(input_params))
-    if directed:
-        input_params.append("-d")
-    if weighted:
-        input_params.append("-w")
-    call(input_params)
 
 
 def n2v_embedding(
