@@ -16,7 +16,7 @@ import tempfile
 import traceback
 
 # Add parent directory to path
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 def validate_file_structure():
@@ -277,7 +277,7 @@ def validate_corner_case_tests():
         from io import StringIO
         
         # Import the test module
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'tests'))
+        sys.path.insert(0, os.path.dirname(__file__))
         import test_multilayer_cornercases
         
         # Create test suite
