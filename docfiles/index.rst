@@ -216,6 +216,7 @@ Documentation Contents
    multilayer_centrality_matrix_functions
    random_walks
    supra
+   sir_epidemic_simulator
 
 .. toctree::
    :maxdepth: 2
