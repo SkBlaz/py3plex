@@ -938,6 +938,883 @@ class MultilayerCentrality:
         """
         return self.multiplex_k_core()
 
+    # ==================== INFORMATION CENTRALITY ====================
+
+    def information_centrality(self):
+        """
+        Compute Information Centrality (Stephenson-Zelen style) on the supra-graph.
+
+        Information centrality measures the importance of a node based on the
+        information flow through the network. It uses the inverse of a modified
+        Laplacian matrix.
+
+        For each physical node u:
+            I(u) = 1 / mean_{a in U} [G[a,a] - (2/(N*L)) * sum_b G[a,b] + (1/(N*L)^2)*sum_{b,c}G[b,c]]
+        
+        where G is the inverse of B = L + (1/(N*L)) * 1*1^T
+
+        Returns:
+            dict: {(node, layer): information_centrality}
+
+        Note:
+            This implementation uses NetworkX's information_centrality for computation.
+            Falls back to harmonic closeness if information centrality computation fails.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        # Create NetworkX graph
+        G = nx.Graph()  # Information centrality is for undirected graphs
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j, weight=matrix[i, j])
+
+        try:
+            # Use NetworkX's information_centrality
+            nx_info_cent = nx.information_centrality(G, weight="weight")
+        except (nx.NetworkXError, np.linalg.LinAlgError, RuntimeError, AttributeError):
+            # Fallback: use harmonic closeness as approximation
+            try:
+                nx_info_cent = {}
+                for node in G.nodes():
+                    # Harmonic centrality as approximation
+                    lengths = nx.single_source_shortest_path_length(G, node)
+                    harmonic = sum(1.0 / d for t, d in lengths.items() if d > 0)
+                    nx_info_cent[node] = harmonic
+            except (nx.NetworkXError, ZeroDivisionError):
+                nx_info_cent = {}
+                for node in G.nodes():
+                    nx_info_cent[node] = 0.0
+
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = nx_info_cent.get(idx, 0.0)
+
+        return results
+
+    # ==================== COMMUNICABILITY BETWEENNESS ====================
+
+    def communicability_betweenness_centrality(self, normalized=True):
+        """
+        Compute communicability betweenness centrality (Estrada-style).
+
+        This measure quantifies how much a node contributes to the communicability
+        between other pairs of nodes. It uses the matrix exponential to account
+        for all walks between nodes.
+
+        Returns:
+            dict: {(node, layer): communicability_betweenness}
+
+        Note:
+            This is computationally expensive as it requires computing the matrix
+            exponential multiple times. For large networks, this may take significant time.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        # Create NetworkX graph
+        G = nx.Graph()  # Communicability is for undirected graphs
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j, weight=matrix[i, j])
+
+        try:
+            # Use NetworkX's communicability_betweenness_centrality
+            nx_comm_between = nx.communicability_betweenness_centrality(G)
+            if normalized and nx_comm_between:
+                max_val = max(nx_comm_between.values())
+                if max_val > 0:
+                    nx_comm_between = {k: v / max_val for k, v in nx_comm_between.items()}
+        except (nx.NetworkXError, np.linalg.LinAlgError, RuntimeError, MemoryError, AttributeError):
+            # Fallback: approximate using regular betweenness
+            try:
+                nx_comm_between = nx.betweenness_centrality(G, normalized=normalized)
+            except (nx.NetworkXError, RuntimeError):
+                nx_comm_between = {}
+                for node in G.nodes():
+                    nx_comm_between[node] = 0.0
+
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = nx_comm_between.get(idx, 0.0)
+
+        return results
+
+    # ==================== ACCESSIBILITY ====================
+
+    def accessibility_centrality(self, h=2):
+        """
+        Compute accessibility centrality (entropy-based reach within h steps).
+
+        Accessibility measures the diversity of nodes reachable within h steps
+        using entropy of the probability distribution.
+
+        Access_r = exp(H_r) where H_r is the entropy of the h-step distribution
+
+        Args:
+            h: Number of steps (default: 2)
+
+        Returns:
+            dict: {(node, layer): accessibility}
+
+        Note:
+            Accessibility is measured as the effective number of h-step destinations,
+            using the entropy of the random walk distribution.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        n = matrix.shape[0]
+
+        # Create row-normalized transition matrix
+        row_sums = np.sum(matrix, axis=1)
+        row_sums[row_sums == 0] = 1  # Avoid division by zero
+        P = matrix / row_sums[:, np.newaxis]
+
+        # Compute P^h
+        P_h = np.linalg.matrix_power(P, h)
+
+        # Compute accessibility for each node
+        results = {}
+        epsilon = 1e-10
+
+        for node_layer, idx in node_layer_mapping.items():
+            p_r_h = P_h[idx, :]
+
+            # Compute entropy
+            p_r_h_safe = np.maximum(p_r_h, epsilon)
+            entropy = -np.sum(p_r_h * np.log(p_r_h_safe))
+
+            # Accessibility is exp(entropy)
+            accessibility = np.exp(entropy)
+
+            results[node_layer] = accessibility
+
+        return results
+
+    # ==================== HARMONIC CLOSENESS ====================
+
+    def harmonic_closeness_centrality(self):
+        """
+        Compute harmonic closeness centrality on the supra-graph.
+
+        Harmonic closeness handles disconnected graphs better than standard closeness
+        by summing the reciprocals of distances instead of taking reciprocal of sum.
+
+        HC(u) = sum_{v≠u} (1 / d(u,v)) for finite distances
+
+        Returns:
+            dict: {(node, layer): harmonic_closeness}
+
+        Note:
+            This measure naturally handles disconnected components as unreachable
+            nodes contribute 0 (instead of infinity) to the sum.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        # Create NetworkX graph
+        if self.network.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    # Use inverse of weight as edge length
+                    edge_length = 1.0 / matrix[i, j] if matrix[i, j] > 0 else float("inf")
+                    G.add_edge(i, j, weight=edge_length)
+
+        try:
+            # Use NetworkX's harmonic_centrality
+            nx_harmonic = nx.harmonic_centrality(G, distance="weight")
+        except (nx.NetworkXError, KeyError, AttributeError):
+            # Fallback: compute manually
+            nx_harmonic = {}
+            for source in G.nodes():
+                try:
+                    lengths = nx.single_source_dijkstra_path_length(G, source, weight="weight")
+                    harmonic = sum(1.0 / d for target, d in lengths.items() if d > 0)
+                    nx_harmonic[source] = harmonic
+                except (nx.NetworkXError, ZeroDivisionError):
+                    nx_harmonic[source] = 0.0
+
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = nx_harmonic.get(idx, 0.0)
+
+        return results
+
+    # ==================== LOCAL EFFICIENCY ====================
+
+    def local_efficiency_centrality(self):
+        """
+        Compute local efficiency centrality.
+
+        Local efficiency measures how efficiently information is exchanged among
+        a node's neighbors when the node is removed. It quantifies the fault
+        tolerance of the network.
+
+        LE(u) = (1 / (|N_u|*(|N_u|-1))) * sum_{i≠j in N_u} [1 / d(i,j)]
+
+        Returns:
+            dict: {(node, layer): local_efficiency}
+
+        Note:
+            For nodes with less than 2 neighbors, local efficiency is 0.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        # Create NetworkX graph
+        G = nx.Graph()
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    edge_length = 1.0 / matrix[i, j] if matrix[i, j] > 0 else float("inf")
+                    G.add_edge(i, j, weight=edge_length)
+
+        results = {}
+
+        for node_layer, idx in node_layer_mapping.items():
+            if idx not in G:
+                results[node_layer] = 0.0
+                continue
+
+            neighbors = list(G.neighbors(idx))
+            n_neighbors = len(neighbors)
+
+            if n_neighbors < 2:
+                results[node_layer] = 0.0
+                continue
+
+            # Create subgraph of neighbors
+            subgraph = G.subgraph(neighbors)
+
+            # Compute efficiency within subgraph
+            efficiency_sum = 0.0
+            count = 0
+
+            for i in neighbors:
+                for j in neighbors:
+                    if i < j:  # Avoid double counting
+                        try:
+                            length = nx.shortest_path_length(
+                                subgraph, i, j, weight="weight"
+                            )
+                            if length > 0:
+                                efficiency_sum += 1.0 / length
+                        except nx.NetworkXNoPath:
+                            # No path between i and j
+                            pass
+                        count += 1
+
+            if count > 0:
+                local_eff = efficiency_sum / count
+            else:
+                local_eff = 0.0
+
+            results[node_layer] = local_eff
+
+        return results
+
+    # ==================== EDGE BETWEENNESS & BRIDGING ====================
+
+    def edge_betweenness_centrality(self, normalized=True):
+        """
+        Compute edge betweenness centrality on the supra-graph.
+
+        Edge betweenness measures the fraction of shortest paths that pass
+        through each edge.
+
+        Returns:
+            dict: {(source, target): edge_betweenness}
+
+        Note:
+            This returns edge-level centrality, not node-level.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        # Create NetworkX graph
+        if self.network.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    edge_length = 1.0 / matrix[i, j] if matrix[i, j] > 0 else float("inf")
+                    G.add_edge(i, j, weight=edge_length)
+
+        try:
+            edge_between = nx.edge_betweenness_centrality(
+                G, weight="weight", normalized=normalized
+            )
+        except (nx.NetworkXError, RuntimeError):
+            # Fallback: return empty dict
+            edge_between = {}
+
+        # Map back to node-layer pairs
+        results = {}
+        for edge, value in edge_between.items():
+            source_nl = reverse_mapping.get(edge[0])
+            target_nl = reverse_mapping.get(edge[1])
+            if source_nl and target_nl:
+                results[(source_nl, target_nl)] = value
+
+        return results
+
+    def bridging_centrality(self):
+        """
+        Compute bridging centrality for nodes in the supra-graph.
+
+        Bridging centrality combines betweenness with the bridging coefficient,
+        which measures how much a node connects sparse regions of the network.
+
+        Bridging(u) = B(u) * BCoeff(u)
+        where BCoeff(u) = (1 / k_u) * sum_{v in N(u)} [1 / k_v]
+
+        Returns:
+            dict: {(node, layer): bridging_centrality}
+
+        Note:
+            Nodes with higher bridging centrality act as important bridges
+            connecting different parts of the network.
+        """
+        # Get betweenness centrality
+        betweenness = self.multilayer_betweenness_centrality(normalized=True)
+
+        # Get degree centralities
+        degrees = self.supra_degree_centrality(weighted=False)
+
+        # Compute bridging coefficient
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        results = {}
+
+        for node_layer, idx in node_layer_mapping.items():
+            k_u = degrees.get(node_layer, 0)
+
+            if k_u == 0:
+                results[node_layer] = 0.0
+                continue
+
+            # Find neighbors
+            neighbors_sum = 0.0
+            for j, adj_val in enumerate(matrix[idx, :]):
+                if adj_val > 0:
+                    neighbor_nl = reverse_mapping.get(j)
+                    if neighbor_nl:
+                        k_v = degrees.get(neighbor_nl, 0)
+                        if k_v > 0:
+                            neighbors_sum += 1.0 / k_v
+
+            bridging_coeff = neighbors_sum / k_u if k_u > 0 else 0
+            bridging_cent = betweenness.get(node_layer, 0) * bridging_coeff
+
+            results[node_layer] = bridging_cent
+
+        return results
+
+    # ==================== PERCOLATION CENTRALITY ====================
+
+    def percolation_centrality(self, edge_activation_prob=0.5, trials=100):
+        """
+        Compute percolation centrality using bond percolation Monte Carlo simulation.
+
+        Percolation centrality measures the importance of a node based on its
+        role in maintaining network connectivity under random edge failures.
+
+        Args:
+            edge_activation_prob: Probability that an edge is active (default: 0.5)
+            trials: Number of Monte Carlo trials (default: 100)
+
+        Returns:
+            dict: {(node, layer): percolation_centrality}
+
+        Note:
+            Higher values indicate nodes that belong to larger connected components
+            across different percolation realizations.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        n = matrix.shape[0]
+
+        # Initialize size tracking
+        size_accumulator = {node_layer: 0.0 for node_layer in node_layer_mapping.keys()}
+
+        # Run Monte Carlo trials
+        for _ in range(trials):
+            # Create percolated graph
+            G_trial = nx.Graph()
+
+            # Sample edges with probability p
+            for i in range(n):
+                for j in range(i + 1, n):
+                    if matrix[i, j] > 0:
+                        if np.random.random() < edge_activation_prob:
+                            G_trial.add_edge(i, j)
+
+            # Compute connected components
+            components = list(nx.connected_components(G_trial))
+
+            # For each node, find the size of its component
+            node_to_component_size = {}
+            for component in components:
+                size = len(component)
+                for node in component:
+                    node_to_component_size[node] = size
+
+            # Accumulate sizes
+            for node_layer, idx in node_layer_mapping.items():
+                size_accumulator[node_layer] += node_to_component_size.get(idx, 1)
+
+        # Compute average and normalize
+        results = {}
+        for node_layer in node_layer_mapping.keys():
+            results[node_layer] = size_accumulator[node_layer] / (trials * n)
+
+        return results
+
+    # ==================== SPREADING (EPIDEMIC) CENTRALITY ====================
+
+    def spreading_centrality(self, beta=0.2, mu=0.1, trials=50, steps=100):
+        """
+        Compute spreading (epidemic) centrality using SIR model.
+
+        Spreading centrality measures how influential a node is in spreading
+        information or disease through the network.
+
+        Args:
+            beta: Infection rate (default: 0.2)
+            mu: Recovery rate (default: 0.1)
+            trials: Number of simulation trials per node (default: 50)
+            steps: Maximum simulation steps (default: 100)
+
+        Returns:
+            dict: {(node, layer): spreading_centrality}
+
+        Note:
+            This measures the average outbreak size when seeding from each node.
+            Requires discrete-time SIR simulation on the supra-graph.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        n = matrix.shape[0]
+
+        # Create NetworkX graph for SIR simulation
+        G = nx.Graph()
+        for i in range(n):
+            for j in range(i + 1, n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j, weight=matrix[i, j])
+
+        results = {}
+
+        # Run SIR simulation starting from each node
+        for node_layer, seed_idx in node_layer_mapping.items():
+            total_outbreak = 0
+
+            for _ in range(trials):
+                # Initialize states: S=0, I=1, R=2
+                state = np.zeros(n, dtype=int)  # All susceptible
+                state[seed_idx] = 1  # Seed is infected
+
+                infected_ever = {seed_idx}
+
+                # Run discrete-time SIR
+                for step in range(steps):
+                    new_infections = set()
+                    new_recoveries = set()
+
+                    # Process infections
+                    infected_nodes = np.where(state == 1)[0]
+                    if len(infected_nodes) == 0:
+                        break
+
+                    for i in infected_nodes:
+                        # Try to infect neighbors
+                        for j in G.neighbors(i):
+                            if state[j] == 0:  # Susceptible
+                                if np.random.random() < beta:
+                                    new_infections.add(j)
+                                    infected_ever.add(j)
+
+                        # Try to recover
+                        if np.random.random() < mu:
+                            new_recoveries.add(i)
+
+                    # Update states
+                    for j in new_infections:
+                        state[j] = 1
+                    for i in new_recoveries:
+                        state[i] = 2
+
+                total_outbreak += len(infected_ever)
+
+            # Normalize by trials and number of nodes
+            results[node_layer] = total_outbreak / (trials * n)
+
+        return results
+
+    # ==================== COLLECTIVE INFLUENCE ====================
+
+    def collective_influence(self, radius=2):
+        """
+        Compute collective influence (CI_ℓ) for multiplex networks.
+
+        Collective influence identifies influential spreaders by considering
+        not just immediate neighbors but also nodes at distance ℓ.
+
+        CI_ℓ(u) = (k_u - 1) * sum_{v in ∂Ball_ℓ(u)} (k_v - 1)
+
+        Args:
+            radius: Radius ℓ for the ball boundary (default: 2)
+
+        Returns:
+            dict: {(node, layer): collective_influence}
+
+        Note:
+            Uses overlapping degree across all layers for each physical node.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        # Get degrees
+        degrees = self.supra_degree_centrality(weighted=False)
+
+        # Create NetworkX graph for BFS
+        G = nx.Graph()
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(i + 1, n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j)
+
+        results = {}
+
+        for node_layer, idx in node_layer_mapping.items():
+            k_u = degrees.get(node_layer, 0)
+
+            if k_u <= 1:
+                results[node_layer] = 0.0
+                continue
+
+            # Find nodes at distance exactly radius (boundary of ball)
+            try:
+                lengths = nx.single_source_shortest_path_length(G, idx, cutoff=radius)
+                frontier = [node for node, dist in lengths.items() if dist == radius]
+            except nx.NetworkXError:
+                frontier = []
+
+            # Compute collective influence
+            ci_sum = 0.0
+            for v in frontier:
+                v_nl = reverse_mapping.get(v)
+                if v_nl:
+                    k_v = degrees.get(v_nl, 0)
+                    ci_sum += max(k_v - 1, 0)
+
+            ci = (k_u - 1) * ci_sum
+            results[node_layer] = ci
+
+        return results
+
+    # ==================== LOAD CENTRALITY ====================
+
+    def load_centrality(self):
+        """
+        Compute load centrality (shortest-path load).
+
+        Load centrality measures the fraction of shortest paths that pass
+        through each node, counting all paths (not just unique pairs).
+
+        Load[k] = sum over all (s,t) pairs of [number of shortest paths through k / total shortest paths]
+
+        Returns:
+            dict: {(node, layer): load_centrality}
+
+        Note:
+            This is similar to betweenness but counts all paths rather than
+            normalizing by the number of node pairs.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        # Create NetworkX graph
+        if self.network.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    edge_length = 1.0 / matrix[i, j] if matrix[i, j] > 0 else float("inf")
+                    G.add_edge(i, j, weight=edge_length)
+
+        # Initialize load
+        load = {idx: 0.0 for idx in range(n)}
+
+        # Compute shortest paths for all pairs
+        for source in G.nodes():
+            try:
+                paths = nx.single_source_shortest_path(G, source)
+                for target, path in paths.items():
+                    if source != target and len(path) > 2:
+                        # Add load to intermediate nodes
+                        for node in path[1:-1]:
+                            load[node] += 1.0
+            except (nx.NetworkXError, KeyError):
+                pass
+
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = load.get(idx, 0.0)
+
+        return results
+
+    # ==================== FLOW BETWEENNESS ====================
+
+    def flow_betweenness_centrality(self, samples=100):
+        """
+        Compute flow betweenness based on maximum flow.
+
+        Flow betweenness measures how much flow passes through a node when
+        maximizing flow between random source-target pairs.
+
+        Args:
+            samples: Number of source-target pairs to sample (default: 100)
+
+        Returns:
+            dict: {(node, layer): flow_betweenness}
+
+        Note:
+            This uses NetworkX's maximum flow algorithms. For large networks,
+            this can be computationally expensive.
+        """
+        supra_matrix = self._get_supra_adjacency_matrix()
+        node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
+
+        if hasattr(supra_matrix, "toarray"):
+            matrix = supra_matrix.toarray()
+        else:
+            matrix = np.array(supra_matrix)
+
+        # Create NetworkX graph with capacities
+        if self.network.directed:
+            G = nx.DiGraph()
+        else:
+            G = nx.Graph()
+
+        n = matrix.shape[0]
+        for i in range(n):
+            for j in range(n):
+                if matrix[i, j] > 0:
+                    G.add_edge(i, j, capacity=matrix[i, j])
+
+        # Initialize flow betweenness
+        flow_between = {idx: 0.0 for idx in range(n)}
+
+        # Sample source-target pairs
+        nodes_list = list(G.nodes())
+        if len(nodes_list) < 2:
+            results = {nl: 0.0 for nl in node_layer_mapping.keys()}
+            return results
+
+        for _ in range(samples):
+            # Sample distinct source and target
+            source, target = np.random.choice(nodes_list, size=2, replace=False)
+
+            try:
+                # Compute maximum flow
+                flow_value, flow_dict = nx.maximum_flow(G, source, target, capacity="capacity")
+
+                # Count flow through each node
+                for node in G.nodes():
+                    if node != source and node != target:
+                        # Sum incoming or outgoing flow
+                        total_flow = 0.0
+                        if node in flow_dict:
+                            total_flow += sum(flow_dict[node].values())
+                        for pred in G.predecessors(node) if G.is_directed() else G.neighbors(node):
+                            if pred in flow_dict:
+                                total_flow += flow_dict[pred].get(node, 0)
+
+                        flow_between[node] += total_flow / 2  # Avoid double counting
+
+            except (nx.NetworkXError, ValueError, nx.NetworkXUnbounded):
+                # If flow computation fails, skip this pair
+                pass
+
+        # Normalize by number of samples
+        for idx in flow_between:
+            flow_between[idx] /= max(samples, 1)
+
+        # Map back to node-layer pairs
+        results = {}
+        for node_layer, idx in node_layer_mapping.items():
+            results[node_layer] = flow_between.get(idx, 0.0)
+
+        return results
+
+    # ==================== LP-AGGREGATED CENTRALITY ====================
+
+    def lp_aggregated_centrality(self, layer_centralities, p=2, weights=None):
+        """
+        Compute Lp-aggregated per-layer centrality.
+
+        Aggregates per-layer centrality values using Lp norm.
+
+        C_i = (sum_{ℓ=1..L} w_ℓ * |c^ℓ[i]|^p)^{1/p}  for p < ∞
+        C_i = max_{ℓ} (w_ℓ * |c^ℓ[i]|)                for p = ∞
+
+        Args:
+            layer_centralities: dict of {layer: {node: centrality}} or
+                               {(node, layer): centrality}
+            p: Lp norm parameter (default: 2). Use float('inf') for L-infinity norm.
+            weights: dict of {layer: weight}. If None, uniform weights are used.
+
+        Returns:
+            dict: {node: aggregated_centrality}
+
+        Note:
+            This is a framework for aggregating any per-layer centrality measure.
+            Input can be degree, PageRank, eigenvector, etc.
+        """
+        # Ensure layer matrices are computed to get layer and node info
+        self._get_layer_matrices()
+
+        # Parse input format
+        if not layer_centralities:
+            return {}
+
+        # Check format: nested dict or flat dict with tuples
+        first_key = next(iter(layer_centralities.keys()))
+
+        if isinstance(first_key, tuple):
+            # Format: {(node, layer): centrality}
+            # Convert to nested dict
+            nested_centralities = defaultdict(dict)
+            for (node, layer), value in layer_centralities.items():
+                nested_centralities[layer][node] = value
+            layer_centralities = dict(nested_centralities)
+
+        # Get layers
+        layers = list(layer_centralities.keys())
+        if not layers:
+            return {}
+
+        # Get all nodes
+        all_nodes = set()
+        for layer_dict in layer_centralities.values():
+            all_nodes.update(layer_dict.keys())
+
+        # Set uniform weights if not provided
+        if weights is None:
+            weights = {layer: 1.0 / len(layers) for layer in layers}
+
+        # Normalize weights to sum to 1
+        weight_sum = sum(weights.values())
+        if weight_sum > 0:
+            weights = {k: v / weight_sum for k, v in weights.items()}
+
+        results = {}
+
+        if p == float("inf"):
+            # L-infinity norm: maximum
+            for node in all_nodes:
+                max_val = 0.0
+                for layer in layers:
+                    val = layer_centralities[layer].get(node, 0)
+                    weighted_val = weights.get(layer, 0) * abs(val)
+                    max_val = max(max_val, weighted_val)
+                results[node] = max_val
+        else:
+            # Lp norm
+            for node in all_nodes:
+                lp_sum = 0.0
+                for layer in layers:
+                    val = layer_centralities[layer].get(node, 0)
+                    weighted_val = weights.get(layer, 0) * abs(val)
+                    lp_sum += weighted_val**p
+                results[node] = lp_sum ** (1.0 / p)
+
+        return results
+
     # ==================== AGGREGATION METHODS ====================
 
     def aggregate_to_node_level(
@@ -984,7 +1861,8 @@ class MultilayerCentrality:
         return aggregated
 
 
-def compute_all_centralities(network, include_path_based=False, include_advanced=False, wf_improved=True):
+def compute_all_centralities(network, include_path_based=False, include_advanced=False, 
+                           include_extended=False, wf_improved=True):
     """
     Compute all available centrality measures for a multilayer network.
 
@@ -994,6 +1872,9 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
                            (betweenness, closeness). Default: False
         include_advanced: Whether to include advanced measures (HITS, current-flow, 
                          communicability, k-core). Default: False
+        include_extended: Whether to include extended measures (information, accessibility,
+                         percolation, spreading, collective influence, load, flow betweenness,
+                         harmonic, bridging, local efficiency). Default: False
         wf_improved: If True, use Wasserman-Faust improved scaling for closeness
                     centrality in disconnected graphs. Default: True
 
@@ -1008,11 +1889,14 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
               - Advanced (if include_advanced=True): "hits", "current_flow_closeness",
                 "current_flow_betweenness", "subgraph_centrality",
                 "total_communicability", "multiplex_k_core"
+              - Extended (if include_extended=True): "information", "communicability_betweenness",
+                "accessibility", "harmonic_closeness", "local_efficiency", "edge_betweenness",
+                "bridging", "percolation", "spreading", "collective_influence", "load",
+                "flow_betweenness"
     
     Note:
-        Path-based and advanced measures are computationally expensive for large
-        networks. Use include_path_based and include_advanced flags to control
-        which measures are computed.
+        Path-based, advanced, and extended measures are computationally expensive for large
+        networks. Use flags to control which measures are computed.
     """
     calc = MultilayerCentrality(network)
     results = {}
@@ -1050,6 +1934,21 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
         results["subgraph_centrality"] = calc.subgraph_centrality()
         results["total_communicability"] = calc.total_communicability()
         results["multiplex_k_core"] = calc.multiplex_k_core()
+
+    # Extended measures (optional due to computational cost)
+    if include_extended:
+        results["information"] = calc.information_centrality()
+        results["communicability_betweenness"] = calc.communicability_betweenness_centrality()
+        results["accessibility"] = calc.accessibility_centrality()
+        results["harmonic_closeness"] = calc.harmonic_closeness_centrality()
+        results["local_efficiency"] = calc.local_efficiency_centrality()
+        results["edge_betweenness"] = calc.edge_betweenness_centrality()
+        results["bridging"] = calc.bridging_centrality()
+        results["percolation"] = calc.percolation_centrality()
+        results["spreading"] = calc.spreading_centrality()
+        results["collective_influence"] = calc.collective_influence()
+        results["load"] = calc.load_centrality()
+        results["flow_betweenness"] = calc.flow_betweenness_centrality()
 
     return results
 

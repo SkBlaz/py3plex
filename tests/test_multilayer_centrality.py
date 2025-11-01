@@ -564,5 +564,282 @@ class TestCentralityConsistency(unittest.TestCase):
         self.assertAlmostEqual(total, 1.0, places=3)
 
 
+class TestExtendedCentralityMetrics(unittest.TestCase):
+    """Test cases for extended centrality measures (metrics 18-30)."""
+    
+    def setUp(self):
+        """Set up test networks."""
+        if not DEPENDENCIES_AVAILABLE:
+            self.skipTest("Dependencies not available for extended centrality tests")
+            
+        # Create a simple 2-layer, 4-node test network
+        self.network = multinet.multi_layer_network(directed=False)
+        
+        # Layer 1: A square
+        self.network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['B', 'L1', 'C', 'L1', 1], 
+            ['C', 'L1', 'D', 'L1', 1],
+            ['D', 'L1', 'A', 'L1', 1]
+        ], input_type='list')
+        
+        # Layer 2: A line
+        self.network.add_edges([
+            ['A', 'L2', 'B', 'L2', 1],
+            ['B', 'L2', 'C', 'L2', 1],
+            ['C', 'L2', 'D', 'L2', 1]
+        ], input_type='list')
+        
+    def test_information_centrality_returns_dict(self):
+        """Test that information centrality returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.information_centrality()
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_information_centrality_values_non_negative(self):
+        """Test that information centrality values are non-negative."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.information_centrality()
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0, 
+                f"Information centrality for {node_layer} is negative: {value}")
+    
+    def test_communicability_betweenness_returns_dict(self):
+        """Test that communicability betweenness returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.communicability_betweenness_centrality()
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_communicability_betweenness_values_non_negative(self):
+        """Test that communicability betweenness values are non-negative."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.communicability_betweenness_centrality(normalized=True)
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Communicability betweenness for {node_layer} is negative: {value}")
+    
+    def test_accessibility_centrality_returns_dict(self):
+        """Test that accessibility centrality returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.accessibility_centrality(h=2)
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_accessibility_centrality_values_positive(self):
+        """Test that accessibility centrality values are positive."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.accessibility_centrality(h=2)
+        
+        for node_layer, value in centralities.items():
+            self.assertGreater(value, 0,
+                f"Accessibility for {node_layer} is not positive: {value}")
+    
+    def test_harmonic_closeness_returns_dict(self):
+        """Test that harmonic closeness returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.harmonic_closeness_centrality()
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_harmonic_closeness_values_non_negative(self):
+        """Test that harmonic closeness values are non-negative."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.harmonic_closeness_centrality()
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Harmonic closeness for {node_layer} is negative: {value}")
+    
+    def test_local_efficiency_returns_dict(self):
+        """Test that local efficiency returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.local_efficiency_centrality()
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_local_efficiency_values_in_range(self):
+        """Test that local efficiency values are between 0 and reasonable upper bound."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.local_efficiency_centrality()
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Local efficiency for {node_layer} is negative: {value}")
+    
+    def test_edge_betweenness_returns_dict(self):
+        """Test that edge betweenness returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.edge_betweenness_centrality()
+        
+        self.assertIsInstance(centralities, dict)
+        # Edge betweenness may be empty if no edges exist
+        
+    def test_bridging_centrality_returns_dict(self):
+        """Test that bridging centrality returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.bridging_centrality()
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_bridging_centrality_values_non_negative(self):
+        """Test that bridging centrality values are non-negative."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.bridging_centrality()
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Bridging centrality for {node_layer} is negative: {value}")
+    
+    def test_percolation_centrality_returns_dict(self):
+        """Test that percolation centrality returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.percolation_centrality(trials=10)
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_percolation_centrality_values_in_range(self):
+        """Test that percolation centrality values are in valid range."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.percolation_centrality(trials=10)
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Percolation centrality for {node_layer} is negative: {value}")
+            self.assertLessEqual(value, 1,
+                f"Percolation centrality for {node_layer} exceeds 1: {value}")
+    
+    def test_spreading_centrality_returns_dict(self):
+        """Test that spreading centrality returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.spreading_centrality(trials=5, steps=10)
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_spreading_centrality_values_in_range(self):
+        """Test that spreading centrality values are in valid range."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.spreading_centrality(trials=5, steps=10)
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Spreading centrality for {node_layer} is negative: {value}")
+            self.assertLessEqual(value, 1,
+                f"Spreading centrality for {node_layer} exceeds 1: {value}")
+    
+    def test_collective_influence_returns_dict(self):
+        """Test that collective influence returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.collective_influence(radius=2)
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_collective_influence_values_non_negative(self):
+        """Test that collective influence values are non-negative."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.collective_influence(radius=2)
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Collective influence for {node_layer} is negative: {value}")
+    
+    def test_load_centrality_returns_dict(self):
+        """Test that load centrality returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.load_centrality()
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_load_centrality_values_non_negative(self):
+        """Test that load centrality values are non-negative."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.load_centrality()
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Load centrality for {node_layer} is negative: {value}")
+    
+    def test_flow_betweenness_returns_dict(self):
+        """Test that flow betweenness returns a dictionary."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.flow_betweenness_centrality(samples=10)
+        
+        self.assertIsInstance(centralities, dict)
+        self.assertGreater(len(centralities), 0)
+        
+    def test_flow_betweenness_values_non_negative(self):
+        """Test that flow betweenness values are non-negative."""
+        calc = MultilayerCentrality(self.network)
+        centralities = calc.flow_betweenness_centrality(samples=10)
+        
+        for node_layer, value in centralities.items():
+            self.assertGreaterEqual(value, 0,
+                f"Flow betweenness for {node_layer} is negative: {value}")
+    
+    def test_lp_aggregated_centrality_l2_norm(self):
+        """Test Lp-aggregated centrality with L2 norm."""
+        calc = MultilayerCentrality(self.network)
+        
+        # Get layer degrees as input
+        layer_degrees = calc.layer_degree_centrality(weighted=False)
+        
+        # Aggregate with L2 norm
+        aggregated = calc.lp_aggregated_centrality(layer_degrees, p=2)
+        
+        self.assertIsInstance(aggregated, dict)
+        self.assertGreater(len(aggregated), 0)
+        
+        for node, value in aggregated.items():
+            self.assertGreaterEqual(value, 0,
+                f"Lp-aggregated centrality for {node} is negative: {value}")
+    
+    def test_lp_aggregated_centrality_linf_norm(self):
+        """Test Lp-aggregated centrality with L-infinity norm."""
+        calc = MultilayerCentrality(self.network)
+        
+        # Get layer degrees as input
+        layer_degrees = calc.layer_degree_centrality(weighted=False)
+        
+        # Aggregate with L-infinity norm
+        aggregated = calc.lp_aggregated_centrality(layer_degrees, p=float('inf'))
+        
+        self.assertIsInstance(aggregated, dict)
+        self.assertGreater(len(aggregated), 0)
+        
+        for node, value in aggregated.items():
+            self.assertGreaterEqual(value, 0,
+                f"Lp-aggregated centrality (L-inf) for {node} is negative: {value}")
+    
+    def test_compute_all_centralities_extended(self):
+        """Test that compute_all_centralities with extended flag works."""
+        results = compute_all_centralities(self.network, include_extended=True)
+        
+        self.assertIsInstance(results, dict)
+        
+        # Check that extended measures are included
+        extended_keys = [
+            'information', 'communicability_betweenness', 'accessibility',
+            'harmonic_closeness', 'local_efficiency', 'edge_betweenness',
+            'bridging', 'percolation', 'spreading', 'collective_influence',
+            'load', 'flow_betweenness'
+        ]
+        
+        for key in extended_keys:
+            self.assertIn(key, results, f"Extended metric '{key}' not found in results")
+
+
 if __name__ == '__main__':
     unittest.main()
