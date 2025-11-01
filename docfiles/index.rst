@@ -190,13 +190,10 @@ Documentation Contents
    basic_usage_analysis_multiplex
    multilayer_concepts
    recipes
-   visualization
    visualization_guide
    dependencies_guide
    networkx_interop
    algorithm_guide
-   algorithm_roadmap
-   performance
    performance_guide
    statistical_comparison
 
@@ -222,9 +219,7 @@ Documentation Contents
    :maxdepth: 2
    :caption: Advanced Topics
 
-   learning
-   learning2
-   learning3
+   learning_advanced
 
 .. toctree::
    :maxdepth: 2
