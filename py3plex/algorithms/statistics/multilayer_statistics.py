@@ -865,7 +865,8 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
     n = supra_adj.shape[0]
 
     # Determine if we should use sparse or dense computation
-    # Sparse is beneficial when: matrix is sparse, n is large, and k << n
+    # Sparse is beneficial when: matrix is sparse, n is large, and k is much smaller than n
+    # Threshold k < n//2 chosen empirically: eigsh() overhead worth it when computing < half eigenvalues
     use_sparse = sp.issparse(supra_adj) and n >= 100 and k < n // 2
     
     # Calculate degree matrix and Laplacian
@@ -886,8 +887,7 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
     k = min(k, n - 2)
 
     if k < 1:
-        empty_result: np.ndarray = np.array([])
-        return empty_result
+        return np.array([])
 
     try:
         if use_sparse:
@@ -901,12 +901,9 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
             all_eigenvalues = np.linalg.eigvalsh(laplacian)
             eigenvalues = np.sort(all_eigenvalues)[:k]
 
-        result: np.ndarray = eigenvalues
-        return result
+        return eigenvalues
     except Exception:
-        # Return empty array if computation fails
-        empty_except: np.ndarray = np.array([])
-        return empty_except
+        return np.array([])
 
 
 def algebraic_connectivity(network: Any) -> float:

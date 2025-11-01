@@ -494,11 +494,22 @@ class MultilayerCentrality:
             # For dangling nodes, we need to add uniform distribution
             # This breaks pure sparsity, but only for dangling rows
             if n_dangling > 0:
-                # Convert to lil for efficient row operations on dangling nodes
-                P_sparse = P_sparse.tolil()
+                # Build dangling node rows efficiently using sparse matrix construction
                 uniform_prob = 1.0 / n
-                for idx in np.where(dangling_mask)[0]:
-                    P_sparse[idx, :] = uniform_prob
+                
+                # Create rows for dangling nodes as dense arrays (unavoidable for uniform distribution)
+                dangling_indices = np.where(dangling_mask)[0]
+                dangling_rows = sp.csr_matrix(
+                    (np.full(n * n_dangling, uniform_prob),
+                     (np.repeat(np.arange(n_dangling), n), np.tile(np.arange(n), n_dangling))),
+                    shape=(n_dangling, n)
+                )
+                
+                # Replace dangling rows in transition matrix
+                # Convert to lil for efficient row assignment
+                P_sparse = P_sparse.tolil()
+                for i, idx in enumerate(dangling_indices):
+                    P_sparse[idx] = dangling_rows[i]
                 P_sparse = P_sparse.tocsr()
             
             # Initialize PageRank vector

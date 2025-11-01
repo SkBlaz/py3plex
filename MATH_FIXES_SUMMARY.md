@@ -58,7 +58,7 @@ row_sums = np.sum(matrix, axis=1)
 row_sums[row_sums == 0] = 1  # BUG: creates zero rows
 P_before = matrix / row_sums[:, np.newaxis]
 print(f"Before fix - row sums: {np.sum(P_before, axis=1)}")
-# Output: [1.0, 1.0, 0.0, ...]  ← row for C is zero! WRONG
+# Output: [1.0, 1.0, 0.0, ...]  <-- row for C is zero! WRONG
 
 # AFTER FIX (CORRECT):
 dangling_mask = row_sums == 0
@@ -67,7 +67,7 @@ safe_row_sums[dangling_mask] = 1
 P_after = matrix / safe_row_sums[:, np.newaxis]
 P_after[dangling_mask, :] = 1.0 / n  # Teleportation
 print(f"After fix - row sums: {np.sum(P_after, axis=1)}")
-# Output: [1.0, 1.0, 1.0, ...]  ← all rows sum to 1! CORRECT
+# Output: [1.0, 1.0, 1.0, ...]  <-- all rows sum to 1! CORRECT
 ```
 
 **Pre-fix failure:**
