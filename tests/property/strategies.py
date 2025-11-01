@@ -383,13 +383,14 @@ def simple_edge_lists(min_edges=1, max_edges=10, allow_self_loops=True):
     @st.composite
     def build_simple_edge_list(draw):
         num_edges = draw(st.integers(min_value=min_edges, max_value=max_edges))
+        max_node_id = 20
         edges = []
         for _ in range(num_edges):
-            n1 = draw(integer_node_ids(max_value=20))
-            n2 = draw(integer_node_ids(max_value=20))
+            n1 = draw(integer_node_ids(max_value=max_node_id))
+            n2 = draw(integer_node_ids(max_value=max_node_id))
             if not allow_self_loops and n1 == n2:
-                # Try one more time
-                n2 = (n1 + 1) % 21
+                # Avoid self-loop by shifting to next node
+                n2 = (n1 + 1) % (max_node_id + 1)
             edges.append([n1, n2])
         return edges
     
@@ -487,8 +488,9 @@ def is_valid_partition(partition: dict, nodes: set) -> bool:
     if not isinstance(partition, dict):
         return False
     
-    # All nodes should be in partition
-    if set(partition.keys()) != nodes:
+    # All nodes should be in partition (convert once for efficiency)
+    partition_nodes = set(partition.keys())
+    if partition_nodes != nodes:
         return False
     
     # All community IDs should be non-negative integers

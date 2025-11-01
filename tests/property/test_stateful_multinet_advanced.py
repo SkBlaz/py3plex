@@ -69,7 +69,13 @@ class AdvancedMultiLayerStateMachine(RuleBasedStateMachine):
         l2=st.text(min_size=1, max_size=8, alphabet=st.characters(min_codepoint=97, max_codepoint=122))
     )
     def add_edge_dict(self, n1, n2, l1, l2):
-        """Add edge using dict format."""
+        """
+        Add edge using dict format.
+        
+        Note: Dict format may not work after certain operations (e.g., after loading
+        a NetworkX graph which changes the internal structure). These are expected
+        state-dependent failures, not bugs in the dict format itself.
+        """
         edge_dict = {
             "source": n1,
             "target": n2,
@@ -81,8 +87,9 @@ class AdvancedMultiLayerStateMachine(RuleBasedStateMachine):
             self.nodes_added.add((n1, l1))
             self.nodes_added.add((n2, l2))
             self.edges_added.add(((n1, l1), (n2, l2)))
-        except (TypeError, ValueError, KeyError):
-            # Dict format may not work after certain operations (e.g., after loading nx graph)
+        except (TypeError, ValueError, KeyError) as e:
+            # Expected: Dict format requires specific network state
+            # This is a state-dependent operation that may fail after nx graph load
             pass
     
     @rule(
