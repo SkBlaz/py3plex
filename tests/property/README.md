@@ -6,7 +6,73 @@ This directory contains property-based tests using [Hypothesis](https://hypothes
 
 Property-based tests verify that code satisfies mathematical properties and invariants across a wide range of inputs, rather than testing specific hand-written examples. This approach is particularly valuable for multilayer network algorithms where edge cases and boundary conditions can be subtle.
 
+**Total: 125+ property-based tests**
+
 ## Test Modules
+
+### Core Operations Tests (NEW)
+
+#### `test_edge_operations_properties.py` (9 tests)
+Tests fundamental invariants for edge operations in multilayer networks.
+
+**Properties tested:**
+- Edge addition increases edge count
+- Edge removal decreases edge count  
+- Edge endpoints are valid nodes
+- Edge weights are non-negative by default
+- Edge weight preservation
+- Undirected edge symmetry
+- Inter-layer edge validity
+- Edge addition idempotence
+- Edge list consistency
+
+#### `test_node_operations_properties.py` (10 tests)
+Tests fundamental invariants for node operations in multilayer networks.
+
+**Properties tested:**
+- Node addition increases node count
+- Node uniqueness within layer
+- Node removal consistency
+- Node layer assignment
+- Same node across different layers
+- Node count non-negative
+- Isolated nodes preserved
+- Node retrieval consistency
+- Node degree non-negative
+- Node neighborhood consistency
+
+#### `test_weight_operations_properties.py` (10 tests)
+Tests numerical properties of edge weights including normalization and scaling.
+
+**Properties tested:**
+- Weight assignment preserved
+- Weight scaling linearity
+- Weight sum non-negative
+- Weight addition commutative
+- Weight mean bounds
+- Weight comparison transitivity
+- Uniform weights constant mean
+- Weight variance non-negative
+- Weight multiplication identity
+- Weight ordering preserved
+
+#### `test_graph_transformation_properties.py` (11 tests)
+Tests structural invariants under graph transformations.
+
+**Properties tested:**
+- Complement graph edge sum
+- Subgraph preserves edges
+- Connected components partition
+- Layer union preserves nodes
+- Edge reversal preserves connectivity
+- Layer intersection subset
+- Spanning tree connected
+- Degree sequence sum even (Handshaking Lemma)
+- Graph union commutative
+- Empty layer removal idempotent
+- Bipartite projection preserves nodes
+
+### Advanced Tests
 
 ### `test_io_roundtrip.py`
 Tests I/O round-trip invariants for loading NetworkX graphs into py3plex.
