@@ -11,14 +11,7 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from py3plex.core import multinet
-
-
-def layer_names():
-    """Generate valid layer names."""
-    return st.text(min_size=1, max_size=8, alphabet=st.characters(
-        whitelist_categories=('Lu', 'Ll', 'Nd'),
-        whitelist_characters='_'
-    ))
+from .strategies import layer_labels
 
 
 @pytest.mark.property
@@ -284,7 +277,7 @@ def test_undirected_edge_symmetry(n, p):
 @pytest.mark.property
 @settings(deadline=None, max_examples=30)
 @given(
-    layers=st.lists(layer_names(), min_size=2, max_size=4, unique=True),
+    layers=st.lists(layer_labels(), min_size=2, max_size=4, unique=True),
     n=st.integers(min_value=2, max_value=6)
 )
 def test_inter_layer_edge_validity(layers, n):

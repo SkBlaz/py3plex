@@ -12,19 +12,7 @@ from hypothesis import given, strategies as st, settings, assume
 import math
 
 from py3plex.core import multinet
-
-
-def layer_names():
-    """Generate valid layer names."""
-    return st.text(min_size=1, max_size=8, alphabet=st.characters(
-        whitelist_categories=('Lu', 'Ll', 'Nd'),
-        whitelist_characters='_'
-    ))
-
-
-def positive_weights():
-    """Generate positive weight values."""
-    return st.floats(min_value=0.1, max_value=100.0, allow_nan=False, allow_infinity=False)
+from .strategies import layer_labels, positive_weights
 
 
 @pytest.mark.property

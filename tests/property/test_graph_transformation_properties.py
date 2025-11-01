@@ -11,14 +11,7 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from py3plex.core import multinet
-
-
-def layer_names():
-    """Generate valid layer names."""
-    return st.text(min_size=1, max_size=8, alphabet=st.characters(
-        whitelist_categories=('Lu', 'Ll', 'Nd'),
-        whitelist_characters='_'
-    ))
+from .strategies import layer_labels
 
 
 @pytest.mark.property
@@ -112,7 +105,7 @@ def test_connected_components_partition(n, p):
 @settings(deadline=None, max_examples=40)
 @given(
     n=st.integers(min_value=2, max_value=10),
-    layers=st.lists(layer_names(), min_size=2, max_size=4, unique=True)
+    layers=st.lists(layer_labels(), min_size=2, max_size=4, unique=True)
 )
 def test_layer_union_preserves_nodes(n, layers):
     """
@@ -183,7 +176,7 @@ def test_edge_reversal_preserves_connectivity(n, p):
 @settings(deadline=None, max_examples=40)
 @given(
     n=st.integers(min_value=2, max_value=8),
-    layers=st.lists(layer_names(), min_size=2, max_size=3, unique=True)
+    layers=st.lists(layer_labels(), min_size=2, max_size=3, unique=True)
 )
 def test_layer_intersection_subset(n, layers):
     """
@@ -330,7 +323,7 @@ def test_graph_union_commutative(n, p):
 @settings(deadline=None, max_examples=40)
 @given(
     n=st.integers(min_value=2, max_value=10),
-    layers=st.lists(layer_names(), min_size=1, max_size=3, unique=True)
+    layers=st.lists(layer_labels(), min_size=1, max_size=3, unique=True)
 )
 def test_empty_layer_removal_idempotent(n, layers):
     """

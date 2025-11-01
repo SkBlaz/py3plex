@@ -11,32 +11,14 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from py3plex.core import multinet
-
-
-def layer_names():
-    """Generate valid layer names."""
-    return st.text(min_size=1, max_size=8, alphabet=st.characters(
-        whitelist_categories=('Lu', 'Ll', 'Nd'),
-        whitelist_characters='_'
-    ))
-
-
-def node_ids():
-    """Generate valid node IDs."""
-    return st.one_of(
-        st.integers(min_value=0, max_value=100).map(str),
-        st.text(min_size=1, max_size=10, alphabet=st.characters(
-            whitelist_categories=('Lu', 'Ll', 'Nd'),
-            whitelist_characters='_'
-        ))
-    )
+from .strategies import layer_labels
 
 
 @pytest.mark.property
 @settings(deadline=None, max_examples=50)
 @given(
     n=st.integers(min_value=1, max_value=15),
-    layer=layer_names()
+    layer=layer_labels()
 )
 def test_node_addition_increases_node_count(n, layer):
     """
@@ -69,7 +51,7 @@ def test_node_addition_increases_node_count(n, layer):
 @settings(deadline=None, max_examples=40)
 @given(
     n=st.integers(min_value=2, max_value=12),
-    layer=layer_names()
+    layer=layer_labels()
 )
 def test_node_uniqueness_within_layer(n, layer):
     """
@@ -160,7 +142,7 @@ def test_node_removal_consistency(n, num_to_remove):
 @pytest.mark.property
 @settings(deadline=None, max_examples=40)
 @given(
-    layers=st.lists(layer_names(), min_size=1, max_size=4, unique=True),
+    layers=st.lists(layer_labels(), min_size=1, max_size=4, unique=True),
     n=st.integers(min_value=2, max_value=8)
 )
 def test_node_layer_assignment(layers, n):
@@ -199,7 +181,7 @@ def test_node_layer_assignment(layers, n):
 @settings(deadline=None, max_examples=35)
 @given(
     n=st.integers(min_value=2, max_value=10),
-    layers=st.lists(layer_names(), min_size=2, max_size=4, unique=True)
+    layers=st.lists(layer_labels(), min_size=2, max_size=4, unique=True)
 )
 def test_same_node_different_layers(n, layers):
     """
@@ -240,7 +222,7 @@ def test_same_node_different_layers(n, layers):
 @settings(deadline=None, max_examples=40)
 @given(
     n=st.integers(min_value=2, max_value=10),
-    layer=layer_names()
+    layer=layer_labels()
 )
 def test_node_count_non_negative(n, layer):
     """
@@ -308,7 +290,7 @@ def test_isolated_nodes_preserved(n, p):
 @settings(deadline=None, max_examples=40)
 @given(
     n=st.integers(min_value=2, max_value=12),
-    layer=layer_names()
+    layer=layer_labels()
 )
 def test_node_retrieval_consistency(n, layer):
     """
@@ -339,7 +321,7 @@ def test_node_retrieval_consistency(n, layer):
 @settings(deadline=None, max_examples=30)
 @given(
     n=st.integers(min_value=2, max_value=10),
-    layers=st.lists(layer_names(), min_size=1, max_size=3, unique=True)
+    layers=st.lists(layer_labels(), min_size=1, max_size=3, unique=True)
 )
 def test_node_degree_non_negative(n, layers):
     """
