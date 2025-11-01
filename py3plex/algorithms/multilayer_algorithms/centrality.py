@@ -1120,7 +1120,7 @@ class MultilayerCentrality:
 
             # Compute entropy
             p_r_h_safe = np.maximum(p_r_h, epsilon)
-            entropy = -np.sum(p_r_h * np.log(p_r_h_safe))
+            entropy = -np.sum(p_r_h_safe * np.log(p_r_h_safe))
 
             # Accessibility is exp(entropy)
             accessibility = np.exp(entropy)
@@ -1646,7 +1646,7 @@ class MultilayerCentrality:
         for i in range(n):
             for j in range(n):
                 if matrix[i, j] > 0:
-                    edge_length = 1.0 / matrix[i, j] if matrix[i, j] > 0 else float("inf")
+                    edge_length = 1.0 / matrix[i, j]
                     G.add_edge(i, j, weight=edge_length)
 
         # Initialize load
@@ -1718,6 +1718,12 @@ class MultilayerCentrality:
         if len(nodes_list) < 2:
             results = {nl: 0.0 for nl in node_layer_mapping.keys()}
             return results
+        
+        # Ensure unique nodes for sampling
+        nodes_list = list(set(nodes_list))
+        if len(nodes_list) < 2:
+            results = {nl: 0.0 for nl in node_layer_mapping.keys()}
+            return results
 
         for _ in range(samples):
             # Sample distinct source and target
@@ -1728,13 +1734,14 @@ class MultilayerCentrality:
                 flow_value, flow_dict = nx.maximum_flow(G, source, target, capacity="capacity")
 
                 # Count flow through each node
+                is_directed = G.is_directed()  # Cache result
                 for node in G.nodes():
                     if node != source and node != target:
                         # Sum incoming or outgoing flow
                         total_flow = 0.0
                         if node in flow_dict:
                             total_flow += sum(flow_dict[node].values())
-                        for pred in G.predecessors(node) if G.is_directed() else G.neighbors(node):
+                        for pred in G.predecessors(node) if is_directed else G.neighbors(node):
                             if pred in flow_dict:
                                 total_flow += flow_dict[pred].get(node, 0)
 
@@ -1745,8 +1752,9 @@ class MultilayerCentrality:
                 pass
 
         # Normalize by number of samples
-        for idx in flow_between:
-            flow_between[idx] /= max(samples, 1)
+        if samples > 0:
+            for idx in flow_between:
+                flow_between[idx] /= samples
 
         # Map back to node-layer pairs
         results = {}
