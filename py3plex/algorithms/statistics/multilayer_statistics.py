@@ -834,6 +834,7 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
     Formula: ℒ = 𝒟 - 𝒜
 
     Eigenvalue spectrum of the supra-Laplacian matrix; captures diffusion properties.
+    Uses sparse eigenvalue computation when beneficial.
 
     Variables:
         𝒜 = supra-adjacency matrix (NL × NL block matrix containing all layers and inter-layer couplings)
@@ -853,36 +854,50 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
 
     Reference:
         De Domenico et al. (2013), Gomez et al. (2013)
+        
+    Notes:
+        - Uses sparse eigsh() for sparse matrices (more efficient)
+        - Falls back to dense computation for small matrices (n < 100) or when k is large relative to n
+        - Laplacian is always symmetric for undirected graphs (PSD with smallest eigenvalue = 0)
     """
     # Get supra-adjacency matrix
     supra_adj = network.get_supra_adjacency_matrix()
+    n = supra_adj.shape[0]
 
-    # Convert to dense if sparse for small networks
-    if sp.issparse(supra_adj):
-        if supra_adj.shape[0] < 1000:
-            supra_adj = supra_adj.toarray()
-
-    # Calculate degree matrix
-    if sp.issparse(supra_adj):
+    # Determine if we should use sparse or dense computation
+    # Sparse is beneficial when: matrix is sparse, n is large, and k << n
+    use_sparse = sp.issparse(supra_adj) and n >= 100 and k < n // 2
+    
+    # Calculate degree matrix and Laplacian
+    if use_sparse:
+        # Keep as sparse
         degrees = np.array(supra_adj.sum(axis=1)).flatten()
-        degree_matrix = sp.diags(degrees)
+        degree_matrix = sp.diags(degrees, format='csr')
         laplacian = degree_matrix - supra_adj
     else:
+        # Convert to dense
+        if sp.issparse(supra_adj):
+            supra_adj = supra_adj.toarray()
         degrees = np.sum(supra_adj, axis=1)
         degree_matrix = np.diag(degrees)
         laplacian = degree_matrix - supra_adj
 
-    # Calculate eigenvalues
-    k = min(k, laplacian.shape[0] - 2)
+    # Adjust k to be valid
+    k = min(k, n - 2)
 
     if k < 1:
         empty_result: np.ndarray = np.array([])
         return empty_result
 
     try:
-        if sp.issparse(laplacian):
-            eigenvalues, _ = eigsh(laplacian, k=k, which="SM")
+        if use_sparse:
+            # Use sparse eigenvalue solver (eigsh for symmetric matrices)
+            # which='SM' = smallest magnitude eigenvalues
+            eigenvalues, _ = eigsh(laplacian, k=k, which="SM", tol=1e-10)
+            # Sort eigenvalues (eigsh may not return them sorted)
+            eigenvalues = np.sort(eigenvalues)
         else:
+            # Dense computation - get all eigenvalues then select smallest k
             all_eigenvalues = np.linalg.eigvalsh(laplacian)
             eigenvalues = np.sort(all_eigenvalues)[:k]
 
