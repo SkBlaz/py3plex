@@ -131,7 +131,7 @@ def compute_enrichment(
     """
 
     if whole_term_list:
-        tvals = set.union(*list(topology_map.values()))
+        tvals = set.union(*topology_map.values())
         topology_map = {}
         topology_map["1_community"] = tvals
 

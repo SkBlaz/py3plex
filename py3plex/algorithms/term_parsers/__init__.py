@@ -74,7 +74,7 @@ def read_uniprot_GO(filename, verbose=True):
     # read the GAF file..
     unigo_counts, whole_termlist = parse_gaf_file(filename, whole_list_counts=True)
     term_counts = Counter(whole_termlist)
-    all_terms = sum(list(term_counts.values()))
+    all_terms = sum(term_counts.values())
     if verbose:
         print(f"All annotations {all_terms}")
     return (unigo_counts, term_counts, all_terms)

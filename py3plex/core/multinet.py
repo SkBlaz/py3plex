@@ -405,8 +405,8 @@ class multi_layer_network:
         components = len(
             list(nx.connected_components(self.core_network.to_undirected()))
         )
-        node_degree_vector = list(dict(nx.degree(self.core_network)).values())
-        mean_degree = np.mean(node_degree_vector)
+        node_degree_vector = dict(nx.degree(self.core_network)).values()
+        mean_degree = np.mean(list(node_degree_vector))
         return {
             "Number of layers": unique_layers,
             "Nodes": nodes,
@@ -1169,17 +1169,18 @@ class multi_layer_network:
                 individual_adj.append(adj)
 
             whole_mat = []
+            num_adj = len(individual_adj)
             for en, adj_mat in enumerate(individual_adj):
                 cross = np.identity(adj_mat.shape[0])
                 one_row = []
-                for j in range(len(individual_adj)):
-                    if j < en or j > en:
+                for j in range(num_adj):
+                    if j != en:
                         one_row.append(cross)
-                    if j == en:
+                    else:
                         one_row.append(adj_mat)
 
                 whole_mat.append(np.hstack(list(one_row)))
-                vectors = np.vstack(list(whole_mat))
+            vectors = np.vstack(whole_mat)
             self.numeric_core_network = vectors
             self.node_order_in_matrix = all_nodes
 

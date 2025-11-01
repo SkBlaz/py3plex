@@ -125,8 +125,8 @@ def core_network_statistics(
     else:
         number_of_classes = None
 
-    node_degree_vector = list(dict(nx.degree(G)).values())
-    mean_degree = np.mean(node_degree_vector)
+    node_degree_vector = dict(nx.degree(G)).values()
+    mean_degree = np.mean(list(node_degree_vector))
 
     try:
         diameter = nx.diameter(G)
