@@ -7,6 +7,13 @@ This module provides common strategies for generating:
 - Weight values
 - NetworkX graphs (via hypothesis-networkx)
 - Multilayer-specific structures (node-layer tuples, layer sets)
+- Probability values
+- Integer node IDs
+
+Strategy naming conventions:
+- Functions ending in '_strategy' return Hypothesis strategies
+- Functions without suffix are callable that return strategies (parametric)
+- Strategies prefixed with 'small_' generate small inputs for fast testing
 """
 
 from typing import List, Tuple
@@ -29,7 +36,22 @@ except ImportError:
 # ============================================================================
 
 def node_names(min_size=1, max_size=10):
-    """Generate short ASCII lowercase node names."""
+    """
+    Generate short ASCII lowercase node names.
+    
+    Args:
+        min_size: Minimum string length
+        max_size: Maximum string length
+    
+    Returns:
+        Hypothesis strategy for node name strings
+        
+    Example:
+        >>> from hypothesis import given
+        >>> @given(node_names())
+        ... def test_node_processing(name):
+        ...     assert len(name) >= 1
+    """
     return st.text(
         min_size=min_size,
         max_size=max_size,
@@ -37,8 +59,31 @@ def node_names(min_size=1, max_size=10):
     )
 
 
+def integer_node_ids(min_value=0, max_value=100):
+    """
+    Generate integer node IDs.
+    
+    Args:
+        min_value: Minimum node ID
+        max_value: Maximum node ID
+    
+    Returns:
+        Hypothesis strategy for integer node IDs
+    """
+    return st.integers(min_value=min_value, max_value=max_value)
+
+
 def layer_labels(min_size=1, max_size=10):
-    """Generate short ASCII lowercase layer labels."""
+    """
+    Generate short ASCII lowercase layer labels.
+    
+    Args:
+        min_size: Minimum string length
+        max_size: Maximum string length
+    
+    Returns:
+        Hypothesis strategy for layer label strings
+    """
     return st.text(
         min_size=min_size,
         max_size=max_size,
@@ -47,7 +92,16 @@ def layer_labels(min_size=1, max_size=10):
 
 
 def finite_weights(min_value=0.0, max_value=10.0):
-    """Generate finite non-negative float weights."""
+    """
+    Generate finite non-negative float weights.
+    
+    Args:
+        min_value: Minimum weight value (inclusive)
+        max_value: Maximum weight value (inclusive)
+    
+    Returns:
+        Hypothesis strategy for finite float weights
+    """
     return st.floats(
         min_value=min_value,
         max_value=max_value,
@@ -57,7 +111,35 @@ def finite_weights(min_value=0.0, max_value=10.0):
 
 
 def positive_weights(min_value=0.01, max_value=10.0):
-    """Generate strictly positive finite float weights."""
+    """
+    Generate strictly positive finite float weights.
+    
+    Args:
+        min_value: Minimum weight value (must be > 0)
+        max_value: Maximum weight value
+    
+    Returns:
+        Hypothesis strategy for positive float weights
+    """
+    return st.floats(
+        min_value=min_value,
+        max_value=max_value,
+        allow_nan=False,
+        allow_infinity=False
+    )
+
+
+def probabilities(min_value=0.0, max_value=1.0):
+    """
+    Generate probability values in [0, 1].
+    
+    Args:
+        min_value: Minimum probability (default 0.0)
+        max_value: Maximum probability (default 1.0)
+    
+    Returns:
+        Hypothesis strategy for probability values
+    """
     return st.floats(
         min_value=min_value,
         max_value=max_value,
@@ -256,6 +338,113 @@ def multilayer_params(min_nodes=3, max_nodes=10, min_layers=1, max_layers=4):
 
 
 # ============================================================================
+# Edge list strategies for different formats
+# ============================================================================
+
+def edge_lists_with_weights(min_edges=1, max_edges=10):
+    """
+    Generate edge lists in list format: [[n1, l1, n2, l2, weight], ...].
+    
+    Args:
+        min_edges: Minimum number of edges
+        max_edges: Maximum number of edges
+    
+    Returns:
+        Hypothesis strategy for edge lists with weights
+    """
+    @st.composite
+    def build_edge_list(draw):
+        num_edges = draw(st.integers(min_value=min_edges, max_value=max_edges))
+        edges = []
+        for _ in range(num_edges):
+            n1 = draw(node_names(max_size=8))
+            l1 = draw(layer_labels(max_size=8))
+            n2 = draw(node_names(max_size=8))
+            l2 = draw(layer_labels(max_size=8))
+            w = draw(positive_weights())
+            edges.append([n1, l1, n2, l2, w])
+        return edges
+    
+    return build_edge_list()
+
+
+def simple_edge_lists(min_edges=1, max_edges=10, allow_self_loops=True):
+    """
+    Generate simple edge lists: [[n1, n2], [n3, n4], ...].
+    
+    Args:
+        min_edges: Minimum number of edges
+        max_edges: Maximum number of edges
+        allow_self_loops: Whether to allow edges from node to itself
+    
+    Returns:
+        Hypothesis strategy for simple edge lists
+    """
+    @st.composite
+    def build_simple_edge_list(draw):
+        num_edges = draw(st.integers(min_value=min_edges, max_value=max_edges))
+        max_node_id = 20
+        edges = []
+        for _ in range(num_edges):
+            n1 = draw(integer_node_ids(max_value=max_node_id))
+            n2 = draw(integer_node_ids(max_value=max_node_id))
+            if not allow_self_loops and n1 == n2:
+                # Avoid self-loop by shifting to next node
+                n2 = (n1 + 1) % (max_node_id + 1)
+            edges.append([n1, n2])
+        return edges
+    
+    return build_simple_edge_list()
+
+
+# ============================================================================
+# Complex multilayer network structures
+# ============================================================================
+
+def multilayer_network_spec(min_nodes=3, max_nodes=10, min_layers=1, max_layers=4):
+    """
+    Generate specifications for creating multilayer networks.
+    
+    Returns:
+        Dictionary with keys: nodes (list), layers (list), edges (list of dicts)
+    """
+    @st.composite
+    def build_network_spec(draw):
+        # Generate nodes and layers
+        num_nodes = draw(st.integers(min_value=min_nodes, max_value=max_nodes))
+        num_layers = draw(st.integers(min_value=min_layers, max_value=max_layers))
+        
+        nodes = [f"n{i}" for i in range(num_nodes)]
+        layers = [f"l{i}" for i in range(num_layers)]
+        
+        # Generate edges (randomly connect nodes within and across layers)
+        num_edges = draw(st.integers(min_value=1, max_value=num_nodes * 2))
+        edges = []
+        for _ in range(num_edges):
+            n1 = draw(st.sampled_from(nodes))
+            n2 = draw(st.sampled_from(nodes))
+            l1 = draw(st.sampled_from(layers))
+            l2 = draw(st.sampled_from(layers))
+            w = draw(positive_weights())
+            
+            edges.append({
+                "source": n1,
+                "target": n2,
+                "source_type": l1,
+                "target_type": l2,
+                "weight": w
+            })
+        
+        return {
+            "nodes": nodes,
+            "layers": layers,
+            "edges": edges
+        }
+    
+    return build_network_spec()
+
+
+# ============================================================================
 # Utility functions
 # ============================================================================
 
@@ -283,3 +472,57 @@ def relabel_graph(G: nx.Graph, seed: int = None) -> Tuple[nx.Graph, dict]:
     H = nx.relabel_nodes(G, mapping, copy=True)
     
     return H, mapping
+
+
+def is_valid_partition(partition: dict, nodes: set) -> bool:
+    """
+    Check if a community partition is valid.
+    
+    Args:
+        partition: Dict mapping nodes to community IDs
+        nodes: Set of expected nodes
+    
+    Returns:
+        True if partition is valid (all nodes covered, community IDs are integers)
+    """
+    if not isinstance(partition, dict):
+        return False
+    
+    # All nodes should be in partition (convert once for efficiency)
+    partition_nodes = set(partition.keys())
+    if partition_nodes != nodes:
+        return False
+    
+    # All community IDs should be non-negative integers
+    return all(isinstance(c, int) and c >= 0 for c in partition.values())
+
+
+# ============================================================================
+# Composite strategies for common test patterns
+# ============================================================================
+
+def connected_weighted_graph_with_params(min_nodes=3, max_nodes=8):
+    """
+    Generate a connected weighted graph with test parameters.
+    
+    Returns:
+        Tuple of (graph, weight_key, test_params)
+    """
+    @st.composite
+    def build(draw):
+        G = draw(connected_graphs(min_nodes=min_nodes, max_nodes=max_nodes))
+        
+        # Add weights
+        for u, v in G.edges():
+            G[u][v]['weight'] = draw(positive_weights())
+        
+        weight_key = 'weight'
+        test_params = {
+            'num_nodes': G.number_of_nodes(),
+            'num_edges': G.number_of_edges(),
+            'is_connected': nx.is_connected(G)
+        }
+        
+        return G, weight_key, test_params
+    
+    return build()

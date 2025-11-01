@@ -52,7 +52,7 @@ class TestBasicStatisticsProperties:
     """Property-based tests for basic network statistics."""
     
     @given(small_graph_strategy())
-    @settings(max_examples=50)
+    @settings(max_examples=100)
     def test_degree_distribution_sum_equals_double_edges(self, G):
         """
         Property: Sum of degree distribution equals 2 * number of edges.
@@ -69,7 +69,7 @@ class TestBasicStatisticsProperties:
         assert total_degree == 2 * G.number_of_edges()
     
     @given(small_digraph_strategy())
-    @settings(max_examples=50)
+    @settings(max_examples=100)
     def test_directed_degree_sum_equals_edges(self, G):
         """
         Property: Sum of out-degrees (or in-degrees) equals number of edges.
@@ -86,13 +86,13 @@ class TestBasicStatisticsProperties:
         assert out_degree_sum == in_degree_sum
     
     @given(small_graph_strategy())
-    @settings(max_examples=50)
+    @settings(max_examples=100)
     def test_node_count_positive(self, G):
         """Property: Number of nodes is always non-negative."""
         assert G.number_of_nodes() >= 0
     
     @given(small_graph_strategy())
-    @settings(max_examples=50)
+    @settings(max_examples=100)
     def test_edge_count_bounded_by_complete_graph(self, G):
         """
         Property: Number of edges cannot exceed complete graph.
@@ -116,7 +116,7 @@ class TestBasicStatisticsProperties:
             assert m <= max_edges_with_loops
     
     @given(small_graph_strategy())
-    @settings(max_examples=50)
+    @settings(max_examples=100)
     def test_connected_components_partition_nodes(self, G):
         """
         Property: Connected components partition the node set.
@@ -288,7 +288,7 @@ class TestNetworkTransformationProperties:
     """Property-based tests for network transformations."""
     
     @given(small_graph_strategy())
-    @settings(max_examples=30)
+    @settings(max_examples=50)
     def test_subgraph_is_subset(self, G):
         """
         Property: A subgraph contains a subset of nodes and edges.
@@ -309,7 +309,7 @@ class TestNetworkTransformationProperties:
         assert H.number_of_nodes() == len(nodes_to_keep)
     
     @given(small_graph_strategy())
-    @settings(max_examples=30)
+    @settings(max_examples=50)
     def test_complement_graph_properties(self, G):
         """
         Property: Complement graph has edges where original doesn't.
@@ -339,7 +339,7 @@ class TestCentralityProperties:
     """Property-based tests for centrality measures."""
     
     @given(small_graph_strategy())
-    @settings(max_examples=30)
+    @settings(max_examples=50)
     def test_degree_centrality_bounds(self, G):
         """
         Property: Degree centrality is in [0, 1] after normalization.
@@ -359,7 +359,7 @@ class TestCentralityProperties:
             assert 0.0 <= value <= 1.0, f"Centrality {value} out of bounds for node {node}"
     
     @given(small_graph_strategy())
-    @settings(max_examples=20)
+    @settings(max_examples=30)
     def test_betweenness_centrality_bounds(self, G):
         """
         Property: Betweenness centrality is in [0, 1] after normalization.
@@ -373,7 +373,7 @@ class TestCentralityProperties:
             assert 0.0 <= value <= 1.0
     
     @given(small_graph_strategy())
-    @settings(max_examples=20)
+    @settings(max_examples=30)
     def test_closeness_centrality_bounds(self, G):
         """
         Property: Closeness centrality is in [0, 1] after normalization.
