@@ -969,7 +969,15 @@ class MultilayerCentrality:
             matrix = np.array(supra_matrix)
 
         # Create NetworkX graph
-        G = nx.Graph()  # Information centrality is for undirected graphs
+        # Information centrality requires undirected graphs
+        if self.network.directed:
+            import warnings
+            warnings.warn(
+                "Information centrality is defined for undirected graphs. "
+                "Converting directed multilayer network to undirected by symmetrizing.",
+                UserWarning
+            )
+        G = nx.Graph()
         n = matrix.shape[0]
         for i in range(n):
             for j in range(n):
@@ -1026,7 +1034,15 @@ class MultilayerCentrality:
             matrix = np.array(supra_matrix)
 
         # Create NetworkX graph
-        G = nx.Graph()  # Communicability is for undirected graphs
+        # Communicability betweenness requires undirected graphs
+        if self.network.directed:
+            import warnings
+            warnings.warn(
+                "Communicability betweenness is defined for undirected graphs. "
+                "Converting directed multilayer network to undirected by symmetrizing.",
+                UserWarning
+            )
+        G = nx.Graph()
         n = matrix.shape[0]
         for i in range(n):
             for j in range(n):
@@ -1201,6 +1217,14 @@ class MultilayerCentrality:
             matrix = np.array(supra_matrix)
 
         # Create NetworkX graph
+        # Local efficiency is typically computed on undirected graphs
+        if self.network.directed:
+            import warnings
+            warnings.warn(
+                "Local efficiency is typically defined for undirected graphs. "
+                "Converting directed multilayer network to undirected by symmetrizing.",
+                UserWarning
+            )
         G = nx.Graph()
         n = matrix.shape[0]
         for i in range(n):
@@ -1862,7 +1886,7 @@ class MultilayerCentrality:
 
 
 def compute_all_centralities(network, include_path_based=False, include_advanced=False, 
-                           include_extended=False, wf_improved=True):
+                           include_extended=False, preset=None, wf_improved=True):
     """
     Compute all available centrality measures for a multilayer network.
 
@@ -1875,6 +1899,12 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
         include_extended: Whether to include extended measures (information, accessibility,
                          percolation, spreading, collective influence, load, flow betweenness,
                          harmonic, bridging, local efficiency). Default: False
+        preset: Convenience parameter to set all inclusion flags at once. Options:
+                - 'basic': Only degree and eigenvector-based measures (default behavior)
+                - 'standard': Includes path-based measures
+                - 'advanced': Includes path-based and advanced measures
+                - 'all': Includes all measures (path-based, advanced, and extended)
+                - None: Use individual flags (default)
         wf_improved: If True, use Wasserman-Faust improved scaling for closeness
                     centrality in disconnected graphs. Default: True
 
@@ -1896,8 +1926,50 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
     
     Note:
         Path-based, advanced, and extended measures are computationally expensive for large
-        networks. Use flags to control which measures are computed.
+        networks. Use flags or presets to control which measures are computed.
+        
+    Examples:
+        >>> # Compute only basic measures (fast)
+        >>> results = compute_all_centralities(network)
+        
+        >>> # Use preset for standard analysis
+        >>> results = compute_all_centralities(network, preset='standard')
+        
+        >>> # Compute everything
+        >>> results = compute_all_centralities(network, preset='all')
+        
+        >>> # Fine-grained control
+        >>> results = compute_all_centralities(
+        ...     network,
+        ...     include_path_based=True,
+        ...     include_extended=True
+        ... )
     """
+    # Handle preset parameter
+    if preset is not None:
+        preset = preset.lower()
+        if preset == 'basic':
+            include_path_based = False
+            include_advanced = False
+            include_extended = False
+        elif preset == 'standard':
+            include_path_based = True
+            include_advanced = False
+            include_extended = False
+        elif preset == 'advanced':
+            include_path_based = True
+            include_advanced = True
+            include_extended = False
+        elif preset == 'all':
+            include_path_based = True
+            include_advanced = True
+            include_extended = True
+        else:
+            raise ValueError(
+                f"Unknown preset '{preset}'. "
+                "Valid options: 'basic', 'standard', 'advanced', 'all'"
+            )
+    
     calc = MultilayerCentrality(network)
     results = {}
 
