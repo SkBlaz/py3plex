@@ -15,7 +15,7 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from py3plex.core import multinet
-from tests.property.strategies import (
+from .strategies import (
     small_graphs, 
     weighted_graphs,
     node_names,
