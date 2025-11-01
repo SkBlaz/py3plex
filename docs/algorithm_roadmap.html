@@ -18,9 +18,7 @@
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Performance and Scalability" href="performance.html" />
-    <link rel="prev" title="Algorithm Selection Guide" href="algorithm_guide.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,94 +49,16 @@
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithm Roadmap</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#algorithm-categories">Algorithm Categories</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#community-detection-algorithms">Community Detection Algorithms</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#louvain-algorithm">Louvain Algorithm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#infomap-algorithm">Infomap Algorithm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multilayer-louvain">Multilayer Louvain</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#leiden-multilayer">Leiden Algorithm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#norc-algorithm">NoRC Algorithm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#community-measures">Community Measures</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#community-ranking">Community Ranking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multilayer-benchmarks">Multilayer Benchmarks</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#centrality-measures">Centrality Measures</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#multilayercentrality-class">MultilayerCentrality Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hubs-and-authorities-hits">Hubs and Authorities (HITS)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#versatility-centrality">Versatility Centrality</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#supra-matrix-function-centralities">Supra Matrix Function Centralities</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multixrank">MultiXRank</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#network-statistics">Network Statistics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#multilayer-statistics">Multilayer Statistics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multilayer-statistics-detailed">Multilayer Statistics (Detailed)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8">Basic Statistics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#topology-analysis">Topology Analysis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#correlation-networks">Correlation Networks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#enrichment-analysis">Enrichment Analysis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#statistical-comparison">Statistical Comparison</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#power-law-analysis">Power Law Analysis</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#node-ranking-classification">Node Ranking &amp; Classification</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#node-ranking">Node Ranking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#label-propagation">Label Propagation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#personalized-pagerank-ppr">Personalized PageRank (PPR)</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#random-walks-embeddings">Random Walks &amp; Embeddings</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#random-walk-primitives">Random Walk Primitives</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#node2vec-embedding">Node2Vec Embedding</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deepwalk-embedding">DeepWalk Embedding</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#entanglement-analysis">Entanglement Analysis</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#visualization-algorithms">Visualization Algorithms</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#layout-algorithms">Layout Algorithms</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multilayer-visualization">Multilayer Visualization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#drawing-machinery">Drawing Machinery</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#color-schemes">Color Schemes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#embedding-visualization">Embedding Visualization</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#benchmark-utilities">Benchmark &amp; Utilities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#network-classification-benchmark">Network Classification Benchmark</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#benchmark-visualizations">Benchmark Visualizations</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#algorithm-selection-guide">Algorithm Selection Guide</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#by-task-type">By Task Type</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#by-network-size">By Network Size</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#by-network-type">By Network Type</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#algorithm-dependencies">Algorithm Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#common-algorithm-workflows">Common Algorithm Workflows</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#community-detection-workflow">Community Detection Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#centrality-analysis-workflow">Centrality Analysis Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#embedding-workflow">Embedding Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#statistical-analysis-workflow">Statistical Analysis Workflow</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further Reading</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#citation-information">Citation Information</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
@@ -156,12 +76,14 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning_advanced.html">Advanced Learning and Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning_advanced.html#random-network-generation">Random Network Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning_advanced.html#label-propagation">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning_advanced.html#node-embeddings">Node Embeddings</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -1097,10 +1019,7 @@
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="algorithm_guide.html" class="btn btn-neutral float-left" title="Algorithm Selection Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="performance.html" class="btn btn-neutral float-right" title="Performance and Scalability" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

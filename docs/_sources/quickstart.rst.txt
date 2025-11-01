@@ -386,7 +386,7 @@ After this quickstart, explore:
 * :doc:`basic_usage` - Detailed usage guide
 * :doc:`tutorials/multilayer_centrality` - Multilayer centrality measures
 * :doc:`tutorials/community_detection` - Advanced community detection
-* :doc:`visualization` - Visualization techniques
+* :doc:`visualization_guide` - Visualization techniques
 
 Examples
 --------

@@ -19,9 +19,7 @@
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Performance and Scalability Best Practices" href="performance_guide.html" />
-    <link rel="prev" title="Algorithm Roadmap" href="algorithm_roadmap.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,72 +50,16 @@
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis.html">Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage_analysis_multiplex.html">Multiplex Network Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_concepts.html">Core Concepts and Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Analysis Recipes &amp; Workflows</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization.html">Network Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization_guide.html">Visualization Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies_guide.html">Dependency Management and Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Performance and Scalability</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#memory-management">Memory Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sparse-vs-dense-matrices">Sparse vs Dense Matrices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#matrix-construction-optimization">Matrix Construction Optimization</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#efficient-network-construction">Efficient Network Construction</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#batch-operations">Batch Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pre-allocate-data-structures">Pre-allocate Data Structures</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#algorithm-selection">Algorithm Selection</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#time-complexity-guidelines">Time Complexity Guidelines</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#avoid-expensive-operations">Avoid Expensive Operations</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#parallel-processing">Parallel Processing</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#using-joblib-for-parallelization">Using Joblib for Parallelization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#numpy-vectorization">NumPy Vectorization</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#visualization-optimization">Visualization Optimization</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#layout-computation">Layout Computation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#reduce-visual-elements">Reduce Visual Elements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#use-appropriate-visualization-type">Use Appropriate Visualization Type</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#i-o-optimization">I/O Optimization</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#efficient-file-formats">Efficient File Formats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#streaming-large-files">Streaming Large Files</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#benchmarking-and-profiling">Benchmarking and Profiling</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#time-your-code">Time Your Code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#memory-profiling">Memory Profiling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#line-profiling">Line Profiling</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#caching-strategies">Caching Strategies</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#function-level-caching">Function-Level Caching</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#network-level-caching">Network-Level Caching</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#best-practices-summary">Best Practices Summary</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#network-size-guidelines">Network Size Guidelines</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#memory-checklist">Memory Checklist</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#speed-checklist">Speed Checklist</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#benchmarking-examples">Benchmarking Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
 </ul>
@@ -135,12 +77,14 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="learning.html">Random Network Generation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning2.html">Label Propagation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="learning3.html">Node Embeddings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning_advanced.html">Advanced Learning and Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning_advanced.html#random-network-generation">Random Network Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning_advanced.html#label-propagation">Label Propagation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning_advanced.html#node-embeddings">Node Embeddings</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -716,10 +660,7 @@ python<span class="w"> </span>config_benchmark.py
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="algorithm_roadmap.html" class="btn btn-neutral float-left" title="Algorithm Roadmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="performance_guide.html" class="btn btn-neutral float-right" title="Performance and Scalability Best Practices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
