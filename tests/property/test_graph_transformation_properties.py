@@ -282,7 +282,11 @@ def test_degree_sequence_sum_even(n, num_edges):
         degree_sum = sum(d for _, d in network.core_network.degree())
         edge_count = len(list(network.get_edges()))
         
-        # Sum of degrees should be even
+        # Handshaking Lemma: Sum of degrees should equal 2 * edge count
+        assert degree_sum == 2 * edge_count, \
+            f"Handshaking Lemma violated: degree_sum={degree_sum}, 2*edge_count={2*edge_count}"
+        
+        # Sum of degrees should be even (consequence of the lemma)
         assert degree_sum % 2 == 0, \
             f"Degree sum is odd: {degree_sum}"
 
