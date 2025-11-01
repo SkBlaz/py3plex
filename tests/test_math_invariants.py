@@ -31,94 +31,70 @@ class TestPageRankTransitionMatrix:
     """Test PageRank transition matrix construction and properties."""
 
     def test_pagerank_row_stochastic_no_dangling(self):
-        """PageRank transition matrix should be row-stochastic when no dangling nodes."""
+        """PageRank should compute correctly when no dangling nodes exist."""
         network = multinet.multi_layer_network(directed=True)
         network.add_edges([
             ['A', 'L1', 'B', 'L1', 1],
             ['B', 'L1', 'C', 'L1', 1],
-            ['C', 'L1', 'A', 'L1', 1],  # Complete cycle
+            ['C', 'L1', 'A', 'L1', 1],  # Complete cycle - no dangling nodes
         ], input_type='list')
 
         calc = MultilayerCentrality(network)
         
-        # Get the supra-adjacency matrix
-        supra_matrix = calc._get_supra_adjacency_matrix()
-        if hasattr(supra_matrix, "toarray"):
-            matrix = supra_matrix.toarray()
-        else:
-            matrix = np.array(supra_matrix)
-
-        n = matrix.shape[0]
-
-        # Build transition matrix as PageRank does
-        row_sums = np.sum(matrix, axis=1)
-        row_sums[row_sums == 0] = 1
-        transition_matrix = matrix / row_sums[:, np.newaxis]
-
-        # Verify row-stochasticity
-        new_row_sums = np.sum(transition_matrix, axis=1)
+        # Compute PageRank using the actual implementation
+        pr = calc.pagerank_centrality()
         
-        # All rows must sum to 1
-        assert np.allclose(new_row_sums, 1.0, atol=1e-8), \
-            f"Transition matrix not row-stochastic: row sums = {new_row_sums}"
-
-        # No row should be all zeros
-        for i in range(n):
-            row_sum = np.sum(transition_matrix[i, :])
-            assert row_sum > 0.999, \
-                f"Row {i} has sum {row_sum}, should be ~1.0"
+        # Verify PageRank properties
+        pr_sum = sum(pr.values())
+        
+        # PageRank should sum to 1
+        assert np.isclose(pr_sum, 1.0, atol=1e-6), \
+            f"PageRank doesn't sum to 1: sum = {pr_sum}"
+        
+        # All values should be positive
+        for node_layer, value in pr.items():
+            assert value > 0, \
+                f"PageRank for {node_layer} is non-positive: {value}"
+        
+        # For a cycle, all nodes should have equal PageRank
+        pr_values = list(pr.values())
+        assert np.allclose(pr_values, pr_values[0], atol=1e-6), \
+            f"PageRank values should be equal for cycle: {pr_values}"
 
     def test_pagerank_handles_dangling_nodes_correctly(self):
-        """PageRank should properly handle dangling nodes (nodes with no outgoing edges)."""
+        """PageRank should properly handle dangling nodes via teleportation."""
         network = multinet.multi_layer_network(directed=True)
         network.add_edges([
             ['A', 'L1', 'B', 'L1', 1],
             ['B', 'L1', 'C', 'L1', 1],
             # C is dangling (no outgoing edges)
-            # D is also dangling and isolated
-            ['A', 'L2', 'D', 'L2', 1],
+            ['A', 'L2', 'D', 'L2', 1],  # D is also dangling
         ], input_type='list')
 
         calc = MultilayerCentrality(network)
         
-        # Get the supra-adjacency matrix
-        supra_matrix = calc._get_supra_adjacency_matrix()
-        if hasattr(supra_matrix, "toarray"):
-            matrix = supra_matrix.toarray()
-        else:
-            matrix = np.array(supra_matrix)
-
-        n = matrix.shape[0]
-        row_sums = np.sum(matrix, axis=1)
+        # Compute PageRank using the actual (fixed) implementation
+        pr = calc.pagerank_centrality()
         
-        # Identify dangling nodes
-        dangling_indices = np.where(row_sums == 0)[0]
+        # Verify PageRank properties
+        pr_sum = sum(pr.values())
         
-        # Current implementation creates zero rows for dangling nodes
-        # This is INCORRECT - standard PageRank uses teleportation
+        # PageRank should sum to 1 even with dangling nodes
+        assert np.isclose(pr_sum, 1.0, atol=1e-6), \
+            f"PageRank doesn't sum to 1 with dangling nodes: sum = {pr_sum}"
         
-        # Build transition matrix as current PageRank does
-        row_sums_copy = row_sums.copy()
-        row_sums_copy[row_sums_copy == 0] = 1
-        transition_matrix = matrix / row_sums_copy[:, np.newaxis]
-
-        # Check transition matrix properties
-        new_row_sums = np.sum(transition_matrix, axis=1)
+        # All values should be non-negative
+        for node_layer, value in pr.items():
+            assert value >= 0, \
+                f"PageRank for {node_layer} is negative: {value}"
         
-        # CURRENT BUG: Dangling nodes have zero rows (sum=0), violating stochasticity
-        # After fix, this test should pass with teleportation
-        for i in dangling_indices:
-            row_sum = np.sum(transition_matrix[i, :])
-            # Current behavior: row_sum == 0 (BUG)
-            # Expected behavior: row_sum == 1 (via teleportation)
-            
-            # This assertion SHOULD FAIL with current code
-            pytest.xfail(
-                "Current implementation creates zero rows for dangling nodes. "
-                "Should use teleportation to make transition matrix stochastic."
-            )
-            assert np.isclose(row_sum, 1.0, atol=1e-8), \
-                f"Dangling node row {i} sum is {row_sum}, should be 1.0"
+        # Dangling nodes should still receive PageRank (via incoming edges)
+        # C and D are dangling, but should have positive PageRank
+        for node_layer, value in pr.items():
+            node, layer = node_layer
+            if node in ['C', 'D']:
+                assert value > 0, \
+                    f"Dangling node {node} in layer {layer} should have positive PageRank"
 
     def test_pagerank_convergence(self):
         """PageRank should converge and sum to 1."""
