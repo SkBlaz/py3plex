@@ -88,7 +88,7 @@ def benchmark_classification(
             "time": np.mean(times),
         }
         df = pd.DataFrame(columns=["percent_train", "micro_F", "macro_F", "setting", "dataset", "time"])
-        df = df.append(outarray, ignore_index=True)
+        df = pd.concat([df, pd.DataFrame([outarray])], ignore_index=True)
         return df
 
     else:
@@ -149,7 +149,7 @@ def benchmark_classification(
                 "time": np.mean(times),
             }
             results.append(outarray)
-            df = df.append(outarray, ignore_index=True)
+            df = pd.concat([df, pd.DataFrame([outarray])], ignore_index=True)
 
     df = df.reset_index()
     return df
