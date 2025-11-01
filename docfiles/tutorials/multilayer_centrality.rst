@@ -49,7 +49,25 @@ Supported Centrality Measures
 * **Total communicability**: Sum of **matrix exponential** entries
 * **Multiplex k-core**: **Core decomposition** of the multilayer network
 
-5. Co-Ranking Algorithms
+5. Extended Measures
+~~~~~~~~~~~~~~~~~~~~
+
+
+* **Information centrality**: **Stephenson-Zelen style** using modified Laplacian inverse
+* **Communicability betweenness**: **Estrada-style** measure using matrix exponential
+* **Accessibility centrality**: **Entropy-based** measure of h-step reach diversity
+* **Percolation centrality**: **Bond percolation** Monte Carlo simulation
+* **Spreading (Epidemic) centrality**: **SIR/IC model** based outbreak size
+* **Collective influence**: **CI_ℓ** identifying influential spreaders at distance ℓ
+* **Load centrality**: **Shortest-path load** through nodes
+* **Flow betweenness**: **Maximum flow** based measure
+* **Harmonic closeness**: **Handles disconnections** better than standard closeness
+* **Edge betweenness**: **Edge-level** shortest path measure
+* **Bridging centrality**: **Combines betweenness** with bridging coefficient
+* **Local efficiency**: **Neighbor subgraph** efficiency measure
+* **Lp-aggregated centrality**: **Framework** for combining per-layer measures
+
+6. Co-Ranking Algorithms
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -307,6 +325,106 @@ The Halu et al. (2013) framework provides **four variants** of cross-layer influ
 * `epsilon`: Numerical stability constant (default 1e-12)
 * `alpha`: Damping parameter (default 0.85)
 
+Extended Centrality Measures
+-----------------------------
+
+
+The extended centrality measures provide specialized metrics for different network analysis scenarios:
+
+.. code-block:: python
+
+    # Information centrality (Stephenson-Zelen style)
+    info_cent = calc.information_centrality()
+    
+    # Communicability betweenness (considers all walks)
+    comm_between = calc.communicability_betweenness_centrality()
+    
+    # Accessibility (entropy-based h-step reach)
+    accessibility = calc.accessibility_centrality(h=2)
+    
+    # Harmonic closeness (better for disconnected graphs)
+    harmonic = calc.harmonic_closeness_centrality()
+    
+    # Local efficiency (fault tolerance)
+    local_eff = calc.local_efficiency_centrality()
+    
+    # Bridging centrality (identifies bridges)
+    bridging = calc.bridging_centrality()
+
+**Monte Carlo Simulations:**
+
+.. code-block:: python
+
+    # Percolation centrality (bond percolation)
+    percolation = calc.percolation_centrality(
+        edge_activation_prob=0.5,
+        trials=100
+    )
+    
+    # Spreading/epidemic centrality (SIR model)
+    spreading = calc.spreading_centrality(
+        beta=0.2,  # Infection rate
+        mu=0.1,    # Recovery rate
+        trials=50,
+        steps=100
+    )
+    
+    # Flow betweenness (max-flow based)
+    flow_between = calc.flow_betweenness_centrality(samples=100)
+
+**Influence and Load Measures:**
+
+.. code-block:: python
+
+    # Collective influence (for influential spreaders)
+    collective = calc.collective_influence(radius=2)
+    
+    # Load centrality (shortest-path load)
+    load = calc.load_centrality()
+    
+    # Edge betweenness (edge-level measure)
+    edge_between = calc.edge_betweenness_centrality()
+
+**Aggregation Framework:**
+
+.. code-block:: python
+
+    # Lp-aggregated centrality (combine per-layer measures)
+    # First get per-layer centralities
+    layer_degrees = calc.layer_degree_centrality(weighted=False)
+    
+    # L2 norm aggregation
+    l2_agg = calc.lp_aggregated_centrality(layer_degrees, p=2)
+    
+    # L-infinity norm (maximum)
+    linf_agg = calc.lp_aggregated_centrality(
+        layer_degrees,
+        p=float('inf')
+    )
+    
+    # Weighted aggregation
+    weights = {'L1': 0.6, 'L2': 0.4}
+    weighted_agg = calc.lp_aggregated_centrality(
+        layer_degrees,
+        p=2,
+        weights=weights
+    )
+
+**Computing All Extended Measures:**
+
+.. code-block:: python
+
+    # Compute all centrality measures including extended ones
+    results = compute_all_centralities(
+        network,
+        include_extended=True
+    )
+    
+    # Access specific measures
+    info_centrality = results['information']
+    spreading_cent = results['spreading']
+    harmonic_close = results['harmonic_closeness']
+
 Example Applications
 --------------------
 
@@ -317,6 +435,9 @@ Example Applications
 4. **Infrastructure networks**: Study **robustness** of multilayer utility networks
 5. **Co-ranking applications**: Simultaneously rank **nodes and layers** for importance (MultiRank)
 6. **Cross-platform influence**: Model **influence propagation** across interconnected platforms (Multiplex PageRank)
+7. **Epidemic modeling**: Use **spreading centrality** to identify superspreaders in contact networks
+8. **Network resilience**: Apply **percolation centrality** to assess infrastructure robustness
+9. **Information flow**: Use **accessibility** and **local efficiency** to analyze communication networks
 
 References
 ----------
@@ -328,3 +449,8 @@ The implementations follow **standard definitions** from multilayer network anal
 * Boccaletti, S., Bianconi, G., Criado, R., Del Genio, C. I., Gómez-Gardenes, J., Romance, M., ... & Zanin, M. (2014). **The structure and dynamics of multilayer networks**. Physics Reports, 544(1), 1-122.
 * Halu, A., Mondragon, R. J., Panzarasa, P., & Bianconi, G. (2013). **Multiplex PageRank**. PloS one, 8(10), e78293.
 * De Domenico, M., Solé-Ribalta, A., Cozzo, E., Kivelä, M., Moreno, Y., Porter, M. A., ... & Arenas, A. (2013). **Mathematical formulation of multilayer networks**. Physical Review X, 3(4), 041022.
+* Stephenson, K., & Zelen, M. (1989). **Rethinking centrality: Methods and examples**. Social networks, 11(1), 1-37.
+* Estrada, E., & Hatano, N. (2008). **Communicability in complex networks**. Physical Review E, 77(3), 036111.
+* Estrada, E., Higham, D. J., & Hatano, N. (2009). **Communicability betweenness in complex networks**. Physica A, 388(5), 764-774.
+* Morone, F., & Makse, H. A. (2015). **Influence maximization in complex networks through optimal percolation**. Nature, 524(7563), 65-68.
+* Latora, V., & Marchiori, M. (2001). **Efficient behavior of small-world networks**. Physical review letters, 87(19), 198701.
