@@ -23,7 +23,6 @@ Date: November 2025
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
-import scipy.sparse as sp
 
 
 def multirank(
