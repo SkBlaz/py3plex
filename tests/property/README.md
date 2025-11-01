@@ -130,9 +130,131 @@ def test_my_property(param):
     # Add more property checks
 ```
 
+### Writing Good Property Tests
+
+**Choose the Right Properties:**
+- **Invariants**: Properties that should always hold (e.g., node count ≥ 0)
+- **Metamorphic**: Output changes predictably with input changes (e.g., scaling weights)
+- **Round-trip**: Encode/decode should return original (e.g., save/load network)
+- **Idempotence**: Applying operation twice = applying once (e.g., sorting)
+- **Commutativity**: Order doesn't matter (e.g., A ∪ B = B ∪ A)
+
+**Use Appropriate Strategies:**
+```python
+# Import from strategies module
+from tests.property.strategies import (
+    node_names,           # Generate node names
+    layer_labels,         # Generate layer labels
+    small_graphs,         # Generate small graphs
+    weighted_graphs,      # Generate weighted graphs
+    positive_weights,     # Generate positive weights
+    probabilities,        # Generate probability values [0, 1]
+)
+
+# Example: Test with multiple strategies
+@given(
+    G=small_graphs(min_nodes=3, max_nodes=8),
+    weight=positive_weights(min_value=0.1, max_value=10.0)
+)
+def test_weighted_property(G, weight):
+    # Scale all edge weights
+    for u, v in G.edges():
+        G[u][v]['weight'] = weight
+    # Test property...
+```
+
+**Handle Preconditions with `assume`:**
+```python
+from hypothesis import assume
+
+@given(G=small_graphs())
+def test_requires_connected(G):
+    # Skip disconnected graphs
+    assume(nx.is_connected(G))
+    assume(G.number_of_nodes() >= 3)
+    # Now test on connected graphs only
+```
+
+**Adjust Test Settings:**
+```python
+# Fast tests: more examples
+@settings(max_examples=100, deadline=None)
+
+# Slow tests: fewer examples but thorough
+@settings(max_examples=20, deadline=None)
+
+# Stateful tests: control step count
+@settings(max_examples=20, stateful_step_count=15, deadline=None)
+```
+
+**Test Edge Cases Explicitly:**
+```python
+# Complement property tests with explicit edge cases
+def test_empty_graph():
+    G = nx.Graph()
+    result = process_graph(G)
+    assert result is not None
+
+def test_single_node():
+    G = nx.Graph()
+    G.add_node(0)
+    result = process_graph(G)
+    assert result >= 0
+```
+
+### Common Patterns
+
+**Testing Symmetry:**
+```python
+@given(G=small_graphs())
+def test_undirected_symmetry(G):
+    """For undirected graphs, (u,v) exists iff (v,u) exists."""
+    for u, v in G.edges():
+        assert G.has_edge(v, u)
+```
+
+**Testing Bounds:**
+```python
+@given(G=small_graphs())
+def test_centrality_bounds(G):
+    """Normalized centrality values are in [0, 1]."""
+    centrality = nx.degree_centrality(G)
+    for value in centrality.values():
+        assert 0.0 <= value <= 1.0
+```
+
+**Testing Conservation:**
+```python
+@given(G=small_graphs())
+def test_node_preservation(G):
+    """Operations preserve node count."""
+    nodes_before = G.number_of_nodes()
+    result = transform_graph(G)
+    assert result.number_of_nodes() == nodes_before
+```
+
+## Test Organization
+
+Property tests are organized by category:
+
+- **`test_io_*.py`**: Input/output and serialization properties
+- **`test_*_properties.py`**: Algorithm-specific properties
+- **`test_stateful_*.py`**: Stateful testing with complex operation sequences
+- **`test_*_invariants.py`**: Invariant checks across operations
+- **`test_*_metamorphic.py`**: Metamorphic relations
+- **`test_network_transformations.py`**: Graph transformation properties
+
+## Performance Considerations
+
+- Use `small_graphs` with `max_nodes ≤ 10` for fast tests
+- Increase `max_examples` for fast, simple tests
+- Decrease `max_examples` for slow, complex tests  
+- Use `@settings(deadline=None)` to disable timeouts for slow operations
+- Use `assume()` sparingly - excessive filtering slows tests
+
 ## References
 
 - [Hypothesis documentation](https://hypothesis.readthedocs.io/)
 - [Property-based testing primer](https://hypothesis.works/articles/what-is-property-based-testing/)
 - [CrossHair documentation](https://github.com/pschanely/CrossHair)
-- Issue: https://github.com/SkBlaz/py3plex/issues/[issue_number]
+- [Choosing properties for property-based testing](https://fsharpforfunandprofit.com/posts/property-based-testing-2/)
