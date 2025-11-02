@@ -5,7 +5,7 @@
 from py3plex.core import multinet
 from py3plex.algorithms import hedwig
 from py3plex.algorithms.community_detection import community_wrapper as cw
-from py3plex.utils import get_dataset_path, get_data_path, get_background_knowledge_path
+from py3plex.utils import get_dataset_path, get_data_path, get_background_knowledge_dir
 
 # load as undirected (simplified example)
 network = multinet.multi_layer_network().load_network(
@@ -31,7 +31,7 @@ hedwig.obo2n3(get_dataset_path("go.obo.gz"), get_data_path("background_knowledge
 
 # some default input parameters
 hedwig_input_parameters = {
-    "bk_dir": get_background_knowledge_path(""),
+    "bk_dir": get_background_knowledge_dir(),
     "data": get_dataset_path("example_partition_inputs.n3"),
     "format": "n3",
     "output": None,

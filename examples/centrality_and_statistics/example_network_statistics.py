@@ -16,8 +16,8 @@ Network statistics help understand:
 
 import os
 from py3plex.core import multinet
-from py3plex.algorithms.statistics.basic_statistics import (
 from py3plex.utils import get_dataset_path
+from py3plex.algorithms.statistics.basic_statistics import (
     core_network_statistics,
     identify_n_hubs
 )

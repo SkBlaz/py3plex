@@ -202,6 +202,9 @@ def get_data_path(relative_path: str) -> str:
     Returns:
         str: Absolute path to the file
     
+    Raises:
+        RuntimeError: If unable to determine repository root directory
+    
     Examples:
         >>> from py3plex.utils import get_data_path
         >>> path = get_data_path("datasets/intact02.gpickle")
@@ -210,15 +213,23 @@ def get_data_path(relative_path: str) -> str:
     
     Note:
         This function assumes the py3plex package is installed or the script
-        is run from within the repository structure.
+        is run from within the repository structure. It works with both
+        regular installations and editable/development installs.
     """
-    # Get the directory containing this file (py3plex/utils.py)
-    utils_dir = Path(__file__).parent
-    # Go up one level to get the repository root (parent of py3plex package)
-    repo_root = utils_dir.parent
-    # Resolve the full path
-    full_path = repo_root / relative_path
-    return str(full_path)
+    try:
+        # Get the directory containing this file (py3plex/utils.py)
+        utils_dir = Path(__file__).parent
+        # Go up one level to get the repository root (parent of py3plex package)
+        repo_root = utils_dir.parent
+        # Resolve the full path
+        full_path = repo_root / relative_path
+        return str(full_path)
+    except Exception as e:
+        raise RuntimeError(
+            f"Unable to determine repository root directory. "
+            f"Error: {e}. "
+            f"This function requires py3plex to be installed from the repository."
+        ) from e
 
 
 def get_dataset_path(filename: str) -> str:
@@ -294,22 +305,41 @@ def get_multilayer_dataset_path(relative_path: str) -> str:
 
 def get_background_knowledge_path(filename: str) -> str:
     """
-    Get the absolute path to a background knowledge file.
+    Get the absolute path to a background knowledge file or directory.
     
     Convenience wrapper around get_data_path() specifically for background knowledge files.
     
     Args:
-        filename: Name or relative path of the background knowledge file
+        filename: Name or relative path of the background knowledge file.
+                 Use empty string or '.' to get the background_knowledge directory itself.
     
     Returns:
-        str: Absolute path to the background knowledge file
+        str: Absolute path to the background knowledge file or directory
     
     Examples:
         >>> from py3plex.utils import get_background_knowledge_path
         >>> path = get_background_knowledge_path("bk.n3")
+        >>> dir_path = get_background_knowledge_path(".")
     """
     # If the filename already includes "background_knowledge/", use it as-is
     if filename.startswith("background_knowledge/"):
         return get_data_path(filename)
+    # If empty string or '.', return the directory itself
+    if not filename or filename == '.':
+        return get_data_path("background_knowledge")
     # Otherwise, prepend "background_knowledge/"
     return get_data_path(f"background_knowledge/{filename}")
+
+
+def get_background_knowledge_dir() -> str:
+    """
+    Get the absolute path to the background knowledge directory.
+    
+    Returns:
+        str: Absolute path to the background_knowledge directory
+    
+    Examples:
+        >>> from py3plex.utils import get_background_knowledge_dir
+        >>> dir_path = get_background_knowledge_dir()
+    """
+    return get_data_path("background_knowledge")
