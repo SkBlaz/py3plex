@@ -4,7 +4,7 @@ Tests for custom exception classes.
 This module tests that all custom exception types can be properly raised,
 caught, and provide meaningful error messages.
 """
-import unittest
+import pytest
 
 from py3plex.exceptions import (
     AlgorithmError,
@@ -25,189 +25,146 @@ from py3plex.exceptions import (
 )
 
 
-class TestExceptionHierarchy(unittest.TestCase):
+class TestExceptionHierarchy:
     """Test exception inheritance hierarchy."""
 
     def test_base_exception_is_exception(self):
         """Test that Py3plexException inherits from Exception."""
-        self.assertTrue(issubclass(Py3plexException, Exception))
+        assert issubclass(Py3plexException, Exception)
 
-    def test_all_custom_exceptions_inherit_from_base(self):
+    @pytest.mark.parametrize("exc_class", [
+        NetworkConstructionError,
+        InvalidLayerError,
+        InvalidNodeError,
+        InvalidEdgeError,
+        ParsingError,
+        VisualizationError,
+        AlgorithmError,
+        ConversionError,
+        IncompatibleNetworkError,
+        Py3plexMatrixError,
+    ])
+    def test_all_custom_exceptions_inherit_from_base(self, exc_class):
         """Test that all custom exceptions inherit from Py3plexException."""
-        custom_exceptions = [
-            NetworkConstructionError,
-            InvalidLayerError,
-            InvalidNodeError,
-            InvalidEdgeError,
-            ParsingError,
-            VisualizationError,
-            AlgorithmError,
-            ConversionError,
-            IncompatibleNetworkError,
-            Py3plexMatrixError,
-        ]
-        for exc_class in custom_exceptions:
-            with self.subTest(exception=exc_class.__name__):
-                self.assertTrue(issubclass(exc_class, Py3plexException))
+        assert issubclass(exc_class, Py3plexException), (
+            f"{exc_class.__name__} should inherit from Py3plexException"
+        )
 
-    def test_algorithm_subexceptions_inherit_from_algorithm_error(self):
+    @pytest.mark.parametrize("exc_class", [
+        CommunityDetectionError,
+        CentralityComputationError,
+        DecompositionError,
+        EmbeddingError,
+    ])
+    def test_algorithm_subexceptions_inherit_from_algorithm_error(self, exc_class):
         """Test that algorithm-specific exceptions inherit from AlgorithmError."""
-        algorithm_exceptions = [
-            CommunityDetectionError,
-            CentralityComputationError,
-            DecompositionError,
-            EmbeddingError,
-        ]
-        for exc_class in algorithm_exceptions:
-            with self.subTest(exception=exc_class.__name__):
-                self.assertTrue(issubclass(exc_class, AlgorithmError))
-                self.assertTrue(issubclass(exc_class, Py3plexException))
+        assert issubclass(exc_class, AlgorithmError), (
+            f"{exc_class.__name__} should inherit from AlgorithmError"
+        )
+        assert issubclass(exc_class, Py3plexException), (
+            f"{exc_class.__name__} should inherit from Py3plexException"
+        )
 
 
-class TestExceptionRaising(unittest.TestCase):
+class TestExceptionRaising:
     """Test that exceptions can be properly raised and caught."""
 
     def test_raise_base_exception(self):
         """Test raising and catching base Py3plexException."""
-        with self.assertRaises(Py3plexException) as context:
+        with pytest.raises(Py3plexException) as exc_info:
             raise Py3plexException("Test error message")
-        self.assertEqual(str(context.exception), "Test error message")
+        assert str(exc_info.value) == "Test error message"
 
-    def test_raise_network_construction_error(self):
-        """Test raising NetworkConstructionError."""
-        with self.assertRaises(NetworkConstructionError):
-            raise NetworkConstructionError("Failed to construct network")
-
-    def test_raise_invalid_layer_error(self):
-        """Test raising InvalidLayerError."""
-        with self.assertRaises(InvalidLayerError):
-            raise InvalidLayerError("Layer 'invalid' does not exist")
-
-    def test_raise_invalid_node_error(self):
-        """Test raising InvalidNodeError."""
-        with self.assertRaises(InvalidNodeError):
-            raise InvalidNodeError("Node 'unknown' not found")
-
-    def test_raise_invalid_edge_error(self):
-        """Test raising InvalidEdgeError."""
-        with self.assertRaises(InvalidEdgeError):
-            raise InvalidEdgeError("Edge (1, 2) is invalid")
-
-    def test_raise_parsing_error(self):
-        """Test raising ParsingError."""
-        with self.assertRaises(ParsingError):
-            raise ParsingError("Failed to parse input file")
-
-    def test_raise_visualization_error(self):
-        """Test raising VisualizationError."""
-        with self.assertRaises(VisualizationError):
-            raise VisualizationError("Visualization failed")
-
-    def test_raise_algorithm_error(self):
-        """Test raising AlgorithmError."""
-        with self.assertRaises(AlgorithmError):
-            raise AlgorithmError("Algorithm execution failed")
-
-    def test_raise_community_detection_error(self):
-        """Test raising CommunityDetectionError."""
-        with self.assertRaises(CommunityDetectionError):
-            raise CommunityDetectionError("Community detection failed")
-
-    def test_raise_centrality_computation_error(self):
-        """Test raising CentralityComputationError."""
-        with self.assertRaises(CentralityComputationError):
-            raise CentralityComputationError("Centrality computation failed")
-
-    def test_raise_decomposition_error(self):
-        """Test raising DecompositionError."""
-        with self.assertRaises(DecompositionError):
-            raise DecompositionError("Network decomposition failed")
-
-    def test_raise_embedding_error(self):
-        """Test raising EmbeddingError."""
-        with self.assertRaises(EmbeddingError):
-            raise EmbeddingError("Embedding generation failed")
-
-    def test_raise_conversion_error(self):
-        """Test raising ConversionError."""
-        with self.assertRaises(ConversionError):
-            raise ConversionError("Format conversion failed")
-
-    def test_raise_incompatible_network_error(self):
-        """Test raising IncompatibleNetworkError."""
-        with self.assertRaises(IncompatibleNetworkError):
-            raise IncompatibleNetworkError("Network format incompatible")
-
-    def test_raise_matrix_error(self):
-        """Test raising Py3plexMatrixError."""
-        with self.assertRaises(Py3plexMatrixError):
-            raise Py3plexMatrixError("Matrix operation failed")
+    @pytest.mark.parametrize("exc_class,error_msg", [
+        (NetworkConstructionError, "Failed to construct network"),
+        (InvalidLayerError, "Layer 'invalid' does not exist"),
+        (InvalidNodeError, "Node 'unknown' not found"),
+        (InvalidEdgeError, "Edge (1, 2) is invalid"),
+        (ParsingError, "Failed to parse input file"),
+        (VisualizationError, "Visualization failed"),
+        (AlgorithmError, "Algorithm execution failed"),
+        (CommunityDetectionError, "Community detection failed"),
+        (CentralityComputationError, "Centrality computation failed"),
+        (DecompositionError, "Network decomposition failed"),
+        (EmbeddingError, "Embedding generation failed"),
+        (ConversionError, "Format conversion failed"),
+        (IncompatibleNetworkError, "Network format incompatible"),
+        (Py3plexMatrixError, "Matrix operation failed"),
+    ])
+    def test_raise_specific_exceptions(self, exc_class, error_msg):
+        """Test raising specific exception types with error messages."""
+        with pytest.raises(exc_class) as exc_info:
+            raise exc_class(error_msg)
+        assert error_msg in str(exc_info.value)
 
 
-class TestExceptionCatching(unittest.TestCase):
+class TestExceptionCatching:
     """Test that exceptions can be caught at different levels of hierarchy."""
 
     def test_catch_specific_exception_with_base(self):
         """Test that specific exceptions can be caught by base exception."""
-        with self.assertRaises(Py3plexException):
+        with pytest.raises(Py3plexException):
             raise NetworkConstructionError("Test error")
 
     def test_catch_algorithm_subexception_with_algorithm_error(self):
         """Test that algorithm subexceptions can be caught by AlgorithmError."""
-        with self.assertRaises(AlgorithmError):
+        with pytest.raises(AlgorithmError):
             raise CommunityDetectionError("Test error")
 
     def test_catch_algorithm_error_with_base(self):
         """Test that AlgorithmError can be caught by base exception."""
-        with self.assertRaises(Py3plexException):
+        with pytest.raises(Py3plexException):
             raise AlgorithmError("Test error")
 
     def test_exception_message_preserved(self):
         """Test that error messages are preserved through exception hierarchy."""
         error_message = "This is a detailed error message"
-        with self.assertRaises(Py3plexException) as context:
+        with pytest.raises(Py3plexException) as exc_info:
             raise InvalidLayerError(error_message)
-        self.assertEqual(str(context.exception), error_message)
+        assert str(exc_info.value) == error_message
 
 
-class TestExceptionUseCases(unittest.TestCase):
+class TestExceptionUseCases:
     """Test realistic exception use cases."""
 
-    def test_multiple_exception_types_in_try_except(self):
+    @pytest.mark.parametrize("operation_type,expected_exception", [
+        ("network", NetworkConstructionError),
+        ("algorithm", AlgorithmError),
+        ("parsing", ParsingError),
+    ])
+    def test_multiple_exception_types_in_try_except(self, operation_type, expected_exception):
         """Test handling multiple exception types."""
-
-        def risky_operation(operation_type):
-            if operation_type == "network":
+        def risky_operation(op_type):
+            if op_type == "network":
                 raise NetworkConstructionError("Network failed")
-            elif operation_type == "algorithm":
+            elif op_type == "algorithm":
                 raise AlgorithmError("Algorithm failed")
-            elif operation_type == "parsing":
+            elif op_type == "parsing":
                 raise ParsingError("Parsing failed")
 
-        # Test catching specific exceptions
-        with self.assertRaises(NetworkConstructionError):
-            risky_operation("network")
+        with pytest.raises(expected_exception):
+            risky_operation(operation_type)
 
-        with self.assertRaises(AlgorithmError):
-            risky_operation("algorithm")
-
-        # Test catching with base exception
-        try:
-            risky_operation("parsing")
-        except Py3plexException as e:
-            self.assertIsInstance(e, ParsingError)
+    def test_catch_with_base_exception(self):
+        """Test catching specific exception with base exception class."""
+        def risky_operation():
+            raise ParsingError("Parsing failed")
+        
+        with pytest.raises(Py3plexException) as exc_info:
+            risky_operation()
+        assert isinstance(exc_info.value, ParsingError)
 
     def test_exception_with_detailed_context(self):
         """Test exceptions with detailed context information."""
         layer_name = "social_network"
         error_msg = f"Layer '{layer_name}' not found in multilayer network"
 
-        with self.assertRaises(InvalidLayerError) as context:
+        with pytest.raises(InvalidLayerError) as exc_info:
             raise InvalidLayerError(error_msg)
 
-        self.assertIn(layer_name, str(context.exception))
-        self.assertIn("not found", str(context.exception))
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert layer_name in str(exc_info.value), (
+            f"Layer name '{layer_name}' should be in error message"
+        )
+        assert "not found" in str(exc_info.value), (
+            "'not found' should be in error message"
+        )
