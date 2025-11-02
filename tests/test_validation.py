@@ -6,9 +6,10 @@ and providing clear error messages to users.
 """
 import os
 import tempfile
-import unittest
+import shutil
 from pathlib import Path
 
+import pytest
 import pandas as pd
 
 from py3plex.exceptions import ParsingError
@@ -22,47 +23,46 @@ from py3plex.validation import (
 )
 
 
-class TestFileValidation(unittest.TestCase):
+@pytest.fixture
+def temp_dir():
+    """Create temporary directory for test files."""
+    temp_path = tempfile.mkdtemp()
+    yield temp_path
+    shutil.rmtree(temp_path, ignore_errors=True)
+
+
+class TestFileValidation:
     """Test file existence and accessibility validation."""
 
-    def setUp(self):
-        """Create temporary directory for test files."""
-        self.temp_dir = tempfile.mkdtemp()
-
-    def tearDown(self):
-        """Clean up temporary files."""
-        import shutil
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
-
-    def test_validate_file_exists_valid(self):
+    def test_validate_file_exists_valid(self, temp_dir):
         """Test validation passes for existing file."""
-        test_file = os.path.join(self.temp_dir, "test.txt")
+        test_file = os.path.join(temp_dir, "test.txt")
         with open(test_file, "w") as f:
             f.write("test content")
         
         # Should not raise exception
         validate_file_exists(test_file)
 
-    def test_validate_file_exists_missing(self):
+    def test_validate_file_exists_missing(self, temp_dir):
         """Test validation fails for non-existent file."""
-        non_existent = os.path.join(self.temp_dir, "nonexistent.txt")
+        non_existent = os.path.join(temp_dir, "nonexistent.txt")
         
-        with self.assertRaises(ParsingError) as ctx:
+        with pytest.raises(ParsingError) as exc_info:
             validate_file_exists(non_existent)
         
-        self.assertIn("File not found", str(ctx.exception))
-        self.assertIn(non_existent, str(ctx.exception))
+        assert "File not found" in str(exc_info.value)
+        assert non_existent in str(exc_info.value)
 
-    def test_validate_file_exists_directory(self):
+    def test_validate_file_exists_directory(self, temp_dir):
         """Test validation fails when path is a directory."""
-        with self.assertRaises(ParsingError) as ctx:
-            validate_file_exists(self.temp_dir)
+        with pytest.raises(ParsingError) as exc_info:
+            validate_file_exists(temp_dir)
         
-        self.assertIn("not a file", str(ctx.exception))
+        assert "not a file" in str(exc_info.value)
 
-    def test_validate_file_exists_not_readable(self):
+    def test_validate_file_exists_not_readable(self, temp_dir):
         """Test validation fails for non-readable file."""
-        test_file = os.path.join(self.temp_dir, "test.txt")
+        test_file = os.path.join(temp_dir, "test.txt")
         with open(test_file, "w") as f:
             f.write("test")
         
@@ -70,30 +70,21 @@ class TestFileValidation(unittest.TestCase):
         os.chmod(test_file, 0o000)
         
         try:
-            with self.assertRaises(ParsingError) as ctx:
+            with pytest.raises(ParsingError) as exc_info:
                 validate_file_exists(test_file)
             
-            self.assertIn("not readable", str(ctx.exception))
+            assert "not readable" in str(exc_info.value)
         finally:
             # Restore permissions for cleanup
             os.chmod(test_file, 0o644)
 
 
-class TestCSVValidation(unittest.TestCase):
+class TestCSVValidation:
     """Test CSV column validation."""
 
-    def setUp(self):
-        """Create temporary directory for test files."""
-        self.temp_dir = tempfile.mkdtemp()
-
-    def tearDown(self):
-        """Clean up temporary files."""
-        import shutil
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
-
-    def test_validate_csv_columns_valid(self):
+    def test_validate_csv_columns_valid(self, temp_dir):
         """Test validation passes for CSV with required columns."""
-        csv_file = os.path.join(self.temp_dir, "test.csv")
+        csv_file = os.path.join(temp_dir, "test.csv")
         df = pd.DataFrame({
             "source": ["A", "B"],
             "target": ["B", "C"],
@@ -104,35 +95,35 @@ class TestCSVValidation(unittest.TestCase):
         # Should not raise exception
         validate_csv_columns(csv_file, ["source", "target", "layer"])
 
-    def test_validate_csv_columns_missing(self):
+    def test_validate_csv_columns_missing(self, temp_dir):
         """Test validation fails for CSV missing required columns."""
-        csv_file = os.path.join(self.temp_dir, "test.csv")
+        csv_file = os.path.join(temp_dir, "test.csv")
         df = pd.DataFrame({
             "source": ["A", "B"],
             "target": ["B", "C"]
         })
         df.to_csv(csv_file, index=False)
         
-        with self.assertRaises(ParsingError) as ctx:
+        with pytest.raises(ParsingError) as exc_info:
             validate_csv_columns(csv_file, ["source", "target", "layer"])
         
-        self.assertIn("missing required column", str(ctx.exception))
-        self.assertIn("layer", str(ctx.exception))
+        assert "missing required column" in str(exc_info.value)
+        assert "layer" in str(exc_info.value)
 
-    def test_validate_csv_columns_empty_file(self):
+    def test_validate_csv_columns_empty_file(self, temp_dir):
         """Test validation fails for empty CSV file."""
-        csv_file = os.path.join(self.temp_dir, "empty.csv")
+        csv_file = os.path.join(temp_dir, "empty.csv")
         with open(csv_file, "w") as f:
             f.write("")
         
-        with self.assertRaises(ParsingError) as ctx:
+        with pytest.raises(ParsingError) as exc_info:
             validate_csv_columns(csv_file, ["source", "target"])
         
-        self.assertIn("empty", str(ctx.exception))
+        assert "empty" in str(exc_info.value)
 
-    def test_validate_csv_columns_with_optional(self):
+    def test_validate_csv_columns_with_optional(self, temp_dir):
         """Test validation with optional columns."""
-        csv_file = os.path.join(self.temp_dir, "test.csv")
+        csv_file = os.path.join(temp_dir, "test.csv")
         df = pd.DataFrame({
             "source": ["A", "B"],
             "target": ["B", "C"],
@@ -148,21 +139,12 @@ class TestCSVValidation(unittest.TestCase):
         )
 
 
-class TestMultiedgelistValidation(unittest.TestCase):
+class TestMultiedgelistValidation:
     """Test multiedgelist format validation."""
 
-    def setUp(self):
-        """Create temporary directory for test files."""
-        self.temp_dir = tempfile.mkdtemp()
-
-    def tearDown(self):
-        """Clean up temporary files."""
-        import shutil
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
-
-    def test_validate_multiedgelist_csv_format(self):
+    def test_validate_multiedgelist_csv_format(self, temp_dir):
         """Test validation of CSV multiedgelist format."""
-        csv_file = os.path.join(self.temp_dir, "edges.csv")
+        csv_file = os.path.join(temp_dir, "edges.csv")
         df = pd.DataFrame({
             "source": ["A", "B", "C"],
             "target": ["B", "C", "D"],
@@ -174,9 +156,9 @@ class TestMultiedgelistValidation(unittest.TestCase):
         # Should not raise exception
         validate_multiedgelist_format(csv_file)
 
-    def test_validate_multiedgelist_space_format(self):
+    def test_validate_multiedgelist_space_format(self, temp_dir):
         """Test validation of space-delimited multiedgelist format."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("# Comment line\n")
             f.write("A L1 B L1 1.0\n")
@@ -186,17 +168,17 @@ class TestMultiedgelistValidation(unittest.TestCase):
         # Should not raise exception
         validate_multiedgelist_format(edge_file)
 
-    def test_validate_multiedgelist_invalid_format(self):
+    def test_validate_multiedgelist_invalid_format(self, temp_dir):
         """Test validation fails for invalid multiedgelist format."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("A B C\n")  # Only 3 fields, need 4 or 5
         
-        with self.assertRaises(ParsingError) as ctx:
+        with pytest.raises(ParsingError) as exc_info:
             validate_multiedgelist_format(edge_file)
         
-        self.assertIn("Invalid multiedgelist format", str(ctx.exception))
-        self.assertIn("expected 4 or 5", str(ctx.exception))
+        assert "Invalid multiedgelist format" in str(exc_info.value)
+        assert "expected 4 or 5" in str(exc_info.value)
 
     def test_validate_multiedgelist_without_weight(self):
         """Test validation of multiedgelist without weight column."""
@@ -216,14 +198,13 @@ class TestEdgelistValidation(unittest.TestCase):
         """Create temporary directory for test files."""
         self.temp_dir = tempfile.mkdtemp()
 
-    def tearDown(self):
-        """Clean up temporary files."""
-        import shutil
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    def test_validate_edgelist_csv_format(self):
+class TestEdgelistValidation:
+    """Test edgelist format validation."""
+
+    def test_validate_edgelist_csv_format(self, temp_dir):
         """Test validation of CSV edgelist format."""
-        csv_file = os.path.join(self.temp_dir, "edges.csv")
+        csv_file = os.path.join(temp_dir, "edges.csv")
         df = pd.DataFrame({
             "source": ["A", "B", "C"],
             "target": ["B", "C", "D"],
@@ -234,9 +215,9 @@ class TestEdgelistValidation(unittest.TestCase):
         # Should not raise exception
         validate_edgelist_format(csv_file)
 
-    def test_validate_edgelist_space_format(self):
+    def test_validate_edgelist_space_format(self, temp_dir):
         """Test validation of space-delimited edgelist format."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("# Comment line\n")
             f.write("A B 1.0\n")
@@ -246,21 +227,21 @@ class TestEdgelistValidation(unittest.TestCase):
         # Should not raise exception
         validate_edgelist_format(edge_file)
 
-    def test_validate_edgelist_invalid_format(self):
+    def test_validate_edgelist_invalid_format(self, temp_dir):
         """Test validation fails for invalid edgelist format."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("A\n")  # Only 1 field, need 2 or 3
         
-        with self.assertRaises(ParsingError) as ctx:
+        with pytest.raises(ParsingError) as exc_info:
             validate_edgelist_format(edge_file)
         
-        self.assertIn("Invalid edgelist format", str(ctx.exception))
-        self.assertIn("expected 2 or 3", str(ctx.exception))
+        assert "Invalid edgelist format" in str(exc_info.value)
+        assert "expected 2 or 3" in str(exc_info.value)
 
-    def test_validate_edgelist_without_weight(self):
+    def test_validate_edgelist_without_weight(self, temp_dir):
         """Test validation of edgelist without weight column."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("A B\n")
             f.write("B C\n")
@@ -268,9 +249,9 @@ class TestEdgelistValidation(unittest.TestCase):
         # Should not raise exception (2 fields is valid)
         validate_edgelist_format(edge_file)
 
-    def test_validate_edgelist_with_delimiter(self):
+    def test_validate_edgelist_with_delimiter(self, temp_dir):
         """Test validation with custom delimiter."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("A|B|1.0\n")
             f.write("B|C|2.0\n")
@@ -279,24 +260,24 @@ class TestEdgelistValidation(unittest.TestCase):
         validate_edgelist_format(edge_file, delimiter="|")
 
 
-class TestInputTypeValidation(unittest.TestCase):
+class TestInputTypeValidation:
     """Test input type validation."""
 
-    def test_validate_input_type_valid(self):
+    @pytest.mark.parametrize("input_type", [
+        'gml', 'nx', 'multiedgelist', 'edgelist', 'gpickle'
+    ])
+    def test_validate_input_type_valid(self, input_type):
         """Test validation passes for valid input types."""
-        valid_types = ['gml', 'nx', 'multiedgelist', 'edgelist', 'gpickle']
-        
-        for input_type in valid_types:
-            # Should not raise exception
-            validate_input_type(input_type)
+        # Should not raise exception
+        validate_input_type(input_type)
 
     def test_validate_input_type_invalid(self):
         """Test validation fails for invalid input type."""
-        with self.assertRaises(ParsingError) as ctx:
+        with pytest.raises(ParsingError) as exc_info:
             validate_input_type("invalid_type")
         
-        self.assertIn("Invalid input_type", str(ctx.exception))
-        self.assertIn("invalid_type", str(ctx.exception))
+        assert "Invalid input_type" in str(exc_info.value)
+        assert "invalid_type" in str(exc_info.value)
 
     def test_validate_input_type_custom_valid_set(self):
         """Test validation with custom set of valid types."""
@@ -306,25 +287,16 @@ class TestInputTypeValidation(unittest.TestCase):
         validate_input_type("type1", valid_types=custom_types)
         
         # Should raise exception for type not in custom set
-        with self.assertRaises(ParsingError):
+        with pytest.raises(ParsingError):
             validate_input_type("type4", valid_types=custom_types)
 
 
-class TestNetworkDataValidation(unittest.TestCase):
+class TestNetworkDataValidation:
     """Test comprehensive network data validation."""
 
-    def setUp(self):
-        """Create temporary directory for test files."""
-        self.temp_dir = tempfile.mkdtemp()
-
-    def tearDown(self):
-        """Clean up temporary files."""
-        import shutil
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
-
-    def test_validate_network_data_multiedgelist(self):
+    def test_validate_network_data_multiedgelist(self, temp_dir):
         """Test validation of multiedgelist network data."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("A L1 B L1 1.0\n")
             f.write("B L1 C L1 2.0\n")
@@ -332,9 +304,9 @@ class TestNetworkDataValidation(unittest.TestCase):
         # Should not raise exception
         validate_network_data(edge_file, "multiedgelist")
 
-    def test_validate_network_data_edgelist(self):
+    def test_validate_network_data_edgelist(self, temp_dir):
         """Test validation of edgelist network data."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("A B 1.0\n")
             f.write("B C 2.0\n")
@@ -342,35 +314,35 @@ class TestNetworkDataValidation(unittest.TestCase):
         # Should not raise exception
         validate_network_data(edge_file, "edgelist")
 
-    def test_validate_network_data_invalid_type(self):
+    def test_validate_network_data_invalid_type(self, temp_dir):
         """Test validation fails for invalid input type."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("A B\n")
         
-        with self.assertRaises(ParsingError) as ctx:
+        with pytest.raises(ParsingError) as exc_info:
             validate_network_data(edge_file, "invalid_type")
         
-        self.assertIn("Invalid input_type", str(ctx.exception))
+        assert "Invalid input_type" in str(exc_info.value)
 
     def test_validate_network_data_missing_file(self):
         """Test validation fails for missing file."""
-        with self.assertRaises(ParsingError) as ctx:
+        with pytest.raises(ParsingError) as exc_info:
             validate_network_data("/nonexistent/file.txt", "edgelist")
         
-        self.assertIn("File not found", str(ctx.exception))
+        assert "File not found" in str(exc_info.value)
 
     def test_validate_network_data_nx_type(self):
-        """Test validation skips file check for nx type."""
-        # nx type doesn't require a file, so should not raise file error
-        # It should only validate the input type
+        """Test validation skips file check for nx type.
+        
+        The 'nx' type doesn't require a file, so should not raise file error.
+        It should only validate the input type.
+        """
         validate_input_type("nx")
 
     def test_validate_network_data_multiedge_tuple_list(self):
-        """Test validation skips file check for multiedge_tuple_list type."""
-        # This type doesn't require a file
+        """Test validation skips file check for multiedge_tuple_list type.
+        
+        This type doesn't require a file.
+        """
         validate_input_type("multiedge_tuple_list")
-
-
-if __name__ == "__main__":
-    unittest.main()
