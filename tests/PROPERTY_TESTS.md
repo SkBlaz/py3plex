@@ -8,7 +8,48 @@ These tests use **property-based testing** with [Hypothesis](https://hypothesis.
 
 ## Test Modules
 
-### 1. `test_io_metamorphic_roundtrip.py` - I/O Metamorphic Properties
+### 1. `test_centrality_invariants.py` - Centrality Metric Invariants (NEW)
+
+Tests fundamental mathematical properties and invariants for multilayer centrality metrics.
+
+**Properties Tested:**
+- **Non-negativity**: All centrality values ≥ 0
+- **Finiteness**: No NaN or infinity values in results
+- **Participation coefficient bounds**: Values in [0, 1]
+- **Normalization**: L1/L2 norms equal 1 when requested (eigenvector centrality)
+- **Lp-aggregated properties**: Correct aggregation with different norms (L1, L2, L∞)
+- **Isomorphism invariance**: Degree rankings preserved under node relabeling
+- **Betweenness ranking invariance**: Rankings consistent under isomorphic transformations
+- **Consistency**: Layer degree sum equals overlapping degree
+- **Monotonicity**: Weighted degree ≥ unweighted when weights ≥ 1
+- **Extended metrics**: Information centrality, collective influence, harmonic closeness properties
+
+**Run:**
+```bash
+pytest tests/property/test_centrality_invariants.py -v -m property
+```
+
+### 2. `test_centrality_rankings.py` - Centrality Rankings & Metamorphic Relations (NEW)
+
+Tests ranking stability, monotonicity, and scale invariance properties of centrality metrics.
+
+**Properties Tested:**
+- **Star network topology**: Hub has highest degree and betweenness
+- **Path network topology**: Endpoints have lower centrality than middle nodes
+- **Scale invariance**: Normalized centrality rankings invariant to weight scaling
+- **Linear scaling**: Weighted degree scales linearly with edge weights
+- **Monotonicity**: Adding edges increases total degree
+- **Layer effects**: More layers increase overlapping degree
+- **Ranking stability**: Multiple computations produce identical rankings
+- **Node set consistency**: All centrality measures return same node set
+- **Participation coefficient**: Uniform distribution across layers increases participation
+
+**Run:**
+```bash
+pytest tests/property/test_centrality_rankings.py -v -m property
+```
+
+### 3. `test_io_metamorphic_roundtrip.py` - I/O Metamorphic Properties
 
 Tests that network I/O operations preserve structure and that certain transformations don't affect topology.
 
@@ -27,7 +68,7 @@ Tests that network I/O operations preserve structure and that certain transforma
 pytest tests/property/test_io_metamorphic_roundtrip.py -v -m property
 ```
 
-### 2. `test_isomorphism_invariance.py` - Permutation/Isomorphism Invariance
+### 4. `test_isomorphism_invariance.py` - Permutation/Isomorphism Invariance
 
 Tests that algorithms produce consistent results on isomorphic graphs (differing only in node labels).
 
@@ -46,7 +87,7 @@ Tests that algorithms produce consistent results on isomorphic graphs (differing
 pytest tests/property/test_isomorphism_invariance.py -v -m property
 ```
 
-### 3. `test_subnetwork_algebra.py` - Subnetwork Algebra & Idempotence
+### 5. `test_subnetwork_algebra.py` - Subnetwork Algebra & Idempotence
 
 Tests algebraic properties of subnetwork operations.
 
@@ -64,7 +105,7 @@ Tests algebraic properties of subnetwork operations.
 pytest tests/property/test_subnetwork_algebra.py -v -m property
 ```
 
-### 4. `test_multiplex_couplings.py` - Multiplex Coupling Invariants
+### 6. `test_multiplex_couplings.py` - Multiplex Coupling Invariants
 
 Tests that multiplex mode correctly creates interlayer couplings.
 
@@ -81,7 +122,7 @@ Tests that multiplex mode correctly creates interlayer couplings.
 pytest tests/property/test_multiplex_couplings.py -v -m property
 ```
 
-### 5. `test_versatility_metamorphic.py` - Versatility Spectral Metamorphics
+### 7. `test_versatility_metamorphic.py` - Versatility Spectral Metamorphics
 
 Tests advanced properties of versatility (multilayer eigenvector centrality).
 
@@ -101,7 +142,7 @@ Tests advanced properties of versatility (multilayer eigenvector centrality).
 pytest tests/property/test_versatility_metamorphic.py -v -m property
 ```
 
-### 6. `test_random_er_statistics.py` - Random Multilayer ER Statistics
+### 8. `test_random_er_statistics.py` - Random Multilayer ER Statistics
 
 Tests that `random_multilayer_ER` produces networks with expected statistical properties.
 
@@ -121,7 +162,7 @@ Tests that `random_multilayer_ER` produces networks with expected statistical pr
 pytest tests/property/test_random_er_statistics.py -v -m property -m slow
 ```
 
-### 7. `test_community_partition_invariants.py` - Community Partition Invariants
+### 9. `test_community_partition_invariants.py` - Community Partition Invariants
 
 Tests properties of Louvain community detection wrapper.
 
@@ -145,7 +186,7 @@ pytest tests/property/test_community_partition_invariants.py -v -m property
 
 **Note:** Requires `python-louvain` package (guarded with `pytest.importorskip`).
 
-### 8. `test_stateful_multinet_advanced.py` - Advanced Stateful Mutations
+### 10. `test_stateful_multinet_advanced.py` - Advanced Stateful Mutations
 
 Uses Hypothesis `RuleBasedStateMachine` to test complex sequences of operations.
 
@@ -227,9 +268,11 @@ pytest tests/property/ -v --hypothesis-seed=42
 pytest tests/property/ -v --hypothesis-show-statistics
 ```
 
-### Just the new 8 modules
+### Just the core property modules
 ```bash
-pytest tests/property/test_io_metamorphic_roundtrip.py \
+pytest tests/property/test_centrality_invariants.py \
+       tests/property/test_centrality_rankings.py \
+       tests/property/test_io_metamorphic_roundtrip.py \
        tests/property/test_isomorphism_invariance.py \
        tests/property/test_subnetwork_algebra.py \
        tests/property/test_multiplex_couplings.py \

@@ -6,11 +6,36 @@ This directory contains property-based tests using [Hypothesis](https://hypothes
 
 Property-based tests verify that code satisfies mathematical properties and invariants across a wide range of inputs, rather than testing specific hand-written examples. This approach is particularly valuable for multilayer network algorithms where edge cases and boundary conditions can be subtle.
 
-**Total: 125+ property-based tests**
+**Total: 155+ property-based tests**
 
 ## Test Modules
 
-### Core Operations Tests (NEW)
+### Centrality Tests (NEW)
+
+#### `test_centrality_invariants.py` (17 tests)
+Tests fundamental mathematical properties and invariants for multilayer centrality metrics.
+
+**Properties tested:**
+- Non-negativity of all centrality values
+- Finiteness (no NaN or infinity)
+- Participation coefficient bounds [0, 1]
+- Normalization properties (L1, L2, Lp norms)
+- Isomorphism invariance for degree and betweenness
+- Consistency across operations
+- Extended centrality metrics properties
+
+#### `test_centrality_rankings.py` (13 tests)
+Tests ranking stability, monotonicity, and scale invariance properties.
+
+**Properties tested:**
+- Network topology effects (star, path)
+- Scale invariance of normalized centralities
+- Linear scaling of weighted degree
+- Monotonicity properties
+- Ranking stability across computations
+- Participation coefficient effects
+
+### Core Operations Tests
 
 #### `test_edge_operations_properties.py` (9 tests)
 Tests fundamental invariants for edge operations in multilayer networks.
