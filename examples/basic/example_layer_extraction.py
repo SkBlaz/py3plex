@@ -15,9 +15,10 @@ Layer extraction is useful for:
 import os
 from py3plex.core import multinet
 from py3plex.algorithms.statistics.basic_statistics import core_network_statistics
+from py3plex.utils import get_dataset_path
 
 # Path to the dataset
-dataset_path = "../datasets/epigenetics.gpickle"
+dataset_path = get_dataset_path("epigenetics.gpickle")
 
 # Check if the dataset exists
 if not os.path.exists(dataset_path):

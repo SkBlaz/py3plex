@@ -28,16 +28,17 @@ from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.embedding_visualization import embedding_visualization
 from py3plex.visualization.embedding_visualization import embedding_tools
+from py3plex.utils import get_dataset_path
 
 print("=" * 70)
 print("NODE2VEC EMBEDDING CONSTRUCTION AND VISUALIZATION")
 print("=" * 70)
 
 # Define file paths
-input_network = "../datasets/imdb_gml.gml"
-edgelist_file = "../datasets/test.edgelist"
-embedding_file = "../datasets/test_embedding.emb"
-json_output = "../datasets/embedding_coordinates.json"
+input_network = get_dataset_path("imdb_gml.gml")
+edgelist_file = get_dataset_path("test.edgelist")
+embedding_file = get_dataset_path("test_embedding.emb")
+json_output = get_dataset_path("embedding_coordinates.json")
 
 # Check if input file exists
 if not os.path.exists(input_network):

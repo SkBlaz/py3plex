@@ -6,10 +6,11 @@ from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.multilayer import hairball_plot, plt
 from py3plex.visualization.colors import colors_default
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 
 # string layout for larger network -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/intact02.gpickle", input_type="gpickle",
+    get_dataset_path("intact02.gpickle"), input_type="gpickle",
     directed=False).add_dummy_layers()
 multilayer_network.basic_stats()
 
@@ -17,14 +18,14 @@ multilayer_network.basic_stats()
 
 # call a specific n2v compiled binary
 train_node2vec_embedding.call_node2vec_binary(
-    "../datasets/IntactEdgelistedges.txt",
-    "../datasets/test_embedding.emb",
+    get_dataset_path("IntactEdgelistedges.txt"),
+    get_dataset_path("test_embedding.emb"),
     binary="./node2vec",  # Note: binary no longer bundled
     weighted=False)
 
 # preprocess and check embedding -- for speed, install parallel tsne from https://github.com/DmitryUlyanov/Multicore-TSNE, py3plex knows how to use it.
 
-multilayer_network.load_embedding("../datasets/test_embedding.emb")
+multilayer_network.load_embedding(get_dataset_path("test_embedding.emb"))
 output_positions = embedding_tools.get_2d_coordinates_tsne(
     multilayer_network, output_format="pos_dict")
 
@@ -62,5 +63,5 @@ hairball_plot(graph,
               edge_width=0.001,
               scale_by_size=False)
 
-f.savefig("../datasets/intact.png", bbox_inches='tight', dpi=300)
-f.savefig("../datasets/intact.pdf", bbox_inches='tight')
+f.savefig(get_dataset_path("intact.png"), bbox_inches='tight', dpi=300)
+f.savefig(get_dataset_path("intact.pdf"), bbox_inches='tight')

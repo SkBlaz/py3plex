@@ -17,6 +17,7 @@ Network statistics help understand:
 import os
 from py3plex.core import multinet
 from py3plex.algorithms.statistics.basic_statistics import (
+from py3plex.utils import get_dataset_path
     core_network_statistics,
     identify_n_hubs
 )
@@ -26,7 +27,7 @@ print("NETWORK STATISTICS AND HUB IDENTIFICATION")
 print("=" * 70)
 
 # Define dataset path
-dataset_path = "../datasets/imdb_gml.gml"
+dataset_path = get_dataset_path("imdb_gml.gml")
 
 # Check if file exists
 if not os.path.exists(dataset_path):

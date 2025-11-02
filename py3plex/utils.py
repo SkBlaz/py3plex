@@ -267,3 +267,49 @@ def get_example_image_path(filename: str) -> str:
         return get_data_path(filename)
     # Otherwise, prepend "example_images/"
     return get_data_path(f"example_images/{filename}")
+
+
+def get_multilayer_dataset_path(relative_path: str) -> str:
+    """
+    Get the absolute path to a multilayer dataset file.
+    
+    Convenience wrapper around get_data_path() specifically for multilayer dataset files.
+    
+    Args:
+        relative_path: Relative path within multilayer_datasets directory
+    
+    Returns:
+        str: Absolute path to the multilayer dataset file
+    
+    Examples:
+        >>> from py3plex.utils import get_multilayer_dataset_path
+        >>> path = get_multilayer_dataset_path("MLKing/MLKing2013_multiplex.edges")
+    """
+    # If the path already includes "multilayer_datasets/", use it as-is
+    if relative_path.startswith("multilayer_datasets/"):
+        return get_data_path(relative_path)
+    # Otherwise, prepend "multilayer_datasets/"
+    return get_data_path(f"multilayer_datasets/{relative_path}")
+
+
+def get_background_knowledge_path(filename: str) -> str:
+    """
+    Get the absolute path to a background knowledge file.
+    
+    Convenience wrapper around get_data_path() specifically for background knowledge files.
+    
+    Args:
+        filename: Name or relative path of the background knowledge file
+    
+    Returns:
+        str: Absolute path to the background knowledge file
+    
+    Examples:
+        >>> from py3plex.utils import get_background_knowledge_path
+        >>> path = get_background_knowledge_path("bk.n3")
+    """
+    # If the filename already includes "background_knowledge/", use it as-is
+    if filename.startswith("background_knowledge/"):
+        return get_data_path(filename)
+    # Otherwise, prepend "background_knowledge/"
+    return get_data_path(f"background_knowledge/{filename}")

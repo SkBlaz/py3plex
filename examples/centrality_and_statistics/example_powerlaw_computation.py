@@ -3,6 +3,7 @@
 import networkx as nx
 from py3plex.algorithms.statistics.topology import plot_power_law
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 
 # examples use the node degrees, note that any node property applies.
 
@@ -13,7 +14,7 @@ plot_power_law(val_vect, "", "Node degree", "individual node")
 
 # on py3plex objects -- consider all edges and nodes
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/epigenetics.gpickle",
+    get_dataset_path("epigenetics.gpickle"),
     directed=False,
     input_type="gpickle_biomine")
 val_vect = sorted(dict(nx.degree(multilayer_network.core_network)).values(),

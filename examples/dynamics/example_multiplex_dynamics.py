@@ -2,23 +2,24 @@
 
 from py3plex.visualization.multilayer import draw_multilayer_default
 from py3plex.core import multinet
+from py3plex.utils import get_multilayer_dataset_path
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 # first parse the layer n1 n2 w edgelist
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../multilayer_datasets/MLKing/MLKing2013_multiplex.edges",
+    get_multilayer_dataset_path("MLKing/MLKing2013_multiplex.edges"),
     directed=True,
     input_type="multiplex_edges")
 
 # map layer ids to names
 multilayer_network.load_layer_name_mapping(
-    "../multilayer_datasets/MLKing/MLKing2013_layers.txt")
+    get_multilayer_dataset_path("MLKing/MLKing2013_layers.txt"))
 
 # Finally, load termporal edge information
 multilayer_network.load_network_activity(
-    "../multilayer_datasets/MLKing/MLKing2013_activity.txt")
+    get_multilayer_dataset_path("MLKing/MLKing2013_activity.txt"))
 
 # read correctly?
 multilayer_network.basic_stats()

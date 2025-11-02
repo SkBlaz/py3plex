@@ -25,6 +25,7 @@ from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
 from py3plex.visualization.multilayer import hairball_plot, plt
 from py3plex.visualization.colors import colors_default
+from py3plex.utils import get_dataset_path
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(
@@ -32,8 +33,8 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument(
     "--input_network",
-    default="../datasets/cora.mat",
-    help="Path to input network file (default: ../datasets/cora.mat)"
+    default=get_dataset_path("cora.mat"),
+    help="Path to input network file (default: datasets/cora.mat)"
 )
 parser.add_argument(
     "--input_type",
