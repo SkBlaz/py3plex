@@ -447,7 +447,10 @@ class MultilayerCentrality:
         Compute PageRank centrality on the supra-graph.
 
         Uses the standard PageRank algorithm on the supra-adjacency matrix
-        representing the multilayer network.
+        representing the multilayer network. Properly handles dangling nodes
+        (nodes with no outgoing edges) via teleportation.
+        
+        This implementation preserves sparsity when possible for memory efficiency.
 
         Args:
             damping: Damping parameter (typically 0.85).
@@ -456,35 +459,110 @@ class MultilayerCentrality:
 
         Returns:
             dict: {(node, layer): centrality_value}
+            
+        Mathematical Invariants:
+            - PageRank values sum to 1.0 (within tol=1e-6)
+            - All values are non-negative
+            - Converges for strongly connected components or with teleportation
         """
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
 
-        if hasattr(supra_matrix, "toarray"):
-            matrix = supra_matrix.toarray()
+        # Keep as sparse if possible
+        is_sparse = sp.issparse(supra_matrix)
+        
+        if is_sparse:
+            # Sparse computation
+            n = supra_matrix.shape[0]
+            
+            # Compute row sums efficiently
+            row_sums = np.array(supra_matrix.sum(axis=1)).flatten()
+            
+            # Identify dangling nodes
+            dangling_mask = row_sums == 0
+            n_dangling = np.sum(dangling_mask)
+            
+            # Build sparse transition matrix
+            # For non-dangling nodes: P = D^{-1} * A where D is diagonal matrix of row sums
+            safe_row_sums = row_sums.copy()
+            safe_row_sums[dangling_mask] = 1  # Temporary to avoid div/0
+            
+            # Create diagonal matrix for normalization
+            D_inv = sp.diags(1.0 / safe_row_sums, format='csr')
+            P_sparse = D_inv @ supra_matrix
+            
+            # For dangling nodes, we need to add uniform distribution
+            # This breaks pure sparsity, but only for dangling rows
+            if n_dangling > 0:
+                # Build dangling node rows efficiently using sparse matrix construction
+                uniform_prob = 1.0 / n
+                
+                # Create rows for dangling nodes as dense arrays (unavoidable for uniform distribution)
+                dangling_indices = np.where(dangling_mask)[0]
+                dangling_rows = sp.csr_matrix(
+                    (np.full(n * n_dangling, uniform_prob),
+                     (np.repeat(np.arange(n_dangling), n), np.tile(np.arange(n), n_dangling))),
+                    shape=(n_dangling, n)
+                )
+                
+                # Replace dangling rows in transition matrix
+                # Convert to lil for efficient row assignment
+                P_sparse = P_sparse.tolil()
+                for i, idx in enumerate(dangling_indices):
+                    P_sparse[idx] = dangling_rows[i]
+                P_sparse = P_sparse.tocsr()
+            
+            # Initialize PageRank vector
+            pagerank = np.ones(n) / n
+            
+            # Power iteration with sparse operations
+            for iteration in range(max_iter):
+                # Sparse matrix-vector multiply
+                new_pagerank = (1 - damping) / n + damping * (P_sparse.T @ pagerank)
+                
+                if np.linalg.norm(pagerank - new_pagerank) < tol:
+                    break
+                pagerank = new_pagerank
+                
         else:
-            matrix = np.array(supra_matrix)
+            # Dense computation (original code path for small networks)
+            if hasattr(supra_matrix, "toarray"):
+                matrix = supra_matrix.toarray()
+            else:
+                matrix = np.array(supra_matrix)
 
-        n = matrix.shape[0]
+            n = matrix.shape[0]
 
-        # Create row-stochastic transition matrix
-        row_sums = np.sum(matrix, axis=1)
-        # Handle nodes with no outgoing edges
-        row_sums[row_sums == 0] = 1
-        transition_matrix = matrix / row_sums[:, np.newaxis]
+            # Create row-stochastic transition matrix with proper dangling node handling
+            row_sums = np.sum(matrix, axis=1)
+            
+            # Identify dangling nodes (no outgoing edges)
+            dangling_mask = row_sums == 0
+            
+            # Avoid division by zero: use reciprocal where safe
+            safe_row_sums = row_sums.copy()
+            safe_row_sums[dangling_mask] = 1  # Temporary value to avoid div/0
+            transition_matrix = matrix / safe_row_sums[:, np.newaxis]
+            
+            # For dangling nodes, distribute probability uniformly (teleportation)
+            # This ensures true stochasticity: each dangling node row sums to 1
+            if dangling_mask.any():
+                transition_matrix[dangling_mask, :] = 1.0 / n
 
-        # Initialize PageRank vector
-        pagerank = np.ones(n) / n
+            # Initialize PageRank vector
+            pagerank = np.ones(n) / n
 
-        # Power iteration
-        for _ in range(max_iter):
-            new_pagerank = (1 - damping) / n + damping * transition_matrix.T.dot(
-                pagerank
-            )
+            # Power iteration with proper PageRank formula
+            for _ in range(max_iter):
+                # Standard PageRank: PR = (1-d)/n * 1 + d * P^T * PR
+                # The teleportation is already built into P for dangling nodes
+                new_pagerank = (1 - damping) / n + damping * transition_matrix.T.dot(
+                    pagerank
+                )
 
-            if np.linalg.norm(pagerank - new_pagerank) < tol:
-                break
-            pagerank = new_pagerank
+                if np.linalg.norm(pagerank - new_pagerank) < tol:
+                    break
+                pagerank = new_pagerank
 
         results = {}
         for node_layer, idx in node_layer_mapping.items():
@@ -1103,10 +1181,18 @@ class MultilayerCentrality:
 
         n = matrix.shape[0]
 
-        # Create row-normalized transition matrix
+        # Create row-normalized transition matrix with proper dangling node handling
         row_sums = np.sum(matrix, axis=1)
-        row_sums[row_sums == 0] = 1  # Avoid division by zero
-        P = matrix / row_sums[:, np.newaxis]
+        dangling_mask = row_sums == 0
+        
+        # Avoid division by zero
+        safe_row_sums = row_sums.copy()
+        safe_row_sums[dangling_mask] = 1
+        P = matrix / safe_row_sums[:, np.newaxis]
+        
+        # For dangling nodes, use uniform distribution (teleportation)
+        if dangling_mask.any():
+            P[dangling_mask, :] = 1.0 / n
 
         # Compute P^h
         P_h = np.linalg.matrix_power(P, h)
