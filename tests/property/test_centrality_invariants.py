@@ -57,9 +57,16 @@ def create_simple_multilayer_network(num_nodes=4, num_layers=2):
 
 def relabel_network_nodes(network, mapping):
     """Create a new network with relabeled nodes (isomorphic)."""
-    new_network = multinet.multi_layer_network(directed=network.directed)
+    # Get the directed property safely
+    is_directed = getattr(network, 'directed', False)
+    new_network = multinet.multi_layer_network(directed=is_directed)
     
     edges = network.get_edges()
+    if not edges:
+        # If no edges, return the empty network
+        return new_network
+    
+    edges_added = 0
     for edge in edges:
         # Handle both list and dict edge formats
         if isinstance(edge, dict):
@@ -83,12 +90,21 @@ def relabel_network_nodes(network, mapping):
                 # Skip edges that can't be parsed
                 continue
         
+        # Skip if any required field is None
+        if source is None or source_layer is None or target is None or target_layer is None:
+            continue
+            
         new_source = mapping.get(source, source)
         new_target = mapping.get(target, target)
         
-        new_network.add_edges([
-            [new_source, source_layer, new_target, target_layer, weight]
-        ], input_type='list')
+        try:
+            new_network.add_edges([
+                [new_source, source_layer, new_target, target_layer, weight]
+            ], input_type='list')
+            edges_added += 1
+        except Exception:
+            # Skip edges that can't be added
+            continue
     
     return new_network
 
