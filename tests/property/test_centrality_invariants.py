@@ -61,48 +61,60 @@ def relabel_network_nodes(network, mapping):
     is_directed = getattr(network, 'directed', False)
     new_network = multinet.multi_layer_network(directed=is_directed)
     
-    edges = network.get_edges()
+    # get_edges() returns a generator, convert to list to check if empty
+    edges = list(network.get_edges(data=True))
     if not edges:
         # If no edges, return the empty network
         return new_network
     
     edges_added = 0
     for edge in edges:
-        # Handle both list and dict edge formats
-        if isinstance(edge, dict):
-            source = edge.get('source')
-            source_layer = edge.get('source_layer')
-            target = edge.get('target')
-            target_layer = edge.get('target_layer')
-            weight = edge.get('weight', 1.0)
-        else:
-            # Handle tuple/list format - check length to avoid index errors
-            try:
-                if len(edge) < 4:
+        try:
+            # NetworkX edges are tuples: ((node1, layer1), (node2, layer2), data_dict)
+            # or ((node1, layer1), (node2, layer2)) without data
+            if len(edge) >= 2:
+                # Extract node-layer tuples
+                node1_tuple = edge[0]
+                node2_tuple = edge[1]
+                
+                # node tuples are (node_name, layer_name)
+                if isinstance(node1_tuple, tuple) and len(node1_tuple) >= 2:
+                    source = node1_tuple[0]
+                    source_layer = node1_tuple[1]
+                else:
                     # Skip malformed edges
                     continue
-                source = edge[0]
-                source_layer = edge[1]
-                target = edge[2]
-                target_layer = edge[3]
-                weight = edge[4] if len(edge) > 4 else 1.0
-            except (IndexError, TypeError):
-                # Skip edges that can't be parsed
+                    
+                if isinstance(node2_tuple, tuple) and len(node2_tuple) >= 2:
+                    target = node2_tuple[0]
+                    target_layer = node2_tuple[1]
+                else:
+                    # Skip malformed edges
+                    continue
+                
+                # Get weight from data dict if present
+                weight = 1.0
+                if len(edge) >= 3 and isinstance(edge[2], dict):
+                    weight = edge[2].get('weight', 1.0)
+                
+                # Skip if any required field is None
+                if source is None or source_layer is None or target is None or target_layer is None:
+                    continue
+                    
+                # Apply mapping to node names
+                new_source = mapping.get(source, source)
+                new_target = mapping.get(target, target)
+                
+                # Add edge to new network
+                new_network.add_edges([
+                    [new_source, source_layer, new_target, target_layer, weight]
+                ], input_type='list')
+                edges_added += 1
+            else:
+                # Skip malformed edges
                 continue
-        
-        # Skip if any required field is None
-        if source is None or source_layer is None or target is None or target_layer is None:
-            continue
-            
-        new_source = mapping.get(source, source)
-        new_target = mapping.get(target, target)
-        
-        try:
-            new_network.add_edges([
-                [new_source, source_layer, new_target, target_layer, weight]
-            ], input_type='list')
-            edges_added += 1
-        except Exception:
+                
+        except Exception as e:
             # Skip edges that can't be added
             continue
     
