@@ -1,20 +1,76 @@
 # New Property-Based Tests Added
 
-This document describes the 40 new property-based tests added to expand test coverage for py3plex multilayer networks.
+This document describes the property-based tests added to expand test coverage for py3plex multilayer networks.
 
 ## Summary
 
-Added **40 new property-based tests** across 4 new test modules:
+**Latest additions:** 26 new property-based tests for centrality metrics across 2 modules:
+- 16 tests for centrality invariants
+- 10 tests for centrality rankings
+
+**Previously added:** 40 property-based tests across 4 modules:
 - 9 tests for edge operations
 - 10 tests for node operations  
 - 10 tests for weight operations
 - 11 tests for graph transformations
 
-Total property-based tests: **125+** (increased from 85)
+**Total property-based tests: 151+** (increased from 125+)
 
-## New Test Modules
+## Latest Test Modules (Centrality Coverage)
 
-### 1. `test_edge_operations_properties.py`
+### 1. `test_centrality_invariants.py` (16 tests)
+
+Tests fundamental mathematical properties and invariants for multilayer centrality metrics.
+
+**Tests:**
+1. `test_degree_centrality_non_negative` - Degree centrality values are always ≥ 0
+2. `test_centrality_values_finite` - All centrality values are finite (no NaN/inf)
+3. `test_participation_coefficient_bounded` - Participation coefficient in [0, 1]
+4. `test_closeness_centrality_non_negative` - Closeness centrality is non-negative
+5. `test_betweenness_centrality_non_negative` - Betweenness centrality is non-negative
+6. `test_eigenvector_centrality_normalization` - L2 normalization produces unit norm
+7. `test_lp_aggregated_centrality_properties` - Lp-aggregated centrality is valid
+8. `test_degree_invariant_under_relabeling` - Degree multiset preserved under isomorphism
+9. `test_betweenness_ranking_invariant` - Betweenness ranking preserved under relabeling
+10. `test_layer_degree_sum_equals_overlapping` - Layer degrees sum to overlapping degree
+11. `test_weighted_degree_greater_equal_unweighted` - Weighted ≥ unweighted (weights ≥ 1)
+12. `test_information_centrality_properties` - Information centrality is valid
+13. `test_collective_influence_properties` - Collective influence is non-negative
+14. `test_harmonic_closeness_properties` - Harmonic closeness is non-negative
+15. `test_compute_all_centralities_basic` - compute_all_centralities returns valid results
+16. `test_compute_all_centralities_extended` - Extended mode includes more metrics
+
+**Key Properties:**
+- Non-negativity and finiteness
+- Normalization correctness
+- Isomorphism invariance
+- Consistency across operations
+
+### 2. `test_centrality_rankings.py` (10 tests)
+
+Tests ranking stability, monotonicity, and scale invariance of centrality metrics.
+
+**Tests:**
+1. `test_star_network_hub_highest_degree` - Hub node has highest degree in star networks
+2. `test_star_network_hub_highest_betweenness` - Hub has highest betweenness
+3. `test_path_network_endpoints_lowest_centrality` - Endpoints have lower centrality
+4. `test_normalized_centrality_scale_invariant` - Rankings invariant to weight scaling
+5. `test_weighted_degree_scales_linearly` - Weighted degree scales linearly
+6. `test_adding_edges_increases_total_degree` - Monotonicity property
+7. `test_more_layers_increases_overlapping_degree` - More layers = higher overlap
+8. `test_degree_ranking_stability` - Rankings stable across computations
+9. `test_centrality_consistent_node_set` - All measures return same node set
+10. `test_uniform_distribution_increases_participation` - Uniform edges increase participation
+
+**Key Properties:**
+- Network topology effects
+- Scale invariance
+- Monotonicity
+- Ranking stability
+
+## Previous Test Modules
+
+### 3. `test_edge_operations_properties.py` (9 tests)
 
 Tests fundamental invariants for edge manipulation in multilayer networks.
 
@@ -35,7 +91,7 @@ Tests fundamental invariants for edge manipulation in multilayer networks.
 - Weight preservation
 - Symmetry in undirected graphs
 
-### 2. `test_node_operations_properties.py`
+### 4. `test_node_operations_properties.py` (10 tests)
 
 Tests fundamental invariants for node manipulation in multilayer networks.
 
@@ -57,7 +113,7 @@ Tests fundamental invariants for node manipulation in multilayer networks.
 - Degree constraints
 - Consistency of graph structure
 
-### 3. `test_weight_operations_properties.py`
+### 5. `test_weight_operations_properties.py` (10 tests)
 
 Tests numerical properties of edge weights.
 
@@ -79,7 +135,7 @@ Tests numerical properties of edge weights.
 - Statistical bounds
 - Ordering preservation
 
-### 4. `test_graph_transformation_properties.py`
+### 6. `test_graph_transformation_properties.py` (11 tests)
 
 Tests structural invariants under graph transformations.
 
