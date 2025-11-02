@@ -5,6 +5,7 @@ from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.embedding_visualization import embedding_tools
 from py3plex.algorithms.community_detection import community_wrapper as cw
+from py3plex.utils import get_dataset_path, get_example_image_path
 from collections import Counter
 
 
@@ -12,7 +13,7 @@ def plot_intact_embedding(num_it):
 
     # string layout for larger network -----------------------------------
     multilayer_network = multinet.multi_layer_network().load_network(
-        "../datasets/intact02.gpickle", input_type="gpickle",
+        get_dataset_path("intact02.gpickle"), input_type="gpickle",
         directed=False).add_dummy_layers()
     multilayer_network.basic_stats()
 
@@ -20,14 +21,14 @@ def plot_intact_embedding(num_it):
 
     # call a specific n2v compiled binary
     train_node2vec_embedding.call_node2vec_binary(
-        "../datasets/IntactEdgelistedges.txt",
-        "../datasets/test_embedding.emb",
+        get_dataset_path("IntactEdgelistedges.txt"),
+        get_dataset_path("test_embedding.emb"),
         binary="./node2vec",  # Note: binary no longer bundled
         weighted=False)
 
     # preprocess and check embedding -- for speed, install parallel tsne from https://github.com/DmitryUlyanov/Multicore-TSNE, py3plex knows how to use it.
 
-    multilayer_network.load_embedding("../datasets/test_embedding.emb")
+    multilayer_network.load_embedding(get_dataset_path("test_embedding.emb"))
 
     # load the positions and select the projection algorithm
     output_positions = embedding_tools.get_2d_coordinates_tsne(
@@ -66,7 +67,7 @@ def plot_intact_embedding(num_it):
                   edge_width=0.001,
                   scale_by_size=False)
 
-    f.savefig("../datasets/" + str(num_it) + "intact.png",
+    f.savefig(get_dataset_path(str(num_it) + "intact.png"),
               bbox_inches='tight',
               dpi=300)
 
@@ -75,7 +76,7 @@ def plot_intact_basic(num_it=10):
 
     print("Plotting intact")
     multilayer_network = multinet.multi_layer_network().load_network(
-        "../datasets/intact02.gpickle", input_type="gpickle",
+        get_dataset_path("intact02.gpickle"), input_type="gpickle",
         directed=False).add_dummy_layers()
     network_colors, graph = multilayer_network.get_layers(style="hairball")
     partition = cw.louvain_communities(multilayer_network)
@@ -102,7 +103,7 @@ def plot_intact_basic(num_it=10):
                   network_colors,
                   legend=False,
                   layout_parameters=layout_parameters)
-    f.savefig("../example_images/intact_" + str(num_it) + "_BH_basic.png",
+    f.savefig(get_example_image_path("intact_" + str(num_it) + "_BH_basic.png"),
               bbox_inches='tight',
               dpi=300)
 
@@ -111,7 +112,7 @@ def plot_intact_BH(num_it=10):
 
     print("Plotting intact")
     multilayer_network = multinet.multi_layer_network().load_network(
-        "../datasets/intact02.gpickle", input_type="gpickle",
+        get_dataset_path("intact02.gpickle"), input_type="gpickle",
         directed=False).add_dummy_layers()
     network_colors, graph = multilayer_network.get_layers(style="hairball")
     partition = cw.louvain_communities(multilayer_network)
@@ -138,7 +139,7 @@ def plot_intact_BH(num_it=10):
                   network_colors,
                   legend=False,
                   layout_parameters=layout_parameters)
-    f.savefig("../example_images/intact_" + str(num_it) + "_BH.png",
+    f.savefig(get_example_image_path("intact_" + str(num_it) + "_BH.png"),
               bbox_inches='tight',
               dpi=300)
 

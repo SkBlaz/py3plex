@@ -6,7 +6,9 @@ including random state management for reproducibility and deprecation warnings.
 """
 
 import functools
+import os
 import warnings
+from pathlib import Path
 from typing import Any, Callable, Optional, Union
 
 import numpy as np
@@ -185,3 +187,83 @@ def validate_multilayer_input(network_data: Any) -> None:
 
     # Additional validation logic can be added here
     # This is a placeholder for future validation enhancements
+
+
+def get_data_path(relative_path: str) -> str:
+    """
+    Get the absolute path to a data file in the repository.
+    
+    This function resolves paths relative to the repository root,
+    allowing example scripts to work regardless of the current working directory.
+    
+    Args:
+        relative_path: Path relative to repository root (e.g., "datasets/intact02.gpickle")
+    
+    Returns:
+        str: Absolute path to the file
+    
+    Examples:
+        >>> from py3plex.utils import get_data_path
+        >>> path = get_data_path("datasets/intact02.gpickle")
+        >>> os.path.exists(path)
+        True
+    
+    Note:
+        This function assumes the py3plex package is installed or the script
+        is run from within the repository structure.
+    """
+    # Get the directory containing this file (py3plex/utils.py)
+    utils_dir = Path(__file__).parent
+    # Go up one level to get the repository root (parent of py3plex package)
+    repo_root = utils_dir.parent
+    # Resolve the full path
+    full_path = repo_root / relative_path
+    return str(full_path)
+
+
+def get_dataset_path(filename: str) -> str:
+    """
+    Get the absolute path to a dataset file.
+    
+    Convenience wrapper around get_data_path() specifically for dataset files.
+    
+    Args:
+        filename: Name or relative path of the dataset file
+    
+    Returns:
+        str: Absolute path to the dataset file
+    
+    Examples:
+        >>> from py3plex.utils import get_dataset_path
+        >>> path = get_dataset_path("intact02.gpickle")
+        >>> os.path.exists(path)
+        True
+    """
+    # If the filename already includes "datasets/", use it as-is
+    if filename.startswith("datasets/"):
+        return get_data_path(filename)
+    # Otherwise, prepend "datasets/"
+    return get_data_path(f"datasets/{filename}")
+
+
+def get_example_image_path(filename: str) -> str:
+    """
+    Get the absolute path to an example image file.
+    
+    Convenience wrapper around get_data_path() specifically for example image files.
+    
+    Args:
+        filename: Name or relative path of the image file
+    
+    Returns:
+        str: Absolute path to the example image file
+    
+    Examples:
+        >>> from py3plex.utils import get_example_image_path
+        >>> path = get_example_image_path("intact_10_BH.png")
+    """
+    # If the filename already includes "example_images/", use it as-is
+    if filename.startswith("example_images/"):
+        return get_data_path(filename)
+    # Otherwise, prepend "example_images/"
+    return get_data_path(f"example_images/{filename}")
