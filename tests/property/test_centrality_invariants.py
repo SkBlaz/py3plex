@@ -61,11 +61,20 @@ def relabel_network_nodes(network, mapping):
     
     edges = network.get_edges()
     for edge in edges:
-        source = edge[0]
-        source_layer = edge[1]
-        target = edge[2]
-        target_layer = edge[3]
-        weight = edge[4] if len(edge) > 4 else 1.0
+        # Handle both list and dict edge formats
+        if isinstance(edge, dict):
+            source = edge.get('source')
+            source_layer = edge.get('source_layer')
+            target = edge.get('target')
+            target_layer = edge.get('target_layer')
+            weight = edge.get('weight', 1.0)
+        else:
+            # Handle tuple/list format
+            source = edge[0]
+            source_layer = edge[1]
+            target = edge[2]
+            target_layer = edge[3]
+            weight = edge[4] if len(edge) > 4 else 1.0
         
         new_source = mapping.get(source, source)
         new_target = mapping.get(target, target)
@@ -185,23 +194,24 @@ def test_betweenness_centrality_non_negative(num_nodes, num_layers):
     num_layers=st.integers(min_value=2, max_value=3)
 )
 def test_eigenvector_centrality_normalization(num_nodes, num_layers):
-    """Test that eigenvector centrality can be properly normalized."""
+    """Test that eigenvector centrality returns valid results."""
     network = create_simple_multilayer_network(num_nodes, num_layers)
     calc = MultilayerCentrality(network)
     
     try:
-        result = calc.multiplex_eigenvector_centrality(normalize='l2')
+        # Note: multiplex_eigenvector_centrality doesn't have a normalize parameter
+        # It returns node-layer centralities
+        result = calc.multiplex_eigenvector_centrality()
         values = np.array(list(result.values()))
-        
-        # L2 normalization should give unit norm
-        norm = np.linalg.norm(values)
-        assert np.isclose(norm, 1.0, atol=1e-6), f"L2 norm should be 1, got {norm}"
         
         # All values should be finite
         assert all(np.isfinite(v) for v in values), "All values must be finite"
+        
+        # Values should be non-negative (Perron-Frobenius for non-negative matrices)
+        assert all(v >= 0 for v in values), "Eigenvector centrality should be non-negative"
     except Exception as e:
         # Some networks may not support eigenvector centrality (e.g., disconnected)
-        # This is acceptable - we just want to ensure that when it works, it's normalized
+        # This is acceptable - we just want to ensure that when it works, it's valid
         if "singular" not in str(e).lower() and "convergence" not in str(e).lower():
             raise
 
@@ -260,10 +270,11 @@ def test_degree_invariant_under_relabeling(num_nodes, num_layers):
     result2 = calc2.supra_degree_centrality(weighted=False)
     
     # The multiset of degree values should be the same
+    # Note: supra_degree_centrality returns node-layer tuples as keys
     values1 = sorted(result1.values())
     values2 = sorted(result2.values())
     
-    assert len(values1) == len(values2), "Should have same number of nodes"
+    assert len(values1) == len(values2), "Should have same number of node-layer pairs"
     assert all(abs(v1 - v2) < 1e-6 for v1, v2 in zip(values1, values2)), \
         "Degree multiset should be identical under relabeling"
 
@@ -290,10 +301,11 @@ def test_betweenness_ranking_invariant(num_nodes, num_layers):
     result2 = calc2.multilayer_betweenness_centrality(normalized=True)
     
     # The sorted centrality values should be identical
+    # Note: betweenness may return node or node-layer tuples
     values1 = sorted(result1.values())
     values2 = sorted(result2.values())
     
-    assert len(values1) == len(values2), "Should have same number of nodes"
+    assert len(values1) == len(values2), "Should have same number of centrality values"
     assert all(abs(v1 - v2) < 1e-6 for v1, v2 in zip(values1, values2)), \
         "Betweenness ranking should be preserved under relabeling"
 
