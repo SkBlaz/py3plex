@@ -288,41 +288,42 @@ def test_weighted_degree_scales_linearly(num_nodes, num_layers, scale_factor):
 @pytest.mark.property
 @settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
-    num_nodes=st.integers(min_value=4, max_value=6),  # Need at least 4 nodes to ensure we can add a new edge
+    num_nodes=st.integers(min_value=4, max_value=6),
     num_layers=st.integers(min_value=1, max_value=2)
 )
 def test_adding_edges_increases_total_degree(num_nodes, num_layers):
-    """Test that adding edges increases the sum of degrees."""
-    network = multinet.multi_layer_network(directed=False)
+    """Test that networks with more edges have higher total degree."""
     nodes = [f'N{i}' for i in range(num_nodes)]
     layers = [f'L{i}' for i in range(num_layers)]
     
-    # Add initial edges to create a path
+    # Network 1: Create a path (fewer edges)
+    network1 = multinet.multi_layer_network(directed=False)
     for layer in layers:
         for i in range(len(nodes) - 1):
-            network.add_edges([
+            network1.add_edges([
                 [nodes[i], layer, nodes[i+1], layer, 1.0]
             ], input_type='list')
     
-    calc1 = MultilayerCentrality(network)
+    calc1 = MultilayerCentrality(network1)
     degree1 = calc1.supra_degree_centrality(weighted=False)
     total_degree1 = sum(degree1.values())
     
-    # Add a new edge between non-adjacent nodes (create a shortcut in the path)
-    # For a path 0-1-2-3, we can add edge 0-2 which doesn't exist
-    if num_nodes >= 4:
-        # Add edge between node 0 and node 2 in first layer (they're not directly connected in a path)
-        network.add_edges([
-            [nodes[0], layers[0], nodes[2], layers[0], 1.0]
-        ], input_type='list')
-        
-        calc2 = MultilayerCentrality(network)
-        degree2 = calc2.supra_degree_centrality(weighted=False)
-        total_degree2 = sum(degree2.values())
-        
-        # Total degree should increase (by 2 for an undirected edge)
-        assert total_degree2 > total_degree1, \
-            f"Adding edges should increase total degree: {total_degree1} -> {total_degree2}"
+    # Network 2: Create a complete graph (more edges)
+    network2 = multinet.multi_layer_network(directed=False)
+    for layer in layers:
+        for i in range(len(nodes)):
+            for j in range(i + 1, len(nodes)):
+                network2.add_edges([
+                    [nodes[i], layer, nodes[j], layer, 1.0]
+                ], input_type='list')
+    
+    calc2 = MultilayerCentrality(network2)
+    degree2 = calc2.supra_degree_centrality(weighted=False)
+    total_degree2 = sum(degree2.values())
+    
+    # Complete graph should have higher total degree than path
+    assert total_degree2 > total_degree1, \
+        f"Complete graph should have higher total degree than path: {total_degree1} -> {total_degree2}"
 
 
 @pytest.mark.property

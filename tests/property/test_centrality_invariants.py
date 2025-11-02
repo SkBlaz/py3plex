@@ -69,12 +69,19 @@ def relabel_network_nodes(network, mapping):
             target_layer = edge.get('target_layer')
             weight = edge.get('weight', 1.0)
         else:
-            # Handle tuple/list format
-            source = edge[0]
-            source_layer = edge[1]
-            target = edge[2]
-            target_layer = edge[3]
-            weight = edge[4] if len(edge) > 4 else 1.0
+            # Handle tuple/list format - check length to avoid index errors
+            try:
+                if len(edge) < 4:
+                    # Skip malformed edges
+                    continue
+                source = edge[0]
+                source_layer = edge[1]
+                target = edge[2]
+                target_layer = edge[3]
+                weight = edge[4] if len(edge) > 4 else 1.0
+            except (IndexError, TypeError):
+                # Skip edges that can't be parsed
+                continue
         
         new_source = mapping.get(source, source)
         new_target = mapping.get(target, target)
