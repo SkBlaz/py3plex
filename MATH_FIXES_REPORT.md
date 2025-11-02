@@ -29,8 +29,10 @@ Identified and fixed 5 math-critical defects in py3plex multilayer network analy
 **File:** `py3plex/algorithms/multilayer_algorithms/centrality.py:470-474`
 
 #### Problem
+
 ```python
 # BEFORE (INCORRECT)
+
 row_sums = np.sum(matrix, axis=1)
 row_sums[row_sums == 0] = 1  # Creates zero rows!
 transition_matrix = matrix / row_sums[:, np.newaxis]
@@ -41,6 +43,7 @@ transition_matrix = matrix / row_sums[:, np.newaxis]
 - Standard PageRank requires uniform teleportation for dangling nodes
 
 #### Minimal Reproduction
+
 ```python
 from py3plex.core import multinet
 from py3plex.algorithms.multilayer_algorithms.centrality import MultilayerCentrality
@@ -57,28 +60,35 @@ calc = MultilayerCentrality(network)
 
 # Before fix: transition matrix row for C is all zeros (sum=0, violates stochasticity)
 # After fix: transition matrix row for C is uniform [1/n, 1/n, 1/n] (sum=1)
+
 ```
 
 #### Fix
+
 ```python
 # AFTER (CORRECT)
+
 row_sums = np.sum(matrix, axis=1)
 dangling_mask = row_sums == 0
 
 # Safe division
+
 safe_row_sums = row_sums.copy()
 safe_row_sums[dangling_mask] = 1
 transition_matrix = matrix / safe_row_sums[:, np.newaxis]
 
 # Teleportation for dangling nodes
+
 if dangling_mask.any():
     transition_matrix[dangling_mask, :] = 1.0 / n
 ```
 
 #### Proof of Fix
+
 **Invariant:** Row-stochastic transition matrix
 ```python
 # Test: All rows must sum to 1
+
 trans_row_sums = np.sum(transition_matrix, axis=1)
 assert np.allclose(trans_row_sums, 1.0, atol=1e-8)
 ```
@@ -92,13 +102,16 @@ assert np.allclose(trans_row_sums, 1.0, atol=1e-8)
 **File:** `py3plex/algorithms/multilayer_algorithms/centrality.py:463-466`
 
 #### Problem
+
 ```python
 # BEFORE (INEFFICIENT)
+
 if hasattr(supra_matrix, "toarray"):
     matrix = supra_matrix.toarray()  # O(N²L²) memory!
 else:
     matrix = np.array(supra_matrix)
 # ... then use dense operations
+
 ```
 
 - **Always** converts sparse → dense, even for large sparse networks
@@ -106,6 +119,7 @@ else:
 - Multilayer networks are typically **sparse** (most node pairs not connected)
 
 #### Impact Analysis
+
 | Network Size | Dense Memory | Sparse Memory (1% density) | Ratio |
 |-------------|--------------|---------------------------|-------|
 | n=1000, L=5 | 200 MB | 2 MB | **100x** |
@@ -113,8 +127,10 @@ else:
 | n=100000, L=10 | 8 TB | 80 GB | **100x** |
 
 #### Fix
+
 ```python
 # AFTER (EFFICIENT)
+
 is_sparse = sp.issparse(supra_matrix)
 
 if is_sparse:
@@ -137,6 +153,7 @@ else:
 ```
 
 #### Benchmark
+
 ```
 Network: 10,000 nodes × 10 layers, 0.1% density
 Before: 8 GB memory, 45 seconds
@@ -151,8 +168,10 @@ Speedup: 3.75x, Memory reduction: 100x
 **File:** `py3plex/algorithms/statistics/multilayer_statistics.py:862-863`
 
 #### Problem
+
 ```python
 # BEFORE (ARBITRARY)
+
 if sp.issparse(supra_adj):
     if supra_adj.shape[0] < 1000:  # Why 1000?
         supra_adj = supra_adj.toarray()
@@ -163,8 +182,10 @@ if sp.issparse(supra_adj):
 - Should depend on sparsity, not just size
 
 #### Fix
+
 ```python
 # AFTER (PRINCIPLED)
+
 n = supra_adj.shape[0]
 use_sparse = sp.issparse(supra_adj) and n >= 100 and k < n // 2
 
@@ -172,9 +193,11 @@ use_sparse = sp.issparse(supra_adj) and n >= 100 and k < n // 2
 # - n >= 100: sparse overhead worth it
 # - k < n/2: eigsh() efficient for k << n
 # - Sparse matrix: obvious candidate
+
 ```
 
 #### Benchmark
+
 | n | k | Sparsity | Before | After | Speedup |
 |---|---|----------|--------|-------|---------|
 | 500 | 10 | 1% | Dense 2.1s | Sparse 0.3s | **7x** |

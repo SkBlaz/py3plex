@@ -10,6 +10,7 @@
 This section tracks changes to this LLM.md file itself to help maintain consistency and track improvements.
 
 ### 2025-11-02: Test Suite Modernization (Current)
+
 **Changes Made:**
 - Modernized 5 test files from unittest to pytest idioms (~700 lines improved)
 - Created shared pytest fixtures in tests/conftest.py
@@ -59,6 +60,7 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 - Better maintainability and readability
 
 ### 2025-11-01: Test Coverage Enhancement
+
 **Changes Made:**
 - Analyzed codebase and identified 15+ modules with missing test coverage
 - Created 5 comprehensive test files (~1,312 lines of test code)
@@ -164,6 +166,7 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 **Purpose:** Address test coverage gaps identified in issue #319 by creating comprehensive tests for previously untested utility modules and documenting remaining opportunities for test expansion.
 
 ### 2025-10-31: Root Directory Cleanup (Previous)
+
 **Changes Made:**
 - Cleaned up root directory to be minimalistic and professional
 - Removed test/validation scripts: `validate_multilayer.py`, `validate_tutorials.py`, `run_tests.py`
@@ -187,6 +190,7 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 **Purpose:** Clean up root directory by removing test remnants and helper scripts, keeping only essential build/config files and documentation (LLM.md, README.md, LICENSE).
 
 ### 2025-10-30: Versatility Implementation (Previous)
+
 **Changes Made:**
 - Implemented versatility (multilayer eigenvector centrality) feature
 - Added `py3plex/algorithms/multilayer_algorithms/versatility.py` module
@@ -233,6 +237,7 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 **Purpose:** Implement versatility feature as specified in issue, providing a principled method for ranking nodes by their importance across multiple interconnected network layers.
 
 ### 2025-10-30: Documentation Improvements (Previous)
+
 **Changes Made:**
 - Fixed 18 broken internal :doc: references across RST documentation files
 - Fixed 7 title underline formatting issues in apidocs.rst
@@ -272,6 +277,7 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 **Purpose:** Address documentation readability and link consistency issues, ensuring all documentation is accessible and all internal references work correctly.
 
 ### 2025-10-29: CrossHair Pure Function Analysis (Previous)
+
 **Changes Made:**
 - Identified 26 pure/deterministic functions suitable for CrossHair symbolic testing
 - Created `tests/test_crosshair_pure_functions.py` test file for automated testing
@@ -335,9 +341,11 @@ This section tracks changes to this LLM.md file itself to help maintain consiste
 **Usage Examples:**
 ```bash
 # Run the test file
+
 pytest tests/test_crosshair_pure_functions.py -v
 
 # Direct CrossHair usage on identified functions
+
 crosshair check py3plex.utils.get_rng
 crosshair watch py3plex.algorithms.statistics.basic_statistics
 ```
@@ -358,6 +366,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 **Purpose:** Address Issue #259 "crossHair - improve" by identifying and documenting pure/deterministic functions suitable for CrossHair symbolic testing, focusing on math, graph, and utility modules.
 
 ### 2025-10-25: Link Fixes and Status Update (Previous)
+
 **Changes Made:**
 - Fixed 8 broken internal links that referenced emoji-decorated headers
 - All links now correctly reference section anchors without emoji icons
@@ -383,6 +392,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 **Purpose:** Fix broken internal navigation links identified in the issue review, ensuring all cross-references within LLM.md work correctly.
 
 ### 2025-10-25: Documentation Coverage Improvement - Item #11 (Previous)
+
 **Changes Made:**
 - Completed Item #11 from "Next Steps and Action Items" section: Documentation coverage improvement
 - Fixed critical bug in `docfiles/apidocs.rst` where `... automodule::` directives were malformed (should be `.. automodule::`)
@@ -421,6 +431,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 **Purpose:** Complete Item #11 from "Next Steps and Action Items" section, improving documentation coverage from 30.7% to 50.9% (exceeding the 50% target), making the py3plex API more accessible and well-documented for users and contributors.
 
 ### 2025-10-24: Type Coverage Tracking System (Issue #211)
+
 **Changes Made:**
 - Implemented comprehensive type coverage tracking infrastructure for py3plex
 - Created `docs/check_type_coverage.py` script (302 lines):
@@ -466,6 +477,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 **Purpose:** Address Issue #211 "type coverage++" by establishing infrastructure for tracking and improving type annotation coverage across the codebase. Follows same patterns as existing doc-coverage system for consistency.
 
 ### 2025-10-23: Code Quality Iteration - Items #9 and #10
+
 **Changes Made:**
 - Implemented Item #10 from "Next Steps and Action Items" section: Performance profiling utilities
 - Implemented Item #9 from "Next Steps and Action Items" section: Expanded property-based testing
@@ -498,6 +510,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 **Purpose:** Address pending optimizations Items #9 and #10 from "Next Steps and Action Items" section (lines 3498-3507), improving code quality and enabling performance monitoring without breaking existing functionality.
 
 ### 2025-10-23: Code Refactoring - Overall Iteration (Current)
+
 **Changes Made:**
 - Implemented Item #7 from "Next Steps and Action Items" section: Refactor long functions
 - Refactored `draw_multilayer_default()` in `py3plex/visualization/multilayer.py`:
@@ -532,6 +545,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 **Purpose:** Address pending optimization Item #7 from "Next Steps and Action Items" section (line 3451), reducing cognitive load and improving code maintainability without breaking existing functionality.
 
 ### 2025-10-23: Code Quality Improvements (Previous - Overals Issue)
+
 **Changes Made:**
 - Implemented pending optimizations from "Next Steps and Action Items" section
 - Extracted hard-coded visualization constants to centralized configuration:
@@ -565,6 +579,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 **Purpose:** Address pending optimizations identified in LLM.md "Next Steps and Action Items" section (lines 3397-3410), specifically items #4 and #6. These changes improve code quality without breaking existing functionality.
 
 ### 2025-10-22: Fuzzing Infrastructure (Issue #fuzzing)
+
 **Changes Made:**
 - Added comprehensive fuzzing infrastructure for discovering bugs in input parsing and network construction
 - Created `fuzzing/` directory with Atheris-based fuzzing harnesses:
@@ -606,6 +621,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 ## 🚨 Active TODOs (Priority Order)
 
 ### 1. Test Coverage Enhancement (High Priority)
+
 - **Goal**: Measure and increase to 50%+ code coverage
 - **Current**: Good core coverage, untested edge cases
 - **Action**:
@@ -617,6 +633,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 - **Strategy**: Target modules with <30% coverage first
 
 ### 2. Refactor Remaining Long Functions (Medium Priority)
+
 - **Targets**:
   - `hairball_plot()` in `visualization/hairball.py` (164 lines)
   - `draw_multiedges()` in `visualization/multilayer.py` (120 lines)
@@ -624,6 +641,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 - **Impact**: Improved maintainability, testability
 
 ### 3. Complete Type Hints (Low Priority)
+
 - **Target**: Remaining methods in `core/multinet.py`
 - **Status**: 7 core methods completed, others can be added incrementally
 - **Impact**: Better IDE support, fewer type-related bugs
@@ -633,26 +651,31 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 ## 📋 Recent Changes (Last 5)
 
 ### 2025-10-25: Link Fixes & Documentation
+
 - Fixed 8 broken internal links in LLM.md (emoji-decorated headers)
 - All 61 internal navigation links now working
 - Documentation coverage: 30.7% → 50.9% (+188 functions, +24 classes)
 
 ### 2025-10-24: Type Coverage Tracking (Issue #211)
+
 - Added `docs/check_type_coverage.py` script (302 lines)
 - GitHub Actions workflow for automated tracking
 - Current baseline: 65.91% precisely typed (17,444/26,465 LOC)
 
 ### 2025-10-23: Code Quality Improvements
+
 - Performance profiling module: `py3plex/profiling.py` (335 lines)
 - Property-based testing: `tests/test_algorithm_properties.py` (10 tests)
 - Function refactoring: `draw_multilayer_default()` 194→117 lines
 
 ### 2025-10-22: Formal Verification & Fuzzing
+
 - CrossHair + icontract integration (8 modules verified)
 - Atheris-based fuzzing infrastructure (`fuzzing/` directory)
 - 15+ core invariants verified symbolically
 
 ### 2025-10-21: Type Coverage & Testing
+
 - Fixed all mypy errors: 43 → 0 errors
 - Network conversion test suite (Issue #177, 8 tests)
 - CLI logging conversion: 78 print statements → structured logging
@@ -664,6 +687,7 @@ crosshair watch py3plex.algorithms.statistics.basic_statistics
 ## 📖 Repository Overview
 
 ### Purpose & Scope
+
 Py3plex is a Python library for multilayer network analysis, visualization, and statistical comparison. It targets research-scale networks (10³-10⁵ nodes) with:
 - Multilayer/multiplex network data structures
 - Community detection algorithms
@@ -671,6 +695,7 @@ Py3plex is a Python library for multilayer network analysis, visualization, and 
 - Visualization tools (force-directed, hierarchical, custom layouts)
 
 ### Key Features
+
 - **Core Data Structure**: `multi_layer_network` (NetworkX-based)
 - **Algorithms**: Community detection, centrality, node ranking, embeddings
 - **Visualization**: Multilayer layouts, hairball plots, Sankey diagrams
@@ -683,6 +708,7 @@ Py3plex is a Python library for multilayer network analysis, visualization, and 
 ## 🏗️ Architecture
 
 ### Directory Structure
+
 ```
 py3plex/
 ├── core/              # Core data structures (multinet.py, parsers.py, converters.py)
@@ -702,6 +728,7 @@ examples/             # 50+ usage examples
 ```
 
 ### Key Files
+
 1. **`py3plex/core/multinet.py`** (1223 lines) - Central data structure
 2. **`py3plex/algorithms/statistics/multilayer_statistics.py`** - Statistical measures
 3. **`py3plex/visualization/multilayer.py`** (859 lines) - Multilayer visualization
@@ -709,6 +736,7 @@ examples/             # 50+ usage examples
 5. **`py3plex/config.py`** - Configuration constants (colors, defaults)
 
 ### Data Flow
+
 ```
 Input (CSV/GraphML/GML) 
   → Parser (core/parsers.py)
@@ -723,39 +751,50 @@ Input (CSV/GraphML/GML)
 ## 🛠️ Development Environment
 
 ### Installation
+
 ```bash
 # Git-only installation (PyPI deprecated)
+
 pip install git+https://github.com/SkBlaz/py3plex.git
 
 # Verify installation
+
 py3plex selftest
 ```
 
 ### Testing & Quality
+
 ```bash
 # Run everything (tests, benchmarks, linters)
+
 make test-all
 
 # Individual commands
+
 make test       # pytest tests/
 make benchmark  # performance benchmarks
 make lint       # black, flake8, mypy
 make format     # auto-format with black
 
 # Coverage
+
 pytest --cov=py3plex --cov-report=html
 
 # Type coverage
+
 make type-coverage
 
 # Formal verification (CrossHair)
+
 crosshair check py3plex/multinet/aggregation.py --per_path_timeout=20
 
 # Fuzzing (optional, requires atheris)
+
 make fuzz-quick  # 1-minute test
 ```
 
 ### CI/CD Workflows
+
 - **tests.yml**: pytest on Python 3.8-3.12, Ubuntu/macOS/Windows
 - **benchmarks.yml**: Performance tracking
 - **code-quality.yml**: Black, flake8, mypy
@@ -769,12 +808,14 @@ make fuzz-quick  # 1-minute test
 ## 📚 Core Concepts
 
 ### Multilayer Networks
+
 - **Layers**: Different types of relationships (e.g., collaboration, friendship, citation)
 - **Nodes**: Can exist in multiple layers
 - **Edges**: Intra-layer (within layer) and inter-layer (between layers)
 - **Supra-adjacency**: Unified matrix representation of all layers
 
 ### Key Algorithms
+
 1. **Community Detection**: Louvain, label propagation, Infomap (AGPLv3)
 2. **Centrality**: Degree, betweenness, closeness, PageRank, HITS
 3. **Statistics**: Density, coupling strength, node activity, entropy
@@ -782,6 +823,7 @@ make fuzz-quick  # 1-minute test
 5. **Comparison**: Statistical tests, effect sizes, multiple comparison corrections
 
 ### Statistical Framework (2025-10-26)
+
 New module: `py3plex/algorithms/statistics/stats_comparison.py`
 - 5 statistical tests: permutation, t-test, Mann-Whitney U, ANOVA, Kruskal-Wallis
 - Effect sizes: Cohen's d, eta-squared
@@ -793,23 +835,27 @@ New module: `py3plex/algorithms/statistics/stats_comparison.py`
 ## 🔍 Known Limitations & Best Practices
 
 ### Scalability
+
 - **Target Scale**: 10³-10⁵ nodes (research-scale networks)
 - **Force-directed layouts**: ~5k nodes max (use alternatives for larger)
 - **Supra-adjacency matrices**: Sparse by default, 10k+ nodes need memory
 - **Visualization**: O(n²) for some operations (alternatives suggested)
 
 ### Dependencies
+
 - **Core**: NetworkX, NumPy, SciPy, matplotlib, scikit-learn
 - **Optional**: plotly (viz), python-louvain (algos), infomap (AGPLv3)
 - **Dev**: pytest, black, mypy, CrossHair, atheris
 
 ### Common Issues
+
 1. **"Could not load network"**: Check CSV format (source, target, layer columns)
 2. **"No module named 'tensorly'"**: Install optional dependency if needed
 3. **Matplotlib backend issues**: Set `matplotlib.use('Agg')` for headless
 4. **Pickle security**: Only load trusted .gpickle files (arbitrary code execution risk)
 
 ### Best Practices
+
 - Use sparse matrices for large networks (automatic by default)
 - Sample nodes for visualization (>1000 nodes)
 - Use virtual environment for installation
@@ -822,11 +868,13 @@ New module: `py3plex/algorithms/statistics/stats_comparison.py`
 ## 🔒 Security & Licensing
 
 ### License
+
 - **Main Library**: MIT (permissive, commercial-friendly)
 - **Infomap**: AGPLv3 (viral, requires open-sourcing derived works)
 - **Recommendation**: Use Louvain/label propagation for commercial projects
 
 ### Security Considerations
+
 - **Pickle Loading**: `.gpickle` files can execute arbitrary code (document risk)
 - **Path Traversal**: Validate file paths in CLI (low risk, added validation)
 - **Resource Exhaustion**: No hard limits on network size (add for CLI if needed)
@@ -837,18 +885,21 @@ New module: `py3plex/algorithms/statistics/stats_comparison.py`
 ## 🧪 Testing & Verification
 
 ### Test Coverage
+
 - **40+ test files** covering core, algorithms, I/O, CLI
 - **Property-based tests**: Hypothesis-powered invariant validation
 - **Network conversion**: 8 tests for format roundtrips
 - **Fuzzing**: Atheris-based input validation (fuzzing/ directory)
 
 ### Formal Verification (CrossHair + icontract)
+
 - **8 modules** with contracts (aggregation, stats, random generation, utils)
 - **15+ invariants** verified symbolically
 - **Optional**: icontract gracefully degrades if not installed
 - **CI Integration**: Automated verification on push/PR
 
 ### Key Invariants Verified
+
 - Node preservation in aggregation
 - Non-negative weights
 - Type safety (NetworkX graphs, numpy Generators)
@@ -861,12 +912,14 @@ New module: `py3plex/algorithms/statistics/stats_comparison.py`
 ## 🤖 For LLM Assistants
 
 ### When Helping Users
+
 1. **Installation**: Always suggest git-based installation, not PyPI
 2. **CSV Format**: Verify source, target, layer columns
 3. **Common Errors**: Check error message guide above
 4. **NetworkX Export**: Use `network.core_network` or `to_nx_network()`
 
 ### When Making Changes
+
 1. **Read First**: Check core/multinet.py for data structure patterns
 2. **Follow Patterns**: Google-style docstrings, PEP 8 formatting
 3. **Add Tests**: All new functionality needs tests
@@ -874,6 +927,7 @@ New module: `py3plex/algorithms/statistics/stats_comparison.py`
 5. **Run Checks**: `make test-all` before committing
 
 ### Code Quality Standards
+
 - ✅ Type hints: Use for new code
 - ✅ Docstrings: Google-style with examples
 - ✅ Testing: pytest for all new features
@@ -886,12 +940,15 @@ New module: `py3plex/algorithms/statistics/stats_comparison.py`
 ## 📞 Quick Reference
 
 ### Common Commands
+
 ```bash
 # Installation & verification
+
 pip install git+https://github.com/SkBlaz/py3plex.git
 py3plex selftest
 
 # Testing & quality
+
 make test-all           # Run everything
 pytest tests/           # Unit tests only
 make benchmark          # Performance tests
@@ -899,30 +956,37 @@ make lint               # Linters
 pytest --cov=py3plex    # Coverage report
 
 # Development
+
 make format             # Auto-format code
 make type-coverage      # Type hint coverage
 crosshair check py3plex # Formal verification
 
 # CLI usage
+
 py3plex --help
 py3plex load network.csv --format multiedgelist
 ```
 
 ### Key Python Patterns
+
 ```python
 # Create multilayer network
+
 from py3plex.core import multinet
 network = multinet.multi_layer_network()
 network.load_network("data.csv", input_type="multiedgelist")
 
 # Basic statistics
+
 network.basic_stats()
 
 # Visualization
+
 from py3plex.visualization.multilayer import draw_multilayer_default
 draw_multilayer_default(network.get_layers(), display=True)
 
 # Export to NetworkX
+
 nx_graph = network.core_network
 ```
 
@@ -1009,6 +1073,7 @@ py3plex --help  # See all commands
 ## 📑 Table of Contents
 
 ### Core Information
+
 1. [Repository Status: All Issues Resolved](#repository-status-all-issues-resolved-2025-10-20)
 2. [Overview](#overview) - What Py3plex does and why
 3. [Structure](#structure) - Repository organization
@@ -1016,18 +1081,21 @@ py3plex --help  # See all commands
 5. [Dependencies and Ecosystem](#dependencies-and-ecosystem) - Required packages
 
 ### Technical Details
+
 6. [Architecture and Data Flow](#architecture-and-data-flow) - How the library works
 7. [Algorithms and Analytical Capabilities](#algorithms-and-analytical-capabilities) - What you can compute
 8. [Development Environment](#development-environment) - Setup and testing
 9. [Documentation](#documentation) - Where to find information
 
 ### For Developers
+
 10. [For LLMs](#for-llms) - Specific guidance for AI assistants
 11. [Development Roadmap](#development-roadmap) - Future plans
 12. [Repository Status](#repository-status) - Current state and progress
 13. [Performance Optimization](#performance-optimization) - Speed and efficiency
 
 ### Reference
+
 14. [Metadata and Provenance](#metadata-and-provenance) - Authors, license, citations
 15. [Recommended Use Cases](#recommended-use-cases) - Best applications
 16. [Known Limitations and Best Practices](#known-limitations-and-best-practices) - What to watch out for
@@ -1174,6 +1242,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
     - **Status**: COMPLETED - World-class documentation
 
 ### Summary Statistics:
+
 - **Total Issues**: 88 (all closed except this meta-issue)
 - **Open Issues**: 1 (Issue #167 - this issue, which will be closed after this update)
 - **Resolution Period**: October 17-20, 2025
@@ -1183,6 +1252,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 - **Code Quality**: PEP 8 compliant, Google-style docstrings, type hints (65.4% coverage)
 
 ### Current Repository Health (2025-10-20):
+
 ✅ **Build Status**: All CI workflows passing  
 ✅ **Documentation**: Excellent (9/10 rating, 30.4% API coverage)  
 ✅ **Testing**: Comprehensive (unit tests, benchmarks, integration tests)  
@@ -1192,6 +1262,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 ✅ **Open Issues**: 0 (all resolved)
 
 ### Next Steps (Optional Future Enhancements):
+
 - Consider adding more interactive Jupyter notebook examples
 - Potential for video tutorials demonstrating visualization features
 - Could expand troubleshooting sections based on user feedback
@@ -1201,6 +1272,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 ## Recent Documentation Review (2025-10-20)
 
 ### Comprehensive RST Documentation Review (2025-10-20)
+
 - **COMPLETED: Documentation Quality Assessment** - Thorough review of all 33 RST documentation files
   - **Assessment Results:** Documentation quality is EXCELLENT
   - **Structure:** Clear hierarchy, consistent formatting, logical organization across all files
@@ -1252,6 +1324,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 ## Recent Feature Additions (2025-10-20)
 
 ### Command-Line Interface (CLI) Tool (2025-10-20)
+
 - **NEW: Comprehensive CLI for Terminal Usage** - Full-featured command-line interface providing access to all main algorithms
   - Entry point: `py3plex` command available after installation
   - Implementation: `py3plex/cli.py` - 900+ lines with 8 main commands
@@ -1289,6 +1362,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 ## Recent Documentation Improvements (2025-10-19)
 
 ### Documentation Coverage CI (2025-10-19)
+
 - **NEW: Documentation Coverage Checker** - Automated measurement of RST documentation coverage
   - Script: `docs/check_doc_coverage.py` - Scans code and RST files to measure coverage
   - CI Workflow: `.github/workflows/doc-coverage.yml` - Runs on every push/PR
@@ -1306,6 +1380,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
   - Badge color: Orange (20-40% range)
 
 ### Master Documentation (2025-10-19)
+
 - **NEW: MASTER_DOCUMENTATION.md** - Comprehensive, publication-quality documentation covering:
   - Complete overview of Py3plex capabilities and architecture
   - Quick start with minimal working examples
@@ -1323,6 +1398,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
   - `make docs-check` - Check API documentation consistency
 
 ### Sphinx Documentation Fixes (2025-10-18)
+
 - **Configuration fixes**: Updated `conf.py` to use `language = 'en'` instead of `None`
 - **Formatting fixes**: Fixed block quote issues in `acknowledgements.rst`
 - **Code block corrections**: Fixed indentation and title underlines in `basic_usage_analysis_multiplex.rst`
@@ -1333,6 +1409,7 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 - **Build quality**: All documentation formatting issues resolved, builds cleanly with proper HTML output
 
 ### Documentation Structure
+
 - **32 RST files** in `docfiles/` directory providing comprehensive API and tutorial documentation
 - **Sphinx-based documentation** with automatic building via GitHub Actions
 - **Deployed to GitHub Pages**: https://skblaz.github.io/py3plex/
@@ -1343,12 +1420,14 @@ The repository had an intensive development cycle in October 2025 where **ALL 88
 The codebase has undergone comprehensive style improvements following PEP 8 and Google Python Style Guide:
 
 ### 1. Automated Code Formatting
+
 - **Black**: Applied automatic formatting to all Python files (except powerlaw.py which has syntax issues)
 - **isort**: Organized imports into three groups (standard library, third-party, local) with alphabetical sorting
 - **ruff --fix**: Applied automatic fixes for common issues (whitespace, comprehensions, etc.)
 - Result: 8+ files reformatted with consistent style
 
 ### 2. Documentation Improvements
+
 - Added comprehensive Google-style module docstrings to 10+ modules:
   - `algorithms/community_detection/NoRC.py`: Node ranking and clustering module
   - `algorithms/community_detection/__init__.py`: Community detection algorithms
@@ -1366,6 +1445,7 @@ The codebase has undergone comprehensive style improvements following PEP 8 and 
   - Clear descriptions
 
 ### 3. Code Quality Improvements
+
 - **Removed unused variables**: Fixed 4 instances of unused local variables
   - `multilayer_modularity.py`: Removed unused `layer_to_idx` and `node_to_idx`
   - `multilayer_statistics.py`: Changed unused node variables to `_` (intentionally unused)
@@ -1375,11 +1455,13 @@ The codebase has undergone comprehensive style improvements following PEP 8 and 
 - **Improved error messages**: Enhanced exception handling with context
 
 ### 4. Remaining Technical Debt
+
 - **powerlaw.py**: File has syntax errors preventing black from parsing (excluded in pyproject.toml)
 - **Print statements**: 115 print statements that should be converted to logging (deferred for future work)
 - **Type hints**: Some modules still lack complete type hints (ongoing improvement)
 
 ### 5. Style Compliance Status
+
 ✅ **Compliant Areas**:
 - Import organization (PEP 8 compliant with isort)
 - Line length and indentation (black enforced)
@@ -1618,6 +1700,7 @@ core.parsers → multi_layer_network object
 ## Algorithms and Analytical Capabilities
 
 ### Core Network Statistics
+
 - **Degree distributions**: In-degree, out-degree, degree sequences with power-law fitting
 - **Clustering coefficients**: Global, local, and layer-specific clustering
 - **Path-based metrics**: Diameter, average shortest path length, eccentricity
@@ -1626,6 +1709,7 @@ core.parsers → multi_layer_network object
 - **Assortativity**: Degree assortativity, attribute-based mixing patterns
 
 ### Multilayer Network Statistics (`multilayer_statistics.py`)
+
 Comprehensive suite of 17 statistics for multilayer networks following Kivelä et al. (2014) and De Domenico et al. (2013):
 
 - **Layer Density (ρₐ)**: `ρₐ = 2Eₐ/(Nₐ(Nₐ-1))` - Fraction of possible edges present in layer α
@@ -1653,18 +1737,23 @@ Example usage:
 from py3plex.algorithms.statistics import multilayer_statistics as mls
 
 # Calculate layer density
+
 density = mls.layer_density(network, 'layer1')
 
 # Node activity across layers
+
 activity = mls.node_activity(network, 'node_A')
 
 # Versatility centrality
+
 versatility = mls.versatility_centrality(network, centrality_type='degree')
 
 # Inter-layer correlation
+
 correlation = mls.inter_layer_degree_correlation(network, 'layer1', 'layer2')
 
 # Network resilience
+
 resilience = mls.resilience(network, 'layer_removal', perturbation_param='layer1')
 ```
 
@@ -1692,9 +1781,11 @@ resilience = mls.resilience(network, 'layer_removal', perturbation_param='layer1
 from py3plex.algorithms.multicentrality import multiplex_participation_coefficient
 
 # Compute MPC for all nodes
+
 mpc = multiplex_participation_coefficient(multinet, normalized=True)
 
 # Check participation of specific node
+
 node_participation = mpc['node_A']
 ```
 
@@ -1747,26 +1838,33 @@ node_participation = mpc['node_A']
 from py3plex.algorithms.multilayer_algorithms.multixrank import MultiXRank
 
 # Initialize
+
 mxr = MultiXRank(restart_prob=0.4, epsilon=1e-6, max_iter=100000)
 
 # Add multiplexes (can use supra-adjacency from multi_layer_network)
+
 mxr.add_multiplex('net1', supra_adj1, node_order=['A', 'B', 'C'])
 mxr.add_multiplex('net2', supra_adj2, node_order=['X', 'Y', 'Z'])
 
 # Add bipartite inter-multiplex connections
+
 mxr.add_bipartite_block('net1', 'net2', bipartite_matrix)
 
 # Build and normalize
+
 mxr.build_supra_heterogeneous_matrix(block_weights={'net1': 1.5})
 mxr.column_normalize(handle_dangling='uniform')
 
 # Run RWR from seed nodes
+
 scores = mxr.random_walk_with_restart({'net1': [0, 1]})
 
 # Aggregate scores per multiplex
+
 aggregated = mxr.aggregate_scores(scores)
 
 # Get top-k ranked nodes
+
 top_k = mxr.get_top_ranked(scores, k=10, exclude_seeds=True)
 ```
 
@@ -1848,15 +1946,19 @@ from py3plex.algorithms.general.walkers import (
 )
 
 # Basic weighted random walk
+
 walk = basic_random_walk(G, start_node=0, walk_length=10, weighted=True, seed=42)
 
 # Node2Vec biased walk (p=return bias, q=in-out bias)
+
 walk_biased = node2vec_walk(G, start_node=0, walk_length=20, p=0.5, q=2.0, seed=42)
 
 # Generate multiple walks from all nodes
+
 walks = generate_walks(G, num_walks=10, walk_length=10, p=1.0, q=1.0, seed=42)
 
 # Multilayer walk with layer constraint
+
 walk_ml = layer_specific_random_walk(
     ml_network.core_network, 
     start_node="A---layer1", 
@@ -1904,28 +2006,33 @@ walk_ml = layer_specific_random_walk(
 - Examples: `examples/dynamics/example_random_walks.py` (demonstrates all features with statistical validation)
 
 ### Community Detection
+
 - **Louvain algorithm**: Modularity optimization for non-overlapping communities (`community_louvain.py`)
 - **Infomap**: Information-theoretic community detection supporting overlapping communities and multilayer structures (via C++ bindings)
 - **Label propagation**: Semi-supervised community detection using known labels
 - **Community ranking**: Scoring communities by internal cohesion and external separation
 
 ### Network Decomposition and Classification
+
 - **Meta-path extraction**: Enumerate typed paths connecting node pairs in heterogeneous networks
 - **Cycle enumeration**: Identify closed walks of specified lengths and type patterns
 - **HINMINE decomposition**: Decompose heterogeneous networks into structural features for classification
 - **Network-level classification**: Predict properties of entire networks using graph kernels
 
 ### Embedding Generation
+
 - **Node2Vec**: Random walk-based embeddings with configurable walk length, return parameter (p), and in-out parameter (q)
 - **Embedding visualization**: t-SNE, UMAP projections for high-dimensional embeddings
 - **Link prediction**: Use embeddings to predict missing edges
 
 ### Temporal Analysis
+
 - **Temporal multilayer networks**: Track edge activation times and evolution dynamics
 - **Spreading processes**: Simulate information or disease propagation across layers
 - **Dynamic community detection**: Track community stability over time
 
 ### Semantic Enrichment
+
 - **Ontology integration**: Link network nodes to RDF ontologies for semantic annotation
 - **Enrichment testing**: Statistical tests for over-represented ontology terms in subgraphs
 - **Hedwig subgroup discovery**: Identify semantically coherent subgraphs using background knowledge
@@ -1960,6 +2067,7 @@ walk_ml = layer_specific_random_walk(
 from py3plex.core import multinet
 
 # Create multiplex network
+
 network = multinet.multi_layer_network(directed=False)
 network.add_nodes([
     {'source': '1', 'type': 'social'},
@@ -1973,6 +2081,7 @@ network.add_edges([
 ], input_type='dict')
 
 # Encode to homogeneous hypergraph
+
 H, node_mapping, edge_info = network.to_homogeneous_hypergraph()
 
 # H is a standard NetworkX Graph with:
@@ -1980,8 +2089,10 @@ H, node_mapping, edge_info = network.to_homogeneous_hypergraph()
 # - edge_info: {edge-node → (layer, (u, v))}
 
 # Decode back to multiplex
+
 recovered = network.from_homogeneous_hypergraph(H)
 # recovered: {layer: [(u, v), ...]}
+
 ```
 
 **Use Cases**:
@@ -2043,6 +2154,7 @@ The py3plex CLI provides terminal access to all main algorithms:
 
 ```bash
 # Quick examples
+
 py3plex create --nodes 50 --layers 2 --output network.graphml
 py3plex load network.graphml --stats
 py3plex community network.graphml --algorithm louvain
@@ -2312,10 +2424,12 @@ Primary documentation in ``docfiles/`` directory (33 ReStructuredText files, com
 **Development workflow**:
 ```bash
 # Initial setup
+
 make setup
 make dev-install
 
 # Code quality and testing
+
 make format       # Auto-format code
 make lint         # Check code quality
 make test         # Run tests with coverage
@@ -2327,6 +2441,7 @@ make ci           # Run lint + test (CI suite without benchmarks)
 **CLI usage** (October 2025 - NEW):
 ```bash
 # Terminal-based analysis
+
 py3plex create --nodes 50 --layers 2 --type er --output network.graphml
 py3plex community network.graphml --algorithm louvain --output communities.json
 py3plex centrality network.graphml --measure pagerank --top 10
@@ -2338,11 +2453,13 @@ py3plex visualize network.graphml --layout multilayer --output viz.png
 from py3plex.core import multinet
 network = multinet.multi_layer_network()
 # Add nodes using dict format (type = layer)
+
 network.add_nodes([
     {"source": "A", "type": "layer1"},
     {"source": "B", "type": "layer1"}
 ], input_type="dict")
 # Add edges using dict format
+
 network.add_edges([{
     "source": "A", "target": "B",
     "source_type": "layer1", "target_type": "layer1"
@@ -2421,27 +2538,33 @@ The library excels in scenarios requiring: (1) visualization of networks too com
 ## Known Limitations and Best Practices
 
 ### External Binary Dependencies
+
 - **Infomap** and **Node2Vec** require external binaries not managed by pip
 - **Mitigation**: Use absolute paths, check binary existence, or use pure-Python alternatives (e.g., Louvain, pecanpy)
 
 ### Licensing
+
 - Main repository: BSD-3-Clause (permissive)
 - Bundled Infomap code: AGPLv3 (copyleft, viral)
 - **Impact**: Use Louvain or label propagation for commercial projects to avoid AGPL restrictions
 
 ### Reproducibility
+
 - Many algorithms use randomization (Louvain, Infomap, layouts)
 - **Mitigation**: Always set `random_state=42` in algorithms and use `np.random.seed(42)` globally
 
 ### Memory and Scalability
+
 - ✅ **Sparse matrices**: Default for supra-adjacency (resolved)
 - **Visualization**: Force layouts scale to ~5k nodes; use matrix visualizations for larger networks
 
 ### PyPI vs GitHub
+
 - PyPI version (0.95, June 2023) lags behind GitHub
 - **Recommendation**: Install from GitHub for latest features: `pip install git+https://github.com/SkBlaz/py3plex.git`
 
 ### Documentation Priority
+
 1. `LLM.md` (this file) - Most comprehensive and current
 2. `docs/` directory - Markdown tutorials and development guides
 3. `examples/` directory - Working code examples
@@ -2615,15 +2738,19 @@ Tests use three standard network sizes:
 **Running Benchmarks**:
 ```bash
 # Run all benchmarks
+
 pytest tests/test_performance_core.py --benchmark-only -v
 
 # Run specific category
+
 pytest tests/test_performance_core.py::TestNetworkCreationBenchmarks --benchmark-only -v
 
 # Generate JSON report
+
 pytest tests/test_performance_core.py --benchmark-only --benchmark-json=benchmark-results.json
 
 # Compare with baseline
+
 pytest tests/test_performance_core.py --benchmark-only --benchmark-save=baseline
 pytest tests/test_performance_core.py --benchmark-only --benchmark-compare=baseline
 ```
@@ -2870,6 +2997,7 @@ The py3plex Python codebase demonstrates **excellent overall quality** with stro
 ### Key Strengths
 
 #### 1. Architectural Excellence
+
 - **Modular Design:** Clean separation between core data structures (`core/`), algorithms (`algorithms/`), visualization (`visualization/`), and utilities
 - **Layered Architecture:** Clear dependencies (core → algorithms → visualization), minimizing circular dependencies
 - **Extensibility Hooks:** Well-designed extension points for custom algorithms, layouts, and parsers
@@ -2887,6 +3015,7 @@ class multi_layer_network:
 ```
 
 #### 2. Code Quality and Maintainability
+
 - **Type Hints:** 65.4% coverage (70/107 modules) with mypy enforcement (100% clean)
 - **Custom Exception Hierarchy:** 13 domain-specific exceptions for clear error reporting
 - **Centralized Configuration:** `config.py` with 8 color palettes, 50+ parameters
@@ -2903,9 +3032,11 @@ class CentralityComputationError(AlgorithmError):
     """Exception raised when centrality computation fails."""
     pass
 # Clear exception hierarchy enables precise error handling
+
 ```
 
 #### 3. Documentation Excellence
+
 - **Google-Style Docstrings:** Comprehensive API documentation with Args, Returns, Examples, References
 - **Mathematical Notation:** Formulas included in docstrings (e.g., multilayer statistics)
 - **Inline Examples:** Working code snippets in docstrings
@@ -2930,6 +3061,7 @@ def layer_density(network: Any, layer: str) -> float:
 ```
 
 #### 4. Performance Optimization
+
 - **Sparse Matrix Support:** Default use of `scipy.sparse` for large networks
 - **NumPy Vectorization:** Efficient array operations throughout
 - **Lazy Evaluation:** Cached results where appropriate (embeddings, layouts)
@@ -2945,6 +3077,7 @@ def get_rng(seed: Optional[Union[int, np.random.Generator]] = None) -> np.random
 ```
 
 #### 5. Robust Error Handling
+
 - **Graceful Degradation:** Optional dependencies handled with try-except blocks
 - **Input Validation:** Type checking and bounds validation in critical paths
 - **Informative Error Messages:** Context-rich exceptions with suggestions
@@ -2960,6 +3093,7 @@ except ImportError:
 ```
 
 #### 6. Comprehensive Testing
+
 - **40+ Test Files:** Covering core functionality, algorithms, I/O, CLI
 - **Test Categories:** Unit tests, integration tests, performance benchmarks, property-based tests
 - **Property-Based Testing:** Hypothesis-powered tests for multiplex network invariants
@@ -2973,6 +3107,7 @@ except ImportError:
 - **CI/CD:** Automated testing on Python 3.8-3.12 across Ubuntu, macOS, Windows
 
 #### 7. Formal Verification (Extended Coverage)
+
 - **Framework:** CrossHair (symbolic execution) + icontract (design-by-contract)
 - **Coverage:** 8 modules with contracts:
   - Core aggregation: `py3plex/multinet/aggregation.py`
@@ -3118,9 +3253,11 @@ except ImportError:
 **Running Verification Locally:**
 ```bash
 # Install verification tools
+
 pip install crosshair-tool icontract z3-solver
 
 # Verify specific modules
+
 crosshair check py3plex/multinet/aggregation.py --per_path_timeout=20
 crosshair check py3plex/core/multinet.py --per_path_timeout=20
 crosshair check py3plex/algorithms/statistics/multilayer_statistics.py --per_path_timeout=20
@@ -3131,6 +3268,7 @@ crosshair check py3plex/utils.py --per_path_timeout=20
 crosshair check py3plex/core/supporting.py --per_path_timeout=20
 
 # Verify all modules with contracts
+
 crosshair check py3plex --per_path_timeout=20
 ```
 
@@ -3191,21 +3329,27 @@ Py3plex includes comprehensive fuzzing infrastructure for discovering crashes, m
 
 ```bash
 # Quick test (1 minute)
+
 make fuzz-quick
 
 # Standard campaign (5 minutes)
+
 make fuzz
 
 # Extended campaign (1 hour)
+
 make fuzz-long
 
 # Docker with ASAN (memory error detection)
+
 make fuzz-docker
 
 # Manual execution
+
 python fuzzing/fuzz_load_network.py fuzzing/seeds/ -max_total_time=300
 
 # Run property-based tests
+
 pytest tests/test_fuzzing_properties.py -v
 ```
 
@@ -3239,14 +3383,17 @@ For C/C++ components (e.g., Infomap bindings), build with AddressSanitizer:
 
 ```bash
 # Set compiler flags
+
 export CFLAGS="-fsanitize=address -fno-omit-frame-pointer -g"
 export CXXFLAGS="-fsanitize=address -fno-omit-frame-pointer -g"
 export LDFLAGS="-fsanitize=address"
 
 # Rebuild
+
 pip install -e . --force-reinstall --no-binary :all:
 
 # Run fuzzer (ASAN will detect memory errors)
+
 python fuzzing/fuzz_load_network.py fuzzing/seeds/
 ```
 
@@ -3368,10 +3515,12 @@ circle_size = 1.05  # Should be in config.py
 **Recommendation:** Move to `config.py`:
 ```python
 # In config.py
+
 DEFAULT_SHADOW_SIZE: float = 0.5
 DEFAULT_CIRCLE_SIZE: float = 1.05
 
 # In multilayer.py
+
 from py3plex import config
 shadow_size = config.DEFAULT_SHADOW_SIZE
 circle_size = config.DEFAULT_CIRCLE_SIZE
@@ -3636,6 +3785,7 @@ class CentralityComputationError(AlgorithmError):
 **3. Configuration System (config.py):**
 ```python
 # Type-annotated configuration with sensible defaults
+
 DEFAULT_NODE_SIZE: int = 10
 DEFAULT_EDGE_ALPHA: float = 0.13
 
@@ -3661,6 +3811,7 @@ except ImportError:
 **1. Magic Numbers in Code:**
 ```python
 # visualization/multilayer.py
+
 shadow_size = 0.5  # What does 0.5 represent? Should be in config
 circle_size = 1.05  # Why 1.05? Should be documented
 ```
@@ -3668,6 +3819,7 @@ circle_size = 1.05  # Why 1.05? Should be documented
 **2. Nested Try-Except:**
 ```python
 # cli.py
+
 try:
     network.load_network(file_path, input_type="gml")
 except:  # Too broad
@@ -3680,6 +3832,7 @@ except:  # Too broad
 **3. Long Parameter Lists:**
 ```python
 # visualization/multilayer.py
+
 def draw_multilayer_default(
     network_list, display=True, node_size=10, alphalevel=0.13,
     rectanglex=1, rectangley=1, background_shape="circle",
@@ -3726,6 +3879,7 @@ def draw_multilayer_default(
 **1. File Path Traversal (Low Risk)**
 ```python
 # cli.py and parsers.py
+
 file_path = Path(user_input)  # Could contain "../../../etc/passwd"
 ```
 **Mitigation:** Add path validation:
@@ -3743,6 +3897,7 @@ def safe_file_path(path_str: str, base_dir: Optional[Path] = None) -> Path:
 **2. Pickle Loading (Medium Risk)**
 ```python
 # core/parsers.py
+
 G = nx.read_gpickle(filename)  # Pickle can execute arbitrary code
 ```
 **Mitigation:** Document risk, add warning:
@@ -3765,6 +3920,7 @@ def load_gpickle(filename: str) -> nx.Graph:
 ```python
 # No limits on network size in most functions
 # Could cause memory exhaustion with malicious input
+
 ```
 **Mitigation:** Add size limits:
 ```python
@@ -3812,6 +3968,7 @@ def validate_network_size(network):
 ### Next Steps and Action Items
 
 #### Immediate (High Priority)
+
 1. ✅ **Replace bare except clauses** with specific exception types
    - Target: `cli.py`, any remaining algorithm modules
    - Impact: Better error diagnostics, more maintainable code
@@ -3825,6 +3982,7 @@ def validate_network_size(network):
    - Impact: User awareness of security considerations
 
 #### Short-term (Medium Priority)
+
 4. ✅ **Add type hints to `core/multinet.py`**
    - Target: 1587-line core file
    - Status: PARTIALLY COMPLETED (2025-10-23) - Type hints added to 7 core methods
@@ -3854,6 +4012,7 @@ def validate_network_size(network):
    - Remaining: Other long functions (hairball_plot: 164 lines, draw_multiedges: 120 lines) can be refactored if needed
 
 #### Long-term (Low Priority)
+
 8. **Increase test coverage to 50%+**
    - Status: IN PROGRESS (2025-10-25) - Link fixes completed, coverage measurement pending
    - Current: Good coverage of core paths (33 test files, comprehensive test suite)
@@ -3957,9 +4116,11 @@ The py3plex codebase is **production-ready** with the following characteristics:
 ## Statistical Comparison Framework Implementation (2025-10-26)
 
 ### Overview
+
 Added comprehensive statistical comparison framework for multilayer networks, enabling quantitative comparison of network ensembles and experimental conditions.
 
 ### Files Added
+
 - **Core Module**: `py3plex/algorithms/statistics/stats_comparison.py` (650 lines)
   - Main function: `compare_multilayer_networks()`
   - Bootstrap CI: `bootstrap_confidence_interval()`
@@ -3980,6 +4141,7 @@ Added comprehensive statistical comparison framework for multilayer networks, en
 ### Features Implemented
 
 #### Statistical Tests (5 types)
+
 1. **Permutation test** - Non-parametric, general purpose
 2. **t-test** - Parametric, 2 groups
 3. **Mann-Whitney U** - Non-parametric, 2 groups
@@ -3987,15 +4149,18 @@ Added comprehensive statistical comparison framework for multilayer networks, en
 5. **Kruskal-Wallis H** - Non-parametric, multiple groups
 
 #### Effect Size Calculations
+
 - **Cohen's d** - For pairwise comparisons
 - **Eta-squared** - For multi-group comparisons
 
 #### Multiple Comparison Corrections (3 methods)
+
 1. **Bonferroni** - Conservative, family-wise error rate
 2. **Holm-Bonferroni** - Sequential Bonferroni
 3. **FDR (Benjamini-Hochberg)** - Recommended, balances power and control
 
 #### Supported Metrics (6 built-in + custom)
+
 1. `density` - Layer density
 2. `average_degree` - Mean node degree
 3. `clustering` - Clustering coefficient
@@ -4025,24 +4190,28 @@ compare_multilayer_networks(
 - `effect_size`, `significant`, `mean_group_0`, `mean_group_1`, ...
 
 ### Testing Results
+
 - ✅ 26/26 new tests pass
 - ✅ 30/30 existing multilayer statistics tests pass (no regressions)
 - ✅ 0 security vulnerabilities (CodeQL)
 - ✅ All examples verified and working
 
 ### Integration
+
 - **Seamless integration** with existing `multilayer_statistics` module
 - **Pandas DataFrame output** for easy manipulation
 - **Flexible metric system** supporting custom functions
 - **Comprehensive error handling** for edge cases
 
 ### Use Cases
+
 1. **Biological Networks**: Compare disease vs. healthy protein interactions
 2. **Social Networks**: Analyze pre/post intervention differences
 3. **Temporal Networks**: Compare snapshots across time periods
 4. **Network Ensembles**: Statistical validation of network properties
 
 ### Documentation Status
+
 - ✅ RST documentation in `docfiles/statistical_comparison.rst`
 - ✅ API reference with all parameters documented
 - ✅ 7 working examples in Jupyter notebook
@@ -4051,6 +4220,7 @@ compare_multilayer_networks(
 - ✅ Use case examples for different domains
 
 ### Performance Characteristics
+
 - **Permutation test**: O(n_perm × n_networks × n_metrics)
 - **Parametric tests**: O(n_networks × n_metrics)
 - **Bootstrap CI**: O(n_bootstrap × n_networks)
@@ -4061,6 +4231,7 @@ Typical performance:
 - Bootstrap CI (1000 samples): 1-2 seconds
 
 ### Quality Assurance
+
 - ✅ Code review feedback addressed
 - ✅ Examples double-verified
 - ✅ No unused imports or dead code
@@ -4069,12 +4240,14 @@ Typical performance:
 - ✅ Type hints not added (following existing module patterns)
 
 ### References
+
 1. Kivelä et al. (2014) - Multilayer network definitions
 2. Good (2013) - Permutation testing methodology
 3. Efron & Tibshirani (1994) - Bootstrap methods
 4. Benjamini & Hochberg (1995) - FDR correction
 
 ### Future Enhancements (Not Implemented)
+
 The following were mentioned in the original issue but intentionally not implemented in this PR:
 - Network distance metrics (Jensen-Shannon, spectral distance, graph edit distance)
 - Layer alignment tests
@@ -4109,6 +4282,7 @@ Comprehensive corner case testing for the `multi_layer_network` class identified
 #### Critical Bugs Fixed (7 Errors)
 
 ##### 1. Edge Operations Without Layer Information ✅ FIXED
+
 - **Tests**: `test_add_edge_without_layers`, `test_add_duplicate_edges`
 - **Location**: `py3plex/core/multinet.py` in `_generic_edge_dict_manipulator`
 - **Issue**: `KeyError` when trying to delete `target_type` or `source_type` keys that don't exist
@@ -4117,6 +4291,7 @@ Comprehensive corner case testing for the `multi_layer_network` class identified
 - **Fix**: Use `.copy()` to avoid dictionary mutation and `.pop(key, None)` instead of `del` to safely remove keys
 
 ##### 2. Node Operations Without Type Field ✅ FIXED
+
 - **Test**: `test_add_single_node_without_layer`
 - **Location**: `py3plex/core/multinet.py` in `_generic_node_dict_manipulator`
 - **Issue**: `KeyError: 'type'` when adding node without type field
@@ -4125,6 +4300,7 @@ Comprehensive corner case testing for the `multi_layer_network` class identified
 - **Fix**: Use `.copy()` and `.pop(key, None)` for safe key removal
 
 ##### 3. Empty Node List Handling ✅ FIXED
+
 - **Test**: `test_add_empty_node_list`
 - **Location**: `py3plex/core/multinet.py` in `_generic_node_dict_manipulator`
 - **Issue**: `UnboundLocalError` when processing empty list
@@ -4133,6 +4309,7 @@ Comprehensive corner case testing for the `multi_layer_network` class identified
 - **Fix**: Proper loop variable naming to avoid scope conflicts
 
 ##### 4. Dictionary Mutation in Duplicate Operations ✅ FIXED
+
 - **Test**: `test_add_duplicate_nodes`
 - **Location**: `py3plex/core/multinet.py` in `_generic_node_dict_manipulator`
 - **Issue**: `KeyError: 'source'` on second add attempt
@@ -4141,6 +4318,7 @@ Comprehensive corner case testing for the `multi_layer_network` class identified
 - **Fix**: Create copy of dictionary before manipulation
 
 ##### 5. Empty Network Layer Splitting ✅ FIXED
+
 - **Test**: `test_split_to_layers_on_empty_network`
 - **Location**: `py3plex/core/converters.py` in `prepare_for_parsing`
 - **Issue**: `ValueError` when unpacking empty dictionary
@@ -4150,9 +4328,11 @@ Comprehensive corner case testing for the `multi_layer_network` class identified
 
 ```python
 # Before (fails on empty)
+
 names, networks = zip(*networks.items())
 
 # After (handles empty gracefully)
+
 if networks:
     names, networks = zip(*networks.items())
 else:
@@ -4160,6 +4340,7 @@ else:
 ```
 
 ##### 6. Remove Operations Missing Keys ✅ FIXED
+
 - **Test**: `test_remove_existing_node`
 - **Location**: `py3plex/core/multinet.py` in `_generic_node_dict_manipulator`
 - **Issue**: `KeyError: 'source'` when removing node
@@ -4168,6 +4349,7 @@ else:
 - **Fix**: Same as fixes #1-4 - use dictionary copies
 
 ##### 7. Multiple Node/Edge Addition ✅ FIXED
+
 - **Tests**: `test_add_multiple_nodes`, `test_add_multiple_edges`
 - **Issue**: Loop variable shadowing in list processing
 - **Root Cause**: Using same variable name `node_dict`/`edge_dict` for both input and iteration
@@ -4219,15 +4401,19 @@ The test suite comprehensively covers:
 
 ```bash
 # Install dependencies
+
 pip install networkx numpy scipy pandas
 
 # Install py3plex in development mode
+
 pip install -e .
 
 # Run the corner case tests
+
 python tests/test_multilayer_cornercases.py
 
 # Expected output: All 49 tests pass
+
 ```
 
 ### Value and Impact
@@ -4323,9 +4509,11 @@ The script performs 8 validation checks:
 
 ```bash
 # Basic validation (checks syntax and structure)
+
 python validate_tutorials.py
 
 # Full validation (requires dependencies)
+
 pip install networkx numpy scipy pandas
 python validate_tutorials.py
 ```

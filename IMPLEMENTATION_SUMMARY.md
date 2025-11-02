@@ -7,29 +7,34 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
 ## Implemented Metrics
 
 ### 18. Information Centrality (Stephenson-Zelen)
+
 - **File**: `py3plex/algorithms/multilayer_algorithms/centrality.py`
 - **Method**: `information_centrality()`
 - **Description**: Measures node importance based on information flow using modified Laplacian inverse
 - **Uses**: NetworkX's `information_centrality` with fallback to harmonic centrality
 
 ### 20. Communicability Betweenness
+
 - **Method**: `communicability_betweenness_centrality(normalized=True)`
 - **Description**: Estrada-style measure using matrix exponential to account for all walks
 - **Uses**: NetworkX's `communicability_betweenness_centrality` with fallback to regular betweenness
 
 ### 21. Accessibility Centrality
+
 - **Method**: `accessibility_centrality(h=2)`
 - **Description**: Entropy-based measure of h-step reach diversity
 - **Formula**: `Access_r = exp(H_r)` where `H_r` is entropy of h-step distribution
 - **Implementation**: Uses row-normalized transition matrix raised to power h
 
 ### 22. Percolation Centrality
+
 - **Method**: `percolation_centrality(edge_activation_prob=0.5, trials=100)`
 - **Description**: Bond percolation Monte Carlo simulation
 - **Algorithm**: Samples edge configurations and computes component sizes
 - **Output**: Normalized by (trials * n) for comparison
 
 ### 23. Spreading (Epidemic) Centrality
+
 - **Method**: `spreading_centrality(beta=0.2, mu=0.1, trials=50, steps=100)`
 - **Description**: SIR model-based outbreak size measure
 - **Algorithm**: Discrete-time SIR simulation seeded from each node
@@ -40,30 +45,35 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
   - `steps`: Maximum simulation steps
 
 ### 24. Collective Influence
+
 - **Method**: `collective_influence(radius=2)`
 - **Description**: Identifies influential spreaders at distance ℓ
 - **Formula**: `CI_ℓ(u) = (k_u - 1) * sum_{v in ∂Ball_ℓ(u)} (k_v - 1)`
 - **Implementation**: Uses BFS to find nodes at exact distance radius
 
 ### 25. Load Centrality
+
 - **Method**: `load_centrality()`
 - **Description**: Shortest-path load through nodes
 - **Algorithm**: Counts intermediate nodes on all shortest paths
 - **Difference from betweenness**: Counts all paths, not normalized by pairs
 
 ### 26. Flow Betweenness
+
 - **Method**: `flow_betweenness_centrality(samples=100)`
 - **Description**: Maximum flow-based measure
 - **Algorithm**: Samples source-target pairs and computes flow through each node
 - **Uses**: NetworkX's `maximum_flow` algorithm
 
 ### 27. Harmonic Closeness
+
 - **Method**: `harmonic_closeness_centrality()`
 - **Description**: Handles disconnected graphs better than standard closeness
 - **Formula**: `HC(u) = sum_{v≠u} (1 / d(u,v))` for finite distances
 - **Uses**: NetworkX's `harmonic_centrality` with fallback to manual computation
 
 ### 28. Edge Betweenness & Bridging Centrality
+
 - **Methods**: 
   - `edge_betweenness_centrality(normalized=True)` - Edge-level measure
   - `bridging_centrality()` - Node-level measure combining betweenness and bridging coefficient
@@ -71,12 +81,14 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
 - **Purpose**: Identifies nodes that act as bridges between network regions
 
 ### 29. Local Efficiency Centrality
+
 - **Method**: `local_efficiency_centrality()`
 - **Description**: Neighbor subgraph efficiency (fault tolerance measure)
 - **Formula**: `LE(u) = (1 / (|N_u|*(|N_u|-1))) * sum_{i≠j in N_u} [1 / d(i,j)]`
 - **Algorithm**: Computes efficiency within induced subgraph of neighbors
 
 ### 30. Lp-Aggregated Centrality
+
 - **Method**: `lp_aggregated_centrality(layer_centralities, p=2, weights=None)`
 - **Description**: Framework for combining per-layer centrality measures
 - **Formulas**:
@@ -87,11 +99,13 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
 ## Integration with Existing Code
 
 ### Updated Functions
+
 - **`compute_all_centralities()`**: Added `include_extended` parameter
   - When `True`, computes all 12 new metrics
   - Maintains backward compatibility (default `False`)
 
 ### API Consistency
+
 - All methods follow existing patterns:
   - Return `dict` with `{(node, layer): value}` format
   - Accept standard parameters (normalized, weighted, etc.)
@@ -101,17 +115,20 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
 ## Testing
 
 ### Test Coverage
+
 - **File**: `tests/test_multilayer_centrality.py`
 - **New Test Class**: `TestExtendedCentralityMetrics`
 - **Test Count**: 25+ new test methods
 
 ### Test Categories
+
 1. **Return Type Tests**: Verify dict return format
 2. **Value Range Tests**: Check for valid value ranges (non-negative, etc.)
 3. **Parameter Tests**: Test different parameter configurations
 4. **Integration Tests**: Test `compute_all_centralities` with extended flag
 
 ### Validation Script
+
 - **File**: `validate_centrality_metrics.py`
 - **Purpose**: Standalone validation of all new metrics
 - **Usage**: `python validate_centrality_metrics.py`
@@ -127,6 +144,7 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
    - Updated references with relevant papers
 
 ### Code Examples
+
 - **File**: `examples/centrality_and_statistics/example_extended_centrality.py`
 - **Functions**: Individual examples for each metric
 - **Demonstration**: Complete workflow showing all metrics
@@ -134,11 +152,13 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
 ## Dependencies
 
 ### Required Packages
+
 - `numpy`: Array operations and numerical computing
 - `scipy`: Scientific computing (matrix operations, sparse matrices)
 - `networkx`: Graph algorithms and analysis
 
 ### Fallback Strategy
+
 - Methods include fallback implementations when primary algorithms fail
 - Graceful degradation for edge cases
 - Informative error messages
@@ -146,11 +166,13 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
 ## Performance Considerations
 
 ### Computational Complexity
+
 - **Fast**: Information, Harmonic, Accessibility (O(n^2) or better)
 - **Moderate**: Load, Bridging, Local Efficiency (O(n^2) to O(n^3))
 - **Expensive**: Percolation, Spreading, Flow Betweenness (Monte Carlo based)
 
 ### Optimization
+
 - Uses sparse matrix operations where possible
 - Leverages NetworkX's optimized algorithms
 - Includes configurable sampling for stochastic methods
@@ -158,22 +180,26 @@ This implementation adds 12 new extended centrality metrics (metrics 18-30 from 
 ## Usage Examples
 
 ### Basic Usage
+
 ```python
 from py3plex.algorithms.multilayer_algorithms.centrality import MultilayerCentrality
 
 calc = MultilayerCentrality(network)
 
 # Individual metrics
+
 info_cent = calc.information_centrality()
 spreading = calc.spreading_centrality(beta=0.2, mu=0.1)
 harmonic = calc.harmonic_closeness_centrality()
 
 # Lp-aggregation
+
 layer_degrees = calc.layer_degree_centrality(weighted=False)
 l2_agg = calc.lp_aggregated_centrality(layer_degrees, p=2)
 ```
 
 ### Compute All Extended Metrics
+
 ```python
 from py3plex.algorithms.multilayer_algorithms.centrality import compute_all_centralities
 
@@ -183,6 +209,7 @@ results = compute_all_centralities(
 )
 
 # Access specific metrics
+
 info_centrality = results['information']
 spreading_cent = results['spreading']
 ```
@@ -190,18 +217,21 @@ spreading_cent = results['spreading']
 ## Quality Assurance
 
 ### Code Quality
+
 - ✓ Follows PEP 8 style guidelines
 - ✓ Comprehensive docstrings
 - ✓ Type hints where appropriate
 - ✓ Error handling with fallbacks
 
 ### Testing
+
 - ✓ Unit tests for each metric
 - ✓ Integration tests
 - ✓ Edge case handling
 - ✓ Validation script
 
 ### Documentation
+
 - ✓ Updated tutorial documentation
 - ✓ Code examples
 - ✓ API documentation
@@ -210,14 +240,17 @@ spreading_cent = results['spreading']
 ## Notes on Implementation
 
 ### Metric 17 (Current-Flow Closeness)
+
 - Already existed in the codebase as `current_flow_closeness_centrality()`
 - No additional implementation needed
 
 ### Metric 19 (Subgraph Centrality)
+
 - Already existed in the codebase as `subgraph_centrality()`
 - No additional implementation needed
 
 ### Approximations and Fallbacks
+
 All metrics include fallback implementations:
 - Information centrality → Harmonic centrality
 - Communicability betweenness → Regular betweenness
@@ -227,12 +260,14 @@ All metrics include fallback implementations:
 ## Future Enhancements
 
 ### Potential Optimizations
+
 1. Parallel processing for Monte Carlo simulations
 2. GPU acceleration for matrix operations
 3. Incremental computation for dynamic networks
 4. Approximation algorithms for large networks
 
 ### Additional Features
+
 1. Visualization functions for centrality distributions
 2. Comparative analysis tools
 3. Statistical significance testing
@@ -241,6 +276,7 @@ All metrics include fallback implementations:
 ## References
 
 ### Key Papers
+
 - Stephenson & Zelen (1989): Information centrality
 - Estrada et al. (2009): Communicability betweenness
 - Morone & Makse (2015): Collective influence

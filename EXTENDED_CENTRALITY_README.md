@@ -30,16 +30,19 @@ from py3plex.algorithms.multilayer_algorithms.centrality import (
 )
 
 # Create your multilayer network
+
 network = multinet.multi_layer_network(directed=False)
 # ... add edges ...
 
 # Option 1: Use individual metrics
+
 calc = MultilayerCentrality(network)
 info_cent = calc.information_centrality()
 spreading = calc.spreading_centrality(beta=0.2, mu=0.1)
 harmonic = calc.harmonic_closeness_centrality()
 
 # Option 2: Compute all extended metrics at once
+
 results = compute_all_centralities(network, include_extended=True)
 ```
 
@@ -83,12 +86,15 @@ Run the validation script to verify the implementation:
 
 ```bash
 # Install dependencies
+
 pip install numpy scipy networkx
 
 # Run validation
+
 python validate_centrality_metrics.py
 
 # Run unit tests
+
 python -m pytest tests/test_multilayer_centrality.py -v
 ```
 
