@@ -1,23 +1,70 @@
-# simple example for saving to multiedgelists
+"""
+Basic Example: Saving Networks in Different Edgelist Formats
+
+This example demonstrates how to:
+1. Load a multilayer network
+2. Save it in various edgelist formats
+3. Understand the differences between format types
+
+Supported edgelist formats:
+- multiedgelist: Human-readable format with node/layer names (node1 layer1 node2 layer2 weight)
+- edgelist: Simple numeric format with encoded node-layer pairs (id1 id2 weight)
+- multiedgelist_encoded: Numeric format maintaining layer information (node_id1 layer_id1 node_id2 layer_id2 weight)
+"""
+
+import os
 from py3plex.core import multinet
 
+# Path to the dataset
+dataset_path = "../datasets/goslim_mirna.gpickle"
+
+# Check if the dataset exists
+if not os.path.exists(dataset_path):
+    print(f"Warning: Dataset file '{dataset_path}' not found.")
+    print("This example requires the goslim_mirna dataset.")
+    print("Please ensure the file exists before running this example.")
+    exit(1)
+
+print("Loading multilayer network...")
+# Load the network from gpickle_biomine format
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/goslim_mirna.gpickle",
+    dataset_path,
     directed=False,
-    input_type="gpickle_biomine")
+    input_type="gpickle_biomine"
+)
 
-# save to string-based representation
-multilayer_network.save_network("../datasets/mirna_multiedgelist.list",
-                                output_type="multiedgelist")
+print("Network loaded successfully!")
+print("\nSaving network in different edgelist formats...\n")
 
-# encode each node-layer pair with an int
-multilayer_network.save_network("../datasets/mirna_edgelist.list",
-                                output_type="edgelist")
+# 1. Save as multiedgelist (string-based, human-readable)
+print("1. Saving as multiedgelist (human-readable format)...")
+output_path1 = "../datasets/mirna_multiedgelist.list"
+multilayer_network.save_network(output_path1, output_type="multiedgelist")
+print(f"   Saved to: {output_path1}")
+print("   Format: node1 layer1 node2 layer2 weight")
 
-# save to string-based representation
-multilayer_network.save_network("../datasets/mirna_multiedgelist_encoded.list",
-                                output_type="multiedgelist_encoded")
+# 2. Save as simple edgelist (encoded node-layer pairs as integers)
+print("\n2. Saving as edgelist (compact numeric format)...")
+output_path2 = "../datasets/mirna_edgelist.list"
+multilayer_network.save_network(output_path2, output_type="edgelist")
+print(f"   Saved to: {output_path2}")
+print("   Format: encoded_node_layer_id1 encoded_node_layer_id2 weight")
 
-# mappings are saved into the main object!
-# print(multilayer_network.node_map)
+# 3. Save as encoded multiedgelist (numeric with layer information)
+print("\n3. Saving as encoded multiedgelist (numeric with layer info)...")
+output_path3 = "../datasets/mirna_multiedgelist_encoded.list"
+multilayer_network.save_network(output_path3, output_type="multiedgelist_encoded")
+print(f"   Saved to: {output_path3}")
+print("   Format: node_id1 layer_id1 node_id2 layer_id2 weight")
+
+print("\nAll formats saved successfully!")
+print("\nNote: Node and layer mappings are stored in the network object:")
+print(f"  - Node mapping: multilayer_network.node_map")
+print(f"  - Layer mapping: multilayer_network.layer_map")
+print("\nThese mappings allow you to convert between numeric IDs and original names.")
+
+# Optionally display mappings (uncomment to see)
+# print("\nNode mapping sample:")
+# print(dict(list(multilayer_network.node_map.items())[:5]))
+# print("\nLayer mapping:")
 # print(multilayer_network.layer_map)
