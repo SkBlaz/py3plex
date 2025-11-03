@@ -36,6 +36,11 @@ class Colors:
     GRAY = '\033[90m'
 
 
+# Configuration constants
+MAX_ERROR_LENGTH = 500  # Maximum length of error messages to display
+MAX_HEADER_LINES = 50   # Maximum number of lines to check for skip markers
+
+
 def check_skip_marker(file_path: Path) -> Tuple[bool, str]:
     """
     Check if a file has a SKIP_CI marker in its header.
@@ -45,9 +50,9 @@ def check_skip_marker(file_path: Path) -> Tuple[bool, str]:
     """
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
-            # Only check first 50 lines for performance
+            # Only check first MAX_HEADER_LINES for performance
             for i, line in enumerate(f):
-                if i >= 50:
+                if i >= MAX_HEADER_LINES:
                     break
                 
                 # Check for SKIP_CI marker (can be in comments or docstrings)
@@ -145,7 +150,7 @@ def run_example(file_path: Path, timeout: int) -> Tuple[bool, float, str]:
         if result.returncode == 0:
             return True, duration, ""
         else:
-            error_msg = result.stderr[-500:] if result.stderr else "Unknown error"
+            error_msg = result.stderr[-MAX_ERROR_LENGTH:] if result.stderr else "Unknown error"
             return False, duration, error_msg
             
     except subprocess.TimeoutExpired:
@@ -269,7 +274,7 @@ def main():
             rel_path = file_path.relative_to(examples_dir)
             print(f"  ✗ {rel_path} ({duration:.2f}s)")
             if error:
-                print(f"    {Colors.GRAY}{error[:200]}{Colors.RESET}")
+                print(f"    {Colors.GRAY}{error[:MAX_ERROR_LENGTH]}{Colors.RESET}")
     
     print(f"{Colors.BOLD}{Colors.BLUE}{'='*70}{Colors.RESET}")
     
