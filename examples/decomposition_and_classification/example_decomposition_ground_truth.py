@@ -1,4 +1,5 @@
 # decomposition with ground truth
+# SKIP_CI: slow - Takes more than 10 seconds to complete
 
 from py3plex.core import multinet
 from py3plex.utils import get_dataset_path

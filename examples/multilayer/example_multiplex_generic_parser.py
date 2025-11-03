@@ -1,4 +1,5 @@
 # parser for generic multiplex networks (multilayer_datasets)
+# SKIP_CI: slow - Takes more than 5 seconds to complete
 
 from py3plex.core import multinet
 from py3plex.utils import get_multilayer_dataset_path

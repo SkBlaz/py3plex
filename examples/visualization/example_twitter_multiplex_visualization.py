@@ -1,4 +1,5 @@
 ## a simple visualization of a twitter network
+# SKIP_CI: slow - Takes more than 10 seconds to complete
 from py3plex.visualization.multilayer import draw_multilayer_default, plt
 from py3plex.core import multinet
 from py3plex.utils import get_dataset_path
