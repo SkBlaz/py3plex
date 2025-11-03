@@ -28,7 +28,12 @@ ER_multilayer = random_generators.random_multilayer_ER(
 )
 
 print("\nNetwork generated successfully!")
-print("Visualizing the network (close the window to exit)...")
 
-# Visualize the network without node labels for clarity
-ER_multilayer.visualize_network(show=True, no_labels=True)
+# In CI mode, skip interactive visualization
+import os
+if os.environ.get('MPLBACKEND') == 'Agg':
+    print("Running in CI mode - skipping interactive visualization")
+else:
+    print("Visualizing the network (close the window to exit)...")
+    # Visualize the network without node labels for clarity
+    ER_multilayer.visualize_network(show=True, no_labels=True)

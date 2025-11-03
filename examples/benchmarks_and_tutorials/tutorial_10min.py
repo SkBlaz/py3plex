@@ -3,6 +3,8 @@
 
 This script contains all the code examples from the 10-minute tutorial.
 It demonstrates the core features of py3plex in a single executable file.
+
+SKIP_CI: slow - This tutorial takes more than 10 seconds to complete
 """
 
 import sys

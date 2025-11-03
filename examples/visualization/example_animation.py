@@ -12,6 +12,8 @@ of nodes increases, useful for understanding scaling properties.
 Requirements:
 - matplotlib
 - imagemagick (for GIF creation)
+
+SKIP_CI: external_deps - Requires imagemagick and takes >10s
 """
 
 import os
