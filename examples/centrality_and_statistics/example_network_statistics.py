@@ -12,6 +12,8 @@ Network statistics help understand:
 - Scale and density of the network
 - Important nodes (hubs) that connect many others
 - Topological properties for comparison with other networks
+
+SKIP_CI: external_deps - Requires specific dataset files
 """
 
 import os

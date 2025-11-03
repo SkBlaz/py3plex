@@ -1,4 +1,5 @@
 # an example of numeric encoding (supra adjacency)
+# SKIP_CI: external_deps - Requires specific dataset files
 
 from py3plex.core import multinet
 from py3plex.core import random_generators

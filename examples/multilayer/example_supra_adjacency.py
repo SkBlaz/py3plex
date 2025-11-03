@@ -19,6 +19,8 @@ Use cases:
 - Spectral analysis and eigenvalue decomposition
 - Matrix-based algorithms (diffusion, centrality)
 - Understanding network structure at the matrix level
+
+SKIP_CI: external_deps - Requires specific dataset files
 """
 
 import os

@@ -1,4 +1,6 @@
 # simple embedding visualization example
+# SKIP_CI: external_deps - Requires specific dataset files
+
 from py3plex.core import multinet
 from py3plex.visualization.embedding_visualization import embedding_visualization
 from py3plex.utils import get_dataset_path
