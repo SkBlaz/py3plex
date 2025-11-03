@@ -5,6 +5,8 @@ Example: Meta Flow Report - Comprehensive Multilayer Network Analysis
 This example demonstrates how to use the MetaFlowReport class to conduct
 multiple analyses at once, including centralities, communities, and statistics.
 This is a convenient way to get a comprehensive view of your multilayer network.
+
+SKIP_CI: slow - Comprehensive analysis takes more than 10 seconds
 """
 
 from py3plex.core import multinet

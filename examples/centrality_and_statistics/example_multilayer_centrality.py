@@ -4,6 +4,8 @@ Example: Multilayer Network Centrality Measures
 
 This example demonstrates how to compute various centrality measures
 for multilayer/multiplex networks using py3plex.
+
+SKIP_CI: slow - Computing centrality measures takes more than 10 seconds
 """
 
 from py3plex.core import multinet

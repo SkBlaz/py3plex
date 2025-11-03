@@ -4,6 +4,8 @@ Example: Leiden community detection for multilayer networks.
 
 This example demonstrates how to use the Leiden algorithm for detecting
 communities in multilayer networks using py3plex.
+
+SKIP_CI: external_deps - Requires leidenalg package
 """
 
 import sys

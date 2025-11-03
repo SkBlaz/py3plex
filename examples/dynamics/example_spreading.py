@@ -14,6 +14,8 @@ Use cases:
 - Information diffusion in social networks
 - Disease spreading in contact networks
 - Influence propagation in multilayer systems
+
+SKIP_CI: external_deps - Requires seaborn
 """
 
 import numpy as np

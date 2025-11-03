@@ -1,4 +1,5 @@
 # visualize multiplex network dynamics
+# SKIP_CI: external_deps - Requires seaborn and specific datasets
 
 from py3plex.visualization.multilayer import draw_multilayer_default
 from py3plex.core import multinet
