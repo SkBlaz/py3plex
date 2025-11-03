@@ -1,24 +1,25 @@
-# parser for generic multiplex networks (../multiplex_datasets)
+# parser for generic multiplex networks (multilayer_datasets)
 
 from py3plex.core import multinet
+from py3plex.utils import get_multilayer_dataset_path
 
 # first parse the layer n1 n2 w edgelist
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../multilayer_datasets/MLKing/MLKing2013_multiplex.edges",
+    get_multilayer_dataset_path("MLKing/MLKing2013_multiplex.edges"),
     directed=True,
     input_type="multiplex_edges")
 
 # map layer ids to names
 multilayer_network.load_layer_name_mapping(
-    "../multilayer_datasets/MLKing/MLKing2013_layers.txt")
+    get_multilayer_dataset_path("MLKing/MLKing2013_layers.txt"))
 
 # Finally, load termporal edge information
 multilayer_network.load_network_activity(
-    "../multilayer_datasets/MLKing/MLKing2013_activity.txt")
+    get_multilayer_dataset_path("MLKing/MLKing2013_activity.txt"))
 
 # Read it alltogether (assumes .edges and other types of files in the target folder!
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../multilayer_datasets/MLKing",
+    get_multilayer_dataset_path("MLKing"),
     directed=True,
     input_type="multiplex_folder")
 

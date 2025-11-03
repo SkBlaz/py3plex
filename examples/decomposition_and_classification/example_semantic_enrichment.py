@@ -11,10 +11,11 @@ from py3plex.core import multinet
 
 # store communities
 from collections import defaultdict
+from py3plex.utils import get_dataset_path
 
 # load the network
 network = multinet.multi_layer_network().load_network(
-    input_file="../datasets/epigenetics.gpickle",
+    input_file=get_dataset_path("epigenetics.gpickle"),
     directed=False,
     input_type="gpickle_biomine")
 
@@ -31,6 +32,6 @@ for node, community in partition.items():
 
 # p<0.05 and fdr_bh correction for GO function -- this can take some time!
 enrichment_table = enrichment_modules.fet_enrichment_uniprot(
-    community_object, "../datasets/goa_human.gaf.gz")
+    community_object, get_dataset_path("goa_human.gaf.gz"))
 
 print(enrichment_table)

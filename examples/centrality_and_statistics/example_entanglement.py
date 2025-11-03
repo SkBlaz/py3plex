@@ -3,10 +3,11 @@
 
 from py3plex.core import multinet
 from py3plex.algorithms.multilayer_algorithms.entanglement import compute_entanglement_analysis
+from py3plex.utils import get_dataset_path
 
 # visualization from a simple file
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/multiL.txt", directed=True, input_type="multiedgelist")
+    get_dataset_path("multiL.txt"), directed=True, input_type="multiedgelist")
 multilayer_network.basic_stats()
 
 analysis = compute_entanglement_analysis(multilayer_network)

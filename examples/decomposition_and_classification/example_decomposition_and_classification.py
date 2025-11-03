@@ -30,13 +30,14 @@ from sklearn.model_selection import StratifiedShuffleSplit
 
 from py3plex.core import multinet
 from py3plex.algorithms.network_classification import PPR
+from py3plex.utils import get_dataset_path
 
 print("=" * 70)
 print("NETWORK DECOMPOSITION AND CLASSIFICATION")
 print("=" * 70)
 
 # Dataset configuration
-dataset = "../datasets/imdb.gpickle"
+dataset = get_dataset_path("imdb.gpickle")
 
 # Check if dataset exists
 if not os.path.exists(dataset):

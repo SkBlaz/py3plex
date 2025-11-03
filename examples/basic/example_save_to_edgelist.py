@@ -14,9 +14,10 @@ Supported edgelist formats:
 
 import os
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 
 # Path to the dataset
-dataset_path = "../datasets/goslim_mirna.gpickle"
+dataset_path = get_dataset_path("goslim_mirna.gpickle")
 
 # Check if the dataset exists
 if not os.path.exists(dataset_path):
@@ -38,21 +39,21 @@ print("\nSaving network in different edgelist formats...\n")
 
 # 1. Save as multiedgelist (string-based, human-readable)
 print("1. Saving as multiedgelist (human-readable format)...")
-output_path1 = "../datasets/mirna_multiedgelist.list"
+output_path1 = get_dataset_path("mirna_multiedgelist.list")
 multilayer_network.save_network(output_path1, output_type="multiedgelist")
 print(f"   Saved to: {output_path1}")
 print("   Format: node1 layer1 node2 layer2 weight")
 
 # 2. Save as simple edgelist (encoded node-layer pairs as integers)
 print("\n2. Saving as edgelist (compact numeric format)...")
-output_path2 = "../datasets/mirna_edgelist.list"
+output_path2 = get_dataset_path("mirna_edgelist.list")
 multilayer_network.save_network(output_path2, output_type="edgelist")
 print(f"   Saved to: {output_path2}")
 print("   Format: encoded_node_layer_id1 encoded_node_layer_id2 weight")
 
 # 3. Save as encoded multiedgelist (numeric with layer information)
 print("\n3. Saving as encoded multiedgelist (numeric with layer info)...")
-output_path3 = "../datasets/mirna_multiedgelist_encoded.list"
+output_path3 = get_dataset_path("mirna_multiedgelist_encoded.list")
 multilayer_network.save_network(output_path3, output_type="multiedgelist_encoded")
 print(f"   Saved to: {output_path3}")
 print("   Format: node_id1 layer_id1 node_id2 layer_id2 weight")

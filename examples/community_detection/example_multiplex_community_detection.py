@@ -1,6 +1,7 @@
 from py3plex.core import random_generators
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 
 ER_multilayer = random_generators.random_multilayer_ER(50,
                                                        8,
@@ -10,10 +11,10 @@ partition = cw.louvain_communities(ER_multilayer)
 print(partition)
 
 comNet = multinet.multi_layer_network().load_network(
-    '../datasets/simple_multiplex.edgelist',
+    get_dataset_path('simple_multiplex.edgelist'),
     directed=False,
     input_type='multiplex_edges')
-comNet.load_layer_name_mapping('../datasets/simple_multiplex.txt')
+comNet.load_layer_name_mapping(get_dataset_path('simple_multiplex.txt'))
 comNet.basic_stats()
 part = cw.louvain_communities(comNet)
 print(part)

@@ -6,7 +6,9 @@ including random state management for reproducibility and deprecation warnings.
 """
 
 import functools
+import os
 import warnings
+from pathlib import Path
 from typing import Any, Callable, Optional, Union
 
 import numpy as np
@@ -185,3 +187,159 @@ def validate_multilayer_input(network_data: Any) -> None:
 
     # Additional validation logic can be added here
     # This is a placeholder for future validation enhancements
+
+
+def get_data_path(relative_path: str) -> str:
+    """
+    Get the absolute path to a data file in the repository.
+    
+    This function resolves paths relative to the repository root,
+    allowing example scripts to work regardless of the current working directory.
+    
+    Args:
+        relative_path: Path relative to repository root (e.g., "datasets/intact02.gpickle")
+    
+    Returns:
+        str: Absolute path to the file
+    
+    Raises:
+        RuntimeError: If unable to determine repository root directory
+    
+    Examples:
+        >>> from py3plex.utils import get_data_path
+        >>> path = get_data_path("datasets/intact02.gpickle")
+        >>> os.path.exists(path)
+        True
+    
+    Note:
+        This function assumes the py3plex package is installed or the script
+        is run from within the repository structure. It works with both
+        regular installations and editable/development installs.
+    """
+    try:
+        # Get the directory containing this file (py3plex/utils.py)
+        utils_dir = Path(__file__).parent
+        # Go up one level to get the repository root (parent of py3plex package)
+        repo_root = utils_dir.parent
+        # Resolve the full path
+        full_path = repo_root / relative_path
+        return str(full_path)
+    except Exception as e:
+        raise RuntimeError(
+            f"Unable to determine repository root directory. "
+            f"Error: {e}. "
+            f"This function requires py3plex to be installed from the repository."
+        ) from e
+
+
+def get_dataset_path(filename: str) -> str:
+    """
+    Get the absolute path to a dataset file.
+    
+    Convenience wrapper around get_data_path() specifically for dataset files.
+    
+    Args:
+        filename: Name or relative path of the dataset file
+    
+    Returns:
+        str: Absolute path to the dataset file
+    
+    Examples:
+        >>> from py3plex.utils import get_dataset_path
+        >>> path = get_dataset_path("intact02.gpickle")
+        >>> os.path.exists(path)
+        True
+    """
+    # If the filename already includes "datasets/", use it as-is
+    if filename.startswith("datasets/"):
+        return get_data_path(filename)
+    # Otherwise, prepend "datasets/"
+    return get_data_path(f"datasets/{filename}")
+
+
+def get_example_image_path(filename: str) -> str:
+    """
+    Get the absolute path to an example image file.
+    
+    Convenience wrapper around get_data_path() specifically for example image files.
+    
+    Args:
+        filename: Name or relative path of the image file
+    
+    Returns:
+        str: Absolute path to the example image file
+    
+    Examples:
+        >>> from py3plex.utils import get_example_image_path
+        >>> path = get_example_image_path("intact_10_BH.png")
+    """
+    # If the filename already includes "example_images/", use it as-is
+    if filename.startswith("example_images/"):
+        return get_data_path(filename)
+    # Otherwise, prepend "example_images/"
+    return get_data_path(f"example_images/{filename}")
+
+
+def get_multilayer_dataset_path(relative_path: str) -> str:
+    """
+    Get the absolute path to a multilayer dataset file.
+    
+    Convenience wrapper around get_data_path() specifically for multilayer dataset files.
+    
+    Args:
+        relative_path: Relative path within multilayer_datasets directory
+    
+    Returns:
+        str: Absolute path to the multilayer dataset file
+    
+    Examples:
+        >>> from py3plex.utils import get_multilayer_dataset_path
+        >>> path = get_multilayer_dataset_path("MLKing/MLKing2013_multiplex.edges")
+    """
+    # If the path already includes "multilayer_datasets/", use it as-is
+    if relative_path.startswith("multilayer_datasets/"):
+        return get_data_path(relative_path)
+    # Otherwise, prepend "multilayer_datasets/"
+    return get_data_path(f"multilayer_datasets/{relative_path}")
+
+
+def get_background_knowledge_path(filename: str) -> str:
+    """
+    Get the absolute path to a background knowledge file or directory.
+    
+    Convenience wrapper around get_data_path() specifically for background knowledge files.
+    
+    Args:
+        filename: Name or relative path of the background knowledge file.
+                 Use empty string or '.' to get the background_knowledge directory itself.
+    
+    Returns:
+        str: Absolute path to the background knowledge file or directory
+    
+    Examples:
+        >>> from py3plex.utils import get_background_knowledge_path
+        >>> path = get_background_knowledge_path("bk.n3")
+        >>> dir_path = get_background_knowledge_path(".")
+    """
+    # If the filename already includes "background_knowledge/", use it as-is
+    if filename.startswith("background_knowledge/"):
+        return get_data_path(filename)
+    # If empty string or '.', return the directory itself
+    if not filename or filename == '.':
+        return get_data_path("background_knowledge")
+    # Otherwise, prepend "background_knowledge/"
+    return get_data_path(f"background_knowledge/{filename}")
+
+
+def get_background_knowledge_dir() -> str:
+    """
+    Get the absolute path to the background knowledge directory.
+    
+    Returns:
+        str: Absolute path to the background_knowledge directory
+    
+    Examples:
+        >>> from py3plex.utils import get_background_knowledge_dir
+        >>> dir_path = get_background_knowledge_dir()
+    """
+    return get_data_path("background_knowledge")

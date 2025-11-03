@@ -15,9 +15,10 @@ gpickle format is useful for:
 
 import os
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 
 # Path to the input dataset
-dataset = "../datasets/imdb_gml.gml"
+dataset = get_dataset_path("imdb_gml.gml")
 
 # Check if the dataset exists
 if not os.path.exists(dataset):
@@ -38,7 +39,7 @@ multilayer_network = multinet.multi_layer_network().load_network(
 print(f"Network loaded successfully from {dataset}")
 
 # Define output path for gpickle file
-output_path = "../datasets/imdb.gpickle"
+output_path = get_dataset_path("imdb.gpickle")
 
 print(f"\nSaving network to gpickle format: {output_path}")
 # Save the network in gpickle format

@@ -23,13 +23,14 @@ import pandas as pd
 from py3plex.core import multinet
 from py3plex.algorithms.network_classification import validate_label_propagation
 from py3plex.visualization.benchmark_visualizations import plot_core_macro
+from py3plex.utils import get_dataset_path
 
 print("=" * 70)
 print("LABEL PROPAGATION FOR NODE CLASSIFICATION")
 print("=" * 70)
 
 # Define dataset path
-dataset_path = "../datasets/cora.mat"
+dataset_path = get_dataset_path("cora.mat")
 
 # Check if file exists
 if not os.path.exists(dataset_path):

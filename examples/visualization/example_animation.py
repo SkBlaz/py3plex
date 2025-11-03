@@ -19,18 +19,19 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from py3plex.core import random_generators
 import matplotlib.image as mgimg
+from py3plex.utils import get_dataset_path, get_example_image_path
 
 print("=" * 70)
 print("NETWORK ANIMATION GENERATOR")
 print("=" * 70)
 
 # Configure animation settings
-folder_tmp_files = "../datasets/animation"
-output_animation = "../example_images/animation.gif"
+folder_tmp_files = get_dataset_path("animation")
+output_animation = get_example_image_path("animation.gif")
 
 # Ensure output directory exists
 os.makedirs(folder_tmp_files, exist_ok=True)
-os.makedirs("../example_images", exist_ok=True)
+os.makedirs(os.path.dirname(output_animation), exist_ok=True)
 
 print(f"\nTemporary files will be saved to: {folder_tmp_files}")
 print(f"Final animation will be saved to: {output_animation}")

@@ -5,9 +5,10 @@ from py3plex.core import multinet
 from py3plex.algorithms.network_classification import *
 from py3plex.visualization.benchmark_visualizations import *
 import pandas as pd
+from py3plex.utils import get_dataset_path
 
 multilayer_network = multinet.multi_layer_network().load_network(
-    input_file="../datasets/imdb_gml.gml", directed=True, input_type="gml")
+    input_file=get_dataset_path("imdb_gml.gml"), directed=True, input_type="gml")
 
 ## import status
 result_frames = []

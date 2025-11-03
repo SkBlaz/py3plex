@@ -32,6 +32,7 @@ from py3plex.visualization.multilayer import (
 )
 from py3plex.visualization.colors import colors_default
 from py3plex.algorithms.community_detection import community_wrapper as cw
+from py3plex.utils import get_dataset_path
 
 # Set random seeds for reproducible visualizations
 random.seed(42)
@@ -60,7 +61,7 @@ print("\n" + "=" * 70)
 print("EXAMPLE 1: Basic Multiedgelist Visualization")
 print("=" * 70)
 
-dataset1 = "../datasets/multinet_k100.txt"
+dataset1 = get_dataset_path("multinet_k100.txt")
 if os.path.exists(dataset1):
     print(f"\nLoading: {dataset1}")
     
@@ -89,7 +90,7 @@ print("\n" + "=" * 70)
 print("EXAMPLE 2: Alternative Dataset")
 print("=" * 70)
 
-dataset2 = "../datasets/edgeList.txt"
+dataset2 = get_dataset_path("edgeList.txt")
 if os.path.exists(dataset2):
     print(f"\nLoading: {dataset2}")
     
@@ -118,7 +119,7 @@ print("\n" + "=" * 70)
 print("EXAMPLE 3: IMDB Network Visualization")
 print("=" * 70)
 
-dataset3 = "../datasets/imdb.gpickle"
+dataset3 = get_dataset_path("imdb.gpickle")
 if os.path.exists(dataset3):
     print(f"\nLoading: {dataset3}")
     
@@ -161,7 +162,7 @@ print("\n" + "=" * 70)
 print("EXAMPLE 4: Biological Network (miRNA)")
 print("=" * 70)
 
-dataset4 = "../datasets/goslim_mirna.gpickle"
+dataset4 = get_dataset_path("goslim_mirna.gpickle")
 if os.path.exists(dataset4):
     print(f"\nLoading: {dataset4}")
     
@@ -190,7 +191,7 @@ print("\n" + "=" * 70)
 print("EXAMPLE 5: Directed Network Diagonal Layout")
 print("=" * 70)
 
-dataset5 = "../datasets/multiL.txt"
+dataset5 = get_dataset_path("multiL.txt")
 if os.path.exists(dataset5):
     print(f"\nLoading: {dataset5}")
     
@@ -219,7 +220,7 @@ print("\n" + "=" * 70)
 print("EXAMPLE 6: Custom Multi-Edge Styling (Advanced)")
 print("=" * 70)
 
-dataset6 = "../datasets/epigenetics.gpickle"
+dataset6 = get_dataset_path("epigenetics.gpickle")
 if os.path.exists(dataset6):
     print(f"\nLoading: {dataset6}")
     
@@ -383,14 +384,14 @@ plt.show()
 
 # basic string layout ----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/epigenetics.gpickle",
+    get_dataset_path("epigenetics.gpickle"),
     directed=False,
     label_delimiter="---",
     input_type="gpickle_biomine")
 network_colors, graph = multilayer_network.get_layers(style="hairball")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input_network", default="../datasets/cora.mat")
+parser.add_argument("--input_network", default=get_dataset_path("cora.mat"))
 parser.add_argument("--input_type", default="sparse_network")
 args = parser.parse_args()
 
@@ -427,7 +428,7 @@ plt.show()
 
 # string layout for larger network -----------------------------------
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/soc-Epinions1.edgelist",
+    get_dataset_path("soc-Epinions1.edgelist"),
     label_delimiter="---",
     input_type="edgelist",
     directed=True)
@@ -438,20 +439,20 @@ plt.show()
 # embedding-based layout (custom coordinates) -----------------------------------
 
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/goslim_mirna.gpickle",
+    get_dataset_path("goslim_mirna.gpickle"),
     directed=False,
     input_type="gpickle_biomine")
 
-multilayer_network.save_network("../datasets/test.edgelist")
+multilayer_network.save_network(get_dataset_path("test.edgelist"))
 
 # call a specific n2v compiled binary
-train_node2vec_embedding.call_node2vec_binary("../datasets/test.edgelist",
-                                              "../datasets/test_embedding.emb",
+train_node2vec_embedding.call_node2vec_binary(get_dataset_path("test.edgelist"),
+                                              get_dataset_path("test_embedding.emb"),
                                               binary="./node2vec",  # Note: binary no longer bundled
                                               weighted=False)
 
 # preprocess and check embedding
-multilayer_network.load_embedding("../datasets/test_embedding.emb")
+multilayer_network.load_embedding(get_dataset_path("test_embedding.emb"))
 output_positions = embedding_tools.get_2d_coordinates_tsne(
     multilayer_network, output_format="pos_dict")
 

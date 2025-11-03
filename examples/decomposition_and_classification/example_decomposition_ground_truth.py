@@ -1,9 +1,10 @@
 # decomposition with ground truth
 
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 #from sklearn.model_selection import StratifiedShuffleSplit
 
-dataset = "../datasets/imdb.gpickle"
+dataset = get_dataset_path("imdb.gpickle")
 
 multilayer_network = multinet.multi_layer_network().load_network(
     input_file=dataset, directed=True, input_type=dataset.split(".")[-1])

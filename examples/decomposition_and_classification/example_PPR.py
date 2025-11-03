@@ -4,10 +4,11 @@ from py3plex.core import multinet
 from py3plex.algorithms.network_classification.PPR import *
 from py3plex.visualization.benchmark_visualizations import *
 from sklearn.svm import SVC
+from py3plex.utils import get_dataset_path
 
 # load a sparse network
 multilayer_network = multinet.multi_layer_network().load_network(
-    "../datasets/cora.mat", directed=False, input_type="sparse")
+    get_dataset_path("cora.mat"), directed=False, input_type="sparse")
 
 # this can take some time!
 model = SVC(kernel='linear', C=1, probability=True)

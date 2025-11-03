@@ -17,14 +17,15 @@ from py3plex.core import multinet
 from py3plex.visualization.multilayer import hairball_plot, plt
 from py3plex.visualization.colors import colors_default
 from collections import Counter
+from py3plex.utils import get_dataset_path
 
 print("=" * 70)
 print("COMMUNITY STRUCTURE VISUALIZATION")
 print("=" * 70)
 
 # Define file paths
-network_file = "../datasets/network.dat"
-community_file = "../datasets/community.dat"
+network_file = get_dataset_path("network.dat")
+community_file = get_dataset_path("community.dat")
 
 # Check if files exist
 if not os.path.exists(network_file):

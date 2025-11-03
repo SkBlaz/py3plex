@@ -23,6 +23,7 @@ Use cases:
 
 import os
 from py3plex.core import multinet, random_generators
+from py3plex.utils import get_dataset_path
 
 print("=" * 70)
 print("SUPRA-ADJACENCY MATRIX OPERATIONS")
@@ -66,8 +67,8 @@ print("\nExample 2: Multiplex Network with Layer Names")
 print("-" * 70)
 
 # Define file paths
-edgelist_path = '../datasets/simple_multiplex.edgelist'
-layer_names_path = '../datasets/simple_multiplex.txt'
+edgelist_path = get_dataset_path('simple_multiplex.edgelist')
+layer_names_path = get_dataset_path('simple_multiplex.txt')
 
 # Check if files exist
 if not os.path.exists(edgelist_path):

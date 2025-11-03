@@ -13,13 +13,14 @@ These are the building blocks for more complex multilayer network analysis.
 
 import os
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 
 print("=" * 70)
 print("MULTILAYER NETWORK FUNCTIONALITY DEMONSTRATION")
 print("=" * 70)
 
 # Load a multilayer network
-dataset_path = "../datasets/multiedgelist.txt"
+dataset_path = get_dataset_path("multiedgelist.txt")
 
 if not os.path.exists(dataset_path):
     print(f"Error: Dataset file '{dataset_path}' not found.")

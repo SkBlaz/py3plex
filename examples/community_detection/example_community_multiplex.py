@@ -4,9 +4,10 @@ import louvain
 import igraph as ig
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 
 network = multinet.multi_layer_network(network_type="multiplex").load_network(
-    input_file="../datasets/multiplex_example.edgelist",
+    input_file=get_dataset_path("multiplex_example.edgelist"),
     directed=True,
     input_type="multiplex_edges")
 

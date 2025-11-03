@@ -1,17 +1,18 @@
 ## a simple visualization of a twitter network
 from py3plex.visualization.multilayer import draw_multilayer_default, plt
 from py3plex.core import multinet
+from py3plex.utils import get_dataset_path
 
 ## Load the relevan layer names for later
 layer_map = {}
-with open("../datasets/twitterlayers.txt") as twl:
+with open(get_dataset_path("twitterlayers.txt")) as twl:
     for line in twl:
         line = line.strip()
         idx, lname = line.split()
         layer_map[idx] = lname
 
 ## Loade the network first!
-multilayer_network = multinet.multi_layer_network(network_type = "multiplex").load_network("../datasets/test13.edges", directed=False, input_type="multiplex_edges")
+multilayer_network = multinet.multi_layer_network(network_type = "multiplex").load_network(get_dataset_path("test13.edges"), directed=False, input_type="multiplex_edges")
 
 ## Let's customize it a bit.
 network_labels, graphs, multilinks = multilayer_network.get_layers()
