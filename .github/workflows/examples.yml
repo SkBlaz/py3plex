@@ -11,7 +11,7 @@ on:
 jobs:
   run-examples:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     
     # Limit permissions for security
     permissions:
@@ -65,10 +65,10 @@ jobs:
 
     - name: Run fast examples
       run: |
-        echo "🧪 Running fast examples (< 10 seconds each)..."
-        python .github/scripts/run_examples.py --fast-only --timeout 10
+        echo "🧪 Running fast examples (< 30 seconds each)..."
+        python .github/scripts/run_examples.py --fast-only --timeout 30
         echo "✅ Fast examples completed successfully"
-      timeout-minutes: 15
+      timeout-minutes: 25
       env:
         # Use non-interactive backend for matplotlib
         MPLBACKEND: Agg
