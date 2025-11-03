@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     
+    # Limit permissions for security
+    permissions:
+      contents: read
+      actions: read
+    
     strategy:
       fail-fast: false
       matrix:
