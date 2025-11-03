@@ -3,6 +3,8 @@ Example demonstrating incidence gadget encoding for multiplex networks.
 
 This example shows how to transform a multiplex network into a homogeneous
 hypergraph using incidence gadget encoding with prime-based layer signatures.
+
+SKIP_CI: external_deps - Requires sympy package
 """
 
 import networkx as nx

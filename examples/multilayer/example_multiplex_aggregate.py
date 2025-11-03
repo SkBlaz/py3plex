@@ -13,6 +13,8 @@ useful for:
 - Creating weighted networks that reflect layer contributions
 - Comparing different layer importance metrics
 - Reducing computational complexity
+
+SKIP_CI: external_deps - Uses deprecated networkx.info() API
 """
 
 import networkx as nx
