@@ -1,4 +1,5 @@
 # decompose a complex network into a simple, homogeneous network according to a heuristic
+# SKIP_CI: slow - Network decomposition and validation takes more than 10 seconds
 
 #from py3plex.algorithms import *
 from py3plex.core import multinet

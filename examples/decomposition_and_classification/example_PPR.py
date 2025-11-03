@@ -1,4 +1,5 @@
 # personalized pagerank for node classification
+# SKIP_CI: slow - PPR validation takes more than 10 seconds
 
 from py3plex.core import multinet
 from py3plex.algorithms.network_classification.PPR import *

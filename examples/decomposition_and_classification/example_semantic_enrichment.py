@@ -1,4 +1,5 @@
 # a simple FET-based partition enrichment..
+# SKIP_CI: slow - Community detection and enrichment takes more than 10 seconds
 
 # enrichment modules
 from py3plex.algorithms.statistics import enrichment_modules

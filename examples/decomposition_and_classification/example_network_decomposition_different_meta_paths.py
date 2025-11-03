@@ -1,4 +1,5 @@
 ## decomposition via different meta paths
+# SKIP_CI: slow - Meta-path decomposition takes more than 10 seconds
 
 from py3plex.core import multinet
 import numpy as np

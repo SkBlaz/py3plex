@@ -12,6 +12,8 @@ Reference:
     Baptista et al. (2022), "Universal multilayer network exploration by random
     walk with restart", Communications Physics, 5, 170.
     https://doi.org/10.1038/s42005-022-00937-9
+
+SKIP_CI: slow - Random walk computations take more than 10 seconds
 """
 
 import numpy as np

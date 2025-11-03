@@ -16,6 +16,8 @@ This approach is useful for:
 
 The decomposition process extracts meaningful subgraphs (meta-paths)
 that capture different aspects of the network structure.
+
+SKIP_CI: slow - Classification workflow with multiple decompositions takes more than 10 seconds
 """
 
 import os
