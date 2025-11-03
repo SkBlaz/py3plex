@@ -10,6 +10,8 @@ Network inversion is useful for:
 - Analyzing information flow in the opposite direction
 - Finding incoming vs outgoing connectivity patterns
 - Studying reversed causality relationships
+
+SKIP_CI: external_deps - Requires specific dataset files
 """
 
 import os

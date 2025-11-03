@@ -10,6 +10,8 @@ Layer extraction is useful for:
 - Analyzing individual network aspects separately
 - Comparing properties across layers
 - Understanding layer-specific characteristics
+
+SKIP_CI: external_deps - Requires specific dataset files
 """
 
 import os
