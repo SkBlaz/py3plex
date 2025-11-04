@@ -384,10 +384,11 @@ def parse_simple_edgelist(
             if line.split()[0] != "#":
                 parts = line.strip().split()
                 if len(parts) == 3:
-                    node_first_str, node_second_str, weight = parts
+                    node_first_str, node_second_str, weight_str = parts
+                    weight = float(weight_str)
                 elif len(parts) == 2:
                     node_first_str, node_second_str = parts
-                    weight = "1"
+                    weight = 1.0
                 else:
                     continue
 
