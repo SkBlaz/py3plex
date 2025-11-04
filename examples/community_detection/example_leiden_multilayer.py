@@ -56,8 +56,8 @@ print("\n\n### Example 2: Random multilayer Erdős-Rényi network ###\n")
 
 # Generate a random multilayer network
 network2 = random_generators.random_multilayer_ER(
-    num_nodes=20,
-    num_layers=3,
+    n=20,
+    l=3,
     p=0.15,
     directed=False
 )
