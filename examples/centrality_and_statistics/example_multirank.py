@@ -8,6 +8,8 @@ for multilayer network analysis.
 These algorithms are particularly useful for:
 1. Co-ranking nodes and layers simultaneously (MultiRank)
 2. Modeling cross-layer influence in social and information networks (Multiplex PageRank)
+
+SKIP_CI: slow - Ranking algorithms take more than 10 seconds
 """
 
 import numpy as np

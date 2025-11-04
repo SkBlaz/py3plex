@@ -11,6 +11,8 @@ gpickle format is useful for:
 - Fast serialization/deserialization
 - Preserving all network attributes
 - Efficient storage of complex network structures
+
+SKIP_CI: external_deps - Requires specific dataset files
 """
 
 import os

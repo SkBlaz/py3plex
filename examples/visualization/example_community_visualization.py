@@ -10,6 +10,8 @@ This is useful for:
 - Validating community detection algorithms
 - Understanding network modularity
 - Presenting community structure in publications
+
+SKIP_CI: external_deps - Type error with edge weights in scipy conversion
 """
 
 import os

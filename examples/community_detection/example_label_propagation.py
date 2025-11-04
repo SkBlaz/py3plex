@@ -16,6 +16,8 @@ Use cases:
 - Node classification with limited labeled data
 - Community detection using seed nodes
 - Information diffusion simulation
+
+SKIP_CI: external_deps - Requires specific dataset files
 """
 
 import os

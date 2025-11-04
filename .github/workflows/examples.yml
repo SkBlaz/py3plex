@@ -1,0 +1,86 @@
+name: Examples CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  run-examples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    # Limit permissions for security
+    permissions:
+      contents: read
+      actions: read
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+      timeout-minutes: 3
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+      timeout-minutes: 2
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc g++ build-essential
+      timeout-minutes: 5
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        # Install numpy and scipy first to avoid potential conflicts
+        pip install --timeout 120 numpy scipy
+        pip install --timeout 120 -r requirements.txt
+        # Add py3plex to PYTHONPATH
+        echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
+        # Verify key dependencies
+        python -c "import numpy; print(f'numpy {numpy.__version__}')"
+        python -c "import scipy; print(f'scipy {scipy.__version__}')"
+        python -c "import networkx; print(f'networkx {networkx.__version__}')"
+      timeout-minutes: 15
+
+    - name: Run fast examples
+      run: |
+        echo "🧪 Running fast examples (< 30 seconds each)..."
+        python .github/scripts/run_examples.py --fast-only --timeout 30
+        echo "✅ Fast examples completed successfully"
+      timeout-minutes: 25
+      env:
+        # Use non-interactive backend for matplotlib
+        MPLBACKEND: Agg
+
+    - name: Upload example outputs
+      if: success() || failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: example-outputs-py${{ matrix.python-version }}
+        path: |
+          example_images/*.png
+          datasets/*.png
+        if-no-files-found: warn
+        retention-days: 7
+      timeout-minutes: 2

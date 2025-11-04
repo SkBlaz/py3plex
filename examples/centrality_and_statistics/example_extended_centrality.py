@@ -7,6 +7,8 @@ implemented in py3plex for multilayer network analysis.
 
 Author: py3plex contributors
 Date: 2025
+
+SKIP_CI: slow - Computing multiple centrality metrics takes more than 10 seconds
 """
 
 from py3plex.core import multinet

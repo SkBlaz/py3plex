@@ -1,3 +1,6 @@
+# Multiplex community detection example
+# SKIP_CI: external_deps - Requires specific dataset files
+
 from py3plex.core import random_generators
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet

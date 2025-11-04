@@ -1,4 +1,5 @@
 # compute and visualize powerlaw distributions (and other alternatives)
+# SKIP_CI: external_deps - Requires specific dataset files
 
 import networkx as nx
 from py3plex.algorithms.statistics.topology import plot_power_law

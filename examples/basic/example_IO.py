@@ -9,6 +9,8 @@ This example demonstrates how to:
 Supported formats include:
 - Monoplex: GML, gpickle, edgelist, sparse matrices (.mat)
 - Multilayer: multiedgelist (N L N L w), multiplex_edges (L N N w)
+
+SKIP_CI: external_deps - Requires specific dataset files that may not be available in CI
 """
 
 import os

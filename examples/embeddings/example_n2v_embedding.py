@@ -1,4 +1,5 @@
 # example network embedding using a binary
+# SKIP_CI: external_deps - Requires node2vec binary
 from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.embedding_visualization import embedding_visualization, embedding_tools

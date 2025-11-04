@@ -10,6 +10,8 @@ Supported edgelist formats:
 - multiedgelist: Human-readable format with node/layer names (node1 layer1 node2 layer2 weight)
 - edgelist: Simple numeric format with encoded node-layer pairs (id1 id2 weight)
 - multiedgelist_encoded: Numeric format maintaining layer information (node_id1 layer_id1 node_id2 layer_id2 weight)
+
+SKIP_CI: external_deps - Requires specific dataset files
 """
 
 import os

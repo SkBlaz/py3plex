@@ -9,6 +9,8 @@ This example demonstrates fundamental multilayer network operations:
 5. Computing centrality measures on subnetworks
 
 These are the building blocks for more complex multilayer network analysis.
+
+SKIP_CI: external_deps - Requires specific dataset files
 """
 
 import os

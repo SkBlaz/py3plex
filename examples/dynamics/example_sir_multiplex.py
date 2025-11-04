@@ -3,6 +3,8 @@ Example: SIR Epidemic Simulation on Multiplex Networks
 
 This example demonstrates the use of the SIR epidemic simulator
 on multiplex networks with multiple interaction layers.
+
+SKIP_CI: slow - Epidemic simulation takes more than 10 seconds
 """
 
 import numpy as np

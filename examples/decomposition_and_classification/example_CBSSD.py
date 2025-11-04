@@ -1,4 +1,5 @@
 # community-based semantic subgroup discovery (skrlj 2017) API. Note this does not include the biomine calls
+# SKIP_CI: slow - Takes more than 10 seconds to complete
 
 # this works for UniProt identifiers TODO:generalize!
 

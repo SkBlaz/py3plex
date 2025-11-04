@@ -1,5 +1,6 @@
 # entanglement: By. Benjamin Renoust and Blaz Skrlj, 2019
 # load an example multilayer network
+# SKIP_CI: external_deps - Requires specific dataset files
 
 from py3plex.core import multinet
 from py3plex.algorithms.multilayer_algorithms.entanglement import compute_entanglement_analysis

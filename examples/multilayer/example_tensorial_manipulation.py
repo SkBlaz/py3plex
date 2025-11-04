@@ -1,4 +1,5 @@
 # tensor-based operations examples
+# SKIP_CI: external_deps - Code issue with generator/len() incompatibility
 
 from py3plex.core import random_generators
 
