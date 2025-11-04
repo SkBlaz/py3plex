@@ -17,6 +17,7 @@ if __name__ == "__main__":
 
 from py3plex.core import multinet
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
+from py3plex.utils import get_dataset_path, get_data_path
 
 
 def example_1_create_network():
@@ -50,10 +51,8 @@ def example_2_load_network():
     print("Example 2: Loading Network from File")
     print("="*60)
 
-    # Determine the correct path to datasets
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(os.path.dirname(script_dir))
-    dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
+    # Get the correct path to datasets
+    dataset_path = get_dataset_path("synthetic_multilayer.txt")
 
     if not os.path.exists(dataset_path):
         print(f"Warning: Dataset not found at {dataset_path}")
@@ -347,10 +346,8 @@ def complete_example():
     print("Complete Example: Full Workflow")
     print("="*60)
 
-    # Determine the correct path to datasets
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(os.path.dirname(script_dir))
-    dataset_path = os.path.join(repo_root, "datasets", "synthetic_multilayer.txt")
+    # Get the correct path to datasets
+    dataset_path = get_dataset_path("synthetic_multilayer.txt")
 
     if not os.path.exists(dataset_path):
         print(f"Dataset not found at {dataset_path}")
@@ -413,7 +410,8 @@ def complete_example():
                 for node in network.get_nodes()
             ]
 
-            output_dir = os.path.join(repo_root, "example_images")
+            # Get the example_images directory path
+            output_dir = get_data_path("example_images")
             os.makedirs(output_dir, exist_ok=True)
             output_file = os.path.join(output_dir, "complete_analysis.png")
 
