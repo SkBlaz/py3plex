@@ -6,12 +6,16 @@ including random state management for reproducibility and deprecation warnings.
 """
 
 import functools
+import inspect
 import os
 import warnings
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
 
 import numpy as np
+
+# Configuration for dataset path search
+MAX_UPWARD_SEARCH_LEVELS = 4  # Check current dir + 3 parent levels
 
 # Optional formal verification support
 try:
@@ -193,8 +197,14 @@ def get_data_path(relative_path: str) -> str:
     """
     Get the absolute path to a data file in the repository.
     
-    This function resolves paths relative to the repository root,
-    allowing example scripts to work regardless of the current working directory.
+    This function searches for data files in multiple locations to support both:
+    - Running examples from a cloned repository
+    - Running scripts/notebooks from any directory with datasets locally available
+    
+    Search order:
+    1. Relative to the calling script's directory (for examples in cloned repo)
+    2. Relative to current working directory (for notebooks/user scripts)
+    3. Relative to py3plex package location (for editable installs)
     
     Args:
         relative_path: Path relative to repository root (e.g., "datasets/intact02.gpickle")
@@ -203,7 +213,7 @@ def get_data_path(relative_path: str) -> str:
         str: Absolute path to the file
     
     Raises:
-        RuntimeError: If unable to determine repository root directory
+        FileNotFoundError: If the file cannot be found in any search location
     
     Examples:
         >>> from py3plex.utils import get_data_path
@@ -212,24 +222,111 @@ def get_data_path(relative_path: str) -> str:
         True
     
     Note:
-        This function assumes the py3plex package is installed or the script
-        is run from within the repository structure. It works with both
-        regular installations and editable/development installs.
+        When py3plex is installed via pip, datasets are not included in the package.
+        Users should either:
+        - Clone the repository and run examples from there
+        - Download datasets separately and place them relative to their scripts
+        - Use current working directory with datasets folder
     """
+    search_paths = []
+    
+    # 1. Try relative to the calling script's directory
     try:
-        # Get the directory containing this file (py3plex/utils.py)
+        caller_path = _find_caller_script_path()
+        if caller_path:
+            for candidate in _search_upward_from_script(caller_path, relative_path):
+                if candidate.exists():
+                    return str(candidate)
+                search_paths.append(str(candidate))
+    except (OSError, AttributeError):
+        pass  # Continue to other search methods
+    
+    # 2. Try relative to current working directory
+    try:
+        cwd_path = Path.cwd() / relative_path
+        if cwd_path.exists():
+            return str(cwd_path)
+        search_paths.append(str(cwd_path))
+    except (OSError, AttributeError):
+        pass
+    
+    # 3. Try relative to py3plex package location (for editable installs)
+    try:
         utils_dir = Path(__file__).parent
-        # Go up one level to get the repository root (parent of py3plex package)
         repo_root = utils_dir.parent
-        # Resolve the full path
-        full_path = repo_root / relative_path
-        return str(full_path)
-    except Exception as e:
-        raise RuntimeError(
-            f"Unable to determine repository root directory. "
-            f"Error: {e}. "
-            f"This function requires py3plex to be installed from the repository."
-        ) from e
+        package_path = repo_root / relative_path
+        if package_path.exists():
+            return str(package_path)
+        search_paths.append(str(package_path))
+    except (OSError, AttributeError):
+        pass
+    
+    # If we reach here, file was not found in any location
+    raise FileNotFoundError(
+        f"Could not find '{relative_path}' in any of the expected locations.\n"
+        f"Searched paths:\n" + "\n".join(f"  - {p}" for p in search_paths) + "\n\n"
+        f"The datasets directory is not included when py3plex is installed via pip.\n"
+        f"To use examples and datasets:\n"
+        f"  1. Clone the repository: git clone https://github.com/SkBlaz/py3plex.git\n"
+        f"  2. Run examples from the repository root directory, OR\n"
+        f"  3. Copy the datasets directory to your working directory"
+    )
+
+
+def _find_caller_script_path() -> Path:
+    """
+    Find the path of the script that called get_data_path.
+    
+    Walks up the call stack to find the first frame outside the py3plex package.
+    
+    Returns:
+        Path to the calling script, or None if not found
+    """
+    frame = inspect.currentframe()
+    utils_file = Path(__file__).resolve()
+    package_dir = utils_file.parent  # py3plex package directory
+    
+    try:
+        while frame is not None:
+            frame_file = inspect.getframeinfo(frame).filename
+            if frame_file:
+                frame_path = Path(frame_file).resolve()
+                # Check if frame is outside the py3plex package directory
+                try:
+                    frame_path.relative_to(package_dir)
+                    # If relative_to succeeds, frame is inside package, skip it
+                except ValueError:
+                    # Frame is outside package, this is our caller
+                    return frame_path.parent
+            frame = frame.f_back
+    finally:
+        del frame  # Avoid reference cycles
+    
+    return None
+
+
+def _search_upward_from_script(script_dir: Path, relative_path: str) -> list:
+    """
+    Generate candidate paths by searching upward from script directory.
+    
+    Searches the script's directory and up to MAX_UPWARD_SEARCH_LEVELS-1 parent
+    directories for the requested file path.
+    
+    Args:
+        script_dir: Directory containing the calling script
+        relative_path: Relative path to search for
+    
+    Returns:
+        List of candidate paths to check
+    """
+    candidates = []
+    # Check current directory and up to 3 parent levels (4 total)
+    for level in range(MAX_UPWARD_SEARCH_LEVELS):
+        potential_root = script_dir
+        for _ in range(level):
+            potential_root = potential_root.parent
+        candidates.append(potential_root / relative_path)
+    return candidates
 
 
 def get_dataset_path(filename: str) -> str:
