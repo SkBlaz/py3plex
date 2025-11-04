@@ -196,8 +196,11 @@ class multi_layer_network:
 
         # Postconditions: core_network should be valid
         assert self.core_network is not None, "core_network must be initialized"
-        assert self.core_network.number_of_nodes() >= 0, "node count must be non-negative"
-        assert self.core_network.number_of_edges() >= 0, "edge count must be non-negative"
+        
+        # Only check node/edge counts for NetworkX graphs (not sparse matrices)
+        if hasattr(self.core_network, 'number_of_nodes'):
+            assert self.core_network.number_of_nodes() >= 0, "node count must be non-negative"
+            assert self.core_network.number_of_edges() >= 0, "edge count must be non-negative"
         
         # Postcondition: if directed=False, graph should be undirected
         if not directed and self.core_network is not None:
