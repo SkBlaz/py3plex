@@ -390,7 +390,7 @@ This section contains property-based tests using [Hypothesis](https://hypothesis
 
 Property-based tests verify that code satisfies mathematical properties and invariants across a wide range of inputs, rather than testing specific hand-written examples. This approach is particularly valuable for multilayer network algorithms where edge cases and boundary conditions can be subtle.
 
-**Total: 155+ property-based tests**
+**Total: 218+ property-based tests**
 
 ### Test Modules
 
@@ -513,9 +513,84 @@ Tests versatility (multilayer eigenvector centrality) invariants.
 pytest tests/property/test_versatility_properties.py -v
 ```
 
+##### `test_converters_properties.py` (19 tests)
+Tests layout computation, coordinate normalization, and network preparation invariants.
+
+**Properties tested:**
+- Random layout preserves all nodes
+- Layout coordinates normalized to [0, 1] range
+- Layout coordinates always finite (no NaN/inf)
+- Custom layout preserves provided positions
+- Layout respects different graph structures
+- Hairball preparation preserves network structure
+- Hairball preparation enumerates layers correctly
+- Parsing separates layers correctly
+- Parsing identifies inter-layer edges
+- Parsing handles empty layers gracefully
+- Parsing preserves total node count
+- Layout handles isolated nodes
+- Layout handles single-edge graphs
+
+**Run:**
+```bash
+pytest tests/property/test_converters_properties.py -v
+```
+
+##### `test_supporting_properties.py` (21 tests)
+Tests layer splitting, multiplex edge addition, and utility function invariants.
+
+**Properties tested:**
+- Layer splitting preserves all nodes
+- Layer splitting produces correct layer count
+- Each layer has expected nodes after splitting
+- Layer splitting preserves intra-layer edges
+- Layer splitting excludes inter-layer edges
+- Layer splitting returns dictionary of graphs
+- Multiplex edges increase edge count
+- Multiplex edges preserve node count
+- Multiplex edges connect corresponding nodes across layers
+- Multiplex edges only between different layers
+- Multiplex edges connect same node IDs
+- Single-layer networks unchanged by multiplex operation
+- Multiplex edges with partial node overlap
+- Empty network handling
+- Multiplex edge addition idempotence
+
+**Run:**
+```bash
+pytest tests/property/test_supporting_properties.py -v
+```
+
+##### `test_basic_statistics_properties.py` (23 tests)
+Tests statistical invariants, hub identification, and network metric properties.
+
+**Properties tested:**
+- Hub identification returns at most top_n hubs
+- Hub degrees always non-negative integers
+- Hubs sorted by degree (highest first)
+- Star graph center identified as top hub
+- Complete graph has all nodes with equal degree
+- Empty graph has all nodes with degree 0
+- Core statistics report non-negative counts
+- Node count matches actual node count
+- Edge count matches actual edge count
+- Mean degree within valid bounds
+- Network density between 0 and 1
+- Complete graph has density 1
+- Empty graph has density 0
+- Connected components count positive
+- Star graph statistics have expected properties
+- Path graph statistics have expected properties
+- Handshaking lemma (sum of degrees = 2 × edges)
+
+**Run:**
+```bash
+pytest tests/property/test_basic_statistics_properties.py -v
+```
+
 ##### Other Test Modules
 
-- `test_statistics_properties.py`: Layer density bounds (needs multilayer format fixes)
+- `test_statistics_properties.py`: Layer density bounds (5 tests)
 - `test_communities_properties.py`: Louvain community detection (needs python-louvain package)
 - `test_random_generators_properties.py`: Random graph generators (needs parameter updates)
 
