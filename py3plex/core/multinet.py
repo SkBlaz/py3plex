@@ -1135,15 +1135,17 @@ class multi_layer_network:
             else:
                 simple_graph = nx.Graph()
 
+            # First, add all nodes (including isolated nodes)
+            for node in self.core_network.nodes():
+                if node not in nmap:
+                    nmap[node] = n_count
+                    simple_graph.add_node(n_count)
+                    n_count += 1
+
+            # Then add all edges
             for edge in self.core_network.edges(data=True):
                 node_first = edge[0]
                 node_second = edge[1]
-                if node_first not in nmap:
-                    nmap[node_first] = n_count
-                    n_count += 1
-                if node_second not in nmap:
-                    nmap[node_second] = n_count
-                    n_count += 1
                 try:
                     weight = float(edge[2]["weight"])
                 except (KeyError, IndexError, ValueError, TypeError):
