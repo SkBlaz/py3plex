@@ -90,17 +90,23 @@ print("\n\n### Example 3: Layer-specific resolution parameters ###\n")
 network3 = multinet.multi_layer_network(directed=False)
 
 # Create two communities in layer 1
+edges_l1 = []
 for i in range(4):
     for j in range(i + 1, 4):
-        network3.add_edge(i, 'L1', j, 'L1', 1)
+        edges_l1.append([i, 'L1', j, 'L1', 1])
 
 for i in range(4, 8):
     for j in range(i + 1, 8):
-        network3.add_edge(i, 'L1', j, 'L1', 1)
+        edges_l1.append([i, 'L1', j, 'L1', 1])
+
+network3.add_edges(edges_l1, input_type='list')
 
 # Sparse layer 2
+edges_l2 = []
 for i in range(0, 7, 2):
-    network3.add_edge(i, 'L2', i + 1, 'L2', 1)
+    edges_l2.append([i, 'L2', i + 1, 'L2', 1])
+
+network3.add_edges(edges_l2, input_type='list')
 
 print("Testing different resolution settings...")
 
@@ -135,14 +141,17 @@ print("\n\n### Example 4: Effect of interlayer coupling ###\n")
 network4 = multinet.multi_layer_network(directed=False)
 
 # Create similar structure in both layers
+edges_both = []
 for layer in ['L1', 'L2']:
     for i in range(3):
         for j in range(i + 1, 3):
-            network4.add_edge(i, layer, j, layer, 1)
+            edges_both.append([i, layer, j, layer, 1])
     
     for i in range(3, 6):
         for j in range(i + 1, 6):
-            network4.add_edge(i, layer, j, layer, 1)
+            edges_both.append([i, layer, j, layer, 1])
+
+network4.add_edges(edges_both, input_type='list')
 
 print("Testing different coupling strengths...")
 
