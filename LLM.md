@@ -390,7 +390,7 @@ This section contains property-based tests using [Hypothesis](https://hypothesis
 
 Property-based tests verify that code satisfies mathematical properties and invariants across a wide range of inputs, rather than testing specific hand-written examples. This approach is particularly valuable for multilayer network algorithms where edge cases and boundary conditions can be subtle.
 
-**Total: 218+ property-based tests**
+**Total: 258+ property-based tests**
 
 ### Test Modules
 
@@ -586,6 +586,52 @@ Tests statistical invariants, hub identification, and network metric properties.
 **Run:**
 ```bash
 pytest tests/property/test_basic_statistics_properties.py -v
+```
+
+##### `test_io_converters_properties.py` (20 tests)
+Tests conversion between MultiLayerGraph and NetworkX, preserving structure and attributes.
+
+**Properties tested:**
+- Union mode preserves all unique nodes
+- Union mode merges edges from all layers
+- Multiplex mode preserves layer information
+- Multiplex mode preserves all edges
+- Conversion returns correct NetworkX graph type
+- Intersection mode is conservative (fewer or equal edges)
+- Converted graphs have non-negative node/edge counts
+- Empty layers handled correctly
+- Connectivity patterns preserved
+- Graph-level attributes preserved
+- Node attributes preserved
+- Union mode flattens layers
+- Multiplex mode creates node-layer tuples
+
+**Run:**
+```bash
+pytest tests/property/test_io_converters_properties.py -v
+```
+
+##### `test_random_generators_extended_properties.py` (20 tests)
+Tests properties of random multilayer and multiplex network generators.
+
+**Properties tested:**
+- Random multilayer ER returns non-null network
+- Correct node count in multilayer networks
+- Non-negative edge counts
+- Zero probability generates no edges
+- One probability generates many edges
+- Probability affects edge density
+- Directed flag respected
+- Random multiplex ER returns non-null network
+- Correct node count in multiplex (n × l nodes)
+- Multiplex has proper layer structure
+- Minimal node count handling
+- Single layer handling
+- Probability extremes (0 and 1)
+
+**Run:**
+```bash
+pytest tests/property/test_random_generators_extended_properties.py -v
 ```
 
 ##### Other Test Modules
