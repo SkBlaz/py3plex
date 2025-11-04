@@ -6,12 +6,16 @@ including random state management for reproducibility and deprecation warnings.
 """
 
 import functools
+import inspect
 import os
 import warnings
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
 
 import numpy as np
+
+# Configuration for dataset path search
+MAX_UPWARD_SEARCH_LEVELS = 4  # Check current dir + 3 parent levels
 
 # Optional formal verification support
 try:
@@ -224,8 +228,6 @@ def get_data_path(relative_path: str) -> str:
         - Download datasets separately and place them relative to their scripts
         - Use current working directory with datasets folder
     """
-    import inspect
-    
     search_paths = []
     
     # 1. Try relative to the calling script's directory
@@ -280,8 +282,6 @@ def _find_caller_script_path() -> Path:
     Returns:
         Path to the calling script, or None if not found
     """
-    import inspect
-    
     frame = inspect.currentframe()
     utils_file = Path(__file__).resolve()
     package_dir = utils_file.parent  # py3plex package directory
@@ -309,6 +309,9 @@ def _search_upward_from_script(script_dir: Path, relative_path: str) -> list:
     """
     Generate candidate paths by searching upward from script directory.
     
+    Searches the script's directory and up to MAX_UPWARD_SEARCH_LEVELS-1 parent
+    directories for the requested file path.
+    
     Args:
         script_dir: Directory containing the calling script
         relative_path: Relative path to search for
@@ -317,8 +320,8 @@ def _search_upward_from_script(script_dir: Path, relative_path: str) -> list:
         List of candidate paths to check
     """
     candidates = []
-    # Check up to 3 levels up for the data directory
-    for level in range(4):
+    # Check current directory and up to 3 parent levels (4 total)
+    for level in range(MAX_UPWARD_SEARCH_LEVELS):
         potential_root = script_dir
         for _ in range(level):
             potential_root = potential_root.parent
