@@ -19,6 +19,7 @@ from py3plex.algorithms.general.walkers import (
     generate_walks,
     layer_specific_random_walk,
 )
+from py3plex.utils import get_dataset_path
 
 
 def example_basic_random_walk():
@@ -29,7 +30,7 @@ def example_basic_random_walk():
 
     # Load py3plex example network
     network = multinet.multi_layer_network().load_network(
-        "datasets/test.edgelist",
+        get_dataset_path("test.edgelist"),
         directed=False,
         input_type="edgelist"
     )
@@ -59,7 +60,7 @@ def example_weighted_random_walk():
 
     # Load py3plex network and add weights
     network = multinet.multi_layer_network().load_network(
-        "datasets/test.edgelist",
+        get_dataset_path("test.edgelist"),
         directed=False,
         input_type="edgelist"
     )
@@ -156,7 +157,7 @@ def example_generate_multiple_walks():
 
     # Load py3plex network
     network = multinet.multi_layer_network().load_network(
-        "datasets/test.edgelist",
+        get_dataset_path("test.edgelist"),
         directed=False,
         input_type="edgelist"
     )
