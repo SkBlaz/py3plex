@@ -229,27 +229,14 @@ def get_data_path(relative_path: str) -> str:
     search_paths = []
     
     # 1. Try relative to the calling script's directory
-    # Walk up the stack to find the first frame outside of py3plex package
     try:
-        frame = inspect.currentframe()
-        while frame is not None:
-            frame_file = inspect.getframeinfo(frame).filename
-            # Skip frames within py3plex package itself
-            if frame_file and 'py3plex' not in frame_file:
-                script_dir = Path(frame_file).parent.resolve()
-                # Navigate up to find repository root from examples/*/
-                # Check up to 3 levels up for the data directory
-                for level in range(4):
-                    potential_root = script_dir
-                    for _ in range(level):
-                        potential_root = potential_root.parent
-                    candidate = potential_root / relative_path
-                    if candidate.exists():
-                        return str(candidate)
-                    search_paths.append(str(potential_root / relative_path))
-                break
-            frame = frame.f_back
-    except Exception:
+        caller_path = _find_caller_script_path()
+        if caller_path:
+            for candidate in _search_upward_from_script(caller_path, relative_path):
+                if candidate.exists():
+                    return str(candidate)
+                search_paths.append(str(candidate))
+    except (OSError, AttributeError):
         pass  # Continue to other search methods
     
     # 2. Try relative to current working directory
@@ -258,7 +245,7 @@ def get_data_path(relative_path: str) -> str:
         if cwd_path.exists():
             return str(cwd_path)
         search_paths.append(str(cwd_path))
-    except Exception:
+    except (OSError, AttributeError):
         pass
     
     # 3. Try relative to py3plex package location (for editable installs)
@@ -269,7 +256,7 @@ def get_data_path(relative_path: str) -> str:
         if package_path.exists():
             return str(package_path)
         search_paths.append(str(package_path))
-    except Exception:
+    except (OSError, AttributeError):
         pass
     
     # If we reach here, file was not found in any location
@@ -282,6 +269,61 @@ def get_data_path(relative_path: str) -> str:
         f"  2. Run examples from the repository root directory, OR\n"
         f"  3. Copy the datasets directory to your working directory"
     )
+
+
+def _find_caller_script_path() -> Path:
+    """
+    Find the path of the script that called get_data_path.
+    
+    Walks up the call stack to find the first frame outside the py3plex package.
+    
+    Returns:
+        Path to the calling script, or None if not found
+    """
+    import inspect
+    
+    frame = inspect.currentframe()
+    utils_file = Path(__file__).resolve()
+    package_dir = utils_file.parent  # py3plex package directory
+    
+    try:
+        while frame is not None:
+            frame_file = inspect.getframeinfo(frame).filename
+            if frame_file:
+                frame_path = Path(frame_file).resolve()
+                # Check if frame is outside the py3plex package directory
+                try:
+                    frame_path.relative_to(package_dir)
+                    # If relative_to succeeds, frame is inside package, skip it
+                except ValueError:
+                    # Frame is outside package, this is our caller
+                    return frame_path.parent
+            frame = frame.f_back
+    finally:
+        del frame  # Avoid reference cycles
+    
+    return None
+
+
+def _search_upward_from_script(script_dir: Path, relative_path: str) -> list:
+    """
+    Generate candidate paths by searching upward from script directory.
+    
+    Args:
+        script_dir: Directory containing the calling script
+        relative_path: Relative path to search for
+    
+    Returns:
+        List of candidate paths to check
+    """
+    candidates = []
+    # Check up to 3 levels up for the data directory
+    for level in range(4):
+        potential_root = script_dir
+        for _ in range(level):
+            potential_root = potential_root.parent
+        candidates.append(potential_root / relative_path)
+    return candidates
 
 
 def get_dataset_path(filename: str) -> str:
