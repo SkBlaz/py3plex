@@ -887,21 +887,187 @@ This section describes the property-based tests added to expand test coverage fo
 
 ### Summary
 
-**Latest additions:** 26 new property-based tests for centrality metrics across 2 modules:
-- 16 tests for centrality invariants
-- 10 tests for centrality rankings
+**Latest additions (November 2024):** 118 new property-based tests across 6 modules:
+- 19 tests for core.converters (layout computation, coordinate normalization)
+- 21 tests for core.supporting (layer splitting, multiplex operations)
+- 23 tests for algorithms.statistics.basic_statistics (statistical invariants)
+- 20 tests for io.converters (MultiLayerGraph conversion, attribute preservation)
+- 20 tests for random_generators (multilayer/multiplex ER networks)
+- 15 tests for utils module (RNG reproducibility, determinism)
 
-**Previously added:** 40 property-based tests across 4 modules:
+**Previously added:** 66 property-based tests across 6 modules:
+- 17 tests for centrality invariants
+- 13 tests for centrality rankings
 - 9 tests for edge operations
 - 10 tests for node operations  
 - 10 tests for weight operations
 - 11 tests for graph transformations
 
-**Total property-based tests: 151+** (increased from 125+)
+**Total property-based tests: 273+** (increased from 155+)
 
-### Latest Test Modules (Centrality Coverage)
+### Latest Test Modules (November 2024)
 
-#### 1. `test_centrality_invariants.py` (16 tests)
+#### 1. `test_converters_properties.py` (19 tests)
+
+Tests layout computation, coordinate normalization, and network preparation invariants.
+
+**Key Properties:**
+- Random layout preserves all nodes
+- Layout coordinates normalized to [0, 1] range
+- Layout coordinates always finite (no NaN/inf)
+- Custom layout preserves provided positions
+- Layout respects different graph structures
+- Hairball preparation preserves network structure
+- Parsing separates layers correctly
+- Parsing identifies inter-layer edges
+- Layout handles edge cases (isolated nodes, single-edge graphs)
+
+**Example test:**
+```python
+@given(num_nodes=st.integers(min_value=2, max_value=10))
+def test_random_layout_preserves_nodes(num_nodes):
+    """Test that random layout preserves all nodes."""
+    G = nx.complete_graph(num_nodes)
+    compute_layout(G, "random", None, verbose=False)
+    assert all('pos' in G.nodes[n] for n in G.nodes())
+```
+
+#### 2. `test_supporting_properties.py` (21 tests)
+
+Tests layer splitting, multiplex edge addition, and utility function invariants.
+
+**Key Properties:**
+- Layer splitting preserves all nodes
+- Layer splitting produces correct layer count
+- Each layer has expected nodes after splitting
+- Layer splitting preserves intra-layer edges
+- Layer splitting excludes inter-layer edges
+- Multiplex edges connect corresponding nodes across layers
+- Multiplex edges only between different layers
+- Single-layer networks unchanged by multiplex operation
+- Partial node overlap handling
+
+**Example test:**
+```python
+@given(num_nodes=st.integers(min_value=2, max_value=8),
+       num_layers=st.integers(min_value=2, max_value=4))
+def test_add_mpx_edges_connects_corresponding_nodes(num_nodes, num_layers):
+    """Test that multiplex edges connect corresponding nodes across layers."""
+    # Creates multiplex network and validates edge connections
+```
+
+#### 3. `test_basic_statistics_properties.py` (23 tests)
+
+Tests statistical invariants, hub identification, and network metric properties.
+
+**Key Properties:**
+- Hub identification returns at most top_n hubs
+- Hub degrees always non-negative integers
+- Hubs sorted by degree (highest first)
+- Star graph center identified as top hub
+- Core statistics report non-negative counts
+- Node/edge counts match actual counts
+- Mean degree within valid bounds [0, n-1]
+- Network density between 0 and 1
+- Complete graph has density 1, empty graph has density 0
+- Handshaking lemma (sum of degrees = 2 × edges)
+
+**Example test:**
+```python
+@given(num_nodes=st.integers(min_value=3, max_value=12),
+       p=st.floats(min_value=0.3, max_value=0.7))
+def test_handshaking_lemma(num_nodes, p):
+    """Test that sum of degrees equals twice the number of edges."""
+    G = nx.gnp_random_graph(num_nodes, p)
+    degree_sum = sum(dict(G.degree()).values())
+    assert degree_sum == 2 * G.number_of_edges()
+```
+
+#### 4. `test_io_converters_properties.py` (20 tests)
+
+Tests conversion between MultiLayerGraph and NetworkX, preserving structure and attributes.
+
+**Key Properties:**
+- Union mode preserves all unique nodes
+- Union mode merges edges from all layers
+- Multiplex mode preserves layer information (node-layer tuples)
+- Multiplex mode preserves all edges
+- Intersection mode is conservative (fewer or equal edges)
+- Converted graphs have non-negative node/edge counts
+- Empty layers handled correctly
+- Connectivity patterns preserved
+- Graph-level and node attributes preserved
+
+**Example test:**
+```python
+@given(num_nodes=st.integers(min_value=2, max_value=8),
+       num_layers=st.integers(min_value=2, max_value=3))
+def test_to_networkx_multiplex_preserves_layer_info(num_nodes, num_layers):
+    """Test that multiplex mode preserves layer information."""
+    graph = create_simple_multilayer_graph(num_nodes, num_layers)
+    nx_graph = to_networkx(graph, mode="multiplex")
+    expected_nodes = num_nodes * num_layers
+    assert nx_graph.number_of_nodes() == expected_nodes
+```
+
+#### 5. `test_random_generators_extended_properties.py` (20 tests)
+
+Tests properties of random multilayer and multiplex network generators.
+
+**Key Properties:**
+- Random multilayer ER returns non-null network
+- Correct node count in multilayer/multiplex networks
+- Non-negative edge counts
+- Zero probability generates no edges
+- One probability generates many edges
+- Probability affects edge density
+- Directed flag respected
+- Multiplex has proper layer structure (n × l nodes)
+- Minimal node count handling
+- Probability extremes (0 and 1)
+
+**Example test:**
+```python
+@given(n=st.integers(min_value=3, max_value=10),
+       l=st.integers(min_value=1, max_value=3))
+def test_random_multiplex_ER_node_count(n, l):
+    """Test that random multiplex ER has correct number of nodes."""
+    network = random_multiplex_ER(n, l, 0.5, directed=False)
+    G = network.core_network
+    expected_nodes = n * l
+    assert G.number_of_nodes() == expected_nodes
+```
+
+#### 6. `test_utils_properties.py` (15 tests)
+
+Tests random number generator utilities and reproducibility.
+
+**Key Properties:**
+- get_rng returns numpy Generator
+- Same seed produces identical random numbers (reproducibility)
+- Different seeds produce different random numbers
+- None seed returns valid generator
+- Passthrough of existing generator
+- Generated numbers follow uniform distribution
+- Generator supports various distributions (uniform, normal, integers)
+- Choice and shuffle operations are deterministic
+- Small and large seed values work correctly
+
+**Example test:**
+```python
+@given(seed=st.integers(min_value=0, max_value=2**31-1))
+def test_get_rng_reproducible_with_same_seed(seed):
+    """Test that same seed produces same random numbers."""
+    rng1 = get_rng(seed)
+    rng2 = get_rng(seed)
+    random1 = rng1.random(10)
+    random2 = rng2.random(10)
+    assert np.allclose(random1, random2)
+```
+
+### Previous Test Modules
+
+#### 7. `test_centrality_invariants.py` (17 tests)
 
 Tests fundamental mathematical properties and invariants for multilayer centrality metrics.
 
