@@ -3,6 +3,7 @@
 import itertools
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple, Union
+import matplotlib.pyplot as plt
 
 import networkx as nx
 import numpy as np
