@@ -7,7 +7,10 @@ This module provides visualization tools for multilayer networks, including:
 - Embedding visualization tools
 - Layout algorithms
 
-Most common imports:
+Convenient imports (recommended):
+    from py3plex.visualization import hairball_plot, draw_multilayer_default, colors_default
+
+Traditional imports (also supported for backwards compatibility):
     from py3plex.visualization.multilayer import hairball_plot, draw_multilayer_default
     from py3plex.visualization.colors import colors_default
     from py3plex.visualization.embedding_visualization import embedding_tools
