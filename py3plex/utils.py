@@ -193,8 +193,14 @@ def get_data_path(relative_path: str) -> str:
     """
     Get the absolute path to a data file in the repository.
     
-    This function resolves paths relative to the repository root,
-    allowing example scripts to work regardless of the current working directory.
+    This function searches for data files in multiple locations to support both:
+    - Running examples from a cloned repository
+    - Running scripts/notebooks from any directory with datasets locally available
+    
+    Search order:
+    1. Relative to the calling script's directory (for examples in cloned repo)
+    2. Relative to current working directory (for notebooks/user scripts)
+    3. Relative to py3plex package location (for editable installs)
     
     Args:
         relative_path: Path relative to repository root (e.g., "datasets/intact02.gpickle")
@@ -203,7 +209,7 @@ def get_data_path(relative_path: str) -> str:
         str: Absolute path to the file
     
     Raises:
-        RuntimeError: If unable to determine repository root directory
+        FileNotFoundError: If the file cannot be found in any search location
     
     Examples:
         >>> from py3plex.utils import get_data_path
@@ -212,24 +218,70 @@ def get_data_path(relative_path: str) -> str:
         True
     
     Note:
-        This function assumes the py3plex package is installed or the script
-        is run from within the repository structure. It works with both
-        regular installations and editable/development installs.
+        When py3plex is installed via pip, datasets are not included in the package.
+        Users should either:
+        - Clone the repository and run examples from there
+        - Download datasets separately and place them relative to their scripts
+        - Use current working directory with datasets folder
     """
+    import inspect
+    
+    search_paths = []
+    
+    # 1. Try relative to the calling script's directory
+    # Walk up the stack to find the first frame outside of py3plex package
     try:
-        # Get the directory containing this file (py3plex/utils.py)
+        frame = inspect.currentframe()
+        while frame is not None:
+            frame_file = inspect.getframeinfo(frame).filename
+            # Skip frames within py3plex package itself
+            if frame_file and 'py3plex' not in frame_file:
+                script_dir = Path(frame_file).parent.resolve()
+                # Navigate up to find repository root from examples/*/
+                # Check up to 3 levels up for the data directory
+                for level in range(4):
+                    potential_root = script_dir
+                    for _ in range(level):
+                        potential_root = potential_root.parent
+                    candidate = potential_root / relative_path
+                    if candidate.exists():
+                        return str(candidate)
+                    search_paths.append(str(potential_root / relative_path))
+                break
+            frame = frame.f_back
+    except Exception:
+        pass  # Continue to other search methods
+    
+    # 2. Try relative to current working directory
+    try:
+        cwd_path = Path.cwd() / relative_path
+        if cwd_path.exists():
+            return str(cwd_path)
+        search_paths.append(str(cwd_path))
+    except Exception:
+        pass
+    
+    # 3. Try relative to py3plex package location (for editable installs)
+    try:
         utils_dir = Path(__file__).parent
-        # Go up one level to get the repository root (parent of py3plex package)
         repo_root = utils_dir.parent
-        # Resolve the full path
-        full_path = repo_root / relative_path
-        return str(full_path)
-    except Exception as e:
-        raise RuntimeError(
-            f"Unable to determine repository root directory. "
-            f"Error: {e}. "
-            f"This function requires py3plex to be installed from the repository."
-        ) from e
+        package_path = repo_root / relative_path
+        if package_path.exists():
+            return str(package_path)
+        search_paths.append(str(package_path))
+    except Exception:
+        pass
+    
+    # If we reach here, file was not found in any location
+    raise FileNotFoundError(
+        f"Could not find '{relative_path}' in any of the expected locations.\n"
+        f"Searched paths:\n" + "\n".join(f"  - {p}" for p in search_paths) + "\n\n"
+        f"The datasets directory is not included when py3plex is installed via pip.\n"
+        f"To use examples and datasets:\n"
+        f"  1. Clone the repository: git clone https://github.com/SkBlaz/py3plex.git\n"
+        f"  2. Run examples from the repository root directory, OR\n"
+        f"  3. Copy the datasets directory to your working directory"
+    )
 
 
 def get_dataset_path(filename: str) -> str:

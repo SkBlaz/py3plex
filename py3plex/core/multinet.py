@@ -167,7 +167,7 @@ class multi_layer_network:
         """
         # crosshair: analysis_kind=asserts
         # Precondition: input_type must be from supported set
-        SUPPORTED = {"edgelist", "multiedgelist", "multiplex_edges", "gml", "gpickle", "graphml", "nx", "sparse"}
+        SUPPORTED = {"edgelist", "multiedgelist", "multiplex_edges", "gml", "gpickle", "gpickle_biomine", "graphml", "nx", "sparse"}
         assert input_type in SUPPORTED, f"input_type must be one of {SUPPORTED}, got {input_type}"
         
         # Precondition: if not nx type, input_file should be provided
