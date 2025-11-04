@@ -390,7 +390,7 @@ This section contains property-based tests using [Hypothesis](https://hypothesis
 
 Property-based tests verify that code satisfies mathematical properties and invariants across a wide range of inputs, rather than testing specific hand-written examples. This approach is particularly valuable for multilayer network algorithms where edge cases and boundary conditions can be subtle.
 
-**Total: 258+ property-based tests**
+**Total: 273+ property-based tests**
 
 ### Test Modules
 
@@ -632,6 +632,30 @@ Tests properties of random multilayer and multiplex network generators.
 **Run:**
 ```bash
 pytest tests/property/test_random_generators_extended_properties.py -v
+```
+
+##### `test_utils_properties.py` (15 tests)
+Tests random number generator utilities and reproducibility.
+
+**Properties tested:**
+- get_rng returns numpy Generator
+- Same seed produces identical random numbers
+- Different seeds produce different random numbers
+- None seed returns valid generator
+- Passthrough of existing generator
+- Generated numbers follow uniform distribution
+- Generator supports various distributions (uniform, normal, integers)
+- Multiple generators from same seed are independent
+- Sequences are deterministic with same seed
+- Seed 0 is valid
+- Choice operations are deterministic
+- Shuffle operations are deterministic
+- Small seed values work correctly
+- Large seed values work correctly
+
+**Run:**
+```bash
+pytest tests/property/test_utils_properties.py -v
 ```
 
 ##### Other Test Modules
