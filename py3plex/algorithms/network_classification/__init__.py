@@ -7,6 +7,7 @@ from .label_propagation import (
     normalize_amplify_freq,
     normalize_exp,
     normalize_initial_matrix_freq,
+    validate_label_propagation,
 )
 
 # label propagation algorithms:
@@ -168,4 +169,5 @@ __all__ = [
     "normalize_exp",
     "benchmark_classification",
     "label_propagation_tf",
+    "validate_label_propagation",
 ]
