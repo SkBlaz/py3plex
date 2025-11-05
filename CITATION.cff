@@ -1,0 +1,75 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Py3plex: A Library for Scalable Multilayer Network Analysis and Visualization"
+authors:
+  - family-names: Škrlj
+    given-names: Blaž
+    email: blaz.skrlj@ijs.si
+    orcid: "https://orcid.org/0000-0003-4924-7317"
+  - family-names: Kralj
+    given-names: Jan
+  - family-names: Lavrač
+    given-names: Nada
+repository-code: "https://github.com/SkBlaz/py3plex"
+url: "https://skblaz.github.io/py3plex/"
+abstract: "Py3plex is a Python library for analysis and visualization of multilayer (heterogeneous) networks. Complex networks are used as means for representing multimodal, real-life systems. With increasing amounts of data that lead to large multilayer networks consisting of different node and edge types, that can also be subject to temporal change, there is an increasing need for versatile visualization and analysis software."
+keywords:
+  - multilayer networks
+  - heterogeneous networks
+  - network analysis
+  - network visualization
+  - network science
+  - graph analysis
+license: MIT
+version: 0.95a
+date-released: "2025-11-05"
+preferred-citation:
+  type: article
+  title: "Py3plex toolkit for visualization and analysis of multilayer networks"
+  authors:
+    - family-names: Škrlj
+      given-names: Blaž
+    - family-names: Kralj
+      given-names: Jan
+    - family-names: Lavrač
+      given-names: Nada
+  journal: "Applied Network Science"
+  year: 2019
+  volume: 4
+  issue: 1
+  pages: 94
+  doi: "10.1007/s41109-019-0203-7"
+  url: "https://doi.org/10.1007/s41109-019-0203-7"
+  issn: "2364-8228"
+references:
+  - type: conference-paper
+    title: "Py3plex: A Library for Scalable Multilayer Network Analysis and Visualization"
+    authors:
+      - family-names: Škrlj
+        given-names: Blaž
+      - family-names: Kralj
+        given-names: Jan
+      - family-names: Lavrač
+        given-names: Nada
+    collection-title: "Complex Networks and Their Applications VII"
+    editors:
+      - family-names: Aiello
+        given-names: Luca Maria
+      - family-names: Cherifi
+        given-names: Chantal
+      - family-names: Cherifi
+        given-names: Hocine
+      - family-names: Lambiotte
+        given-names: Renaud
+      - family-names: Lió
+        given-names: Pietro
+      - family-names: Rocha
+        given-names: Luis M.
+    year: 2019
+    publisher:
+      name: "Springer International Publishing"
+      address: Cham
+    pages: "757-768"
+    doi: "10.1007/978-3-030-05411-3_60"
+    isbn: "978-3-030-05411-3"
