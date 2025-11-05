@@ -1078,8 +1078,6 @@ class TestCLIQuickstart:
         network_file = tmp_path / "demo_network.graphml"
         assert network_file.exists()
 
-        import networkx as nx
-
         G = nx.read_graphml(str(network_file))
         # Should have nodes from 2 layers
         assert G.number_of_nodes() == 20  # 10 nodes per layer * 2 layers

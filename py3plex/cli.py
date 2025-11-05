@@ -1262,8 +1262,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] Graph creation failed: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("Graph creation", graph_status))
 
@@ -1280,8 +1278,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] Visualization module error: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("Visualization module", viz_status))
 
@@ -1326,8 +1322,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] Multilayer graph creation failed: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("Multilayer graph", multilayer_status))
 
@@ -1351,8 +1345,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] Community detection failed: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("Community detection", community_status))
 
@@ -1397,8 +1389,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] File I/O test failed: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("File I/O", io_status))
 
@@ -1466,6 +1456,10 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
 
         network = multinet.multi_layer_network()
 
+        # Set random seed for reproducibility
+        random.seed(42)
+        np.random.seed(42)
+
         # Create two layers with nodes
         for layer_idx in range(2):
             layer_name = f"layer{layer_idx + 1}"
@@ -1473,7 +1467,6 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
             network.add_nodes(nodes_dict, input_type="dict")
 
             # Add edges with probability 0.3
-            random.seed(42)
             edges_dict = []
             for i in range(10):
                 for j in range(i + 1, 10):
