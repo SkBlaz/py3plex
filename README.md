@@ -40,6 +40,8 @@ To verify installation.
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
 
+Repo organization
+![Customization](example_images/diagram.png)
 ### CLI Tool
 
 Py3plex includes a command-line interface for multilayer network analysis. See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
