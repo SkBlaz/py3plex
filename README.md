@@ -27,10 +27,26 @@ pip install git+https://github.com/SkBlaz/py3plex.git
 
 and
 
-```
+```bash
 py3plex selftest
 ```
 To verify installation.
+
+**Quick Start with CLI:**
+
+```bash
+# Get started with an interactive demo
+py3plex quickstart
+
+# Check version
+py3plex --version
+
+# Get help
+py3plex --help
+
+# See all available commands
+py3plex help
+```
 
 **Note**: The Git version includes the latest features and bug fixes. PyPI version is deprecated.
 
@@ -45,7 +61,15 @@ To verify installation.
 *made with http://gitdiagram.com*
 ### CLI Tool
 
-Py3plex includes a command-line interface for multilayer network analysis. See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
+Py3plex includes a powerful command-line interface for multilayer network analysis.
+
+**Common CLI Commands:**
+- `py3plex quickstart` - Interactive demo with example graph (recommended for new users)
+- `py3plex selftest` - Verify installation and core functionality
+- `py3plex --version` - Show version information
+- `py3plex --help` - Show all available commands and options
+
+See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
 
 
 ### Requirements
