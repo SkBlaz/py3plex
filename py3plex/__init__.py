@@ -9,7 +9,6 @@ heterogeneous and multilayer networks.
 __version__ = "0.95a"
 __api_version__ = "0.95a"
 
-# Import custom exceptions for easy access
 from py3plex.exceptions import (
     AlgorithmError,
     CentralityComputationError,
@@ -27,7 +26,6 @@ from py3plex.exceptions import (
     VisualizationError,
 )
 
-# Import profiling utilities for easy access
 from py3plex.profiling import (
     benchmark,
     get_monitor,

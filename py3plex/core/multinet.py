@@ -76,7 +76,6 @@ except ImportError:
 
 class multi_layer_network:
 
-    # constructor
     def __init__(
         self,
         verbose: bool = True,

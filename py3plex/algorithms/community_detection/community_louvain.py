@@ -8,7 +8,6 @@ from typing import Dict, List, Optional
 
 import networkx as nx
 
-# coding=utf-8
 
 
 

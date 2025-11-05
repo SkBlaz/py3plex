@@ -279,7 +279,6 @@ def NoRC_communities(
     )
 
     if output == "mapping":
-        # todo
         return None
     else:
         return partition

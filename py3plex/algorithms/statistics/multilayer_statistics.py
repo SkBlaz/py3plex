@@ -892,7 +892,6 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
     try:
         if use_sparse:
             # Use sparse eigenvalue solver (eigsh for symmetric matrices)
-            # which='SM' = smallest magnitude eigenvalues
             eigenvalues, _ = eigsh(laplacian, k=k, which="SM", tol=1e-10)
             # Sort eigenvalues (eigsh may not return them sorted)
             eigenvalues = np.sort(eigenvalues)

@@ -126,8 +126,6 @@ def validate_ppr(
                 mi = f1_score(test_labels_second, preds, average="micro")
                 ma = f1_score(test_labels_second, preds, average="macro")
 
-                # being_predicted = np.unique(train_labels_first)
-                # tmp_lab = test_labels[:,being_predicted]
                 #                mi,ma = evaluate_oracle_F1(probs,tmp_lab)
 
                 # train the model

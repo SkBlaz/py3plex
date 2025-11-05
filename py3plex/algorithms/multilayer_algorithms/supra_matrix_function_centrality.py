@@ -253,7 +253,6 @@ def katz_centrality(
         centralities = spsolve(identity_matrix - alpha * supra_matrix, b)
     except (np.linalg.LinAlgError, RuntimeError, ValueError):
         # Fallback: use series approximation if sparse solve fails
-        # x = sum_{k=0}^{inf} (alpha * A)^k * b
         centralities = b.copy()
         current_term = b.copy()
         for _ in range(100):  # Limit iterations

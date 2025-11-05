@@ -82,6 +82,4 @@ if __name__ == "__main__":
     a = genfromtxt(datta, delimiter="\t", skip_header=4)
     a = np.nan_to_num(a)
     logger.info("Read the data..")
-    #    idx = np.random.randint(1000,size=5000)
-    #    a = a[:,idx]
     logger.info("Network shape: %s", default_correlation_to_network(a).shape)

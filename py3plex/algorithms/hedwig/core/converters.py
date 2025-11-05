@@ -97,7 +97,6 @@ def obo2n3(obofile, n3out, gaf_file):
 
     ontology = defaultdict(list)
     current_term = ""
-    # obofile = obofile.replace("/","")
 
     parse_gaf_file(gaf_file)
 

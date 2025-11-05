@@ -299,7 +299,6 @@ def leiden_multilayer(
         The parallel option is reserved for future implementation using joblib or
         multiprocessing for parallelizing local move computations.
     """
-    # Import here to avoid circular dependencies
     from .multilayer_modularity import multilayer_modularity
     
     # Check for unsupported features

@@ -75,7 +75,6 @@ class ExperimentKB:
             annotation_links = list(annot_objects)
             annotations = []
             weights = {}
-            #            to_uni = lambda s: str(s, 'utf-8').encode('ascii', 'ignore')
 
             for link in annotation_links:
 
@@ -285,7 +284,6 @@ class ExperimentKB:
                 self.reverse_bit_binary_members[pred][el] = indices
 
     def _propagate_annotation_names(self, g):
-        # to_uni = lambda s:  s.decode('unicode-escape')#str(s, 'utf-8').encode('ascii', 'ignore')
 
         # Query for annotation names
         for sub, obj in g.subject_objects(predicate=HEDWIG.annotation_name):
@@ -305,7 +303,6 @@ class ExperimentKB:
         """
         Adds the resource 'sub' as a subclass of 'obj'.
         """
-        # to_uni = lambda s:  s.decode('unicode-escape')#str(s, 'utf-8').encode('ascii', 'ignore')
         sub, obj = sub, obj
 
         self.predicates.update([sub, obj])
