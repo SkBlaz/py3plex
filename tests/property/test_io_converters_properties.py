@@ -45,7 +45,8 @@ def create_simple_multilayer_graph(num_nodes=3, num_layers=2):
             edge = Edge(
                 src=f'n{i}',
                 dst=f'n{i+1}',
-                layer=layer_id,
+                src_layer=layer_id,
+                dst_layer=layer_id,
                 attributes={}
             )
             graph.add_edge(edge)
@@ -241,7 +242,7 @@ def test_to_networkx_preserves_connectivity_pattern(num_nodes, num_layers):
     for layer_idx in range(num_layers):
         layer_id = f'layer{layer_idx}'
         for i in range(num_nodes - 1):
-            edge = Edge(src=f'n{i}', dst=f'n{i+1}', layer=layer_id, attributes={})
+            edge = Edge(src=f'n{i}', dst=f'n{i+1}', src_layer=layer_id, dst_layer=layer_id, attributes={})
             graph.add_edge(edge)
     
     # Convert to NetworkX

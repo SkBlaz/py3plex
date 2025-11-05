@@ -376,7 +376,6 @@ def test_layout_handles_isolated_nodes(num_nodes):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_layout_handles_single_edge_graphs():
     """Test that layout handles graphs with just one edge."""
     G = nx.Graph()

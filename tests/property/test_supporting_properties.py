@@ -393,7 +393,6 @@ def test_add_mpx_edges_partial_overlap(num_shared, num_unique1, num_unique2):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_split_to_layers_empty_network():
     """Test that splitting empty network returns empty dict."""
     G = nx.Graph()

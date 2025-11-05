@@ -75,7 +75,6 @@ def test_get_rng_different_seeds_different_numbers(seed1, seed2):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_get_rng_none_seed_returns_generator():
     """Test that None seed returns a valid generator."""
     rng = get_rng(None)
