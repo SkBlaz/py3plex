@@ -44,8 +44,6 @@ py3plex --version
 # Get help
 py3plex --help
 
-# See all available commands
-py3plex help
 ```
 
 **Note**: The Git version includes the latest features and bug fixes. PyPI version is deprecated.
