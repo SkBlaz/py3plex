@@ -329,7 +329,7 @@ Common causes:
 
 If your example requires a new dependency:
 
-1. Add it to `requirements.txt`
+1. Add it to the `dependencies` list in `pyproject.toml` (or to an appropriate `[project.optional-dependencies]` group)
 2. Update the CI workflow if it's a system dependency
 3. Consider adding error handling for optional dependencies
 
