@@ -8,7 +8,12 @@ with full coverage of main algorithms.
 
 import argparse
 import json
+import os
+import random
+import shutil
 import sys
+import tempfile
+import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -38,8 +43,6 @@ def _normalize_network_nodes(
         Network with tuple nodes
     """
     import ast
-
-    import networkx as nx
 
     # Check if nodes need normalization
     sample_node = next(iter(network.core_network.nodes()), None)
@@ -219,6 +222,13 @@ def create_parser() -> argparse.ArgumentParser:
         description="Py3plex - A library for multilayer network analysis and visualization",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+Quick Start:
+  # New to py3plex? Start here:
+  py3plex quickstart           # Interactive demo with example graph
+  py3plex selftest             # Verify installation
+  py3plex --version            # Show version
+  py3plex --help               # Show this help
+
 Examples:
   # Create a random multilayer network with 100 nodes and 3 layers
   py3plex create --nodes 100 --layers 3 --type random --probability 0.1 --output network.edgelist
@@ -451,6 +461,23 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--verbose", "-v", action="store_true", help="Show detailed output"
     )
 
+    # QUICKSTART command
+    quickstart_parser = subparsers.add_parser(
+        "quickstart",
+        help="Quick start guide - creates a demo graph and shows basic operations",
+    )
+    quickstart_parser.add_argument(
+        "--keep-files",
+        action="store_true",
+        help="Keep generated files instead of cleaning them up",
+    )
+    quickstart_parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=None,
+        help="Directory for output files (default: temporary directory)",
+    )
+
     return parser
 
 
@@ -464,11 +491,8 @@ def cmd_create(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        import random
-
         if args.seed is not None:
             random.seed(args.seed)
-            import numpy as np
 
             np.random.seed(args.seed)
 
@@ -783,7 +807,6 @@ def cmd_community(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error detecting communities: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -856,7 +879,6 @@ def cmd_centrality(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error computing centrality: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -973,7 +995,6 @@ def cmd_stats(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error computing statistics: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -1047,7 +1068,6 @@ def cmd_visualize(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error creating visualization: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -1090,7 +1110,6 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error aggregating network: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -1169,7 +1188,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     import importlib
-    import tempfile
     import time
 
     # Set matplotlib backend early, before any imports that might use it
@@ -1244,8 +1262,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] Graph creation failed: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("Graph creation", graph_status))
 
@@ -1262,8 +1278,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] Visualization module error: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("Visualization module", viz_status))
 
@@ -1308,8 +1322,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] Multilayer graph creation failed: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("Multilayer graph", multilayer_status))
 
@@ -1333,8 +1345,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] Community detection failed: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("Community detection", community_status))
 
@@ -1379,8 +1389,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"   [✗] File I/O test failed: {e}")
         if verbose:
-            import traceback
-
             traceback.print_exc()
     test_results.append(("File I/O", io_status))
 
@@ -1561,6 +1569,223 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_quickstart(args: argparse.Namespace) -> int:
+    """Run quickstart demo - creates a tiny demo graph and demonstrates basic operations.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    # Set matplotlib backend early
+    import matplotlib
+
+    matplotlib.use("Agg")  # Non-interactive backend
+    import matplotlib.pyplot as plt
+
+    print("[py3plex::quickstart] 🚀 Welcome to py3plex!")
+    print()
+    print("This quickstart guide will demonstrate basic multilayer network operations.")
+    print("=" * 70)
+    print()
+
+    # Determine output directory
+    if args.output_dir:
+        output_dir = Path(args.output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        cleanup = False
+    else:
+        temp_dir = tempfile.mkdtemp(prefix="py3plex_quickstart_")
+        output_dir = Path(temp_dir)
+        cleanup = not args.keep_files
+
+    try:
+        # Step 1: Create a demo multilayer network
+        print("Step 1: Creating demo multilayer network...")
+        print("  - 10 nodes across 2 layers")
+        print("  - Random connections with p=0.3")
+        print()
+
+        network = multinet.multi_layer_network()
+
+        # Set random seed for reproducibility
+        random.seed(42)
+        np.random.seed(42)
+
+        # Create two layers with nodes
+        for layer_idx in range(2):
+            layer_name = f"layer{layer_idx + 1}"
+            nodes_dict = [{"source": f"node{i}", "type": layer_name} for i in range(10)]
+            network.add_nodes(nodes_dict, input_type="dict")
+
+            # Add edges with probability 0.3
+            edges_dict = []
+            for i in range(10):
+                for j in range(i + 1, 10):
+                    if random.random() < 0.3:
+                        edges_dict.append(
+                            {
+                                "source": f"node{i}",
+                                "target": f"node{j}",
+                                "source_type": layer_name,
+                                "target_type": layer_name,
+                            }
+                        )
+            if edges_dict:
+                network.add_edges(edges_dict, input_type="dict")
+
+        network_file = output_dir / "demo_network.graphml"
+        nx.write_graphml(network.core_network, str(network_file))
+        print(f"✓ Network created and saved to: {network_file}")
+        print(f"  Nodes: {network.core_network.number_of_nodes()}")
+        print(f"  Edges: {network.core_network.number_of_edges()}")
+        print()
+
+        # Step 2: Compute basic statistics
+        print("Step 2: Computing basic network statistics...")
+        layers = _get_layer_names(network)
+        print(f"  Layers: {', '.join(layers)}")
+
+        from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+        for layer in layers:
+            try:
+                density = mls.layer_density(network, layer)
+                print(f"  {layer} density: {density:.4f}")
+            except Exception as e:
+                print(f"  {layer} density: (error: {e})")
+
+        G_undirected = network.core_network.to_undirected()
+        clustering = nx.average_clustering(G_undirected)
+        print(f"  Avg clustering coefficient: {clustering:.4f}")
+        print()
+
+        # Step 3: Visualize the network
+        print("Step 3: Visualizing the network...")
+        viz_file = output_dir / "demo_visualization.png"
+
+        try:
+            from py3plex.visualization import multilayer
+
+            layer_names, layer_graphs, multiedges = network.get_layers(
+                style="diagonal", compute_layouts="force", verbose=False
+            )
+
+            plt.figure(figsize=(10, 6))
+            if isinstance(layer_graphs, list):
+                graph_list = layer_graphs
+            else:
+                graph_list = list(layer_graphs.values())
+
+            multilayer.draw_multilayer_default(
+                graph_list,
+                display=False,
+                labels=layer_names,
+            )
+            plt.savefig(viz_file, dpi=150, bbox_inches="tight")
+            plt.close()
+            print(f"✓ Visualization saved to: {viz_file}")
+        except Exception as e:
+            # Fallback to simple NetworkX visualization
+            print(f"  Note: Multilayer visualization failed ({e}), using simple layout")
+            pos = nx.spring_layout(network.core_network)
+            plt.figure(figsize=(10, 6))
+            nx.draw(
+                network.core_network,
+                pos,
+                node_size=300,
+                node_color="lightblue",
+                edge_color="gray",
+                alpha=0.7,
+                with_labels=True,
+                font_size=8,
+            )
+            plt.title("Demo Multilayer Network")
+            plt.savefig(viz_file, dpi=150, bbox_inches="tight")
+            plt.close()
+            print(f"✓ Visualization saved to: {viz_file}")
+        print()
+
+        # Step 4: Detect communities
+        print("Step 4: Detecting communities...")
+        try:
+            from py3plex.algorithms.community_detection import community_wrapper
+
+            G = (
+                network.core_network.to_undirected()
+                if network.core_network.is_directed()
+                else network.core_network
+            )
+            partition = community_wrapper.louvain_communities(G)
+            num_communities = len(set(partition.values()))
+            print(f"✓ Found {num_communities} communities")
+
+            comm_file = output_dir / "demo_communities.json"
+            with open(comm_file, "w") as f:
+                json.dump(
+                    {
+                        "num_communities": num_communities,
+                        "communities": {str(k): int(v) for k, v in partition.items()},
+                    },
+                    f,
+                    indent=2,
+                )
+            print(f"  Communities saved to: {comm_file}")
+        except Exception as e:
+            print(f"  Note: Community detection skipped ({e})")
+        print()
+
+        # Summary and next steps
+        print("=" * 70)
+        print("✅ Quickstart completed successfully!")
+        print()
+        print("📁 Generated files:")
+        for file in output_dir.glob("demo_*"):
+            print(f"  - {file}")
+        print()
+        print("🎯 Next steps:")
+        print("  1. Try creating your own network:")
+        print(
+            "     py3plex create --nodes 50 --layers 3 --output my_network.graphml"
+        )
+        print()
+        print("  2. Analyze an existing network:")
+        print("     py3plex load my_network.graphml --stats")
+        print()
+        print("  3. Visualize your network:")
+        print(
+            "     py3plex visualize my_network.graphml --output viz.png --layout multilayer"
+        )
+        print()
+        print("  4. Detect communities:")
+        print(
+            "     py3plex community my_network.graphml --algorithm louvain --output communities.json"
+        )
+        print()
+        print("📚 For more information:")
+        print("  - Documentation: https://skblaz.github.io/py3plex/")
+        print("  - GitHub: https://github.com/SkBlaz/py3plex")
+        print("  - Run 'py3plex --help' to see all available commands")
+        print()
+
+        if cleanup:
+            print(f"🧹 Cleaning up temporary files in {output_dir}...")
+            shutil.rmtree(output_dir)
+            print("   (Use --keep-files to preserve generated files)")
+        else:
+            print(f"📂 Files kept in: {output_dir}")
+
+        print()
+        return 0
+
+    except Exception as e:
+        print(f"\n❌ Error during quickstart: {e}")
+
+        traceback.print_exc()
+        return 1
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
@@ -1592,6 +1817,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "aggregate": cmd_aggregate,
         "convert": cmd_convert,
         "selftest": cmd_selftest,
+        "quickstart": cmd_quickstart,
     }
 
     handler = command_handlers.get(args.command)

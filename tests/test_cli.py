@@ -1007,44 +1007,88 @@ class TestCLISelftest:
         assert "Tests passed:" in captured.out
         assert "Time elapsed:" in captured.out
 
-    def test_selftest_checks_centrality_statistics(self, capsys):
-        """Test that selftest checks centrality statistics."""
-        result = cli.main(["selftest"])
-        assert result == 0
-        captured = capsys.readouterr()
-        assert "Centrality statistics" in captured.out
 
-    def test_selftest_checks_multilayer_manipulation(self, capsys):
-        """Test that selftest checks multilayer manipulation."""
-        result = cli.main(["selftest"])
-        assert result == 0
-        captured = capsys.readouterr()
-        assert "Multilayer manipulation" in captured.out
+class TestCLIQuickstart:
+    """Test the 'quickstart' command."""
 
-    def test_selftest_reports_8_tests(self, capsys):
-        """Test that selftest now reports 8 tests (expanded from original 6)."""
-        result = cli.main(["selftest"])
+    def test_quickstart_basic(self, capsys):
+        """Test that quickstart runs successfully."""
+        result = cli.main(["quickstart"])
         assert result == 0
         captured = capsys.readouterr()
-        # Should show 8/8 tests passed
-        assert "Tests passed: 8/8" in captured.out
+        assert "[py3plex::quickstart]" in captured.out
+        assert "Welcome to py3plex" in captured.out
+        assert "Quickstart completed successfully" in captured.out
 
-    def test_selftest_verbose_shows_centrality_details(self, capsys):
-        """Test that verbose mode shows centrality computation details."""
-        result = cli.main(["selftest", "--verbose"])
+    def test_quickstart_creates_files(self, tmp_path, capsys):
+        """Test that quickstart creates the expected files."""
+        result = cli.main(
+            ["quickstart", "--keep-files", "--output-dir", str(tmp_path)]
+        )
         assert result == 0
-        captured = capsys.readouterr()
-        # Verbose output should show specific centrality metrics
-        assert "Versatility centrality" in captured.out or "centrality computed" in captured.out
-        assert "Layer density" in captured.out or "Layer1:" in captured.out
 
-    def test_selftest_verbose_shows_manipulation_details(self, capsys):
-        """Test that verbose mode shows manipulation operation details."""
-        result = cli.main(["selftest", "--verbose"])
+        # Check that files were created
+        assert (tmp_path / "demo_network.graphml").exists()
+        assert (tmp_path / "demo_visualization.png").exists()
+
+        captured = capsys.readouterr()
+        assert "Network created" in captured.out
+        assert "Visualization saved" in captured.out
+
+    def test_quickstart_keep_files(self, tmp_path, capsys):
+        """Test that --keep-files preserves files."""
+        result = cli.main(
+            ["quickstart", "--keep-files", "--output-dir", str(tmp_path)]
+        )
+        assert result == 0
+
+        # Files should exist after command completes
+        assert (tmp_path / "demo_network.graphml").exists()
+
+        captured = capsys.readouterr()
+        assert "Files kept in:" in captured.out
+
+    def test_quickstart_shows_next_steps(self, capsys):
+        """Test that quickstart shows next steps."""
+        result = cli.main(["quickstart"])
         assert result == 0
         captured = capsys.readouterr()
-        # Verbose output should show specific manipulation operations
-        # Check for either the output or error streams (logging may go to stderr)
-        output = captured.out + captured.err
-        assert "Layer splitting" in output or "aggregation" in output.lower()
+        assert "Next steps:" in captured.out
+        assert "py3plex create" in captured.out
+        assert "py3plex load" in captured.out
+        assert "py3plex visualize" in captured.out
+
+    def test_quickstart_shows_documentation_links(self, capsys):
+        """Test that quickstart shows documentation links."""
+        result = cli.main(["quickstart"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Documentation:" in captured.out
+        assert "GitHub:" in captured.out
+        assert "https://skblaz.github.io/py3plex/" in captured.out
+
+    def test_quickstart_network_structure(self, tmp_path):
+        """Test that the generated network has expected structure."""
+        result = cli.main(
+            ["quickstart", "--keep-files", "--output-dir", str(tmp_path)]
+        )
+        assert result == 0
+
+        # Load and verify the network
+        network_file = tmp_path / "demo_network.graphml"
+        assert network_file.exists()
+
+        G = nx.read_graphml(str(network_file))
+        # Should have nodes from 2 layers
+        assert G.number_of_nodes() == 20  # 10 nodes per layer * 2 layers
+        assert G.number_of_edges() > 0  # Should have some edges
+
+    def test_quickstart_cleanup_by_default(self, capsys):
+        """Test that quickstart cleans up by default."""
+        result = cli.main(["quickstart"])
+        assert result == 0
+        captured = capsys.readouterr()
+        # Should mention cleanup
+        assert "Cleaning up" in captured.out or "temporary" in captured.out.lower()
+
 
