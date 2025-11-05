@@ -167,8 +167,6 @@ issn={2364-8228},
 doi={10.1007/s41109-019-0203-7},
 url={https://doi.org/10.1007/s41109-019-0203-7}
 }
-
-
 ```
 and
 ```
@@ -191,5 +189,4 @@ pages="757--768",
 abstract="Real-life systems are commonly represented as networks of interacting entities. While homogeneous networks consist of nodes of a single node type, multilayer networks are characterized by multiple types of nodes or edges, all present in the same system. Analysis and visualization of such networks represent a challenge for real-life complex network applications. The presented Py3plex Python-based library facilitates the exploration and visualization of multilayer networks. The library includes a diagonal projection-based network visualization, developed specifically for large networks with multiple node (and edge) types. The library also includes state-of-the-art methods for network decomposition and statistical analysis. The Py3plex functionality is showcased on real-world multilayer networks from the domains of biology and on synthetic networks.",
 isbn="978-3-030-05411-3"
 }
-
 ```
