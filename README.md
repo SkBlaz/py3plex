@@ -19,7 +19,7 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 ### Installation (Git-Only Method)
 
-⚠️ **IMPORTANT**: Py3plex is **no longer available on PyPI**. Install from GitHub:
+⚠️ **IMPORTANT**: py3plex is **no longer updated on PyPI**. Install from GitHub:
 
 ```bash
 pip install git+https://github.com/SkBlaz/py3plex.git
