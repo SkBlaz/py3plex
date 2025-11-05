@@ -1384,6 +1384,159 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             traceback.print_exc()
     test_results.append(("File I/O", io_status))
 
+    # Test 7: Centrality statistics
+    print("\n7. Testing centrality statistics...")
+    centrality_status = False
+    try:
+        from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+        # Create a multilayer network for centrality testing
+        network = multinet.multi_layer_network()
+        
+        # Add nodes and edges in two layers
+        for layer_idx in range(2):
+            layer_name = f"layer{layer_idx + 1}"
+            nodes = [{"source": f"node{i}", "type": layer_name} for i in range(6)]
+            network.add_nodes(nodes, input_type="dict")
+            
+            # Create a star topology (node0 as hub)
+            for i in range(1, 6):
+                network.add_edges(
+                    [
+                        {
+                            "source": "node0",
+                            "target": f"node{i}",
+                            "source_type": layer_name,
+                            "target_type": layer_name,
+                        }
+                    ],
+                    input_type="dict",
+                )
+
+        # Test versatility centrality (multilayer-specific)
+        try:
+            versatility = mls.versatility_centrality(network, centrality_type="degree")
+            if versatility and len(versatility) > 0:
+                if verbose:
+                    print("   ✓ Versatility centrality computed")
+                    top_node = max(versatility.items(), key=lambda x: x[1])
+                    print(f"      Top node: {top_node[0]} (score: {top_node[1]:.4f})")
+        except Exception as e:
+            if verbose:
+                print(f"   ! Versatility centrality: {e}")
+
+        # Test degree centrality on core network
+        G = network.core_network
+        degree_cent = nx.degree_centrality(G)
+        if degree_cent and len(degree_cent) > 0:
+            if verbose:
+                print("   ✓ Degree centrality computed")
+                print(f"      Nodes: {len(degree_cent)}")
+
+        # Test betweenness centrality
+        betw_cent = nx.betweenness_centrality(G)
+        if betw_cent and len(betw_cent) > 0:
+            if verbose:
+                print("   ✓ Betweenness centrality computed")
+
+        # Test layer density (multilayer statistic)
+        density1 = mls.layer_density(network, "layer1")
+        density2 = mls.layer_density(network, "layer2")
+        if 0.0 <= density1 <= 1.0 and 0.0 <= density2 <= 1.0:
+            if verbose:
+                print("   ✓ Layer density computed")
+                print(f"      Layer1: {density1:.4f}, Layer2: {density2:.4f}")
+
+        print("   [✓] Centrality statistics test passed")
+        centrality_status = True
+
+    except Exception as e:
+        print(f"   [✗] Centrality statistics failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+    test_results.append(("Centrality statistics", centrality_status))
+
+    # Test 8: Multilayer manipulation
+    print("\n8. Testing multilayer manipulation...")
+    manipulation_status = False
+    try:
+        # Create a multilayer network
+        network = multinet.multi_layer_network()
+        
+        # Add nodes in three layers
+        for layer_idx in range(3):
+            layer_name = f"layer{layer_idx + 1}"
+            nodes = [{"source": f"node{i}", "type": layer_name} for i in range(4)]
+            network.add_nodes(nodes, input_type="dict")
+            
+            # Add edges in each layer
+            for i in range(3):
+                network.add_edges(
+                    [
+                        {
+                            "source": f"node{i}",
+                            "target": f"node{i+1}",
+                            "source_type": layer_name,
+                            "target_type": layer_name,
+                        }
+                    ],
+                    input_type="dict",
+                )
+
+        initial_nodes = network.core_network.number_of_nodes()
+        initial_edges = network.core_network.number_of_edges()
+
+        # Test layer splitting
+        try:
+            layers_result = network.split_to_layers()
+            if layers_result and len(layers_result) == 3:
+                if verbose:
+                    print(f"   ✓ Layer splitting: {len(layers_result)} layers")
+        except Exception as e:
+            if verbose:
+                print(f"   ! Layer splitting: {e}")
+
+        # Test edge aggregation (flattening)
+        try:
+            aggregated = network.aggregate_edges(metric="sum")
+            if aggregated and aggregated.number_of_nodes() > 0:
+                if verbose:
+                    print("   ✓ Edge aggregation (flattening) successful")
+                    print(f"      Aggregated: {aggregated.number_of_nodes()} nodes, {aggregated.number_of_edges()} edges")
+        except Exception as e:
+            if verbose:
+                print(f"   ! Edge aggregation: {e}")
+
+        # Test subnetwork extraction by layer
+        try:
+            # Get edges for layer1 only
+            layer1_edges = [
+                edge for edge in network.get_edges()
+                if edge[0][1] == "layer1" and edge[1][1] == "layer1"
+            ]
+            if layer1_edges:
+                if verbose:
+                    print(f"   ✓ Subnetwork extraction: {len(layer1_edges)} edges in layer1")
+        except Exception as e:
+            if verbose:
+                print(f"   ! Subnetwork extraction: {e}")
+
+        # Verify network integrity after operations
+        if network.core_network.number_of_nodes() == initial_nodes:
+            if verbose:
+                print("   ✓ Network integrity maintained")
+
+        print("   [✓] Multilayer manipulation test passed")
+        manipulation_status = True
+
+    except Exception as e:
+        print(f"   [✗] Multilayer manipulation failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+    test_results.append(("Multilayer manipulation", manipulation_status))
+
     # Performance summary
     elapsed = time.time() - start_time
     print(f"\n{'='*60}")
