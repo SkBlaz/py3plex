@@ -11,7 +11,7 @@
 ![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 ![Docker](https://img.shields.io/badge/Docker-Available-blue)
 
-Heterogeneous networks are complex networks with additional information assigned to nodes or edges (or both). This library includes
+*Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
 ![Customization](example_images/part1.png)
@@ -40,7 +40,7 @@ To verify installation.
 
 * [Examples](examples/) - 50+ example scripts demonstrating usage
 
-Repo organization
+**Repo organization:**
 ![Customization](example_images/diagram.png)
 ### CLI Tool
 
