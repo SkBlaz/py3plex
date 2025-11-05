@@ -1007,3 +1007,46 @@ class TestCLISelftest:
         assert "Tests passed:" in captured.out
         assert "Time elapsed:" in captured.out
 
+    def test_selftest_checks_centrality_statistics(self, capsys):
+        """Test that selftest checks centrality statistics."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Centrality statistics" in captured.out
+        assert result == 0
+
+    def test_selftest_checks_multilayer_manipulation(self, capsys):
+        """Test that selftest checks multilayer manipulation."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Multilayer manipulation" in captured.out
+        assert result == 0
+
+    def test_selftest_reports_8_tests(self, capsys):
+        """Test that selftest now reports 8 tests (expanded from original 6)."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        # Should show 8/8 tests passed
+        assert "Tests passed: 8/8" in captured.out
+
+    def test_selftest_verbose_shows_centrality_details(self, capsys):
+        """Test that verbose mode shows centrality computation details."""
+        result = cli.main(["selftest", "--verbose"])
+        assert result == 0
+        captured = capsys.readouterr()
+        # Verbose output should show specific centrality metrics
+        assert "Versatility centrality" in captured.out or "centrality computed" in captured.out
+        assert "Layer density" in captured.out or "Layer1:" in captured.out
+
+    def test_selftest_verbose_shows_manipulation_details(self, capsys):
+        """Test that verbose mode shows manipulation operation details."""
+        result = cli.main(["selftest", "--verbose"])
+        assert result == 0
+        captured = capsys.readouterr()
+        # Verbose output should show specific manipulation operations
+        # Check for either the output or error streams (logging may go to stderr)
+        output = captured.out + captured.err
+        assert "Layer splitting" in output or "aggregation" in output.lower()
+
