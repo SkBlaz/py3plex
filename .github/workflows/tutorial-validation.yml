@@ -33,7 +33,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
           ${{ runner.os }}-pip-
       timeout-minutes: 2
@@ -49,9 +49,7 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         # Install numpy and scipy first to avoid potential conflicts
         pip install --timeout 120 numpy scipy
-        pip install --timeout 120 -r requirements.txt
-        # Add py3plex to PYTHONPATH
-        echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
+        pip install --timeout 120 -e .
         # Verify key dependencies
         python -c "import numpy; print(f'numpy {numpy.__version__}')"
         python -c "import scipy; print(f'scipy {scipy.__version__}')"

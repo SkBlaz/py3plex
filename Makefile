@@ -72,10 +72,8 @@ setup: ## Create virtual environment and install dependencies
 	@printf "$(COLOR_GREEN)✓ Installing dependencies...$(COLOR_RESET)\n"
 	@if [ -f "pyproject.toml" ]; then \
 		$(VENV_PIP) install -e .; \
-	elif [ -f "requirements.txt" ]; then \
-		$(VENV_PIP) install -r requirements.txt; \
 	else \
-		printf "$(COLOR_RED)✗ No pyproject.toml or requirements.txt found!$(COLOR_RESET)\n"; \
+		printf "$(COLOR_RED)✗ No pyproject.toml found!$(COLOR_RESET)\n"; \
 		exit 1; \
 	fi
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Setup complete! Activate with: source $(VENV)/bin/activate$(COLOR_RESET)\n"
