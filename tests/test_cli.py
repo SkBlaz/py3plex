@@ -1013,7 +1013,6 @@ class TestCLISelftest:
         assert result == 0
         captured = capsys.readouterr()
         assert "Centrality statistics" in captured.out
-        assert result == 0
 
     def test_selftest_checks_multilayer_manipulation(self, capsys):
         """Test that selftest checks multilayer manipulation."""
@@ -1021,7 +1020,6 @@ class TestCLISelftest:
         assert result == 0
         captured = capsys.readouterr()
         assert "Multilayer manipulation" in captured.out
-        assert result == 0
 
     def test_selftest_reports_8_tests(self, capsys):
         """Test that selftest now reports 8 tests (expanded from original 6)."""
