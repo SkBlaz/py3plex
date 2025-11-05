@@ -8,7 +8,12 @@ with full coverage of main algorithms.
 
 import argparse
 import json
+import os
+import random
+import shutil
 import sys
+import tempfile
+import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -38,8 +43,6 @@ def _normalize_network_nodes(
         Network with tuple nodes
     """
     import ast
-
-    import networkx as nx
 
     # Check if nodes need normalization
     sample_node = next(iter(network.core_network.nodes()), None)
@@ -488,11 +491,8 @@ def cmd_create(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        import random
-
         if args.seed is not None:
             random.seed(args.seed)
-            import numpy as np
 
             np.random.seed(args.seed)
 
@@ -807,7 +807,6 @@ def cmd_community(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error detecting communities: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -880,7 +879,6 @@ def cmd_centrality(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error computing centrality: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -997,7 +995,6 @@ def cmd_stats(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error computing statistics: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -1071,7 +1068,6 @@ def cmd_visualize(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error creating visualization: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -1114,7 +1110,6 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error aggregating network: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
@@ -1193,7 +1188,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     import importlib
-    import tempfile
     import time
 
     # Set matplotlib backend early, before any imports that might use it
@@ -1441,9 +1435,6 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
     Returns:
         Exit code (0 for success)
     """
-    import os
-    import tempfile
-
     # Set matplotlib backend early
     import matplotlib
 
@@ -1482,8 +1473,6 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
             network.add_nodes(nodes_dict, input_type="dict")
 
             # Add edges with probability 0.3
-            import random
-
             random.seed(42)
             edges_dict = []
             for i in range(10):
@@ -1636,8 +1625,6 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
 
         if cleanup:
             print(f"🧹 Cleaning up temporary files in {output_dir}...")
-            import shutil
-
             shutil.rmtree(output_dir)
             print("   (Use --keep-files to preserve generated files)")
         else:
@@ -1648,7 +1635,6 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
 
     except Exception as e:
         print(f"\n❌ Error during quickstart: {e}")
-        import traceback
 
         traceback.print_exc()
         return 1
