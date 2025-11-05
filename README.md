@@ -32,19 +32,6 @@ py3plex selftest
 ```
 To verify installation.
 
-**Quick Start with CLI:**
-
-```bash
-# Get started with an interactive demo
-py3plex quickstart
-
-# Check version
-py3plex --version
-
-# Get help
-py3plex --help
-
-```
 
 **Note**: The Git version includes the latest features and bug fixes. PyPI version is deprecated.
 
