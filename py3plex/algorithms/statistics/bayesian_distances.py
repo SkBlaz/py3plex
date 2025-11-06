@@ -1,6 +1,5 @@
 # tutorial
 
-# import bayesiantests as bt
 from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt

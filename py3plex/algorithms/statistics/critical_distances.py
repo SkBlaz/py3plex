@@ -289,15 +289,12 @@ def remove_backslash(file_name: str) -> str:
 results: List[Any] = []
 
 # try:
-#     results_file = sys.argv[1].strip().split("=")[1]
-#     options = {"results": None, "the_algorithm": None, "out": None}
 
 #     for i in range(1, len(sys.argv)):
 #         option_name, option_value = sys.argv[i].strip().split("=")
 #         options[option_name] = option_value
 
 #     with open(results_file, "r") as f:
-#         critical_distance_value = float(f.readline().strip().split(" ")[1])
 #         for x in f:
 #             ime, rang = x.split(" ")
 #             results.append([ime, float(rang)])
@@ -305,7 +302,6 @@ results: List[Any] = []
 #         options["out"] = remove_backslash(options["out"])
 #     diagram(results, critical_distance_value, options["the_algorithm"], options["out"])
 # except:
-#     message = "Something went wrong:\n\n"
 #     message += traceback.format_exc()
 #     message += """\n
 # python ranks2pdf.py results=<results file> [the_algorithm=<the algorithm>] [out=<output file>]
@@ -317,14 +313,12 @@ results: List[Any] = []
 
 # <N: number of algorithms> <critical distance> <something>   # we read only the critical distance
 # alg_name1 avg_rank1
-# ...
 # alg_nameN avg_rankN
 
 # Options in brackets are optional. For the meaning of the arguments, see the docstring of the method diagram.
 # """
 
 # else:
-#     message = "Finnished."
 # finally:
 #     print(message)
 

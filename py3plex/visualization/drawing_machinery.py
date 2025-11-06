@@ -104,9 +104,7 @@ def draw(G, pos=None, ax=None, **kwds):
     cf.set_facecolor("w")
     # if ax is None:
     #    if cf._axstack() is None:
-    #        ax = cf.add_axes((0, 0, 1, 1))
     #    else:
-    #        ax = cf.gca()
     if ax is None:
         if cf.axes:
             ax = cf.gca()
@@ -561,7 +559,6 @@ def draw_networkx_edges(
     edge_pos = np.asarray([(pos[e[0]], pos[e[1]]) for e in edgelist])
 
     # if not cb.iterable(width):
-    #     lw = (width, )
     # else:
     if not (type(width) == list or type(width) == tuple):
         lw = (width,)
@@ -663,9 +660,6 @@ def draw_networkx_edges(
             shrink_target = 0  # space from  head to target
             # if cb.iterable(node_size):  # many node sizes
             #     src_node, dst_node = edgelist[i]
-            #     index_node = nodelist.index(dst_node)
-            #     marker_size = node_size[index_node]
-            #     shrink_target = to_marker_edge(marker_size, node_shape)
             # else:
             shrink_target = to_marker_edge(node_size, node_shape)
             if arrow_colors is None:

@@ -151,9 +151,6 @@ class Fit:
 
     def __getattr__(self, name):
         if name in self.supported_distributions.keys():
-            #from string import capwords
-            #dist = capwords(name, '_')
-            # dist = globals()[dist] #Seems a hack. Might try import powerlaw; getattr(powerlaw, dist)
             dist = self.supported_distributions[name]
             if dist == Power_Law:
                 parameter_range = self.parameter_range
@@ -791,7 +788,6 @@ class Distribution:
             possible_numerical_error = True
         # if 0 in CDF or 1 in CDF:
         #    print("0 or 1 in fit cumulative distribution values.", file=sys.stderr)
-        #    possible_numerical_error = True
         if possible_numerical_error:
             print(
                 "Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.",
@@ -866,7 +862,6 @@ class Distribution:
                     upper_limit = self.discrete_approximation
 
 
-#            from mpmath import exp
                 from numpy import arange
                 X = arange(self.xmin, upper_limit + 1)
                 PDF = self._pdf_base_function(X)
@@ -1253,7 +1248,6 @@ class Exponential(Distribution):
         if not self.discrete and self.in_range() and not self.xmax:
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import exp
-            #        likelihoods = exp(-Lambda*data)*\
             #                Lambda*exp(Lambda*xmin)
             likelihoods = self.Lambda * exp(self.Lambda * (self.xmin - data))
             # Simplified so as not to throw a nan from infs being divided by each other
@@ -1269,7 +1263,6 @@ class Exponential(Distribution):
         if not self.discrete and self.in_range() and not self.xmax:
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from numpy import log
-            #        likelihoods = exp(-Lambda*data)*\
             #                Lambda*exp(Lambda*xmin)
             loglikelihoods = log(self.Lambda) + (self.Lambda *
                                                  (self.xmin - data))
@@ -1440,7 +1433,6 @@ class Truncated_Power_Law(Distribution):
             data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
             from mpmath import gammainc
             from numpy import exp
-            #        likelihoods = (data**-alpha)*exp(-Lambda*data)*\
             #                (Lambda**(1-alpha))/\
             #                float(gammainc(1-alpha,Lambda*xmin))
             likelihoods = (
@@ -1528,7 +1520,6 @@ class Lognormal(Distribution):
                     upper_limit = self.xmax
                 else:
                     upper_limit = self.discrete_approximation
-#            from mpmath import exp
                 from numpy import arange
                 X = arange(self.xmin, upper_limit + 1)
                 PDF = self._pdf_base_function(X)
@@ -1634,7 +1625,6 @@ class Lognormal(Distribution):
             possible_numerical_error = True
         # if 0 in CDF or 1 in CDF:
         #    print("0 or 1 in fit cumulative distribution values.", file=sys.stderr)
-        #    possible_numerical_error = True
         if possible_numerical_error:
             print(
                 "Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.",
@@ -1691,19 +1681,11 @@ class Lognormal(Distribution):
 
 
 #    def _generate_random_continuous(self, r1, r2=None):
-#        from numpy import log, sqrt, exp, sin, cos
 #        from scipy.constants import pi
 #        if r2==None:
 #            from numpy.random import rand
-#            r2 = rand(len(r1))
-#            r2_provided = False
 #        else:
-#            r2_provided = True
 #
-#        rho = sqrt(-2.0 * self.sigma**2.0 * log(1-r1))
-#        theta = 2.0 * pi * r2
-#        x1 = exp(rho * sin(theta))
-#        x2 = exp(rho * cos(theta))
 #
 #        if r2_provided:
 #            return x1, x2
@@ -2014,11 +1996,7 @@ def checkunique(data):
 #    so is useless.
 #    """
 #
-#    n = len(data)
-#    from numpy import arange
 #    if not all(data[i] <= data[i+1] for i in arange(n-1)):
-#        from numpy import sort
-#        data = sort(data)
 #    return data
 
 
@@ -2489,7 +2467,6 @@ def distribution_fit(data,
 #                fmin(\
 #                lambda p: -sum(log(likelihood_function(p, data))),\
 #                initial_parameters, full_output=1, disp=False)
-#        loglikelihood =-negative_loglikelihood
 #
 #        if comparison_alpha:
 #            R, p = distribution_compare(data, 'power_law',[comparison_alpha], distribution, parameters, discrete, xmin, xmax)
@@ -2789,8 +2766,6 @@ def negative_binomial_likelihoods(data, r, p, xmin=0, xmax=False):
     # Better to make this correction earlier on in distribution_fit, so as to not recheck for discreteness and reround every time fmin is used.
     # if not is_discrete(data):
     #    print("Rounding to nearest integer values for negative binomial fit.", file=sys.stderr)
-    #    from numpy import around
-    #    data = around(data)
 
     xmin = float(xmin)
     data = data[data >= xmin]
@@ -2829,7 +2804,6 @@ def exponential_likelihoods(data, Lambda, xmin, xmax=False, discrete=False):
 
     from numpy import exp
     if not discrete:
-        #        likelihoods = exp(-Lambda*data)*\
         #                Lambda*exp(Lambda*xmin)
         likelihoods = Lambda * exp(
             Lambda * (xmin - data)
@@ -2864,7 +2838,6 @@ def stretched_exponential_likelihoods(data,
 
     from numpy import exp
     if not discrete:
-        #        likelihoods = (data**(beta-1) * exp(-Lambda*(data**beta)))*\
         #            (beta*Lambda*exp(Lambda*(xmin**beta)))
         likelihoods = data**(beta - 1) * beta * Lambda * exp(
             Lambda * (xmin**beta - data**beta)
@@ -2942,7 +2915,6 @@ def truncated_power_law_likelihoods(data,
     if not discrete:
         from mpmath import gammainc
         #        from scipy.special import gamma, gammaincc #Not NEARLY accurate enough to do the job
-        #        likelihoods = (data**-alpha)*exp(-Lambda*data)*\
         #                (Lambda**(1-alpha))/\
         #                float(gammaincc(1-alpha,Lambda*xmin))
         # Simplified so as not to throw a nan from infs being divided by each other
@@ -2980,20 +2952,17 @@ def lognormal_likelihoods(data, mu, sigma, xmin, xmax=False, discrete=False):
         from numpy import exp, sqrt
         from scipy.constants import pi
 
-        #        from mpmath import erfc
         from scipy.special import erfc
         likelihoods = (1.0 / data) * exp(-((log(data) - mu) ** 2) / (2 * sigma ** 2)) *\
             sqrt(2 / (pi * sigma ** 2)) / \
             erfc((log(xmin) - mu) / (sqrt(2) * sigma))
 
 
-#        likelihoods = likelihoods.astype(float)
     if discrete:
         if not xmax:
             xmax = max(data)
         if xmax:
             from numpy import arange, exp
-            #            from mpmath import exp
             X = arange(xmin, xmax + 1)
             #            PDF_function = lambda x: (1.0/x)*exp(-( (log(x) - mu)**2 ) / 2*sigma**2)
             #            PDF = asarray(list(map(PDF_function,X)))

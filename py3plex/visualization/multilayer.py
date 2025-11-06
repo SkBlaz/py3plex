@@ -2,7 +2,6 @@
 
 # draw multi layered network, takes .nx object list as input
 
-# imports first
 from typing import Any, Dict, List, Optional, Union
 
 import networkx as nx
@@ -363,8 +362,6 @@ def draw_multiedges(
         network_list = list(network_list.values())
 
     # indices are correct network positions
-    #    main_figure = plt.figure()
-    #    shape_subplot = main_figure.add_subplot(111)
 
     if input_type == "nodes":
 
@@ -478,8 +475,6 @@ def generate_random_multiedges(
         pheight: Height parameter for curves
     """
 
-    #    main_figure = plt.figure()
-    #    shape_subplot = main_figure.add_subplot(111)
     #    main_figure.add_subplot(111)
 
     # this needs to be in the form of:
@@ -625,8 +620,6 @@ def hairball_plot(
         None
     """
 
-    #    main_figure = plt.figure()
-    #    shape_subplot = main_figure.add_subplot(111)
 
     logger.info("Beginning parsing..")
     nodes = g.nodes(data=True)
@@ -776,8 +769,6 @@ def interactive_hairball_plot(
         False if plotly not available, otherwise plotly figure object
     """
 
-    #    main_figure = plt.figure()
-    #    shape_subplot = main_figure.add_subplot(111)
 
     if not plotly_import:
         logger.error("Please, install plotly!")
@@ -871,7 +862,6 @@ if __name__ == "__main__":
     # generate_random_multiedges(x, 12, style="piramidal")
     generate_random_multiedges(x, 12, style="curve2_bezier")
     # network 1's 4 to network 6's 3 etc..
-    # mel = [((1,1),(5,1))]
     # draw_multiedges(x,mel,input_type="tuple")
 
     plt.show()

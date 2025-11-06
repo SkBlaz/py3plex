@@ -189,13 +189,10 @@ def compute_entanglement_analysis(network: Any) -> List[Dict[str, Any]]:
 
 if __name__ == "__main__":
     # Example usage - requires a network object to be defined
-    # net = ...  # Define your network here
-    # analysis = compute_entanglement_analysis(net)
     #
     # logger.info("%d connected components of layers", len(analysis))
     # for i, b in enumerate(analysis):
     #     logger.info("--- block %d", i)
-    #     layer_labels = b["Layer entanglement"].keys()
     #     logger.info("Covering layers: %s", layer_labels)
     #
     #     logger.info("Entanglement intensity: %f", b["Entanglement intensity"])

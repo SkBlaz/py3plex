@@ -9,16 +9,11 @@ import scipy.sparse as sp
 # from networkx.algorithms.community.community_utils import is_partition
 
 # def stochastic_normalization(matrix):
-#     matrix = matrix.tolil()
 #     try:
 #         matrix.setdiag(0)
 #     except TypeError:
 #         matrix.setdiag(np.zeros(matrix.shape[0]))
-#     matrix = matrix.tocsr()
-#     d = matrix.sum(axis=1).getA1()
-#     nzs = np.where(d > 0)
 #     d[nzs] = 1 / d[nzs]
-#     matrix = (sp.diags(d, 0).tocsc().dot(matrix)).transpose()
 #     return matrix
 
 

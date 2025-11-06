@@ -109,7 +109,6 @@ def plot_core_time_gg(fname: str) -> None:
     fnamex = pd.read_csv(fname, sep=" ")
     fnamex.columns = cnames
 
-    # gx = (ggplot(fnamex, aes('setting', 'time'))
     #       + geom_boxplot()
     #       + theme(axis_text_x=element_text(rotation=90, hjust=1))
     #       + theme_bw()
@@ -247,7 +246,6 @@ def plot_robustness(infile: pd.DataFrame) -> None:
     p1.set_ylabel("Micro F score", fontsize=20)
     plt.show()
 
-    # gx = (ggplot(infile, aes('macro_F','micro_F'))
     #       + geom_density_2d(aes(color='percent_train'))
     #       +xlab("Macro F score")
     #       +ylab("Micro F score")

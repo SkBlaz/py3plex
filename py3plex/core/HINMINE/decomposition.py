@@ -147,7 +147,6 @@ def np_calculate_importance_chi(predicted, label_matrix, actual_pos_nums):
     bot = (
         predicted_pos_num * (fn_nums + tn_nums) * actual_pos_nums * (tn_nums + fp_nums)
     )
-    # bot_zeros = np.where(bot == 0)[0]
     # bot[bot_zeros] = 1
     # if not np.all(top[bot_zeros] == 0):
     #     raise Exception('Error in chi implementation')
@@ -390,7 +389,6 @@ def hinmine_decompose(network, heuristic, cycle=None, parallel=False):
             f"No decomposition cycle provided. Candidate cycles thus used are: {cycle}"
         )
 
-    #       cycle = cycle[0:2]
     try:
         cycles = cycle
 

@@ -207,17 +207,9 @@ def NoRC_communities_main(
 
 if __name__ == "__main__":
 
-    # n = 50
-    # tau1 = 4
-    # tau2 = 1.5
-    # mu = 0.1
-    # graph = LFR_benchmark_graph(n,
     #                             tau1,
     #                             tau2,
     #                             mu,
-    #                             average_degree=5,
-    #                             min_community=30,
-    #                             seed=10)
 
     graph = nx.powerlaw_cluster_graph(1000, 5, 0.1)
     print(nx_info(graph))

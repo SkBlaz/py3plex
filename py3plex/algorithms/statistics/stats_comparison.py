@@ -30,7 +30,6 @@ import numpy as np
 import pandas as pd
 from scipy.stats import f_oneway, kruskal, mannwhitneyu, ttest_ind
 
-# Import multilayer statistics functions
 from . import multilayer_statistics as mls
 
 

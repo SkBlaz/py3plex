@@ -367,7 +367,6 @@ class HeterogeneousInformationNetwork:
             )
         middle_type = node_sequence[int(len(node_sequence) / 2)]
 
-        # forward_sequence = %TODO: INVERSE SEQUENCES!!!!!!!!!
 
         for node in self.graph:
 
@@ -449,17 +448,12 @@ class HeterogeneousInformationNetwork:
         ## old
         # for node in self.graph:
         #     if self.graph.nodes[node]['type'] == middle_type:
-        #         points = [node]
-        #         i = int(len(node_sequence) / 2 + 1)
         #         while i < len(node_sequence):
-        #             current_type = node_sequence[i]
-        #             new_points = []
         #             for point in points:
         #                 new_points += [
         #                     x for x in self.graph[point]
         #                     if self.graph.nodes[x]['type'] == current_type
         #                 ]
-        #             points = new_points
         #             i += 1
         #         if len(points) > 1:
         #             yield points

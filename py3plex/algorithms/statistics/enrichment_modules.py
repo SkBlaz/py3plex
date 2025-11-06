@@ -170,7 +170,6 @@ def compute_enrichment(
 
         # computational pool instantiation
         ncpu = 2  # mp.cpu_count()
-        #        pool = mp.Pool(ncpu)
 
         # compute the results
         n = len(term_database)
@@ -182,7 +181,6 @@ def compute_enrichment(
         results = [parallel_enrichment(x) for x in range(n)]
 
         # for batch in jobs:
-        #     results = pool.map(parallel_enrichment,batch)
         tmpframe = tmpframe.append(results, ignore_index=True)
 
         # multitest corrections on partition level
