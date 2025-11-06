@@ -31,16 +31,16 @@ print("=" * 70)
 print("SUPRA-ADJACENCY MATRIX OPERATIONS")
 print("=" * 70)
 
-print("\nExample 1: Random Erdős-Rényi Multilayer Network")
+print("\nExample 1: Random Erdős-Rényi Multiplex Network")
 print("-" * 70)
 
-# Generate a random multilayer network
+# Generate a random multiplex network
 print("  Generating network...")
 print("    Nodes: 500")
 print("    Layers: 8")
 print("    Edge probability: 0.05")
 
-ER_multilayer = random_generators.random_multilayer_ER(
+ER_multilayer = random_generators.random_multiplex_ER(
     500,     # Number of nodes
     8,       # Number of layers
     0.05,    # Edge probability
