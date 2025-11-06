@@ -2,7 +2,7 @@
 Multilayer Example: Supra-Adjacency Matrix Operations
 
 This example demonstrates how to:
-1. Generate random multilayer networks
+1. Generate random multiplex networks
 2. Compute supra-adjacency matrices
 3. Load multiplex networks with layer mappings
 4. Visualize matrix structure
