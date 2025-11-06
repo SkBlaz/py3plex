@@ -1,5 +1,5 @@
 # tensor-based operations examples
-# SKIP_CI: external_deps - Code issue with generator/len() incompatibility
+# SKIP_CI: external_deps - Requires visualization with display=True
 
 from py3plex.core import random_generators
 
