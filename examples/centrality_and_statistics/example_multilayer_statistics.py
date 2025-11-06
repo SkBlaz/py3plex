@@ -4,6 +4,8 @@ Example script demonstrating multilayer network statistics.
 
 This script showcases all 17 multilayer network statistics implemented
 in py3plex.algorithms.statistics.multilayer_statistics.
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 # This is a demonstration script - requires dependencies to run

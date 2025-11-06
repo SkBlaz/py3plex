@@ -7,6 +7,8 @@ This script demonstrates the new I/O API for multilayer graphs including:
 - Converting to core py3plex objects for analysis (centrality, etc.)
 - Converting between libraries (NetworkX, igraph)
 - Schema validation and error handling
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 import sys

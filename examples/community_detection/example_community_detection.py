@@ -13,6 +13,8 @@ revealing the modular structure of networks.
 Algorithms:
 - Louvain: Fast, hierarchical, optimizes modularity (BSD-3 license)
 - Infomap: Flow-based, optimizes information flow (requires binary)
+
+SKIP_CI: external_deps - Requires specific dataset files (cora.mat)
 """
 
 import os

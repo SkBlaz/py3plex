@@ -4,6 +4,8 @@ Example demonstrating the improved monoplex_nx_wrapper with kwargs support.
 
 This example shows how to use the monoplex_nx_wrapper to call NetworkX centrality
 functions with custom parameters, which is essential for weighted multilayer networks.
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 from py3plex.core import multinet

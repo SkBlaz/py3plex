@@ -14,6 +14,8 @@ Visualization styles:
 - "default": Standard NetworkX layout
 - Custom: Fine-grained control over node and edge appearance
 
+SKIP_CI: external_deps - Requires specific dataset files
+
 This example showcases the full flexibility of py3plex visualization,
 from simple one-liners to complex custom multi-edge styling.
 """

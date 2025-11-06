@@ -1,4 +1,5 @@
 # this example demonstrates how a network can be manipulated
+# Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 
 from py3plex.core import multinet
 from py3plex.core import random_generators

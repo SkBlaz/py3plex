@@ -8,6 +8,8 @@ This example demonstrates how to:
 
 The monoplex_nx_wrapper allows you to use any NetworkX algorithm
 on the aggregated (flattened) version of your multilayer network.
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 from py3plex.core import random_generators
