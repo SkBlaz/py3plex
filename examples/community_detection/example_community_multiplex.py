@@ -1,4 +1,5 @@
 # multiplex community detection!
+# SKIP_CI: external_deps - Requires specific dataset files (multiplex_example.edgelist)
 
 import louvain
 import igraph as ig

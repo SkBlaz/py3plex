@@ -7,6 +7,8 @@ in py3plex, including:
 - Calculating multilayer modularity
 - Detecting communities with the generalized Louvain algorithm
 - Generating synthetic multilayer networks with ground-truth communities
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 import sys

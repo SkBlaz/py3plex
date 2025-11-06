@@ -4,6 +4,8 @@ Example demonstrating vectorized aggregation with multi_layer_network object.
 This example shows how to use the new optimized aggregate_layers function
 with the main multi_layer_network class, comparing it to the existing
 aggregate_edges method.
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 import numpy as np

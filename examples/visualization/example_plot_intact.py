@@ -1,4 +1,5 @@
 # simple plot of a larger file
+# SKIP_CI: external_deps - Requires specific dataset files (intact02.gpickle)
 from collections import Counter
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.visualization.embedding_visualization import embedding_tools

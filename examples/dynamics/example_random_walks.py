@@ -7,6 +7,8 @@ This example demonstrates the comprehensive random walk capabilities:
 3. Multiple walk generation
 4. Multilayer network walks
 5. Statistical validation of walk properties
+
+SKIP_CI: external_deps - Requires specific dataset files (test.edgelist)
 """
 
 import numpy as np

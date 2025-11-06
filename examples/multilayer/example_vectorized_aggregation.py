@@ -6,6 +6,8 @@ with the main py3plex multi_layer_network data structure to efficiently
 aggregate edge weights across multiple layers.
 
 Performance: ~8× faster than legacy loop-based approaches.
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 import numpy as np

@@ -14,6 +14,8 @@ compared to traditional force-directed algorithms.
 
 Note: This is a benchmark/comparison template. The actual implementation
 would require adding specific benchmark code based on your needs.
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 import sys

@@ -9,6 +9,8 @@ of an interconnected (multiplex) network.
 Versatility is based on the multilayer eigenvector centrality formulation from:
 - De Domenico et al. (2013) "Mathematical Formulation of Multilayer Networks"
 - De Domenico et al. (2015) "Ranking in interconnected multilayer networks reveals versatile nodes"
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 import numpy as np

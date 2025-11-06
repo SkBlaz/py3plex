@@ -7,6 +7,8 @@ This example demonstrates how to:
 
 The random_multilayer_ER function creates a multilayer network where each layer
 is an Erdős-Rényi random graph with the specified parameters.
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
 
 from py3plex.core import random_generators

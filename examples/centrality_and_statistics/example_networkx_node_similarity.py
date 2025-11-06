@@ -1,3 +1,11 @@
+"""
+Example: NetworkX Node Similarity Comparison
+
+This example demonstrates computing node similarity using various NetworkX algorithms.
+
+Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
+"""
+
 from py3plex.core import multinet
 from py3plex.visualization.multilayer import plt
 import networkx as nx

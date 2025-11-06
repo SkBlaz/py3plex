@@ -20,6 +20,8 @@ Options:
 1. Install Python package: pip install node2vec
 2. Download C++ binary from: https://github.com/snap-stanford/snap
 3. Use alternative embeddings: DeepWalk, LINE, etc.
+
+SKIP_CI: external_deps - Requires specific dataset files (cora.gml)
 """
 
 import os
