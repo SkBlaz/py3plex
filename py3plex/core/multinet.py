@@ -1209,8 +1209,9 @@ class multi_layer_network:
 
         # Calculate and warn about memory usage for dense matrices
         if mtype == "dense":
-            num_nodes = len(list(self.get_nodes()))
-            num_layers = len({x[1] for x in self.get_nodes()})
+            nodes_list = list(self.get_nodes())
+            num_nodes = len(nodes_list)
+            num_layers = len({x[1] for x in nodes_list})
             supra_size = num_nodes * num_layers
 
             # Estimate memory for dense matrix (8 bytes per float64)
