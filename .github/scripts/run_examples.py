@@ -88,6 +88,11 @@ def check_imports_external_deps(file_path: Path) -> bool:
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
+            
+            # Skip files marked as FAST standalone
+            if 'Runtime: FAST' in content[:2000]:
+                return False
+                
             for indicator in external_indicators:
                 if indicator in content:
                     return True
