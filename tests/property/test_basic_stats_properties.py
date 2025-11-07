@@ -21,7 +21,7 @@ import pytest
 from hypothesis import assume, given, strategies as st
 
 from py3plex.algorithms.statistics.basic_statistics import identify_n_hubs
-from tests.property.strategies import small_graphs
+from .strategies import small_graphs
 
 
 # ============================================================================
