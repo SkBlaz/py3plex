@@ -7,6 +7,7 @@ and providing clear error messages to users.
 import os
 import tempfile
 import shutil
+import unittest
 from pathlib import Path
 
 import pytest
@@ -180,23 +181,15 @@ class TestMultiedgelistValidation:
         assert "Invalid multiedgelist format" in str(exc_info.value)
         assert "expected 4 or 5" in str(exc_info.value)
 
-    def test_validate_multiedgelist_without_weight(self):
+    def test_validate_multiedgelist_without_weight(self, temp_dir):
         """Test validation of multiedgelist without weight column."""
-        edge_file = os.path.join(self.temp_dir, "edges.txt")
+        edge_file = os.path.join(temp_dir, "edges.txt")
         with open(edge_file, "w") as f:
             f.write("A L1 B L1\n")
             f.write("B L1 C L1\n")
         
         # Should not raise exception (4 fields is valid)
         validate_multiedgelist_format(edge_file)
-
-
-class TestEdgelistValidation(unittest.TestCase):
-    """Test edgelist format validation."""
-
-    def setUp(self):
-        """Create temporary directory for test files."""
-        self.temp_dir = tempfile.mkdtemp()
 
 
 class TestEdgelistValidation:
