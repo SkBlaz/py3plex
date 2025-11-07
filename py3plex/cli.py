@@ -22,6 +22,7 @@ import numpy as np
 
 from py3plex import __version__
 from py3plex.core import multinet
+from py3plex.core.nx_compat import nx_write_gpickle
 from py3plex.logging_config import get_logger
 
 # Get logger for CLI module
@@ -677,8 +678,14 @@ def cmd_load(args: argparse.Namespace) -> int:
                     }
 
                 # Overall clustering
+                G_undirected = network.core_network.to_undirected()
+                # Convert multigraph to simple graph for clustering (NetworkX limitation)
+                if isinstance(G_undirected, nx.MultiGraph):
+                    G_simple = nx.Graph(G_undirected)
+                else:
+                    G_simple = G_undirected
                 stats["clustering_coefficient"] = float(
-                    nx.average_clustering(network.core_network.to_undirected())
+                    nx.average_clustering(G_simple)
                 )
 
                 # Degree distribution
@@ -916,8 +923,13 @@ def cmd_stats(args: argparse.Namespace) -> int:
         if args.measure in ["all", "clustering"]:
             try:
                 G_undirected = network.core_network.to_undirected()
+                # Convert multigraph to simple graph for clustering (NetworkX limitation)
+                if isinstance(G_undirected, nx.MultiGraph):
+                    G_simple = nx.Graph(G_undirected)
+                else:
+                    G_simple = G_undirected
                 stats["clustering_coefficient"] = float(
-                    nx.average_clustering(G_undirected)
+                    nx.average_clustering(G_simple)
                 )
             except Exception as e:
                 logger.warning(f"Could not compute clustering: {e}")
@@ -1098,7 +1110,7 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
         elif output_path.suffix == ".gexf":
             nx.write_gexf(aggregated, str(output_path))
         elif output_path.suffix == ".gpickle":
-            nx.write_gpickle(aggregated, str(output_path))
+            nx_write_gpickle(aggregated, str(output_path))
         else:
             logger.warning("Unsupported format, using GraphML")
             nx.write_graphml(aggregated, str(output_path.with_suffix(".graphml")))
@@ -1136,7 +1148,7 @@ def cmd_convert(args: argparse.Namespace) -> int:
         elif output_path.suffix == ".gexf":
             nx.write_gexf(network.core_network, str(output_path))
         elif output_path.suffix == ".gpickle":
-            nx.write_gpickle(network.core_network, str(output_path))
+            nx_write_gpickle(network.core_network, str(output_path))
         elif output_path.suffix == ".json":
             # Custom JSON export with network info
             layers = _get_layer_names(network)
@@ -1657,7 +1669,12 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
                 print(f"  {layer} density: (error: {e})")
 
         G_undirected = network.core_network.to_undirected()
-        clustering = nx.average_clustering(G_undirected)
+        # Convert multigraph to simple graph for clustering (NetworkX limitation)
+        if isinstance(G_undirected, nx.MultiGraph):
+            G_simple = nx.Graph(G_undirected)
+        else:
+            G_simple = G_undirected
+        clustering = nx.average_clustering(G_simple)
         print(f"  Avg clustering coefficient: {clustering:.4f}")
         print()
 
