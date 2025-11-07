@@ -11,6 +11,34 @@ from pathlib import Path
 
 import pytest
 
+# Configure Hypothesis profiles
+try:
+    from hypothesis import settings, Verbosity
+    
+    # Register a "ci" profile for faster CI runs
+    settings.register_profile(
+        "ci",
+        max_examples=10,
+        deadline=2000,  # 2 seconds per test
+        verbosity=Verbosity.normal,
+    )
+    
+    # Register a "nightly" profile for thorough testing
+    settings.register_profile(
+        "nightly",
+        max_examples=int(os.environ.get("HYPOTHESIS_MAX_EXAMPLES", "600")),
+        deadline=None,
+        verbosity=Verbosity.verbose,
+    )
+    
+    # Activate profile based on environment
+    profile = os.environ.get("HYPOTHESIS_PROFILE", "ci" if os.environ.get("CI") else "default")
+    settings.load_profile(profile)
+    
+except ImportError:
+    # Hypothesis not available - tests will be skipped
+    pass
+
 
 @pytest.fixture
 def temp_dir():
@@ -72,4 +100,7 @@ def pytest_configure(config):
     )
     config.addinivalue_line(
         "markers", "unit: fast unit tests"
+    )
+    config.addinivalue_line(
+        "markers", "metamorphic: metamorphic tests that verify invariants under transformations"
     )

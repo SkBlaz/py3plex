@@ -5,6 +5,10 @@ on:
     branches: [ main, master, develop ]
   pull_request:
     branches: [ main, master, develop ]
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
   test:
@@ -107,6 +111,9 @@ jobs:
       shell: bash
 
     - name: Run tests via Makefile
+      env:
+        MPLBACKEND: Agg  # Avoid GUI issues in matplotlib
+        HYPOTHESIS_PROFILE: ci  # Use CI profile for Hypothesis
       run: |
         echo "🧪 Running tests via Makefile..."
         # Activate virtual environment (cross-platform)
@@ -115,8 +122,8 @@ jobs:
         else
           source .venv/bin/activate
         fi
-        # Install pytest if not already installed
-        pip install pytest pytest-cov || echo "pytest already installed"
+        # Install pytest and hypothesis if not already installed
+        pip install pytest pytest-cov hypothesis || echo "pytest already installed"
         # Use pytest with coverage for Python 3.10 on Linux to upload to codecov
         if [ "${{ matrix.python-version }}" == "3.10" ] && [ "$RUNNER_OS" == "Linux" ]; then
           pytest tests/ --cov=py3plex --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests failed"
@@ -129,6 +136,24 @@ jobs:
           fi
         fi
       timeout-minutes: 12
+      shell: bash
+    
+    - name: Run metamorphic tests
+      env:
+        MPLBACKEND: Agg
+        HYPOTHESIS_PROFILE: ci
+      run: |
+        echo "🔬 Running metamorphic tests..."
+        # Activate virtual environment (cross-platform)
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          source .venv/Scripts/activate
+        else
+          source .venv/bin/activate
+        fi
+        # Run only metamorphic tests
+        pip install hypothesis || echo "hypothesis already installed"
+        pytest -q -k metamorphic tests/ || echo "⚠️ Metamorphic tests failed"
+      timeout-minutes: 5
       shell: bash
 
     - name: Upload coverage to Codecov
@@ -190,4 +215,48 @@ jobs:
         timeout 400 python run_tests.py || echo "⚠️ Minimal tests timed out after 6.7 minutes"
         echo "✅ Minimal dependency tests completed"
         echo "Note: Some tests may be skipped due to missing optional dependencies"
+      timeout-minutes: 8
+
+  # Nightly job for thorough metamorphic testing
+  metamorphic-nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    name: "Nightly Metamorphic Tests"
+    # Run only on schedule or manual trigger
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      timeout-minutes: 2
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      timeout-minutes: 3
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest hypothesis networkx numpy scipy tqdm
+      timeout-minutes: 10
+
+    - name: Install package
+      run: |
+        echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
+      timeout-minutes: 2
+
+    - name: Run extended metamorphic tests
+      env:
+        MPLBACKEND: Agg
+        HYPOTHESIS_PROFILE: nightly
+        HYPOTHESIS_MAX_EXAMPLES: 600
+      run: |
+        echo "🔬 Running extended metamorphic tests..."
+        echo "Configuration:"
+        echo "  - HYPOTHESIS_PROFILE: nightly"
+        echo "  - HYPOTHESIS_MAX_EXAMPLES: 600"
+        pytest -v -k metamorphic tests/test_metamorphic.py --tb=short
+      timeout-minutes: 50
       timeout-minutes: 8
