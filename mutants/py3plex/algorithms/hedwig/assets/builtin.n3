@@ -1,0 +1,30 @@
+@prefix : <http://kt.ijs.si/hedwig#>.
+@prefix OWL: <http://www.w3.org/2002/07/owl#>.
+@prefix RDF: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix RDFS: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix XSD: <http://www.w3.org/2001/XMLSchema#>.
+
+:Example 
+    a OWL:Class ;
+    RDFS:label "Example".
+    
+:score 
+    a OWL:DatatypeProperty ;
+	RDFS:label "score" ;
+	RDFS:domain :Example ;
+	RDFS:range XSD:float .
+    
+:annotated_with 
+    a OWL:ObjectProperty ;
+	RDFS:label "annotated with" ;
+	RDFS:domain :Example ;
+	RDFS:range RDF:Resource .
+
+:GeneralizationPredicate
+    a OWL:Class.
+
+RDFS:subClassOf
+    a :GeneralizationPredicate.
+
+:partOf
+    a :GeneralizationPredicate.

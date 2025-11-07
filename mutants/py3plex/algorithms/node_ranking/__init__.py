@@ -1,0 +1,182 @@
+# node ranking algorithms
+import multiprocessing as mp
+from typing import Any, Generator, List, Optional, Tuple, Union, cast
+
+import networkx as nx
+import numpy as np
+import scipy.sparse as sp
+
+# Global variables for multiprocessing (set by run_PPR)
+__graph_matrix: sp.spmatrix
+damping_hyper: float
+spread_step_hyper: int
+spread_percent_hyper: float
+
+
+def stochastic_normalization(matrix: sp.spmatrix) -> sp.spmatrix:
+    matrix = matrix.tolil()
+
+    try:
+        matrix.setdiag(0)
+    except TypeError:
+        matrix.setdiag(np.zeros(matrix.shape[0]))
+
+    matrix = matrix.tocsr()
+    d = matrix.sum(axis=1).getA1()
+    nzs = np.where(d > 0)
+    k = np.zeros(matrix.shape[1])
+    nz = 1 / d[nzs]
+    k[nzs] = nz
+    sp.diags(k, 0).tocsc()
+    matrix = (sp.diags(k, 0).tocsc().dot(matrix)).transpose()
+    return matrix
+
+
+def page_rank_kernel(index_row: int) -> Tuple[int, np.ndarray]:
+
+    # call as results = p.map(pr_kernel, batch)
+    pr = sparse_page_rank(
+        __graph_matrix,
+        [index_row],
+        epsilon=1e-6,
+        max_steps=100000,
+        damping=damping_hyper,
+        spread_step=spread_step_hyper,
+        spread_percent=spread_percent_hyper,
+        try_shrink=True,
+    )
+
+    norm = np.linalg.norm(pr, 2)
+    if norm > 0:
+        pr = pr / np.linalg.norm(pr, 2)
+        return (index_row, pr)
+    else:
+        return (index_row, np.zeros(__graph_matrix.shape[1]))
+
+
+def sparse_page_rank(
+    matrix: sp.spmatrix,
+    start_nodes: Union[List[int], range],
+    epsilon: float = 1e-6,
+    max_steps: int = 100000,
+    damping: float = 0.5,
+    spread_step: int = 10,
+    spread_percent: float = 0.3,
+    try_shrink: bool = True,
+) -> np.ndarray:
+
+    assert (len(start_nodes)) > 0
+
+    # this method assumes that column sums are all equal to 1 (stochastic normalizaition!)
+    size = matrix.shape[0]
+    if start_nodes is None:
+        start_nodes = range(size)
+        nz = size
+    else:
+        nz = len(start_nodes)
+    start_vec = np.zeros((size, 1))
+    start_vec[start_nodes] = 1
+    start_rank = start_vec / len(start_nodes)
+    rank_vec = start_vec / len(start_nodes)
+
+    # calculate the max spread:
+    shrink = False
+    which = np.zeros(0)
+    if try_shrink:
+        v = start_vec / len(start_nodes)
+        steps = 0
+        while nz < size * spread_percent and steps < spread_step:
+            steps += 1
+            v += matrix.dot(v)
+            nz_new = np.count_nonzero(v)
+            if nz_new == nz:
+                shrink = True
+                break
+            nz = nz_new
+        rr = np.arange(matrix.shape[0])
+        which = (v[rr] > 0).reshape(size)
+        if shrink:
+            start_rank = start_rank[which]
+            rank_vec = rank_vec[which]
+            matrix = matrix[:, which][which, :]
+    diff: Union[float, Any] = np.inf
+    steps = 0
+    while diff > epsilon and steps < max_steps:  # not converged yet
+        steps += 1
+        new_rank = matrix.dot(rank_vec)
+        rank_sum: float = np.sum(new_rank)
+        if rank_sum < 0.999999999:
+            new_rank += start_rank * (1 - rank_sum)
+        new_rank = damping * new_rank + (1 - damping) * start_rank
+        new_diff = np.linalg.norm(rank_vec - new_rank, 1)
+        diff = new_diff
+        rank_vec = new_rank
+    if try_shrink and shrink:
+        ret = np.zeros(size)
+        rank_vec = rank_vec.T[0]  # this works for both python versions
+        ret[which] = rank_vec
+        ret[start_nodes] = 0
+        return cast(np.ndarray, ret.flatten())
+    else:
+        rank_vec[start_nodes] = 0
+        return cast(np.ndarray, rank_vec.flatten())
+
+
+def run_PPR(
+    network: sp.spmatrix,
+    cores: Optional[int] = None,
+    jobs: Optional[List[range]] = None,
+    damping: float = 0.85,
+    spread_step: int = 10,
+    spread_percent: float = 0.3,
+    targets: Optional[List[int]] = None,
+    parallel: bool = True,
+) -> Generator[Union[Tuple[int, np.ndarray], List[Tuple[int, np.ndarray]]], None, None]:
+
+    # normalize the matrix
+
+    network = stochastic_normalization(network)
+    global __graph_matrix
+    global damping_hyper
+    global spread_step_hyper
+    global spread_percent_hyper
+
+    damping_hyper = damping
+    spread_step_hyper = spread_step
+    spread_percent_hyper = spread_percent
+
+    __graph_matrix = network
+    if cores is None:
+        cores = mp.cpu_count()
+
+    n = network.shape[1]
+    step = cores
+
+    if jobs is None:
+        if targets is None:
+            jobs = [range(n)[i : i + step] for i in range(0, n, step)]  # generate jobs
+        else:
+            jobs = [range(n)[i : i + step] for i in targets]  # generate jobs
+
+    if not parallel:
+        for target in jobs:
+            for x in target:
+                vector = page_rank_kernel(x)
+                yield vector
+    else:
+        with mp.Pool(processes=cores) as p:
+            for batch in jobs:
+                results = p.map(page_rank_kernel, batch)
+                yield results
+
+
+def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
+    return nx.hits_scipy(graph)  # type: ignore[no-any-return]
+
+
+def hub_matrix(graph: nx.Graph) -> np.ndarray:
+    return cast(np.ndarray, nx.hub_matrix(graph))
+
+
+def authority_matrix(graph: nx.Graph) -> np.ndarray:
+    return cast(np.ndarray, nx.authority_matrix(graph))
