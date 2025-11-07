@@ -29,6 +29,21 @@ from py3plex.logging_config import get_logger
 logger = get_logger(__name__)
 
 
+def _convert_to_simple_graph(G: nx.Graph) -> nx.Graph:
+    """Convert a multigraph to a simple graph for algorithms that don't support multigraphs.
+    
+    Args:
+        G: Input graph (may be MultiGraph or Graph)
+        
+    Returns:
+        Simple graph (no parallel edges)
+    """
+    if isinstance(G, nx.MultiGraph):
+        return nx.Graph(G)
+    return G
+
+
+
 def _normalize_network_nodes(
     network: "multinet.multi_layer_network",
 ) -> "multinet.multi_layer_network":
@@ -679,11 +694,7 @@ def cmd_load(args: argparse.Namespace) -> int:
 
                 # Overall clustering
                 G_undirected = network.core_network.to_undirected()
-                # Convert multigraph to simple graph for clustering (NetworkX limitation)
-                if isinstance(G_undirected, nx.MultiGraph):
-                    G_simple = nx.Graph(G_undirected)
-                else:
-                    G_simple = G_undirected
+                G_simple = _convert_to_simple_graph(G_undirected)
                 stats["clustering_coefficient"] = float(
                     nx.average_clustering(G_simple)
                 )
@@ -923,11 +934,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
         if args.measure in ["all", "clustering"]:
             try:
                 G_undirected = network.core_network.to_undirected()
-                # Convert multigraph to simple graph for clustering (NetworkX limitation)
-                if isinstance(G_undirected, nx.MultiGraph):
-                    G_simple = nx.Graph(G_undirected)
-                else:
-                    G_simple = G_undirected
+                G_simple = _convert_to_simple_graph(G_undirected)
                 stats["clustering_coefficient"] = float(
                     nx.average_clustering(G_simple)
                 )
@@ -1669,11 +1676,7 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
                 print(f"  {layer} density: (error: {e})")
 
         G_undirected = network.core_network.to_undirected()
-        # Convert multigraph to simple graph for clustering (NetworkX limitation)
-        if isinstance(G_undirected, nx.MultiGraph):
-            G_simple = nx.Graph(G_undirected)
-        else:
-            G_simple = G_undirected
+        G_simple = _convert_to_simple_graph(G_undirected)
         clustering = nx.average_clustering(G_simple)
         print(f"  Avg clustering coefficient: {clustering:.4f}")
         print()
