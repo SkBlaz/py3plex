@@ -8,7 +8,7 @@ in py3plex, including:
 - Detecting communities with the generalized Louvain algorithm
 - Generating synthetic multilayer networks with ground-truth communities
 
-Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
+SKIP_CI: slow - Runs Louvain algorithm multiple times with synthetic network generation, takes more than 10 seconds
 """
 
 import sys
