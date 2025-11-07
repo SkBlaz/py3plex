@@ -79,3 +79,5 @@ timeout-*
 slow-unit-*
 doc-coverage.json
 LLM_ORIGINAL_BACKUP.md
+mutants/
+.mutmut-cache
