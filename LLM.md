@@ -1,15 +1,686 @@
 # Py3plex Developer and LLM Documentation
 
-This document consolidates technical documentation for developers and LLM assistants working with py3plex.
+**Welcome! This is the entry point for LLMs and developers working with py3plex.**
+
+This document provides comprehensive guidance for understanding and using py3plex, a Python library for multilayer network analysis and visualization.
 
 ---
 
-## Table of Contents
+## 🚀 Quick Start for LLMs
 
-1. [Visualization Module Import Guide](#visualization-module-import-guide)
-2. [Examples CI Documentation](#examples-ci-documentation)
-3. [Property-Based Tests](#property-based-tests)
-4. [Selftest Expansion](#selftest-expansion)
+### What is py3plex?
+
+**Py3plex** is a Python library for **multilayer network analysis and visualization**. It enables working with complex networks that have:
+- Multiple layers (e.g., social networks with different relationship types)
+- Different node types (heterogeneous networks)
+- Temporal dynamics (time-varying networks)
+
+**Key capabilities:**
+- Create and manipulate multilayer networks
+- Compute multilayer-specific centrality measures
+- Detect communities in multilayer structures
+- Visualize complex network structures
+- Convert between NetworkX and multilayer formats
+
+**Installation:**
+```bash
+pip install git+https://github.com/SkBlaz/py3plex.git
+py3plex selftest  # Verify installation
+```
+
+### 30-Second Example
+
+```python
+from py3plex.core import multinet
+from py3plex.core import random_generators
+
+# Create a random multilayer network
+network = random_generators.random_multilayer_ER(
+    n=100,      # 100 nodes
+    layers=3,   # 3 layers
+    p=0.05      # Edge probability
+)
+
+# Visualize it
+network.visualize_network(show=True)
+
+# Compute centrality
+from py3plex.algorithms.statistics import multilayer_statistics
+centrality = multilayer_statistics.versatility_centrality(network)
+```
+
+### Core Concepts
+
+1. **Multilayer Network**: A network with multiple layers, where each layer represents a different type of relationship
+2. **Node-Layer Tuple**: Nodes are identified by `(node_name, layer_name)` pairs
+3. **Intra-layer edges**: Edges within a single layer
+4. **Inter-layer edges**: Edges connecting the same node across different layers
+5. **Network Types**:
+   - `multilayer`: General multilayer networks
+   - `multiplex`: Special case where same nodes exist in all layers with inter-layer couplings
+
+---
+
+## 📚 Table of Contents
+
+### For First-Time Users
+1. [Quick Start for LLMs](#quick-start-for-llms) *(you are here)*
+2. [Core API Reference](#core-api-reference)
+3. [Common Usage Patterns](#common-usage-patterns)
+4. [Navigation Guide](#navigation-guide)
+
+### Technical Documentation
+5. [Visualization Module Import Guide](#visualization-module-import-guide)
+6. [Examples CI Documentation](#examples-ci-documentation)
+7. [Property-Based Tests](#property-based-tests)
+8. [Selftest Expansion](#selftest-expansion)
+
+---
+
+## 🔑 Core API Reference
+
+### Main Class: `multi_layer_network`
+
+Located in: `py3plex.core.multinet`
+
+**Initialization:**
+```python
+from py3plex.core import multinet
+
+network = multinet.multi_layer_network(
+    network_type="multilayer",  # or "multiplex"
+    directed=True,              # or False for undirected
+    verbose=True                # Enable logging
+)
+```
+
+**Key Methods:**
+
+#### Network Construction
+```python
+# Load from file
+network.load_network(
+    input_file="network.edgelist",
+    input_type="edgelist_general"
+)
+
+# Load from NetworkX graph
+network.load_network(
+    input_file=nx_graph,
+    input_type="nx"
+)
+
+# Add nodes
+network.add_nodes(
+    [("node1", "layer1"), ("node2", "layer1")]
+)
+
+# Add edges
+network.add_edges(
+    [("node1", "node2", "layer1")]
+)
+```
+
+#### Network Analysis
+```python
+# Get nodes and edges
+nodes = network.get_nodes()          # Returns list of (node, layer) tuples
+edges = network.get_edges()          # Returns list of edges
+
+# Split into layers
+layer_graphs = network.split_to_layers()  # Dict of layer_name -> NetworkX graph
+
+# Get network statistics
+num_nodes = network.core_network.number_of_nodes()
+num_edges = network.core_network.number_of_edges()
+```
+
+#### Visualization
+```python
+# Basic visualization
+network.visualize_network(show=True)
+
+# Hairball plot
+from py3plex.visualization import hairball_plot
+colors, graph = network.get_layers(style="hairball")
+hairball_plot(graph, colors)
+```
+
+### Random Network Generators
+
+Located in: `py3plex.core.random_generators`
+
+```python
+from py3plex.core import random_generators
+
+# Random multilayer Erdős-Rényi
+network = random_generators.random_multilayer_ER(
+    n=100,          # Number of nodes
+    layers=3,       # Number of layers
+    p=0.05,         # Edge probability
+    directed=False  # Undirected
+)
+
+# Random multiplex network (with inter-layer couplings)
+network = random_generators.random_multiplex_ER(
+    n=50,
+    layers=4,
+    p=0.1,
+    directed=True
+)
+```
+
+### Centrality Measures
+
+Located in: `py3plex.algorithms.statistics.multilayer_statistics`
+
+```python
+from py3plex.algorithms.statistics import multilayer_statistics
+
+# Versatility (multilayer eigenvector centrality)
+scores = multilayer_statistics.versatility_centrality(network)
+
+# Other multilayer-specific measures
+node_act = multilayer_statistics.node_activity(network, ("node1", "layer1"))
+layer_dens = multilayer_statistics.layer_density(network, "layer1")
+clustering = multilayer_statistics.multilayer_clustering_coefficient(network)
+
+# For standard centrality (degree, betweenness, etc.), use NetworkX on flattened graph
+import networkx as nx
+G = network.core_network
+degree_cent = nx.degree_centrality(G)
+betweenness = nx.betweenness_centrality(G)
+```
+
+### Community Detection
+
+Located in: `py3plex.algorithms.community_detection`
+
+```python
+from py3plex.algorithms.community_detection import community_wrapper
+
+# Louvain algorithm (requires python-louvain package)
+partition = community_wrapper.louvain_communities(network.core_network)
+
+# Label propagation (no external dependencies)
+partition = community_wrapper.label_propagation(network.core_network)
+```
+
+### Visualization Functions
+
+Located in: `py3plex.visualization`
+
+```python
+from py3plex.visualization import (
+    hairball_plot,              # Force-directed layout
+    draw_multilayer_default,    # Diagonal multilayer layout
+    colors_default,             # Color palettes
+    plt                         # matplotlib.pyplot
+)
+
+# Example
+colors, graph = network.get_layers(style="hairball")
+hairball_plot(graph, colors)
+plt.show()
+```
+
+---
+
+## 🎯 Common Usage Patterns
+
+### Pattern 1: Load and Analyze a Network
+
+```python
+from py3plex.core import multinet
+
+# Create network object
+network = multinet.multi_layer_network(directed=False)
+
+# Load from file (various formats supported)
+network.load_network(
+    input_file="data/network.edgelist",
+    input_type="edgelist_general"
+)
+
+# Analyze
+print(f"Nodes: {network.core_network.number_of_nodes()}")
+print(f"Edges: {network.core_network.number_of_edges()}")
+
+# Get layer-specific information
+layers = network.split_to_layers()
+for layer_name, layer_graph in layers.items():
+    print(f"Layer {layer_name}: {layer_graph.number_of_edges()} edges")
+```
+
+### Pattern 2: Create a Synthetic Network
+
+```python
+from py3plex.core import random_generators
+
+# Generate random network
+network = random_generators.random_multilayer_ER(
+    n=100,
+    layers=3,
+    p=0.05,
+    directed=False
+)
+
+# Compute centrality
+from py3plex.algorithms.statistics import multilayer_statistics
+scores = multilayer_statistics.versatility_centrality(network)
+
+# Identify top nodes
+top_nodes = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:10]
+print("Top 10 central nodes:", top_nodes)
+```
+
+### Pattern 3: Convert Between NetworkX and Py3plex
+
+```python
+import networkx as nx
+from py3plex.core import multinet
+
+# NetworkX -> Py3plex
+nx_graph = nx.karate_club_graph()
+network = multinet.multi_layer_network()
+network.load_network(input_file=nx_graph, input_type="nx")
+
+# Py3plex -> NetworkX (flatten to single layer)
+from py3plex.io.converters import to_networkx
+nx_graph = to_networkx(network, mode="union")  # or "multiplex", "intersection"
+```
+
+### Pattern 4: Visualize Multilayer Networks
+
+```python
+from py3plex.core import multinet
+from py3plex.visualization import hairball_plot, plt
+
+# Create or load network
+network = multinet.multi_layer_network()
+# ... add nodes/edges ...
+
+# Method 1: Built-in visualization
+network.visualize_network(show=True, no_labels=False)
+
+# Method 2: Hairball plot (for larger networks)
+colors, graph = network.get_layers(style="hairball")
+hairball_plot(graph, colors)
+plt.title("My Multilayer Network")
+plt.show()
+```
+
+### Pattern 5: Community Detection
+
+```python
+from py3plex.core import multinet
+from py3plex.algorithms.community_detection import community_wrapper
+
+# Load network
+network = multinet.multi_layer_network()
+network.load_network(input_file="data.edgelist", input_type="edgelist_general")
+
+# Detect communities using Louvain
+partition = community_wrapper.louvain_communities(
+    network.core_network,
+    randomize=False
+)
+
+# Analyze communities
+from collections import Counter
+community_sizes = Counter(partition.values())
+print(f"Found {len(community_sizes)} communities")
+print(f"Largest community: {max(community_sizes.values())} nodes")
+```
+
+---
+
+## 🧭 Navigation Guide
+
+### Where to Find Information
+
+1. **"How do I install py3plex?"**
+   - See README.md or [Installation](#quick-start-for-llms) above
+
+2. **"What are the main features?"**
+   - See [Core API Reference](#core-api-reference) above
+   - Check `examples/` directory for 59 example scripts
+
+3. **"How do I visualize networks?"**
+   - See [Visualization Functions](#visualization-functions) above
+   - See [Visualization Module Import Guide](#visualization-module-import-guide) below
+
+4. **"How do I compute centrality?"**
+   - See [Centrality Measures](#centrality-measures) above
+   - Check `py3plex/algorithms/statistics/` for implementations
+
+5. **"How do I detect communities?"**
+   - See [Community Detection](#community-detection) above
+   - Check `examples/community_detection/` for examples
+
+6. **"What file formats are supported?"**
+   - Edgelist formats: `edgelist_general`, `edgelist`
+   - GraphML: `graphml`
+   - NetworkX graphs: `nx` (direct import)
+   - GPickle: Native Python serialization
+   - See `py3plex/io/` for I/O functions
+
+7. **"How do I run tests?"**
+   - Quick: `py3plex selftest`
+   - Full: `make test-all` or `pytest tests/`
+   - See [Testing](#testing) in README.md
+
+8. **"What's the difference between multilayer and multiplex?"**
+   - **Multilayer**: General case, any layer structure
+   - **Multiplex**: All layers have same nodes, with inter-layer couplings
+   - Set `network_type="multiplex"` for automatic coupling
+
+9. **"How do I work with large networks?"**
+   - Use sparse matrices: Check `network.sparse_enabled`
+   - Use `no_labels=True` in visualizations
+   - See Performance Guide in docs/
+
+10. **"Where are the property-based tests?"**
+    - See [Property-Based Tests](#property-based-tests) below
+    - Located in `tests/property/`
+
+### File Organization
+
+```
+py3plex/
+├── core/                    # Core data structures
+│   ├── multinet.py         # Main multi_layer_network class
+│   ├── random_generators.py # Network generators
+│   └── converters.py       # Format converters
+├── algorithms/             # Analysis algorithms
+│   ├── multilayer_algorithms/  # Multilayer-specific
+│   ├── statistics/         # Statistical measures
+│   └── community_detection/ # Community detection
+├── visualization/          # Plotting and visualization
+│   ├── multilayer.py       # Main visualization functions
+│   └── colors.py           # Color utilities
+├── io/                     # Input/output
+│   └── converters.py       # Format conversions
+└── cli.py                  # Command-line interface
+
+examples/                   # 59 example scripts
+├── basic/                  # Basic usage examples
+├── visualization/          # Visualization examples
+├── community_detection/    # Community detection examples
+└── centrality_and_statistics/ # Analysis examples
+
+tests/                      # Test suite
+├── test_*.py              # Unit tests
+└── property/              # Property-based tests (273+ tests)
+
+docs/                       # Documentation (HTML)
+```
+
+### Example Categories
+
+The `examples/` directory contains 59 examples organized by category:
+
+- **basic/** - Network creation, I/O, basic operations (10 examples)
+- **visualization/** - Plotting and layout examples
+- **community_detection/** - Community detection algorithms (5 examples)
+- **centrality_and_statistics/** - Centrality and statistical analysis
+- **embeddings/** - Node embedding examples (3 examples)
+- **decomposition_and_classification/** - Network decomposition (7 examples)
+- **multilayer/** - Multilayer-specific operations
+- **dynamics/** - Temporal/dynamic networks
+- **benchmarks_and_tutorials/** - Performance and tutorials
+
+**Tip**: Start with `examples/basic/example_random_generator.py` for a simple working example.
+
+---
+
+## ❓ FAQ and Troubleshooting
+
+### Frequently Asked Questions
+
+#### Q: What's the difference between multilayer and multiplex networks?
+
+**A:** 
+- **Multilayer networks** are the general case - you can have any layer structure, different nodes in different layers, and arbitrary inter-layer connections.
+- **Multiplex networks** are a special case where:
+  - All layers have the same nodes
+  - Inter-layer edges connect the same node across layers (couplings)
+  - Example: A social network with friendship, collaboration, and family layers
+
+Use `network_type="multiplex"` to automatically create inter-layer couplings.
+
+#### Q: How do I specify nodes and layers?
+
+**A:** Nodes in py3plex are represented as `(node_name, layer_name)` tuples:
+
+```python
+# Add a node named "Alice" in layer "friends"
+network.add_nodes([("Alice", "friends")])
+
+# Add an edge between Alice and Bob in the friends layer
+network.add_edges([("Alice", "Bob", "friends")])
+```
+
+#### Q: What edge formats are supported?
+
+**A:** Multiple formats are supported in `add_edges()`:
+
+```python
+# Format 1: (source, target, layer)
+network.add_edges([("node1", "node2", "layer1")])
+
+# Format 2: Dictionary with properties
+network.add_edges([{
+    'source': 'node1',
+    'target': 'node2', 
+    'layer': 'layer1',
+    'weight': 0.5
+}])
+
+# Format 3: For inter-layer edges
+# Connect node1 between layer1 and layer2
+network.add_edges([("node1", "node1", "layer1", "layer2")])
+```
+
+#### Q: How do I convert a NetworkX graph to py3plex?
+
+**A:**
+```python
+import networkx as nx
+from py3plex.core import multinet
+
+# Create NetworkX graph
+G = nx.karate_club_graph()
+
+# Load into py3plex
+network = multinet.multi_layer_network()
+network.load_network(input_file=G, input_type="nx")
+```
+
+The NetworkX graph becomes a single layer in the multilayer network.
+
+#### Q: How do I flatten a multilayer network back to NetworkX?
+
+**A:**
+```python
+from py3plex.io.converters import to_networkx
+
+# Union mode: merge all layers (edges from any layer included)
+G = to_networkx(network, mode="union")
+
+# Multiplex mode: preserve layer structure as node-layer tuples
+G = to_networkx(network, mode="multiplex")
+
+# Intersection mode: only edges present in ALL layers
+G = to_networkx(network, mode="intersection")
+```
+
+#### Q: Why is my visualization empty or not showing?
+
+**A:** Common causes:
+
+1. **No edges in network**: Check `network.core_network.number_of_edges()`
+2. **Backend issue**: For server/headless environments, use:
+   ```python
+   import matplotlib
+   matplotlib.use('Agg')  # Non-interactive backend
+   ```
+3. **CI mode**: Examples detect CI via `MPLBACKEND=Agg` and skip `show=True`
+
+#### Q: How do I save/load networks?
+
+**A:**
+```python
+# Save as edgelist
+network.save_network("output.edgelist")
+
+# Save as GraphML
+from py3plex.io import IO
+IO.to_graphml(network, "output.graphml")
+
+# Save as pickle (preserves all attributes)
+import pickle
+with open("network.pkl", "wb") as f:
+    pickle.dump(network, f)
+
+# Load
+network = multinet.multi_layer_network()
+network.load_network("input.edgelist", input_type="edgelist_general")
+```
+
+#### Q: What centrality measures are available?
+
+**A:** 
+
+**Multilayer-specific** (from `py3plex.algorithms.statistics.multilayer_statistics`):
+- `versatility_centrality()` - Multilayer eigenvector centrality
+- `node_activity()` - Activity of a node across layers
+- `layer_density()` - Density of a specific layer
+- `multilayer_clustering_coefficient()` - Clustering in multilayer context
+- `degree_vector()` - Degree per layer for a node
+
+**Standard measures** (use NetworkX on the flattened `core_network`):
+- Degree centrality: `nx.degree_centrality(network.core_network)`
+- Betweenness centrality: `nx.betweenness_centrality(network.core_network)`
+- Closeness centrality: `nx.closeness_centrality(network.core_network)`
+- Eigenvector centrality: `nx.eigenvector_centrality(network.core_network)`
+- PageRank: `nx.pagerank(network.core_network)`
+
+#### Q: Can I use py3plex with large networks (millions of nodes)?
+
+**A:** Yes, but consider:
+
+1. **Sparse matrices**: Enable with `network.sparse_enabled = True`
+2. **Visualization**: Skip labels with `no_labels=True`
+3. **Sampling**: Analyze subnetworks first
+4. **Memory**: Multilayer networks require more memory than single-layer
+
+See Performance Guide in docs/ for optimization strategies.
+
+#### Q: What Python versions are supported?
+
+**A:** Python 3.8+ (as specified in `pyproject.toml`)
+
+### Common Errors and Solutions
+
+#### Error: "ModuleNotFoundError: No module named 'py3plex'"
+
+**Solution:** Install from GitHub (PyPI version is outdated):
+```bash
+pip install git+https://github.com/SkBlaz/py3plex.git
+```
+
+#### Error: "No module named 'community'" or "python-louvain"
+
+**Solution:** The Louvain algorithm requires an optional dependency:
+```bash
+pip install python-louvain
+```
+
+Or use built-in label propagation:
+```python
+from py3plex.algorithms.community_detection import community_wrapper
+partition = community_wrapper.label_propagation(network.core_network)
+```
+
+#### Error: ImportError with visualization
+
+**Solution:** Ensure matplotlib and visualization dependencies are installed:
+```bash
+pip install matplotlib seaborn
+```
+
+For headless environments, set backend before importing:
+```python
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+```
+
+#### Error: "AttributeError: 'MultiGraph' object has no attribute 'nodes_iter'"
+
+**Solution:** This indicates outdated NetworkX version. Update to 2.5+:
+```bash
+pip install --upgrade networkx>=2.5
+```
+
+#### Error: Visualization shows disconnected nodes
+
+**Cause:** This is expected if your network has multiple components or isolated nodes.
+
+**Solution:** 
+- Filter for largest component:
+  ```python
+  import networkx as nx
+  G = network.core_network
+  largest_cc = max(nx.connected_components(G.to_undirected()), key=len)
+  G_main = G.subgraph(largest_cc)
+  ```
+- Or explicitly connect components if needed
+
+#### Warning: "AGPL license concerns"
+
+**Context:** Some community detection code (Infomap) is AGPLv3 licensed.
+
+**Solution:**
+- For proprietary/commercial use: Use Louvain or label propagation (BSD/MIT licensed)
+- For open-source: All features are safe to use
+- See License section in README.md
+
+### Performance Tips
+
+1. **Use appropriate network types:**
+   - `directed=False` for undirected networks (faster)
+   - `network_type="multiplex"` only when needed
+
+2. **Efficient centrality computation:**
+   - Compute once and cache results
+   - Use sampling for very large networks
+   - Consider approximate algorithms
+
+3. **Visualization optimization:**
+   - Use `no_labels=True` for networks with >100 nodes
+   - Reduce edge density for clarity
+   - Use force-directed layouts sparingly on large graphs
+
+4. **Memory management:**
+   - Delete intermediate results with `del variable`
+   - Use generators when possible
+   - Process layers independently for very large networks
+
+### Getting Help
+
+1. **Check examples**: 59 examples in `examples/` directory
+2. **Run selftest**: `py3plex selftest` to verify installation
+3. **Read docs**: [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
+4. **Open an issue**: [GitHub Issues](https://github.com/SkBlaz/py3plex/issues)
+5. **Read this file**: You're in the right place!
+
+---
+
+## 📖 Detailed Technical Documentation
+
+The sections below contain detailed technical information for developers and advanced users.
 
 ---
 
