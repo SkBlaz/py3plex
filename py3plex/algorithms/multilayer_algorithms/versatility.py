@@ -405,7 +405,7 @@ def versatility_katz(
             eigenvalues, _ = eigs(S, k=1, which='LM', maxiter=max_iter)
             rho = np.abs(eigenvalues[0])
             alpha = 0.85 / rho  # Conservative damping
-        except (ArithmeticError, RuntimeError, ValueError) as e:
+        except (ArithmeticError, RuntimeError, ValueError):
             # Fallback: use a small fixed alpha
             alpha = 0.01
     

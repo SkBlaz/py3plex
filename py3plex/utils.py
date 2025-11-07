@@ -82,9 +82,15 @@ def get_rng(
     Note:
         Uses numpy.random.Generator (modern API introduced in NumPy 1.17)
         rather than the legacy numpy.random.RandomState API.
+        
+        Negative seeds are converted to positive values by taking absolute value
+        to ensure compatibility with NumPy's SeedSequence.
     """
     if isinstance(seed, np.random.Generator):
         return seed
+    # Convert negative seeds to positive (NumPy SeedSequence requires non-negative)
+    if seed is not None and seed < 0:
+        seed = abs(seed)
     return np.random.default_rng(seed)
 
 
