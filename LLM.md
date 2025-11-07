@@ -45,7 +45,7 @@ network = random_generators.random_multilayer_ER(
 network.visualize_network(show=True)
 
 # Compute centrality
-from py3plex.algorithms import multilayer_statistics
+from py3plex.algorithms.statistics import multilayer_statistics
 centrality = multilayer_statistics.versatility_centrality(network)
 ```
 
@@ -172,19 +172,24 @@ network = random_generators.random_multiplex_ER(
 
 ### Centrality Measures
 
-Located in: `py3plex.algorithms.multilayer_algorithms`
+Located in: `py3plex.algorithms.statistics.multilayer_statistics`
 
 ```python
-from py3plex.algorithms.multilayer_algorithms import versatility
-
-# Versatility (multilayer eigenvector centrality)
-scores = versatility.versatility(network)
-
-# Other centrality measures in py3plex.algorithms.statistics
 from py3plex.algorithms.statistics import multilayer_statistics
 
-degree_cent = multilayer_statistics.degree_centrality(network)
-betweenness = multilayer_statistics.betweenness_centrality(network)
+# Versatility (multilayer eigenvector centrality)
+scores = multilayer_statistics.versatility_centrality(network)
+
+# Other multilayer-specific measures
+node_act = multilayer_statistics.node_activity(network, node=("node1", "layer1"))
+layer_dens = multilayer_statistics.layer_density(network, "layer1")
+clustering = multilayer_statistics.multilayer_clustering_coefficient(network)
+
+# For standard centrality (degree, betweenness, etc.), use NetworkX on flattened graph
+import networkx as nx
+G = network.core_network
+degree_cent = nx.degree_centrality(G)
+betweenness = nx.betweenness_centrality(G)
 ```
 
 ### Community Detection
@@ -261,8 +266,8 @@ network = random_generators.random_multilayer_ER(
 )
 
 # Compute centrality
-from py3plex.algorithms.multilayer_algorithms import versatility
-scores = versatility.versatility(network)
+from py3plex.algorithms.statistics import multilayer_statistics
+scores = multilayer_statistics.versatility_centrality(network)
 
 # Identify top nodes
 top_nodes = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:10]
@@ -547,18 +552,19 @@ network.load_network("input.edgelist", input_type="edgelist_general")
 
 **A:** 
 
-**Multilayer-specific:**
-- `versatility()` - Multilayer eigenvector centrality
-- `layer_degree_centrality()` - Degree per layer
+**Multilayer-specific** (from `py3plex.algorithms.statistics.multilayer_statistics`):
+- `versatility_centrality()` - Multilayer eigenvector centrality
+- `node_activity()` - Activity of a node across layers
+- `layer_density()` - Density of a specific layer
+- `multilayer_clustering_coefficient()` - Clustering in multilayer context
+- `degree_vector()` - Degree per layer for a node
 
-**Standard measures (via NetworkX on flattened graph):**
-- Degree centrality
-- Betweenness centrality
-- Closeness centrality
-- Eigenvector centrality
-- PageRank
-
-See `py3plex/algorithms/statistics/multilayer_statistics.py` for implementations.
+**Standard measures** (use NetworkX on the flattened `core_network`):
+- Degree centrality: `nx.degree_centrality(network.core_network)`
+- Betweenness centrality: `nx.betweenness_centrality(network.core_network)`
+- Closeness centrality: `nx.closeness_centrality(network.core_network)`
+- Eigenvector centrality: `nx.eigenvector_centrality(network.core_network)`
+- PageRank: `nx.pagerank(network.core_network)`
 
 #### Q: Can I use py3plex with large networks (millions of nodes)?
 
