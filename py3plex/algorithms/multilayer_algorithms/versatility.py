@@ -405,7 +405,7 @@ def versatility_katz(
             eigenvalues, _ = eigs(S, k=1, which='LM', maxiter=max_iter)
             rho = np.abs(eigenvalues[0])
             alpha = 0.85 / rho  # Conservative damping
-        except:
+        except (ArithmeticError, RuntimeError, ValueError) as e:
             # Fallback: use a small fixed alpha
             alpha = 0.01
     
@@ -417,8 +417,8 @@ def versatility_katz(
         from scipy.sparse.linalg import spsolve
         x = spsolve(I - alpha * S, b)
         x = np.abs(x)  # Ensure non-negative
-    except:
-        raise ValueError("Failed to solve Katz system. Try reducing alpha.")
+    except (ArithmeticError, RuntimeError, ValueError) as e:
+        raise ValueError(f"Failed to solve Katz system. Try reducing alpha. Error: {e}") from e
     
     # Reshape and contract
     X = x.reshape((N, L), order='F')
