@@ -401,7 +401,8 @@ class MultilayerCentrality:
         z = Σ_{t=0}^∞ α^t M^t b = (I - αM)^{-1} b
 
         Args:
-            alpha: Attenuation parameter (should be < 1/ρ(M)).
+            alpha: Attenuation parameter (should be < 1/ρ(M)). If None, automatically
+                  computes a safe value as 0.85/ρ(M) where ρ(M) is the spectral radius.
             beta: Exogenous preference vector. If None, uses vector of ones.
 
         Returns:
@@ -416,6 +417,19 @@ class MultilayerCentrality:
             matrix = supra_matrix
 
         n = matrix.shape[0]
+
+        # Auto-compute alpha if not provided
+        if alpha is None:
+            try:
+                from scipy.sparse.linalg import eigs
+                eigenvalues, _ = eigs(matrix, k=1, which='LM', maxiter=1000)
+                rho = np.abs(eigenvalues[0])
+                if rho > 0:
+                    alpha = 0.85 / rho  # Conservative choice
+                else:
+                    alpha = 0.1  # Fallback for zero spectral radius
+            except (ArithmeticError, RuntimeError, ValueError):
+                alpha = 0.1  # Fallback value
 
         if beta is None:
             beta = np.ones(n)
