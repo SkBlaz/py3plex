@@ -181,7 +181,7 @@ from py3plex.algorithms.statistics import multilayer_statistics
 scores = multilayer_statistics.versatility_centrality(network)
 
 # Other multilayer-specific measures
-node_act = multilayer_statistics.node_activity(network, node=("node1", "layer1"))
+node_act = multilayer_statistics.node_activity(network, ("node1", "layer1"))
 layer_dens = multilayer_statistics.layer_density(network, "layer1")
 clustering = multilayer_statistics.multilayer_clustering_coefficient(network)
 
@@ -199,10 +199,10 @@ Located in: `py3plex.algorithms.community_detection`
 ```python
 from py3plex.algorithms.community_detection import community_wrapper
 
-# Louvain algorithm (no external dependencies)
+# Louvain algorithm (requires python-louvain package)
 partition = community_wrapper.louvain_communities(network.core_network)
 
-# Label propagation
+# Label propagation (no external dependencies)
 partition = community_wrapper.label_propagation(network.core_network)
 ```
 
