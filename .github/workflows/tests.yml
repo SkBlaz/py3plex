@@ -259,4 +259,3 @@ jobs:
         echo "  - HYPOTHESIS_MAX_EXAMPLES: 600"
         pytest -v -k metamorphic tests/test_metamorphic.py --tb=short
       timeout-minutes: 50
-      timeout-minutes: 8
