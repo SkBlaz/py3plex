@@ -33,6 +33,11 @@ from py3plex.profiling import (
     timed_section,
 )
 
+# Convenient top-level imports for common use cases
+# This allows: from py3plex import multi_layer_network
+from py3plex.core.multinet import multi_layer_network
+from py3plex.core import random_generators
+
 __all__ = [
     # Version info
     "__version__",
@@ -57,4 +62,7 @@ __all__ = [
     "timed_section",
     "benchmark",
     "get_monitor",
+    # Core classes and modules
+    "multi_layer_network",
+    "random_generators",
 ]

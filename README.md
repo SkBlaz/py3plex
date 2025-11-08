@@ -39,9 +39,35 @@ To verify installation.
 
 **Recommended**: Use a virtual environment (venv or conda) to manage dependencies.
 
-**Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
+### Quick Start
 
-* [Examples](examples/) - 50+ example scripts demonstrating usage
+**5-Line Example** - Create and visualize a multilayer network:
+
+```python
+from py3plex import random_generators
+
+network = random_generators.random_multilayer_ER(20, 2, 0.2)
+network.visualize_network(show=True)
+```
+
+**10-Line Example** - Build your own:
+
+```python
+from py3plex import multi_layer_network
+
+network = multi_layer_network()
+network.add_nodes_from([("Alice", "friends"), ("Bob", "friends")])
+network.add_edges_from([("Alice", "Bob", "friends")])
+print(f"Created network with {network.number_of_nodes()} nodes")
+```
+
+### Documentation & Guides
+
+* **📚 [Quickstart Guide](QUICKSTART.md)** - Zero to working network in 5 minutes
+* **🔄 [NetworkX Migration Guide](NETWORKX_MIGRATION.md)** - For users familiar with NetworkX
+* **🤖 [LLM Guide](LLM.md)** - Comprehensive guide for AI assistants and developers
+* **📖 [Complete Documentation](https://skblaz.github.io/py3plex/)** - Full API reference and tutorials
+* **💡 [Examples](examples/)** - 50+ example scripts demonstrating usage
 
 **Repo organization:**
 ![Customization](example_images/diagram.png)
