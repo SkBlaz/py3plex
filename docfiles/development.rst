@@ -85,6 +85,45 @@ Testing
     # Using Makefile (recommended)
     make test
 
+User Simulation Testing
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Py3plex includes a **user simulation test framework** that validates DX (Developer Experience) 
+from multiple user personas:
+
+.. code-block:: bash
+
+    # Run user simulation tests
+    pytest tests/test_user_simulation.py -v -s
+    
+    # Run specific persona
+    pytest tests/test_user_simulation.py::TestBeginnerDataScientistPersona -v -s
+
+**Personas tested:**
+
+1. **Beginner Data Scientist** - Expects NetworkX-like feel
+2. **Network Science Researcher** - Needs multilayer constructs
+3. **ML Engineer** - Requires scalable IO and interop
+4. **Bio/Omics Analyst** - Parses edge lists with metadata
+5. **Educator** - Wants reliable install and quick visualization
+6. **Power User** - Migrating from NetworkX
+
+Each persona tests:
+
+* Install & import
+* Quickstart graph creation
+* IO / data formats
+* Algorithms and statistics
+* Visualization
+* Interoperability (NetworkX, igraph)
+* Performance
+* APIs & typing
+* Error handling
+* Documentation walkthrough
+
+The framework generates **structured reports** with friction points and actionable 
+suggestions prioritized by effort and impact.
+
 Code Quality
 ------------
 

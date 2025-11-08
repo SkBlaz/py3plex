@@ -1,12 +1,153 @@
-NetworkX Interoperability Guide
-================================
+NetworkX Interoperability and Migration Guide
+=============================================
 
 This guide covers converting between Py3plex and NetworkX formats, preserving attributes,
-and integrating with external tools.
+integrating with external tools, and **migrating from NetworkX to py3plex**.
 
 .. contents:: Table of Contents
    :local:
    :depth: 2
+
+Why Migrate from NetworkX?
+---------------------------
+
+**NetworkX** is excellent for single-layer networks but lacks native support for:
+
+* Multiple layers with different relationship types
+* Inter-layer edges (coupling between layers)
+* Multilayer-specific algorithms and metrics
+
+**Py3plex** extends network analysis to multilayer structures while maintaining a familiar API.
+
+Quick Comparison
+~~~~~~~~~~~~~~~~
+
+**NetworkX Single-Layer Graph:**
+
+.. code-block:: python
+
+    import networkx as nx
+    
+    G = nx.Graph()
+    G.add_nodes_from(['Alice', 'Bob', 'Carol'])
+    G.add_edges_from([
+        ('Alice', 'Bob'),
+        ('Bob', 'Carol'),
+    ])
+
+**Py3plex Equivalent (Single Layer):**
+
+.. code-block:: python
+
+    from py3plex import multi_layer_network
+    
+    network = multi_layer_network()
+    network.add_nodes_from([
+        ('Alice', 'layer1'),
+        ('Bob', 'layer1'),
+        ('Carol', 'layer1'),
+    ])
+    network.add_edges_from([
+        ('Alice', 'Bob', 'layer1'),
+        ('Bob', 'Carol', 'layer1'),
+    ])
+
+**Key Difference:** Py3plex requires explicit layer specification.
+
+API Mapping Table
+~~~~~~~~~~~~~~~~~
+
++-----------------------------------+-------------------------------------------+------------------------+
+| NetworkX                          | Py3plex                                   | Notes                  |
++===================================+===========================================+========================+
+| ``G = nx.Graph()``                | ``net = multi_layer_network()``           | Both undirected        |
++-----------------------------------+-------------------------------------------+------------------------+
+| ``G = nx.DiGraph()``              | ``net = multi_layer_network(directed=T)`` | Directed               |
++-----------------------------------+-------------------------------------------+------------------------+
+| ``G.add_node('A')``               | ``net.add_node('A', 'layer1')``           | Layer required         |
++-----------------------------------+-------------------------------------------+------------------------+
+| ``G.add_edge('A', 'B')``          | ``net.add_edge('A', 'B', 'layer1')``      | Layer required         |
++-----------------------------------+-------------------------------------------+------------------------+
+| ``G.nodes()``                     | ``net.get_nodes()``                       | Returns generator      |
++-----------------------------------+-------------------------------------------+------------------------+
+| ``G.edges()``                     | ``net.get_edges()``                       | Returns generator      |
++-----------------------------------+-------------------------------------------+------------------------+
+| ``G.number_of_nodes()``           | ``net.number_of_nodes()``                 | ✓ Same                 |
++-----------------------------------+-------------------------------------------+------------------------+
+| ``G.number_of_edges()``           | ``net.number_of_edges()``                 | ✓ Same                 |
++-----------------------------------+-------------------------------------------+------------------------+
+
+Conversion Functions
+~~~~~~~~~~~~~~~~~~~~
+
+**From NetworkX to Py3plex:**
+
+.. code-block:: python
+
+    import networkx as nx
+    from py3plex import multi_layer_network
+    
+    def networkx_to_py3plex(G, layer_name="default"):
+        """Convert a NetworkX graph to py3plex (single layer)."""
+        network = multi_layer_network()
+        
+        # Add all nodes to the specified layer
+        for node in G.nodes():
+            network.add_node(node, layer_name)
+        
+        # Add all edges
+        for u, v in G.edges():
+            network.add_edge(u, v, layer_name)
+        
+        return network
+    
+    # Usage
+    G = nx.karate_club_graph()
+    network = networkx_to_py3plex(G, "social")
+
+**From Py3plex to NetworkX:**
+
+.. code-block:: python
+
+    import networkx as nx
+    
+    def py3plex_to_networkx(network, layer=None):
+        """
+        Convert py3plex network to NetworkX.
+        If layer is specified, extract only that layer.
+        If layer is None, create a merged NetworkX graph.
+        """
+        G = nx.Graph()
+        
+        if layer:
+            # Extract single layer
+            for node in network.get_nodes():
+                if node[1] == layer:
+                    G.add_node(node[0])
+            
+            for edge in network.get_edges():
+                if len(edge) >= 3 and edge[2] == layer:
+                    G.add_edge(edge[0], edge[1])
+        else:
+            # Merge all layers (loses layer information)
+            nodes_seen = set()
+            for node in network.get_nodes():
+                if node[0] not in nodes_seen:
+                    G.add_node(node[0])
+                    nodes_seen.add(node[0])
+            
+            edges_seen = set()
+            for edge in network.get_edges():
+                edge_tuple = (edge[0], edge[1])
+                if edge_tuple not in edges_seen:
+                    G.add_edge(edge[0], edge[1])
+                    edges_seen.add(edge_tuple)
+        
+        return G
+    
+    # Usage
+    G = py3plex_to_networkx(network, layer="social")  # Single layer
+    G_all = py3plex_to_networkx(network)  # Merged
 
 Why NetworkX Interoperability?
 -------------------------------

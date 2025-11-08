@@ -28,6 +28,31 @@ If you prefer using Docker, you can get started immediately without installing P
 
 **For complete Docker documentation**, see :doc:`tutorials/docker_usage`.
 
+Simple 5-Line Example
+---------------------
+
+The **quickest way** to get started with py3plex:
+
+.. code-block:: python
+
+    from py3plex import random_generators
+    
+    # Create a random multilayer network
+    network = random_generators.random_multilayer_ER(20, 2, 0.2)
+    
+    # Visualize it
+    network.visualize_network(show=True)
+
+**That's it!** You now have a multilayer network with 20 nodes and 2 layers.
+
+.. note::
+   Since version 0.95a, py3plex supports **top-level imports** for convenience:
+   
+   * ``from py3plex import multi_layer_network``
+   * ``from py3plex import random_generators``
+   
+   This is more intuitive for beginners and aligns with NetworkX conventions.
+
 Creating Your First Multilayer Network
 ---------------------------------------
 
@@ -35,10 +60,10 @@ Let's create a **simple multilayer network** from scratch:
 
 .. code-block:: python
 
-    from py3plex.core import multinet
+    from py3plex import multi_layer_network
     
     # Create a new multilayer network
-    network = multinet.multi_layer_network()
+    network = multi_layer_network()
     
     # Add edges within layers (nodes are created automatically)
     # Format: [source_node, source_layer, target_node, target_layer, weight]
@@ -51,6 +76,14 @@ Let's create a **simple multilayer network** from scratch:
     
     # Display basic statistics
     network.basic_stats()
+
+**Alternative Import Style:**
+
+.. code-block:: python
+
+    # Explicit import (also valid)
+    from py3plex.core import multinet
+    network = multinet.multi_layer_network()
 
 **Expected Output:**
 
