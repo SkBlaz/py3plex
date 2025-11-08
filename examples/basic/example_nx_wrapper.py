@@ -9,7 +9,7 @@ This example demonstrates how to:
 Betweenness centrality measures how often a node appears on
 shortest paths between other nodes - indicating "bridge" nodes.
 
-Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
+SKIP_CI: slow - Betweenness centrality on 300-node network may take more than 10 seconds
 """
 
 from py3plex.core import random_generators

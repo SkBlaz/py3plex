@@ -5,7 +5,7 @@ Example: Statistical Comparison of Multilayer Networks
 This script demonstrates how to use py3plex's statistical comparison framework
 to compare multilayer networks and detect statistically significant differences.
 
-Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
+SKIP_CI: slow - Runs 1000 permutations which takes more than 10 seconds
 """
 
 from py3plex.core import multinet
