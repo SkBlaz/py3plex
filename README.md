@@ -1,4 +1,4 @@
-# *Py3Plex* - a library for analysis and visualization of heterogeneous networks
+# *Py3Plex* - a library for analysis and visualization of multilayer networks
 
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 [![Examples](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml)
