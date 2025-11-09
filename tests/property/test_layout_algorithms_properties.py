@@ -216,23 +216,22 @@ def test_layout_cycle_graph(num_nodes):
 )
 def test_layout_disconnected_graph(num_nodes, seed):
     """Property: Layout handles disconnected graphs."""
-    # Create a disconnected graph
+    # Create a disconnected graph with two components
     half = num_nodes // 2
     G = nx.Graph()
     
-    # Component 1
+    # Component 1: complete subgraph on first half nodes
     for i in range(half):
         for j in range(i + 1, half):
-            if seed % 2 == 0:
-                G.add_edge(i, j)
+            G.add_edge(i, j)
     
-    # Component 2
+    # Component 2: complete subgraph on second half nodes
     for i in range(half, num_nodes):
         for j in range(i + 1, num_nodes):
-            if (seed + 1) % 2 == 0:
-                G.add_edge(i, j)
+            G.add_edge(i, j)
     
-    assume(G.number_of_edges() > 0)
+    # This graph always has edges in both components
+    assert G.number_of_edges() > 0
     
     layout = compute_force_directed_layout(G, forceImport=False, seed=seed)
     

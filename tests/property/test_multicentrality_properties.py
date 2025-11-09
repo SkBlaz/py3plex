@@ -67,7 +67,7 @@ def test_mpc_normalized_bounded_zero_one(num_nodes, num_layers, seed):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Compute MPC with normalization
     mpc = multiplex_participation_coefficient(net, normalized=True, check_multiplex=True)
@@ -115,7 +115,7 @@ def test_mpc_non_negative(num_nodes, num_layers, seed):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Compute MPC (normalized and unnormalized)
     mpc_normalized = multiplex_participation_coefficient(net, normalized=True, check_multiplex=True)
@@ -163,7 +163,7 @@ def test_mpc_isolated_node_is_zero(num_nodes, num_layers):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Compute MPC
     mpc = multiplex_participation_coefficient(net, normalized=True, check_multiplex=True)
@@ -262,7 +262,7 @@ def test_mpc_concentrated_distribution_low(num_nodes, num_layers):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Compute MPC
     mpc = multiplex_participation_coefficient(net, normalized=True, check_multiplex=True)
@@ -317,7 +317,7 @@ def test_mpc_all_nodes_present(num_nodes, num_layers, seed):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Compute MPC
     mpc = multiplex_participation_coefficient(net, normalized=True, check_multiplex=True)
@@ -364,7 +364,7 @@ def test_mpc_unnormalized_less_than_normalized(num_nodes, num_layers, seed):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Compute both normalized and unnormalized MPC
     mpc_normalized = multiplex_participation_coefficient(net, normalized=True, check_multiplex=True)
@@ -423,7 +423,7 @@ def test_mpc_two_layers_bounds(num_nodes):
                 "weight": 1.0
             })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Compute MPC
     mpc = multiplex_participation_coefficient(net, normalized=True, check_multiplex=True)

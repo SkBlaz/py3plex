@@ -69,7 +69,7 @@ def test_occurrence_matrix_is_square(num_nodes, num_layers, seed):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
@@ -120,7 +120,7 @@ def test_occurrence_matrix_non_negative(num_nodes, num_layers, seed):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
@@ -162,7 +162,7 @@ def test_occurrence_matrix_diagonal_positive(num_nodes, num_layers, seed):
                 "weight": 1.0
             })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
@@ -210,7 +210,7 @@ def test_occurrence_matrix_symmetric(num_nodes, num_layers, seed):
                     "weight": 1.0
                 })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
@@ -256,7 +256,7 @@ def test_occurrence_matrix_returns_correct_layer_count(num_nodes, num_layers, se
             "weight": 1.0
         })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
@@ -307,7 +307,7 @@ def test_compute_blocks_returns_valid_structure(num_nodes, num_layers, seed):
                 "weight": 1.0
             })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
@@ -356,7 +356,7 @@ def test_compute_blocks_indices_cover_all_layers(num_nodes, num_layers, seed):
                 "weight": 1.0
             })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
@@ -410,7 +410,7 @@ def test_compute_blocks_submatrices_square(num_nodes, num_layers, seed):
                 "weight": 1.0
             })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
@@ -456,7 +456,7 @@ def test_compute_blocks_size_consistency(num_nodes, num_layers, seed):
                 "weight": 1.0
             })
     
-    assume(net.number_of_edges() > 0)
+    assume(len(list(net.get_edges())) > 0)
     
     # Build occurrence matrix
     c_matrix, layers = build_occurrence_matrix(net)
