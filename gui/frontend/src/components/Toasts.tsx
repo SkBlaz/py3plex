@@ -1,0 +1,2 @@
+// Toasts component (placeholder)
+export {}

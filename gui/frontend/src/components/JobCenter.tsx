@@ -1,0 +1,2 @@
+// JobCenter component (placeholder)
+export {}

@@ -1,0 +1,31 @@
+version: '3.8'
+
+# GPU-enabled compose override
+# Usage: docker compose -f docker-compose.yml -f compose.gpu.yml up
+
+services:
+  api:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # Uncomment to use CUDA-enabled base image
+    # build:
+    #   args:
+    #     - BASE_IMAGE=nvidia/cuda:12.2.0-runtime-ubuntu22.04
+
+  worker:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # Uncomment to use CUDA-enabled base image
+    # build:
+    #   args:
+    #     - BASE_IMAGE=nvidia/cuda:12.2.0-runtime-ubuntu22.04

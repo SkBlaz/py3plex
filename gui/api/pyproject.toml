@@ -1,0 +1,29 @@
+[project]
+name = "py3plex-gui-api"
+version = "0.1.0"
+description = "FastAPI backend for Py3plex GUI"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.109.0",
+    "uvicorn[standard]==0.27.0",
+    "celery==5.3.4",
+    "redis==5.0.1",
+    "flower==2.0.1",
+    "python-multipart==0.0.6",
+    "pydantic==2.5.3",
+    "pydantic-settings==2.1.0",
+    "networkx==3.2.1",
+    "matplotlib==3.8.2",
+    "numpy==1.26.3",
+    "scipy==1.11.4",
+    "scikit-learn==1.4.0",
+    "python-louvain==0.16",
+    "aiofiles==23.2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.25.0",
+]
