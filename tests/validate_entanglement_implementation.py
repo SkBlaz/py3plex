@@ -38,7 +38,7 @@ def validate_entanglement_implementation():
     lines = content.split('\n')
     code_lines = [l for l in lines if l.strip() and not l.strip().startswith('#')]
     
-    print(f"\n📊 File statistics:")
+    print(f"\nStats: File statistics:")
     print(f"  Total lines: {len(lines)}")
     print(f"  Code lines (non-empty, non-comment): {len(code_lines)}")
     
@@ -127,15 +127,15 @@ def validate_entanglement_implementation():
         print("  INFO: Example file not found (optional)")
     
     print("\n" + "=" * 60)
-    print("✅ All validation checks passed!")
+    print("PASS: All validation checks passed!")
     print("=" * 60)
-    print("\n📝 CONCLUSION:")
+    print("\nNote: CONCLUSION:")
     print("The entanglement module is FULLY IMPLEMENTED with:")
     print("  • build_occurrence_matrix() - builds occurrence matrix")
     print("  • compute_blocks() - performs block decomposition")
     print("  • compute_entanglement() - computes entanglement metrics")
     print("  • compute_entanglement_analysis() - main API function")
-    print("\n⚠️  The issue description claiming it's a stub is INCORRECT.")
+    print("\nWARNING:  The issue description claiming it's a stub is INCORRECT.")
     print("   No changes are needed to the entanglement module.")
     
     return True
@@ -145,7 +145,7 @@ if __name__ == "__main__":
         success = validate_entanglement_implementation()
         sys.exit(0 if success else 1)
     except Exception as e:
-        print(f"\n❌ Validation failed with error: {e}")
+        print(f"\nFAIL: Validation failed with error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

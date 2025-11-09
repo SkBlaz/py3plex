@@ -67,33 +67,33 @@ def test_edge_width_processing():
         
         result = process_edge_widths(width)
         
-        print(f"\n🔍 {scenario['name']}")
+        print(f"\nChecking: {scenario['name']}")
         print(f"   Description: {scenario['description']}")
         print(f"   Input: {width} (type: {type(width).__name__})")
         print(f"   Result: {result} (type: {type(result).__name__})")
         
         # Check if result type matches expected
         if type(result) != expected_type:
-            print(f"   ❌ FAIL: Expected {expected_type.__name__}, got {type(result).__name__}")
+            print(f"   FAIL: FAIL: Expected {expected_type.__name__}, got {type(result).__name__}")
             all_passed = False
         else:
-            print(f"   ✅ PASS: Correct type {expected_type.__name__}")
+            print(f"   PASS: PASS: Correct type {expected_type.__name__}")
             
         # Additional checks
         if isinstance(width, (list, tuple)):
             # Should preserve the original object for collections
             if result is not width:
-                print(f"   ❌ FAIL: Should preserve original object")
+                print(f"   FAIL: FAIL: Should preserve original object")
                 all_passed = False
             else:
-                print(f"   ✅ PASS: Preserved original object")
+                print(f"   PASS: PASS: Preserved original object")
         else:
             # Should wrap scalars in tuple
             if result != (width,):
-                print(f"   ❌ FAIL: Should wrap scalar in tuple")
+                print(f"   FAIL: FAIL: Should wrap scalar in tuple")
                 all_passed = False
             else:
-                print(f"   ✅ PASS: Correctly wrapped scalar")
+                print(f"   PASS: PASS: Correctly wrapped scalar")
     
     return all_passed
 
@@ -144,10 +144,10 @@ def demonstrate_issue_fix():
         print(f"  New logic result: {new_result}")
         
         if isinstance(width, (list, tuple)) and old_result != new_result:
-            print(f"  🐛 OLD LOGIC BUG: Wrapped {type(width).__name__} incorrectly!")
-            print(f"  ✅ NEW LOGIC FIX: Preserves {type(width).__name__} correctly!")
+            print(f"  BUG: OLD LOGIC BUG: Wrapped {type(width).__name__} incorrectly!")
+            print(f"  PASS: NEW LOGIC FIX: Preserves {type(width).__name__} correctly!")
         elif old_result == new_result:
-            print(f"  ✅ Both logics handle scalar correctly")
+            print(f"  PASS: Both logics handle scalar correctly")
         print()
     
     print("Impact:")
@@ -209,37 +209,37 @@ def test_multilayer_scenario():
         # Validate processing
         if isinstance(width, (list, tuple)):
             if processed is width and len(processed) == config['intra_edges']:
-                print(f"   ✅ Correct: Multi-width preserved for {config['intra_edges']} edges")
+                print(f"   PASS: Correct: Multi-width preserved for {config['intra_edges']} edges")
             elif processed is width:
-                print(f"   ⚠️  Width count mismatch: {len(processed)} vs {config['intra_edges']} edges")
+                print(f"   WARNING:  Width count mismatch: {len(processed)} vs {config['intra_edges']} edges")
             else:
-                print(f"   ❌ Error: Multi-width not preserved")
+                print(f"   FAIL: Error: Multi-width not preserved")
                 all_correct = False
         else:
             if processed == (width,):
-                print(f"   ✅ Correct: Scalar width wrapped for uniform edges")
+                print(f"   PASS: Correct: Scalar width wrapped for uniform edges")
             else:
-                print(f"   ❌ Error: Scalar width not properly wrapped")
+                print(f"   FAIL: Error: Scalar width not properly wrapped")
                 all_correct = False
         print()
     
     # Process inter-layer edges
-    print("🔗 Inter-layer connections")
+    print("Inter-layer connections Inter-layer connections")
     processed_inter = process_width(inter_layer_widths)
     print(f"   Width spec: {inter_layer_widths} (type: {type(inter_layer_widths).__name__})")
     print(f"   Processed: {processed_inter} (type: {type(processed_inter).__name__})")
     
     if processed_inter is inter_layer_widths:
-        print(f"   ✅ Correct: Inter-layer widths preserved")
+        print(f"   PASS: Correct: Inter-layer widths preserved")
     else:
-        print(f"   ❌ Error: Inter-layer widths not preserved")
+        print(f"   FAIL: Error: Inter-layer widths not preserved")
         all_correct = False
     
     print()
     return all_correct
 
 if __name__ == "__main__":
-    print("🔧 Testing py3plex issue #19 fix - Multilayer Visualization")
+    print("Testing: Testing py3plex issue #19 fix - Multilayer Visualization")
     print("="*70)
     
     # Test the core logic
@@ -256,17 +256,17 @@ if __name__ == "__main__":
     print("="*70)
     
     if logic_passed and scenario_passed:
-        print("🎉 ALL TESTS PASSED!")
-        print("✅ The fix correctly handles edge width processing")
-        print("✅ Multilayer networks should now render edges properly")
-        print("✅ Both single and multiple edge widths work correctly")
+        print("Success: ALL TESTS PASSED!")
+        print("PASS: The fix correctly handles edge width processing")
+        print("PASS: Multilayer networks should now render edges properly")
+        print("PASS: Both single and multiple edge widths work correctly")
         print()
         print("The issue described in #19 should now be resolved!")
     else:
-        print("❌ SOME TESTS FAILED!")
+        print("FAIL: SOME TESTS FAILED!")
         if not logic_passed:
-            print("❌ Core logic tests failed")
+            print("FAIL: Core logic tests failed")
         if not scenario_passed:
-            print("❌ Multilayer scenario tests failed")
+            print("FAIL: Multilayer scenario tests failed")
     
     sys.exit(0 if (logic_passed and scenario_passed) else 1)

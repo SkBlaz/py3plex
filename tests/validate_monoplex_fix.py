@@ -104,7 +104,7 @@ def validate_monoplex_nx_wrapper_fix():
         return False
     
     print("\n" + "=" * 60)
-    print("✅ All validation checks passed!")
+    print("PASS: All validation checks passed!")
     print("=" * 60)
     print("\nThe monoplex_nx_wrapper function has been successfully fixed to:")
     print("1. Accept kwargs parameter")
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         success = validate_monoplex_nx_wrapper_fix()
         sys.exit(0 if success else 1)
     except Exception as e:
-        print(f"\n❌ Validation failed with error: {e}")
+        print(f"\nFAIL: Validation failed with error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

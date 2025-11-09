@@ -41,6 +41,6 @@ if some_nodes:
 
 # and random edge as
 if some_edges:
-    print(f"✓ Sample edge: {ER_multilayer[some_edges[0][0]][some_edges[0][1]]}")
+    print(f"Sample edge: {ER_multilayer[some_edges[0][0]][some_edges[0][1]]}")
 
-print("\n✅ All tensorial operations completed successfully!")
+print("\nAll tensorial operations completed successfully!")

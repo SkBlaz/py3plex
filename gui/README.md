@@ -5,7 +5,7 @@ A production-ready web-based GUI for **py3plex** multilayer network analysis, ru
 ![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)
 ![Docker](https://img.shields.io/badge/docker-compose-blue)
 
-## 🚀 Quick Start
+## Quick Start Quick Start
 
 ```bash
 # Navigate to the gui directory
@@ -19,7 +19,7 @@ make up
 
 # Open in browser
 # 🌐 Application: http://localhost:8080
-# 📊 Job Monitor (Flower): http://localhost:5555
+# Data Job Monitor (Flower): http://localhost:5555
 ```
 
 **First time?** The build takes ~3-5 minutes. Subsequent starts are instant.
@@ -79,30 +79,30 @@ That's it! The application will be running with:
 - **Proxy**: Nginx for unified access
 - **Monitoring**: Flower dashboard for job inspection
 
-## 📦 What's Included
+## What is Included What's Included
 
 ### Features
 
-✅ **Data Loading**
+[OK] **Data Loading**
 - Upload network files (.edgelist, .txt, .gml, .gpickle)
 - Automatic format detection
 - Multilayer network support
 - Real-time file preview
 
-✅ **Visualization**
+[OK] **Visualization**
 - Layer-centric view
 - Interactive node/edge inspection
 - Configurable layouts
 - Position caching
 
-✅ **Analysis** (Async via Celery)
+[OK] **Analysis** (Async via Celery)
 - **Layouts**: Spring, Kamada-Kawai, Circular, Random
 - **Centrality**: Degree, Betweenness, Closeness, Eigenvector, PageRank
 - **Community Detection**: Louvain, Label Propagation, Greedy Modularity
 - Real-time progress tracking
 - Result caching
 
-✅ **Export**
+[OK] **Export**
 - CSV summaries (centrality, communities)
 - JSON position data
 - PNG snapshots (planned)
@@ -200,7 +200,7 @@ RUN pip install -e ${PY3PLEX_PATH}
 
 **Note:** The mount is read-only to prevent accidental writes from containers.
 
-## 🔧 Configuration
+## Configuration Configuration
 
 ### Environment Variables (.env)
 
@@ -229,7 +229,7 @@ docker compose -f docker-compose.yml -f compose.gpu.yml up
 - NVIDIA Docker runtime installed
 - CUDA-compatible GPU
 
-## 📊 Data Formats
+## Data Data Formats
 
 ### Accepted Input Formats
 
@@ -327,7 +327,7 @@ make e2e
 4. **Monitor** jobs at http://localhost:5555 (Flower)
 5. **Export** workspace bundle
 
-## 🚀 Production Deployment
+## Quick Start Production Deployment
 
 ### Static Build (Recommended)
 
@@ -366,7 +366,7 @@ frontend:
 
 **Current Status**: Development mode - suitable for local use only. Do not expose to public internet without proper security hardening.
 
-## 🐛 Troubleshooting
+## Troubleshooting Troubleshooting
 
 ### Issue: Port already in use
 
@@ -407,7 +407,7 @@ docker compose exec nginx cat /etc/nginx/nginx.conf
 curl http://localhost:8000/api/health
 ```
 
-## 📚 API Documentation
+## API Documentation API Documentation
 
 Interactive docs available at:
 - **Swagger UI**: http://localhost:8080/api/docs
@@ -456,7 +456,7 @@ This GUI is part of the [py3plex](https://github.com/SkBlaz/py3plex) project.
 - Add tests for new features
 - Update this README with new features
 
-## 📄 License
+## License License
 
 This GUI follows the py3plex repository license:
 - **GUI code** (under `gui/`): BSD-3-Clause (same as py3plex)

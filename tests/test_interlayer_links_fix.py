@@ -171,10 +171,10 @@ if __name__ == "__main__":
         print("="*60)
         sys.exit(0)
     except AssertionError as e:
-        print(f"\n❌ TEST FAILED: {e}")
+        print(f"\nFAIL: TEST FAILED: {e}")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ TEST ERROR: {e}")
+        print(f"\nFAIL: TEST ERROR: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

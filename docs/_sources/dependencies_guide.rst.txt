@@ -139,7 +139,7 @@ Install Infomap for information-theoretic community detection:
 
 * ``infomap >= 2.0.0`` - Information flow-based community detection
 
-**⚠️ Important licensing note:**
+**[WARNING] Important licensing note:**
 
 Infomap is licensed under **AGPLv3** (viral copyleft license). If you use Infomap functions
 in your project, your project may also need to be AGPLv3 licensed.

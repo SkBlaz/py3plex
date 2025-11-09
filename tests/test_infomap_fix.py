@@ -35,7 +35,7 @@ def test_infomap_integration():
                 f.write("4 1\n")
                 f.write("1 3\n")  # Add a cross-connection
             
-            print(f"✅ Created test edgelist: {test_edgelist}")
+            print(f"PASS: Created test edgelist: {test_edgelist}")
             
             # 2. Test directory creation (simulating the fix)
             print("📂 Testing directory creation...")
@@ -43,48 +43,48 @@ def test_infomap_integration():
             # Test output directory creation
             out_dir = "out"
             os.makedirs(out_dir, exist_ok=True)
-            print(f"✅ Created output directory: {out_dir}")
+            print(f"PASS: Created output directory: {out_dir}")
             
             # Test edgelist directory creation  
             edgelist_with_dir = "./custom_dir/edgelist.txt"
             edgelist_dir = os.path.dirname(edgelist_with_dir)
             if edgelist_dir:
                 os.makedirs(edgelist_dir, exist_ok=True)
-                print(f"✅ Created edgelist directory: {edgelist_dir}")
+                print(f"PASS: Created edgelist directory: {edgelist_dir}")
             
             # 3. Test infomap binary execution (if available)
             infomap_binary = "/home/runner/work/py3plex/py3plex/bin/Infomap"
             if os.path.exists(infomap_binary):
-                print("🔧 Testing infomap binary execution...")
+                print("Testing: Testing infomap binary execution...")
                 
                 # Run infomap on our test network
                 cmd = [infomap_binary, test_edgelist, out_dir + "/", "-N", "5", "--silent"]
                 result = call(cmd)
                 
                 if result == 0:
-                    print("✅ Infomap executed successfully")
+                    print("PASS: Infomap executed successfully")
                     
                     # Check if expected output file was created
                     expected_output = os.path.join(out_dir, test_edgelist.split('.')[0] + ".tree")
                     if os.path.exists(expected_output):
-                        print(f"✅ Expected output file created: {expected_output}")
+                        print(f"PASS: Expected output file created: {expected_output}")
                         
                         # Try to read and parse the file
                         try:
                             with open(expected_output) as f:
                                 lines = f.readlines()
-                                print(f"✅ Output file readable with {len(lines)} lines")
+                                print(f"PASS: Output file readable with {len(lines)} lines")
                         except Exception as e:
-                            print(f"❌ Failed to read output file: {e}")
+                            print(f"FAIL: Failed to read output file: {e}")
                     else:
-                        print(f"❌ Expected output file not found: {expected_output}")
+                        print(f"FAIL: Expected output file not found: {expected_output}")
                 else:
-                    print(f"❌ Infomap execution failed with code: {result}")
+                    print(f"FAIL: Infomap execution failed with code: {result}")
             else:
-                print(f"⚠️  Infomap binary not found at: {infomap_binary}")
+                print(f"WARNING:  Infomap binary not found at: {infomap_binary}")
                 print("   (This is expected in some test environments)")
             
-            print("\n🎉 Integration test completed!")
+            print("\nSuccess: Integration test completed!")
             
             # List what was created for verification
             print("\n📋 Files and directories created:")
@@ -120,7 +120,7 @@ def test_infomap_seed_parameter():
     sig = inspect.signature(community_wrapper.run_infomap)
     assert 'seed' in sig.parameters, "run_infomap should accept 'seed' parameter"
     
-    print("✅ Seed parameters verified in infomap functions")
+    print("PASS: Seed parameters verified in infomap functions")
 
 
 if __name__ == "__main__":

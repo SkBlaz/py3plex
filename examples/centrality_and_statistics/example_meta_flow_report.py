@@ -330,7 +330,7 @@ def main():
         print("5. Export results with export_to_dict() for further processing")
         
     except Exception as e:
-        print(f"\n❌ Error running examples: {e}")
+        print(f"\nError running examples: {e}")
         import traceback
         traceback.print_exc()
 

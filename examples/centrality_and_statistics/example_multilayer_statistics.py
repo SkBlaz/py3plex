@@ -168,10 +168,10 @@ try:
     print(f"    - Q = {Q:.3f}")
 
     print("\n" + "=" * 70)
-    print("✅ All 17 multilayer statistics computed successfully!")
+    print("All 17 multilayer statistics computed successfully!")
     print("=" * 70)
 
 except ImportError as e:
-    print("❌ This example requires py3plex dependencies:")
+    print("ERROR: This example requires py3plex dependencies:")
     print(f"   {e}")
     print("\nInstall with: pip install numpy scipy networkx")

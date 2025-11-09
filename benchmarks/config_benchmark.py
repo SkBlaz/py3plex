@@ -20,9 +20,9 @@ try:
     from py3plex.core import multinet
     from py3plex.utils import get_rng
     
-    print("✅ py3plex imports successful")
+    print("SUCCESS: py3plex imports successful")
 except ImportError as e:
-    print(f"❌ Import failed: {e}")
+    print(f"ERROR: Import failed: {e}")
     print("Make sure py3plex is installed: pip install -e .")
     exit(1)
 
@@ -64,7 +64,7 @@ def demonstrate_config_usage():
     print("="*60)
     
     # Show current settings
-    print(f"\n📊 Current Settings:")
+    print(f"\nStats: Current Settings:")
     print(f"  Default node size: {config.DEFAULT_NODE_SIZE}")
     print(f"  Default edge alpha: {config.DEFAULT_EDGE_ALPHA}")
     print(f"  Default color palette: {config.DEFAULT_COLOR_PALETTE}")
@@ -72,7 +72,7 @@ def demonstrate_config_usage():
     print(f"  API version: {config.__api_version__}")
     
     # Show available color palettes
-    print(f"\n🎨 Available Color Palettes:")
+    print(f"\nPalettes: Available Color Palettes:")
     for name in config.COLOR_PALETTES.keys():
         num_colors = len(config.COLOR_PALETTES[name])
         print(f"  - {name:20s} ({num_colors} colors)")
@@ -105,9 +105,9 @@ def demonstrate_reproducibility():
     print(f"🎲 Random values with seed=42 (second run): {values2}")
     
     if values1 == values2:
-        print("✅ Results are reproducible!")
+        print("SUCCESS: Results are reproducible!")
     else:
-        print("❌ Results differ (unexpected)")
+        print("ERROR: Results differ (unexpected)")
 
 
 def run_benchmarks():
@@ -123,17 +123,17 @@ def run_benchmarks():
     ]
     
     for num_layers, nodes_per_layer in test_configs:
-        print(f"\n📈 Testing {num_layers} layers × {nodes_per_layer} nodes:")
+        print(f"\nTesting: Testing {num_layers} layers × {nodes_per_layer} nodes:")
         
         try:
             results = benchmark_network_creation(num_layers, nodes_per_layer)
             
             print(f"  ⏱️  Creation time: {results['creation_time']:.3f}s")
-            print(f"  📊 Total nodes: {results['num_nodes']}")
-            print(f"  🔗 Total edges: {results['num_edges']}")
+            print(f"  Stats: Total nodes: {results['num_nodes']}")
+            print(f"  Edges: Total edges: {results['num_edges']}")
             
         except Exception as e:
-            print(f"  ❌ Error: {e}")
+            print(f"  ERROR: Error: {e}")
 
 
 def main():
@@ -144,8 +144,8 @@ def main():
     
     # Check version
     import py3plex
-    print(f"\n📦 py3plex version: {py3plex.__version__}")
-    print(f"📦 API version: {py3plex.__api_version__}")
+    print(f"\nPackage: py3plex version: {py3plex.__version__}")
+    print(f"Package: API version: {py3plex.__api_version__}")
     
     # Demonstrate config
     demonstrate_config_usage()
@@ -157,7 +157,7 @@ def main():
     run_benchmarks()
     
     print("\n" + "="*60)
-    print("✅ Benchmark complete!")
+    print("SUCCESS: Benchmark complete!")
     print("="*60)
 
 

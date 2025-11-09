@@ -22,7 +22,7 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 ### Installation (Git-Only Method)
 
-⚠️ **IMPORTANT**: py3plex is **no longer updated on PyPI**. Install from GitHub:
+WARNING: **IMPORTANT**: py3plex is **no longer updated on PyPI**. Install from GitHub:
 
 ```bash
 pip install git+https://github.com/SkBlaz/py3plex.git
@@ -65,10 +65,10 @@ Py3plex includes a production-ready web-based GUI for multilayer network analysi
 
 **Features:**
 - 🌐 **Interactive Web Interface** - React-based UI with real-time updates
-- 📊 **Network Visualization** - Layer-centric views with configurable layouts
-- 🔍 **Advanced Analysis** - Centrality metrics, community detection, and more
-- 📁 **Multiple Formats** - Support for edgelist, GML, NetworkX pickle files
-- ⚙️ **Async Processing** - Background job execution with progress tracking
+- * **Network Visualization** - Layer-centric views with configurable layouts
+- * **Advanced Analysis** - Centrality metrics, community detection, and more
+- * **Multiple Formats** - Support for edgelist, GML, NetworkX pickle files
+- * **Async Processing** - Background job execution with progress tracking
 - 💾 **Workspace Management** - Save and restore complete analysis sessions
 
 **Quick Start:**
@@ -120,13 +120,13 @@ make up
 
 | Feature Category | License | Commercial Use | Notes |
 |-----------------|---------|----------------|-------|
-| Core multilayer network functionality | MIT | ✅ Yes | Safe for proprietary use |
-| Network visualization (layouts, colors) | MIT | ✅ Yes | Safe for proprietary use |
-| I/O operations (load/save networks) | MIT | ✅ Yes | Safe for proprietary use |
-| Louvain community detection | BSD-3-Clause | ✅ Yes | Safe for proprietary use |
-| Label propagation algorithms | MIT | ✅ Yes | Safe for proprietary use |
-| **Infomap community detection** | **AGPLv3** | ⚠️ Restricted | Viral license - requires open-sourcing derived works |
-| Node embeddings (if using bundled code) | Varies | ⚠️ Check | Use pure Python alternatives for safety |
+| Core multilayer network functionality | MIT | Yes Yes | Safe for proprietary use |
+| Network visualization (layouts, colors) | MIT | Yes Yes | Safe for proprietary use |
+| I/O operations (load/save networks) | MIT | Yes Yes | Safe for proprietary use |
+| Louvain community detection | BSD-3-Clause | Yes Yes | Safe for proprietary use |
+| Label propagation algorithms | MIT | Yes Yes | Safe for proprietary use |
+| **Infomap community detection** | **AGPLv3** | WARNING: Restricted | Viral license - requires open-sourcing derived works |
+| Node embeddings (if using bundled code) | Varies | WARNING: Check | Use pure Python alternatives for safety |
 
 **Recommendations**:
 - **For commercial/proprietary projects**: Avoid Infomap functions or use the pure Python `infomap` package separately

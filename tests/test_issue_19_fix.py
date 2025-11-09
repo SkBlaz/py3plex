@@ -49,28 +49,28 @@ def test_edge_width_logic():
         result = process_width(width)
         
         if type(result) != expected_type:
-            print(f"❌ FAIL: {description}")
+            print(f"FAIL: FAIL: {description}")
             print(f"   Input: {width} (type: {type(width).__name__})")
             print(f"   Expected type: {expected_type.__name__}")
             print(f"   Actual result: {result} (type: {type(result).__name__})")
             all_passed = False
         else:
-            print(f"✅ PASS: {description}")
+            print(f"PASS: PASS: {description}")
             
         # Additional validation for scalars
         if not isinstance(width, (list, tuple)):
             if result != (width,):
-                print(f"❌ FAIL: Scalar value not properly wrapped")
+                print(f"FAIL: FAIL: Scalar value not properly wrapped")
                 print(f"   Expected: ({width},), Got: {result}")
                 all_passed = False
         else:
             # For lists and tuples, should be unchanged
             if result is not width:
-                print(f"❌ FAIL: List/tuple should be unchanged (same object)")
+                print(f"FAIL: FAIL: List/tuple should be unchanged (same object)")
                 all_passed = False
     
     if all_passed:
-        print("\n🎉 All edge width logic tests PASSED!")
+        print("\nSuccess: All edge width logic tests PASSED!")
         return True
     else:
         print("\n💥 Some edge width logic tests FAILED!")
@@ -110,15 +110,15 @@ def test_old_vs_new_logic():
         if isinstance(width, (list, tuple)):
             # For lists/tuples, old logic was wrong, new should preserve original
             if old_result == (width,) and new_result == width:
-                print(f"  ✅ Fix confirmed: preserves {type(width).__name__} correctly")
+                print(f"  PASS: Fix confirmed: preserves {type(width).__name__} correctly")
             else:
                 print(f"  ❓ Unexpected result")
         else:
             # For scalars, both should wrap in tuple
             if old_result == new_result == (width,):
-                print(f"  ✅ Both handle scalar correctly")
+                print(f"  PASS: Both handle scalar correctly")
             else:
-                print(f"  ❌ Inconsistent scalar handling")
+                print(f"  FAIL: Inconsistent scalar handling")
         print()
 
 if __name__ == "__main__":
@@ -134,8 +134,8 @@ if __name__ == "__main__":
     test_old_vs_new_logic()
     
     if success:
-        print("✅ All tests passed! The fix is working correctly.")
+        print("PASS: All tests passed! The fix is working correctly.")
         sys.exit(0)
     else:
-        print("❌ Some tests failed!")
+        print("FAIL: Some tests failed!")
         sys.exit(1)
