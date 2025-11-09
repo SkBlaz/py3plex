@@ -198,7 +198,7 @@ def test_multilayer_scenario():
     
     # Process each layer
     for i, config in enumerate(layer_configs):
-        print(f"🔶 {config['layer_name']}")
+        print(f" {config['layer_name']}")
         width = config['edge_width']
         processed = process_width(width)
         

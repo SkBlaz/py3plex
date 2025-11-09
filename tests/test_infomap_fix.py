@@ -24,7 +24,7 @@ def test_infomap_integration():
             # Change to temp directory to avoid conflicts
             os.chdir(temp_dir)
             
-            print("🧪 Testing infomap integration fix...")
+            print(" Testing infomap integration fix...")
             
             # 1. Create a simple test network edgelist
             test_edgelist = "test_network.txt"
@@ -38,7 +38,7 @@ def test_infomap_integration():
             print(f"PASS: Created test edgelist: {test_edgelist}")
             
             # 2. Test directory creation (simulating the fix)
-            print("📂 Testing directory creation...")
+            print(" Testing directory creation...")
             
             # Test output directory creation
             out_dir = "out"
@@ -87,7 +87,7 @@ def test_infomap_integration():
             print("\nSuccess: Integration test completed!")
             
             # List what was created for verification
-            print("\n📋 Files and directories created:")
+            print("\n Files and directories created:")
             for root, dirs, files in os.walk("."):
                 level = root.replace(".", "").count(os.sep)
                 indent = " " * 2 * level

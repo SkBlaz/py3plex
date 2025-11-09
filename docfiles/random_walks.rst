@@ -19,13 +19,13 @@ Random walks are fundamental building blocks for many graph algorithms:
 Key Features
 ~~~~~~~~~~~~
 
-- ✅ Basic random walks with proper edge weight handling
-- ✅ Second-order (biased) random walks following Node2Vec logic
-- ✅ Multiple simultaneous walks with deterministic seeding
-- ✅ Support for directed, weighted, and multigraphs
-- ✅ Multilayer network-aware walks with layer constraints
-- ✅ Efficient sparse adjacency matrix handling
-- ✅ Comprehensive test suite validating correctness properties
+- [OK] Basic random walks with proper edge weight handling
+- [OK] Second-order (biased) random walks following Node2Vec logic
+- [OK] Multiple simultaneous walks with deterministic seeding
+- [OK] Support for directed, weighted, and multigraphs
+- [OK] Multilayer network-aware walks with layer constraints
+- [OK] Efficient sparse adjacency matrix handling
+- [OK] Comprehensive test suite validating correctness properties
 
 Basic Random Walk
 -----------------

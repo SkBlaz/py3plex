@@ -127,15 +127,15 @@ if __name__ == "__main__":
         logger.info("Running test_get_layers_returns_list_of_graphs...")
         try:
             test_get_layers_returns_list_of_graphs()
-            logger.info("✓ test_get_layers_returns_list_of_graphs passed")
+            logger.info("[OK] test_get_layers_returns_list_of_graphs passed")
         except AssertionError as e:
-            logger.error(f"✗ test_get_layers_returns_list_of_graphs failed: {e}")
+            logger.error(f"[X] test_get_layers_returns_list_of_graphs failed: {e}")
         
         logger.info("Running test_layer_extraction_with_statistics...")
         try:
             test_layer_extraction_with_statistics()
-            logger.info("✓ test_layer_extraction_with_statistics passed")
+            logger.info("[OK] test_layer_extraction_with_statistics passed")
         except AssertionError as e:
-            logger.error(f"✗ test_layer_extraction_with_statistics failed: {e}")
+            logger.error(f"[X] test_layer_extraction_with_statistics failed: {e}")
     else:
         logger.warning("Dependencies not available, skipping tests")

@@ -18,7 +18,7 @@ cp .env.example .env
 make up
 
 # Open in browser
-# 🌐 Application: http://localhost:8080
+#  Application: http://localhost:8080
 # Data Job Monitor (Flower): http://localhost:5555
 ```
 
@@ -31,14 +31,14 @@ That's it! The application will be running with:
 - Redis broker
 - Nginx reverse proxy
 
-## 📋 Prerequisites
+##  Prerequisites
 
 - Docker (>= 20.10)
 - Docker Compose (>= 2.0)
 - 4GB RAM minimum
 - Ports available: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)
 
-## 🏗️ Architecture
+## ️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -120,7 +120,7 @@ Save and restore complete analysis sessions:
 # - UI view state
 ```
 
-## 🛠️ Development Guide
+## ️ Development Guide
 
 ### Project Structure
 
@@ -265,7 +265,7 @@ curl -F "file=@gui/toy_network.edgelist" http://localhost:8080/api/upload
 # Or use the Web UI at http://localhost:8080
 ```
 
-## 🧪 Testing
+##  Testing
 
 ### Continuous Integration
 
@@ -445,7 +445,7 @@ curl http://localhost:8080/api/jobs/$JOB_ID
 curl http://localhost:8080/api/graphs/$GRAPH_ID/positions
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 This GUI is part of the [py3plex](https://github.com/SkBlaz/py3plex) project.
 
@@ -462,7 +462,7 @@ This GUI follows the py3plex repository license:
 - **GUI code** (under `gui/`): BSD-3-Clause (same as py3plex)
 - **Dependencies**: See individual package licenses
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 Built with:
 - [py3plex](https://github.com/SkBlaz/py3plex) - Multilayer network analysis
@@ -472,7 +472,7 @@ Built with:
 - [Vite](https://vitejs.dev/) - Frontend build tool
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
 
-## 📞 Support
+##  Support
 
 - **Issues**: https://github.com/SkBlaz/py3plex/issues
 - **Docs**: https://skblaz.github.io/py3plex/
@@ -480,4 +480,4 @@ Built with:
 
 ---
 
-**Pro GUI for py3plex** • Built with ❤️ by the py3plex community
+**Pro GUI for py3plex** • Built with ️ by the py3plex community

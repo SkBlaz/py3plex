@@ -59,7 +59,7 @@ for layer_id in layers_to_be_extracted:
     )
     separate_layers.append(subnetwork_layer)
 
-print(f"✓ Extracted {len(separate_layers)} separate layers")
+print(f"[OK] Extracted {len(separate_layers)} separate layers")
 
 print("\nStep 3: Aggregating with degree normalization")
 print("-" * 70)
@@ -112,10 +112,10 @@ print("=" * 70)
 
 # Note about edge sets
 print("\nKey observations:")
-print("  ✓ Both networks have the same edges (same topology)")
-print("  ✓ Edge weights differ based on normalization method")
-print("  ✓ Degree-normalized weights are typically smaller")
-print("  ✓ Raw counts directly reflect layer multiplicity")
+print("  [OK] Both networks have the same edges (same topology)")
+print("  [OK] Edge weights differ based on normalization method")
+print("  [OK] Degree-normalized weights are typically smaller")
+print("  [OK] Raw counts directly reflect layer multiplicity")
 
 print("\nFull edge comparison (showing all edges):")
 print("-" * 70)

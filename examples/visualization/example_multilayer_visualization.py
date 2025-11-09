@@ -81,7 +81,7 @@ if os.path.exists(dataset1):
     multilayer_network.visualize_network()
     plt.show()
 else:
-    print(f"\n✗ Dataset not found: {dataset1}")
+    print(f"\n[X] Dataset not found: {dataset1}")
     print("  Skipping Example 1")
 
 ##############################################################################
@@ -110,7 +110,7 @@ if os.path.exists(dataset2):
     multilayer_network.visualize_network()
     plt.show()
 else:
-    print(f"\n✗ Dataset not found: {dataset2}")
+    print(f"\n[X] Dataset not found: {dataset2}")
     print("  Skipping Example 2")
 
 ##############################################################################
@@ -153,7 +153,7 @@ if os.path.exists(dataset3):
     )
     plt.show()
 else:
-    print(f"\n✗ Dataset not found: {dataset3}")
+    print(f"\n[X] Dataset not found: {dataset3}")
     print("  Skipping Example 3")
 
 ##############################################################################
@@ -182,7 +182,7 @@ if os.path.exists(dataset4):
     multilayer_network.visualize_network(style="hairball")
     plt.show()
 else:
-    print(f"\n✗ Dataset not found: {dataset4}")
+    print(f"\n[X] Dataset not found: {dataset4}")
     print("  Skipping Example 4")
 
 ##############################################################################
@@ -211,7 +211,7 @@ if os.path.exists(dataset5):
     multilayer_network.visualize_network(style="diagonal")
     plt.show()
 else:
-    print(f"\n✗ Dataset not found: {dataset5}")
+    print(f"\n[X] Dataset not found: {dataset5}")
     print("  Skipping Example 5")
 
 ##############################################################################
@@ -271,7 +271,7 @@ if os.path.exists(dataset6):
                 linmod="upper",
                 linewidth=0.4
             )
-            print(f"  ✓ Styled '{edge_type}' edges (lightblue, dashed)")
+            print(f"  [OK] Styled '{edge_type}' edges (lightblue, dashed)")
             
         elif edge_type == "belongs_to":
             draw_multiedges(
@@ -284,7 +284,7 @@ if os.path.exists(dataset6):
                 linmod="upper",
                 linewidth=0.4
             )
-            print(f"  ✓ Styled '{edge_type}' edges (red, dotted)")
+            print(f"  [OK] Styled '{edge_type}' edges (red, dotted)")
             
         elif edge_type == "codes_for":
             draw_multiedges(
@@ -297,7 +297,7 @@ if os.path.exists(dataset6):
                 linmod="upper",
                 linewidth=0.4
             )
-            print(f"  ✓ Styled '{edge_type}' edges (orange, dotted)")
+            print(f"  [OK] Styled '{edge_type}' edges (orange, dotted)")
             
         else:
             # Default style for other edge types
@@ -311,14 +311,14 @@ if os.path.exists(dataset6):
                 linmod="both",
                 linewidth=0.4
             )
-            print(f"  ✓ Styled '{edge_type}' edges (default: black, dash-dot)")
+            print(f"  [OK] Styled '{edge_type}' edges (default: black, dash-dot)")
     
     print("\n(Close window to exit)")
     plt.show()
     plt.clf()
     
 else:
-    print(f"\n✗ Dataset not found: {dataset6}")
+    print(f"\n[X] Dataset not found: {dataset6}")
     print("  Skipping Example 6")
 
 print("\n" + "=" * 70)

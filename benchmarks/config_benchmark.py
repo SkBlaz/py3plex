@@ -78,13 +78,13 @@ def demonstrate_config_usage():
         print(f"  - {name:20s} ({num_colors} colors)")
     
     # Get a color palette
-    print(f"\n🌈 Using '{config.DEFAULT_COLOR_PALETTE}' palette:")
+    print(f"\n Using '{config.DEFAULT_COLOR_PALETTE}' palette:")
     colors = config.get_color_palette()
     print(f"  First 3 colors: {colors[:3]}")
     
     # Show colorblind safe option
     cb_colors = config.get_color_palette("colorblind_safe")
-    print(f"\n♿ Color-blind safe palette:")
+    print(f"\n Color-blind safe palette:")
     print(f"  First 3 colors: {cb_colors[:3]}")
 
 
@@ -101,8 +101,8 @@ def demonstrate_reproducibility():
     rng2 = get_rng(42)
     values2 = [rng2.random() for _ in range(5)]
     
-    print(f"\n🎲 Random values with seed=42 (first run):  {values1}")
-    print(f"🎲 Random values with seed=42 (second run): {values2}")
+    print(f"\n Random values with seed=42 (first run):  {values1}")
+    print(f" Random values with seed=42 (second run): {values2}")
     
     if values1 == values2:
         print("SUCCESS: Results are reproducible!")

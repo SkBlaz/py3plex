@@ -73,7 +73,7 @@ def test_edge_width_logic():
         print("\nSuccess: All edge width logic tests PASSED!")
         return True
     else:
-        print("\n💥 Some edge width logic tests FAILED!")
+        print("\n Some edge width logic tests FAILED!")
         return False
 
 def test_old_vs_new_logic():
@@ -112,7 +112,7 @@ def test_old_vs_new_logic():
             if old_result == (width,) and new_result == width:
                 print(f"  PASS: Fix confirmed: preserves {type(width).__name__} correctly")
             else:
-                print(f"  ❓ Unexpected result")
+                print(f"  ? Unexpected result")
         else:
             # For scalars, both should wrap in tuple
             if old_result == new_result == (width,):

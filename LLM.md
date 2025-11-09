@@ -77,7 +77,7 @@ centrality = multilayer_statistics.versatility_centrality(network)
 
 ---
 
-## 🔑 Core API Reference
+## KEY: Core API Reference
 
 ### Main Class: `multi_layer_network`
 
@@ -335,7 +335,7 @@ print(f"Largest community: {max(community_sizes.values())} nodes")
 
 ---
 
-## 🧭 Navigation Guide
+##  Navigation Guide
 
 ### Where to Find Information
 
@@ -434,7 +434,7 @@ The `examples/` directory contains 59 examples organized by category:
 
 ---
 
-## ❓ FAQ and Troubleshooting
+## ? FAQ and Troubleshooting
 
 ### Frequently Asked Questions
 
@@ -678,7 +678,7 @@ pip install --upgrade networkx>=2.5
 
 ---
 
-## 📖 Detailed Technical Documentation
+##  Detailed Technical Documentation
 
 The sections below contain detailed technical information for developers and advanced users.
 
@@ -2366,14 +2366,14 @@ The verbose flag shows:
 
 The expanded selftest now includes **8 tests**:
 
-1. ✓ Core dependencies (numpy, networkx, matplotlib, scipy, pandas)
-2. ✓ Graph creation (basic multilayer network construction)
-3. ✓ Visualization module (imports and backend configuration)
-4. ✓ Multilayer graph (layer-based network construction)
-5. ✓ Community detection (Louvain algorithm)
-6. ✓ File I/O (save/load network in GraphML format)
-7. ✓ **Centrality statistics** (new: versatility, degree, betweenness, layer density)
-8. ✓ **Multilayer manipulation** (new: splitting, aggregation, extraction)
+1. [OK] Core dependencies (numpy, networkx, matplotlib, scipy, pandas)
+2. [OK] Graph creation (basic multilayer network construction)
+3. [OK] Visualization module (imports and backend configuration)
+4. [OK] Multilayer graph (layer-based network construction)
+5. [OK] Community detection (Louvain algorithm)
+6. [OK] File I/O (save/load network in GraphML format)
+7. [OK] **Centrality statistics** (new: versatility, degree, betweenness, layer density)
+8. [OK] **Multilayer manipulation** (new: splitting, aggregation, extraction)
 
 ### Example Output
 
@@ -2382,31 +2382,31 @@ Non-verbose output:
 [py3plex::selftest] Starting py3plex self-test...
 
 1. Checking core dependencies...
-   [✓] Core dependencies OK
+   [[OK]] Core dependencies OK
 2. Testing graph creation...
-   [✓] Graph creation successful
+   [[OK]] Graph creation successful
 ...
 7. Testing centrality statistics...
-   [✓] Centrality statistics test passed
+   [[OK]] Centrality statistics test passed
 8. Testing multilayer manipulation...
-   [✓] Multilayer manipulation test passed
+   [[OK]] Multilayer manipulation test passed
 
 ============================================================
 TEST SUMMARY TEST SUMMARY
 ============================================================
-  [✓] Core dependencies
-  [✓] Graph creation
-  [✓] Visualization module
-  [✓] Multilayer graph
-  [✓] Community detection
-  [✓] File I/O
-  [✓] Centrality statistics
-  [✓] Multilayer manipulation
+  [[OK]] Core dependencies
+  [[OK]] Graph creation
+  [[OK]] Visualization module
+  [[OK]] Multilayer graph
+  [[OK]] Community detection
+  [[OK]] File I/O
+  [[OK]] Centrality statistics
+  [[OK]] Multilayer manipulation
 
   Tests passed: 8/8
   Time elapsed: 0.24s
 
-[✓] All tests completed successfully!
+[[OK]] All tests completed successfully!
 ```
 
 ### Implementation Details

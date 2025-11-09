@@ -15,7 +15,7 @@
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
-**🤖 For LLMs and AI assistants:** See [LLM.md](./LLM.md) for a comprehensive guide including quick start, API reference, usage patterns, and FAQ.
+** For LLMs and AI assistants:** See [LLM.md](./LLM.md) for a comprehensive guide including quick start, API reference, usage patterns, and FAQ.
 
 ![Customization](example_images/part1.png)
 ## Getting Started
@@ -64,12 +64,12 @@ See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html
 Py3plex includes a production-ready web-based GUI for multilayer network analysis, visualization, and exploration.
 
 **Features:**
-- 🌐 **Interactive Web Interface** - React-based UI with real-time updates
+-  **Interactive Web Interface** - React-based UI with real-time updates
 - * **Network Visualization** - Layer-centric views with configurable layouts
 - * **Advanced Analysis** - Centrality metrics, community detection, and more
 - * **Multiple Formats** - Support for edgelist, GML, NetworkX pickle files
 - * **Async Processing** - Background job execution with progress tracking
-- 💾 **Workspace Management** - Save and restore complete analysis sessions
+-  **Workspace Management** - Save and restore complete analysis sessions
 
 **Quick Start:**
 ```bash

@@ -55,7 +55,7 @@ try:
         ['David', 'twitter', 'David', 'linkedin', 1],
     ], input_type='list')
 
-    print("✓ Network created: 4 nodes, 3 layers")
+    print("[OK] Network created: 4 nodes, 3 layers")
 
     # 1. Layer Density
     print("\n2. Layer Density (ρᵢ)")
