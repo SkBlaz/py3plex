@@ -651,11 +651,7 @@ class multi_layer_network:
         """
 
         self.tmp_core_network = self.core_network
-
-        if self.directed:
-            self.core_network = nx.MultiDiGraph()
-        else:
-            self.core_network = nx.MultiGraph()
+        self.core_network = self._create_graph()
 
         for edge in self.tmp_core_network.edges():
             self.add_edges(
@@ -1069,10 +1065,8 @@ class multi_layer_network:
             )
 
             if convert_to_simple:
-                if self.directed:
-                    self.separate_layers = [nx.DiGraph(x) for x in self.separate_layers]
-                else:
-                    self.separate_layers = [nx.Graph(x) for x in self.separate_layers]
+                graph_class = nx.DiGraph if self.directed else nx.Graph
+                self.separate_layers = [graph_class(x) for x in self.separate_layers]
 
     def get_layers(
         self,
@@ -1103,11 +1097,23 @@ class multi_layer_network:
             )
 
     def _initiate_network(self):
+        """Initialize the core network if it doesn't exist."""
         if self.core_network is None:
-            if self.directed:
-                self.core_network = nx.MultiDiGraph()
-            else:
-                self.core_network = nx.MultiGraph()
+            self.core_network = self._create_graph()
+    
+    def _create_graph(self, multi: bool = True) -> Union[nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph]:
+        """Create an appropriate graph type based on network settings.
+        
+        Args:
+            multi: Whether to create a MultiGraph/MultiDiGraph (default: True)
+            
+        Returns:
+            NetworkX graph object of the appropriate type
+        """
+        if self.directed:
+            return nx.MultiDiGraph() if multi else nx.DiGraph()
+        else:
+            return nx.MultiGraph() if multi else nx.Graph()
 
     def monoplex_nx_wrapper(self, method, kwargs=None):
         """
@@ -1297,11 +1303,9 @@ class multi_layer_network:
             eval("self.core_network." + target_function + "((n1,l1))")
 
     def _unfreeze(self):
-        """Unfreeze the network graph for modifications."""
-        if self.directed:
-            self.core_network = nx.MultiDiGraph(self.core_network)
-        else:
-            self.core_network = nx.MultiGraph(self.core_network)
+        """Unfreeze the network graph for modifications by creating a mutable copy."""
+        graph_class = nx.MultiDiGraph if self.directed else nx.MultiGraph
+        self.core_network = graph_class(self.core_network)
 
     # ═════════════════════════════════════════════════════════════════════════
     # Node and Edge Manipulation Methods
