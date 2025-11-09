@@ -238,14 +238,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install pytest hypothesis networkx numpy scipy tqdm
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -e .[tests]
       timeout-minutes: 10
-
-    - name: Install package
-      run: |
-        echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
-      timeout-minutes: 2
 
     - name: Run extended metamorphic tests
       env:
