@@ -1,0 +1,43 @@
+# Data directories (should not be committed)
+data/
+data/uploads/*
+data/artifacts/*
+data/workspaces/*
+
+# Keep directory structure
+!data/.gitkeep
+!data/uploads/.gitkeep
+!data/artifacts/.gitkeep
+!data/workspaces/.gitkeep
+
+# Environment files
+.env
+
+# Node modules
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
