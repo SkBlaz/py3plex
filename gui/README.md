@@ -22,6 +22,8 @@ make up
 # 📊 Job Monitor (Flower): http://localhost:5555
 ```
 
+**First time?** The build takes ~3-5 minutes. Subsequent starts are instant.
+
 That's it! The application will be running with:
 - React + TypeScript frontend with hot reload
 - FastAPI backend with py3plex integration
@@ -330,6 +332,8 @@ frontend:
 - [ ] Validate file uploads strictly
 - [ ] Set resource limits per user/job
 - [ ] Enable Celery task rate limiting
+
+**Current Status**: Development mode - suitable for local use only. Do not expose to public internet without proper security hardening.
 
 ## 🐛 Troubleshooting
 
