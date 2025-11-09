@@ -1,4 +1,4 @@
-# Py3plex GUI (Pro Version)
+# Py3plex GUI
 
 A production-ready web-based GUI for **py3plex** multilayer network analysis, running locally via Docker Compose.
 
