@@ -28,6 +28,7 @@ RUN pip install --no-cache-dir \
     celery==5.3.4 \
     redis==5.0.1 \
     flower==2.0.1 \
+    python-multipart==0.0.18 \
     pydantic==2.5.3 \
     networkx==3.2.1 \
     matplotlib==3.8.2 \
