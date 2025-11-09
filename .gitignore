@@ -78,6 +78,7 @@ leak-*
 timeout-*
 slow-unit-*
 doc-coverage.json
+loc-stats.json
 LLM_ORIGINAL_BACKUP.md
 mutants/
 .mutmut-cache
