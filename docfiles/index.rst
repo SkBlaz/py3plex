@@ -220,6 +220,14 @@ Documentation Contents
 
 .. toctree::
    :maxdepth: 2
+   :caption: GUI (Web Interface)
+
+   gui
+   gui_architecture
+   gui_testing
+
+.. toctree::
+   :maxdepth: 2
    :caption: Advanced Topics
 
    learning
