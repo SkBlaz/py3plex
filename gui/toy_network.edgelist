@@ -1,0 +1,16 @@
+# Toy multilayer network for testing
+# Format: node1 node2 layer weight
+1 2 social 1.0
+1 3 social 1.0
+2 3 social 1.0
+2 4 social 1.0
+3 4 social 1.0
+4 5 social 1.0
+1 4 work 1.0
+2 5 work 1.0
+3 5 work 1.0
+1 5 work 1.0
+2 6 hobby 1.0
+3 6 hobby 1.0
+4 6 hobby 1.0
+5 6 hobby 1.0

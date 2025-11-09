@@ -1,0 +1,237 @@
+name: GUI Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    paths:
+      - 'gui/**'
+      - '.github/workflows/gui-tests.yml'
+  pull_request:
+    branches: [ main, master, develop ]
+    paths:
+      - 'gui/**'
+      - '.github/workflows/gui-tests.yml'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Create .env file
+      run: |
+        cd gui
+        cp .env.example .env
+    
+    - name: Build Docker images
+      run: |
+        cd gui
+        docker compose build api worker redis
+    
+    - name: Start services
+      run: |
+        cd gui
+        docker compose up -d api worker redis
+    
+    - name: Wait for services to be ready
+      run: |
+        echo "Waiting for API to be ready..."
+        timeout 60 bash -c 'until curl -f http://localhost:8000/api/health; do sleep 2; done'
+    
+    - name: Run API tests
+      run: |
+        cd gui
+        docker compose exec -T api pytest ci/api-tests/ -v --tb=short
+    
+    - name: Show logs on failure
+      if: failure()
+      run: |
+        cd gui
+        docker compose logs api
+        docker compose logs worker
+    
+    - name: Stop services
+      if: always()
+      run: |
+        cd gui
+        docker compose down -v
+
+  integration-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Create .env file
+      run: |
+        cd gui
+        cp .env.example .env
+    
+    - name: Build and start all services
+      run: |
+        cd gui
+        docker compose up -d --build
+    
+    - name: Wait for services to be ready
+      run: |
+        echo "Waiting for Nginx to be ready..."
+        timeout 120 bash -c 'until curl -f http://localhost:8080/api/health; do sleep 3; done'
+        echo "All services ready!"
+    
+    - name: Test file upload
+      run: |
+        cd gui
+        # Upload the toy network
+        RESPONSE=$(curl -s -F "file=@toy_network.edgelist" http://localhost:8080/api/upload)
+        echo "Upload response: $RESPONSE"
+        
+        # Extract graph_id
+        GRAPH_ID=$(echo $RESPONSE | jq -r '.graph_id')
+        echo "Graph ID: $GRAPH_ID"
+        
+        # Verify graph summary
+        SUMMARY=$(curl -s http://localhost:8080/api/graphs/$GRAPH_ID/summary)
+        echo "Summary: $SUMMARY"
+        
+        # Check if we got expected nodes and edges
+        NODES=$(echo $SUMMARY | jq -r '.nodes')
+        EDGES=$(echo $SUMMARY | jq -r '.edges')
+        
+        if [ "$NODES" != "6" ] || [ "$EDGES" != "14" ]; then
+          echo "ERROR: Expected 6 nodes and 14 edges, got $NODES nodes and $EDGES edges"
+          exit 1
+        fi
+        
+        echo "✓ Upload test passed"
+    
+    - name: Test layout job
+      run: |
+        cd gui
+        # Get graph_id from previous upload
+        RESPONSE=$(curl -s -F "file=@toy_network.edgelist" http://localhost:8080/api/upload)
+        GRAPH_ID=$(echo $RESPONSE | jq -r '.graph_id')
+        
+        # Start layout job
+        JOB_RESPONSE=$(curl -s -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"algorithm":"spring","seed":42,"dimensions":2}' \
+          http://localhost:8080/api/graphs/$GRAPH_ID/layout)
+        
+        JOB_ID=$(echo $JOB_RESPONSE | jq -r '.job_id')
+        echo "Layout job ID: $JOB_ID"
+        
+        # Poll job status (max 30 seconds)
+        for i in {1..15}; do
+          STATUS=$(curl -s http://localhost:8080/api/jobs/$JOB_ID | jq -r '.status')
+          echo "Job status: $STATUS"
+          
+          if [ "$STATUS" = "completed" ]; then
+            echo "✓ Layout job completed successfully"
+            exit 0
+          elif [ "$STATUS" = "failed" ]; then
+            echo "ERROR: Layout job failed"
+            curl -s http://localhost:8080/api/jobs/$JOB_ID | jq
+            exit 1
+          fi
+          
+          sleep 2
+        done
+        
+        echo "WARNING: Layout job did not complete in time"
+        exit 1
+    
+    - name: Test centrality job
+      run: |
+        cd gui
+        # Get graph_id from previous upload
+        RESPONSE=$(curl -s -F "file=@toy_network.edgelist" http://localhost:8080/api/upload)
+        GRAPH_ID=$(echo $RESPONSE | jq -r '.graph_id')
+        
+        # Start centrality job
+        JOB_RESPONSE=$(curl -s -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"metrics":["degree","betweenness"]}' \
+          http://localhost:8080/api/graphs/$GRAPH_ID/analysis/centrality)
+        
+        JOB_ID=$(echo $JOB_RESPONSE | jq -r '.job_id')
+        echo "Centrality job ID: $JOB_ID"
+        
+        # Poll job status (max 30 seconds)
+        for i in {1..15}; do
+          STATUS=$(curl -s http://localhost:8080/api/jobs/$JOB_ID | jq -r '.status')
+          echo "Job status: $STATUS"
+          
+          if [ "$STATUS" = "completed" ]; then
+            echo "✓ Centrality job completed successfully"
+            exit 0
+          elif [ "$STATUS" = "failed" ]; then
+            echo "ERROR: Centrality job failed"
+            curl -s http://localhost:8080/api/jobs/$JOB_ID | jq
+            exit 1
+          fi
+          
+          sleep 2
+        done
+        
+        echo "WARNING: Centrality job did not complete in time"
+        exit 1
+    
+    - name: Show service logs on failure
+      if: failure()
+      run: |
+        cd gui
+        echo "=== API logs ==="
+        docker compose logs api
+        echo "=== Worker logs ==="
+        docker compose logs worker
+        echo "=== Redis logs ==="
+        docker compose logs redis
+    
+    - name: Stop services
+      if: always()
+      run: |
+        cd gui
+        docker compose down -v
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: gui/frontend/package.json
+    
+    - name: Install dependencies
+      run: |
+        cd gui/frontend
+        npm ci
+    
+    - name: Type check
+      run: |
+        cd gui/frontend
+        npm run build
+    
+    - name: Check build output
+      run: |
+        cd gui/frontend
+        if [ ! -d "dist" ]; then
+          echo "ERROR: Build did not produce dist directory"
+          exit 1
+        fi
+        echo "✓ Frontend build successful"

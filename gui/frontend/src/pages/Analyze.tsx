@@ -1,0 +1,261 @@
+import { useState, useEffect } from 'react';
+import { Play, RefreshCw, CheckCircle, XCircle, Clock, AlertCircle } from 'lucide-react';
+import {
+  computeLayout,
+  computeCentrality,
+  computeCommunity,
+  getJobStatus,
+} from '../lib/api';
+
+export default function Analyze() {
+  const [graphId, setGraphId] = useState<string | null>(null);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedGraphId = sessionStorage.getItem('currentGraphId');
+    if (storedGraphId) {
+      setGraphId(storedGraphId);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Poll jobs
+    const interval = setInterval(() => {
+      jobs.forEach(async (job) => {
+        if (job.status === 'running' || job.status === 'queued') {
+          try {
+            const response = await getJobStatus(job.id);
+            setJobs((prev) =>
+              prev.map((j) => (j.id === job.id ? { ...j, ...response.data } : j))
+            );
+          } catch (err) {
+            console.error('Failed to poll job:', err);
+          }
+        }
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [jobs]);
+
+  const runLayoutJob = async () => {
+    if (!graphId) return;
+    setError(null);
+
+    try {
+      const response = await computeLayout(graphId, {
+        algorithm: 'spring',
+        seed: 42,
+        dimensions: 2,
+        iterations: 50,
+      });
+
+      setJobs((prev) => [
+        ...prev,
+        {
+          id: response.data.job_id,
+          type: 'Layout',
+          status: 'queued',
+          progress: 0,
+        },
+      ]);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to start layout job');
+    }
+  };
+
+  const runCentralityJob = async () => {
+    if (!graphId) return;
+    setError(null);
+
+    try {
+      const response = await computeCentrality(graphId, {
+        metrics: ['degree', 'betweenness'],
+      });
+
+      setJobs((prev) => [
+        ...prev,
+        {
+          id: response.data.job_id,
+          type: 'Centrality',
+          status: 'queued',
+          progress: 0,
+        },
+      ]);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to start centrality job');
+    }
+  };
+
+  const runCommunityJob = async () => {
+    if (!graphId) return;
+    setError(null);
+
+    try {
+      const response = await computeCommunity(graphId, {
+        algorithm: 'louvain',
+        resolution: 1.0,
+        seed: 42,
+      });
+
+      setJobs((prev) => [
+        ...prev,
+        {
+          id: response.data.job_id,
+          type: 'Community Detection',
+          status: 'queued',
+          progress: 0,
+        },
+      ]);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to start community detection job');
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="h-5 w-5 text-green-600" />;
+      case 'failed':
+        return <XCircle className="h-5 w-5 text-red-600" />;
+      case 'running':
+        return <RefreshCw className="h-5 w-5 text-blue-600 animate-spin" />;
+      default:
+        return <Clock className="h-5 w-5 text-gray-400" />;
+    }
+  };
+
+  if (!graphId) {
+    return (
+      <div className="px-4 py-6">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <AlertCircle className="h-6 w-6 text-yellow-600 mb-2" />
+          <h3 className="text-lg font-medium text-yellow-900">No Graph Loaded</h3>
+          <p className="text-sm text-yellow-800 mt-1">
+            Please upload a network file first in the Load Data page.
+          </p>
+          <a
+            href="/"
+            className="mt-4 inline-block px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+          >
+            Go to Load Data
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-4 py-6">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Analyze Network</h1>
+
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Layout */}
+        <div className="bg-white shadow rounded-lg p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Layout</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Compute graph layout using force-directed algorithms
+          </p>
+          <button
+            onClick={runLayoutJob}
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center"
+          >
+            <Play className="h-4 w-4 mr-2" />
+            Run Spring Layout
+          </button>
+        </div>
+
+        {/* Centrality */}
+        <div className="bg-white shadow rounded-lg p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Centrality</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Compute node centrality metrics (degree, betweenness)
+          </p>
+          <button
+            onClick={runCentralityJob}
+            className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 flex items-center justify-center"
+          >
+            <Play className="h-4 w-4 mr-2" />
+            Run Centrality
+          </button>
+        </div>
+
+        {/* Community Detection */}
+        <div className="bg-white shadow rounded-lg p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Communities</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Detect communities using Louvain algorithm
+          </p>
+          <button
+            onClick={runCommunityJob}
+            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center"
+          >
+            <Play className="h-4 w-4 mr-2" />
+            Detect Communities
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start">
+          <AlertCircle className="h-5 w-5 text-red-600 mr-2 mt-0.5" />
+          <div>
+            <h3 className="text-sm font-medium text-red-800">Error</h3>
+            <p className="text-sm text-red-700 mt-1">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Job Center */}
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Job Center</h2>
+
+        {jobs.length === 0 ? (
+          <p className="text-sm text-gray-500">No jobs yet. Start an analysis above.</p>
+        ) : (
+          <div className="space-y-3">
+            {jobs.map((job) => (
+              <div
+                key={job.id}
+                className="border border-gray-200 rounded-lg p-4 flex items-center justify-between"
+              >
+                <div className="flex items-center space-x-3">
+                  {getStatusIcon(job.status)}
+                  <div>
+                    <p className="font-medium text-gray-900">{job.type}</p>
+                    <p className="text-sm text-gray-500">
+                      {job.phase || job.status}
+                      {job.progress > 0 && ` (${job.progress}%)`}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-400 font-mono">{job.id}</p>
+                  {job.status === 'completed' && job.result && (
+                    <p className="text-sm text-green-600 mt-1">✓ Complete</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-6 text-sm text-gray-500">
+        <p>
+          Jobs run asynchronously using Celery workers. Monitor detailed progress at{' '}
+          <a
+            href="/flower"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            Flower dashboard
+          </a>
+          .
+        </p>
+      </div>
+    </div>
+  );
+}

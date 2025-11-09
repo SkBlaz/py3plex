@@ -17,6 +17,7 @@ eggs/
 .eggs/
 lib/
 lib64/
+!gui/frontend/src/lib/
 parts/
 sdist/
 var/
@@ -82,3 +83,9 @@ loc-stats.json
 LLM_ORIGINAL_BACKUP.md
 mutants/
 .mutmut-cache
+
+# GUI data directories (runtime data, not source)
+gui/data/uploads/*
+gui/data/artifacts/*
+gui/data/workspaces/*
+!gui/data/**/.gitkeep

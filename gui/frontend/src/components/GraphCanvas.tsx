@@ -1,0 +1,2 @@
+// GraphCanvas component (placeholder)
+export {}

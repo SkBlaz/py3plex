@@ -1,0 +1,2 @@
+// InspectPanel component (placeholder)
+export {}

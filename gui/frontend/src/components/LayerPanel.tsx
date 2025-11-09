@@ -1,0 +1,2 @@
+// LayerPanel component (placeholder)
+export {}
