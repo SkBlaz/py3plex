@@ -13,11 +13,37 @@ def count_lines_in_file(filepath):
     """
     Count lines in a single file.
     Returns tuple: (total_lines, code_lines, comment_lines, blank_lines)
+    
+    Supports comment detection for multiple languages:
+    - Python: #
+    - C/C++/Java/JavaScript/Go/Rust: //, /* */
+    - HTML/XML: <!-- -->
+    - Shell: #
+    - CSS: /* */
     """
     total_lines = 0
     code_lines = 0
     comment_lines = 0
     blank_lines = 0
+    
+    # Get file extension to determine comment style
+    ext = filepath.suffix.lower()
+    
+    # Define comment prefixes for different languages
+    single_line_comments = []
+    if ext in ['.py', '.sh', '.bash', '.yml', '.yaml', '.toml', '.r', '.rb']:
+        single_line_comments = ['#']
+    elif ext in ['.js', '.jsx', '.ts', '.tsx', '.java', '.c', '.cpp', '.cc', '.h', '.hpp', 
+                 '.cs', '.go', '.rs', '.swift', '.kt', '.scala', '.php']:
+        single_line_comments = ['//', '/*', '*/']
+    elif ext in ['.css', '.scss', '.sass', '.less']:
+        single_line_comments = ['/*', '*/']
+    elif ext in ['.html', '.xml', '.svg']:
+        single_line_comments = ['<!--', '-->']
+    elif ext in ['.lua']:
+        single_line_comments = ['--']
+    elif ext in ['.sql']:
+        single_line_comments = ['--', '/*', '*/']
     
     try:
         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
@@ -27,7 +53,7 @@ def count_lines_in_file(filepath):
                 
                 if not stripped:
                     blank_lines += 1
-                elif stripped.startswith('#'):
+                elif any(stripped.startswith(comment) for comment in single_line_comments):
                     comment_lines += 1
                 else:
                     code_lines += 1
@@ -44,12 +70,34 @@ def count_loc(root_dir, extensions=None):
     Args:
         root_dir: Root directory to search
         extensions: List of file extensions to include (e.g., ['.py', '.js'])
+                   If None or 'all', counts all common programming language files.
     
     Returns:
         Dictionary with LOC statistics
     """
-    if extensions is None:
-        extensions = ['.py']
+    if extensions is None or (isinstance(extensions, list) and 'all' in extensions):
+        # Count all common programming language files
+        extensions = [
+            '.py',          # Python
+            '.js', '.jsx', '.ts', '.tsx',  # JavaScript/TypeScript
+            '.java',        # Java
+            '.c', '.cpp', '.cc', '.h', '.hpp',  # C/C++
+            '.cs',          # C#
+            '.go',          # Go
+            '.rs',          # Rust
+            '.rb',          # Ruby
+            '.php',         # PHP
+            '.swift',       # Swift
+            '.kt',          # Kotlin
+            '.scala',       # Scala
+            '.r',           # R
+            '.sh', '.bash', # Shell
+            '.html', '.css', '.scss', '.sass',  # Web
+            '.xml', '.svg', # Markup
+            '.sql',         # SQL
+            '.lua',         # Lua
+            '.yml', '.yaml', '.toml', '.json',  # Config
+        ]
     
     root_path = Path(root_dir)
     
@@ -109,7 +157,7 @@ def main():
     parser.add_argument('--root', default='.', help='Root directory to scan')
     parser.add_argument('--json', help='Output JSON file path')
     parser.add_argument('--extensions', nargs='+', default=['.py'], 
-                        help='File extensions to count (default: .py)')
+                        help='File extensions to count (default: .py). Use "all" to count all languages.')
     
     args = parser.parse_args()
     

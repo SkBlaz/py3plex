@@ -14,7 +14,6 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-      pull-requests: write
     
     steps:
     - name: Checkout code
@@ -27,9 +26,9 @@ jobs:
         python-version: "3.10"
       timeout-minutes: 2
     
-    - name: Count lines of code
+    - name: Count lines of code (all languages)
       run: |
-        python3 .github/scripts/count_loc.py --root py3plex --json loc-stats.json
+        python3 .github/scripts/count_loc.py --root py3plex --json loc-stats.json --extensions all
       timeout-minutes: 1
     
     - name: Display LOC statistics
@@ -57,32 +56,3 @@ jobs:
         echo "Total lines: $FORMATTED_LINES ($TOTAL_LINES)"
         echo "Code lines: $CODE_LINES"
       timeout-minutes: 1
-    
-    - name: Comment LOC on PR
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const stats = JSON.parse(fs.readFileSync('loc-stats.json', 'utf8'));
-          
-          const comment = `## 📊 Lines of Code Report
-          
-          | Metric | Count |
-          |--------|-------|
-          | **Total Lines** | **${stats.total_lines.toLocaleString()}** |
-          | Code Lines | ${stats.code_lines.toLocaleString()} |
-          | Comment Lines | ${stats.comment_lines.toLocaleString()} |
-          | Blank Lines | ${stats.blank_lines.toLocaleString()} |
-          | Files | ${stats.total_files} |
-          
-          ![Lines of Code](https://img.shields.io/badge/lines-${stats.total_lines_formatted}-blue)
-          `;
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: comment
-          });
-      timeout-minutes: 2
