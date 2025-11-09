@@ -74,6 +74,258 @@ except ImportError:
     server_mode = True
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Helper functions for visualization (extracted from visualize_network method)
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def _draw_diagonal_layers(
+    graphs, network_labels, parameters_layers, axis, verbose
+):
+    """Helper function to draw diagonal layer visualization.
+    
+    Args:
+        graphs: List of layer graphs
+        network_labels: Labels for network layers
+        parameters_layers: Custom parameters for layer drawing
+        axis: Optional matplotlib axis
+        verbose: Enable verbose output
+        
+    Returns:
+        Matplotlib axis object
+    """
+    if parameters_layers is None:
+        draw_params = {
+            "display": False,
+            "background_shape": "circle",
+            "labels": network_labels,
+            "node_size": 3,
+            "verbose": verbose,
+        }
+        return draw_multilayer_default(graphs, **draw_params)
+    else:
+        return draw_multilayer_default(graphs, **parameters_layers)
+
+
+def _draw_multiedges_for_type(
+    graphs,
+    edges,
+    edge_type,
+    alphachannel,
+    linepoints,
+    orientation,
+    linewidth,
+    resolution,
+    parameters_multiedges=None,
+):
+    """Helper function to draw multi-edges for a specific edge type.
+    
+    Args:
+        graphs: List of layer graphs
+        edges: Edges to draw
+        edge_type: Type of edges ('coupling' or other)
+        alphachannel: Alpha channel for edge transparency
+        linepoints: Line style for edges
+        orientation: Edge orientation ('upper', 'bottom', etc.)
+        linewidth: Width of edge lines
+        resolution: Resolution for edge curves
+        parameters_multiedges: Custom parameters for edge drawing
+        
+    Returns:
+        Matplotlib axis object
+    """
+    if parameters_multiedges is not None:
+        return draw_multiedges(graphs, edges, **parameters_multiedges)
+    
+    if edge_type == "coupling":
+        return draw_multiedges(
+            graphs,
+            edges,
+            alphachannel=alphachannel,
+            linepoints=linepoints,
+            linecolor="red",
+            curve_height=2,
+            linmod="bottom",
+            linewidth=linewidth,
+            resolution=resolution,
+        )
+    else:
+        return draw_multiedges(
+            graphs,
+            edges,
+            alphachannel=alphachannel,
+            linepoints="--",
+            linecolor="black",
+            curve_height=2,
+            linmod=orientation,
+            linewidth=linewidth,
+            resolution=resolution,
+        )
+
+
+def _visualize_diagonal_style(
+    network_obj,
+    parameters_layers,
+    parameters_multiedges,
+    axis,
+    verbose,
+    no_labels,
+    alphachannel,
+    linepoints,
+    orientation,
+    linewidth,
+    resolution,
+    show,
+):
+    """Helper function for diagonal style visualization.
+    
+    Args:
+        network_obj: Multi-layer network object
+        parameters_layers: Custom parameters for layer drawing
+        parameters_multiedges: Custom parameters for edge drawing
+        axis: Optional matplotlib axis
+        verbose: Enable verbose output
+        no_labels: Hide network labels
+        alphachannel: Alpha channel for edge transparency
+        linepoints: Line style for edges
+        orientation: Edge orientation
+        linewidth: Width of edge lines
+        resolution: Resolution for edge curves
+        show: Show plot immediately
+        
+    Returns:
+        Matplotlib axis object
+    """
+    network_labels, graphs, multilinks = network_obj.get_layers("diagonal")
+    if no_labels:
+        network_labels = None
+    
+    # Draw layers
+    ax = _draw_diagonal_layers(graphs, network_labels, parameters_layers, axis, verbose)
+    
+    # Draw multi-edges
+    for edge_type, edges in tqdm.tqdm(multilinks.items()):
+        ax = _draw_multiedges_for_type(
+            graphs,
+            edges,
+            edge_type,
+            alphachannel,
+            linepoints,
+            orientation,
+            linewidth,
+            resolution,
+            parameters_multiedges,
+        )
+    
+    if show:
+        plt.show()
+    
+    return ax
+
+
+def _visualize_hairball_style(network_obj, axis, legend, show):
+    """Helper function for hairball style visualization.
+    
+    Args:
+        network_obj: Multi-layer network object
+        axis: Optional matplotlib axis
+        legend: Show legend
+        show: Show plot immediately
+        
+    Returns:
+        Matplotlib axis object
+    """
+    network_colors, graph = network_obj.get_layers(style="hairball")
+    ax = hairball_plot(graph, network_colors, layout_algorithm="force", legend=legend)
+    
+    if show:
+        plt.show()
+    
+    return ax
+
+
+def _encode_multilayer_network(core_network, directed):
+    """Helper function to encode multilayer network to numeric format.
+    
+    Args:
+        core_network: NetworkX graph with multilayer structure
+        directed: Whether the network is directed
+        
+    Returns:
+        Tuple of (numeric_network, node_order)
+    """
+    nmap = {}
+    n_count = 0
+    
+    # Create simple graph based on directedness
+    simple_graph = nx.DiGraph() if directed else nx.Graph()
+    
+    # First, add all nodes (including isolated nodes)
+    for node in core_network.nodes():
+        if node not in nmap:
+            nmap[node] = n_count
+            simple_graph.add_node(n_count)
+            n_count += 1
+    
+    # Then add all edges with weights
+    for edge in core_network.edges(data=True):
+        node_first, node_second = edge[0], edge[1]
+        try:
+            weight = float(edge[2]["weight"])
+        except (KeyError, IndexError, ValueError, TypeError):
+            weight = 1
+        
+        simple_graph.add_edge(nmap[node_first], nmap[node_second], weight=weight)
+    
+    vectors = nx_to_scipy_sparse_matrix(simple_graph)
+    return vectors, simple_graph.nodes()
+
+
+def _encode_multiplex_network(core_network):
+    """Helper function to encode multiplex network to numeric format.
+    
+    Args:
+        core_network: NetworkX graph with multiplex structure
+        
+    Returns:
+        Tuple of (numeric_network, node_order)
+    """
+    unique_layers = {n[1] for n in core_network.nodes()}
+    individual_adj = []
+    all_nodes = []
+    
+    # Build adjacency matrix for each layer
+    for layer in unique_layers:
+        layer_nodes = [n for n in core_network.nodes() if n[1] == layer]
+        H = core_network.subgraph(layer_nodes)
+        
+        # NetworkX 3.x compatibility: use to_numpy_array instead of to_numpy_matrix
+        try:
+            adj = nx.to_numpy_array(H)
+        except AttributeError:
+            # Fallback for older NetworkX versions
+            adj = nx.to_numpy_matrix(H)
+        
+        all_nodes += list(H.nodes())
+        individual_adj.append(adj)
+    
+    # Combine adjacency matrices into supra-adjacency matrix
+    whole_mat = []
+    num_adj = len(individual_adj)
+    for en, adj_mat in enumerate(individual_adj):
+        cross = np.identity(adj_mat.shape[0])
+        one_row = []
+        for j in range(num_adj):
+            if j != en:
+                one_row.append(cross)
+            else:
+                one_row.append(adj_mat)
+        whole_mat.append(np.hstack(list(one_row)))
+    
+    vectors = np.vstack(whole_mat)
+    return vectors, all_nodes
+
+
 class multi_layer_network:
 
     def __init__(
@@ -115,13 +367,28 @@ class multi_layer_network:
         self.hinmine_network: Optional[Any] = None
         self.label_delimiter: str = label_delimiter
 
+    # ═════════════════════════════════════════════════════════════════════════
+    # Core Data Access Methods
+    # ═════════════════════════════════════════════════════════════════════════
+
     def __getitem__(self, i, j=None):
-        # for node in self.core_network.nodes():
-        #     print(node)
+        """Access network nodes using dictionary-like syntax.
+        
+        Args:
+            i: Node identifier
+            j: Optional second node identifier for edge access
+            
+        Returns:
+            Node neighbors if j is None, else edge data
+        """
         if j is None:
             return self.core_network[i]
         else:
             return self.core_network[i][j]
+
+    # ═════════════════════════════════════════════════════════════════════════
+    # I/O Operations - Loading and Saving Networks
+    # ═════════════════════════════════════════════════════════════════════════
 
     def read_ground_truth_communities(self, cfile):
         """
@@ -305,15 +572,32 @@ class multi_layer_network:
             input_file, input_type=input_type, layer_mapping=layer_mapping
         )
 
+    # ═════════════════════════════════════════════════════════════════════════
+    # Utility and Helper Methods
+    # ═════════════════════════════════════════════════════════════════════════
+
     def monitor(self, message):
-        """A simple monithor method"""
+        """A simple monitor method for logging"""
 
         logger.info("-" * 20)
         logger.info(message)
         logger.info("-" * 20)
 
-    def get_neighbors(self, node_id, layer_id=None):
+    def get_neighbors(self, node_id: str, layer_id: Optional[str] = None) -> Any:
+        """Get neighbors of a node in a specific layer.
+        
+        Args:
+            node_id: Node identifier
+            layer_id: Layer identifier (optional)
+            
+        Returns:
+            Iterator of neighbor nodes
+        """
         return self.core_network.neighbors((node_id, layer_id))
+
+    # ═════════════════════════════════════════════════════════════════════════
+    # Network Transformation and Conversion Methods
+    # ═════════════════════════════════════════════════════════════════════════
 
     def invert(self, override_core=False):
         """
@@ -386,7 +670,11 @@ class multi_layer_network:
         return self
 
     def sparse_to_px(self, directed=None):
-        """convert to px format"""
+        """Convert sparse matrix to py3plex format
+        
+        Args:
+            directed: Whether the network is directed (uses self.directed if None)
+        """
 
         if directed is None:
             directed = self.directed
@@ -396,6 +684,10 @@ class multi_layer_network:
         )
         self.add_dummy_layers()
         self.sparse_enabled = False
+
+    # ═════════════════════════════════════════════════════════════════════════
+    # Network Statistics and Analysis Methods
+    # ═════════════════════════════════════════════════════════════════════════
 
     def summary(self):
         """
@@ -1005,10 +1297,15 @@ class multi_layer_network:
             eval("self.core_network." + target_function + "((n1,l1))")
 
     def _unfreeze(self):
+        """Unfreeze the network graph for modifications."""
         if self.directed:
             self.core_network = nx.MultiDiGraph(self.core_network)
         else:
             self.core_network = nx.MultiGraph(self.core_network)
+
+    # ═════════════════════════════════════════════════════════════════════════
+    # Node and Edge Manipulation Methods
+    # ═════════════════════════════════════════════════════════════════════════
 
     def add_edges(
         self,
@@ -1124,70 +1421,20 @@ class multi_layer_network:
         """
 
     def _encode_to_numeric(self):
-
+        """Encode network to numeric format for matrix operations.
+        
+        Converts the network structure to numeric matrices. For multilayer networks,
+        creates a simple numeric graph. For multiplex networks, creates a supra-adjacency
+        matrix with identity matrices coupling layers.
+        """
         if self.network_type != "multiplex":
-            nmap = {}
-            n_count = 0
-
-            if self.directed:
-                simple_graph = nx.DiGraph()
-            else:
-                simple_graph = nx.Graph()
-
-            # First, add all nodes (including isolated nodes)
-            for node in self.core_network.nodes():
-                if node not in nmap:
-                    nmap[node] = n_count
-                    simple_graph.add_node(n_count)
-                    n_count += 1
-
-            # Then add all edges
-            for edge in self.core_network.edges(data=True):
-                node_first = edge[0]
-                node_second = edge[1]
-                try:
-                    weight = float(edge[2]["weight"])
-                except (KeyError, IndexError, ValueError, TypeError):
-                    weight = 1
-
-                simple_graph.add_edge(
-                    nmap[node_first], nmap[node_second], weight=weight
-                )
-            vectors = nx_to_scipy_sparse_matrix(simple_graph)
-            self.numeric_core_network = vectors
-            self.node_order_in_matrix = simple_graph.nodes()
-
+            self.numeric_core_network, self.node_order_in_matrix = _encode_multilayer_network(
+                self.core_network, self.directed
+            )
         else:
-            unique_layers = {n[1] for n in self.core_network.nodes()}
-            individual_adj = []
-            all_nodes = []
-            for layer in unique_layers:
-                layer_nodes = [n for n in self.core_network.nodes() if n[1] == layer]
-                H = self.core_network.subgraph(layer_nodes)
-                # NetworkX 3.x compatibility: use to_numpy_array instead of to_numpy_matrix
-                try:
-                    adj = nx.to_numpy_array(H)
-                except AttributeError:
-                    # Fallback for older NetworkX versions
-                    adj = nx.to_numpy_matrix(H)
-                all_nodes += list(H.nodes())
-                individual_adj.append(adj)
-
-            whole_mat = []
-            num_adj = len(individual_adj)
-            for en, adj_mat in enumerate(individual_adj):
-                cross = np.identity(adj_mat.shape[0])
-                one_row = []
-                for j in range(num_adj):
-                    if j != en:
-                        one_row.append(cross)
-                    else:
-                        one_row.append(adj_mat)
-
-                whole_mat.append(np.hstack(list(one_row)))
-            vectors = np.vstack(whole_mat)
-            self.numeric_core_network = vectors
-            self.node_order_in_matrix = all_nodes
+            self.numeric_core_network, self.node_order_in_matrix = _encode_multiplex_network(
+                self.core_network
+            )
 
     def get_supra_adjacency_matrix(self, mtype="sparse"):
         """
@@ -1261,6 +1508,10 @@ class multi_layer_network:
         adjmat = self.get_supra_adjacency_matrix(mtype="dense")
         supra_adjacency_matrix_plot(adjmat, **kwargs)
 
+    # ═════════════════════════════════════════════════════════════════════════
+    # Visualization Methods
+    # ═════════════════════════════════════════════════════════════════════════
+
     def visualize_network(
         self,
         style="diagonal",
@@ -1280,129 +1531,56 @@ class multi_layer_network:
         linepoints="-.",
         legend=False,
     ):
+        """Visualize the multilayer network.
+        
+        Supports two visualization styles:
+        - 'diagonal': Layer-centric diagonal layout with inter-layer edges
+        - 'hairball': Aggregate hairball plot of all layers
+        
+        Args:
+            style: Visualization style ('diagonal' or 'hairball')
+            parameters_layers: Custom parameters for layer drawing
+            parameters_multiedges: Custom parameters for edge drawing
+            show: Show plot immediately
+            compute_layouts: Layout algorithm (currently unused)
+            layouts_parameters: Layout parameters (currently unused)
+            verbose: Enable verbose output
+            orientation: Edge orientation for diagonal style
+            resolution: Resolution for edge curves
+            axis: Optional matplotlib axis to draw on
+            fig: Optional matplotlib figure (currently unused)
+            no_labels: Hide network labels
+            linewidth: Width of edge lines
+            alphachannel: Alpha channel for edge transparency
+            linepoints: Line style for edges
+            legend: Show legend (for hairball style)
+            
+        Returns:
+            Matplotlib axis object
+            
+        Raises:
+            Exception: If style is not 'diagonal' or 'hairball'
+        """
         if server_mode:
             return 0
-        """
-        network visualization.
-        Either use diagonal or hairball style. Additional parameters are added with parameters_layers and parameters_edges etc.
-
-        """
-
+        
         if style == "diagonal":
-            network_labels, graphs, multilinks = self.get_layers(style)
-            if no_labels:
-                network_labels = None
-            if parameters_layers is None:
-                if axis:
-                    axis = draw_multilayer_default(
-                        graphs,
-                        display=False,
-                        background_shape="circle",
-                        labels=network_labels,
-                        node_size=3,
-                        verbose=verbose,
-                    )
-                else:
-                    ax = draw_multilayer_default(
-                        graphs,
-                        display=False,
-                        background_shape="circle",
-                        labels=network_labels,
-                        node_size=3,
-                        verbose=verbose,
-                    )
-            else:
-                if axis:
-                    axis = draw_multilayer_default(graphs, **parameters_layers)
-                else:
-                    ax = draw_multilayer_default(graphs, **parameters_layers)
-
-            if parameters_multiedges is None:
-                enum = 1
-                for edge_type, edges in tqdm.tqdm(multilinks.items()):
-                    if edge_type == "coupling":
-                        if axis:
-                            axis = draw_multiedges(
-                                graphs,
-                                edges,
-                                alphachannel=alphachannel,
-                                linepoints=linepoints,
-                                linecolor="red",
-                                curve_height=2,
-                                linmod="bottom",
-                                linewidth=linewidth,
-                                resolution=resolution,
-                            )
-                        else:
-                            ax = draw_multiedges(
-                                graphs,
-                                edges,
-                                alphachannel=alphachannel,
-                                linepoints=linepoints,
-                                linecolor="red",
-                                curve_height=2,
-                                linmod="bottom",
-                                linewidth=linewidth,
-                                resolution=resolution,
-                            )
-                    else:
-                        if axis:
-                            axis = draw_multiedges(
-                                graphs,
-                                edges,
-                                alphachannel=alphachannel,
-                                linepoints="--",
-                                linecolor="black",
-                                curve_height=2,
-                                linmod=orientation,
-                                linewidth=linewidth,
-                                resolution=resolution,
-                            )
-                        else:
-                            ax = draw_multiedges(
-                                graphs,
-                                edges,
-                                alphachannel=alphachannel,
-                                linepoints="--",
-                                linecolor="black",
-                                curve_height=2,
-                                linmod=orientation,
-                                linewidth=linewidth,
-                                resolution=resolution,
-                            )
-                    enum += 1
-            else:
-                enum = 1
-                for edge_type, edges in multilinks.items():
-                    if axis:
-                        axis = draw_multiedges(graphs, edges, **parameters_multiedges)
-                    else:
-                        ax = draw_multiedges(graphs, edges, **parameters_multiedges)
-                    enum += 1
-            if show:
-                plt.show()
-
-            if axis:
-                return axis
-            else:
-                return ax
-
+            return _visualize_diagonal_style(
+                self,
+                parameters_layers,
+                parameters_multiedges,
+                axis,
+                verbose,
+                no_labels,
+                alphachannel,
+                linepoints,
+                orientation,
+                linewidth,
+                resolution,
+                show,
+            )
         elif style == "hairball":
-            network_colors, graph = self.get_layers(style="hairball")
-            if axis:
-                axis = hairball_plot(
-                    graph, network_colors, layout_algorithm="force", legend=legend
-                )
-            else:
-                ax = hairball_plot(
-                    graph, network_colors, layout_algorithm="force", legend=legend
-                )
-            if show:
-                plt.show()
-            if axis:
-                return axis
-            else:
-                return ax
+            return _visualize_hairball_style(self, axis, legend, show)
         else:
             raise Exception(
                 "Please, specify visualization style using: .style. keyword"
