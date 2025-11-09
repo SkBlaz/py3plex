@@ -59,7 +59,7 @@ multilayer_network = multinet.multi_layer_network().load_network(
     input_type=dataset.split(".")[-1]  # Detect format from extension
 )
 
-print("  ✓ Network loaded successfully!")
+print("  [OK] Network loaded successfully!")
 print("\n  Network statistics:")
 multilayer_network.basic_stats()
 

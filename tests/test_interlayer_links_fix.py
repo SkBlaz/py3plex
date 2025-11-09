@@ -122,7 +122,7 @@ def test_interlayer_links_positions():
         f"Got layer1={pos1}, layer2={pos2}"
     )
     
-    print("\n✓ SUCCESS: Layers have different positions after draw_multilayer_default")
+    print("\n[OK] SUCCESS: Layers have different positions after draw_multilayer_default")
     print(f"  Layer 1 at {pos1}")
     print(f"  Layer 2 at {pos2}")
     
@@ -140,7 +140,7 @@ def test_interlayer_links_positions():
         f"Y offset incorrect: expected {pos1[1] + expected_offset}, got {pos2[1]}"
     )
     
-    print(f"✓ Offset matches expected value: {expected_offset}")
+    print(f"[OK] Offset matches expected value: {expected_offset}")
 
     # Now draw inter-layer edges (this should use the offset positions)
     for edge_type, edges in multiedges.items():
@@ -156,11 +156,11 @@ def test_interlayer_links_positions():
         )
 
     plt.savefig('/tmp/test_interlayer_links.png', dpi=100, bbox_inches='tight')
-    print("\n✓ Visualization saved to /tmp/test_interlayer_links.png")
+    print("\n[OK] Visualization saved to /tmp/test_interlayer_links.png")
     
     plt.close('all')
     
-    print("\n✓ All checks passed! Inter-layer links are correctly visualized.")
+    print("\n[OK] All checks passed! Inter-layer links are correctly visualized.")
 
 
 if __name__ == "__main__":
@@ -171,10 +171,10 @@ if __name__ == "__main__":
         print("="*60)
         sys.exit(0)
     except AssertionError as e:
-        print(f"\n❌ TEST FAILED: {e}")
+        print(f"\nFAIL: TEST FAILED: {e}")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ TEST ERROR: {e}")
+        print(f"\nFAIL: TEST ERROR: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

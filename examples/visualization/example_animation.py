@@ -106,9 +106,9 @@ try:
     # Save as GIF using imagemagick
     # fps=1 means 1 frame per second
     my_anim.save(output_animation, writer='imagemagick', fps=1)
-    print(f"✓ Animation saved successfully to: {output_animation}")
+    print(f"[OK] Animation saved successfully to: {output_animation}")
 except Exception as e:
-    print(f"✗ Error saving animation: {e}")
+    print(f"[X] Error saving animation: {e}")
     print("  Note: This requires imagemagick to be installed.")
     print("  Install with: sudo apt-get install imagemagick (Linux)")
     print("               or: brew install imagemagick (macOS)")

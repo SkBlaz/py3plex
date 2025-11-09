@@ -348,7 +348,7 @@ Larger networks (1000+ nodes) may take proportionally longer.
 
 ## Security Testing (Development Mode)
 
-⚠️ **Do NOT expose to public internet** without:
+[WARNING] **Do NOT expose to public internet** without:
 - [ ] Changing CORS settings
 - [ ] Adding authentication
 - [ ] Enabling HTTPS

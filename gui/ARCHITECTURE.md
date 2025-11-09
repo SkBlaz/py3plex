@@ -315,12 +315,12 @@ workspace_{uuid}.zip
 
 ### Current (Development Mode)
 
-- ✅ Read-only py3plex mount
-- ✅ Isolated data directories
-- ❌ CORS allows all origins
-- ❌ No authentication
-- ❌ No HTTPS
-- ❌ No rate limiting
+- [OK] Read-only py3plex mount
+- [OK] Isolated data directories
+- [NO] CORS allows all origins
+- [NO] No authentication
+- [NO] No HTTPS
+- [NO] No rate limiting
 
 ### Production Hardening (TODO)
 

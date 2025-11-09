@@ -47,13 +47,13 @@ ER_multilayer = random_generators.random_multiplex_ER(
     directed=False
 )
 
-print("  ✓ Network generated")
+print("  [OK] Network generated")
 
 # Compute the supra-adjacency matrix
 print("\n  Computing supra-adjacency matrix...")
 mtx = ER_multilayer.get_supra_adjacency_matrix()
 
-print(f"  ✓ Matrix computed")
+print(f"  [OK] Matrix computed")
 print(f"  Matrix shape: {mtx.shape}")
 print(f"  Matrix type: {type(mtx)}")
 print(f"  Non-zero entries: {mtx.nnz if hasattr(mtx, 'nnz') else 'N/A'}")
@@ -74,7 +74,7 @@ layer_names_path = get_dataset_path('simple_multiplex.txt')
 
 # Check if files exist
 if not os.path.exists(edgelist_path):
-    print(f"  ✗ Edgelist file not found: {edgelist_path}")
+    print(f"  [X] Edgelist file not found: {edgelist_path}")
     print("  Skipping multiplex example...")
 else:
     print("  Loading multiplex network...")
@@ -90,7 +90,7 @@ else:
         input_type='multiplex_edges'
     )
     
-    print("  ✓ Network loaded")
+    print("  [OK] Network loaded")
     
     # Display basic statistics
     print("\n  Network statistics:")
@@ -100,15 +100,15 @@ else:
     if os.path.exists(layer_names_path):
         print(f"\n  Loading layer names from: {layer_names_path}")
         comNet.load_layer_name_mapping(layer_names_path)
-        print("  ✓ Layer names loaded")
+        print("  [OK] Layer names loaded")
     else:
-        print(f"\n  ✗ Layer names file not found: {layer_names_path}")
+        print(f"\n  [X] Layer names file not found: {layer_names_path}")
     
     # Compute supra-adjacency matrix
     print("\n  Computing supra-adjacency matrix...")
     mat = comNet.get_supra_adjacency_matrix()
     
-    print(f"  ✓ Matrix computed")
+    print(f"  [OK] Matrix computed")
     print(f"  Matrix shape: {mat.shape}")
     print(f"  Rows/Cols per layer: {mat.shape[0] // comNet.get_number_of_layers()}")
     
@@ -117,9 +117,9 @@ else:
     try:
         kwargs = {"display": True}
         comNet.visualize_matrix(kwargs)
-        print("  ✓ Visualization complete (close window to continue)")
+        print("  [OK] Visualization complete (close window to continue)")
     except Exception as e:
-        print(f"  ✗ Visualization error: {e}")
+        print(f"  [X] Visualization error: {e}")
     
     # Show node ordering in matrix
     print("\n  Node ordering in matrix:")

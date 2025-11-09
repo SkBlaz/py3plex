@@ -345,27 +345,27 @@ License Matrix
      - Notes
    * - Core multilayer functionality
      - MIT
-     - ✅ Yes
+     - [OK] Yes
      - Safe for proprietary use
    * - Network visualization
      - MIT
-     - ✅ Yes
+     - [OK] Yes
      - Safe for proprietary use
    * - I/O operations
      - MIT
-     - ✅ Yes
+     - [OK] Yes
      - Safe for proprietary use
    * - Louvain community detection
      - BSD-3-Clause
-     - ✅ Yes
+     - [OK] Yes
      - Safe for proprietary use
    * - Label propagation
      - MIT
-     - ✅ Yes
+     - [OK] Yes
      - Safe for proprietary use
    * - **Infomap community detection**
      - **AGPLv3**
-     - ⚠️ Restricted
+     - [WARNING] Restricted
      - Viral license - requires open-sourcing derived works
 
 Recommendations

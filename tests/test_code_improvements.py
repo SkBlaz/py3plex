@@ -17,51 +17,51 @@ def test_imports():
     
     try:
         from py3plex.logging_config import get_logger, setup_logging
-        print("✅ logging_config imports successfully")
+        print("PASS: logging_config imports successfully")
     except Exception as e:
-        print(f"❌ logging_config import failed: {e}")
+        print(f"FAIL: logging_config import failed: {e}")
         return False
     
     try:
         from py3plex.algorithms.statistics import basic_statistics
-        print("✅ basic_statistics imports successfully")
+        print("PASS: basic_statistics imports successfully")
     except Exception as e:
-        print(f"❌ basic_statistics import failed: {e}")
+        print(f"FAIL: basic_statistics import failed: {e}")
         return False
     
     try:
         from py3plex.algorithms.statistics import enrichment_modules
-        print("✅ enrichment_modules imports successfully")
+        print("PASS: enrichment_modules imports successfully")
     except Exception as e:
-        print(f"❌ enrichment_modules import failed: {e}")
+        print(f"FAIL: enrichment_modules import failed: {e}")
         return False
     
     try:
         from py3plex.algorithms.statistics import statistics
-        print("✅ statistics imports successfully")
+        print("PASS: statistics imports successfully")
     except Exception as e:
-        print(f"❌ statistics import failed: {e}")
+        print(f"FAIL: statistics import failed: {e}")
         return False
     
     try:
         from py3plex.algorithms.statistics import topology
-        print("✅ topology imports successfully")
+        print("PASS: topology imports successfully")
     except Exception as e:
-        print(f"❌ topology import failed: {e}")
+        print(f"FAIL: topology import failed: {e}")
         return False
     
     try:
         from py3plex.algorithms.community_detection import community_wrapper
-        print("✅ community_wrapper imports successfully")
+        print("PASS: community_wrapper imports successfully")
     except Exception as e:
-        print(f"❌ community_wrapper import failed: {e}")
+        print(f"FAIL: community_wrapper import failed: {e}")
         return False
     
     try:
         from py3plex.algorithms.community_detection import community_ranking
-        print("✅ community_ranking imports successfully")
+        print("PASS: community_ranking imports successfully")
     except Exception as e:
-        print(f"❌ community_ranking import failed: {e}")
+        print(f"FAIL: community_ranking import failed: {e}")
         return False
     
     return True
@@ -77,25 +77,25 @@ def test_logging_module():
         # Test get_logger
         logger1 = get_logger('test_module')
         assert logger1 is not None, "get_logger returned None"
-        print("✅ get_logger() works")
+        print("PASS: get_logger() works")
         
         # Test that logger has correct name
         assert 'py3plex' in logger1.name, f"Logger name incorrect: {logger1.name}"
-        print("✅ Logger has correct name")
+        print("PASS: Logger has correct name")
         
         # Test setup_logging
         import logging
         logger2 = setup_logging(level=logging.INFO)
         assert logger2 is not None, "setup_logging returned None"
-        print("✅ setup_logging() works")
+        print("PASS: setup_logging() works")
         
         # Test that logger can actually log
         logger1.info("Test log message")
-        print("✅ Logger can output messages")
+        print("PASS: Logger can output messages")
         
         return True
     except Exception as e:
-        print(f"❌ Logging module test failed: {e}")
+        print(f"FAIL: Logging module test failed: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -116,21 +116,21 @@ def test_exception_handling():
         # Test that functions still work
         hubs = basic_statistics.identify_n_hubs(G, top_n=2)
         assert isinstance(hubs, dict), "identify_n_hubs should return a dict"
-        print("✅ identify_n_hubs() still works")
+        print("PASS: identify_n_hubs() still works")
         
         # Test core_network_statistics - may fail due to pandas version but not our changes
         try:
             stats = basic_statistics.core_network_statistics(G, name="test")
-            print("✅ core_network_statistics() still works")
+            print("PASS: core_network_statistics() still works")
         except AttributeError as e:
             if "append" in str(e):
-                print("⚠️  core_network_statistics() has pandas version issue (unrelated to our changes)")
+                print("WARNING:  core_network_statistics() has pandas version issue (unrelated to our changes)")
             else:
                 raise
         
         return True
     except Exception as e:
-        print(f"❌ Exception handling test failed: {e}")
+        print(f"FAIL: Exception handling test failed: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -149,8 +149,8 @@ if __name__ == "__main__":
     
     print("\n" + "=" * 50)
     if success:
-        print("✅ All tests passed! Code improvements are working correctly.")
+        print("PASS: All tests passed! Code improvements are working correctly.")
         sys.exit(0)
     else:
-        print("❌ Some tests failed!")
+        print("FAIL: Some tests failed!")
         sys.exit(1)

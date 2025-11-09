@@ -5,7 +5,7 @@ A production-ready web-based GUI for **py3plex** multilayer network analysis, ru
 ![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)
 ![Docker](https://img.shields.io/badge/docker-compose-blue)
 
-## 🚀 Quick Start
+## Quick Start Quick Start
 
 ```bash
 # Navigate to the gui directory
@@ -18,8 +18,8 @@ cp .env.example .env
 make up
 
 # Open in browser
-# 🌐 Application: http://localhost:8080
-# 📊 Job Monitor (Flower): http://localhost:5555
+#  Application: http://localhost:8080
+# Data Job Monitor (Flower): http://localhost:5555
 ```
 
 **First time?** The build takes ~3-5 minutes. Subsequent starts are instant.
@@ -31,14 +31,14 @@ That's it! The application will be running with:
 - Redis broker
 - Nginx reverse proxy
 
-## 📋 Prerequisites
+##  Prerequisites
 
 - Docker (>= 20.10)
 - Docker Compose (>= 2.0)
 - 4GB RAM minimum
 - Ports available: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)
 
-## 🏗️ Architecture
+## ️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -79,30 +79,30 @@ That's it! The application will be running with:
 - **Proxy**: Nginx for unified access
 - **Monitoring**: Flower dashboard for job inspection
 
-## 📦 What's Included
+## What is Included What's Included
 
 ### Features
 
-✅ **Data Loading**
+[OK] **Data Loading**
 - Upload network files (.edgelist, .txt, .gml, .gpickle)
 - Automatic format detection
 - Multilayer network support
 - Real-time file preview
 
-✅ **Visualization**
+[OK] **Visualization**
 - Layer-centric view
 - Interactive node/edge inspection
 - Configurable layouts
 - Position caching
 
-✅ **Analysis** (Async via Celery)
+[OK] **Analysis** (Async via Celery)
 - **Layouts**: Spring, Kamada-Kawai, Circular, Random
 - **Centrality**: Degree, Betweenness, Closeness, Eigenvector, PageRank
 - **Community Detection**: Louvain, Label Propagation, Greedy Modularity
 - Real-time progress tracking
 - Result caching
 
-✅ **Export**
+[OK] **Export**
 - CSV summaries (centrality, communities)
 - JSON position data
 - PNG snapshots (planned)
@@ -120,7 +120,7 @@ Save and restore complete analysis sessions:
 # - UI view state
 ```
 
-## 🛠️ Development Guide
+## ️ Development Guide
 
 ### Project Structure
 
@@ -200,7 +200,7 @@ RUN pip install -e ${PY3PLEX_PATH}
 
 **Note:** The mount is read-only to prevent accidental writes from containers.
 
-## 🔧 Configuration
+## Configuration Configuration
 
 ### Environment Variables (.env)
 
@@ -229,7 +229,7 @@ docker compose -f docker-compose.yml -f compose.gpu.yml up
 - NVIDIA Docker runtime installed
 - CUDA-compatible GPU
 
-## 📊 Data Formats
+## Data Data Formats
 
 ### Accepted Input Formats
 
@@ -265,7 +265,7 @@ curl -F "file=@gui/toy_network.edgelist" http://localhost:8080/api/upload
 # Or use the Web UI at http://localhost:8080
 ```
 
-## 🧪 Testing
+##  Testing
 
 ### Continuous Integration
 
@@ -327,7 +327,7 @@ make e2e
 4. **Monitor** jobs at http://localhost:5555 (Flower)
 5. **Export** workspace bundle
 
-## 🚀 Production Deployment
+## Quick Start Production Deployment
 
 ### Static Build (Recommended)
 
@@ -366,7 +366,7 @@ frontend:
 
 **Current Status**: Development mode - suitable for local use only. Do not expose to public internet without proper security hardening.
 
-## 🐛 Troubleshooting
+## Troubleshooting Troubleshooting
 
 ### Issue: Port already in use
 
@@ -407,7 +407,7 @@ docker compose exec nginx cat /etc/nginx/nginx.conf
 curl http://localhost:8000/api/health
 ```
 
-## 📚 API Documentation
+## API Documentation API Documentation
 
 Interactive docs available at:
 - **Swagger UI**: http://localhost:8080/api/docs
@@ -445,7 +445,7 @@ curl http://localhost:8080/api/jobs/$JOB_ID
 curl http://localhost:8080/api/graphs/$GRAPH_ID/positions
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 This GUI is part of the [py3plex](https://github.com/SkBlaz/py3plex) project.
 
@@ -456,13 +456,13 @@ This GUI is part of the [py3plex](https://github.com/SkBlaz/py3plex) project.
 - Add tests for new features
 - Update this README with new features
 
-## 📄 License
+## License License
 
 This GUI follows the py3plex repository license:
 - **GUI code** (under `gui/`): BSD-3-Clause (same as py3plex)
 - **Dependencies**: See individual package licenses
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 Built with:
 - [py3plex](https://github.com/SkBlaz/py3plex) - Multilayer network analysis
@@ -472,7 +472,7 @@ Built with:
 - [Vite](https://vitejs.dev/) - Frontend build tool
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
 
-## 📞 Support
+##  Support
 
 - **Issues**: https://github.com/SkBlaz/py3plex/issues
 - **Docs**: https://skblaz.github.io/py3plex/
@@ -480,4 +480,4 @@ Built with:
 
 ---
 
-**Pro GUI for py3plex** • Built with ❤️ by the py3plex community
+**Pro GUI for py3plex** • Built with ️ by the py3plex community

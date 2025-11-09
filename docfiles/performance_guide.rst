@@ -573,13 +573,13 @@ Before Running on Large Network
 
 .. code-block:: text
 
-    ☐ Enable sparse matrices (automatic for most ops)
-    ☐ Sample network if >10k nodes
-    ☐ Choose efficient algorithms (degree > betweenness)
-    ☐ Limit visualization detail
-    ☐ Monitor memory usage
-    ☐ Use batch processing for multiple networks
-    ☐ Consider alternative tools if >100k nodes
+    [ ] Enable sparse matrices (automatic for most ops)
+    [ ] Sample network if >10k nodes
+    [ ] Choose efficient algorithms (degree > betweenness)
+    [ ] Limit visualization detail
+    [ ] Monitor memory usage
+    [ ] Use batch processing for multiple networks
+    [ ] Consider alternative tools if >100k nodes
 
 Optimization Order
 ~~~~~~~~~~~~~~~~~~

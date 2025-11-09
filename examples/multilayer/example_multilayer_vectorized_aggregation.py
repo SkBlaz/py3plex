@@ -81,7 +81,7 @@ t0 = time.perf_counter()
 aggregated_matrix = aggregate_layers(edges_array, reducer="sum", to_sparse=True)
 vec_time = time.perf_counter() - t0
 
-print(f"✓ Vectorized aggregation completed in {vec_time:.6f} seconds")
+print(f"[OK] Vectorized aggregation completed in {vec_time:.6f} seconds")
 print(f"  Result: {aggregated_matrix.shape[0]}×{aggregated_matrix.shape[1]} sparse matrix")
 print(f"  Non-zero entries: {aggregated_matrix.nnz}")
 
@@ -148,7 +148,7 @@ t0 = time.perf_counter()
 agg_matrix_large = aggregate_layers(edges_array_large, reducer="sum", to_sparse=True)
 vec_time_large = time.perf_counter() - t0
 
-print(f"✓ Completed in {vec_time_large:.4f} seconds")
+print(f"[OK] Completed in {vec_time_large:.4f} seconds")
 print(f"  Matrix: {agg_matrix_large.shape[0]}×{agg_matrix_large.shape[1]}")
 print(f"  Non-zeros: {agg_matrix_large.nnz:,}")
 
@@ -201,9 +201,9 @@ for node, cent in top_nodes:
 
 print("\n" + "=" * 70)
 print("Summary:")
-print("  ✓ Vectorized aggregation integrates seamlessly with multi_layer_network")
-print("  ✓ Provides significant speedup over legacy aggregate_edges method")
-print("  ✓ Supports multiple reducer modes (sum, mean, max)")
-print("  ✓ Returns sparse matrices for memory efficiency")
-print("  ✓ Compatible with NetworkX for downstream analysis")
+print("  [OK] Vectorized aggregation integrates seamlessly with multi_layer_network")
+print("  [OK] Provides significant speedup over legacy aggregate_edges method")
+print("  [OK] Supports multiple reducer modes (sum, mean, max)")
+print("  [OK] Returns sparse matrices for memory efficiency")
+print("  [OK] Compatible with NetworkX for downstream analysis")
 print("=" * 70)

@@ -17,10 +17,10 @@ def test_config_imports():
     try:
         from py3plex import config
 
-        print("✅ Config module imports successfully")
+        print("PASS: Config module imports successfully")
         return True
     except Exception as e:
-        print(f"❌ Config module import failed: {e}")
+        print(f"FAIL: Config module import failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -39,7 +39,7 @@ def test_config_values():
             config.DEFAULT_NODE_SIZE, int
         ), "DEFAULT_NODE_SIZE should be int"
         assert config.DEFAULT_NODE_SIZE > 0, "DEFAULT_NODE_SIZE should be positive"
-        print("✅ DEFAULT_NODE_SIZE is valid")
+        print("PASS: DEFAULT_NODE_SIZE is valid")
 
         assert isinstance(
             config.DEFAULT_EDGE_ALPHA, float
@@ -47,7 +47,7 @@ def test_config_values():
         assert (
             0 <= config.DEFAULT_EDGE_ALPHA <= 1
         ), "DEFAULT_EDGE_ALPHA should be between 0 and 1"
-        print("✅ DEFAULT_EDGE_ALPHA is valid")
+        print("PASS: DEFAULT_EDGE_ALPHA is valid")
 
         # Test color palettes
         assert isinstance(
@@ -58,16 +58,16 @@ def test_config_values():
         assert (
             "colorblind_safe" in config.COLOR_PALETTES
         ), "colorblind_safe palette should exist"
-        print("✅ COLOR_PALETTES is valid")
+        print("PASS: COLOR_PALETTES is valid")
 
         # Test version info
         assert hasattr(config, "__api_version__"), "__api_version__ should exist"
         assert isinstance(config.__api_version__, str), "__api_version__ should be str"
-        print("✅ __api_version__ is valid")
+        print("PASS: __api_version__ is valid")
 
         return True
     except Exception as e:
-        print(f"❌ Config values test failed: {e}")
+        print(f"FAIL: Config values test failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -85,33 +85,33 @@ def test_get_color_palette():
         colors = get_color_palette()
         assert isinstance(colors, list), "get_color_palette should return list"
         assert len(colors) > 0, "Palette should not be empty"
-        print("✅ Default palette works")
+        print("PASS: Default palette works")
 
         # Test specific palette
         rainbow = get_color_palette("rainbow")
         assert isinstance(rainbow, list), "Rainbow palette should be list"
         assert len(rainbow) > 0, "Rainbow palette should not be empty"
         assert rainbow[0].startswith("#"), "Colors should be hex codes"
-        print("✅ Rainbow palette works")
+        print("PASS: Rainbow palette works")
 
         # Test colorblind safe palette
         cb_safe = get_color_palette("colorblind_safe")
         assert isinstance(cb_safe, list), "Colorblind safe palette should be list"
         assert len(cb_safe) > 0, "Colorblind safe palette should not be empty"
-        print("✅ Colorblind safe palette works")
+        print("PASS: Colorblind safe palette works")
 
         # Test invalid palette name
         try:
             get_color_palette("nonexistent")
-            print("❌ Should have raised ValueError for invalid palette")
+            print("FAIL: Should have raised ValueError for invalid palette")
             return False
         except ValueError as e:
             assert "Unknown palette" in str(e), "Should mention unknown palette"
-            print("✅ Invalid palette raises ValueError")
+            print("PASS: Invalid palette raises ValueError")
 
         return True
     except Exception as e:
-        print(f"❌ get_color_palette test failed: {e}")
+        print(f"FAIL: get_color_palette test failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -132,12 +132,12 @@ def test_api_version_in_main_init():
             py3plex.__api_version__, str
         ), "__api_version__ should be str"
         assert hasattr(py3plex, "__version__"), "__version__ should be in main package"
-        print(f"✅ py3plex.__api_version__ = {py3plex.__api_version__}")
-        print(f"✅ py3plex.__version__ = {py3plex.__version__}")
+        print(f"PASS: py3plex.__api_version__ = {py3plex.__api_version__}")
+        print(f"PASS: py3plex.__version__ = {py3plex.__version__}")
 
         return True
     except Exception as e:
-        print(f"❌ API version test failed: {e}")
+        print(f"FAIL: API version test failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -156,7 +156,7 @@ def test_utils_deprecation():
             from py3plex.utils import deprecated, warn_if_deprecated
         except ImportError as e:
             if "numpy" in str(e):
-                print("⚠️  Skipping test (numpy not available)")
+                print("WARNING:  Skipping test (numpy not available)")
                 return True
             raise
 
@@ -178,7 +178,7 @@ def test_utils_deprecation():
                 w[0].category, DeprecationWarning
             ), "Should be DeprecationWarning"
             assert "deprecated" in str(w[0].message).lower(), "Should mention deprecated"
-            print("✅ @deprecated decorator works")
+            print("PASS: @deprecated decorator works")
 
         # Test warn_if_deprecated
         with warnings.catch_warnings(record=True) as w:
@@ -188,11 +188,11 @@ def test_utils_deprecation():
             assert issubclass(
                 w[0].category, DeprecationWarning
             ), "Should be DeprecationWarning"
-            print("✅ warn_if_deprecated() works")
+            print("PASS: warn_if_deprecated() works")
 
         return True
     except Exception as e:
-        print(f"❌ Deprecation utilities test failed: {e}")
+        print(f"FAIL: Deprecation utilities test failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -214,9 +214,9 @@ if __name__ == "__main__":
     print("\n" + "=" * 50)
     if success:
         print(
-            "✅ All configuration and API tests passed! New features are working correctly."
+            "PASS: All configuration and API tests passed! New features are working correctly."
         )
         sys.exit(0)
     else:
-        print("❌ Some tests failed!")
+        print("FAIL: Some tests failed!")
         sys.exit(1)

@@ -6,7 +6,7 @@ This document provides comprehensive guidance for understanding and using py3ple
 
 ---
 
-## 🚀 Quick Start for LLMs
+## Quick Start Quick Start for LLMs
 
 ### What is py3plex?
 
@@ -61,7 +61,7 @@ centrality = multilayer_statistics.versatility_centrality(network)
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents Table of Contents
 
 ### For First-Time Users
 1. [Quick Start for LLMs](#quick-start-for-llms) *(you are here)*
@@ -77,7 +77,7 @@ centrality = multilayer_statistics.versatility_centrality(network)
 
 ---
 
-## 🔑 Core API Reference
+## KEY: Core API Reference
 
 ### Main Class: `multi_layer_network`
 
@@ -226,7 +226,7 @@ plt.show()
 
 ---
 
-## 🎯 Common Usage Patterns
+## Usage Patterns Common Usage Patterns
 
 ### Pattern 1: Load and Analyze a Network
 
@@ -335,7 +335,7 @@ print(f"Largest community: {max(community_sizes.values())} nodes")
 
 ---
 
-## 🧭 Navigation Guide
+##  Navigation Guide
 
 ### Where to Find Information
 
@@ -434,7 +434,7 @@ The `examples/` directory contains 59 examples organized by category:
 
 ---
 
-## ❓ FAQ and Troubleshooting
+## ? FAQ and Troubleshooting
 
 ### Frequently Asked Questions
 
@@ -678,7 +678,7 @@ pip install --upgrade networkx>=2.5
 
 ---
 
-## 📖 Detailed Technical Documentation
+##  Detailed Technical Documentation
 
 The sections below contain detailed technical information for developers and advanced users.
 
@@ -2366,14 +2366,14 @@ The verbose flag shows:
 
 The expanded selftest now includes **8 tests**:
 
-1. ✓ Core dependencies (numpy, networkx, matplotlib, scipy, pandas)
-2. ✓ Graph creation (basic multilayer network construction)
-3. ✓ Visualization module (imports and backend configuration)
-4. ✓ Multilayer graph (layer-based network construction)
-5. ✓ Community detection (Louvain algorithm)
-6. ✓ File I/O (save/load network in GraphML format)
-7. ✓ **Centrality statistics** (new: versatility, degree, betweenness, layer density)
-8. ✓ **Multilayer manipulation** (new: splitting, aggregation, extraction)
+1. [OK] Core dependencies (numpy, networkx, matplotlib, scipy, pandas)
+2. [OK] Graph creation (basic multilayer network construction)
+3. [OK] Visualization module (imports and backend configuration)
+4. [OK] Multilayer graph (layer-based network construction)
+5. [OK] Community detection (Louvain algorithm)
+6. [OK] File I/O (save/load network in GraphML format)
+7. [OK] **Centrality statistics** (new: versatility, degree, betweenness, layer density)
+8. [OK] **Multilayer manipulation** (new: splitting, aggregation, extraction)
 
 ### Example Output
 
@@ -2382,31 +2382,31 @@ Non-verbose output:
 [py3plex::selftest] Starting py3plex self-test...
 
 1. Checking core dependencies...
-   [✓] Core dependencies OK
+   [[OK]] Core dependencies OK
 2. Testing graph creation...
-   [✓] Graph creation successful
+   [[OK]] Graph creation successful
 ...
 7. Testing centrality statistics...
-   [✓] Centrality statistics test passed
+   [[OK]] Centrality statistics test passed
 8. Testing multilayer manipulation...
-   [✓] Multilayer manipulation test passed
+   [[OK]] Multilayer manipulation test passed
 
 ============================================================
-📊 TEST SUMMARY
+TEST SUMMARY TEST SUMMARY
 ============================================================
-  [✓] Core dependencies
-  [✓] Graph creation
-  [✓] Visualization module
-  [✓] Multilayer graph
-  [✓] Community detection
-  [✓] File I/O
-  [✓] Centrality statistics
-  [✓] Multilayer manipulation
+  [[OK]] Core dependencies
+  [[OK]] Graph creation
+  [[OK]] Visualization module
+  [[OK]] Multilayer graph
+  [[OK]] Community detection
+  [[OK]] File I/O
+  [[OK]] Centrality statistics
+  [[OK]] Multilayer manipulation
 
   Tests passed: 8/8
   Time elapsed: 0.24s
 
-[✓] All tests completed successfully!
+[[OK]] All tests completed successfully!
 ```
 
 ### Implementation Details
@@ -2489,80 +2489,80 @@ This document provides a comprehensive analysis of property-testable functions i
 
 ## 1. MAP OF TARGETS (15 Candidates)
 
-### ✅ Quick Wins (Implemented)
+### DONE Quick Wins (Implemented)
 
 #### Visualization Module
 
 1. **`py3plex.visualization.colors.hex_to_RGB`** - `py3plex/visualization/colors.py:164`
    - **Rationale**: Pure function, deterministic string-to-list conversion
    - **Properties**: Round-trip, structural (3 elements, [0-255] range), type checking
-   - **Status**: ✅ Implemented in `test_color_utilities_properties.py`
+   - **Status**: DONE Implemented in `test_color_utilities_properties.py`
 
 2. **`py3plex.visualization.colors.RGB_to_hex`** - `py3plex/visualization/colors.py:177`
    - **Rationale**: Pure function, deterministic list-to-string conversion
    - **Properties**: Round-trip, structural (7 chars, # prefix, hex format)
-   - **Status**: ✅ Implemented in `test_color_utilities_properties.py`
+   - **Status**: DONE Implemented in `test_color_utilities_properties.py`
 
 3. **`py3plex.visualization.colors.linear_gradient`** - `py3plex/visualization/colors.py:210`
    - **Rationale**: Pure function, color interpolation with well-defined mathematical properties
    - **Properties**: Structural (n colors), boundary (endpoints), monotone (interpolation)
-   - **Status**: ✅ Implemented in `test_color_utilities_properties.py`
+   - **Status**: DONE Implemented in `test_color_utilities_properties.py`
 
 4. **`py3plex.visualization.bezier.bezier_calculate_dfy`** - `py3plex/visualization/bezier.py:10`
    - **Rationale**: Pure numerical computation, no side effects
    - **Properties**: Structural (array shape), continuity (no NaN/Inf), finite output
-   - **Status**: ✅ Implemented in `test_bezier_properties.py`
+   - **Status**: DONE Implemented in `test_bezier_properties.py`
 
 5. **`py3plex.visualization.bezier.draw_bezier`** - `py3plex/visualization/bezier.py:53`
    - **Rationale**: Pure coordinate generation for curves
    - **Properties**: Structural (paired arrays), monotone (x-coords), range bounds
-   - **Status**: ✅ Implemented in `test_bezier_properties.py`
+   - **Status**: DONE Implemented in `test_bezier_properties.py`
 
 6. **`py3plex.visualization.polyfit.draw_order3`** - `py3plex/visualization/polyfit.py:6`
    - **Rationale**: Pure polynomial fitting, deterministic output
    - **Properties**: Structural (10 points), deterministic, finite values
-   - **Status**: ✅ Implemented in `test_polyfit_properties.py`
+   - **Status**: DONE Implemented in `test_polyfit_properties.py`
 
 7. **`py3plex.visualization.polyfit.draw_piramidal`** - `py3plex/visualization/polyfit.py:19`
    - **Rationale**: Simple coordinate generation, fully deterministic
    - **Properties**: Structural (3 points), boundary (endpoints), deterministic
-   - **Status**: ✅ Implemented in `test_polyfit_properties.py`
+   - **Status**: DONE Implemented in `test_polyfit_properties.py`
 
 #### Core Module
 
 8. **`py3plex.core.supporting.split_to_layers`** - `py3plex/core/supporting.py:54`
    - **Rationale**: Graph partitioning, preserves node/edge counts
    - **Properties**: Structural (dict return), invariant (node preservation), layer consistency
-   - **Status**: ✅ Already has tests in `test_supporting_properties.py`
+   - **Status**: DONE Already has tests in `test_supporting_properties.py`
 
 9. **`py3plex.core.supporting.add_mpx_edges`** - `py3plex/core/supporting.py:108`
    - **Rationale**: Graph transformation with clear structural invariants
    - **Properties**: Structural (edge count increase), invariant (node preservation), idempotent
-   - **Status**: ✅ Already has tests in `test_supporting_properties.py`
+   - **Status**: DONE Already has tests in `test_supporting_properties.py`
 
 #### Algorithm Module
 
 10. **`py3plex.algorithms.statistics.basic_statistics.identify_n_hubs`** - `py3plex/algorithms/statistics/basic_statistics.py:38`
     - **Rationale**: Deterministic ranking, no side effects
     - **Properties**: Structural (≤ top_n entries), monotone (descending order), subset invariant
-    - **Status**: ✅ Implemented in `test_basic_statistics_properties.py`
+    - **Status**: DONE Implemented in `test_basic_statistics_properties.py`
 
 11. **`py3plex.core.random_generators.random_multilayer_ER`** - `py3plex/core/random_generators.py:36`
     - **Rationale**: Stochastic but with statistical properties
     - **Properties**: Structural (node format), probabilistic (edge counts), non-negativity
-    - **Status**: ✅ Implemented in `test_random_gen_extended_properties.py`
+    - **Status**: DONE Implemented in `test_random_gen_extended_properties.py`
 
 12. **`py3plex.core.random_generators.random_multiplex_ER`** - `py3plex/core/random_generators.py:100`
     - **Rationale**: Multiplex network generation with layer constraints
     - **Properties**: Structural (n×l nodes), layer consistency, intra-layer edges only
-    - **Status**: ✅ Implemented in `test_random_gen_extended_properties.py`
+    - **Status**: DONE Implemented in `test_random_gen_extended_properties.py`
 
 13. **`py3plex.core.random_generators.random_multiplex_generator`** - `py3plex/core/random_generators.py:147`
     - **Rationale**: Alternative generation method with dropout parameter
     - **Properties**: Structural (node format), edge attributes, intra-layer constraint
-    - **Status**: ✅ Implemented in `test_random_gen_extended_properties.py`
+    - **Status**: DONE Implemented in `test_random_gen_extended_properties.py`
 
-### 🟡 Medium Complexity (Candidates for Future Work)
+### Medium Priority Medium Complexity (Candidates for Future Work)
 
 14. **`py3plex.core.converters.prepare_for_parsing`** - `py3plex/core/converters.py:219`
     - **Rationale**: Network decomposition with layer/edge categorization
@@ -2900,12 +2900,12 @@ pytest tests/property/test_color_utilities_properties.py \
 
 ### Best Practices Established
 
-1. ✅ Use `@pytest.mark.property` for all Hypothesis tests
-2. ✅ Document properties in docstrings
-3. ✅ Keep test inputs small for fast execution
-4. ✅ Use `assume()` for preconditions rather than filtering
-5. ✅ Include falsifying examples in comments when debugging
-6. ✅ Test both positive cases and error conditions
+1. DONE Use `@pytest.mark.property` for all Hypothesis tests
+2. DONE Document properties in docstrings
+3. DONE Keep test inputs small for fast execution
+4. DONE Use `assume()` for preconditions rather than filtering
+5. DONE Include falsifying examples in comments when debugging
+6. DONE Test both positive cases and error conditions
 
 ---
 
@@ -2914,11 +2914,11 @@ pytest tests/property/test_color_utilities_properties.py \
 This audit successfully identified and implemented property tests for 13 high-value functions in py3plex, achieving broad coverage of visualization utilities, core random generators, and basic statistics. The tests discovered one bug, documented several implementation quirks, and established a foundation for continued property-based testing expansion.
 
 **Key Achievements:**
-- ✅ 78 property tests implemented and passing
-- ✅ ~375 LOC covered with generated test cases
-- ✅ 1 bug found and documented
-- ✅ Reusable strategy library created in `tests/property/strategies.py`
-- ✅ Test execution time under 1 minute
+- DONE 78 property tests implemented and passing
+- DONE ~375 LOC covered with generated test cases
+- DONE 1 bug found and documented
+- DONE Reusable strategy library created in `tests/property/strategies.py`
+- DONE Test execution time under 1 minute
 
 **Next Steps:**
 1. Fix identified bug in bezier.py
@@ -2927,18 +2927,18 @@ This audit successfully identified and implemented property tests for 13 high-va
 4. Add metamorphic properties for graph algorithms
 # Property-Based Testing Implementation Summary
 
-## ✅ Deliverables Completed
+## DONE Deliverables Completed
 
 All requirements from the issue have been fully implemented:
 
-### 1. MAP OF TARGETS ✅
+### 1. MAP OF TARGETS DONE
 - **Identified**: 13 implemented + 2 future candidates (15 total)
 - **Categories**: 
-  - ✅ Quick wins: 13 functions (visualization: 7, core: 3, algorithms: 3)
-  - 🟡 Medium complexity: 2 candidates for future work
+  - DONE Quick wins: 13 functions (visualization: 7, core: 3, algorithms: 3)
+  - Medium Priority Medium complexity: 2 candidates for future work
 - **Location**: See `PROPERTY_TESTING_ANALYSIS.md` Section 1
 
-### 2. PROPERTIES/INVARIANTS ✅
+### 2. PROPERTIES/INVARIANTS DONE
 - **Specified**: 3-6 precise properties per function
 - **Types covered**:
   - Algebraic: determinism, idempotence
@@ -2948,14 +2948,14 @@ All requirements from the issue have been fully implemented:
   - Boundary: endpoint preservation, gradient limits
 - **Location**: See `PROPERTY_TESTING_ANALYSIS.md` Section 2
 
-### 3. STRATEGIES ✅
+### 3. STRATEGIES DONE
 - **Designed**: Comprehensive Hypothesis strategies
 - **Primitives**: node names, IDs, weights, probabilities, colors, coordinates
 - **Complex**: NetworkX graphs, multilayer structures, edge/node dictionaries
 - **Constraints**: Bounded sizes, no inf/NaN, valid ranges, preconditions via `assume()`
 - **Location**: See `PROPERTY_TESTING_ANALYSIS.md` Section 3 + `tests/property/strategies.py`
 
-### 4. TEST IMPLEMENTATION ✅
+### 4. TEST IMPLEMENTATION DONE
 - **Created**: 5 new test files under `tests/property/`
 - **Total tests**: 78 property-based tests
 - **Execution**: All passing in ~16-30 seconds
@@ -2973,13 +2973,13 @@ All requirements from the issue have been fully implemented:
 
 ## Key Findings
 
-### 🐛 Bug Discovered
+### BUG: Bug Discovered
 - **Location**: `py3plex/visualization/bezier.py:148`
 - **Issue**: Format string mismatch (`{linemode}` vs `lm=linemode`)
 - **Impact**: Raises `KeyError` instead of `ValueError` for invalid linemode
 - **Status**: Documented in analysis, test adapted to handle both exceptions
 
-### 📝 Implementation Notes
+### Notes: Implementation Notes
 1. `random_multiplex_ER` only adds nodes via edges → empty layers have no nodes
 2. `@require` decorators don't enforce when `icontract` unavailable
 3. Polynomial fitting can be ill-conditioned with certain inputs (expected, handled)
@@ -3005,13 +3005,13 @@ pytest tests/property/test_color_utilities_properties.py \
 
 ## Success Metrics
 
-✅ All 4 deliverables completed as specified  
-✅ 78 property tests implemented and passing  
-✅ ~375 LOC covered with generated test cases  
-✅ 1 bug found and documented  
-✅ Reusable strategy library established  
-✅ Test execution under 1 minute  
-✅ Comprehensive documentation provided  
+DONE All 4 deliverables completed as specified  
+DONE 78 property tests implemented and passing  
+DONE ~375 LOC covered with generated test cases  
+DONE 1 bug found and documented  
+DONE Reusable strategy library established  
+DONE Test execution under 1 minute  
+DONE Comprehensive documentation provided  
 
 ## Next Steps (Recommended)
 

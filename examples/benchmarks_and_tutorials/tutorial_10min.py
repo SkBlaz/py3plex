@@ -471,7 +471,7 @@ def main():
     complete_example()
 
     print("\n" + "="*60)
-    print("Tutorial completed successfully! ✓")
+    print("Tutorial completed successfully! [OK]")
     print("="*60)
 
 

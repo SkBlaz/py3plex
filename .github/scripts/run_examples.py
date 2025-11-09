@@ -249,9 +249,9 @@ def main():
         results.append((file_path, success, duration, error))
         
         if success:
-            print(f"{Colors.GREEN}✓{Colors.RESET} ({duration:.2f}s)")
+            print(f"{Colors.GREEN}[OK]{Colors.RESET} ({duration:.2f}s)")
         else:
-            print(f"{Colors.RED}✗{Colors.RESET} ({duration:.2f}s)")
+            print(f"{Colors.RED}[X]{Colors.RESET} ({duration:.2f}s)")
             if error:
                 # Print first line of error
                 error_line = error.split('\n')[0][:80]
@@ -277,7 +277,7 @@ def main():
         print(f"{Colors.BOLD}{Colors.RED}Failed Examples:{Colors.RESET}")
         for file_path, _, duration, error in failed:
             rel_path = file_path.relative_to(examples_dir)
-            print(f"  ✗ {rel_path} ({duration:.2f}s)")
+            print(f"  [X] {rel_path} ({duration:.2f}s)")
             if error:
                 print(f"    {Colors.GRAY}{error[:MAX_ERROR_LENGTH]}{Colors.RESET}")
     

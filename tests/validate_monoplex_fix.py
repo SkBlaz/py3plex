@@ -31,7 +31,7 @@ def validate_monoplex_nx_wrapper_fix():
         content = f.read()
     
     # Check 1: Function signature includes kwargs parameter
-    print("\n✓ Check 1: Function signature includes kwargs parameter")
+    print("\n[OK] Check 1: Function signature includes kwargs parameter")
     if "def monoplex_nx_wrapper(self, method, kwargs=None):" in content:
         print("  PASS: Function signature is correct")
     else:
@@ -39,7 +39,7 @@ def validate_monoplex_nx_wrapper_fix():
         return False
     
     # Check 2: kwargs is initialized if None
-    print("\n✓ Check 2: kwargs is initialized if None")
+    print("\n[OK] Check 2: kwargs is initialized if None")
     if "if kwargs is None:\n        kwargs = {}" in content or \
        "if kwargs is None:\n            kwargs = {}" in content:
         print("  PASS: kwargs is properly initialized")
@@ -48,7 +48,7 @@ def validate_monoplex_nx_wrapper_fix():
         return False
     
     # Check 3: kwargs is forwarded to NetworkX call (using getattr, not eval)
-    print("\n✓ Check 3: kwargs is forwarded to NetworkX call safely")
+    print("\n[OK] Check 3: kwargs is forwarded to NetworkX call safely")
     if "getattr(nx, method)" in content and "**kwargs" in content:
         print("  PASS: kwargs is forwarded using safe getattr method")
     elif "eval" in content and "**kwargs" in content:
@@ -58,14 +58,14 @@ def validate_monoplex_nx_wrapper_fix():
         return False
     
     # Check 3b: Method validation exists
-    print("\n✓ Check 3b: Method validation exists")
+    print("\n[OK] Check 3b: Method validation exists")
     if "hasattr(nx, method)" in content:
         print("  PASS: Method validation present")
     else:
         print("  INFO: No method validation (optional)")
     
     # Check 4: Docstring has been improved
-    print("\n✓ Check 4: Docstring has been improved")
+    print("\n[OK] Check 4: Docstring has been improved")
     if "A generic networkx function wrapper" in content or \
        "A generic NetworkX function wrapper" in content:
         print("  PASS: Docstring has been improved")
@@ -74,7 +74,7 @@ def validate_monoplex_nx_wrapper_fix():
         return False
     
     # Check 5: Examples in docstring
-    print("\n✓ Check 5: Examples in docstring")
+    print("\n[OK] Check 5: Examples in docstring")
     if "Example:" in content and "kwargs=" in content:
         print("  PASS: Usage examples found in docstring")
     else:
@@ -82,7 +82,7 @@ def validate_monoplex_nx_wrapper_fix():
         return False
     
     # Check 6: Test file exists
-    print("\n✓ Check 6: Test file exists")
+    print("\n[OK] Check 6: Test file exists")
     test_path = os.path.join(
         os.path.dirname(__file__),
         "test_monoplex_nx_wrapper.py"
@@ -104,7 +104,7 @@ def validate_monoplex_nx_wrapper_fix():
         return False
     
     print("\n" + "=" * 60)
-    print("✅ All validation checks passed!")
+    print("PASS: All validation checks passed!")
     print("=" * 60)
     print("\nThe monoplex_nx_wrapper function has been successfully fixed to:")
     print("1. Accept kwargs parameter")
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         success = validate_monoplex_nx_wrapper_fix()
         sys.exit(0 if success else 1)
     except Exception as e:
-        print(f"\n❌ Validation failed with error: {e}")
+        print(f"\nFAIL: Validation failed with error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

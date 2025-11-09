@@ -15,14 +15,14 @@
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
-**🤖 For LLMs and AI assistants:** See [LLM.md](./LLM.md) for a comprehensive guide including quick start, API reference, usage patterns, and FAQ.
+** For LLMs and AI assistants:** See [LLM.md](./LLM.md) for a comprehensive guide including quick start, API reference, usage patterns, and FAQ.
 
 ![Customization](example_images/part1.png)
 ## Getting Started
 
 ### Installation (Git-Only Method)
 
-⚠️ **IMPORTANT**: py3plex is **no longer updated on PyPI**. Install from GitHub:
+WARNING: **IMPORTANT**: py3plex is **no longer updated on PyPI**. Install from GitHub:
 
 ```bash
 pip install git+https://github.com/SkBlaz/py3plex.git
@@ -64,12 +64,12 @@ See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html
 Py3plex includes a production-ready web-based GUI for multilayer network analysis, visualization, and exploration.
 
 **Features:**
-- 🌐 **Interactive Web Interface** - React-based UI with real-time updates
-- 📊 **Network Visualization** - Layer-centric views with configurable layouts
-- 🔍 **Advanced Analysis** - Centrality metrics, community detection, and more
-- 📁 **Multiple Formats** - Support for edgelist, GML, NetworkX pickle files
-- ⚙️ **Async Processing** - Background job execution with progress tracking
-- 💾 **Workspace Management** - Save and restore complete analysis sessions
+-  **Interactive Web Interface** - React-based UI with real-time updates
+- * **Network Visualization** - Layer-centric views with configurable layouts
+- * **Advanced Analysis** - Centrality metrics, community detection, and more
+- * **Multiple Formats** - Support for edgelist, GML, NetworkX pickle files
+- * **Async Processing** - Background job execution with progress tracking
+-  **Workspace Management** - Save and restore complete analysis sessions
 
 **Quick Start:**
 ```bash
@@ -120,13 +120,13 @@ make up
 
 | Feature Category | License | Commercial Use | Notes |
 |-----------------|---------|----------------|-------|
-| Core multilayer network functionality | MIT | ✅ Yes | Safe for proprietary use |
-| Network visualization (layouts, colors) | MIT | ✅ Yes | Safe for proprietary use |
-| I/O operations (load/save networks) | MIT | ✅ Yes | Safe for proprietary use |
-| Louvain community detection | BSD-3-Clause | ✅ Yes | Safe for proprietary use |
-| Label propagation algorithms | MIT | ✅ Yes | Safe for proprietary use |
-| **Infomap community detection** | **AGPLv3** | ⚠️ Restricted | Viral license - requires open-sourcing derived works |
-| Node embeddings (if using bundled code) | Varies | ⚠️ Check | Use pure Python alternatives for safety |
+| Core multilayer network functionality | MIT | Yes Yes | Safe for proprietary use |
+| Network visualization (layouts, colors) | MIT | Yes Yes | Safe for proprietary use |
+| I/O operations (load/save networks) | MIT | Yes Yes | Safe for proprietary use |
+| Louvain community detection | BSD-3-Clause | Yes Yes | Safe for proprietary use |
+| Label propagation algorithms | MIT | Yes Yes | Safe for proprietary use |
+| **Infomap community detection** | **AGPLv3** | WARNING: Restricted | Viral license - requires open-sourcing derived works |
+| Node embeddings (if using bundled code) | Varies | WARNING: Check | Use pure Python alternatives for safety |
 
 **Recommendations**:
 - **For commercial/proprietary projects**: Avoid Infomap functions or use the pure Python `infomap` package separately

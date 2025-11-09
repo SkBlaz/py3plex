@@ -961,7 +961,7 @@ class TestCLISelftest:
         assert result == 0
         captured = capsys.readouterr()
         assert "Core dependencies" in captured.out
-        assert "[✓]" in captured.out
+        assert "[[OK]]" in captured.out
 
     def test_selftest_checks_graph_creation(self, capsys):
         """Test that selftest checks graph creation."""
