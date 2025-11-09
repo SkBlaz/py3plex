@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
-      contents: read
+      contents: write
     
     steps:
     - name: Checkout code
@@ -56,3 +56,32 @@ jobs:
         echo "Total lines: $FORMATTED_LINES ($TOTAL_LINES)"
         echo "Code lines: $CODE_LINES"
       timeout-minutes: 1
+    
+    - name: Update README badge
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+      run: |
+        # Update the LOC badge in README.md
+        sed -i "s/lines-[0-9.]*K-blue/lines-$FORMATTED_LINES-blue/" README.md
+        
+        # Check if README was actually changed
+        if git diff --quiet README.md; then
+          echo "README.md is already up to date"
+        else
+          echo "README.md updated with new LOC count: $FORMATTED_LINES"
+        fi
+      timeout-minutes: 1
+    
+    - name: Commit and push changes
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        if git diff --quiet README.md; then
+          echo "No changes to commit"
+        else
+          git add README.md
+          git commit -m "chore: update LOC badge to $FORMATTED_LINES [skip ci]"
+          git push
+        fi
+      timeout-minutes: 2
