@@ -934,15 +934,8 @@ class multi_layer_network:
             layer_network = self.subnetwork(nodes)
 
             if normalize_by != "raw":
-                connectivity = np.mean(
-                    [
-                        x[1]
-                        for x in eval(
-                            "nx." + normalize_by + "(layer_network.core_network)"
-                        )
-                    ]
-                )
-
+                nx_func = getattr(nx, normalize_by)
+                connectivity = np.mean([x[1] for x in nx_func(layer_network.core_network)])
             else:
                 connectivity = 1
 
@@ -1183,7 +1176,7 @@ class multi_layer_network:
             edge_dict.pop("source", None)
             edge_dict.pop("target_type", None)
             edge_dict.pop("source_type", None)
-            eval("self.core_network." + target_function + "(**edge_dict)")
+            getattr(self.core_network, target_function)(**edge_dict)
 
         else:
             for edge_dict_item in edge_dict_list:
@@ -1211,39 +1204,31 @@ class multi_layer_network:
                 edge_dict.pop("source", None)
                 edge_dict.pop("target_type", None)
                 edge_dict.pop("source_type", None)
-                eval("self.core_network." + target_function + "(**edge_dict)")
+                getattr(self.core_network, target_function)(**edge_dict)
 
     def _generic_edge_list_manipulator(self, edge_list, target_function, raw=False):
+        """Generic manipulator of edge lists.
+        
+        Args:
+            edge_list: List of edges or single edge as [node1, layer1, node2, layer2, weight]
+            target_function: Name of the method to call (e.g., 'add_edge', 'remove_edge')
+            raw: If True, only pass node tuples; if False, also include weight and type
         """
-        Generic manipulator of edge lists
-        """
-
+        func = getattr(self.core_network, target_function)
+        
         if isinstance(edge_list[0], list):
             for edge in edge_list:
                 n1, l1, n2, l2, w = edge
                 if raw:
-                    eval("self.core_network." + target_function + "((n1,l1),(n2,l2))")
+                    func((n1, l1), (n2, l2))
                 else:
-                    eval(
-                        "self.core_network."
-                        + target_function
-                        + "((n1,l1),(n2,l2),weight="
-                        + str(w)
-                        + ',type="default")'
-                    )
-
+                    func((n1, l1), (n2, l2), weight=w, type="default")
         else:
             n1, l1, n2, l2, w = edge_list
             if raw:
-                eval("self.core_network." + target_function + "((n1,l1),(n2,l2))")
+                func((n1, l1), (n2, l2))
             else:
-                eval(
-                    "self.core_network."
-                    + target_function
-                    + "((n1,l1),(n2,l2),weight="
-                    + str(w)
-                    + ',type="default"))'
-                )
+                func((n1, l1), (n2, l2), weight=w, type="default")
 
     def _generic_node_dict_manipulator(self, node_dict_list, target_function):
         """
@@ -1263,7 +1248,7 @@ class multi_layer_network:
             node_dict.pop("source", None)
             node_dict.pop("type", None)
             nname = node_dict["node_for_adding"]
-            eval("self.core_network." + target_function + f"({nname})")
+            getattr(self.core_network, target_function)(nname)
 
         else:
             # Handle list of node dictionaries
@@ -1286,21 +1271,24 @@ class multi_layer_network:
                 node_dict.pop("source", None)
                 node_dict.pop("type", None)
                 nname = node_dict["node_for_adding"]
-                eval("self.core_network." + target_function + f"({nname})")
+                getattr(self.core_network, target_function)(nname)
 
     def _generic_node_list_manipulator(self, node_list, target_function):
+        """Generic manipulator of node lists.
+        
+        Args:
+            node_list: List of nodes or single node as [node_id, layer_id]
+            target_function: Name of the method to call (e.g., 'add_node', 'remove_node')
         """
-        Generic manipulator of node lists
-        """
-
+        func = getattr(self.core_network, target_function)
+        
         if isinstance(node_list, list):
             for node in node_list:
                 n1, l1 = node
-                eval("self.core_network." + target_function + "((n1,l1))")
-
+                func((n1, l1))
         else:
             n1, l1 = node_list
-            eval("self.core_network." + target_function + "((n1,l1))")
+            func((n1, l1))
 
     def _unfreeze(self):
         """Unfreeze the network graph for modifications by creating a mutable copy."""
