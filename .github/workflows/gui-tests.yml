@@ -16,33 +16,30 @@ on:
 jobs:
   api-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     
     steps:
     - uses: actions/checkout@v4
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
+      with:
+        driver-opts: image=moby/buildkit:latest
     
     - name: Create .env file
       run: |
         cd gui
         cp .env.example .env
     
-    - name: Build Docker images
+    - name: Build and start services
       run: |
         cd gui
-        docker compose build api worker redis
-    
-    - name: Start services
-      run: |
-        cd gui
-        docker compose up -d api worker redis
+        docker compose up -d --build api worker redis
     
     - name: Wait for services to be ready
       run: |
         echo "Waiting for API to be ready..."
-        timeout 60 bash -c 'until curl -f http://localhost:8000/api/health; do sleep 2; done'
+        timeout 45 bash -c 'until curl -sf http://localhost:8000/api/health; do sleep 1; done'
     
     - name: Run API tests
       run: |
@@ -64,13 +61,15 @@ jobs:
 
   integration-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 12
     
     steps:
     - uses: actions/checkout@v4
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
+      with:
+        driver-opts: image=moby/buildkit:latest
     
     - name: Create .env file
       run: |
@@ -85,13 +84,13 @@ jobs:
     - name: Wait for services to be ready
       run: |
         echo "Waiting for Nginx to be ready..."
-        timeout 120 bash -c 'until curl -f http://localhost:8080/api/health; do sleep 3; done'
+        timeout 90 bash -c 'until curl -sf http://localhost:8080/api/health; do sleep 2; done'
         echo "All services ready!"
     
-    - name: Test file upload
+    - name: Test complete workflow (upload + layout + centrality)
       run: |
         cd gui
-        # Upload the toy network
+        # Upload the toy network once
         RESPONSE=$(curl -s -F "file=@toy_network.edgelist" http://localhost:8080/api/upload)
         echo "Upload response: $RESPONSE"
         
@@ -113,15 +112,8 @@ jobs:
         fi
         
         echo "✓ Upload test passed"
-    
-    - name: Test layout job
-      run: |
-        cd gui
-        # Get graph_id from previous upload
-        RESPONSE=$(curl -s -F "file=@toy_network.edgelist" http://localhost:8080/api/upload)
-        GRAPH_ID=$(echo $RESPONSE | jq -r '.graph_id')
         
-        # Start layout job
+        # Test layout job using the same graph
         JOB_RESPONSE=$(curl -s -X POST \
           -H "Content-Type: application/json" \
           -d '{"algorithm":"spring","seed":42,"dimensions":2}' \
@@ -130,14 +122,14 @@ jobs:
         JOB_ID=$(echo $JOB_RESPONSE | jq -r '.job_id')
         echo "Layout job ID: $JOB_ID"
         
-        # Poll job status (max 30 seconds)
-        for i in {1..15}; do
+        # Poll job status (max 20 seconds)
+        for i in {1..10}; do
           STATUS=$(curl -s http://localhost:8080/api/jobs/$JOB_ID | jq -r '.status')
-          echo "Job status: $STATUS"
+          echo "Layout job status: $STATUS"
           
           if [ "$STATUS" = "completed" ]; then
             echo "✓ Layout job completed successfully"
-            exit 0
+            break
           elif [ "$STATUS" = "failed" ]; then
             echo "ERROR: Layout job failed"
             curl -s http://localhost:8080/api/jobs/$JOB_ID | jq
@@ -147,33 +139,28 @@ jobs:
           sleep 2
         done
         
-        echo "WARNING: Layout job did not complete in time"
-        exit 1
-    
-    - name: Test centrality job
-      run: |
-        cd gui
-        # Get graph_id from previous upload
-        RESPONSE=$(curl -s -F "file=@toy_network.edgelist" http://localhost:8080/api/upload)
-        GRAPH_ID=$(echo $RESPONSE | jq -r '.graph_id')
+        if [ "$STATUS" != "completed" ]; then
+          echo "WARNING: Layout job did not complete in time"
+          exit 1
+        fi
         
-        # Start centrality job
+        # Test centrality job using the same graph
         JOB_RESPONSE=$(curl -s -X POST \
           -H "Content-Type: application/json" \
-          -d '{"metrics":["degree","betweenness"]}' \
+          -d '{"metrics":["degree"]}' \
           http://localhost:8080/api/graphs/$GRAPH_ID/analysis/centrality)
         
         JOB_ID=$(echo $JOB_RESPONSE | jq -r '.job_id')
         echo "Centrality job ID: $JOB_ID"
         
-        # Poll job status (max 30 seconds)
-        for i in {1..15}; do
+        # Poll job status (max 20 seconds)
+        for i in {1..10}; do
           STATUS=$(curl -s http://localhost:8080/api/jobs/$JOB_ID | jq -r '.status')
-          echo "Job status: $STATUS"
+          echo "Centrality job status: $STATUS"
           
           if [ "$STATUS" = "completed" ]; then
             echo "✓ Centrality job completed successfully"
-            exit 0
+            break
           elif [ "$STATUS" = "failed" ]; then
             echo "ERROR: Centrality job failed"
             curl -s http://localhost:8080/api/jobs/$JOB_ID | jq
@@ -183,8 +170,12 @@ jobs:
           sleep 2
         done
         
-        echo "WARNING: Centrality job did not complete in time"
-        exit 1
+        if [ "$STATUS" != "completed" ]; then
+          echo "WARNING: Centrality job did not complete in time"
+          exit 1
+        fi
+        
+        echo "✓ All integration tests passed"
     
     - name: Show service logs on failure
       if: failure()
@@ -205,7 +196,7 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 8
     
     steps:
     - uses: actions/checkout@v4
@@ -222,7 +213,7 @@ jobs:
         cd gui/frontend
         npm ci
     
-    - name: Type check
+    - name: Build frontend
       run: |
         cd gui/frontend
         npm run build

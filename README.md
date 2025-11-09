@@ -59,6 +59,39 @@ Py3plex includes a powerful command-line interface for multilayer network analys
 
 See the [CLI Tutorial](https://skblaz.github.io/py3plex/tutorials/cli_usage.html) for complete documentation.
 
+### Web GUI
+
+Py3plex includes a production-ready web-based GUI for multilayer network analysis, visualization, and exploration.
+
+**Features:**
+- 🌐 **Interactive Web Interface** - React-based UI with real-time updates
+- 📊 **Network Visualization** - Layer-centric views with configurable layouts
+- 🔍 **Advanced Analysis** - Centrality metrics, community detection, and more
+- 📁 **Multiple Formats** - Support for edgelist, GML, NetworkX pickle files
+- ⚙️ **Async Processing** - Background job execution with progress tracking
+- 💾 **Workspace Management** - Save and restore complete analysis sessions
+
+**Quick Start:**
+```bash
+cd gui
+cp .env.example .env
+make up
+
+# Open in browser: http://localhost:8080
+```
+
+**Architecture:**
+- Frontend: React + TypeScript + Vite
+- Backend: FastAPI with py3plex integration
+- Workers: Celery for async analysis jobs
+- Monitoring: Flower dashboard at http://localhost:5555
+
+**Requirements:**
+- Docker & Docker Compose (>= 2.0)
+- 4GB RAM minimum
+- Ports: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)
+
+**Documentation:** See [gui/README.md](gui/README.md) for complete setup, API reference, and deployment guide.
 
 ### Requirements
 
