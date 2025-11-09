@@ -267,15 +267,46 @@ curl -F "file=@gui/toy_network.edgelist" http://localhost:8080/api/upload
 
 ## 🧪 Testing
 
+### Continuous Integration
+
+GUI tests run automatically on GitHub Actions for any changes to the `gui/` directory:
+
+```yaml
+# Workflow: .github/workflows/gui-tests.yml
+- API unit tests (pytest)
+- Integration tests (Docker Compose)
+- Frontend build verification
+```
+
+**Status**: ![GUI Tests](https://github.com/SkBlaz/py3plex/actions/workflows/gui-tests.yml/badge.svg)
+
+Tests include:
+- Health endpoint validation
+- File upload with toy network
+- Layout job execution and completion
+- Centrality computation
+- Service health checks
+
 ### API Tests
 
 ```bash
 # Run inside API container
 make bash-api
-pytest /app/tests -v
+pytest ci/api-tests/ -v
 
 # Or directly
-docker compose exec api pytest /app/tests -v
+docker compose exec api pytest ci/api-tests/ -v
+```
+
+### Integration Tests
+
+The CI workflow runs full integration tests:
+
+```bash
+# Upload and analyze a network
+cd gui
+curl -F "file=@toy_network.edgelist" http://localhost:8080/api/upload
+# Run layout, centrality, and community detection jobs
 ```
 
 ### Frontend Tests (WIP)

@@ -1,5 +1,70 @@
 # GUI Testing Guide
 
+Complete testing guide for the Py3plex GUI, including automated CI tests and manual validation.
+
+## Automated Testing (CI)
+
+### GitHub Actions Workflow
+
+All GUI tests run automatically on GitHub Actions:
+
+**Workflow**: `.github/workflows/gui-tests.yml`
+
+**Triggers**:
+- Push to main/master/develop branches (if `gui/` files changed)
+- Pull requests targeting main/master/develop (if `gui/` files changed)
+- Manual workflow dispatch
+
+**Test Jobs**:
+
+1. **API Tests** (~5 min)
+   - Build API, worker, redis containers
+   - Run pytest suite: `ci/api-tests/`
+   - Validate health endpoint
+   - Test file upload functionality
+
+2. **Integration Tests** (~10 min)
+   - Build all services (including nginx, frontend)
+   - Test full upload → analyze → export flow
+   - Validate layout job execution
+   - Test centrality computation
+   - Verify service health
+
+3. **Frontend Build** (~5 min)
+   - Type check TypeScript
+   - Build production bundle
+   - Verify dist output
+
+**View Results**: Check the Actions tab on GitHub or the badge in README.md
+
+### Running CI Tests Locally
+
+You can run the same tests locally:
+
+```bash
+cd gui
+
+# API tests
+docker compose build api worker redis
+docker compose up -d api worker redis
+docker compose exec api pytest ci/api-tests/ -v
+docker compose down -v
+
+# Integration tests
+docker compose up -d --build
+# Wait for services
+curl -f http://localhost:8080/api/health
+# Run manual integration tests (see below)
+docker compose down -v
+
+# Frontend build
+cd frontend
+npm ci
+npm run build
+```
+
+## Manual Testing Guide
+
 Manual testing guide for the Py3plex GUI. Follow these steps to validate the implementation.
 
 ## Prerequisites
