@@ -33,7 +33,7 @@ RUN pip install --no-cache-dir \
     matplotlib==3.8.2 \
     numpy==1.26.3 \
     scipy==1.11.4 \
-    scikit-learn==1.4.0 \
+    scikit-learn==1.5.0 \
     python-louvain==0.16
 
 # Set working directory
@@ -42,9 +42,9 @@ WORKDIR /app
 # Copy application code
 COPY ./api/app ./app
 
-# Install py3plex from mounted workspace
-ARG PY3PLEX_PATH=/workspace
-RUN pip install -e ${PY3PLEX_PATH}
+# Copy and install py3plex from repository root
+COPY ../ /tmp/py3plex
+RUN pip install -e /tmp/py3plex
 
 # Create data directory
 RUN mkdir -p /data/uploads /data/artifacts /data/workspaces

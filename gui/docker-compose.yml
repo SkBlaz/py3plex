@@ -19,8 +19,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
-      args:
-        - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-api
     environment:
       - REDIS_URL=redis://redis:6379/0
@@ -47,8 +45,6 @@ services:
     build:
       context: .
       dockerfile: worker/Dockerfile
-      args:
-        - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-worker
     environment:
       - REDIS_URL=redis://redis:6379/0
@@ -67,8 +63,6 @@ services:
     build:
       context: .
       dockerfile: worker/Dockerfile
-      args:
-        - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-flower
     environment:
       - REDIS_URL=redis://redis:6379/0
