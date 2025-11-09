@@ -1283,7 +1283,7 @@ Tests conversion between MultiLayerGraph and NetworkX, preserving structure and 
 pytest tests/property/test_io_converters_properties.py -v
 ```
 
-##### `test_random_generators_extended_properties.py` (20 tests)
+##### `test_random_gen_extended_properties.py` (20 tests)
 Tests properties of random multilayer and multiplex network generators.
 
 **Properties tested:**
@@ -1303,7 +1303,7 @@ Tests properties of random multilayer and multiplex network generators.
 
 **Run:**
 ```bash
-pytest tests/property/test_random_generators_extended_properties.py -v
+pytest tests/property/test_random_gen_extended_properties.py -v
 ```
 
 ##### `test_utils_properties.py` (15 tests)
@@ -1682,7 +1682,7 @@ def test_to_networkx_multiplex_preserves_layer_info(num_nodes, num_layers):
     assert nx_graph.number_of_nodes() == expected_nodes
 ```
 
-#### 5. `test_random_generators_extended_properties.py` (20 tests)
+#### 5. `test_random_gen_extended_properties.py` (20 tests)
 
 Tests properties of random multilayer and multiplex network generators.
 
@@ -2545,7 +2545,7 @@ This document provides a comprehensive analysis of property-testable functions i
 10. **`py3plex.algorithms.statistics.basic_statistics.identify_n_hubs`** - `py3plex/algorithms/statistics/basic_statistics.py:38`
     - **Rationale**: Deterministic ranking, no side effects
     - **Properties**: Structural (≤ top_n entries), monotone (descending order), subset invariant
-    - **Status**: ✅ Implemented in `test_basic_stats_properties.py`
+    - **Status**: ✅ Implemented in `test_basic_statistics_properties.py`
 
 11. **`py3plex.core.random_generators.random_multilayer_ER`** - `py3plex/core/random_generators.py:36`
     - **Rationale**: Stochastic but with statistical properties
@@ -2803,8 +2803,8 @@ multilayer_params() = {
    - Tests for `draw_order3`, `draw_piramidal`
    - Structural properties, determinism, comparison tests
 
-4. **`tests/property/test_basic_stats_properties.py`** (15 tests)
-   - Tests for `identify_n_hubs`
+4. **`tests/property/test_basic_statistics_properties.py`** (17 tests)
+   - Tests for `identify_n_hubs`, `core_network_statistics`
    - Ranking properties, special graph cases (complete, star, path)
 
 5. **`tests/property/test_random_gen_extended_properties.py`** (20 tests)
@@ -2818,11 +2818,11 @@ multilayer_params() = {
 pytest tests/property/test_color_utilities_properties.py \
        tests/property/test_bezier_properties.py \
        tests/property/test_polyfit_properties.py \
-       tests/property/test_basic_stats_properties.py \
+       tests/property/test_basic_statistics_properties.py \
        tests/property/test_random_gen_extended_properties.py \
        -v -m property
 
-# Summary: 78 tests passed
+# Summary: 80 tests passed
 ```
 
 ### Key Findings
@@ -2968,7 +2968,7 @@ All requirements from the issue have been fully implemented:
 | `test_color_utilities_properties.py` | 16 | visualization.colors | Round-trip, structural, boundary |
 | `test_bezier_properties.py` | 12 | visualization.bezier | Shape, monotonicity, continuity |
 | `test_polyfit_properties.py` | 15 | visualization.polyfit | Determinism, structural, comparison |
-| `test_basic_stats_properties.py` | 15 | algorithms.statistics | Ranking, subset, special cases |
+| `test_basic_statistics_properties.py` | 17 | algorithms.statistics | Ranking, subset, special cases |
 | `test_random_gen_extended_properties.py` | 20 | core.random_generators | Structural, probabilistic, format |
 
 ## Key Findings
@@ -2991,11 +2991,11 @@ All requirements from the issue have been fully implemented:
 pytest tests/property/test_color_utilities_properties.py \
        tests/property/test_bezier_properties.py \
        tests/property/test_polyfit_properties.py \
-       tests/property/test_basic_stats_properties.py \
+       tests/property/test_basic_statistics_properties.py \
        tests/property/test_random_gen_extended_properties.py \
        -v -m property
 
-# Expected: 78 passed in ~16-30 seconds
+# Expected: 80 passed in ~16-30 seconds
 ```
 
 ## Documentation
