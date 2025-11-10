@@ -1,22 +1,37 @@
 """
 Unit tests for GUI performance optimizations
 
-These tests validate the performance improvements without requiring
-full API setup or Celery workers.
+These tests validate the performance improvements.
+Run with: python -m pytest test_performance_optimizations.py
+Or directly: python test_performance_optimizations.py
+
+Note: Requires API dependencies to be installed.
 """
-import tempfile
-import os
 import sys
+import os
 
-# Add gui/api to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../api'))
+# Test if we can import the required modules
+try:
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../api'))
+    from app.services.model import get_cache_stats, clear_cache
+    import networkx as nx
+    CAN_RUN_TESTS = True
+except ImportError as e:
+    print(f"⚠ Cannot run tests: {e}")
+    print("These tests require API dependencies. Run in Docker or install dependencies:")
+    print("  cd gui/api && pip install -r requirements.txt")
+    CAN_RUN_TESTS = False
 
+if not CAN_RUN_TESTS:
+    sys.exit(0)
+
+# Import after checking dependencies
 from app.services.io import load_multilayer_edgelist, GRAPH_REGISTRY
-from app.services.model import get_graph_summary, get_graph_positions, filter_graph, clear_cache, get_cache_stats
+from app.services.model import get_graph_summary, get_graph_positions, filter_graph
 from app.services.metrics import compute_centrality
 from app.services.layouts import compute_layout
 from app.schemas import FilterSpec
-import networkx as nx
+import tempfile
 
 
 def test_summary_caching():

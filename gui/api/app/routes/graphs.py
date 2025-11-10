@@ -62,7 +62,7 @@ async def get_positions(graph_id: str, response: Response):
 
 
 @router.get("/graphs/{graph_id}/sample")
-async def get_sample(graph_id: str, max_nodes: int = 500, response: Response):
+async def get_sample(graph_id: str, response: Response, max_nodes: int = 500):
     """Get a sampled subgraph for preview"""
     try:
         result = sample_graph(graph_id, max_nodes)
