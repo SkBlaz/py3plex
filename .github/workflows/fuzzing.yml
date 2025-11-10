@@ -26,10 +26,10 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install --upgrade pip --timeout 120
-          pip install --timeout 120 --retries 3 pytest hypothesis
-          pip install --timeout 120 --retries 3 networkx numpy scipy tqdm || true
-          pip install -e . || true
+          pip install --upgrade --timeout 120 --retries 5 pip
+          pip install --timeout 120 --retries 5 pytest hypothesis
+          pip install --timeout 120 --retries 5 networkx numpy scipy tqdm || true
+          pip install --timeout 120 --retries 5 -e . || true
         timeout-minutes: 8
       
       - name: Run property-based fuzzing tests
@@ -67,10 +67,10 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install --upgrade pip --timeout 120
-          pip install --timeout 120 --retries 3 atheris
-          pip install --timeout 120 --retries 3 networkx numpy scipy tqdm || true
-          pip install -e . || true
+          pip install --upgrade --timeout 120 --retries 5 pip
+          pip install --timeout 120 --retries 5 atheris
+          pip install --timeout 120 --retries 5 networkx numpy scipy tqdm || true
+          pip install --timeout 120 --retries 5 -e . || true
         timeout-minutes: 5
       
       - name: Run quick fuzzing campaign (60 seconds)

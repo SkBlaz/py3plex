@@ -26,13 +26,13 @@ jobs:
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        python -m pip install --upgrade --timeout 120 --retries 5 pip
         # Install Sphinx and extensions
-        pip install sphinx sphinx-rtd-theme myst-parser m2r2
+        pip install --timeout 120 --retries 5 sphinx sphinx-rtd-theme myst-parser m2r2
         # Install package dependencies for API documentation
-        pip install numpy scipy networkx matplotlib rdflib tqdm bitarray
+        pip install --timeout 120 --retries 5 numpy scipy networkx matplotlib rdflib tqdm bitarray
         # Install py3plex package itself for autodoc to work
-        pip install -e .
+        pip install --timeout 120 --retries 5 -e .
       timeout-minutes: 8
     
     - name: Build Sphinx documentation
