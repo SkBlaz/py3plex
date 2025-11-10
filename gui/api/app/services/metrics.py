@@ -9,12 +9,34 @@ logger = logging.getLogger(__name__)
 
 
 def compute_centrality(graph_id: str, metrics: list, layers: list = None):
-    """Compute centrality metrics"""
+    """Compute centrality metrics
+    
+    For MultiGraphs (multilayer networks), centrality is computed on a simplified
+    view where multiple edges are aggregated. This provides meaningful centrality
+    values for multilayer networks.
+    """
     entry = get_graph(graph_id)
     if not entry:
         raise ValueError(f"Graph {graph_id} not found")
     
     graph = entry['graph']
+    
+    # Convert MultiGraph to simple Graph for centrality computation
+    # Multiple edges are collapsed into single weighted edges
+    if isinstance(graph, nx.MultiGraph) or isinstance(graph, nx.MultiDiGraph):
+        logger.info(f"Converting MultiGraph to Graph for centrality computation")
+        simple_graph = nx.Graph()
+        
+        # Aggregate edge weights
+        for u, v, data in graph.edges(data=True):
+            weight = data.get('weight', 1.0)
+            if simple_graph.has_edge(u, v):
+                simple_graph[u][v]['weight'] += weight
+            else:
+                simple_graph.add_edge(u, v, weight=weight)
+        
+        graph = simple_graph
+    
     results = {}
     
     for metric in metrics:
@@ -22,18 +44,26 @@ def compute_centrality(graph_id: str, metrics: list, layers: list = None):
         
         try:
             if metric == "degree":
-                centrality = dict(graph.degree())
+                # For degree centrality, use weighted degree if weights present
+                if nx.is_weighted(graph):
+                    centrality = dict(graph.degree(weight='weight'))
+                else:
+                    centrality = dict(graph.degree())
             elif metric == "betweenness":
-                centrality = nx.betweenness_centrality(graph)
+                centrality = nx.betweenness_centrality(graph, weight='weight')
             elif metric == "closeness":
-                centrality = nx.closeness_centrality(graph)
+                centrality = nx.closeness_centrality(graph, distance='weight')
             elif metric == "eigenvector":
                 try:
-                    centrality = nx.eigenvector_centrality(graph, max_iter=100)
+                    centrality = nx.eigenvector_centrality(graph, max_iter=100, weight='weight')
                 except:
-                    centrality = nx.eigenvector_centrality_numpy(graph)
+                    try:
+                        centrality = nx.eigenvector_centrality_numpy(graph, weight='weight')
+                    except:
+                        # Fall back to unweighted if that fails too
+                        centrality = nx.eigenvector_centrality(graph, max_iter=100)
             elif metric == "pagerank":
-                centrality = nx.pagerank(graph)
+                centrality = nx.pagerank(graph, weight='weight')
             else:
                 continue
             
@@ -43,7 +73,7 @@ def compute_centrality(graph_id: str, metrics: list, layers: list = None):
                 for node, value in sorted(centrality.items(), key=lambda x: x[1], reverse=True)
             ]
         except Exception as e:
-            logger.error(f"Error computing {metric}: {e}")
+            logger.error(f"Error computing {metric}: {e}", exc_info=True)
             results[metric] = {"error": str(e)}
     
     return results

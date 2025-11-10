@@ -66,13 +66,26 @@ def load_graph_from_file(graph_id: str, filepath: str) -> bool:
 
 
 def load_multilayer_edgelist(filepath: str) -> nx.MultiGraph:
-    """Load multilayer network from edgelist format"""
+    """Load multilayer network from edgelist format
+    
+    Supports formats:
+    - node1 node2 layer weight
+    - node1 node2 layer
+    - node1 node2
+    
+    Lines starting with # are treated as comments and ignored.
+    """
     G = nx.MultiGraph()
     
     with open(filepath, 'r') as f:
         for line in f:
-            parts = line.strip().split()
-            if len(parts) >= 3:
+            # Skip empty lines and comments
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            
+            parts = line.split()
+            if len(parts) >= 2:
                 node1, node2 = parts[0], parts[1]
                 layer = parts[2] if len(parts) > 2 else "default"
                 weight = float(parts[3]) if len(parts) > 3 else 1.0
