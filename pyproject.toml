@@ -87,6 +87,11 @@ viz = [
     "plotly>=5.0.0",
     "python-igraph>=0.10.0",
 ]
+# Optional: Desktop GUI
+gui = [
+    "PySide6>=6.5.0",  # Qt6 bindings for Python
+    "platformdirs>=3.0.0",  # Cross-platform config/data directories
+]
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"
@@ -96,6 +101,7 @@ Repository = "https://github.com/SkBlaz/py3plex"
 
 [project.scripts]
 py3plex = "py3plex.cli:main"
+py3plex-gui = "gui.desktop.app:main"
 
 [tool.setuptools]
 zip-safe = false
@@ -103,7 +109,7 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["py3plex*"]
+include = ["py3plex*", "gui*"]
 exclude = ["tests*", "docs*", "examples*"]
 
 [tool.isort]
