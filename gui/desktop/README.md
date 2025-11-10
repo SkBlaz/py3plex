@@ -104,7 +104,7 @@ Logs are stored in:
 
 ## Development Status
 
-### ✅ Implemented (Phase 1)
+### ✅ Implemented (Phases 1-2)
 
 - Application bootstrap with DPI awareness
 - Main window with menu bar and toolbar
@@ -113,10 +113,13 @@ Logs are stored in:
 - Logging service with file rotation
 - Window geometry restoration
 - Design system (colors, spacing, typography)
+- **I/O service with multi-format support**
+- **Algorithms service with 6 algorithms**
+- **File loading with progress tracking**
+- **Metadata display**
 
 ### 🚧 In Progress
 
-- File loading and validation
 - Network visualization canvas
 - Algorithm execution with progress tracking
 - Inspector panel for node/edge properties
@@ -132,6 +135,34 @@ Logs are stored in:
 - Recent files menu
 - Comprehensive keyboard shortcuts
 - Integration tests
+
+## Testing
+
+The desktop GUI services can be tested independently:
+
+```python
+# Test I/O service
+from gui.desktop.services.io_service import get_io_service
+
+io = get_io_service()
+graph = io.load_graph("path/to/network.gml")
+metadata = io.get_metadata()
+print(f"Nodes: {metadata['nodes']}, Edges: {metadata['edges']}")
+```
+
+```python
+# Test algorithms service
+from gui.desktop.services.algorithms_service import get_algorithms_service
+
+algos = get_algorithms_service()
+for algo in algos.get_algorithms():
+    print(f"{algo.name} - {algo.description}")
+
+# Run an algorithm
+result = algos.run_algorithm(graph, "degree_centrality")
+```
+
+Unit tests for services are located in `tests/gui/` (when installed in development mode).
 
 ## Contributing
 

@@ -93,6 +93,39 @@ make up
 
 **Documentation:** See [gui/README.md](gui/README.md) for complete setup, API reference, and deployment guide.
 
+### Desktop GUI (New!)
+
+Py3plex now includes a modern desktop application for multilayer network analysis.
+
+**Features:**
+- 🖥️ **Native Desktop App** - Cross-platform (Windows/macOS/Linux) built with PySide6
+- 🎨 **Modern UI** - Clean interface with light/dark themes and HiDPI support
+- 📊 **Network Analysis** - Centrality metrics, community detection, graph layouts
+- 📁 **Multiple Formats** - Edgelist, GML, GraphML, NetworkX pickle, JSON
+- ⚡ **Non-blocking** - Async operations with progress tracking
+- 💾 **Persistent Settings** - Remembers preferences, window size, recent files
+
+**Quick Start:**
+```bash
+# Install desktop GUI dependencies
+pip install ".[gui]"
+
+# Launch the application
+py3plex-gui
+
+# Or use Python module
+python -m gui.desktop
+```
+
+**Requirements:**
+- Python 3.10 or higher
+- PySide6 (Qt6) - installed automatically with `[gui]` extra
+- platformdirs - for cross-platform config paths
+
+**Documentation:** See [gui/desktop/README.md](gui/desktop/README.md) for architecture details and development guide.
+
+**Current Status:** Phase 2 complete - file loading and algorithm services implemented. Visualization canvas coming in next phase.
+
 ### Requirements
 
 - Python 3.8 or higher

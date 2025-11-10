@@ -5,11 +5,16 @@ This module provides common fixtures and configuration that can be used
 across all test modules.
 """
 import os
+import sys
 import tempfile
 import shutil
 from pathlib import Path
 
 import pytest
+
+# Add repo root to Python path for GUI module imports
+repo_root = Path(__file__).parent.parent
+sys.path.insert(0, str(repo_root))
 
 # Configure Hypothesis profiles
 try:
