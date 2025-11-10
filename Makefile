@@ -68,10 +68,12 @@ setup: ## Create virtual environment and install dependencies
 		$(PYTHON) -m venv $(VENV); \
 	fi
 	@printf "$(COLOR_GREEN)✓ Upgrading pip...$(COLOR_RESET)\n"
-	@$(VENV_PIP) install --upgrade pip setuptools wheel
+	@$(VENV_PIP) install --upgrade --timeout 120 --retries 5 pip setuptools wheel || \
+		(printf "$(COLOR_YELLOW)⚠ Warning: Failed to upgrade pip/setuptools/wheel (transient network error)$(COLOR_RESET)\n" && true)
 	@printf "$(COLOR_GREEN)✓ Installing dependencies...$(COLOR_RESET)\n"
 	@if [ -f "pyproject.toml" ]; then \
-		$(VENV_PIP) install -e .; \
+		$(VENV_PIP) install --timeout 120 --retries 5 -e . || \
+			(printf "$(COLOR_RED)✗ Failed to install dependencies after retries$(COLOR_RESET)\n" && exit 1); \
 	else \
 		printf "$(COLOR_RED)✗ No pyproject.toml found!$(COLOR_RESET)\n"; \
 		exit 1; \
@@ -85,7 +87,7 @@ dev-install: ## Install package in editable mode with dev dependencies
 		exit 1; \
 	fi
 	@printf "$(COLOR_GREEN)✓ Installing package with dev dependencies...$(COLOR_RESET)\n"
-	@$(VENV_PIP) install -e ".[dev]"
+	@$(VENV_PIP) install --timeout 120 --retries 5 -e ".[dev]"
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Development installation complete!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -220,7 +222,7 @@ build: ## Build source and wheel distributions
 		exit 1; \
 	fi
 	@printf "$(COLOR_GREEN)✓ Installing build tools...$(COLOR_RESET)\n"
-	@$(VENV_PIP) install --upgrade build twine
+	@$(VENV_PIP) install --timeout 120 --retries 5 --upgrade build twine
 	@printf "$(COLOR_GREEN)✓ Building package...$(COLOR_RESET)\n"
 	@$(VENV_PYTHON) -m build
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Build complete! Distributions saved to dist/$(COLOR_RESET)\n"
