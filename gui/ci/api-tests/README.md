@@ -189,7 +189,6 @@ pip install "httpx>=0.25.0" "fastapi[all]>=0.109.0"
 
 ## Related Documentation
 
-- **User Journey Analysis:** `../USER_JOURNEY_FINDINGS.md`
 - **Interactive Demo:** `../demo_improvements.py`
 - **GUI Setup:** `../README.md`
 - **API Documentation:** Access at `http://localhost:8080/api/docs` when running
