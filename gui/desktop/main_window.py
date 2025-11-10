@@ -17,7 +17,9 @@ except ImportError:
     HAS_PYSIDE6 = False
 
 from .services.logger import get_logger
+from .services.io_service import get_io_service
 from .design_system import icons
+from .components.progress_dialog import ProgressDialog
 
 if TYPE_CHECKING:
     from .app import Application
@@ -237,18 +239,71 @@ class MainWindow(QMainWindow):
         
         if file_path:
             logger.info(f"Selected file: {file_path}")
-            self.status_label.setText(f"Loaded: {file_path}")
             
             # Save last directory
             from pathlib import Path
             self.preferences.set("last_directory", str(Path(file_path).parent))
             self.preferences.add_recent_file(file_path)
             
-            # TODO: Actually load and display the file
+            # Load the file
+            self._load_file(file_path)
+    
+    def _load_file(self, filepath: str) -> None:
+        """Load a network file."""
+        io_service = get_io_service()
+        
+        # Validate file first
+        is_valid, error_msg = io_service.validate_file(filepath)
+        if not is_valid:
+            QMessageBox.critical(
+                self,
+                "Invalid File",
+                f"Cannot load file: {error_msg}"
+            )
+            return
+        
+        # Create progress dialog
+        progress = ProgressDialog("Loading Network", self)
+        
+        # Progress callback
+        def update_progress(percent: int, message: str):
+            progress.set_progress(percent, message)
+            # Process events to keep UI responsive
+            from PySide6.QtWidgets import QApplication
+            QApplication.processEvents()
+        
+        progress.show()
+        
+        # Load graph
+        graph = io_service.load_graph(filepath, update_progress)
+        
+        progress.accept()
+        
+        if graph:
+            # Show metadata
+            metadata = io_service.get_metadata()
+            info_text = f"Loaded: {Path(filepath).name}\n\n"
+            info_text += f"Nodes: {metadata.get('nodes', 0)}\n"
+            info_text += f"Edges: {metadata.get('edges', 0)}\n"
+            info_text += f"Directed: {metadata.get('directed', False)}\n"
+            
+            if 'density' in metadata:
+                info_text += f"Density: {metadata['density']:.4f}\n"
+            if 'components' in metadata:
+                info_text += f"Components: {metadata['components']}\n"
+            
+            self.status_label.setText(f"Loaded: {metadata.get('nodes', 0)} nodes, {metadata.get('edges', 0)} edges")
+            
             QMessageBox.information(
                 self,
-                "File Selected",
-                f"File loading will be implemented in next phase.\n\nSelected: {file_path}"
+                "Network Loaded",
+                info_text
+            )
+        else:
+            QMessageBox.critical(
+                self,
+                "Load Failed",
+                "Failed to load network file. Check logs for details."
             )
     
     def _on_preferences(self) -> None:
