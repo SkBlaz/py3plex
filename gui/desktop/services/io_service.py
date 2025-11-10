@@ -17,7 +17,7 @@ logger = get_logger()
 
 class IOService:
     """Service for loading and saving graph files."""
-    
+
     # Supported file formats
     FORMATS = {
         ".edgelist": "edgelist",
@@ -29,18 +29,18 @@ class IOService:
         ".json": "json",
         ".txt": "edgelist",
     }
-    
+
     def __init__(self):
         """Initialize I/O service."""
         self.current_graph: Optional[nx.Graph] = None
         self.current_file: Optional[str] = None
         self.graph_metadata: Dict[str, Any] = {}
-    
+
     def detect_format(self, filepath: str) -> Optional[str]:
         """Detect file format from extension."""
         ext = Path(filepath).suffix.lower()
         return self.FORMATS.get(ext)
-    
+
     def load_graph(
         self,
         filepath: str,
@@ -59,19 +59,19 @@ class IOService:
         try:
             if not os.path.exists(filepath):
                 raise FileNotFoundError(f"File not found: {filepath}")
-            
+
             if progress_callback:
                 progress_callback(0, "Detecting format...")
-            
+
             file_format = self.detect_format(filepath)
             if not file_format:
                 raise ValueError(f"Unsupported file format: {filepath}")
-            
+
             logger.info(f"Loading {file_format} file: {filepath}")
-            
+
             if progress_callback:
                 progress_callback(20, f"Loading {file_format} file...")
-            
+
             # Load based on format
             if file_format == "edgelist":
                 graph = nx.read_edgelist(filepath)
@@ -89,31 +89,31 @@ class IOService:
                 graph = json_graph.node_link_graph(data)
             else:
                 raise ValueError(f"Format {file_format} not yet implemented")
-            
+
             if progress_callback:
                 progress_callback(80, "Computing metadata...")
-            
+
             # Compute metadata
             self.graph_metadata = self._compute_metadata(graph)
-            
+
             if progress_callback:
                 progress_callback(100, "Complete")
-            
+
             # Store current graph
             self.current_graph = graph
             self.current_file = filepath
-            
+
             logger.info(f"Loaded graph with {graph.number_of_nodes()} nodes, "
                        f"{graph.number_of_edges()} edges")
-            
+
             return graph
-            
+
         except Exception as e:
             logger.error(f"Error loading graph: {e}", exc_info=True)
             if progress_callback:
                 progress_callback(0, f"Error: {str(e)}")
             return None
-    
+
     def save_graph(
         self,
         graph: nx.Graph,
@@ -134,19 +134,19 @@ class IOService:
         try:
             if progress_callback:
                 progress_callback(0, "Detecting format...")
-            
+
             file_format = self.detect_format(filepath)
             if not file_format:
                 raise ValueError(f"Unsupported file format: {filepath}")
-            
+
             logger.info(f"Saving {file_format} file: {filepath}")
-            
+
             if progress_callback:
                 progress_callback(20, f"Saving {file_format} file...")
-            
+
             # Ensure parent directory exists
             Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-            
+
             # Save based on format
             if file_format == "edgelist":
                 nx.write_edgelist(graph, filepath)
@@ -164,19 +164,19 @@ class IOService:
                     json.dump(data, f, indent=2)
             else:
                 raise ValueError(f"Format {file_format} not yet implemented")
-            
+
             if progress_callback:
                 progress_callback(100, "Complete")
-            
+
             logger.info(f"Saved graph to {filepath}")
             return True
-            
+
         except Exception as e:
             logger.error(f"Error saving graph: {e}", exc_info=True)
             if progress_callback:
                 progress_callback(0, f"Error: {str(e)}")
             return False
-    
+
     def _compute_metadata(self, graph: nx.Graph) -> Dict[str, Any]:
         """Compute graph metadata."""
         metadata = {
@@ -185,7 +185,7 @@ class IOService:
             "directed": graph.is_directed(),
             "multigraph": graph.is_multigraph(),
         }
-        
+
         # Try to compute additional metrics (may be expensive for large graphs)
         try:
             if graph.number_of_nodes() < 10000:  # Only for smaller graphs
@@ -195,28 +195,28 @@ class IOService:
                 metadata["components"] = nx.number_connected_components(graph)
         except Exception as e:
             logger.debug(f"Could not compute all metrics: {e}")
-        
+
         return metadata
-    
+
     def get_metadata(self) -> Dict[str, Any]:
         """Get metadata for currently loaded graph."""
         return self.graph_metadata.copy()
-    
+
     def get_current_graph(self) -> Optional[nx.Graph]:
         """Get the currently loaded graph."""
         return self.current_graph
-    
+
     def get_current_file(self) -> Optional[str]:
         """Get the currently loaded file path."""
         return self.current_file
-    
+
     def clear(self) -> None:
         """Clear current graph and metadata."""
         self.current_graph = None
         self.current_file = None
         self.graph_metadata = {}
         logger.info("Cleared current graph")
-    
+
     @staticmethod
     def validate_file(filepath: str) -> tuple[bool, str]:
         """
@@ -227,17 +227,17 @@ class IOService:
         """
         if not os.path.exists(filepath):
             return False, "File does not exist"
-        
+
         if not os.path.isfile(filepath):
             return False, "Path is not a file"
-        
+
         if os.path.getsize(filepath) == 0:
             return False, "File is empty"
-        
+
         ext = Path(filepath).suffix.lower()
         if ext not in IOService.FORMATS:
             return False, f"Unsupported format: {ext}"
-        
+
         return True, ""
 
 

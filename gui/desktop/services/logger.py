@@ -18,32 +18,32 @@ except ImportError:
 
 class Logger:
     """Centralized logger with file and console output."""
-    
+
     _instance: Optional[logging.Logger] = None
     _initialized: bool = False
-    
+
     @classmethod
     def get_logger(cls, name: str = "py3plex_gui") -> logging.Logger:
         """Get or create the application logger."""
         if cls._instance is None:
             cls._instance = cls._setup_logger(name)
         return cls._instance
-    
+
     @classmethod
     def _setup_logger(cls, name: str) -> logging.Logger:
         """Set up logger with file and console handlers."""
         if cls._initialized:
             return logging.getLogger(name)
-        
+
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
-        
+
         # Create logs directory
         log_dir = Path(user_log_dir("py3plex", "SkBlaz"))
         log_dir.mkdir(parents=True, exist_ok=True)
-        
+
         log_file = log_dir / "gui.log"
-        
+
         # File handler with rotation
         file_handler = RotatingFileHandler(
             log_file,
@@ -57,7 +57,7 @@ class Logger:
             datefmt='%Y-%m-%d %H:%M:%S'
         )
         file_handler.setFormatter(file_formatter)
-        
+
         # Console handler
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.INFO)
@@ -65,14 +65,14 @@ class Logger:
             '%(levelname)s - %(message)s'
         )
         console_handler.setFormatter(console_formatter)
-        
+
         # Add handlers
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
-        
+
         cls._initialized = True
         logger.info(f"Logger initialized. Log file: {log_file}")
-        
+
         return logger
 
 

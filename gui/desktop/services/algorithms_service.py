@@ -38,7 +38,7 @@ class AlgorithmInfo:
 
 class AlgorithmsService:
     """Service for running graph algorithms."""
-    
+
     # Registry of available algorithms
     ALGORITHMS: Dict[str, AlgorithmInfo] = {
         "degree_centrality": AlgorithmInfo(
@@ -95,12 +95,12 @@ class AlgorithmsService:
             max_nodes=1000,  # Can be slow for large graphs
         ),
     }
-    
+
     def __init__(self):
         """Initialize algorithms service."""
         self._running = False
         self._cancel_requested = False
-    
+
     def get_algorithms(
         self,
         category: Optional[AlgorithmCategory] = None
@@ -112,11 +112,11 @@ class AlgorithmsService:
                 if algo.category == category
             ]
         return list(self.ALGORITHMS.values())
-    
+
     def get_algorithm(self, algorithm_id: str) -> Optional[AlgorithmInfo]:
         """Get algorithm info by ID."""
         return self.ALGORITHMS.get(algorithm_id)
-    
+
     def can_run(self, algorithm_id: str, num_nodes: int) -> tuple[bool, str]:
         """
         Check if algorithm can run on a graph.
@@ -127,15 +127,15 @@ class AlgorithmsService:
         algo = self.get_algorithm(algorithm_id)
         if not algo:
             return False, "Algorithm not found"
-        
+
         if num_nodes < algo.min_nodes:
             return False, f"Graph too small (minimum {algo.min_nodes} nodes)"
-        
+
         if num_nodes > algo.max_nodes:
             return False, f"Graph too large (maximum {algo.max_nodes} nodes)"
-        
+
         return True, ""
-    
+
     def run_algorithm(
         self,
         graph: nx.Graph,
@@ -158,42 +158,42 @@ class AlgorithmsService:
         try:
             self._running = True
             self._cancel_requested = False
-            
+
             algo = self.get_algorithm(algorithm_id)
             if not algo:
                 raise ValueError(f"Unknown algorithm: {algorithm_id}")
-            
+
             # Check if can run
             can_run, msg = self.can_run(algorithm_id, graph.number_of_nodes())
             if not can_run:
                 raise ValueError(msg)
-            
+
             logger.info(f"Running algorithm: {algo.name}")
-            
+
             if progress_callback:
                 progress_callback(0, f"Running {algo.name}...")
-            
+
             # Merge default parameters
             params = parameters or {}
             for param_name, param_info in algo.parameters.items():
                 if param_name not in params:
                     params[param_name] = param_info.get("default")
-            
+
             # Run algorithm based on ID
             result = self._execute_algorithm(graph, algorithm_id, params, progress_callback)
-            
+
             if self._cancel_requested:
                 logger.info("Algorithm cancelled by user")
                 if progress_callback:
                     progress_callback(0, "Cancelled")
                 return None
-            
+
             if progress_callback:
                 progress_callback(100, "Complete")
-            
+
             logger.info(f"Algorithm completed: {algo.name}")
             return result
-            
+
         except Exception as e:
             logger.error(f"Error running algorithm: {e}", exc_info=True)
             if progress_callback:
@@ -202,7 +202,7 @@ class AlgorithmsService:
         finally:
             self._running = False
             self._cancel_requested = False
-    
+
     def _execute_algorithm(
         self,
         graph: nx.Graph,
@@ -211,13 +211,13 @@ class AlgorithmsService:
         progress_callback: Optional[Callable[[int, str], None]]
     ) -> Dict[str, Any]:
         """Execute the actual algorithm."""
-        
+
         if algorithm_id == "degree_centrality":
             if progress_callback:
                 progress_callback(50, "Computing degree centrality...")
             centrality = nx.degree_centrality(graph)
             return {"centrality": centrality, "type": "degree"}
-        
+
         elif algorithm_id == "betweenness_centrality":
             if progress_callback:
                 progress_callback(30, "Computing betweenness centrality...")
@@ -227,13 +227,13 @@ class AlgorithmsService:
                 endpoints=params.get("endpoints", False)
             )
             return {"centrality": centrality, "type": "betweenness"}
-        
+
         elif algorithm_id == "closeness_centrality":
             if progress_callback:
                 progress_callback(50, "Computing closeness centrality...")
             centrality = nx.closeness_centrality(graph)
             return {"centrality": centrality, "type": "closeness"}
-        
+
         elif algorithm_id == "louvain":
             if progress_callback:
                 progress_callback(30, "Running Louvain algorithm...")
@@ -257,7 +257,7 @@ class AlgorithmsService:
                     "error": "python-louvain package not installed",
                     "install": "pip install python-louvain"
                 }
-        
+
         elif algorithm_id == "spring_layout":
             if progress_callback:
                 progress_callback(30, "Computing spring layout...")
@@ -267,22 +267,22 @@ class AlgorithmsService:
                 iterations=params.get("iterations", 50)
             )
             return {"positions": pos, "type": "spring"}
-        
+
         elif algorithm_id == "kamada_kawai":
             if progress_callback:
                 progress_callback(30, "Computing Kamada-Kawai layout...")
             pos = nx.kamada_kawai_layout(graph)
             return {"positions": pos, "type": "kamada_kawai"}
-        
+
         else:
             raise ValueError(f"Algorithm execution not implemented: {algorithm_id}")
-    
+
     def cancel(self) -> None:
         """Request cancellation of running algorithm."""
         if self._running:
             self._cancel_requested = True
             logger.info("Algorithm cancellation requested")
-    
+
     def is_running(self) -> bool:
         """Check if an algorithm is currently running."""
         return self._running
