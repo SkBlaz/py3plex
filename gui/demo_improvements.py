@@ -247,7 +247,6 @@ def main():
     print("   - Using simple or complex edgelist formats")
     print("   - Computing centrality on multi-layer networks")
     print("   - Getting weight-aware centrality results")
-    print("\n📚 See USER_JOURNEY_FINDINGS.md for detailed documentation")
     print()
 
 
