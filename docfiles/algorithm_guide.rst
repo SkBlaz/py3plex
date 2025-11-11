@@ -256,6 +256,178 @@ Versatility Centrality
     from py3plex.algorithms.statistics import multilayer_statistics as mls
     versatility = mls.versatility_centrality(network, centrality_type='degree')
 
+New Multiplex Network Metrics
+------------------------------
+
+The following metrics extend standard network analysis to multiplex networks, accounting for inter-layer couplings and layer-specific structures.
+
+Multiplex Betweenness Centrality
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Best for:**
+
+* Identifying bridge nodes across layers
+* Finding bottlenecks in multiplex information flow
+* Analyzing paths that traverse inter-layer couplings
+
+**Complexity:** :math:`O(nm)` where :math:`n` is node-layer pairs, :math:`m` is total edges
+
+**Usage:**
+
+.. code-block:: python
+
+    from py3plex.algorithms.statistics import multilayer_statistics as mls
+    betweenness = mls.multiplex_betweenness_centrality(network, normalized=True)
+    top_nodes = sorted(betweenness.items(), key=lambda x: x[1], reverse=True)[:5]
+
+**Reference:** De Domenico et al. (2015), "Structural reducibility of multilayer networks"
+
+Multiplex Closeness Centrality
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Best for:**
+
+* Finding nodes that can quickly reach all other node-layers
+* Broadcasting efficiency across layers
+* Central position analysis in multiplex networks
+
+**Complexity:** :math:`O(nm)` where :math:`n` is node-layer pairs
+
+**Usage:**
+
+.. code-block:: python
+
+    closeness = mls.multiplex_closeness_centrality(network, normalized=True)
+    central_nodes = {k: v for k, v in closeness.items() if v > 0.5}
+
+**Reference:** De Domenico et al. (2015), "Structural reducibility of multilayer networks"
+
+Community Participation Metrics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Best for:**
+
+* Measuring node diversity across communities
+* Identifying nodes that bridge different communities
+* Analyzing cross-community connections
+
+**Complexity:** :math:`O(k)` where :math:`k` is node degree
+
+**Usage:**
+
+.. code-block:: python
+
+    # Participation coefficient (Pᵢ = 1 - Σₛ(kᵢₛ/kᵢ)²)
+    pc = mls.community_participation_coefficient(network, communities, 'Alice')
+    
+    # Participation entropy (Hᵢ = -Σₛ(kᵢₛ/kᵢ)log(kᵢₛ/kᵢ))
+    entropy = mls.community_participation_entropy(network, communities, 'Alice')
+
+**Reference:** Guimerà & Amaral (2005), "Functional cartography of complex metabolic networks"
+
+Layer Redundancy Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Best for:**
+
+* Measuring edge overlap between layers
+* Identifying redundant vs. unique connections
+* Understanding layer complementarity
+
+**Complexity:** :math:`O(m)` where :math:`m` is edges
+
+**Usage:**
+
+.. code-block:: python
+
+    # Redundancy coefficient (Rᵅᵝ = |Eᵅ ∩ Eᵝ|/|Eᵅ|)
+    redundancy = mls.layer_redundancy_coefficient(network, 'social', 'work')
+    
+    # Count unique and redundant edges
+    unique, redundant = mls.unique_redundant_edges(network, 'social', 'work')
+
+**Reference:** Nicosia & Latora (2015), "Measuring and modeling correlations in multiplex networks"
+
+Multiplex Rich-Club Coefficient
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Best for:**
+
+* Analyzing whether high-degree nodes connect preferentially
+* Network core structure identification
+* Hierarchy analysis in multiplex networks
+
+**Complexity:** :math:`O(m)` where :math:`m` is edges
+
+**Usage:**
+
+.. code-block:: python
+
+    rich_club = mls.multiplex_rich_club_coefficient(network, k=10, normalized=True)
+
+**Reference:** Extended from Alstott et al. (2014) to multiplex networks
+
+Robustness and Percolation Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Best for:**
+
+* Network resilience assessment
+* Critical layer identification
+* Cascade failure analysis
+
+**Complexity:** :math:`O(n \times t)` where :math:`t` is number of trials
+
+**Usage:**
+
+.. code-block:: python
+
+    # Estimate percolation threshold
+    threshold = mls.percolation_threshold(
+        network, 
+        removal_strategy='degree',  # or 'random', 'betweenness'
+        trials=20
+    )
+    
+    # Simulate layer removal
+    resilience = mls.targeted_layer_removal(
+        network, 
+        'social', 
+        return_resilience=True
+    )
+
+**Reference:** Buldyrev et al. (2010), "Catastrophic cascade of failures in interdependent networks"
+
+Direct Modularity Computation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Best for:**
+
+* Evaluating community partition quality
+* Comparing different community structures
+* Direct modularity calculation without detection
+
+**Complexity:** :math:`O(m)` where :math:`m` is edges
+
+**Usage:**
+
+.. code-block:: python
+
+    # Compute multislice modularity score
+    Q = mls.compute_modularity_score(
+        network, 
+        communities, 
+        gamma=1.0,  # resolution parameter
+        omega=1.0   # inter-layer coupling
+    )
+
+**Reference:** Mucha et al. (2010), Science 328, 876-878
+
+Complete Example
+~~~~~~~~~~~~~~~~
+
+See ``examples/centrality_and_statistics/example_new_multiplex_metrics.py`` for a comprehensive demonstration of all new metrics.
+
 Network Statistics
 ------------------
 
