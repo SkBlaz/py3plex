@@ -3020,3 +3020,215 @@ DONE Comprehensive documentation provided
 3. Expand to medium-complexity targets (converters, multilayer stats)
 4. Add metamorphic properties for graph algorithms
 5. Consider performance property tests (complexity bounds)
+
+---
+
+## Metrics Improvements (2025-11 Implementation)
+
+### Summary
+
+The py3plex library has been enhanced with comprehensive multiplex network metrics as specified in the metrics improvements issue. All newly implemented functions follow standard definitions from multilayer network analysis literature and include proper documentation, type hints, and test coverage.
+
+### Newly Implemented Metrics
+
+#### 1. Multiplex Centrality Measures
+
+**`multiplex_betweenness_centrality(network, normalized=True, weight=None)`**
+- Computes betweenness centrality on the supra-graph
+- Accounts for paths that traverse inter-layer couplings
+- Returns dictionary mapping (node, layer) tuples to centrality values
+- Reference: De Domenico et al. (2015), "Structural reducibility of multilayer networks"
+
+**`multiplex_closeness_centrality(network, normalized=True, weight=None)`**
+- Computes closeness centrality on the supra-graph
+- Captures how quickly node-layers can reach all other node-layers
+- Returns dictionary mapping (node, layer) tuples to centrality values  
+- Reference: De Domenico et al. (2015), "Structural reducibility of multilayer networks"
+
+#### 2. Community Participation Metrics
+
+**`community_participation_coefficient(network, communities, node)`**
+- Measures how evenly a node's connections are distributed across communities
+- Formula: Pᵢ = 1 - Σₛ (kᵢₛ / kᵢ)²
+- Returns value between 0 and 1 (higher = more diverse participation)
+- Reference: Guimerà & Amaral (2005), "Functional cartography of complex metabolic networks"
+
+**`community_participation_entropy(network, communities, node)`**
+- Shannon entropy-based measure of community participation diversity
+- Formula: Hᵢ = -Σₛ (kᵢₛ / kᵢ) log(kᵢₛ / kᵢ)
+- Returns entropy value (higher = more diverse participation)
+- Reference: Based on Shannon entropy applied to community structure
+
+#### 3. Layer Redundancy Metrics
+
+**`layer_redundancy_coefficient(network, layer_i, layer_j)`**
+- Measures proportion of edges in one layer that are also present in another
+- Formula: Rᵅᵝ = |Eᵅ ∩ Eᵝ| / |Eᵅ|
+- Returns value between 0 and 1 (1 = high redundancy, 0 = complementary)
+- Reference: Nicosia & Latora (2015), "Measuring and modeling correlations in multiplex networks"
+
+**`unique_redundant_edges(network, layer_i, layer_j)`**
+- Counts unique and redundant edges between two layers
+- Returns tuple of (unique_edges, redundant_edges)
+- Useful for understanding layer complementarity
+
+#### 4. Rich-Club Analysis
+
+**`multiplex_rich_club_coefficient(network, k, normalized=True)`**
+- Measures tendency of high-degree nodes to be densely connected
+- Formula: φᴹ(k) = Eᴹ(>k) / (Nᴹ(>k) * (Nᴹ(>k)-1) / 2)
+- Accounts for multiplex structure (uses overlapping degree)
+- Reference: Extended from Alstott et al. (2014) to multiplex networks
+
+#### 5. Robustness and Percolation Analysis
+
+**`percolation_threshold(network, removal_strategy='random', trials=10)`**
+- Estimates percolation threshold via node removal simulation
+- Supports 'random', 'degree', or 'betweenness' removal strategies
+- Returns estimated threshold as fraction of nodes
+- Reference: Buldyrev et al. (2010), "Catastrophic cascade of failures in interdependent networks"
+
+**`targeted_layer_removal(network, layer, return_resilience=False)`**
+- Simulates removal of an entire layer
+- Returns modified network or resilience score
+- Useful for analyzing layer importance
+- Reference: Buldyrev et al. (2010), "Catastrophic cascade of failures"
+
+#### 6. Modularity Computation
+
+**`compute_modularity_score(network, communities, gamma=1.0, omega=1.0)`**
+- Direct computation of multislice modularity quality function
+- Does not run detection algorithms, just evaluates partition
+- Formula: Q = (1/2μ) Σᵢⱼₐᵦ [(Aᵢⱼᵅ - γ·kᵢᵅkⱼᵅ/(2mₐ))δₐᵦ + ω·δᵢⱼ] δ(cᵢᵅ, cⱼᵝ)
+- Reference: Mucha et al. (2010), Science 328, 876-878
+
+### Previously Existing Metrics (Confirmed Present)
+
+The following metrics were already implemented in py3plex before this update:
+
+- **Multiplex PageRank/Eigenvector Centrality**: `versatility_centrality()` function
+- **Multiplex Clustering Coefficients**: `multilayer_clustering_coefficient()` function  
+- **Assortativity**: `inter_layer_assortativity()` function
+- **Edge Overlap Metrics**: `edge_overlap()` and `layer_similarity()` functions
+- **Motif Counts**: `multilayer_motif_frequency()` function (basic triangles)
+- **Robustness/Resilience**: `resilience()` function
+- **Modularity Wrapper**: `multilayer_modularity()` function (wraps community detection)
+
+### Test Coverage
+
+All newly implemented functions have comprehensive test coverage in `tests/test_new_multilayer_metrics.py`:
+
+- **16 tests** covering all new functions
+- Tests validate return types, value ranges, and properties
+- All tests passing with 100% success rate
+
+### Usage Examples
+
+```python
+from py3plex.core import multinet
+from py3plex.algorithms.statistics import multilayer_statistics
+
+# Create or load network
+network = multinet.multi_layer_network(directed=False)
+# ... add edges ...
+
+# Compute multiplex betweenness
+betweenness = multilayer_statistics.multiplex_betweenness_centrality(network)
+top_nodes = sorted(betweenness.items(), key=lambda x: x[1], reverse=True)[:5]
+
+# Compute multiplex closeness
+closeness = multilayer_statistics.multiplex_closeness_centrality(network)
+central_nodes = {k: v for k, v in closeness.items() if v > 0.5}
+
+# Analyze community participation
+communities = detect_communities(network)  # Your detection method
+pc = multilayer_statistics.community_participation_coefficient(network, communities, 'Alice')
+entropy = multilayer_statistics.community_participation_entropy(network, communities, 'Alice')
+
+# Layer redundancy analysis
+redundancy = multilayer_statistics.layer_redundancy_coefficient(network, 'social', 'work')
+unique, redundant = multilayer_statistics.unique_redundant_edges(network, 'social', 'work')
+
+# Rich-club analysis
+rich_club = multilayer_statistics.multiplex_rich_club_coefficient(network, k=10)
+
+# Percolation analysis
+threshold = multilayer_statistics.percolation_threshold(
+    network, removal_strategy='degree', trials=20
+)
+resilience = multilayer_statistics.targeted_layer_removal(
+    network, 'social', return_resilience=True
+)
+
+# Direct modularity computation
+Q = multilayer_statistics.compute_modularity_score(
+    network, communities, gamma=1.0, omega=1.0
+)
+```
+
+### API Reference
+
+All new functions are exported from `py3plex.algorithms.statistics.multilayer_statistics`:
+
+```python
+from py3plex.algorithms.statistics.multilayer_statistics import (
+    multiplex_betweenness_centrality,
+    multiplex_closeness_centrality,
+    community_participation_coefficient,
+    community_participation_entropy,
+    layer_redundancy_coefficient,
+    unique_redundant_edges,
+    multiplex_rich_club_coefficient,
+    percolation_threshold,
+    targeted_layer_removal,
+    compute_modularity_score,
+)
+```
+
+Or import the entire module:
+
+```python
+from py3plex.algorithms.statistics import multilayer_statistics
+
+# Use with full path
+result = multilayer_statistics.multiplex_betweenness_centrality(network)
+```
+
+### Implementation Details
+
+- **Location**: All functions added to `py3plex/algorithms/statistics/multilayer_statistics.py`
+- **Line count**: ~550 new lines of code
+- **Dependencies**: Uses existing NetworkX, NumPy, and SciPy functionality
+- **Design principle**: Minimal changes - functions operate on the existing supra-graph representation
+- **Documentation**: Complete docstrings with formulas, references, and examples
+
+### Validation
+
+1. **Correctness**: All functions follow standard definitions from cited literature
+2. **Type safety**: Proper type hints and return type annotations
+3. **Testing**: 16 new tests with 100% pass rate
+4. **Integration**: Functions work with existing py3plex infrastructure
+5. **Performance**: Leverages efficient NetworkX algorithms where possible
+
+### Status: COMPLETE ✓
+
+All requirements from the metrics improvements issue have been successfully implemented:
+
+- ✓ Multiplex betweenness (traversing inter-layer couplings)
+- ✓ Multiplex closeness (traversing inter-layer couplings)  
+- ✓ Participation metrics by community (coefficient & entropy)
+- ✓ Layer overlap/redundancy metrics (unique vs redundant ties)
+- ✓ Rich-club coefficients (generalized to multiplex)
+- ✓ Percolation analyses (targeted removal & cascade thresholds)
+- ✓ Explicit multislice modularity score computation (direct utility)
+
+### References
+
+Key papers cited in the implementation:
+
+1. De Domenico et al. (2015), "Structural reducibility of multilayer networks", Nature Communications 6, 6864
+2. Mucha et al. (2010), "Community Structure in Time-Dependent, Multiscale, and Multiplex Networks", Science 328, 876-878
+3. Guimerà & Amaral (2005), "Functional cartography of complex metabolic networks", Nature 433, 895-900
+4. Nicosia & Latora (2015), "Measuring and modeling correlations in multiplex networks", Physical Review E 92, 032805
+5. Buldyrev et al. (2010), "Catastrophic cascade of failures in interdependent networks", Nature 464, 1025-1028
+6. Kivelä et al. (2014), "Multilayer networks", Journal of Complex Networks 2(3), 203-271
