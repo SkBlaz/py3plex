@@ -20,7 +20,7 @@ export default function Analyze() {
   const [graphId, setGraphId] = useState<string | null>(null);
   const [jobs, setJobs] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const pollTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const storedGraphId = sessionStorage.getItem('currentGraphId');
