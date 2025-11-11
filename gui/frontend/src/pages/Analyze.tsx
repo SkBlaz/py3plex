@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Play, RefreshCw, CheckCircle, XCircle, Clock, AlertCircle } from 'lucide-react';
 import {
   computeLayout,
@@ -7,10 +7,20 @@ import {
   getJobStatus,
 } from '../lib/api';
 
+// Adaptive polling intervals based on job state
+const POLL_INTERVALS = {
+  queued: 3000,      // 3 seconds for queued jobs
+  running: 2000,     // 2 seconds for running jobs  
+  completed: 0,      // Stop polling for completed
+  failed: 0,         // Stop polling for failed
+  default: 5000      // 5 seconds default
+};
+
 export default function Analyze() {
   const [graphId, setGraphId] = useState<string | null>(null);
   const [jobs, setJobs] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const pollTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const storedGraphId = sessionStorage.getItem('currentGraphId');
@@ -19,25 +29,66 @@ export default function Analyze() {
     }
   }, []);
 
-  useEffect(() => {
-    // Poll jobs
-    const interval = setInterval(() => {
-      jobs.forEach(async (job) => {
-        if (job.status === 'running' || job.status === 'queued') {
-          try {
-            const response = await getJobStatus(job.id);
-            setJobs((prev) =>
-              prev.map((j) => (j.id === job.id ? { ...j, ...response.data } : j))
-            );
-          } catch (err) {
-            console.error('Failed to poll job:', err);
-          }
-        }
-      });
-    }, 2000);
+  // Optimized polling with adaptive intervals
+  const pollJobs = useCallback(async () => {
+    const activeJobs = jobs.filter(
+      job => job.status === 'running' || job.status === 'queued'
+    );
+    
+    if (activeJobs.length === 0) {
+      // No active jobs, stop polling
+      if (pollTimerRef.current) {
+        clearTimeout(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+      return;
+    }
 
-    return () => clearInterval(interval);
+    // Poll active jobs in batch
+    const promises = activeJobs.map(async (job) => {
+      try {
+        const response = await getJobStatus(job.id);
+        return { id: job.id, data: response.data };
+      } catch (err) {
+        console.error('Failed to poll job:', err);
+        return null;
+      }
+    });
+
+    const results = await Promise.all(promises);
+    
+    setJobs((prev) =>
+      prev.map((j) => {
+        const result = results.find(r => r?.id === j.id);
+        return result ? { ...j, ...result.data } : j;
+      })
+    );
+
+    // Schedule next poll with adaptive interval
+    const minInterval = Math.min(
+      ...activeJobs.map(j => POLL_INTERVALS[j.status as keyof typeof POLL_INTERVALS] || POLL_INTERVALS.default)
+    );
+    
+    pollTimerRef.current = setTimeout(pollJobs, minInterval);
   }, [jobs]);
+
+  useEffect(() => {
+    // Start polling when jobs are added
+    const hasActiveJobs = jobs.some(
+      job => job.status === 'running' || job.status === 'queued'
+    );
+    
+    if (hasActiveJobs && !pollTimerRef.current) {
+      pollTimerRef.current = setTimeout(pollJobs, 2000);
+    }
+
+    return () => {
+      if (pollTimerRef.current) {
+        clearTimeout(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+    };
+  }, [jobs, pollJobs]);
 
   const runLayoutJob = async () => {
     if (!graphId) return;

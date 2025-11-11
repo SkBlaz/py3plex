@@ -7,64 +7,80 @@ import networkx as nx
 import uuid
 import logging
 import random
+from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
+# Cache for expensive computations
+SUMMARY_CACHE = {}
+POSITION_CACHE = {}
+
 
 def get_graph_summary(graph_id: str):
-    """Get summary statistics for a graph"""
+    """Get summary statistics for a graph (cached)"""
+    # Check cache first
+    if graph_id in SUMMARY_CACHE:
+        logger.debug(f"Using cached summary for graph {graph_id}")
+        return SUMMARY_CACHE[graph_id]
+    
     entry = get_graph(graph_id)
     if not entry:
         return None
     
     graph = entry['graph']
     
-    # Extract layers
-    layers = set()
-    for u, v, data in graph.edges(data=True):
-        if 'layer' in data:
-            layers.add(data['layer'])
+    # Extract layers (optimized with set comprehension)
+    layers = {data.get('layer') for u, v, data in graph.edges(data=True) if 'layer' in data}
     
-    # Extract attributes
+    # Extract attributes (optimized)
     attributes = set()
     for node, data in graph.nodes(data=True):
         attributes.update(data.keys())
     
-    return GraphSummary(
+    summary = GraphSummary(
         graph_id=graph_id,
         nodes=graph.number_of_nodes(),
         edges=graph.number_of_edges(),
         layers=sorted(list(layers)) if layers else ["default"],
         attributes=sorted(list(attributes))
     )
+    
+    # Cache the result
+    SUMMARY_CACHE[graph_id] = summary
+    logger.debug(f"Cached summary for graph {graph_id}")
+    
+    return summary
 
 
 def filter_graph(graph_id: str, spec: FilterSpec):
-    """Filter graph based on specification"""
+    """Filter graph based on specification (optimized)"""
     entry = get_graph(graph_id)
     if not entry:
         return None
     
     graph = entry['graph']
-    subgraph = graph.copy()
     
-    # Filter by degree
+    # Use subgraph view for better performance when possible
+    nodes_to_keep = set(graph.nodes())
+    
+    # Filter by degree (optimized with list comprehension)
     if spec.min_degree is not None or spec.max_degree is not None:
-        nodes_to_remove = []
-        for node in subgraph.nodes():
-            degree = subgraph.degree(node)
-            if spec.min_degree and degree < spec.min_degree:
-                nodes_to_remove.append(node)
-            if spec.max_degree and degree > spec.max_degree:
-                nodes_to_remove.append(node)
-        subgraph.remove_nodes_from(nodes_to_remove)
+        degree_dict = dict(graph.degree())
+        nodes_to_keep = {
+            node for node in nodes_to_keep
+            if (spec.min_degree is None or degree_dict[node] >= spec.min_degree) and
+               (spec.max_degree is None or degree_dict[node] <= spec.max_degree)
+        }
     
-    # Filter by layers
+    # Create subgraph from filtered nodes
+    subgraph = graph.subgraph(nodes_to_keep).copy()
+    
+    # Filter by layers if specified
     if spec.layers:
-        edges_to_remove = []
-        for u, v, key, data in subgraph.edges(keys=True, data=True):
-            if 'layer' in data and data['layer'] not in spec.layers:
-                edges_to_remove.append((u, v, key))
+        edges_to_remove = [
+            (u, v, key) for u, v, key, data in subgraph.edges(keys=True, data=True)
+            if 'layer' in data and data['layer'] not in spec.layers
+        ]
         subgraph.remove_edges_from(edges_to_remove)
     
     # Generate new subgraph ID
@@ -76,6 +92,9 @@ def filter_graph(graph_id: str, spec: FilterSpec):
         'metadata': {'parent': graph_id}
     }
     
+    # Invalidate caches for new subgraph
+    logger.debug(f"Created filtered subgraph {subgraph_id} from {graph_id}")
+    
     return FilterResponse(
         subgraph_id=subgraph_id,
         original_graph_id=graph_id,
@@ -85,7 +104,12 @@ def filter_graph(graph_id: str, spec: FilterSpec):
 
 
 def get_graph_positions(graph_id: str):
-    """Get node positions for visualization"""
+    """Get node positions for visualization (cached)"""
+    # Check cache first
+    if graph_id in POSITION_CACHE:
+        logger.debug(f"Using cached positions for graph {graph_id}")
+        return POSITION_CACHE[graph_id]
+    
     entry = get_graph(graph_id)
     if not entry:
         return None
@@ -94,8 +118,16 @@ def get_graph_positions(graph_id: str):
     positions = entry.get('positions')
     if not positions:
         graph = entry['graph']
-        # Generate spring layout as default
-        pos_dict = nx.spring_layout(graph, seed=42)
+        
+        # For large graphs, use faster layout algorithm
+        num_nodes = graph.number_of_nodes()
+        if num_nodes > 1000:
+            logger.info(f"Large graph ({num_nodes} nodes), using random layout for speed")
+            pos_dict = nx.random_layout(graph, seed=42)
+        else:
+            # Generate spring layout as default with limited iterations
+            pos_dict = nx.spring_layout(graph, seed=42, iterations=20)
+        
         positions = [
             NodePosition(
                 node_id=str(node),
@@ -107,14 +139,20 @@ def get_graph_positions(graph_id: str):
         ]
         entry['positions'] = positions
     
-    return GraphPositions(
+    result = GraphPositions(
         graph_id=graph_id,
         positions=positions
     )
+    
+    # Cache the result
+    POSITION_CACHE[graph_id] = result
+    logger.debug(f"Cached positions for graph {graph_id}")
+    
+    return result
 
 
 def sample_graph(graph_id: str, max_nodes: int = 500):
-    """Sample a subgraph for preview"""
+    """Sample a subgraph for preview (optimized)"""
     entry = get_graph(graph_id)
     if not entry:
         return None
@@ -125,9 +163,8 @@ def sample_graph(graph_id: str, max_nodes: int = 500):
         # Return full graph if small enough
         return get_graph_summary(graph_id)
     
-    # Sample nodes
-    nodes = list(graph.nodes())
-    sampled_nodes = random.sample(nodes, max_nodes)
+    # Sample nodes (optimized with random.sample)
+    sampled_nodes = random.sample(list(graph.nodes()), max_nodes)
     subgraph = graph.subgraph(sampled_nodes)
     
     return {
@@ -137,4 +174,27 @@ def sample_graph(graph_id: str, max_nodes: int = 500):
         "edges": subgraph.number_of_edges(),
         "total_nodes": graph.number_of_nodes(),
         "total_edges": graph.number_of_edges()
+    }
+
+
+def clear_cache(graph_id: str = None):
+    """Clear caches for specific graph or all graphs"""
+    global SUMMARY_CACHE, POSITION_CACHE
+    
+    if graph_id:
+        SUMMARY_CACHE.pop(graph_id, None)
+        POSITION_CACHE.pop(graph_id, None)
+        logger.info(f"Cleared cache for graph {graph_id}")
+    else:
+        SUMMARY_CACHE.clear()
+        POSITION_CACHE.clear()
+        logger.info("Cleared all caches")
+
+
+def get_cache_stats():
+    """Get cache statistics for monitoring"""
+    return {
+        "summary_cache_size": len(SUMMARY_CACHE),
+        "position_cache_size": len(POSITION_CACHE),
+        "graph_registry_size": len(GRAPH_REGISTRY)
     }

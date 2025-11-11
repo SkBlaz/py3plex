@@ -3,10 +3,11 @@ FastAPI application for Py3plex GUI
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 import logging
 
-from app.routes import health, upload, graphs, jobs, analysis, workspace
+from app.routes import health, upload, graphs, jobs, analysis, workspace, cache
 
 # Configure logging
 logging.basicConfig(
@@ -25,6 +26,9 @@ app = FastAPI(
     openapi_url="/api/openapi.json"
 )
 
+# Add GZip compression middleware for better performance
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
@@ -41,6 +45,7 @@ app.include_router(graphs.router, prefix="/api", tags=["Graphs"])
 app.include_router(jobs.router, prefix="/api", tags=["Jobs"])
 app.include_router(analysis.router, prefix="/api", tags=["Analysis"])
 app.include_router(workspace.router, prefix="/api", tags=["Workspace"])
+app.include_router(cache.router, prefix="/api", tags=["Cache"])
 
 # Global exception handler
 @app.exception_handler(Exception)
