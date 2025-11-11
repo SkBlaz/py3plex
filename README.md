@@ -15,6 +15,8 @@
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
+*For LLMs and AI assistants:* See [LLM.md](./LLM.md) for a comprehensive guide including quick start, API reference, usage patterns, and FAQ.
+
 ![Customization](example_images/part1.png)
 ## Getting Started
 
@@ -151,6 +153,8 @@ make lint       # Run linters only
 ```bash
 python run_tests.py
 ```
+
+For comprehensive project context, development status, and guidance for maintainers and LLMs, see [LLM.md](./LLM.md).
 
 ### Performance Benchmarks
 
