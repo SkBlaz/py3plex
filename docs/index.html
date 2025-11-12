@@ -80,6 +80,13 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -429,6 +436,7 @@ py3plex provides:</p>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#community-detection">Community Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#centrality-measures">Centrality Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#new-multiplex-network-metrics">New Multiplex Network Metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#network-statistics">Network Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#node-embeddings">Node Embeddings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="algorithm_guide.html#visualization">Visualization</a></li>
@@ -504,6 +512,7 @@ py3plex provides:</p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/cli_usage.html">Command-Line Interface (CLI) Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/cli_usage.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/cli_usage.html#quick-start">Quick Start</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/cli_usage.html#getting-help">Getting Help</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/cli_usage.html#available-commands">Available Commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/cli_usage.html#creating-networks">Creating Networks</a></li>
@@ -555,6 +564,8 @@ py3plex provides:</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#aggregation-methods">Aggregation Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#mathematical-definitions">Mathematical Definitions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#multirank-and-multiplex-pagerank-variants">MultiRank and Multiplex PageRank Variants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#extended-centrality-measures">Extended Centrality Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#example-applications">Example Applications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/multilayer_centrality.html#references">References</a></li>
 </ul>
@@ -656,6 +667,69 @@ py3plex provides:</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="supra.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#model-definition">Model Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#update-rules">Update Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#units-and-conventions">Units and Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#performance-tips">Performance Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sir_epidemic_simulator.html#citation">Citation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#development-guide">Development Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#data-formats">Data Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#production-deployment">Production Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#api-documentation">API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#support">Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#system-overview">System Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#data-flow">Data Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#component-responsibilities">Component Responsibilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#data-models">Data Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#security-architecture">Security Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#deployment-variants">Deployment Variants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#network-topology">Network Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#volume-mounts">Volume Mounts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#performance-characteristics">Performance Characteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_architecture.html#future-enhancements">Future Enhancements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui_testing.html#automated-testing-ci">Automated Testing (CI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_testing.html#manual-testing-guide">Manual Testing Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_testing.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_testing.html#cleanup">Cleanup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_testing.html#test-checklist">Test Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_testing.html#performance-benchmarks">Performance Benchmarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_testing.html#security-testing-development-mode">Security Testing (Development Mode)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui_testing.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
 </ul>
