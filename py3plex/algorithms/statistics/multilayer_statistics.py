@@ -1215,6 +1215,516 @@ def resilience(
     return float(perturbed_size / original_size)
 
 
+def multiplex_betweenness_centrality(
+    network: Any, normalized: bool = True, weight: Optional[str] = None
+) -> Dict[Tuple[Any, Any], float]:
+    """
+    Calculate multiplex betweenness centrality.
+
+    Computes betweenness centrality on the supra-graph, accounting for paths
+    that traverse inter-layer couplings. This extends the standard betweenness
+    definition to multiplex networks where paths can cross layers.
+
+    Formula: Bᵢᵅ = Σₛ≠ᵢ≠ₜ (σₛₜ(iα) / σₛₜ)
+
+    where σₛₜ is the total number of shortest paths from s to t, and
+    σₛₜ(iα) is the number of those paths passing through node i in layer α.
+
+    Args:
+        network: py3plex multi_layer_network object
+        normalized: Whether to normalize by the number of node pairs
+        weight: Edge weight attribute name (None for unweighted)
+
+    Returns:
+        Dictionary mapping (node, layer) tuples to betweenness centrality values
+
+    Examples:
+        >>> betweenness = multiplex_betweenness_centrality(network)
+        >>> top_nodes = sorted(betweenness.items(), key=lambda x: x[1], reverse=True)[:5]
+
+    Reference:
+        De Domenico et al. (2015), "Structural reducibility of multilayer networks"
+    """
+    G = network.core_network
+    betweenness = nx.betweenness_centrality(G, normalized=normalized, weight=weight)
+    return betweenness
+
+
+def multiplex_closeness_centrality(
+    network: Any, normalized: bool = True, weight: Optional[str] = None
+) -> Dict[Tuple[Any, Any], float]:
+    """
+    Calculate multiplex closeness centrality.
+
+    Computes closeness centrality on the supra-graph, where shortest paths
+    can traverse inter-layer edges. This captures how quickly a node-layer
+    can reach all other node-layers in the multiplex network.
+
+    Formula: Cᵢᵅ = (N*L - 1) / Σⱼᵝ≠ᵢᵅ d(iα, jβ)
+
+    where d(iα, jβ) is the shortest path distance from node i in layer α
+    to node j in layer β, and N*L is the total number of node-layer pairs.
+
+    Args:
+        network: py3plex multi_layer_network object
+        normalized: Whether to normalize by network size
+        weight: Edge weight attribute name (None for unweighted)
+
+    Returns:
+        Dictionary mapping (node, layer) tuples to closeness centrality values
+
+    Examples:
+        >>> closeness = multiplex_closeness_centrality(network)
+        >>> central_nodes = {k: v for k, v in closeness.items() if v > 0.5}
+
+    Reference:
+        De Domenico et al. (2015), "Structural reducibility of multilayer networks"
+    """
+    G = network.core_network
+    # Use distance (inverse weight) if weights are provided
+    distance = weight if weight else None
+    closeness = nx.closeness_centrality(G, distance=distance)
+    return closeness
+
+
+def community_participation_coefficient(
+    network: Any, communities: Dict[Tuple[Any, Any], int], node: Any
+) -> float:
+    """
+    Calculate participation coefficient for a node across community structure.
+
+    Measures how evenly a node's connections are distributed across different
+    communities, across all layers. A node with connections to many communities
+    has high participation.
+
+    Formula: Pᵢ = 1 - Σₛ (kᵢₛ / kᵢ)²
+
+    where kᵢₛ is the number of connections node i has to community s,
+    and kᵢ is the total degree of node i across all layers.
+
+    Args:
+        network: py3plex multi_layer_network object
+        communities: Dictionary mapping (node, layer) to community ID
+        node: Node identifier (not node-layer tuple)
+
+    Returns:
+        Participation coefficient value between 0 and 1
+
+    Examples:
+        >>> communities = detect_communities(network)
+        >>> pc = community_participation_coefficient(network, communities, 'Alice')
+        >>> print(f"Participation: {pc:.3f}")
+
+    Reference:
+        Guimerà & Amaral (2005), "Functional cartography of complex metabolic networks"
+    """
+    # Get all node-layer pairs for this node
+    node_layers = [nl for nl in network.get_nodes() if nl[0] == node]
+
+    # Count connections to each community
+    community_connections = {}
+    total_degree = 0
+
+    for node_layer in node_layers:
+        # Get neighbors of this node-layer
+        if node_layer in network.core_network:
+            for neighbor in network.core_network.neighbors(node_layer):
+                if neighbor in communities:
+                    comm_id = communities[neighbor]
+                    community_connections[comm_id] = (
+                        community_connections.get(comm_id, 0) + 1
+                    )
+                    total_degree += 1
+
+    if total_degree == 0:
+        return 0.0
+
+    # Calculate participation coefficient
+    pc = 1.0 - sum(
+        (count / total_degree) ** 2 for count in community_connections.values()
+    )
+
+    return pc
+
+
+def community_participation_entropy(
+    network: Any, communities: Dict[Tuple[Any, Any], int], node: Any
+) -> float:
+    """
+    Calculate participation entropy for a node across community structure.
+
+    Shannon entropy-based measure of how evenly a node distributes its
+    connections across different communities. Higher entropy indicates
+    more diverse community participation.
+
+    Formula: Hᵢ = -Σₛ (kᵢₛ / kᵢ) log(kᵢₛ / kᵢ)
+
+    where kᵢₛ is connections to community s, kᵢ is total degree.
+
+    Args:
+        network: py3plex multi_layer_network object
+        communities: Dictionary mapping (node, layer) to community ID
+        node: Node identifier (not node-layer tuple)
+
+    Returns:
+        Entropy value (higher = more diverse participation)
+
+    Examples:
+        >>> entropy = community_participation_entropy(network, communities, 'Alice')
+        >>> print(f"Participation entropy: {entropy:.3f}")
+
+    Reference:
+        Based on Shannon entropy applied to community structure
+    """
+    # Get all node-layer pairs for this node
+    node_layers = [nl for nl in network.get_nodes() if nl[0] == node]
+
+    # Count connections to each community
+    community_connections = {}
+    total_degree = 0
+
+    for node_layer in node_layers:
+        if node_layer in network.core_network:
+            for neighbor in network.core_network.neighbors(node_layer):
+                if neighbor in communities:
+                    comm_id = communities[neighbor]
+                    community_connections[comm_id] = (
+                        community_connections.get(comm_id, 0) + 1
+                    )
+                    total_degree += 1
+
+    if total_degree == 0:
+        return 0.0
+
+    # Calculate entropy
+    entropy = 0.0
+    for count in community_connections.values():
+        if count > 0:
+            p = count / total_degree
+            entropy -= p * np.log(p)
+
+    return entropy
+
+
+def layer_redundancy_coefficient(
+    network: Any, layer_i: str, layer_j: str
+) -> float:
+    """
+    Calculate layer redundancy coefficient.
+
+    Measures the proportion of edges in one layer that are redundant
+    (also present) in another layer. Values close to 1 indicate high
+    redundancy, while values close to 0 indicate complementary layers.
+
+    Formula: Rᵅᵝ = |Eᵅ ∩ Eᵝ| / |Eᵅ|
+
+    where Eᵅ and Eᵝ are edge sets of layers α and β.
+
+    Args:
+        network: py3plex multi_layer_network object
+        layer_i: First layer identifier
+        layer_j: Second layer identifier
+
+    Returns:
+        Redundancy coefficient between 0 and 1
+
+    Examples:
+        >>> redundancy = layer_redundancy_coefficient(network, 'social', 'work')
+        >>> print(f"Redundancy: {redundancy:.2%}")
+
+    Reference:
+        Nicosia & Latora (2015), "Measuring and modeling correlations in multiplex networks"
+    """
+    # Get edges from both layers
+    edges_i = set()
+    edges_j = set()
+
+    for edge in network.get_edges():
+        # edge format: (source, target, layer) or similar
+        if len(edge) >= 3:
+            source, target, layer = edge[0], edge[1], edge[2]
+            edge_key = tuple(sorted([source, target]))  # Undirected edge
+
+            if layer == layer_i:
+                edges_i.add(edge_key)
+            elif layer == layer_j:
+                edges_j.add(edge_key)
+
+    if len(edges_i) == 0:
+        return 0.0
+
+    # Calculate overlap
+    overlap = len(edges_i & edges_j)
+    redundancy = overlap / len(edges_i)
+
+    return redundancy
+
+
+def unique_redundant_edges(
+    network: Any, layer_i: str, layer_j: str
+) -> Tuple[int, int]:
+    """
+    Count unique and redundant edges between two layers.
+
+    Returns the number of edges unique to the first layer and the number
+    of edges present in both layers (redundant).
+
+    Args:
+        network: py3plex multi_layer_network object
+        layer_i: First layer identifier
+        layer_j: Second layer identifier
+
+    Returns:
+        Tuple of (unique_edges, redundant_edges)
+
+    Examples:
+        >>> unique, redundant = unique_redundant_edges(network, 'social', 'work')
+        >>> print(f"Unique: {unique}, Redundant: {redundant}")
+    """
+    # Get edges from both layers
+    edges_i = set()
+    edges_j = set()
+
+    for edge in network.get_edges():
+        if len(edge) >= 3:
+            source, target, layer = edge[0], edge[1], edge[2]
+            edge_key = tuple(sorted([source, target]))
+
+            if layer == layer_i:
+                edges_i.add(edge_key)
+            elif layer == layer_j:
+                edges_j.add(edge_key)
+
+    redundant = len(edges_i & edges_j)
+    unique = len(edges_i - edges_j)
+
+    return unique, redundant
+
+
+def multiplex_rich_club_coefficient(
+    network: Any, k: int, normalized: bool = True
+) -> float:
+    """
+    Calculate multiplex rich-club coefficient.
+
+    Measures the tendency of high-degree nodes to be more densely connected
+    to each other than expected by chance, accounting for the multiplex structure.
+
+    Formula: φᴹ(k) = Eᴹ(>k) / (Nᴹ(>k) * (Nᴹ(>k)-1) / 2)
+
+    where Eᴹ(>k) is the number of edges among nodes with overlapping degree > k,
+    and Nᴹ(>k) is the number of such nodes.
+
+    Args:
+        network: py3plex multi_layer_network object
+        k: Degree threshold
+        normalized: Whether to normalize by random expectation
+
+    Returns:
+        Rich-club coefficient value
+
+    Examples:
+        >>> rich_club = multiplex_rich_club_coefficient(network, k=10)
+        >>> print(f"Rich-club coefficient: {rich_club:.3f}")
+
+    Reference:
+        Alstott et al. (2014), "powerlaw: A Python Package for Analysis of Heavy-Tailed Distributions"
+        Extended to multiplex networks
+    """
+    # Calculate overlapping degree for each node
+    node_degrees = {}
+    for node_layer in network.get_nodes():
+        node = node_layer[0]
+        degree = network.core_network.degree(node_layer)
+        node_degrees[node] = node_degrees.get(node, 0) + degree
+
+    # Find nodes with degree > k
+    rich_nodes = {node for node, deg in node_degrees.items() if deg > k}
+
+    if len(rich_nodes) < 2:
+        return 0.0
+
+    # Count edges among rich nodes
+    rich_edges = 0
+    for edge in network.get_edges():
+        if len(edge) >= 3:
+            source, target = edge[0], edge[1]
+            if source in rich_nodes and target in rich_nodes:
+                rich_edges += 1
+
+    # Calculate coefficient
+    num_rich = len(rich_nodes)
+    max_possible_edges = num_rich * (num_rich - 1) / 2
+    
+    if max_possible_edges == 0:
+        return 0.0
+
+    phi = rich_edges / max_possible_edges
+
+    return phi
+
+
+def percolation_threshold(
+    network: Any, removal_strategy: str = "random", trials: int = 10
+) -> float:
+    """
+    Estimate percolation threshold for the multiplex network.
+
+    Determines the fraction of nodes that must be removed before the network
+    fragments into disconnected components. Uses sampling to estimate threshold.
+
+    Args:
+        network: py3plex multi_layer_network object
+        removal_strategy: 'random', 'degree', or 'betweenness'
+        trials: Number of trials for averaging
+
+    Returns:
+        Estimated percolation threshold (fraction of nodes)
+
+    Examples:
+        >>> threshold = percolation_threshold(network, removal_strategy='degree')
+        >>> print(f"Percolation threshold: {threshold:.2%}")
+
+    Reference:
+        Buldyrev et al. (2010), "Catastrophic cascade of failures in interdependent networks"
+    """
+    import random
+
+    thresholds = []
+
+    for _ in range(trials):
+        G = network.core_network.copy()
+        nodes = list(G.nodes())
+        num_nodes = len(nodes)
+
+        if num_nodes == 0:
+            continue
+
+        # Sort nodes by removal strategy
+        if removal_strategy == "degree":
+            nodes_sorted = sorted(nodes, key=lambda n: G.degree(n), reverse=True)
+        elif removal_strategy == "betweenness":
+            bc = nx.betweenness_centrality(G)
+            nodes_sorted = sorted(nodes, key=lambda n: bc.get(n, 0), reverse=True)
+        else:  # random
+            nodes_sorted = nodes.copy()
+            random.shuffle(nodes_sorted)
+
+        # Find when giant component disappears
+        components = list(nx.connected_components(G.to_undirected()))
+        original_size = max(len(c) for c in components) if components else 0
+
+        removed = 0
+        for node in nodes_sorted:
+            G.remove_node(node)
+            removed += 1
+
+            components = list(nx.connected_components(G.to_undirected()))
+            largest_size = max(len(c) for c in components) if components else 0
+
+            # Threshold: when giant component < 50% of original
+            if largest_size < 0.5 * original_size:
+                thresholds.append(removed / num_nodes)
+                break
+
+    return float(np.mean(thresholds)) if thresholds else 1.0
+
+
+def targeted_layer_removal(
+    network: Any, layer: str, return_resilience: bool = False
+) -> Union[Any, Tuple[Any, float]]:
+    """
+    Simulate targeted removal of an entire layer.
+
+    Removes all edges in a specified layer and returns the modified network
+    or resilience score.
+
+    Args:
+        network: py3plex multi_layer_network object
+        layer: Layer identifier to remove
+        return_resilience: If True, return resilience score instead of network
+
+    Returns:
+        Modified network or resilience score
+
+    Examples:
+        >>> resilience = targeted_layer_removal(network, 'social', return_resilience=True)
+        >>> print(f"Resilience after removing social layer: {resilience:.3f}")
+
+    Reference:
+        Buldyrev et al. (2010), "Catastrophic cascade of failures"
+    """
+    from copy import deepcopy
+
+    G = network.core_network.copy()
+
+    # Original size of largest component
+    components = list(nx.connected_components(G.to_undirected()))
+    original_size = max(len(c) for c in components) if components else 0
+
+    # Remove edges from the specified layer
+    edges_to_remove = []
+    for edge in network.get_edges():
+        if len(edge) >= 3 and edge[2] == layer:
+            source_layer = (edge[0], edge[2])
+            target_layer = (edge[1], edge[2])
+            if G.has_edge(source_layer, target_layer):
+                edges_to_remove.append((source_layer, target_layer))
+
+    G.remove_edges_from(edges_to_remove)
+
+    if return_resilience:
+        # Calculate resilience
+        components = list(nx.connected_components(G.to_undirected()))
+        new_size = max(len(c) for c in components) if components else 0
+
+        if original_size == 0:
+            resilience = 1.0
+        else:
+            resilience = new_size / original_size
+
+        return resilience
+    else:
+        # Return modified network
+        modified_network = deepcopy(network)
+        modified_network.core_network = G
+        return modified_network
+
+
+def compute_modularity_score(
+    network: Any,
+    communities: Dict[Tuple[Any, Any], int],
+    gamma: float = 1.0,
+    omega: float = 1.0,
+) -> float:
+    """
+    Compute explicit multislice modularity score.
+
+    Direct computation of the modularity quality function for a given
+    community partition, without running detection algorithms.
+
+    Formula: Q = (1/2μ) Σᵢⱼₐᵦ [(Aᵢⱼᵅ - γ·kᵢᵅkⱼᵅ/(2mₐ))δₐᵦ + ω·δᵢⱼ] δ(cᵢᵅ, cⱼᵝ)
+
+    Args:
+        network: py3plex multi_layer_network object
+        communities: Dictionary mapping (node, layer) to community ID
+        gamma: Resolution parameter (default: 1.0)
+        omega: Inter-layer coupling strength (default: 1.0)
+
+    Returns:
+        Modularity score Q (higher is better)
+
+    Examples:
+        >>> communities = {('A', 'L1'): 0, ('B', 'L1'): 0, ('C', 'L1'): 1}
+        >>> Q = compute_modularity_score(network, communities)
+        >>> print(f"Modularity: {Q:.3f}")
+
+    Reference:
+        Mucha et al. (2010), Science 328, 876-878
+    """
+    return multilayer_modularity(network, communities, gamma, omega)
+
+
 def multilayer_modularity(
     network: Any,
     communities: Dict[Tuple[Any, Any], int],
@@ -1286,4 +1796,14 @@ __all__ = [
     "entropy_of_multiplexity",
     "multilayer_motif_frequency",
     "resilience",
+    "multiplex_betweenness_centrality",
+    "multiplex_closeness_centrality",
+    "community_participation_coefficient",
+    "community_participation_entropy",
+    "layer_redundancy_coefficient",
+    "unique_redundant_edges",
+    "multiplex_rich_club_coefficient",
+    "percolation_threshold",
+    "targeted_layer_removal",
+    "compute_modularity_score",
 ]

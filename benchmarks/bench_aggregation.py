@@ -216,7 +216,7 @@ class TestAggregationBenchmarks:
         print(f"  Matrix shape: {vec_result.shape}")
         print(f"  Non-zeros: {vec_result.nnz}")
         
-        # ✅ Primary acceptance criterion: ≥3× speedup
+        # Primary acceptance criterion: ≥3× speedup
         assert speedup >= 3.0, (
             f"Speedup {speedup:.2f}× below 3× target. "
             f"Legacy: {leg_time:.2f}s, Vectorized: {vec_time:.2f}s"

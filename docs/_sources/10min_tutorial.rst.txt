@@ -514,5 +514,5 @@ Tips for Success
 4. **Seed Your Random**: Use ``seed`` parameters in algorithms for reproducible results
 5. **Visualize Early**: Quick plots help catch data loading issues early
 
-Happy network analysis! 🎉
+Happy network analysis! 
 

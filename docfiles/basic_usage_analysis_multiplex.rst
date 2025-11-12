@@ -28,6 +28,7 @@ See:
 - ``example_multiplex_aggregate.py`` - Network aggregation
 - ``example_multiplex_dynamics.py`` - Temporal dynamics
 - ``example_multiplex_community_detection.py`` - Community detection
+- ``example_new_multiplex_metrics.py`` - New multiplex centrality and robustness metrics
 
 Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples
 

@@ -220,10 +220,10 @@ try:
     plt.show()
     
 except FileNotFoundError as e:
-    print(f"✗ Infomap binary not found: {e}")
+    print(f"[X] Infomap binary not found: {e}")
     print("  Using Louvain results from above instead.")
 except Exception as e:
-    print(f"✗ Error running Infomap: {e}")
+    print(f"[X] Error running Infomap: {e}")
     print("  Using Louvain results from above instead.")
 
 ##############################################################################
@@ -248,7 +248,7 @@ if save_edgelist:
         edgelist_file=output_file
     )
     
-    print(f"✓ Network saved successfully!")
+    print(f"[OK] Network saved successfully!")
     print(f"  Node mapping saved in: network.node_map")
 else:
     print("Edgelist export disabled (set save_edgelist=True to enable)")
@@ -258,7 +258,7 @@ print("COMMUNITY DETECTION COMPLETE")
 print("=" * 70)
 
 print("\nKey takeaways:")
-print("  ✓ Louvain: Fast, Python-only, optimizes modularity")
-print("  ✓ Infomap: Flow-based, requires binary, very accurate")
-print("  ✓ Both reveal hierarchical community structure")
-print("  ✓ Visualizations help validate detected communities")
+print("  [OK] Louvain: Fast, Python-only, optimizes modularity")
+print("  [OK] Infomap: Flow-based, requires binary, very accurate")
+print("  [OK] Both reveal hierarchical community structure")
+print("  [OK] Visualizations help validate detected communities")

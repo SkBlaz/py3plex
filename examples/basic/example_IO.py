@@ -63,9 +63,9 @@ if os.path.exists(gml_path):
     multilayer_network = multinet.multi_layer_network().load_network(
         gml_path, directed=True, input_type="gml"
     )
-    print(f"   ✓ Loaded: {gml_path}")
+    print(f"   [OK] Loaded: {gml_path}")
 else:
-    print(f"   ✗ Not found: {gml_path}")
+    print(f"   [X] Not found: {gml_path}")
 
 # Example 2: Loading from gpickle_biomine format
 print("\n2. gpickle_biomine format (specialized biological networks):")
@@ -76,9 +76,9 @@ if os.path.exists(gpickle_path):
         directed=True,
         input_type="gpickle_biomine"
     )
-    print(f"   ✓ Loaded: {gpickle_path}")
+    print(f"   [OK] Loaded: {gpickle_path}")
 else:
-    print(f"   ✗ Not found: {gpickle_path}")
+    print(f"   [X] Not found: {gpickle_path}")
 
 # Example 3: Loading from sparse matrix format (.mat)
 print("\n3. Sparse matrix format (.mat - MATLAB format):")
@@ -87,9 +87,9 @@ if os.path.exists(mat_path):
     multilayer_network = multinet.multi_layer_network().load_network(
         mat_path, directed=False, input_type="sparse"
     )
-    print(f"   ✓ Loaded: {mat_path}")
+    print(f"   [OK] Loaded: {mat_path}")
 else:
-    print(f"   ✗ Not found: {mat_path}")
+    print(f"   [X] Not found: {mat_path}")
 
 # Example 4: Loading from simple edgelist
 print("\n4. Simple edgelist format (node1 node2 per line):")
@@ -98,9 +98,9 @@ if os.path.exists(edgelist_path):
     multilayer_network = multinet.multi_layer_network().load_network(
         edgelist_path, directed=False, input_type="edgelist"
     )
-    print(f"   ✓ Loaded: {edgelist_path}")
+    print(f"   [OK] Loaded: {edgelist_path}")
 else:
-    print(f"   ✗ Not found: {edgelist_path}")
+    print(f"   [X] Not found: {edgelist_path}")
 
 print("\n" + "=" * 70)
 print("MULTILAYER/MULTIPLEX-SPECIFIC FORMATS")
@@ -115,9 +115,9 @@ if os.path.exists(multiedge_path):
         directed=False,
         input_type="multiedgelist"
     )
-    print(f"   ✓ Loaded: {multiedge_path}")
+    print(f"   [OK] Loaded: {multiedge_path}")
 else:
-    print(f"   ✗ Not found: {multiedge_path}")
+    print(f"   [X] Not found: {multiedge_path}")
 
 # Example 6: Multiplex edges format (L N N w)
 print("\n6. Multiplex edges format (layer node1 node2 weight):")
@@ -130,9 +130,9 @@ if os.path.exists(multiplex_path):
         directed=False,
         input_type="multiplex_edges"
     )
-    print(f"   ✓ Loaded: {multiplex_path}")
+    print(f"   [OK] Loaded: {multiplex_path}")
 else:
-    print(f"   ✗ Not found: {multiplex_path}")
+    print(f"   [X] Not found: {multiplex_path}")
 
 print("\n" + "=" * 70)
 print("SAVING NETWORK IN GPICKLE FORMAT")
@@ -145,7 +145,7 @@ if 'multilayer_network' in locals():
         output_file=output_path,
         output_type="gpickle"
     )
-    print(f"✓ Network saved to: {output_path}")
+    print(f"[OK] Network saved to: {output_path}")
     print("\nNote: gpickle format is fastest for loading/saving complex networks")
 else:
     print("No network was successfully loaded, skipping save.")

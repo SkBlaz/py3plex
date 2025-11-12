@@ -37,10 +37,10 @@ jobs:
       
       - name: Install dependencies
         run: |
-          python -m pip install -U pip
-          pip install crosshair-tool icontract z3-solver
+          python -m pip install --upgrade --timeout 120 --retries 5 pip
+          pip install --timeout 120 --retries 5 crosshair-tool icontract z3-solver
           # Install minimal required dependencies for py3plex
-          pip install numpy scipy networkx
+          pip install --timeout 120 --retries 5 numpy scipy networkx
         timeout-minutes: 10
       
       - name: Run CrossHair verification

@@ -87,11 +87,11 @@ jobs:
       run: |
         echo "🔧 Setting up development environment (Windows)..."
         python -m venv .venv
-        .venv\Scripts\python.exe -m pip install --upgrade pip setuptools wheel
+        .venv\Scripts\python.exe -m pip install --upgrade --timeout 120 --retries 5 pip setuptools wheel
         if (Test-Path pyproject.toml) {
-          .venv\Scripts\pip.exe install -e .
+          .venv\Scripts\pip.exe install --timeout 120 --retries 5 -e .
         } elseif (Test-Path requirements.txt) {
-          .venv\Scripts\pip.exe install -r requirements.txt
+          .venv\Scripts\pip.exe install --timeout 120 --retries 5 -r requirements.txt
         }
       timeout-minutes: 15
       shell: pwsh
@@ -104,7 +104,7 @@ jobs:
         else
           source .venv/bin/activate
         fi
-        pip install --timeout 120 -r requirements.txt || echo "requirements.txt not found or already installed"
+        pip install --timeout 120 --retries 5 -r requirements.txt || echo "requirements.txt not found or already installed"
         # Add py3plex to PYTHONPATH for testing without full install
         echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
       timeout-minutes: 5
@@ -123,17 +123,12 @@ jobs:
           source .venv/bin/activate
         fi
         # Install pytest and hypothesis if not already installed
-        pip install pytest pytest-cov hypothesis || echo "pytest already installed"
-        # Use pytest with coverage for Python 3.10 on Linux to upload to codecov
-        if [ "${{ matrix.python-version }}" == "3.10" ] && [ "$RUNNER_OS" == "Linux" ]; then
-          pytest tests/ --cov=py3plex --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests failed"
+        pip install pytest hypothesis || echo "pytest already installed"
+        # Run tests
+        if [ -f "run_tests.py" ]; then
+          timeout 600 python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
         else
-          # Use run_tests.py for other combinations or pytest without coverage
-          if [ -f "run_tests.py" ]; then
-            timeout 600 python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
-          else
-            pytest tests/ || echo "⚠️ Tests failed"
-          fi
+          pytest tests/ || echo "⚠️ Tests failed"
         fi
       timeout-minutes: 12
       shell: bash
@@ -155,17 +150,6 @@ jobs:
         pytest -q -k metamorphic tests/ || echo "⚠️ Metamorphic tests failed"
       timeout-minutes: 5
       shell: bash
-
-    - name: Upload coverage to Codecov
-      if: matrix.python-version == '3.10' && runner.os == 'Linux'
-      uses: codecov/codecov-action@v4
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-py3plex
-        fail_ci_if_error: false
-      timeout-minutes: 2
 
     - name: Upload test results
       if: always()
@@ -238,8 +222,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip setuptools wheel
-        pip install -e .[tests]
+        python -m pip install --upgrade --timeout 120 --retries 5 pip setuptools wheel
+        pip install --timeout 120 --retries 5 -e .[tests]
       timeout-minutes: 10
 
     - name: Run extended metamorphic tests

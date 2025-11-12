@@ -55,7 +55,7 @@ Check that Py3plex and dependencies are installed:
     print(f"SciPy: {scipy.__version__}")
     print(f"Matplotlib: {matplotlib.__version__}")
     
-    print("\n✓ All core dependencies available")
+    print("\n[OK] All core dependencies available")
 
 Optional Dependencies
 ---------------------
@@ -91,9 +91,9 @@ Install Plotly and igraph for interactive and advanced visualizations:
     try:
         import plotly
         import igraph
-        print("✓ Advanced visualization available")
+        print("[OK] Advanced visualization available")
     except ImportError:
-        print("✗ Install with: pip install py3plex[viz]")
+        print("[X] Install with: pip install py3plex[viz]")
 
 Additional Algorithms
 ~~~~~~~~~~~~~~~~~~~~~
@@ -139,7 +139,7 @@ Install Infomap for information-theoretic community detection:
 
 * ``infomap >= 2.0.0`` - Information flow-based community detection
 
-**⚠️ Important licensing note:**
+**WARNING️ Important licensing note:**
 
 Infomap is licensed under **AGPLv3** (viral copyleft license). If you use Infomap functions
 in your project, your project may also need to be AGPLv3 licensed.
@@ -157,9 +157,9 @@ in your project, your project may also need to be AGPLv3 licensed.
     # Check if available
     try:
         import infomap
-        print("✓ Infomap available")
+        print("[OK] Infomap available")
     except ImportError:
-        print("✗ Install with: pip install py3plex[infomap]")
+        print("[X] Install with: pip install py3plex[infomap]")
         print("  OR use Louvain algorithm instead")
 
 Installing All Optional Features
@@ -461,17 +461,17 @@ Provide users with this diagnostic script:
         for package, category in required.items():
             try:
                 __import__(package.replace('-', '_'))
-                print(f"  ✓ {package:20s} ({category})")
+                print(f"  [OK] {package:20s} ({category})")
             except ImportError:
-                print(f"  ✗ {package:20s} ({category}) - MISSING!")
+                print(f"  [X] {package:20s} ({category}) - MISSING!")
         
         print("\nOptional packages:")
         for package, category in optional.items():
             try:
                 __import__(package.replace('-', '_'))
-                print(f"  ✓ {package:20s} ({category})")
+                print(f"  [OK] {package:20s} ({category})")
             except ImportError:
-                print(f"  ✗ {package:20s} ({category}) - Not installed")
+                print(f"  [X] {package:20s} ({category}) - Not installed")
         
         print("\nInstallation commands:")
         print("  Core: pip install git+https://github.com/SkBlaz/py3plex.git")

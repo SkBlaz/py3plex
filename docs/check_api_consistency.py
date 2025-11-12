@@ -219,7 +219,7 @@ def main():
     print()
     
     if not all_issues:
-        print("✓ No API consistency issues found!")
+        print("[OK] No API consistency issues found!")
         print()
         return 0
     

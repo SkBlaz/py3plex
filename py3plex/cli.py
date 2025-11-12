@@ -1237,15 +1237,15 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             module = importlib.import_module(dep_name)
             deps[dep_name] = getattr(module, "__version__", "unknown")
             if verbose:
-                print(f"   ✓ {dep_name}: {deps[dep_name]}")
+                print(f"   [OK] {dep_name}: {deps[dep_name]}")
         except ImportError as e:
             deps_status = False
-            print(f"   ✗ {dep_name}: NOT FOUND - {e}")
+            print(f"   X {dep_name}: NOT FOUND - {e}")
 
     if deps_status:
-        print("   [✓] Core dependencies OK")
+        print("   [OK] Core dependencies OK")
     else:
-        print("   [✗] Some dependencies missing")
+        print("   [X] Some dependencies missing")
     test_results.append(("Core dependencies", deps_status))
 
     # Test 2: Graph creation
@@ -1271,15 +1271,15 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         network.add_edges(edges, input_type="dict")
 
         if network.core_network.number_of_nodes() == 10:
-            print("   [✓] Graph creation successful")
+            print("   [OK] Graph creation successful")
             if verbose:
                 print(f"      Nodes: {network.core_network.number_of_nodes()}")
                 print(f"      Edges: {network.core_network.number_of_edges()}")
             graph_status = True
         else:
-            print("   [✗] Graph creation failed: unexpected node count")
+            print("   [X] Graph creation failed: unexpected node count")
     except Exception as e:
-        print(f"   [✗] Graph creation failed: {e}")
+        print(f"   [X] Graph creation failed: {e}")
         if verbose:
             traceback.print_exc()
     test_results.append(("Graph creation", graph_status))
@@ -1290,12 +1290,12 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     try:
         from py3plex.visualization import multilayer as _  # noqa: F401
 
-        print("   [✓] Visualization module initialized")
+        print("   [OK] Visualization module initialized")
         if verbose:
             print(f"      Matplotlib backend: {matplotlib.get_backend()}")
         viz_status = True
     except Exception as e:
-        print(f"   [✗] Visualization module error: {e}")
+        print(f"   [X] Visualization module error: {e}")
         if verbose:
             traceback.print_exc()
     test_results.append(("Visualization module", viz_status))
@@ -1330,16 +1330,16 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         layer_list = layers[0] if isinstance(layers, tuple) else list(layers)
 
         if len(layer_list) >= 2:
-            print("   [✓] Example multilayer graph created")
+            print("   [OK] Example multilayer graph created")
             if verbose:
                 print(f"      Layers: {len(layer_list)}")
                 print(f"      Total nodes: {network.core_network.number_of_nodes()}")
                 print(f"      Total edges: {network.core_network.number_of_edges()}")
             multilayer_status = True
         else:
-            print("   [✗] Multilayer graph creation failed: insufficient layers")
+            print("   [X] Multilayer graph creation failed: insufficient layers")
     except Exception as e:
-        print(f"   [✗] Multilayer graph creation failed: {e}")
+        print(f"   [X] Multilayer graph creation failed: {e}")
         if verbose:
             traceback.print_exc()
     test_results.append(("Multilayer graph", multilayer_status))
@@ -1355,14 +1355,14 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         partition = community_wrapper.louvain_communities(G)
 
         if partition and len(set(partition.values())) > 1:
-            print("   [✓] Community detection test passed")
+            print("   [OK] Community detection test passed")
             if verbose:
                 print(f"      Communities found: {len(set(partition.values()))}")
             community_status = True
         else:
-            print("   [✗] Community detection failed: no communities found")
+            print("   [X] Community detection failed: no communities found")
     except Exception as e:
-        print(f"   [✗] Community detection failed: {e}")
+        print(f"   [X] Community detection failed: {e}")
         if verbose:
             traceback.print_exc()
     test_results.append(("Community detection", community_status))
@@ -1399,14 +1399,14 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             loaded_network.core_network = G
 
             if loaded_network.core_network.number_of_nodes() == 5:
-                print("   [✓] File I/O test passed")
+                print("   [OK] File I/O test passed")
                 if verbose:
                     print(f"      Test file: {test_file.name}")
                 io_status = True
             else:
-                print("   [✗] File I/O test failed: node count mismatch")
+                print("   [X] File I/O test failed: node count mismatch")
     except Exception as e:
-        print(f"   [✗] File I/O test failed: {e}")
+        print(f"   [X] File I/O test failed: {e}")
         if verbose:
             traceback.print_exc()
     test_results.append(("File I/O", io_status))
@@ -1445,7 +1445,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             versatility = mls.versatility_centrality(network, centrality_type="degree")
             if versatility and len(versatility) > 0:
                 if verbose:
-                    print("   ✓ Versatility centrality computed")
+                    print("   OK Versatility centrality computed")
                     top_node = max(versatility.items(), key=lambda x: x[1])
                     print(f"      Top node: {top_node[0]} (score: {top_node[1]:.4f})")
         except Exception as e:
@@ -1457,28 +1457,28 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         degree_cent = nx.degree_centrality(G)
         if degree_cent and len(degree_cent) > 0:
             if verbose:
-                print("   ✓ Degree centrality computed")
+                print("   OK Degree centrality computed")
                 print(f"      Nodes: {len(degree_cent)}")
 
         # Test betweenness centrality
         betw_cent = nx.betweenness_centrality(G)
         if betw_cent and len(betw_cent) > 0:
             if verbose:
-                print("   ✓ Betweenness centrality computed")
+                print("   OK Betweenness centrality computed")
 
         # Test layer density (multilayer statistic)
         density1 = mls.layer_density(network, "layer1")
         density2 = mls.layer_density(network, "layer2")
         if 0.0 <= density1 <= 1.0 and 0.0 <= density2 <= 1.0:
             if verbose:
-                print("   ✓ Layer density computed")
+                print("   OK Layer density computed")
                 print(f"      Layer1: {density1:.4f}, Layer2: {density2:.4f}")
 
-        print("   [✓] Centrality statistics test passed")
+        print("   [OK] Centrality statistics test passed")
         centrality_status = True
 
     except Exception as e:
-        print(f"   [✗] Centrality statistics failed: {e}")
+        print(f"   [X] Centrality statistics failed: {e}")
         if verbose:
             import traceback
             traceback.print_exc()
@@ -1519,7 +1519,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             layers_result = network.split_to_layers()
             if layers_result and len(layers_result) == 3:
                 if verbose:
-                    print(f"   ✓ Layer splitting: {len(layers_result)} layers")
+                    print(f"   OK Layer splitting: {len(layers_result)} layers")
         except Exception as e:
             if verbose:
                 print(f"   ! Layer splitting: {e}")
@@ -1529,7 +1529,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             aggregated = network.aggregate_edges(metric="sum")
             if aggregated and aggregated.number_of_nodes() > 0:
                 if verbose:
-                    print("   ✓ Edge aggregation (flattening) successful")
+                    print("   OK Edge aggregation (flattening) successful")
                     print(f"      Aggregated: {aggregated.number_of_nodes()} nodes, {aggregated.number_of_edges()} edges")
         except Exception as e:
             if verbose:
@@ -1544,7 +1544,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             ]
             if layer1_edges:
                 if verbose:
-                    print(f"   ✓ Subnetwork extraction: {len(layer1_edges)} edges in layer1")
+                    print(f"   OK Subnetwork extraction: {len(layer1_edges)} edges in layer1")
         except Exception as e:
             if verbose:
                 print(f"   ! Subnetwork extraction: {e}")
@@ -1552,13 +1552,13 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         # Verify network integrity after operations
         if network.core_network.number_of_nodes() == initial_nodes:
             if verbose:
-                print("   ✓ Network integrity maintained")
+                print("   OK Network integrity maintained")
 
-        print("   [✓] Multilayer manipulation test passed")
+        print("   [OK] Multilayer manipulation test passed")
         manipulation_status = True
 
     except Exception as e:
-        print(f"   [✗] Multilayer manipulation failed: {e}")
+        print(f"   [X] Multilayer manipulation failed: {e}")
         if verbose:
             import traceback
             traceback.print_exc()
@@ -1567,24 +1567,24 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     # Performance summary
     elapsed = time.time() - start_time
     print(f"\n{'='*60}")
-    print("📊 TEST SUMMARY")
+    print("TEST SUMMARY")
     print(f"{'='*60}")
 
     passed = sum(1 for _, status in test_results if status)
     total = len(test_results)
 
     for test_name, status in test_results:
-        status_icon = "✓" if status else "✗"
+        status_icon = "OK" if status else "X"
         print(f"  [{status_icon}] {test_name}")
 
     print(f"\n  Tests passed: {passed}/{total}")
     print(f"  Time elapsed: {elapsed:.2f}s")
 
     if passed == total:
-        print("\n[✓] All tests completed successfully!")
+        print("\n[OK] All tests completed successfully!")
         return 0
     else:
-        print(f"\n[✗] {total - passed} test(s) failed")
+        print(f"\n[X] {total - passed} test(s) failed")
         return 1
 
 
@@ -1603,7 +1603,7 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
     matplotlib.use("Agg")  # Non-interactive backend
     import matplotlib.pyplot as plt
 
-    print("[py3plex::quickstart] 🚀 Welcome to py3plex!")
+    print("[py3plex::quickstart] Welcome to py3plex!")
     print()
     print("This quickstart guide will demonstrate basic multilayer network operations.")
     print("=" * 70)
@@ -1656,7 +1656,7 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
 
         network_file = output_dir / "demo_network.graphml"
         nx.write_graphml(network.core_network, str(network_file))
-        print(f"✓ Network created and saved to: {network_file}")
+        print(f"Network created and saved to: {network_file}")
         print(f"  Nodes: {network.core_network.number_of_nodes()}")
         print(f"  Edges: {network.core_network.number_of_edges()}")
         print()
@@ -1705,7 +1705,7 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
             )
             plt.savefig(viz_file, dpi=150, bbox_inches="tight")
             plt.close()
-            print(f"✓ Visualization saved to: {viz_file}")
+            print(f"OK Visualization saved to: {viz_file}")
         except Exception as e:
             # Fallback to simple NetworkX visualization
             print(f"  Note: Multilayer visualization failed ({e}), using simple layout")
@@ -1724,7 +1724,7 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
             plt.title("Demo Multilayer Network")
             plt.savefig(viz_file, dpi=150, bbox_inches="tight")
             plt.close()
-            print(f"✓ Visualization saved to: {viz_file}")
+            print(f"OK Visualization saved to: {viz_file}")
         print()
 
         # Step 4: Detect communities
@@ -1739,7 +1739,7 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
             )
             partition = community_wrapper.louvain_communities(G)
             num_communities = len(set(partition.values()))
-            print(f"✓ Found {num_communities} communities")
+            print(f"Found {num_communities} communities")
 
             comm_file = output_dir / "demo_communities.json"
             with open(comm_file, "w") as f:
@@ -1758,13 +1758,13 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
 
         # Summary and next steps
         print("=" * 70)
-        print("✅ Quickstart completed successfully!")
+        print("Quickstart completed successfully!")
         print()
-        print("📁 Generated files:")
+        print("Generated files:")
         for file in output_dir.glob("demo_*"):
             print(f"  - {file}")
         print()
-        print("🎯 Next steps:")
+        print("Next steps:")
         print("  1. Try creating your own network:")
         print(
             "     py3plex create --nodes 50 --layers 3 --output my_network.graphml"
@@ -1783,24 +1783,24 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
             "     py3plex community my_network.graphml --algorithm louvain --output communities.json"
         )
         print()
-        print("📚 For more information:")
+        print("For more information:")
         print("  - Documentation: https://skblaz.github.io/py3plex/")
         print("  - GitHub: https://github.com/SkBlaz/py3plex")
         print("  - Run 'py3plex --help' to see all available commands")
         print()
 
         if cleanup:
-            print(f"🧹 Cleaning up temporary files in {output_dir}...")
+            print(f"Cleaning up temporary files in {output_dir}...")
             shutil.rmtree(output_dir)
             print("   (Use --keep-files to preserve generated files)")
         else:
-            print(f"📂 Files kept in: {output_dir}")
+            print(f"Files kept in: {output_dir}")
 
         print()
         return 0
 
     except Exception as e:
-        print(f"\n❌ Error during quickstart: {e}")
+        print(f"\nError during quickstart: {e}")
 
         traceback.print_exc()
         return 1

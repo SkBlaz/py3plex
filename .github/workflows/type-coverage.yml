@@ -14,7 +14,6 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
-      pull-requests: write
     
     steps:
     - name: Checkout code
@@ -29,10 +28,10 @@ jobs:
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install mypy lxml types-six
+        python -m pip install --upgrade --timeout 120 --retries 5 pip
+        pip install --timeout 120 --retries 5 mypy lxml types-six
         # Install minimal dependencies for type checking
-        pip install numpy scipy networkx matplotlib rdflib tqdm bitarray pandas
+        pip install --timeout 120 --retries 5 numpy scipy networkx matplotlib rdflib tqdm bitarray pandas
       timeout-minutes: 8
     
     - name: Check type coverage
@@ -53,51 +52,4 @@ jobs:
         name: type-coverage-report
         path: type-coverage.json
         retention-days: 90
-      timeout-minutes: 2
-    
-    - name: Comment coverage on PR
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const coverage = JSON.parse(fs.readFileSync('type-coverage.json', 'utf8'));
-          
-          // Find top 10 most imprecise modules
-          const topImprecise = coverage.modules
-            .filter(m => m.total_loc > 10) // Only modules with >10 LOC
-            .sort((a, b) => b.imprecise_percent - a.imprecise_percent)
-            .slice(0, 10);
-          
-          let moduleTable = '';
-          topImprecise.forEach((m, i) => {
-            const name = m.name.length > 50 ? m.name.substring(0, 47) + '...' : m.name;
-            moduleTable += `| ${i + 1} | ${name} | ${m.imprecise_percent.toFixed(1)}% | ${m.total_loc} |\n`;
-          });
-          
-          const comment = `## 🔍 Type Coverage Report
-          
-          | Metric | Count | Coverage |
-          |--------|-------|----------|
-          | Total Lines | ${coverage.total_loc.toLocaleString()} | - |
-          | Precisely Typed | ${coverage.precise_loc.toLocaleString()} | ${coverage.precise_percent.toFixed(1)}% |
-          | Imprecisely Typed | ${coverage.imprecise_loc.toLocaleString()} | ${coverage.imprecise_percent.toFixed(1)}% |
-          
-          ![Type Coverage](${coverage.badge_url})
-          
-          ### Top 10 Most Imprecise Modules
-          
-          | Rank | Module | Imprecision | LOC |
-          |------|--------|-------------|-----|
-          ${moduleTable}
-          
-          *Type coverage is measured using mypy's analysis of type annotations. Higher precision means better type coverage.*
-          `;
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: comment
-          });
       timeout-minutes: 2

@@ -87,7 +87,7 @@ for node, centrality in sorted(pagerank_custom.items(), key=lambda x: x[1], reve
     print(f"   {node}: {centrality:.4f}")
 
 print("\n" + "=" * 70)
-print("✅ All examples completed successfully!")
+print("All examples completed successfully!")
 print("=" * 70)
 print("\nKey takeaway:")
 print("  The kwargs parameter now allows you to pass any NetworkX function")

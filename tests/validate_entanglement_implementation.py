@@ -38,12 +38,12 @@ def validate_entanglement_implementation():
     lines = content.split('\n')
     code_lines = [l for l in lines if l.strip() and not l.strip().startswith('#')]
     
-    print(f"\n📊 File statistics:")
+    print(f"\nStats: File statistics:")
     print(f"  Total lines: {len(lines)}")
     print(f"  Code lines (non-empty, non-comment): {len(code_lines)}")
     
     # Check 1: build_occurrence_matrix function
-    print("\n✓ Check 1: build_occurrence_matrix function")
+    print("\n[OK] Check 1: build_occurrence_matrix function")
     if "def build_occurrence_matrix" in content:
         if "return c_matrix, layers" in content:
             print("  PASS: build_occurrence_matrix is fully implemented")
@@ -55,7 +55,7 @@ def validate_entanglement_implementation():
         return False
     
     # Check 2: compute_blocks function
-    print("\n✓ Check 2: compute_blocks function")
+    print("\n[OK] Check 2: compute_blocks function")
     if "def compute_blocks" in content:
         if "return indices, blocks" in content:
             print("  PASS: compute_blocks is fully implemented")
@@ -67,7 +67,7 @@ def validate_entanglement_implementation():
         return False
     
     # Check 3: compute_entanglement function
-    print("\n✓ Check 3: compute_entanglement function")
+    print("\n[OK] Check 3: compute_entanglement function")
     if "def compute_entanglement" in content:
         if "entanglement_intensity" in content and "entanglement_homogeneity" in content:
             print("  PASS: compute_entanglement is fully implemented")
@@ -79,7 +79,7 @@ def validate_entanglement_implementation():
         return False
     
     # Check 4: compute_entanglement_analysis function (main API)
-    print("\n✓ Check 4: compute_entanglement_analysis function (main API)")
+    print("\n[OK] Check 4: compute_entanglement_analysis function (main API)")
     if "def compute_entanglement_analysis" in content:
         if "return analysis" in content:
             print("  PASS: compute_entanglement_analysis is fully implemented")
@@ -91,7 +91,7 @@ def validate_entanglement_implementation():
         return False
     
     # Check 5: Implementation uses real algorithms (not just pass)
-    print("\n✓ Check 5: Real implementation (not just stubs)")
+    print("\n[OK] Check 5: Real implementation (not just stubs)")
     if "np.linalg.eig" in content and "spatial.distance.cosine" in content:
         print("  PASS: Module uses real numerical algorithms")
     else:
@@ -99,7 +99,7 @@ def validate_entanglement_implementation():
         return False
     
     # Check 6: Has proper imports
-    print("\n✓ Check 6: Proper imports for implementation")
+    print("\n[OK] Check 6: Proper imports for implementation")
     required_imports = ["numpy", "scipy", "itertools"]
     imports_found = all(imp in content for imp in required_imports)
     if imports_found:
@@ -109,7 +109,7 @@ def validate_entanglement_implementation():
         return False
     
     # Check 7: Example usage exists
-    print("\n✓ Check 7: Example usage file exists")
+    print("\n[OK] Check 7: Example usage file exists")
     example_path = os.path.join(
         os.path.dirname(__file__),
         "..",
@@ -127,15 +127,15 @@ def validate_entanglement_implementation():
         print("  INFO: Example file not found (optional)")
     
     print("\n" + "=" * 60)
-    print("✅ All validation checks passed!")
+    print("PASS: All validation checks passed!")
     print("=" * 60)
-    print("\n📝 CONCLUSION:")
+    print("\nNote: CONCLUSION:")
     print("The entanglement module is FULLY IMPLEMENTED with:")
     print("  • build_occurrence_matrix() - builds occurrence matrix")
     print("  • compute_blocks() - performs block decomposition")
     print("  • compute_entanglement() - computes entanglement metrics")
     print("  • compute_entanglement_analysis() - main API function")
-    print("\n⚠️  The issue description claiming it's a stub is INCORRECT.")
+    print("\nWARNING:  The issue description claiming it's a stub is INCORRECT.")
     print("   No changes are needed to the entanglement module.")
     
     return True
@@ -145,7 +145,7 @@ if __name__ == "__main__":
         success = validate_entanglement_implementation()
         sys.exit(0 if success else 1)
     except Exception as e:
-        print(f"\n❌ Validation failed with error: {e}")
+        print(f"\nFAIL: Validation failed with error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

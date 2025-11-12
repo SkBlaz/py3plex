@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Play, AlertCircle } from 'lucide-react';
-import { getGraphPositions, sampleGraph } from '../lib/api';
+import { getGraphPositions } from '../lib/api';
 
 export default function Visualize() {
   const [graphId, setGraphId] = useState<string | null>(null);

@@ -217,7 +217,7 @@ Issue: "Could not load network" error
     if missing:
         print(f"\nMissing columns: {missing}")
     else:
-        print("\n✓ All required columns present")
+        print("\n[OK] All required columns present")
 
 Issue: Encoding errors with special characters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -290,11 +290,11 @@ End-to-End Pipeline: CSV → Analysis → Visualization
     )
     plt.title("Multilayer Network from CSV")
     plt.savefig('network_visualization.png', dpi=300, bbox_inches='tight')
-    print("\n✓ Visualization saved to network_visualization.png")
+    print("\n[OK] Visualization saved to network_visualization.png")
     
     # Step 7: Export to NetworkX for further analysis
     nx_graph = network.to_nx_network()
-    print(f"\n✓ Exported to NetworkX: {nx_graph.number_of_nodes()} nodes, "
+    print(f"\n[OK] Exported to NetworkX: {nx_graph.number_of_nodes()} nodes, "
           f"{nx_graph.number_of_edges()} edges")
 
 **Expected Output:**
@@ -317,8 +317,8 @@ End-to-End Pipeline: CSV → Analysis → Visualization
       ('D', 'social'): degree 3
       ('B', 'social'): degree 2
     
-    ✓ Visualization saved to network_visualization.png
-    ✓ Exported to NetworkX: 9 nodes, 7 edges
+    [OK] Visualization saved to network_visualization.png
+    [OK] Exported to NetworkX: 9 nodes, 7 edges
 
 Validation Before Loading
 --------------------------
@@ -335,14 +335,14 @@ Use the validation module to check CSV format before loading:
     try:
         # Validate before loading
         validate_network_data('network.csv', 'multiedgelist')
-        print("✓ Validation passed")
+        print("[OK] Validation passed")
         
         # Safe to load
         network = multinet.multi_layer_network()
         network.load_network('network.csv', input_type='multiedgelist')
         
     except ParsingError as e:
-        print(f"✗ Validation failed:\n{e}")
+        print(f"[X] Validation failed:\n{e}")
         # Fix CSV and try again
 
 This performs checks for:

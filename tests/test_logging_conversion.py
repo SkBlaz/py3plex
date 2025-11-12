@@ -33,7 +33,7 @@ def test_logging_imports():
         
         return True
     except Exception as e:
-        print(f"❌ Logging import test failed: {e}")
+        print(f"FAIL: Logging import test failed: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -61,7 +61,7 @@ def test_logger_functionality():
         
         return True
     except Exception as e:
-        print(f"❌ Logger functionality test failed: {e}")
+        print(f"FAIL: Logger functionality test failed: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -86,7 +86,7 @@ def test_no_print_statements_in_converted_modules():
     for module in modules_to_check:
         filepath = os.path.join(base_path, module)
         if not os.path.exists(filepath):
-            print(f"⚠️  Skipping {module} - file not found")
+            print(f"WARNING:  Skipping {module} - file not found")
             continue
             
         with open(filepath, 'r') as f:
@@ -107,7 +107,7 @@ def test_no_print_statements_in_converted_modules():
                 print_lines.append((i, line.strip()))
         
         if print_lines:
-            print(f"⚠️  Module {module} still has print statements:")
+            print(f"WARNING:  Module {module} still has print statements:")
             for line_num, line_text in print_lines:
                 print(f"   Line {line_num}: {line_text[:80]}")
     
@@ -121,20 +121,20 @@ if __name__ == "__main__":
     
     print("Test 1: Checking logging imports...")
     success = test_logging_imports() and success
-    print("✅ Logging imports test passed\n" if success else "")
+    print("PASS: Logging imports test passed\n" if success else "")
     
     print("Test 2: Checking logger functionality...")
     success = test_logger_functionality() and success
-    print("✅ Logger functionality test passed\n" if success else "")
+    print("PASS: Logger functionality test passed\n" if success else "")
     
     print("Test 3: Checking for remaining print statements...")
     success = test_no_print_statements_in_converted_modules() and success
-    print("✅ Print statement check completed\n")
+    print("PASS: Print statement check completed\n")
     
     print("=" * 50)
     if success:
-        print("✅ All logging conversion tests passed!")
+        print("PASS: All logging conversion tests passed!")
         sys.exit(0)
     else:
-        print("❌ Some tests failed")
+        print("FAIL: Some tests failed")
         sys.exit(1)

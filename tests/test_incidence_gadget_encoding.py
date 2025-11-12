@@ -379,10 +379,10 @@ if __name__ == "__main__":
         try:
             print(f"Running {name}...", end=" ")
             test_func()
-            print("✓ PASSED")
+            print("[OK] PASSED")
             passed += 1
         except Exception as e:
-            print(f"✗ FAILED: {e}")
+            print(f"[X] FAILED: {e}")
             failed += 1
 
     print(f"\n{passed} passed, {failed} failed")
