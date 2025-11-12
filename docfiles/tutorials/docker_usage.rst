@@ -301,7 +301,7 @@ A comprehensive test script to validate your Docker setup:
 8. Container selftest
 9. Volume mounting and file creation
 
-The script provides colored output (✓ PASS / ✗ FAIL) and a summary report.
+The script provides colored output ([OK] PASS / [X] FAIL) and a summary report.
 
 **Script location:** ``test-docker-setup.sh`` in the repository root
 

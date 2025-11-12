@@ -13,8 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
-      contents: read
-      pull-requests: write
+      contents: write
     
     steps:
     - name: Checkout code
@@ -27,9 +26,9 @@ jobs:
         python-version: "3.10"
       timeout-minutes: 2
     
-    - name: Count lines of code
+    - name: Count lines of code (all languages)
       run: |
-        python3 .github/scripts/count_loc.py --root py3plex --json loc-stats.json
+        python3 .github/scripts/count_loc.py --root py3plex --json loc-stats.json --extensions all
       timeout-minutes: 1
     
     - name: Display LOC statistics
@@ -58,31 +57,31 @@ jobs:
         echo "Code lines: $CODE_LINES"
       timeout-minutes: 1
     
-    - name: Comment LOC on PR
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const stats = JSON.parse(fs.readFileSync('loc-stats.json', 'utf8'));
-          
-          const comment = `## 📊 Lines of Code Report
-          
-          | Metric | Count |
-          |--------|-------|
-          | **Total Lines** | **${stats.total_lines.toLocaleString()}** |
-          | Code Lines | ${stats.code_lines.toLocaleString()} |
-          | Comment Lines | ${stats.comment_lines.toLocaleString()} |
-          | Blank Lines | ${stats.blank_lines.toLocaleString()} |
-          | Files | ${stats.total_files} |
-          
-          ![Lines of Code](https://img.shields.io/badge/lines-${stats.total_lines_formatted}-blue)
-          `;
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: comment
-          });
+    - name: Update README badge
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+      run: |
+        # Update the LOC badge in README.md
+        sed -i "s/lines-[0-9.]*K-blue/lines-$FORMATTED_LINES-blue/" README.md
+        
+        # Check if README was actually changed
+        if git diff --quiet README.md; then
+          echo "README.md is already up to date"
+        else
+          echo "README.md updated with new LOC count: $FORMATTED_LINES"
+        fi
+      timeout-minutes: 1
+    
+    - name: Commit and push changes
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        if git diff --quiet README.md; then
+          echo "No changes to commit"
+        else
+          git add README.md
+          git commit -m "chore: update LOC badge to $FORMATTED_LINES [skip ci]"
+          git push
+        fi
       timeout-minutes: 2

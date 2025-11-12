@@ -16,7 +16,7 @@ dependencies = [
     "matplotlib==3.8.2",
     "numpy==1.26.3",
     "scipy==1.11.4",
-    "scikit-learn==1.5.0",
+    "scikit-learn==1.4.0",
     "python-louvain==0.16",
     "aiofiles==23.2.1",
 ]

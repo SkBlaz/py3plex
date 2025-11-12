@@ -253,7 +253,7 @@ Gephi is a popular network visualization tool. Export Py3plex networks to GEXF f
     nx_graph = network.core_network
     nx.write_gexf(nx_graph, "network_for_gephi.gexf")
     
-    print("✓ Exported to network_for_gephi.gexf")
+    print("[OK] Exported to network_for_gephi.gexf")
     print("  Open in Gephi: File → Open → network_for_gephi.gexf")
 
 Export to Cytoscape
@@ -269,7 +269,7 @@ Cytoscape is a bioinformatics network analysis tool. Export to GraphML:
     nx_graph = network.core_network
     nx.write_graphml(nx_graph, "network_for_cytoscape.graphml")
     
-    print("✓ Exported to network_for_cytoscape.graphml")
+    print("[OK] Exported to network_for_cytoscape.graphml")
     print("  Open in Cytoscape: File → Import → Network from File")
 
 Convert to igraph
@@ -303,7 +303,7 @@ igraph is a fast C-based network analysis library:
     ig_edges = [(node_to_idx[u], node_to_idx[v]) for u, v in edges]
     ig_graph.add_edges(ig_edges)
     
-    print(f"✓ Converted to igraph: {ig_graph.vcount()} vertices, {ig_graph.ecount()} edges")
+    print(f"[OK] Converted to igraph: {ig_graph.vcount()} vertices, {ig_graph.ecount()} edges")
     
     # Use igraph algorithms
     communities = ig_graph.community_multilevel()
@@ -367,17 +367,17 @@ Convert multilayer network to tensor representation for tensor decomposition:
         
         # Tucker decomposition
         core, factors = tucker(tl.tensor(tensor), rank=[5, 2, 5])
-        print(f"\n✓ Tucker decomposition complete")
+        print(f"\n[OK] Tucker decomposition complete")
         print(f"  Core tensor shape: {core.shape}")
         print(f"  Factor matrices: {[f.shape for f in factors]}")
         
         # PARAFAC/CP decomposition
         factors_cp = parafac(tl.tensor(tensor), rank=5)
-        print(f"\n✓ PARAFAC decomposition complete")
+        print(f"\n[OK] PARAFAC decomposition complete")
         print(f"  Rank: 5")
         
     except ImportError:
-        print("\n✗ TensorLy not installed")
+        print("\n[X] TensorLy not installed")
         print("  Install: pip install tensorly")
 
 Supra-Adjacency Matrix
@@ -427,7 +427,7 @@ Create Py3plex Network from NetworkX
     network = multinet.multi_layer_network()
     network.load_network(G, input_type="nx")
     
-    print(f"✓ Imported {network.core_network.number_of_nodes()} nodes")
+    print(f"[OK] Imported {network.core_network.number_of_nodes()} nodes")
 
 Practical Examples
 ------------------
@@ -515,7 +515,7 @@ Example 3: Export for Gephi Visualization
     # Export to GEXF with communities
     nx.write_gexf(network.core_network, "network_with_communities.gexf")
     
-    print("✓ Exported to GEXF with community information")
+    print("[OK] Exported to GEXF with community information")
     print("  Open in Gephi and color by 'community' attribute")
 
 Next Steps

@@ -399,7 +399,7 @@ def test_dict_to_list_conversion():
         draw_multilayer_default(networks_list, display=False, verbose=False)
         plt.close()
         
-        logging.info("✓ Dict to list conversion test passed")
+        logging.info("[OK] Dict to list conversion test passed")
         
     except Exception as e:
         logging.error(f"Dict to list conversion test failed: {e}")

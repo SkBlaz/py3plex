@@ -46,7 +46,7 @@ multilayer_network = multinet.multi_layer_network().load_network(
     input_type="gml"
 )
 
-print("✓ Network loaded successfully!")
+print("[OK] Network loaded successfully!")
 
 print("\n" + "=" * 70)
 print("QUICK NETWORK SUMMARY")

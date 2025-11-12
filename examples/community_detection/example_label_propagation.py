@@ -54,7 +54,7 @@ multilayer_network = multinet.multi_layer_network().load_network(
     input_type="sparse"
 )
 
-print("  ✓ Network loaded successfully!")
+print("  [OK] Network loaded successfully!")
 
 # Note about sparse matrices
 print("""
@@ -101,14 +101,14 @@ for idx, scheme in enumerate(normalization_schemes, 1):
         )
         
         result_frames.append(result)
-        print(f"    ✓ Completed validation for {scheme}")
+        print(f"    [OK] Completed validation for {scheme}")
         
     except Exception as e:
-        print(f"    ✗ Error with scheme {scheme}: {e}")
+        print(f"    [X] Error with scheme {scheme}: {e}")
         continue
 
 if not result_frames:
-    print("\n  ✗ No successful validations. Cannot generate results.")
+    print("\n  [X] No successful validations. Cannot generate results.")
     exit(1)
 
 print("\nStep 4: Aggregating results")
@@ -126,7 +126,7 @@ for result_frame in result_frames:
 # Reset index for clean output
 validation_results.reset_index(drop=True, inplace=True)
 
-print("  ✓ Results aggregated successfully!")
+print("  [OK] Results aggregated successfully!")
 print(f"\n  Total experiments: {len(validation_results)}")
 
 # Display results summary
@@ -150,10 +150,10 @@ try:
     
     plot_core_macro(validation_results)
     
-    print("  ✓ Visualization complete!")
+    print("  [OK] Visualization complete!")
     
 except Exception as e:
-    print(f"  ✗ Visualization error: {e}")
+    print(f"  [X] Visualization error: {e}")
     print("  Continuing with text results...")
 
 print("\n" + "=" * 70)

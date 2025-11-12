@@ -344,17 +344,17 @@ Pull Request Guidelines
 Before Submitting
 ~~~~~~~~~~~~~~~~~
 
-✅ Code follows style guide (``make lint`` passes)
+[OK] Code follows style guide (``make lint`` passes)
 
-✅ All tests pass (``make test`` passes)
+[OK] All tests pass (``make test`` passes)
 
-✅ New code has tests
+[OK] New code has tests
 
-✅ Documentation is updated
+[OK] Documentation is updated
 
-✅ Commit messages are clear
+[OK] Commit messages are clear
 
-✅ Branch is up to date with main
+[OK] Branch is up to date with main
 
 PR Description
 ~~~~~~~~~~~~~~
@@ -503,4 +503,4 @@ Next Steps
 * Browse `existing issues <https://github.com/SkBlaz/py3plex/issues>`_
 * Check `good first issues <https://github.com/SkBlaz/py3plex/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22>`_
 
-Thank you for contributing to py3plex! 🎉
+Thank you for contributing to py3plex! 

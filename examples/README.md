@@ -14,7 +14,7 @@ python examples/basic/example_random_generator.py
 
 Examples are categorized by their runtime characteristics and dependencies:
 
-### Fast Standalone Examples (✓ Run in CI)
+### Fast Standalone Examples ([OK] Run in CI)
 
 These examples:
 - Complete in under 5 seconds

@@ -59,7 +59,7 @@ multilayer_network = multinet.multi_layer_network().load_network(
     input_type="gml"
 )
 
-print("  ✓ Network loaded successfully!")
+print("  [OK] Network loaded successfully!")
 
 print(f"\nStep 2: Saving network as edgelist for Node2Vec")
 print("-" * 70)
@@ -69,7 +69,7 @@ print(f"  Output file: {edgelist_file}")
 # Format: source_node target_node (one edge per line)
 multilayer_network.save_network(edgelist_file)
 
-print("  ✓ Edgelist saved successfully!")
+print("  [OK] Edgelist saved successfully!")
 
 print(f"\nStep 3: Generating Node2Vec embeddings")
 print("-" * 70)
@@ -111,10 +111,10 @@ try:
         weighted=False
     )
     
-    print("  ✓ Node2Vec embeddings generated successfully!")
+    print("  [OK] Node2Vec embeddings generated successfully!")
     
 except FileNotFoundError as e:
-    print(f"  ✗ Node2Vec binary not found: {e}")
+    print(f"  [X] Node2Vec binary not found: {e}")
     print("\n  Please install Node2Vec to continue:")
     print("    pip install node2vec")
     print("  Or download the binary from:")
@@ -122,7 +122,7 @@ except FileNotFoundError as e:
     print("\n  Exiting...")
     exit(1)
 except Exception as e:
-    print(f"  ✗ Error generating embeddings: {e}")
+    print(f"  [X] Error generating embeddings: {e}")
     print("  Please check Node2Vec installation and try again.")
     exit(1)
 
@@ -133,7 +133,7 @@ print("-" * 70)
 # This associates each node with its embedding vector
 multilayer_network.load_embedding(embedding_file)
 
-print("  ✓ Embeddings loaded successfully!")
+print("  [OK] Embeddings loaded successfully!")
 
 print(f"\nStep 5: Visualizing embeddings using t-SNE")
 print("-" * 70)
@@ -154,11 +154,11 @@ try:
     # Nodes that are structurally similar will be close together
     embedding_visualization.visualize_embedding(multilayer_network)
     
-    print("  ✓ Visualization complete!")
+    print("  [OK] Visualization complete!")
     print("  (Close the window to continue)")
     
 except Exception as e:
-    print(f"  ✗ Visualization error: {e}")
+    print(f"  [X] Visualization error: {e}")
     print("  Continuing with coordinate export...")
 
 print(f"\nStep 6: Exporting embedding coordinates")
@@ -175,7 +175,7 @@ output_positions = embedding_tools.get_2d_coordinates_tsne(
 with open(json_output, 'w') as outfile:
     json.dump(output_positions, outfile, indent=2)
 
-print(f"  ✓ Coordinates exported to: {json_output}")
+print(f"  [OK] Coordinates exported to: {json_output}")
 
 print("\n" + "=" * 70)
 print("EMBEDDING CONSTRUCTION COMPLETE")

@@ -459,34 +459,34 @@ Network Size Guidelines
 Memory Checklist
 ~~~~~~~~~~~~~~~~
 
-✅ Use sparse matrices (``sparse=True``)
+[OK] Use sparse matrices (``sparse=True``)
 
-✅ Batch add edges (not one at a time)
+[OK] Batch add edges (not one at a time)
 
-✅ Avoid repeated matrix construction
+[OK] Avoid repeated matrix construction
 
-✅ Use generators instead of lists where possible
+[OK] Use generators instead of lists where possible
 
-✅ Clear unused variables (``del variable``)
+[OK] Clear unused variables (``del variable``)
 
-✅ Monitor memory with ``tracemalloc``
+[OK] Monitor memory with ``tracemalloc``
 
 Speed Checklist
 ~~~~~~~~~~~~~~~
 
-✅ Choose appropriate algorithms for network size
+[OK] Choose appropriate algorithms for network size
 
-✅ Avoid O(n²) operations on large networks
+[OK] Avoid O(n²) operations on large networks
 
-✅ Use NumPy vectorization
+[OK] Use NumPy vectorization
 
-✅ Cache expensive computations
+[OK] Cache expensive computations
 
-✅ Precompute layouts
+[OK] Precompute layouts
 
-✅ Sample for exploration
+[OK] Sample for exploration
 
-✅ Profile to find bottlenecks
+[OK] Profile to find bottlenecks
 
 Benchmarking Examples
 ---------------------
