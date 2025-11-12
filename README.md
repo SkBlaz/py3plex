@@ -42,7 +42,7 @@ To verify installation.
 
 **Documentation:** Complete documentation is available at [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 
-* [Examples](examples/) - 50+ example scripts demonstrating usage
+* [Examples](examples/) - 50+ example scripts demonstrating usage ([see examples README](examples/README.md))
 
 **Repo organization:**
 ![Customization](example_images/diagram.png)
@@ -91,7 +91,7 @@ make up
 - 4GB RAM minimum
 - Ports: 8080 (GUI), 5555 (Flower), 8000 (API), 6379 (Redis)
 
-**Documentation:** See [gui/README.md](gui/README.md) for complete setup, API reference, and deployment guide.
+**Documentation:** See the [GUI Documentation](https://skblaz.github.io/py3plex/gui.html) for complete setup, API reference, and deployment guide.
 
 ### Requirements
 
