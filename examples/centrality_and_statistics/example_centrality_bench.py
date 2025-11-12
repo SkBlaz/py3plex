@@ -98,7 +98,12 @@ def integrate_similarity_curve(similarities):
     if len(similarities) == 0:
         return 0.0
     # Use trapezoidal rule and normalize by length
-    return np.trapz(similarities) / len(similarities)
+    try:
+        # Use trapezoid (new name in numpy >= 2.0)
+        return np.trapezoid(similarities) / len(similarities)
+    except AttributeError:
+        # Fallback to trapz for older numpy versions
+        return np.trapz(similarities) / len(similarities)
 
 
 def generate_synthetic_network(num_nodes=50, num_layers=3, edge_prob=0.15):
