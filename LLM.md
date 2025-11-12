@@ -6,7 +6,7 @@ This document provides comprehensive guidance for understanding and using py3ple
 
 ---
 
-## Quick Start Quick Start for LLMs
+## Quick Start for LLMs
 
 ### What is py3plex?
 
@@ -61,7 +61,7 @@ centrality = multilayer_statistics.versatility_centrality(network)
 
 ---
 
-## Table of Contents Table of Contents
+## Table of Contents
 
 ### For First-Time Users
 1. [Quick Start for LLMs](#quick-start-for-llms) *(you are here)*
@@ -77,7 +77,7 @@ centrality = multilayer_statistics.versatility_centrality(network)
 
 ---
 
-## KEY: Core API Reference
+## Core API Reference
 
 ### Main Class: `multi_layer_network`
 
@@ -226,7 +226,7 @@ plt.show()
 
 ---
 
-## Usage Patterns Common Usage Patterns
+## Common Usage Patterns
 
 ### Pattern 1: Load and Analyze a Network
 
