@@ -77,7 +77,7 @@ centrality = multilayer_statistics.versatility_centrality(network)
 
 ---
 
-## KEY: Core API Reference
+## Core API Reference
 
 ### Main Class: `multi_layer_network`
 
@@ -226,7 +226,7 @@ plt.show()
 
 ---
 
-## Usage Patterns Common Usage Patterns
+## Common Usage Patterns
 
 ### Pattern 1: Load and Analyze a Network
 
