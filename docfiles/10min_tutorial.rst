@@ -1,19 +1,19 @@
-10-Minute Tutorial: Getting Started with Py3plex
-=================================================
+10-Minute Tutorial: Getting Started with py3plex
+================================================
 
-This tutorial provides a **quick introduction** to py3plex, covering the **most common tasks** you'll need to work with multilayer networks.
+This tutorial provides a quick introduction to py3plex, covering the most common tasks for working with multilayer networks.
 
-What You'll Learn
------------------
+What You Will Learn
+-------------------
 
-In just **10 minutes**, you'll learn how to:
+In 10 minutes, you will learn how to:
 
-1. **Create and load** multilayer networks
-2. Perform **basic network analysis**
-3. Compute **multilayer statistics**
-4. Detect **communities**
-5. Perform **random walks** for embeddings
-6. **Visualize** your networks
+1. Create and load multilayer networks
+2. Perform basic network analysis
+3. Compute multilayer statistics
+4. Detect communities
+5. Perform random walks for embeddings
+6. Visualize networks
 
 Prerequisites
 -------------
@@ -27,7 +27,7 @@ Make sure py3plex is installed:
 1. Creating Your First Multilayer Network (2 minutes)
 ------------------------------------------------------
 
-Let's start by creating a **simple multilayer network** from scratch:
+Start by creating a simple multilayer network from scratch:
 
 .. code-block:: python
 
@@ -63,7 +63,7 @@ Let's start by creating a **simple multilayer network** from scratch:
 2. Loading Networks from Files (1 minute)
 ------------------------------------------
 
-Py3plex supports **multiple input formats**. Here's how to load from an edge list:
+py3plex supports multiple input formats. Here is how to load from an edge list:
 
 .. code-block:: python
 
@@ -82,10 +82,10 @@ Py3plex supports **multiple input formats**. Here's how to load from an edge lis
 
 **Supported formats:**
 
-- ``multiedgelist``: **source, target, layer**
-- ``edgelist``: **simple source, target pairs**
-- ``gpickle``: **NetworkX pickle** format
-- ``gml``, ``graphml``: **Standard graph** formats
+- ``multiedgelist`` - source, target, layer
+- ``edgelist`` - simple source, target pairs
+- ``gpickle`` - NetworkX pickle format
+- ``gml``, ``graphml`` - standard graph formats
 
 3. Exploring Network Structure (2 minutes)
 -------------------------------------------
@@ -173,7 +173,7 @@ For multilayer-specific centrality measures:
 5. Multilayer Network Statistics (2 minutes)
 ---------------------------------------------
 
-Py3plex provides 17 specialized statistics for analyzing multilayer networks. Here are the most commonly used:
+py3plex provides 17 specialized statistics for analyzing multilayer networks. Here are the most commonly used:
 
 Basic Layer Statistics
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -225,7 +225,7 @@ See ``py3plex/algorithms/statistics/README_MULTILAYER_STATISTICS.md`` for all 17
 6. Community Detection (2 minutes)
 ----------------------------------
 
-Py3plex provides Louvain-based community detection that works across multiple layers:
+py3plex provides Louvain-based community detection that works across multiple layers:
 
 .. code-block:: python
 
