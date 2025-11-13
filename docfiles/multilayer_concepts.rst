@@ -1,51 +1,51 @@
 Core Concepts and Architecture
 ==============================
 
-This guide explains the **fundamental concepts** and **architectural design** of py3plex.
+This guide explains the fundamental concepts and architectural design of py3plex.
 
 What are Multilayer Networks?
 ------------------------------
 
-A **multilayer network** is a complex network structure that goes beyond traditional **single-layer graphs** by incorporating **multiple types of relationships**, **node types**, or **interaction contexts**.
+A multilayer network is a complex network structure that goes beyond traditional single-layer graphs by incorporating multiple types of relationships, node types, or interaction contexts.
 
 Key Characteristics
 ~~~~~~~~~~~~~~~~~~~
 
 **Traditional (Single-Layer) Networks:**
 
-* **One type** of node
-* **One type** of edge
-* **Homogeneous** structure
+* One type of node
+* One type of edge
+* Homogeneous structure
 
 **Multilayer Networks:**
 
-* **Multiple node types**
-* **Multiple edge types**
-* **Multiple layers** of interaction
-* **Inter-layer** and **intra-layer** connections
+* Multiple node types
+* Multiple edge types
+* Multiple layers of interaction
+* Inter-layer and intra-layer connections
 
 Types of Multilayer Networks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Multiplex Networks**
-  **Multiple layers** with the **same set of nodes** but **different types of edges**.
+  Multiple layers with the same set of nodes but different types of edges.
   
-  *Example:* Social network with **friendship**, **colleague**, and **family** layers.
+  *Example:* Social network with friendship, colleague, and family layers.
 
 **Heterogeneous Networks (HINs)**
-  **Different node types** with **type-specific relationships**.
+  Different node types with type-specific relationships.
   
-  *Example:* Academic network with **authors**, **papers**, and **venues**.
+  *Example:* Academic network with authors, papers, and venues.
 
 **Temporal Networks**
-  Networks that **evolve over time**, with **time-sliced layers**.
+  Networks that evolve over time, with time-sliced layers.
   
-  *Example:* Communication network across **different time periods**.
+  *Example:* Communication network across different time periods.
 
 **Interdependent Networks**
-  **Multiple networks** where nodes in one network **depend on nodes** in another.
+  Multiple networks where nodes in one network depend on nodes in another.
   
-  *Example:* **Power grid** and **communication network** interdependency.
+  *Example:* Power grid and communication network interdependency.
 
 Core Data Structure
 -------------------
@@ -53,12 +53,12 @@ Core Data Structure
 The ``multi_layer_network`` Class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The **central data structure** in py3plex is the ``multi_layer_network`` class, which provides:
+The central data structure in py3plex is the ``multi_layer_network`` class, which provides:
 
-* **Layer Management:** Add, remove, and query network layers
-* **Node and Edge Operations:** Efficient addition and retrieval
-* **NetworkX Integration:** Full compatibility with NetworkX algorithms
-* **Matrix Representations:** Supra-adjacency and layer-specific matrices
+* Layer Management: Add, remove, and query network layers
+* Node and Edge Operations: Efficient addition and retrieval
+* NetworkX Integration: Full compatibility with NetworkX algorithms
+* Matrix Representations: Supra-adjacency and layer-specific matrices
 
 Basic Structure
 ^^^^^^^^^^^^^^^
