@@ -1,22 +1,22 @@
 Algorithm Selection Guide
 =========================
 
-This guide helps you choose the **right algorithms** for your **multilayer network analysis** tasks.
+This guide helps you choose the right algorithms for your multilayer network analysis tasks.
 
 Community Detection
 -------------------
 
-Choose based on your **network characteristics** and **requirements**:
+Choose based on your network characteristics and requirements:
 
 Louvain Algorithm
 ~~~~~~~~~~~~~~~~~
 
-**Best for:**
+Best for:
 
-* **Large networks** (10,000+ nodes)
-* **Fast approximate** results
-* **Non-overlapping** communities
-* **Modularity optimization**
+* Large networks (10,000+ nodes)
+* Fast approximate results
+* Non-overlapping communities
+* Modularity optimization
 
 **Complexity:** :math:`O(n \log n)` where :math:`n` is the number of nodes
 
@@ -29,25 +29,25 @@ Louvain Algorithm
 
 **Pros:**
 
-* **Very fast** on large networks
-* **Well-established** and widely used
-* **BSD license** (commercial-friendly)
+* Very fast on large networks
+* Well-established and widely used
+* BSD license (commercial-friendly)
 
 **Cons:**
 
-* **Non-deterministic** (random initialization)
-* **Cannot find overlapping** communities
-* **Resolution limit** issues
+* Non-deterministic (random initialization)
+* Cannot find overlapping communities
+* Resolution limit issues
 
 Infomap Algorithm
 ~~~~~~~~~~~~~~~~~
 
-**Best for:**
+Best for:
 
-* **Flow-based** community structure
-* **Overlapping** communities
-* **Hierarchical** community detection
-* **Information-theoretic** optimization
+* Flow-based community structure
+* Overlapping communities
+* Hierarchical community detection
+* Information-theoretic optimization
 
 **Complexity:** :math:`O(m \log n)` where :math:`m` is edges, :math:`n` is nodes
 
@@ -63,27 +63,27 @@ Infomap Algorithm
 
 **Pros:**
 
-* Can detect **overlapping communities**
-* **Flow-based** approach (natural for many applications)
-* **Hierarchical** structure
+* Can detect overlapping communities
+* Flow-based approach (natural for many applications)
+* Hierarchical structure
 
 **Cons:**
 
-* Requires **external binary** or AGPLv3 code
-* **Slower than Louvain**
-* **AGPLv3 license** (viral copyleft)
+* Requires external binary or AGPLv3 code
+* Slower than Louvain
+* AGPLv3 license (viral copyleft)
 
 Label Propagation
 ~~~~~~~~~~~~~~~~~
 
-**Best for:**
+Best for:
 
-* **Semi-supervised** community detection
-* **Known seed** communities
-* **Very large sparse** networks
-* **Linear-time** approximate results
+* Semi-supervised community detection
+* Known seed communities
+* Very large sparse networks
+* Linear-time approximate results
 
-**Complexity:** :math:`O(m)` **linear** in number of edges
+**Complexity:** :math:`O(m)` linear in number of edges
 
 **Usage:**
 
@@ -97,7 +97,7 @@ Label Propagation
 
 **Pros:**
 
-* **Very fast** (linear time)
+* Very fast (linear time)
 * Can incorporate prior knowledge
 * MIT license
 
@@ -110,7 +110,7 @@ Label Propagation
 Multilayer Modularity
 ~~~~~~~~~~~~~~~~~~~~~
 
-**Best for:**
+Best for:
 
 * True multilayer community detection
 * Cross-layer community structure
@@ -145,7 +145,7 @@ Centrality Measures
 Degree Centrality
 ~~~~~~~~~~~~~~~~~
 
-**Best for:**
+Best for:
 
 * Quick importance ranking
 * Local connectivity measure
