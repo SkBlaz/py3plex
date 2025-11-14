@@ -144,39 +144,53 @@ def multilayer_modularity(
     if total_weight == 0:
         return 0.0
 
-    # Calculate modularity
+    # Calculate modularity using vectorized operations for better performance
+    # Complexity: O(N*C + E) instead of O(N²) where C is #communities
     Q = 0.0
 
-    # Intra-layer contributions
+    # Intra-layer contributions - vectorized computation per layer
     for layer in layers:
         stats = layer_stats[layer]
         layer_weight = stats["weight"]
         degrees = stats["degrees"]
         nodes = stats["nodes"]
         layer_idx = stats["indices"]
+        n_nodes = len(nodes)
 
         gamma_layer = gamma_dict.get(layer, 1.0)
 
-        # Sum over all node pairs in this layer
-        for i, (node_i, lyr_i) in enumerate(nodes):
-            for j, (node_j, lyr_j) in enumerate(nodes):
-                # Check if in same community
-                com_i = communities.get((node_i, lyr_i), -1)
-                com_j = communities.get((node_j, lyr_j), -1)
-
-                if com_i != -1 and com_j != -1 and com_i == com_j:
-                    # Get actual adjacency
-                    idx_i = layer_idx[i]
-                    idx_j = layer_idx[j]
-                    A_ij = supra_matrix[idx_i, idx_j]
-
-                    # Calculate null model expectation
-                    if layer_weight > 0:
-                        P_ij = (degrees[i] * degrees[j]) / layer_weight
-                    else:
-                        P_ij = 0.0
-
-                    Q += A_ij - gamma_layer * P_ij
+        # Build community membership vector for this layer
+        community_vec = np.array([communities.get((node, lyr), -1) for node, lyr in nodes])
+        
+        # Skip if no valid community assignments
+        if np.all(community_vec == -1):
+            continue
+        
+        # Extract layer adjacency matrix
+        layer_adj = supra_matrix[np.ix_(layer_idx, layer_idx)]
+        
+        # Compute null model matrix: P_ij = (k_i * k_j) / (2m)
+        if layer_weight > 0:
+            # Vectorized outer product: degrees[i] * degrees[j] for all i,j
+            null_model = np.outer(degrees, degrees) / layer_weight
+        else:
+            null_model = np.zeros((n_nodes, n_nodes))
+        
+        # Modularity matrix: B = A - gamma * P
+        B = layer_adj - gamma_layer * null_model
+        
+        # Compute sum of B_ij for all pairs in same community
+        # Use broadcasting: create boolean matrix where entry (i,j) is True if same community
+        unique_communities = np.unique(community_vec[community_vec != -1])
+        for community in unique_communities:
+            # Mask for nodes in this community
+            in_community = (community_vec == community)
+            
+            # Sum B_ij for all i,j in this community using boolean indexing
+            # This is equivalent to: sum_{i,j in C} B_ij
+            community_indices = np.where(in_community)[0]
+            community_B = B[np.ix_(community_indices, community_indices)]
+            Q += np.sum(community_B)
 
     # Inter-layer coupling contributions
     for i, layer_i in enumerate(layers):

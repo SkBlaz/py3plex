@@ -23,6 +23,7 @@ Date: November 2025
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
+import scipy.sparse as sp
 
 
 def multirank(
@@ -98,40 +99,46 @@ def multirank(
 
     for iteration in range(max_iter):
         # === Update node scores ===
-        # Build layer-weighted supra-adjacency matrix
+        # Build layer-weighted supra-adjacency matrix using sparse operations
         # For each layer ℓ: A_y[ℓ] = y[ℓ] * A[ℓ]
-        weighted_layers = [
-            layer_scores[ell] * layer_adjacencies[ell] for ell in range(L)
-        ]
-
-        # Build block-diagonal supra matrix + inter-layer replica couplings
-        # Supra matrix is (N*L) x (N*L)
-        supra_matrix = np.zeros((N * L, N * L))
-
-        # Fill diagonal blocks (intra-layer edges weighted by layer scores)
+        # Use sparse block matrix construction for memory efficiency: O(E + N*L) vs O(N²*L²)
+        
+        # Convert layers to sparse if needed and scale by layer scores
+        weighted_layers_sparse = []
         for ell in range(L):
-            supra_matrix[
-                ell * N : (ell + 1) * N, ell * N : (ell + 1) * N
-            ] = weighted_layers[ell]
-
-        # Fill off-diagonal blocks (inter-layer replica couplings)
+            layer_csr = sp.csr_matrix(layer_adjacencies[ell])
+            weighted_layers_sparse.append(layer_scores[ell] * layer_csr)
+        
+        # Build block-diagonal supra matrix using sparse blocks
+        # Diagonal blocks: intralayer edges weighted by layer scores
+        diagonal_blocks = [[None for _ in range(L)] for _ in range(L)]
+        for ell in range(L):
+            diagonal_blocks[ell][ell] = weighted_layers_sparse[ell]
+        
+        # Off-diagonal blocks: interlayer replica couplings (sparse identity matrices)
         for ell1 in range(L):
             for ell2 in range(L):
                 if ell1 != ell2:
                     coupling_weight = interlayer_coupling[ell1, ell2]
                     if coupling_weight != 0:
-                        # Replica-to-replica coupling: connect same physical node across layers
-                        for i in range(N):
-                            supra_matrix[ell1 * N + i, ell2 * N + i] = (
-                                coupling_weight
-                            )
-
-        # Create row-stochastic transition matrix
-        row_sums = np.sum(supra_matrix, axis=1)
+                        # Sparse identity for replica-to-replica coupling
+                        diagonal_blocks[ell1][ell2] = sp.identity(N, format='csr') * coupling_weight
+                    else:
+                        # Zero block if no coupling
+                        diagonal_blocks[ell1][ell2] = sp.csr_matrix((N, N))
+        
+        # Construct sparse supra-adjacency matrix
+        supra_matrix = sp.bmat(diagonal_blocks, format='csr')
+        
+        # Create row-stochastic transition matrix (sparse operations)
+        row_sums = np.array(supra_matrix.sum(axis=1)).flatten()
         row_sums[row_sums == 0] = 1  # Handle dangling nodes
-        transition_matrix = supra_matrix / row_sums[:, np.newaxis]
-
-        # PageRank-style update on supra-matrix
+        
+        # Normalize rows to create transition matrix
+        row_sums_inv = sp.diags(1.0 / row_sums, format='csr')
+        transition_matrix = row_sums_inv @ supra_matrix
+        
+        # PageRank-style update on supra-matrix (sparse matrix-vector products)
         replica_scores = np.ones(N * L) / (N * L)
         for _ in range(100):  # Inner PageRank iterations
             new_replica_scores = (1 - alpha) / (N * L) + alpha * (
@@ -140,28 +147,26 @@ def multirank(
             if np.linalg.norm(replica_scores - new_replica_scores) < tol:
                 break
             replica_scores = new_replica_scores
-
+        
         # Aggregate replica scores to node scores (sum across layers)
-        new_node_scores = np.zeros(N)
-        for i in range(N):
-            for ell in range(L):
-                new_node_scores[i] += replica_scores[ell * N + i]
-
+        # Vectorized: reshape and sum instead of nested loops
+        replica_scores_reshaped = replica_scores.reshape(L, N)
+        new_node_scores = np.sum(replica_scores_reshaped, axis=0)
+        
         # Normalize node scores
         if np.sum(new_node_scores) > 0:
             new_node_scores = new_node_scores / np.sum(new_node_scores)
-
+        
         # === Update layer scores ===
-        # For each layer ℓ: y[ℓ] = sum of edge weights × (source + target node scores)
+        # Vectorized computation: for each layer ℓ, compute edge activity
+        # edge_activity = sum_{i,j} A[ℓ]_{ij} * (x[i] + x[j])
         new_layer_scores = np.zeros(L)
         for ell in range(L):
-            edge_activity = 0.0
-            for i in range(N):
-                for j in range(N):
-                    if layer_adjacencies[ell][i, j] > 0:
-                        edge_activity += layer_adjacencies[ell][i, j] * (
-                            new_node_scores[i] + new_node_scores[j]
-                        )
+            layer_adj = layer_adjacencies[ell]
+            # Vectorized: A @ x gives column sums weighted by x
+            # A.T @ x gives row sums weighted by x
+            # Total activity = sum of both (counts each edge twice for undirected)
+            edge_activity = np.sum(layer_adj @ new_node_scores) + np.sum(layer_adj.T @ new_node_scores)
             new_layer_scores[ell] = edge_activity
 
         # Normalize layer scores
