@@ -1,0 +1,581 @@
+{
+  "env": {
+    "python_version": "3.12.3",
+    "py3plex_version": "0.95a",
+    "os": "Linux 6.11.0-1018-azure x86_64",
+    "cpu_info": "2 physical cores, 4 logical cores",
+    "ram_gb": 15.62,
+    "pip_freeze": "argcomplete==3.6.3\nattrs==23.2.0\nAutomat==22.10.0\nBabel==2.10.3\nbcc==0.29.1\nbcrypt==3.2.2\nbitarray==3.8.0\nblinker==1.7.0\nboto3==1.34.46\nbotocore==1.34.46\ncertifi==2023.11.17\nchardet==5.2.0\nclick==8.1.6\ncloud-init==25.1.4\ncolorama==0.4.6\ncommand-not-found==0.3\nconfigobj==5.0.8\nconstantly==23.10.4\ncontourpy==1.3.3\ncryptography==41.0.7\ncycler==0.12.1\nCython==3.2.1\ndbus-python==1.3.2\ndistro==1.9.0\ndistro-info==1.7+build1\nfonttools==4.60.1\ngensim==4.4.0\nhttplib2==0.20.4\nhyperlink==21.0.0\nidna==3.6\nincremental==22.10.0\nJinja2==3.1.2\njmespath==1.0.1\njoblib==1.5.2\njsonpatch==1.32\njsonpointer==2.0\njsonschema==4.10.3\nkiwisolver==1.4.9\nlaunchpadlib==1.11.0\nlazr.restfulclient==0.14.6\nlazr.uri==1.0.6\nmarkdown-it-py==3.0.0\nMarkupSafe==2.1.5\nmatplotlib==3.10.7\nmdurl==0.1.2\nmercurial==6.7.2\nnetaddr==0.8.0\nnetifaces==0.11.0\nnetworkx==3.5\nnumpy==2.3.4\noauthlib==3.2.2\npackaging==24.0\npandas==2.3.3\npexpect==4.9.0\npillow==12.0.0\npipx==1.8.0\nplatformdirs==4.5.0\npsutil==7.1.3\nptyprocess==0.7.0\n-e git+https://github.com/SkBlaz/py3plex@b845ddbc9d2e8d8d9b5b1d0e5095eed54e73b9e3#egg=py3plex\npyasn1==0.4.8\npyasn1-modules==0.2.8\nPygments==2.17.2\nPyGObject==3.48.2\nPyHamcrest==2.1.0\nPyJWT==2.7.0\npyOpenSSL==23.2.0\npyparsing==3.1.1\npyparted==3.12.0\npyrsistent==0.20.0\npyserial==3.5\npython-apt==2.7.7+ubuntu5\npython-dateutil==2.8.2\npython-debian==0.1.49+ubuntu2\npython-magic==0.4.27\npytz==2024.1\nPyYAML==6.0.1\nrdflib==7.4.0\nrequests==2.31.0\nrich==13.7.1\ns3transfer==0.10.1\nscikit-learn==1.7.2\nscipy==1.16.3\nseaborn==0.13.2\nservice-identity==24.1.0\nsetuptools==68.1.2\nsix==1.16.0\nsmart_open==7.5.0\nsos==4.8.2\nssh-import-id==5.11\nsystemd-python==235\nthreadpoolctl==3.6.0\ntqdm==4.67.1\nTwisted==24.3.0\ntyping_extensions==4.10.0\ntzdata==2025.2\nubuntu-pro-client==8001\nufw==0.36.2\nurllib3==2.0.7\nuserpath==1.9.2\nwadllib==1.3.6\nWALinuxAgent==2.11.1.4\nwheel==0.42.0\nwrapt==2.0.1\nzope.interface==6.1\nzstandard==0.22.0\n"
+  },
+  "import_verification": {
+    "imports": {
+      "py3plex": "SUCCESS",
+      "py3plex.core": "SUCCESS",
+      "py3plex.core.multinet": "SUCCESS",
+      "py3plex.core.random_generators": "SUCCESS",
+      "py3plex.algorithms": "SUCCESS",
+      "py3plex.algorithms.statistics": "SUCCESS",
+      "py3plex.algorithms.community_detection": "SUCCESS",
+      "py3plex.io": "SUCCESS",
+      "py3plex.visualization": "SUCCESS",
+      "py3plex.wrappers": "SUCCESS"
+    },
+    "help_py3plex": "Help on package py3plex:\n\nNAME\n    py3plex - Py3plex - A Python library for multilayer network analysis and visualization.\n\nDESCRIPTION\n    This package provides tools for constructing, analyzing, and visualizing\n    heterogeneous and multilayer networks.\n\nPACKAGE CONTENTS\n    __main__\n    algorithms (package)\n    cli\n    config\n    core (package)\n    exceptions\n    io (package)\n    logging_config\n    multinet (package)\n    profiling\n    utils\n    validation\n    visualization (package)\n    wrappers (package)\n\nCLASSES\n    builtins.Exception(builtins.BaseException)\n        py3plex.exceptions.Py3plexException\n            py3plex.exceptions.AlgorithmError\n                py3plex.exceptions.CentralityComputationError\n                py3plex.exceptions.CommunityDetectionError\n                py3plex.exceptions.DecompositionError\n                py3plex.exceptions.EmbeddingError\n            py3plex.exceptions.ConversionError\n            py3plex.exceptions.IncompatibleNetworkError\n            py3plex.exceptions.InvalidEdgeError\n            py3plex.exceptions.InvalidLayerError\n            py3plex.exceptions.InvalidNodeError\n            py3plex.exceptions.NetworkConstructionError\n            py3plex.exceptions.ParsingError",
+    "help_core": "Help on package py3plex.core in py3plex:\n\nNAME\n    py3plex.core - Core data structures and utilities for multilayer networks.\n\nDESCRIPTION\n    This module provides the fundamental building blocks for working with\n    multilayer networks, including the multi_layer_network class and related\n    parsers and converters.\n\nPACKAGE CONTENTS\n    HINMINE (package)\n    converters\n    multinet\n    nx_compat\n    parsers\n    random_generators\n    supporting\n\nFILE\n    /home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\n\n\n",
+    "discrepancies": []
+  },
+  "graph_construction": {
+    "undirected_cycle": {
+      "code": "nx.cycle_graph(5)",
+      "repr": "<networkx.classes.graph.Graph object at 0x7f0247f90740>",
+      "type": "<class 'networkx.classes.graph.Graph'>",
+      "nodes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "degrees": {
+        "0": 2,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2
+      }
+    },
+    "directed_weighted": {
+      "code": "G = nx.DiGraph(); G.add_weighted_edges_from([(0,1,1.5),(1,2,2.0),(2,3,0.5),(3,0,1.0)])",
+      "repr": "<networkx.classes.digraph.DiGraph object at 0x7f0224df1a00>",
+      "type": "<class 'networkx.classes.digraph.DiGraph'>",
+      "nodes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "edges": [
+        [
+          0,
+          1,
+          1.5
+        ],
+        [
+          1,
+          2,
+          2.0
+        ],
+        [
+          2,
+          3,
+          0.5
+        ],
+        [
+          3,
+          0,
+          1.0
+        ]
+      ],
+      "in_degrees": {
+        "0": 1,
+        "1": 1,
+        "2": 1,
+        "3": 1
+      },
+      "out_degrees": {
+        "0": 1,
+        "1": 1,
+        "2": 1,
+        "3": 1
+      }
+    },
+    "multilayer": {
+      "error": "multi_layer_network.add_nodes() got an unexpected keyword argument 'layer'"
+    },
+    "hypergraph": {
+      "status": "not_available",
+      "note": "py3plex does not have native hypergraph support in core API"
+    }
+  },
+  "io_validation": {
+    "formats": {
+      "edgelist": {
+        "status": "SUCCESS",
+        "nodes_match": false,
+        "edges_match": true
+      },
+      "adjlist": {
+        "status": "SUCCESS",
+        "nodes_match": false,
+        "edges_match": true
+      },
+      "gml": {
+        "status": "SUCCESS",
+        "nodes_match": false,
+        "edges_match": true
+      },
+      "graphml": {
+        "status": "SUCCESS",
+        "nodes_match": false,
+        "edges_match": true
+      }
+    },
+    "round_trip": {},
+    "malformed": {
+      "missing_values": {
+        "status": "loaded_without_error",
+        "nodes": 4,
+        "edges": 2
+      },
+      "irregular_columns": {
+        "status": "raised_exception",
+        "exception": "Failed to convert edge data (['3']) to dictionary."
+      },
+      "non_numeric_weights": {
+        "status": "raised_exception",
+        "exception": "Failed to convert edge data (['abc']) to dictionary."
+      },
+      "self_loops": {
+        "status": "loaded_without_error",
+        "nodes": 3,
+        "edges": 3
+      },
+      "negative_weights": {
+        "status": "raised_exception",
+        "exception": "Failed to convert edge data (['-5.0']) to dictionary."
+      }
+    },
+    "large_file": {
+      "status": "SUCCESS",
+      "num_edges": 10000,
+      "load_time_seconds": 1.69,
+      "memory_increase_mb": 3.25
+    }
+  },
+  "algorithms": {
+    "centrality": {
+      "degree_centrality": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.0004,
+        "memory_mb": 0.0,
+        "return_type": "<class 'dict'>",
+        "num_results": 34
+      },
+      "betweenness_centrality": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.0021,
+        "memory_mb": 0.0,
+        "return_type": "<class 'dict'>",
+        "num_results": 34
+      },
+      "closeness_centrality": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.0009,
+        "memory_mb": 0.0,
+        "return_type": "<class 'dict'>",
+        "num_results": 34
+      },
+      "eigenvector_centrality": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.001,
+        "memory_mb": 0.0,
+        "return_type": "<class 'dict'>",
+        "num_results": 34
+      }
+    },
+    "clustering": {
+      "status": "SUCCESS",
+      "runtime_seconds": 0.0007,
+      "return_type": "<class 'dict'>",
+      "num_results": 34
+    },
+    "pagerank": {
+      "status": "SUCCESS",
+      "runtime_seconds": 0.0024,
+      "return_type": "<class 'dict'>",
+      "num_results": 34
+    },
+    "shortest_paths": {
+      "status": "SUCCESS",
+      "runtime_seconds": 0.0003,
+      "return_type": "<class 'dict'>",
+      "num_results": 34
+    },
+    "connected_components": {
+      "status": "SUCCESS",
+      "runtime_seconds": 0.0002,
+      "num_components": 1
+    },
+    "community_detection": {
+      "louvain": {
+        "status": "NOT_AVAILABLE",
+        "note": "python-louvain not installed"
+      }
+    }
+  },
+  "visualization": {
+    "layouts": {
+      "small_spring": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.06,
+        "memory_mb": 8.66,
+        "image": "viz_small_spring.png"
+      },
+      "small_circular": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.06,
+        "memory_mb": 3.38,
+        "image": "viz_small_circular.png"
+      },
+      "small_kamada_kawai": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.1,
+        "memory_mb": 8.91,
+        "image": "viz_small_kamada_kawai.png"
+      },
+      "small_random": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.07,
+        "memory_mb": 3.76,
+        "image": "viz_small_random.png"
+      },
+      "medium_spring": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.09,
+        "memory_mb": 4.18,
+        "image": "viz_medium_spring.png"
+      },
+      "medium_circular": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.09,
+        "memory_mb": 3.93,
+        "image": "viz_medium_circular.png"
+      },
+      "medium_kamada_kawai": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.32,
+        "memory_mb": -7.54,
+        "image": "viz_medium_kamada_kawai.png"
+      },
+      "medium_random": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.1,
+        "memory_mb": 4.0,
+        "image": "viz_medium_random.png"
+      },
+      "large_spring": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.94,
+        "memory_mb": 0.59,
+        "image": "viz_large_spring.png"
+      },
+      "large_circular": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.2,
+        "memory_mb": 4.09,
+        "image": "viz_large_circular.png"
+      },
+      "large_kamada_kawai": {
+        "status": "SUCCESS",
+        "runtime_seconds": 9.55,
+        "memory_mb": 1.52,
+        "image": "viz_large_kamada_kawai.png"
+      },
+      "large_random": {
+        "status": "SUCCESS",
+        "runtime_seconds": 0.2,
+        "memory_mb": 3.75,
+        "image": "viz_large_random.png"
+      }
+    },
+    "images": [
+      "viz_small_spring.png",
+      "viz_small_circular.png",
+      "viz_small_kamada_kawai.png",
+      "viz_small_random.png",
+      "viz_medium_spring.png",
+      "viz_medium_circular.png",
+      "viz_medium_kamada_kawai.png",
+      "viz_medium_random.png",
+      "viz_large_spring.png",
+      "viz_large_circular.png",
+      "viz_large_kamada_kawai.png",
+      "viz_large_random.png",
+      "viz_long_labels.png"
+    ],
+    "long_labels": {
+      "status": "SUCCESS"
+    }
+  },
+  "api_discoverability": {
+    "dir_output": {
+      "py3plex": [
+        "AlgorithmError",
+        "CentralityComputationError",
+        "CommunityDetectionError",
+        "ConversionError",
+        "DecompositionError",
+        "EmbeddingError",
+        "IncompatibleNetworkError",
+        "InvalidEdgeError",
+        "InvalidLayerError",
+        "InvalidNodeError",
+        "NetworkConstructionError",
+        "ParsingError",
+        "Py3plexException",
+        "VisualizationError",
+        "__all__",
+        "__api_version__",
+        "__builtins__",
+        "__cached__",
+        "__doc__",
+        "__file__",
+        "__loader__",
+        "__name__",
+        "__package__",
+        "__path__",
+        "__spec__",
+        "__version__",
+        "algorithms",
+        "benchmark",
+        "config",
+        "core",
+        "exceptions",
+        "get_monitor",
+        "io",
+        "logging_config",
+        "profile_performance",
+        "profiling",
+        "timed_section",
+        "visualization",
+        "wrappers"
+      ],
+      "multinet": [
+        "Any",
+        "Dict",
+        "ICONTRACT_AVAILABLE",
+        "List",
+        "Optional",
+        "Tuple",
+        "Union",
+        "__builtins__",
+        "__cached__",
+        "__doc__",
+        "__file__",
+        "__loader__",
+        "__name__",
+        "__package__",
+        "__spec__",
+        "_draw_diagonal_layers",
+        "_draw_multiedges_for_type",
+        "_encode_multilayer_network",
+        "_encode_multiplex_network",
+        "_visualize_diagonal_style",
+        "_visualize_hairball_style",
+        "converters",
+        "defaultdict",
+        "draw_multiedges",
+        "draw_multilayer_default",
+        "ensure",
+        "get_logger",
+        "hairball_plot",
+        "hinmine_decompose",
+        "hinmine_get_cycles",
+        "invariant",
+        "itertools",
+        "load_hinmine_object",
+        "logger",
+        "multi_layer_network",
+        "np",
+        "nx",
+        "nx_from_scipy_sparse_matrix",
+        "nx_info",
+        "nx_to_scipy_sparse_matrix",
+        "parsers",
+        "plt",
+        "require",
+        "server_mode",
+        "supra_adjacency_matrix_plot",
+        "topology",
+        "tqdm"
+      ]
+    },
+    "friction_points": [
+      "multi_layer_network() requires no arguments by default but unclear from dir()",
+      "Method names use add_nodes/add_edges (plural) - check consistency with NetworkX",
+      "multi_layer_network __repr__ shows memory address (not informative)",
+      "add_edges() uses 'layer', 'layer_from', 'layer_to' parameters - could be confusing",
+      "visualize_network() method name - unclear what network means in multilayer context",
+      "No clear naming patterns for discoverability (e.g., all viz methods start with 'visualize_')",
+      "Need to test error messages for clarity (covered in Step 7)",
+      "Unclear return types from dir() alone - need type hints or docstrings",
+      "No inline examples in docstrings visible from help()"
+    ]
+  },
+  "error_handling": {
+    "tests": [
+      {
+        "name": "wrong_data_type_nodes",
+        "status": "raised_exception",
+        "exception_type": "TypeError",
+        "message": "'int' object is not iterable",
+        "clarity_rating": 3,
+        "suggestion": "Add more context to error message"
+      },
+      {
+        "name": "nan_weight",
+        "status": "no_error",
+        "message": "Test completed without raising exception",
+        "clarity_rating": 2,
+        "suggestion": "Should provide clear error or warning"
+      },
+      {
+        "name": "negative_weight",
+        "status": "no_error",
+        "message": "Test completed without raising exception",
+        "clarity_rating": 2,
+        "suggestion": "Should provide clear error or warning"
+      },
+      {
+        "name": "missing_node",
+        "status": "raised_exception",
+        "exception_type": "NodeNotFound",
+        "message": "Source 999 is not in G",
+        "clarity_rating": 3,
+        "suggestion": "Add more context to error message"
+      },
+      {
+        "name": "empty_graph_centrality",
+        "status": "no_error",
+        "message": "Test completed without raising exception",
+        "clarity_rating": 2,
+        "suggestion": "Should provide clear error or warning"
+      }
+    ]
+  },
+  "performance": {
+    "benchmarks": {
+      "incremental_1000": {
+        "runtime_seconds": 0.0,
+        "memory_mb": 0.0
+      },
+      "bulk_1000": {
+        "runtime_seconds": 0.0,
+        "memory_mb": 0.0
+      },
+      "pagerank_1000": {
+        "runtime_seconds": 0.0
+      },
+      "incremental_5000": {
+        "runtime_seconds": 0.01,
+        "memory_mb": 0.62
+      },
+      "bulk_5000": {
+        "runtime_seconds": 0.01,
+        "memory_mb": 0.25
+      },
+      "pagerank_5000": {
+        "runtime_seconds": 0.01
+      },
+      "incremental_50000": {
+        "runtime_seconds": 0.12,
+        "memory_mb": 17.55
+      },
+      "bulk_50000": {
+        "runtime_seconds": 0.11,
+        "memory_mb": -15.22
+      }
+    },
+    "stress_test": {
+      "iterations": 50,
+      "memory_growth_mb": 0.0,
+      "memory_samples": [
+        212.19,
+        212.19,
+        212.19,
+        212.19,
+        212.19
+      ]
+    }
+  },
+  "interoperability": {
+    "networkx": {
+      "error": "multi_layer_network.add_nodes() got an unexpected keyword argument 'layer'"
+    },
+    "pandas": {
+      "to_dataframe": {
+        "status": "SUCCESS",
+        "shape": [
+          34,
+          34
+        ]
+      },
+      "from_dataframe": {
+        "status": "SUCCESS",
+        "nodes_match": true,
+        "edges_match": true
+      }
+    },
+    "numpy": {
+      "to_array": {
+        "status": "SUCCESS",
+        "shape": [
+          34,
+          34
+        ],
+        "dtype": "float64"
+      },
+      "from_array": {
+        "status": "SUCCESS",
+        "nodes_match": true
+      }
+    },
+    "igraph": {
+      "status": "igraph_not_installed"
+    }
+  },
+  "findings": [
+    "help(py3plex) contains error or warning messages",
+    "Cannot create multilayer graph: multi_layer_network.add_nodes() got an unexpected keyword argument 'layer'",
+    "Hypergraph support not available in py3plex",
+    "Round-trip mismatch for edgelist format",
+    "Round-trip mismatch for adjlist format",
+    "Round-trip mismatch for gml format",
+    "Round-trip mismatch for graphml format",
+    "Malformed file missing_values loaded without error (should warn or fail)",
+    "Louvain community detection not available (python-louvain not installed)",
+    "API ergonomics: multi_layer_network() requires no arguments by default but unclear from dir()",
+    "API ergonomics: Method names use add_nodes/add_edges (plural) - check consistency with NetworkX",
+    "API ergonomics: multi_layer_network __repr__ shows memory address (not informative)",
+    "API ergonomics: add_edges() uses 'layer', 'layer_from', 'layer_to' parameters - could be confusing",
+    "API ergonomics: visualize_network() method name - unclear what network means in multilayer context",
+    "API ergonomics: No clear naming patterns for discoverability (e.g., all viz methods start with 'visualize_')",
+    "API ergonomics: Need to test error messages for clarity (covered in Step 7)",
+    "API ergonomics: Unclear return types from dir() alone - need type hints or docstrings",
+    "API ergonomics: No inline examples in docstrings visible from help()",
+    "NetworkX interoperability issue: multi_layer_network.add_nodes() got an unexpected keyword argument 'layer'",
+    "igraph not installed - cannot test interoperability"
+  ]
+}

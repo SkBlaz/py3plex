@@ -1,103 +1,91 @@
-# Py3plex Developer and LLM Documentation
+# Py3plex Actionable Improvements
 
-**Welcome! This is the entry point for LLMs and developers working with py3plex.**
-
-This document provides comprehensive guidance for understanding and using py3plex, a Python library for multilayer network analysis and visualization.
-
----
-
-## Quick Start for LLMs
-
-### What is py3plex?
-
-**Py3plex** is a Python library for **multilayer network analysis and visualization**. It enables working with complex networks that have:
-- Multiple layers (e.g., social networks with different relationship types)
-- Different node types (heterogeneous networks)
-- Temporal dynamics (time-varying networks)
-
-**Key capabilities:**
-- Create and manipulate multilayer networks
-- Compute multilayer-specific centrality measures
-- Detect communities in multilayer structures
-- Visualize complex network structures
-- Convert between NetworkX and multilayer formats
-
-**Installation:**
-```bash
-pip install git+https://github.com/SkBlaz/py3plex.git
-py3plex selftest  # Verify installation
-```
-
-### 30-Second Example
-
-```python
-from py3plex.core import multinet
-from py3plex.core import random_generators
-
-# Create a random multilayer network
-network = random_generators.random_multilayer_ER(
-    n=100,      # 100 nodes
-    layers=3,   # 3 layers
-    p=0.05      # Edge probability
-)
-
-# Visualize it
-network.visualize_network(show=True)
-
-# Compute centrality
-from py3plex.algorithms.statistics import multilayer_statistics
-centrality = multilayer_statistics.versatility_centrality(network)
-```
-
-### Core Concepts
-
-1. **Multilayer Network**: A network with multiple layers, where each layer represents a different type of relationship
-2. **Node-Layer Tuple**: Nodes are identified by `(node_name, layer_name)` pairs
-3. **Intra-layer edges**: Edges within a single layer
-4. **Inter-layer edges**: Edges connecting the same node across different layers
-5. **Network Types**:
-   - `multilayer`: General multilayer networks
-   - `multiplex`: Special case where same nodes exist in all layers with inter-layer couplings
-
----
-
-## Table of Contents
-
-### For First-Time Users
-1. [Quick Start for LLMs](#quick-start-for-llms) *(you are here)*
-2. [Core API Reference](#core-api-reference)
-3. [Common Usage Patterns](#common-usage-patterns)
-4. [Navigation Guide](#navigation-guide)
-
-### Technical Documentation
-5. [Visualization Module Import Guide](#visualization-module-import-guide)
-6. [Examples CI Documentation](#examples-ci-documentation)
-7. [Property-Based Tests](#property-based-tests)
-8. [Selftest Expansion](#selftest-expansion)
-
----
-
-## Core API Reference
-
-### Main Class: `multi_layer_network`
-
-Located in: `py3plex.core.multinet`
-
-**Initialization:**
-```python
-from py3plex.core import multinet
-
-network = multinet.multi_layer_network(
-    network_type="multilayer",  # or "multiplex"
-    directed=True,              # or False for undirected
-    verbose=True                # Enable logging
-)
-```
-
-**Key Methods:**
-
-#### Network Construction
-```python
+Add __version__ attribute to py3plex.__init__.py for version detection
+Document add_nodes() requires dict format with 'source' and 'type' keys
+Document add_edges() requires dict format with 'source', 'target', and 'layer' keys
+Add example code to multi_layer_network docstring showing dict-based API
+Implement __repr__ for multi_layer_network showing node/edge/layer counts
+Add type hints to multi_layer_network.add_nodes() and add_edges()
+Create quick reference guide for node dict structure in LLM.md
+Create quick reference guide for edge dict structure in LLM.md
+Standardize method naming convention documentation (add_nodes vs add_node)
+Add to_networkx() method to multi_layer_network class
+Add from_networkx() class method to multi_layer_network
+Document layer parameter confusion in add_edges (layer vs layer_from vs layer_to)
+Add validation for malformed edgelist files with clear error messages
+Add warnings for files with missing values or irregular column counts
+Implement round-trip test suite for all supported IO formats
+Document expected behavior for self-loops in IO operations
+Document expected behavior for negative weights in IO operations
+Add optional dependency documentation for python-louvain
+Add optional dependency documentation for igraph
+Expand help() docstrings for py3plex main module
+Expand help() docstrings for py3plex.core module
+Add inline examples to all public method docstrings
+Create naming pattern guide for visualization methods
+Add tab completion hints via __all__ exports
+Improve error message clarity for TypeError in add_nodes
+Add contextual help messages to all custom exceptions
+Rate and document all exception messages for clarity (target 4-5/5)
+Add suggested fixes to exception messages where applicable
+Document performance characteristics for large graphs (50K+ nodes)
+Add memory usage guidelines for different graph sizes
+Document expected load times for 1M+ edge datasets
+Create performance benchmark reference table
+Add stress test suite for memory leak detection
+Implement memory profiling decorators for key operations
+Add NetworkX compatibility layer documentation
+Document attribute preservation in NetworkX conversions
+Add pandas DataFrame conversion examples
+Add numpy array conversion examples
+Add igraph conversion examples (when available)
+Document information loss in format conversions
+Create conversion matrix showing supported paths
+Add hypergraph support or document lack thereof clearly
+Implement proper validation for NaN values in weights
+Add clear warnings for edge case handling
+Document directed vs undirected algorithm compatibility
+Add pre-condition checks for algorithm requirements
+Implement better error messages for missing nodes in algorithms
+Add algorithm runtime complexity documentation
+Create algorithm selection guide based on graph properties
+Add visualization performance guidelines for graph sizes
+Document layout algorithm characteristics and use cases
+Add timeout warnings for slow layout computations
+Implement progress bars for long-running visualizations
+Add support for unicode labels or document limitations
+Document font rendering issues with CJK characters
+Add layout algorithm comparison benchmarks
+Create visualization quick start guide
+Add method discovery guide using dir() output
+Document return types for all public methods
+Add constructor parameter documentation
+Create API ergonomics improvement roadmap
+Implement consistent parameter naming across methods
+Add deprecation warnings for confusing parameter names
+Create migration guide for API changes
+Document relationship between NetworkX and py3plex APIs
+Add code examples for common API confusion points
+Implement input validation with actionable error messages
+Add data type checking at API boundaries
+Create comprehensive test suite for error conditions
+Document expected exceptions for each method
+Add error handling best practices guide
+Create troubleshooting section in documentation
+Implement centralized logging configuration
+Add debug mode documentation
+Create development environment setup guide
+Add contribution guidelines for new algorithms
+Document testing requirements for pull requests
+Add benchmark requirements for performance-critical changes
+Implement continuous benchmarking in CI
+Add regression detection for performance
+Create release checklist including benchmark validation
+Document versioning strategy
+Add changelog generation automation
+Implement semantic versioning enforcement
+Create backward compatibility policy
+Add deprecation schedule documentation
 # Load from file
 network.load_network(
     input_file="network.edgelist",
