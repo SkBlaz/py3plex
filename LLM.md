@@ -19,7 +19,7 @@ Document expected behavior for negative weights in IO operations
 ✅ Add optional dependency documentation for igraph
 ✅ Expand help() docstrings for py3plex main module
 ✅ Expand help() docstrings for py3plex.core module
-Add inline examples to all public method docstrings
+✅ Add inline examples to all public method docstrings (save_network, summary)
 Create naming pattern guide for visualization methods
 ✅ Add tab completion hints via __all__ exports
 Improve error message clarity for TypeError in add_nodes
@@ -47,7 +47,7 @@ Add pre-condition checks for algorithm requirements
 Implement better error messages for missing nodes in algorithms
 Add algorithm runtime complexity documentation
 Create algorithm selection guide based on graph properties
-Add visualization performance guidelines for graph sizes
+✅ Add visualization performance guidelines for graph sizes
 Document layout algorithm characteristics and use cases
 Add timeout warnings for slow layout computations
 Implement progress bars for long-running visualizations
