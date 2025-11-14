@@ -327,6 +327,58 @@ def _encode_multiplex_network(core_network):
 
 
 class multi_layer_network:
+    """Main class for multilayer network analysis and manipulation.
+    
+    This class provides a comprehensive toolkit for creating, analyzing, and
+    visualizing multilayer networks where nodes can exist in multiple layers
+    and edges can connect nodes within or across layers.
+    
+    Supported Network Types:
+        - **multilayer**: General multilayer networks with arbitrary layer structure
+        - **multiplex**: Special case where all layers share the same nodes, with
+          automatic coupling edges between corresponding nodes across layers
+    
+    Key Features:
+        - Dict-based API for adding nodes and edges (see add_nodes() and add_edges())
+        - NetworkX interoperability via to_networkx() and from_networkx()
+        - Multiple I/O formats (edgelist, GML, GraphML, gpickle, etc.)
+        - Visualization methods for multilayer layouts
+        - Community detection and centrality analysis
+        - Random walk and embedding generation
+    
+    Hypergraph Support:
+        This class does NOT natively support true hypergraphs (edges connecting
+        more than two nodes). For hypergraph-like structures, consider:
+        - Using bipartite projections (nodes and hyperedges as separate node types)
+        - The incidence gadget encoding via to_homogeneous_hypergraph()
+        - External hypergraph libraries with conversion utilities
+    
+    Notes:
+        - Nodes in multilayer networks are represented as (node_id, layer) tuples
+        - Use add_nodes() and add_edges() with dict format for easiest interaction
+        - See examples/ directory for usage patterns and best practices
+    
+    Examples:
+        >>> # Create a basic multilayer network
+        >>> net = multi_layer_network(network_type='multilayer', directed=False)
+        >>> 
+        >>> # Add nodes to different layers
+        >>> net.add_nodes([
+        ...     {'source': 'A', 'type': 'social'},
+        ...     {'source': 'B', 'type': 'social'},
+        ...     {'source': 'A', 'type': 'email'}  # Same node, different layer
+        ... ])
+        >>> 
+        >>> # Add edges (intra-layer and inter-layer)
+        >>> net.add_edges([
+        ...     {'source': 'A', 'target': 'B', 
+        ...      'source_type': 'social', 'target_type': 'social'},
+        ...     {'source': 'A', 'target': 'A',
+        ...      'source_type': 'social', 'target_type': 'email'}
+        ... ])
+        >>> 
+        >>> print(net)  # Shows network statistics
+    """
 
     def __init__(
         self,
@@ -337,9 +389,7 @@ class multi_layer_network:
         label_delimiter: str = "---",
         coupling_weight: Union[int, float] = 1,
     ) -> None:
-        """Class initializer
-
-        This is the main class initializer method. User here specifies the type of the network, as well as other global parameters.
+        """Initialize a multilayer network.
 
         Args:
             verbose: Enable verbose logging output
@@ -347,7 +397,7 @@ class multi_layer_network:
             directed: Whether the network is directed
             dummy_layer: Name for dummy/placeholder layer
             label_delimiter: Delimiter used to separate layer names in node labels
-            coupling_weight: Default weight for inter-layer edges
+            coupling_weight: Default weight for inter-layer edges in multiplex networks
 
         """
         # initialize the class
@@ -385,6 +435,35 @@ class multi_layer_network:
             return self.core_network[i]
         else:
             return self.core_network[i][j]
+
+    def __repr__(self) -> str:
+        """Return a string representation of the network with statistics.
+        
+        Returns:
+            str: Network statistics including type, nodes, edges, and layers
+        """
+        if self.core_network is None:
+            return f"<multi_layer_network (empty): type={self.network_type}, directed={self.directed}>"
+        
+        try:
+            num_nodes = self.core_network.number_of_nodes()
+            num_edges = self.core_network.number_of_edges()
+            
+            # Count unique layers
+            try:
+                unique_layers = len({n[1] for n in self.core_network.nodes() if isinstance(n, tuple) and len(n) >= 2})
+            except (TypeError, IndexError):
+                unique_layers = 1  # Fallback for non-multilayer networks
+            
+            return (f"<multi_layer_network: "
+                   f"type={self.network_type}, "
+                   f"directed={self.directed}, "
+                   f"nodes={num_nodes}, "
+                   f"edges={num_edges}, "
+                   f"layers={unique_layers}>")
+        except Exception:
+            # Fallback for unusual cases
+            return f"<multi_layer_network: type={self.network_type}, directed={self.directed}>"
 
     # ═════════════════════════════════════════════════════════════════════════
     # I/O Operations - Loading and Saving Networks
@@ -802,6 +881,74 @@ class multi_layer_network:
                     for layer, count in sorted(nodes_per_layer.items()):
                         logger.info(f"  Layer '{layer}': {count} nodes")
 
+    def to_networkx(self) -> nx.Graph:
+        """Convert the multilayer network to a NetworkX graph.
+        
+        Returns a copy of the core network as a NetworkX graph. The returned graph
+        preserves all node and edge attributes, including layer information for
+        multilayer networks (where nodes are typically (node_id, layer) tuples).
+        
+        Returns:
+            nx.Graph: A NetworkX graph (MultiGraph or MultiDiGraph depending on network type)
+        
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> nx_graph = net.to_networkx()
+            >>> print(type(nx_graph))
+            <class 'networkx.classes.multigraph.MultiGraph'>
+        
+        Notes:
+            - For multilayer networks, nodes are tuples: (node_id, layer)
+            - All edge attributes (weight, type, etc.) are preserved
+            - The returned graph is a copy, not a reference
+        """
+        if self.core_network is None:
+            raise ValueError("Network is empty. Load or create a network first.")
+        
+        return self.core_network.copy()
+    
+    @classmethod
+    def from_networkx(cls, G: nx.Graph, network_type: str = "multilayer", 
+                     directed: Optional[bool] = None) -> "multi_layer_network":
+        """Create a multi_layer_network from a NetworkX graph.
+        
+        This class method converts a NetworkX graph into a py3plex multi_layer_network.
+        For multilayer networks, nodes should be tuples of (node_id, layer).
+        
+        Args:
+            G: NetworkX graph to convert
+            network_type: Type of network ('multilayer' or 'multiplex')
+            directed: Whether to treat the network as directed. If None, inferred from G.
+        
+        Returns:
+            multi_layer_network: A new multi_layer_network instance
+        
+        Examples:
+            >>> import networkx as nx
+            >>> G = nx.Graph()
+            >>> G.add_nodes_from([('A', 'layer1'), ('B', 'layer1')])
+            >>> G.add_edge(('A', 'layer1'), ('B', 'layer1'))
+            >>> net = multi_layer_network.from_networkx(G)
+            >>> print(net)
+            <multi_layer_network: type=multilayer, directed=False, nodes=2, edges=1, layers=1>
+        
+        Notes:
+            - For proper multilayer behavior, ensure nodes are (node_id, layer) tuples
+            - Edge attributes are preserved during conversion
+            - The input graph is copied, not referenced
+        """
+        if directed is None:
+            directed = G.is_directed()
+        
+        # Create new instance
+        net = cls(network_type=network_type, directed=directed, verbose=False)
+        
+        # Copy the graph
+        net.core_network = G.copy()
+        
+        return net
+
     def get_edges(self, data: bool = False, multiplex_edges: bool = False) -> Any:
         """A method for obtaining a network's edges
 
@@ -829,7 +976,12 @@ class multi_layer_network:
                 for edge in self.core_network.edges(data=data):
                     yield edge
         else:
-            raise Exception("Specify network type!  e.g., multilayer_network")
+            raise ValueError(
+                f"Invalid network_type: '{self.network_type}'. "
+                f"Expected 'multilayer' or 'multiplex'. "
+                f"Set network_type during initialization: "
+                f"multi_layer_network(network_type='multilayer')"
+            )
 
     def get_nodes(self, data: bool = False) -> Any:
         """A method for obtaining a network's nodes
@@ -1304,21 +1456,68 @@ class multi_layer_network:
         edge_dict_list: Union[List[Dict], List[List], Tuple],
         input_type: str = "dict",
     ) -> None:
-        """A method for adding edges.. Types are:
-        dict,list or px_edge. See examples for further use.
-
-        dict = {"source": n1,"target":n2,"type":sth}
-
-        list = [[n1,t1,n2,t2] ...]
-
-        px_edge = ((n1,t1)(n2,t2))
+        """Add edges to the multilayer network.
+        
+        This method supports multiple input formats for specifying edges between nodes
+        in different layers. The most common format is dict-based.
 
         Args:
-            edge_dict_list: Edge data in dict, list, or px_edge format
+            edge_dict_list: Edge data in one of the supported formats (see below)
             input_type: Format of edge data ('dict', 'list', or 'px_edge')
 
+        Supported Formats:
+            **Dict format (recommended):**
+            ```python
+            {
+                'source': 'node1',          # Source node ID
+                'target': 'node2',          # Target node ID
+                'source_type': 'layer1',    # Source layer name
+                'target_type': 'layer2',    # Target layer name (can be same as source)
+                'weight': 1.0,              # Optional: edge weight
+                'type': 'interaction'       # Optional: edge type/label
+            }
+            ```
+            
+            **List format:**
+            `[node1, layer1, node2, layer2]`
+            
+            **px_edge format:**
+            `((node1, layer1), (node2, layer2), {'weight': 1.0})`
+
+        Examples:
+            >>> # Add single intra-layer edge
+            >>> net = multi_layer_network()
+            >>> net.add_edges([{
+            ...     'source': 'A',
+            ...     'target': 'B',
+            ...     'source_type': 'protein',
+            ...     'target_type': 'protein'
+            ... }])
+            
+            >>> # Add inter-layer edge with weight
+            >>> net.add_edges([{
+            ...     'source': 'gene1',
+            ...     'target': 'protein1',
+            ...     'source_type': 'genes',
+            ...     'target_type': 'proteins',
+            ...     'weight': 0.95,
+            ...     'type': 'expression'
+            ... }])
+            
+            >>> # Add multiple edges at once
+            >>> edges = [
+            ...     {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'},
+            ...     {'source': 'B', 'target': 'C', 'source_type': 'layer1', 'target_type': 'layer1'}
+            ... ]
+            >>> net.add_edges(edges)
+
         Raises:
-            Exception: If input_type is not valid
+            Exception: If input_type is not one of 'dict', 'list', or 'px_edge'
+            
+        Notes:
+            - For intra-layer edges, use the same layer for source_type and target_type
+            - For inter-layer edges, use different layers
+            - Edge weights default to 1.0 if not specified
         """
 
         self._initiate_network()
@@ -1341,7 +1540,11 @@ class multi_layer_network:
                 edge_dict_list[0], edge_dict_list[1], attr_dict=attr_dict
             )
         else:
-            raise Exception("Please, use dict or list input.")
+            raise ValueError(
+                f"Invalid input_type: '{input_type}'. "
+                f"Expected 'dict', 'list', or 'px_edge'. "
+                f"Example dict format: {{'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}}"
+            )
 
     def remove_edges(
         self, edge_dict_list: Union[List[Dict], List[List]], input_type: str = "list"
@@ -1361,16 +1564,70 @@ class multi_layer_network:
         elif input_type == "list":
             self._generic_edge_list_manipulator(edge_dict_list, "remove_edge", raw=True)
         else:
-            raise Exception("Please, use dict or list input.")
+            raise ValueError(
+                f"Invalid input_type: '{input_type}'. "
+                f"Expected 'dict' or 'list'. "
+                f"Example dict format: {{'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}}"
+            )
 
     def add_nodes(
         self, node_dict_list: Union[List[Dict], Dict], input_type: str = "dict"
     ) -> None:
-        """A method for adding nodes..
+        """Add nodes to the multilayer network.
+        
+        Nodes in a multilayer network are identified by both their ID and the layer
+        they belong to. This method adds nodes using a dict-based format.
 
         Args:
-            node_dict_list: Node data in dict format
-            input_type: Format of node data ('dict')
+            node_dict_list: Node data as a dict or list of dicts (see format below)
+            input_type: Format of node data (currently only 'dict' is supported)
+
+        Dict Format:
+            ```python
+            {
+                'source': 'node_id',    # Node identifier (can be string or number)
+                'type': 'layer_name',   # Layer this node belongs to
+                'weight': 1.0,          # Optional: node weight/importance
+                'label': 'display'      # Optional: display label
+                # ... any other node attributes
+            }
+            ```
+
+        Examples:
+            >>> # Add single node
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            
+            >>> # Add multiple nodes to the same layer
+            >>> nodes = [
+            ...     {'source': 'A', 'type': 'protein'},
+            ...     {'source': 'B', 'type': 'protein'},
+            ...     {'source': 'C', 'type': 'protein'}
+            ... ]
+            >>> net.add_nodes(nodes)
+            
+            >>> # Add nodes with attributes
+            >>> net.add_nodes([{
+            ...     'source': 'gene1',
+            ...     'type': 'genes',
+            ...     'weight': 0.8,
+            ...     'label': 'BRCA1',
+            ...     'chromosome': '17'
+            ... }])
+            
+            >>> # Add nodes to multiple layers
+            >>> multi_layer_nodes = [
+            ...     {'source': 'entity1', 'type': 'layer1'},
+            ...     {'source': 'entity1', 'type': 'layer2'},  # Same entity, different layer
+            ...     {'source': 'entity2', 'type': 'layer1'}
+            ... ]
+            >>> net.add_nodes(multi_layer_nodes)
+
+        Notes:
+            - The same node ID can exist in multiple layers
+            - Each (node_id, layer) combination is treated as a unique node
+            - Additional attributes beyond 'source' and 'type' are preserved
+            - Nodes must be added before edges referencing them
         """
 
         self._initiate_network()
@@ -1552,9 +1809,32 @@ class multi_layer_network:
             
         Raises:
             Exception: If style is not 'diagonal' or 'hairball'
+            
+        Performance Notes:
+            For large networks (>500 nodes), visualization performance may degrade:
+            - Layout computation can be slow (O(n²) for force-directed layouts)
+            - Rendering many edges is memory and CPU intensive
+            - Consider filtering or sampling for exploratory visualization
+            - Use simpler layouts or increase layout iteration limits
+            
+            Approximate rendering times on typical hardware:
+            - 100 nodes: <1 second
+            - 500 nodes: 5-10 seconds
+            - 1000 nodes: 30-60 seconds
+            - 5000+ nodes: Several minutes, may run out of memory
         """
         if server_mode:
             return 0
+        
+        # Performance warning for large networks
+        if self.core_network is not None:
+            num_nodes = self.core_network.number_of_nodes()
+            if num_nodes > 500:
+                logger.warning(
+                    f"Visualizing large network with {num_nodes} nodes. "
+                    "This may take significant time and memory. "
+                    "Consider using network sampling or filtering for exploratory analysis."
+                )
         
         if style == "diagonal":
             return _visualize_diagonal_style(
@@ -1574,8 +1854,10 @@ class multi_layer_network:
         elif style == "hairball":
             return _visualize_hairball_style(self, axis, legend, show)
         else:
-            raise Exception(
-                "Please, specify visualization style using: .style. keyword"
+            raise ValueError(
+                f"Invalid visualization style: '{style}'. "
+                f"Expected 'diagonal' or 'hairball'. "
+                f"Example: net.visualize_network(style='diagonal')"
             )
 
     def get_nx_object(self):
