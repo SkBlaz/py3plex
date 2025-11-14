@@ -31,7 +31,7 @@ If you prefer using Docker, you can get started immediately without installing P
 Creating Your First Multilayer Network
 ---------------------------------------
 
-Let's create a **simple multilayer network** from scratch:
+Create a simple multilayer network from scratch:
 
 .. code-block:: python
 
@@ -72,7 +72,7 @@ py3plex supports multiple input formats:
 From Edge List
 ~~~~~~~~~~~~~~
 
-**Load from a simple edge list:**
+Load from a simple edge list:
 
 .. code-block:: python
 
@@ -90,7 +90,7 @@ From Edge List
 From Multilayer Edge List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Load from multilayer edge list** (source target layer format):
+Load from multilayer edge list (source target layer format):
 
 .. code-block:: python
 
@@ -115,11 +115,11 @@ From GraphML
 Supported Formats
 ~~~~~~~~~~~~~~~~~
 
-* ``edgelist`` - **Simple source-target pairs**
-* ``multiedgelist`` - **Source, target, layer** format
-* ``gpickle`` - **NetworkX pickle** format
-* ``gml`` - **Graph Modeling Language**
-* ``graphml`` - **GraphML XML** format
+* ``edgelist`` - Simple source-target pairs
+* ``multiedgelist`` - Source, target, layer format
+* ``gpickle`` - NetworkX pickle format
+* ``gml`` - Graph Modeling Language
+* ``graphml`` - GraphML XML format
 
 Basic Network Analysis
 ----------------------
@@ -178,7 +178,7 @@ Community Detection
 Using Louvain Algorithm
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-**Detect communities using Louvain** modularity optimization:
+Detect communities using Louvain modularity optimization:
 
 .. code-block:: python
 
@@ -194,7 +194,7 @@ Using Louvain Algorithm
 Using Infomap
 ~~~~~~~~~~~~~
 
-**Detect communities using Infomap** (requires infomap binary):
+Detect communities using Infomap (requires infomap binary):
 
 .. code-block:: python
 
@@ -209,7 +209,7 @@ Using Infomap
 Multilayer Modularity
 ~~~~~~~~~~~~~~~~~~~~~
 
-**Compute multilayer modularity:**
+Compute multilayer modularity:
 
 .. code-block:: python
 
