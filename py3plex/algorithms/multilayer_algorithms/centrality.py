@@ -1144,6 +1144,12 @@ class MultilayerCentrality:
         try:
             # Use NetworkX's communicability_betweenness_centrality
             nx_comm_between = nx.communicability_betweenness_centrality(G)
+            
+            # Handle NaN values that can arise from numerical instability in matrix exponential
+            # NaN typically occurs when exp(A) has very large values or numerical overflow
+            nx_comm_between = {k: 0.0 if np.isnan(v) or np.isinf(v) else v 
+                             for k, v in nx_comm_between.items()}
+            
             if normalized and nx_comm_between:
                 max_val = max(nx_comm_between.values())
                 if max_val > 0:
