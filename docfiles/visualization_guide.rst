@@ -604,6 +604,11 @@ Small Multiples View
 Displays each layer as a separate subplot in a grid layout, making it easy to compare
 layer structures side-by-side.
 
+.. image:: ../example_images/multilayer_small_multiples_shared.png
+   :width: 600px
+   :align: center
+   :alt: Small multiples visualization with shared layout
+
 .. code-block:: python
 
     from py3plex.visualization.multilayer import visualize_multilayer_network
@@ -647,6 +652,11 @@ Edge-Colored Projection
 
 Projects all layers onto a single 2D graph, using edge colors to indicate layer membership.
 Useful for seeing the overall structure while maintaining layer information.
+
+.. image:: ../example_images/multilayer_edge_projection_spring.png
+   :width: 600px
+   :align: center
+   :alt: Edge-colored projection visualization
 
 .. code-block:: python
 
@@ -695,6 +705,11 @@ Supra-Adjacency Heatmap
 Shows the multilayer network as a block matrix where each block represents the
 adjacency matrix of one layer. Can optionally include inter-layer connections.
 
+.. image:: ../example_images/multilayer_supra_heatmap_inter.png
+   :width: 600px
+   :align: center
+   :alt: Supra-adjacency heatmap with inter-layer connections
+
 .. code-block:: python
 
     from py3plex.visualization.multilayer import visualize_multilayer_network
@@ -741,6 +756,11 @@ Radial/Concentric Layers
 
 Arranges layers as concentric circles, with nodes positioned on rings and
 inter-layer edges shown as radial connections.
+
+.. image:: ../example_images/multilayer_radial_with_inter.png
+   :width: 600px
+   :align: center
+   :alt: Radial layers visualization with concentric circles
 
 .. code-block:: python
 
@@ -789,6 +809,11 @@ Ego-Centric Multilayer View
 
 Focuses on a single node (the "ego") and shows its neighborhood across different layers,
 highlighting the ego node's position in each layer context.
+
+.. image:: ../example_images/multilayer_ego_node3_1hop.png
+   :width: 600px
+   :align: center
+   :alt: Ego-centric multilayer visualization showing node neighborhood
 
 .. code-block:: python
 
