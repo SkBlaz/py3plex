@@ -981,13 +981,23 @@ def plot_small_multiples(
     num_cols = min(max_cols, num_layers)
     num_rows = (num_layers + num_cols - 1) // num_cols
     
-    # Create figure
+    # Create figure with improved aesthetics
     if figsize is None:
         figsize = (5 * num_cols, 4 * num_rows)
-    fig, axes = plt.subplots(num_rows, num_cols, figsize=figsize)
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=figsize, 
+                             facecolor='white')
+    fig.patch.set_facecolor('white')
+    
     if num_layers == 1:
         axes = np.array([axes])
     axes = axes.flatten() if num_layers > 1 else axes
+    
+    # Use a professional color palette
+    try:
+        import matplotlib.cm as cm
+        color_palette = cm.get_cmap('Set2')
+    except:
+        color_palette = None
     
     # Compute shared layout if requested
     if shared_layout:
@@ -997,57 +1007,95 @@ def plot_small_multiples(
             union_graph.add_nodes_from(layer_graph.nodes())
             union_graph.add_edges_from(layer_graph.edges())
         
-        # Compute layout on union graph
+        # Compute layout on union graph with better parameters
         if layout == "spring":
-            pos = nx.spring_layout(union_graph)
+            pos = nx.spring_layout(union_graph, k=0.5, iterations=50)
         elif layout == "circular":
             pos = nx.circular_layout(union_graph)
         elif layout == "random":
-            pos = nx.random_layout(union_graph)
+            pos = nx.random_layout(union_graph, seed=42)
         elif layout == "kamada_kawai":
             pos = nx.kamada_kawai_layout(union_graph)
         else:
-            pos = nx.spring_layout(union_graph)
+            pos = nx.spring_layout(union_graph, k=0.5, iterations=50)
     
-    # Draw each layer
+    # Draw each layer with improved aesthetics
     for idx, layer_name in enumerate(layer_names):
         ax = axes[idx]
         layer_graph = layers_dict[layer_name]
         
+        # Set subplot background
+        ax.set_facecolor('#f8f9fa')
+        
         # Compute per-layer layout if not shared
         if not shared_layout:
             if layout == "spring":
-                pos = nx.spring_layout(layer_graph)
+                pos = nx.spring_layout(layer_graph, k=0.5, iterations=50)
             elif layout == "circular":
                 pos = nx.circular_layout(layer_graph)
             elif layout == "random":
-                pos = nx.random_layout(layer_graph)
+                pos = nx.random_layout(layer_graph, seed=42)
             elif layout == "kamada_kawai":
                 pos = nx.kamada_kawai_layout(layer_graph)
             else:
-                pos = nx.spring_layout(layer_graph)
+                pos = nx.spring_layout(layer_graph, k=0.5, iterations=50)
         
-        # Draw the layer
-        nx.draw_networkx(
+        # Get color for this layer
+        if color_palette:
+            layer_color = color_palette(idx / max(num_layers - 1, 1))
+        else:
+            layer_color = colors.colors_default[idx % len(colors.colors_default)]
+        
+        # Draw edges with better styling
+        nx.draw_networkx_edges(
+            layer_graph,
+            pos=pos,
+            ax=ax,
+            edge_color='#666666',
+            width=1.5,
+            alpha=0.6,
+            style='solid'
+        )
+        
+        # Draw nodes with better styling
+        nx.draw_networkx_nodes(
             layer_graph,
             pos=pos,
             ax=ax,
             node_size=node_size,
-            with_labels=kwargs.get('with_labels', False),
-            node_color=kwargs.get('node_color', colors.colors_default[idx % len(colors.colors_default)]),
-            edge_color=kwargs.get('edge_color', 'gray'),
-            **{k: v for k, v in kwargs.items() if k not in ['with_labels', 'node_color', 'edge_color']}
+            node_color=[layer_color],
+            edgecolors='white',
+            linewidths=2,
+            alpha=0.9
         )
         
+        # Draw labels if requested
+        if kwargs.get('with_labels', False):
+            nx.draw_networkx_labels(
+                layer_graph,
+                pos=pos,
+                ax=ax,
+                font_size=8,
+                font_weight='bold',
+                font_color='#2c3e50'
+            )
+        
+        # Add title with improved styling
         if show_layer_titles:
-            ax.set_title(f"Layer: {layer_name}")
+            ax.set_title(f"Layer {layer_name}", 
+                        fontsize=12, 
+                        fontweight='bold',
+                        pad=10,
+                        color='#2c3e50')
+        
         ax.axis('off')
     
     # Hide unused subplots
     for idx in range(num_layers, len(axes)):
         axes[idx].axis('off')
+        axes[idx].set_facecolor('white')
     
-    plt.tight_layout()
+    plt.tight_layout(pad=2.0)
     return fig
 
 
@@ -1057,8 +1105,8 @@ def plot_edge_colored_projection(
     node_size: int = 50,
     layer_colors: Optional[Dict[Any, str]] = None,
     aggregate_multilayer_edges: bool = True,
-    figsize: Tuple[float, float] = (10, 8),
-    edge_alpha: float = 0.6,
+    figsize: Tuple[float, float] = (12, 9),
+    edge_alpha: float = 0.7,
     **kwargs
 ):
     """Create an aggregated projection where edge colors indicate layer membership.
@@ -1108,28 +1156,101 @@ def plot_edge_colored_projection(
     if not layers_dict:
         raise ValueError("No layers found in the multilayer network")
     
-    # Generate layer colors if not provided
+    # Generate professional color palette if not provided
     layer_names = sorted(layers_dict.keys())
     if layer_colors is None:
-        layer_colors = {}
-        for idx, layer_name in enumerate(layer_names):
-            layer_colors[layer_name] = colors.colors_default[idx % len(colors.colors_default)]
+        try:
+            import matplotlib.cm as cm
+            cmap = cm.get_cmap('tab10')
+            layer_colors = {}
+            for idx, layer_name in enumerate(layer_names):
+                layer_colors[layer_name] = cmap(idx / max(len(layer_names) - 1, 1))
+        except:
+            layer_colors = {}
+            for idx, layer_name in enumerate(layer_names):
+                layer_colors[layer_name] = colors.colors_default[idx % len(colors.colors_default)]
     
-    # Compute layout on aggregated graph
+    # Compute layout on aggregated graph with better parameters
     if layout == "spring":
-        pos = nx.spring_layout(aggregated_graph)
+        pos = nx.spring_layout(aggregated_graph, k=0.5, iterations=50)
     elif layout == "circular":
         pos = nx.circular_layout(aggregated_graph)
     elif layout == "random":
-        pos = nx.random_layout(aggregated_graph)
+        pos = nx.random_layout(aggregated_graph, seed=42)
     elif layout == "kamada_kawai":
         pos = nx.kamada_kawai_layout(aggregated_graph)
     else:
-        pos = nx.spring_layout(aggregated_graph)
+        pos = nx.spring_layout(aggregated_graph, k=0.5, iterations=50)
     
-    # Create figure
-    fig, ax = plt.subplots(figsize=figsize)
+    # Create figure with improved styling
+    fig, ax = plt.subplots(figsize=figsize, facecolor='white')
+    ax.set_facecolor('#f8f9fa')
+    fig.patch.set_facecolor('white')
     
+    # Draw edges per layer with improved styling and proper ordering
+    for idx, layer_name in enumerate(layer_names):
+        edge_list = [(u, v) for u, v, _ in layers_dict[layer_name]]
+        if edge_list:
+            nx.draw_networkx_edges(
+                aggregated_graph,
+                pos,
+                edgelist=edge_list,
+                edge_color=layer_colors[layer_name],
+                alpha=edge_alpha,
+                width=2.5,
+                ax=ax,
+                label=f"Layer {layer_name}"
+            )
+    
+    # Draw nodes with improved styling
+    nx.draw_networkx_nodes(
+        aggregated_graph,
+        pos,
+        node_size=node_size * 2,
+        node_color='#ffffff',
+        edgecolors='#2c3e50',
+        linewidths=2,
+        alpha=0.95,
+        ax=ax
+    )
+    
+    # Add labels if requested
+    if kwargs.get('with_labels', False):
+        nx.draw_networkx_labels(
+            aggregated_graph, 
+            pos, 
+            ax=ax,
+            font_size=9,
+            font_weight='bold',
+            font_color='#2c3e50'
+        )
+    
+    # Add professional legend
+    legend = ax.legend(
+        loc='upper right',
+        frameon=True,
+        fancybox=True,
+        shadow=True,
+        fontsize=10,
+        title='Network Layers',
+        title_fontsize=11
+    )
+    legend.get_frame().set_facecolor('white')
+    legend.get_frame().set_alpha(0.95)
+    legend.get_frame().set_edgecolor('#cccccc')
+    
+    # Add title with improved styling
+    ax.set_title(
+        "Multilayer Network Projection",
+        fontsize=14,
+        fontweight='bold',
+        pad=20,
+        color='#2c3e50'
+    )
+    ax.axis('off')
+    
+    plt.tight_layout()
+    return fig
     # Draw nodes once
     nx.draw_networkx_nodes(
         aggregated_graph,
@@ -1272,25 +1393,37 @@ def plot_supra_adjacency_heatmap(
                     supra_matrix[offset1 + i, offset2 + i] = inter_layer_weight
                     supra_matrix[offset2 + i, offset1 + i] = inter_layer_weight
     
-    # Create visualization
-    fig, ax = plt.subplots(figsize=figsize)
-    im = ax.imshow(supra_matrix, cmap=cmap, interpolation='nearest', **kwargs)
+    # Create visualization with improved aesthetics
+    fig, ax = plt.subplots(figsize=figsize, facecolor='white')
+    fig.patch.set_facecolor('white')
     
-    # Add grid lines to show block boundaries
+    # Use a better colormap for heatmaps
+    im = ax.imshow(supra_matrix, cmap=cmap, interpolation='nearest', 
+                   aspect='auto', **kwargs)
+    
+    # Add grid lines to show block boundaries with improved styling
     for i in range(1, n_layers):
-        ax.axhline(y=i * n_nodes - 0.5, color='white', linewidth=2)
-        ax.axvline(x=i * n_nodes - 0.5, color='white', linewidth=2)
+        ax.axhline(y=i * n_nodes - 0.5, color='#ffffff', linewidth=3, alpha=0.9)
+        ax.axvline(x=i * n_nodes - 0.5, color='#ffffff', linewidth=3, alpha=0.9)
     
-    # Add layer labels
+    # Add layer labels with improved styling
     for layer_idx, layer_name in enumerate(layer_names):
         pos = layer_idx * n_nodes + n_nodes / 2
-        ax.text(-n_nodes * 0.05, pos, f"L{layer_name}", 
-                ha='right', va='center', fontsize=10)
-        ax.text(pos, -n_nodes * 0.05, f"L{layer_name}", 
-                ha='center', va='bottom', fontsize=10)
+        ax.text(-n_nodes * 0.08, pos, f"Layer {layer_name}", 
+                ha='right', va='center', fontsize=11, 
+                fontweight='bold', color='#2c3e50')
+        ax.text(pos, -n_nodes * 0.08, f"Layer {layer_name}", 
+                ha='center', va='bottom', fontsize=11,
+                fontweight='bold', color='#2c3e50', rotation=0)
     
-    ax.set_title("Supra-Adjacency Matrix")
-    plt.colorbar(im, ax=ax, label="Edge Weight")
+    # Add title with improved styling
+    ax.set_title("Supra-Adjacency Matrix Heatmap", 
+                fontsize=14, fontweight='bold', pad=20, color='#2c3e50')
+    
+    # Add colorbar with improved styling
+    cbar = plt.colorbar(im, ax=ax, label="Edge Weight", fraction=0.046, pad=0.04)
+    cbar.ax.tick_params(labelsize=10)
+    cbar.set_label("Edge Weight", size=11, weight='bold')
     
     plt.tight_layout()
     return fig
@@ -1302,8 +1435,8 @@ def plot_radial_layers(
     radius_step: float = 1.0,
     node_size: int = 50,
     draw_inter_layer_edges: bool = True,
-    figsize: Tuple[float, float] = (10, 10),
-    edge_alpha: float = 0.3,
+    figsize: Tuple[float, float] = (12, 12),
+    edge_alpha: float = 0.5,
     **kwargs
 ):
     """Create a radial/concentric visualization with layers as rings.
@@ -1377,44 +1510,78 @@ def plot_radial_layers(
             y = radius * np.sin(angle)
             positions[(node, layer_name)] = (x, y)
     
-    # Create figure
-    fig, ax = plt.subplots(figsize=figsize)
+    # Create figure with improved aesthetics
+    fig, ax = plt.subplots(figsize=figsize, facecolor='white')
+    fig.patch.set_facecolor('white')
+    ax.set_facecolor('#f8f9fa')
     
-    # Draw intra-layer edges
+    # Use professional color palette
+    try:
+        import matplotlib.cm as cm
+        color_palette = cm.get_cmap('Set2')
+    except:
+        color_palette = None
+    
+    # Draw intra-layer edges with improved styling
     for layer_idx, layer_name in enumerate(layer_names):
         edge_list = layers_dict[layer_name]
-        layer_color = colors.colors_default[layer_idx % len(colors.colors_default)]
+        if color_palette:
+            layer_color = color_palette(layer_idx / max(len(layer_names) - 1, 1))
+        else:
+            layer_color = colors.colors_default[layer_idx % len(colors.colors_default)]
         
         for u, v in edge_list:
             if (u, layer_name) in positions and (v, layer_name) in positions:
                 x_coords = [positions[(u, layer_name)][0], positions[(v, layer_name)][0]]
                 y_coords = [positions[(u, layer_name)][1], positions[(v, layer_name)][1]]
-                ax.plot(x_coords, y_coords, color=layer_color, alpha=edge_alpha, linewidth=1)
+                ax.plot(x_coords, y_coords, color=layer_color, 
+                       alpha=edge_alpha, linewidth=2, zorder=1)
     
-    # Draw inter-layer edges if requested
+    # Draw inter-layer edges if requested with improved styling
     if draw_inter_layer_edges:
         for u, v in inter_layer_edges:
             if u in positions and v in positions:
                 x_coords = [positions[u][0], positions[v][0]]
                 y_coords = [positions[u][1], positions[v][1]]
-                ax.plot(x_coords, y_coords, color='gray', alpha=edge_alpha * 0.5, 
-                       linewidth=0.5, linestyle='--')
+                ax.plot(x_coords, y_coords, color='#95a5a6', 
+                       alpha=edge_alpha * 0.4, linewidth=1, 
+                       linestyle='--', zorder=0)
     
-    # Draw nodes
+    # Draw nodes with improved styling
     for layer_idx, layer_name in enumerate(layer_names):
-        layer_color = colors.colors_default[layer_idx % len(colors.colors_default)]
+        if color_palette:
+            layer_color = color_palette(layer_idx / max(len(layer_names) - 1, 1))
+        else:
+            layer_color = colors.colors_default[layer_idx % len(colors.colors_default)]
+        
         for node in nodes_per_layer[layer_name]:
             if (node, layer_name) in positions:
                 x, y = positions[(node, layer_name)]
-                ax.scatter(x, y, s=node_size, c=layer_color, alpha=0.8, 
-                          edgecolors='black', linewidth=0.5)
+                ax.scatter(x, y, s=node_size * 2, c=[layer_color], 
+                          alpha=0.9, edgecolors='white', 
+                          linewidths=2, zorder=2)
     
-    # Add layer labels
+    # Add layer labels with improved styling
     for layer_idx, layer_name in enumerate(layer_names):
         radius = base_radius + layer_idx * radius_step
-        ax.text(0, radius + 0.3, f"Layer {layer_name}", 
-               ha='center', va='bottom', fontsize=10, weight='bold')
+        ax.text(0, radius + 0.4, f"Layer {layer_name}", 
+               ha='center', va='bottom', fontsize=11, 
+               weight='bold', color='#2c3e50',
+               bbox=dict(boxstyle='round,pad=0.5', 
+                        facecolor='white', 
+                        edgecolor='#cccccc',
+                        alpha=0.9))
     
+    # Add title with improved styling
+    ax.set_title("Radial Multilayer Network",
+                fontsize=14, fontweight='bold', 
+                pad=20, color='#2c3e50')
+    
+    ax.set_aspect('equal')
+    ax.axis('off')
+    
+    plt.tight_layout()
+    return fig
     ax.set_aspect('equal')
     ax.axis('off')
     ax.set_title("Radial Multilayer Visualization")
@@ -1502,57 +1669,95 @@ def plot_ego_multilayer(
     if figsize is None:
         figsize = (5 * num_cols, 4 * num_rows)
     
-    fig, axes = plt.subplots(num_rows, num_cols, figsize=figsize)
+    # Create figure with improved aesthetics
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=figsize, facecolor='white')
+    fig.patch.set_facecolor('white')
+    
     if num_layers == 1:
         axes = np.array([axes])
     axes = axes.flatten() if num_layers > 1 else axes
     
-    # Draw each ego graph
+    # Use professional color for ego node
+    ego_color = '#e74c3c'  # Professional red
+    neighbor_color = '#3498db'  # Professional blue
+    
+    # Draw each ego graph with improved aesthetics
     for idx, layer_name in enumerate(sorted(ego_graphs.keys())):
         ax = axes[idx]
+        ax.set_facecolor('#f8f9fa')
         ego_graph = ego_graphs[layer_name]
         
-        # Compute layout
+        # Compute layout with better parameters
         if layout == "spring":
-            pos = nx.spring_layout(ego_graph)
+            pos = nx.spring_layout(ego_graph, k=0.5, iterations=50)
         elif layout == "circular":
             pos = nx.circular_layout(ego_graph)
         elif layout == "kamada_kawai":
             pos = nx.kamada_kawai_layout(ego_graph)
         else:
-            pos = nx.spring_layout(ego_graph)
+            pos = nx.spring_layout(ego_graph, k=0.5, iterations=50)
         
-        # Draw edges
-        nx.draw_networkx_edges(ego_graph, pos, ax=ax, alpha=0.5)
+        # Draw edges with improved styling
+        nx.draw_networkx_edges(
+            ego_graph, pos, ax=ax, 
+            alpha=0.6, width=2, 
+            edge_color='#95a5a6'
+        )
         
-        # Draw regular nodes
+        # Draw regular nodes with improved styling
         non_ego_nodes = [n for n in ego_graph.nodes() if n != ego]
         if non_ego_nodes:
             nx.draw_networkx_nodes(
                 ego_graph, pos, nodelist=non_ego_nodes,
-                node_size=node_size, node_color='lightblue',
-                ax=ax
+                node_size=node_size, node_color=neighbor_color,
+                edgecolors='white', linewidths=2,
+                alpha=0.85, ax=ax
             )
         
-        # Draw ego node with emphasis
+        # Draw ego node with emphasis and improved styling
         nx.draw_networkx_nodes(
             ego_graph, pos, nodelist=[ego],
-            node_size=ego_node_size, node_color='red',
-            ax=ax
+            node_size=ego_node_size, node_color=ego_color,
+            edgecolors='white', linewidths=3,
+            alpha=0.95, ax=ax
         )
         
-        # Add labels if requested
+        # Add labels if requested with improved styling
         if kwargs.get('with_labels', True):
-            nx.draw_networkx_labels(ego_graph, pos, ax=ax, font_size=8)
+            # Label ego node specially
+            nx.draw_networkx_labels(
+                ego_graph, pos, 
+                labels={ego: str(ego)},
+                ax=ax, font_size=10, 
+                font_weight='bold',
+                font_color='white'
+            )
+            # Label other nodes
+            other_labels = {n: str(n) for n in non_ego_nodes}
+            if other_labels:
+                nx.draw_networkx_labels(
+                    ego_graph, pos,
+                    labels=other_labels,
+                    ax=ax, font_size=8,
+                    font_color='#2c3e50'
+                )
         
-        ax.set_title(f"Layer: {layer_name}\n(Ego: {ego})")
+        # Add title with improved styling
+        ax.set_title(f"Layer {layer_name}\nEgo Node: {ego}",
+                    fontsize=11, fontweight='bold',
+                    pad=10, color='#2c3e50')
         ax.axis('off')
     
     # Hide unused subplots
     for idx in range(num_layers, len(axes)):
         axes[idx].axis('off')
+        axes[idx].set_facecolor('white')
     
-    plt.tight_layout()
+    # Add overall title
+    fig.suptitle(f"Ego-Centric Network View ({max_depth}-hop neighborhood)",
+                fontsize=13, fontweight='bold', y=0.98, color='#2c3e50')
+    
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
     return fig
 
 
