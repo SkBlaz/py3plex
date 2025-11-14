@@ -1178,6 +1178,25 @@ class multi_layer_network:
         return outgraph
 
     def remove_layer_edges(self):
+        """Remove all edges from separate layer graphs while keeping nodes.
+
+        This method creates empty copies of each layer graph with all nodes intact
+        but no edges. Useful for reconstructing networks with different edge sets
+        or for temporal network analysis.
+
+        Notes:
+            - Requires split_to_layers() to be called first
+            - Stores empty layer graphs in self.tmp_layers
+            - Original graphs in self.separate_layers remain unchanged
+            - All nodes and their attributes are preserved
+
+        Raises:
+            RuntimeError: If split_to_layers() hasn't been called yet
+
+        See Also:
+            split_to_layers: Must be called before this method
+            fill_tmp_with_edges: Add edges back to emptied layers
+        """
 
         if self.separate_layers is not None:
             self.tmp_layers = []
@@ -1192,6 +1211,40 @@ class multi_layer_network:
         self.monitor("Finished edge cleaning..")
 
     def edges_from_temporal_table(self, edge_df):
+        """Convert a temporal edge DataFrame to edge tuple list.
+
+        Extracts edges from a pandas DataFrame with temporal/activity information
+        and converts them to a list of edge tuples suitable for network construction.
+
+        Args:
+            edge_df: pandas DataFrame with columns:
+                - node_first: Source node identifier
+                - node_second: Target node identifier
+                - layer_name: Layer identifier
+
+        Returns:
+            list: List of edge tuples in format:
+                (node_first, node_second, layer_first, layer_second, weight)
+                where weight is always 1
+
+        Notes:
+            - All values are converted to strings
+            - All edges are assigned weight=1
+            - Both source and target are assumed to be in the same layer
+
+        Examples:
+            >>> import pandas as pd
+            >>> df = pd.DataFrame({
+            ...     'node_first': ['A', 'B'],
+            ...     'node_second': ['B', 'C'],
+            ...     'layer_name': ['L1', 'L1']
+            ... })
+            >>> net.edges_from_temporal_table(df)
+            [('A', 'B', 'L1', 'L1', 1), ('B', 'C', 'L1', 'L1', 1)]
+
+        See Also:
+            fill_tmp_with_edges: Add these edges to layer graphs
+        """
 
         node_first_names = edge_df.node_first.values
         node_second_names = edge_df.node_second.values
@@ -1209,6 +1262,45 @@ class multi_layer_network:
         return edges
 
     def fill_tmp_with_edges(self, edge_df):
+        """Fill temporary layer graphs with edges from a DataFrame.
+
+        Populates the emptied layer graphs (created by remove_layer_edges) with
+        edges from a temporal/activity DataFrame. Useful for temporal network
+        analysis where edge sets change over time.
+
+        Args:
+            edge_df: pandas DataFrame with columns:
+                - node_first: Source node identifier
+                - node_second: Target node identifier
+                - layer_name: Layer identifier
+
+        Notes:
+            - Requires remove_layer_edges() to be called first
+            - Edges are grouped by layer
+            - Modifies self.tmp_layers in place
+            - Each edge is stored as ((node_first, layer), (node_second, layer))
+
+        Raises:
+            AttributeError: If self.tmp_layers doesn't exist (call remove_layer_edges first)
+
+        Examples:
+            >>> import pandas as pd
+            >>> # First, prepare empty layers
+            >>> net.split_to_layers()
+            >>> net.remove_layer_edges()
+            >>> 
+            >>> # Then fill with new edges
+            >>> df = pd.DataFrame({
+            ...     'node_first': ['A', 'B'],
+            ...     'node_second': ['B', 'C'],
+            ...     'layer_name': ['L1', 'L1']
+            ... })
+            >>> net.fill_tmp_with_edges(df)
+
+        See Also:
+            remove_layer_edges: Creates empty layer graphs
+            edges_from_temporal_table: Convert DataFrame to edge list
+        """
 
         node_first_names = edge_df.node_first.values
         node_second_names = edge_df.node_second.values
@@ -2033,6 +2125,46 @@ class multi_layer_network:
         out_folder="out",
         multiplex=False,
     ):
+        """Serialize the multilayer network to an edgelist file.
+
+        Converts the network to a numeric edgelist format suitable for external tools
+        and algorithms that require integer node/layer identifiers.
+
+        Args:
+            edgelist_file: Path to output edgelist file (default: "./tmp/tmpedgelist.txt")
+            tmp_folder: Temporary folder for intermediate files (default: "tmp")
+            out_folder: Output folder for results (default: "out")
+            multiplex: If True, use multiplex format (node layer node layer weight)
+                      If False, use simple edgelist format (node1 node2 weight)
+
+        Returns:
+            dict: Inverse node mapping (numeric_id -> original_node_tuple)
+                 Use this to decode results from external algorithms
+
+        File Formats:
+            - Multiplex format: node1_id layer1_id node2_id layer2_id weight
+            - Simple format: node1_id node2_id weight
+
+        Notes:
+            - Creates tmp_folder and out_folder if they don't exist
+            - Nodes are mapped to sequential integers starting from 0
+            - Layers are mapped to sequential integers starting from 0 (multiplex mode)
+            - All edges have weight 1 unless explicitly specified
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> # ... build network ...
+            >>> node_mapping = net.serialize_to_edgelist(
+            ...     edgelist_file='network.txt',
+            ...     multiplex=True
+            ... )
+            >>> # Use node_mapping to decode results
+            >>> original_node = node_mapping[0]  # Get original node for id 0
+
+        See Also:
+            load_network: Load networks from file
+            save_network: Alternative serialization method
+        """
 
         import os
 
