@@ -725,14 +725,36 @@ class multi_layer_network:
             self.core_network_inverse = G  # .add_edges_from(new_edges)
 
     def save_network(self, output_file=None, output_type="edgelist"):
-        """A method for saving the network
+        """Save the network to a file in various formats.
 
-        This method loads and prepares a given network.
+        This method exports the multilayer network to different file formats
+        for persistence, sharing, or use with other tools.
 
         Args:
-            param1: output file path
-            param2: output file type
+            output_file: Path where the network should be saved
+            output_type: Format for saving ('edgelist', 'multiedgelist', 
+                        'multiedgelist_encoded', or 'gpickle')
 
+        Supported Formats:
+            - 'edgelist': Simple edge list format (standard NetworkX)
+            - 'multiedgelist': Multilayer edge list with layer information
+            - 'multiedgelist_encoded': Multilayer edge list with integer encoding
+            - 'gpickle': Python pickle format (preserves all attributes)
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> net.add_edges([{'source': 'A', 'target': 'B', 
+            ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
+            >>> net.save_network('network.txt', output_type='multiedgelist')
+            
+            >>> # For faster I/O with all metadata preserved
+            >>> net.save_network('network.gpickle', output_type='gpickle')
+
+        Notes:
+            - 'gpickle' format preserves all node/edge attributes
+            - 'multiedgelist_encoded' creates node_map and layer_map attributes
+            - Edge weights and types are preserved in supported formats
         """
         if output_type == "edgelist":
             parsers.save_edgelist(self.core_network, output_file=output_file)
@@ -789,8 +811,29 @@ class multi_layer_network:
     # ═════════════════════════════════════════════════════════════════════════
 
     def summary(self):
-        """
-        Generate a short summary of the network in form of a dict.
+        """Generate a summary of network statistics.
+        
+        Computes and returns key metrics about the multilayer network structure.
+        
+        Returns:
+            dict: Network statistics including:
+                - 'Number of layers': Count of unique layers
+                - 'Nodes': Total number of nodes
+                - 'Edges': Total number of edges
+                - 'Mean degree': Average node degree
+                - 'CC': Number of connected components
+        
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> net.add_edges([{'source': 'A', 'target': 'B', 
+            ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
+            >>> stats = net.summary()
+            >>> print(f"Network has {stats['Nodes']} nodes and {stats['Edges']} edges")
+        
+        Notes:
+            - Connected components are computed on the undirected version
+            - Mean degree is averaged across all nodes in all layers
         """
 
         unique_layers = len({n[1] for n in self.core_network.nodes()})
