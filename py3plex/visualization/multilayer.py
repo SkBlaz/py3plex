@@ -2,7 +2,7 @@
 
 # draw multi layered network, takes .nx object list as input
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -853,6 +853,707 @@ def interactive_hairball_plot(
     )
     fig.show()
     return fig  # Return the figure object
+
+
+def visualize_multilayer_network(
+    multilayer_network,
+    visualization_type: str = "diagonal",
+    **kwargs
+):
+    """High-level function to visualize multilayer networks with multiple visualization modes.
+    
+    This function provides a unified interface for various multilayer network visualization
+    techniques, making it easy to switch between different visual representations.
+    
+    Args:
+        multilayer_network: A MultiLayerNetwork instance from py3plex.core.multinet
+        visualization_type: Type of visualization to use. Options:
+            - "diagonal": Default layer-centric diagonal layout (existing behavior)
+            - "small_multiples": One subplot per layer with shared or independent layouts
+            - "edge_colored_projection": Aggregate projection with edge colors by layer
+            - "supra_adjacency_heatmap": Matrix representation of multilayer structure
+            - "radial_layers": Concentric circles for layers with radial inter-layer edges
+            - "ego_multilayer": Ego-centric view focused on a specific node
+        **kwargs: Additional keyword arguments specific to each visualization type.
+            See individual plot functions for details.
+    
+    Returns:
+        matplotlib.figure.Figure: The created figure object
+    
+    Raises:
+        ValueError: If visualization_type is not recognized
+    
+    Examples:
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network()
+        >>> net.load_network("network.txt", input_type="multiedgelist")
+        >>> 
+        >>> # Use default diagonal visualization
+        >>> fig = visualize_multilayer_network(net)
+        >>> 
+        >>> # Use small multiples view
+        >>> fig = visualize_multilayer_network(net, visualization_type="small_multiples")
+        >>> 
+        >>> # Use edge-colored projection
+        >>> fig = visualize_multilayer_network(net, visualization_type="edge_colored_projection")
+    """
+    if visualization_type == "diagonal":
+        # Use existing visualization method for backward compatibility
+        fig = plt.gcf()
+        multilayer_network.visualize_network(style="diagonal", **kwargs)
+        return fig
+    elif visualization_type == "small_multiples":
+        return plot_small_multiples(multilayer_network, **kwargs)
+    elif visualization_type == "edge_colored_projection":
+        return plot_edge_colored_projection(multilayer_network, **kwargs)
+    elif visualization_type == "supra_adjacency_heatmap":
+        return plot_supra_adjacency_heatmap(multilayer_network, **kwargs)
+    elif visualization_type == "radial_layers":
+        return plot_radial_layers(multilayer_network, **kwargs)
+    elif visualization_type == "ego_multilayer":
+        return plot_ego_multilayer(multilayer_network, **kwargs)
+    else:
+        raise ValueError(
+            f"Unknown visualization_type: '{visualization_type}'. "
+            f"Valid options are: 'diagonal', 'small_multiples', "
+            f"'edge_colored_projection', 'supra_adjacency_heatmap', "
+            f"'radial_layers', 'ego_multilayer'"
+        )
+
+
+def plot_small_multiples(
+    multilayer_network,
+    layout: str = "spring",
+    max_cols: int = 3,
+    node_size: int = 50,
+    shared_layout: bool = True,
+    show_layer_titles: bool = True,
+    figsize: Optional[Tuple[float, float]] = None,
+    **kwargs
+):
+    """Create a small multiples visualization with one subplot per layer.
+    
+    This visualization shows each layer as a separate subplot in a grid layout,
+    making it easy to compare the structure of different layers side-by-side.
+    
+    Args:
+        multilayer_network: A MultiLayerNetwork instance
+        layout: Layout algorithm to use ("spring", "circular", "random", "kamada_kawai")
+        max_cols: Maximum number of columns in the subplot grid
+        node_size: Size of nodes in each subplot
+        shared_layout: If True, compute one layout and reuse for all layers;
+                       if False, compute independent layouts per layer
+        show_layer_titles: If True, show layer names as subplot titles
+        figsize: Optional figure size as (width, height) tuple
+        **kwargs: Additional arguments passed to nx.draw_networkx
+        
+    Returns:
+        matplotlib.figure.Figure: The created figure
+    """
+    # Get layers as separate networkx graphs
+    layers_dict = {}
+    if hasattr(multilayer_network, 'core_network') and multilayer_network.core_network is not None:
+        # Extract individual layers from the multilayer network
+        for node in multilayer_network.core_network.nodes():
+            if isinstance(node, tuple) and len(node) >= 2:
+                layer_id = node[1]
+                if layer_id not in layers_dict:
+                    layers_dict[layer_id] = nx.Graph() if not multilayer_network.directed else nx.DiGraph()
+                layers_dict[layer_id].add_node(node[0])
+        
+        # Add edges to corresponding layers
+        for u, v, data in multilayer_network.core_network.edges(data=True):
+            if isinstance(u, tuple) and isinstance(v, tuple) and len(u) >= 2 and len(v) >= 2:
+                # Only add intra-layer edges
+                if u[1] == v[1]:
+                    layer_id = u[1]
+                    layers_dict[layer_id].add_edge(u[0], v[0], **data)
+    else:
+        raise ValueError("multilayer_network must have a core_network attribute")
+    
+    if not layers_dict:
+        raise ValueError("No layers found in the multilayer network")
+    
+    layer_names = sorted(layers_dict.keys())
+    num_layers = len(layer_names)
+    
+    # Calculate grid dimensions
+    num_cols = min(max_cols, num_layers)
+    num_rows = (num_layers + num_cols - 1) // num_cols
+    
+    # Create figure
+    if figsize is None:
+        figsize = (5 * num_cols, 4 * num_rows)
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=figsize)
+    if num_layers == 1:
+        axes = np.array([axes])
+    axes = axes.flatten() if num_layers > 1 else axes
+    
+    # Compute shared layout if requested
+    if shared_layout:
+        # Create union graph of all layers
+        union_graph = nx.Graph()
+        for layer_graph in layers_dict.values():
+            union_graph.add_nodes_from(layer_graph.nodes())
+            union_graph.add_edges_from(layer_graph.edges())
+        
+        # Compute layout on union graph
+        if layout == "spring":
+            pos = nx.spring_layout(union_graph)
+        elif layout == "circular":
+            pos = nx.circular_layout(union_graph)
+        elif layout == "random":
+            pos = nx.random_layout(union_graph)
+        elif layout == "kamada_kawai":
+            pos = nx.kamada_kawai_layout(union_graph)
+        else:
+            pos = nx.spring_layout(union_graph)
+    
+    # Draw each layer
+    for idx, layer_name in enumerate(layer_names):
+        ax = axes[idx]
+        layer_graph = layers_dict[layer_name]
+        
+        # Compute per-layer layout if not shared
+        if not shared_layout:
+            if layout == "spring":
+                pos = nx.spring_layout(layer_graph)
+            elif layout == "circular":
+                pos = nx.circular_layout(layer_graph)
+            elif layout == "random":
+                pos = nx.random_layout(layer_graph)
+            elif layout == "kamada_kawai":
+                pos = nx.kamada_kawai_layout(layer_graph)
+            else:
+                pos = nx.spring_layout(layer_graph)
+        
+        # Draw the layer
+        nx.draw_networkx(
+            layer_graph,
+            pos=pos,
+            ax=ax,
+            node_size=node_size,
+            with_labels=kwargs.get('with_labels', False),
+            node_color=kwargs.get('node_color', colors.colors_default[idx % len(colors.colors_default)]),
+            edge_color=kwargs.get('edge_color', 'gray'),
+            **{k: v for k, v in kwargs.items() if k not in ['with_labels', 'node_color', 'edge_color']}
+        )
+        
+        if show_layer_titles:
+            ax.set_title(f"Layer: {layer_name}")
+        ax.axis('off')
+    
+    # Hide unused subplots
+    for idx in range(num_layers, len(axes)):
+        axes[idx].axis('off')
+    
+    plt.tight_layout()
+    return fig
+
+
+def plot_edge_colored_projection(
+    multilayer_network,
+    layout: str = "spring",
+    node_size: int = 50,
+    layer_colors: Optional[Dict[Any, str]] = None,
+    aggregate_multilayer_edges: bool = True,
+    figsize: Tuple[float, float] = (10, 8),
+    edge_alpha: float = 0.6,
+    **kwargs
+):
+    """Create an aggregated projection where edge colors indicate layer membership.
+    
+    This visualization projects all layers onto a single 2D graph, using edge colors
+    to distinguish which layer each edge belongs to. Useful for seeing the overall
+    structure while maintaining layer information.
+    
+    Args:
+        multilayer_network: A MultiLayerNetwork instance
+        layout: Layout algorithm to use ("spring", "circular", "random", "kamada_kawai")
+        node_size: Size of nodes
+        layer_colors: Optional dict mapping layer names to colors; if None, auto-generated
+        aggregate_multilayer_edges: If True, show edges from all layers with distinct colors
+        figsize: Figure size as (width, height) tuple
+        edge_alpha: Transparency level for edges (0-1)
+        **kwargs: Additional arguments for customization
+        
+    Returns:
+        matplotlib.figure.Figure: The created figure
+    """
+    # Extract layers and build aggregated graph
+    layers_dict = {}
+    aggregated_graph = nx.Graph()
+    
+    if hasattr(multilayer_network, 'core_network') and multilayer_network.core_network is not None:
+        # Extract nodes and edges per layer
+        for node in multilayer_network.core_network.nodes():
+            if isinstance(node, tuple) and len(node) >= 2:
+                layer_id = node[1]
+                if layer_id not in layers_dict:
+                    layers_dict[layer_id] = []
+                aggregated_graph.add_node(node[0])
+        
+        # Collect edges by layer
+        for u, v, data in multilayer_network.core_network.edges(data=True):
+            if isinstance(u, tuple) and isinstance(v, tuple) and len(u) >= 2 and len(v) >= 2:
+                if u[1] == v[1]:  # Intra-layer edge
+                    layer_id = u[1]
+                    if layer_id not in layers_dict:
+                        layers_dict[layer_id] = []
+                    layers_dict[layer_id].append((u[0], v[0], data))
+                    aggregated_graph.add_edge(u[0], v[0])
+    else:
+        raise ValueError("multilayer_network must have a core_network attribute")
+    
+    if not layers_dict:
+        raise ValueError("No layers found in the multilayer network")
+    
+    # Generate layer colors if not provided
+    layer_names = sorted(layers_dict.keys())
+    if layer_colors is None:
+        layer_colors = {}
+        for idx, layer_name in enumerate(layer_names):
+            layer_colors[layer_name] = colors.colors_default[idx % len(colors.colors_default)]
+    
+    # Compute layout on aggregated graph
+    if layout == "spring":
+        pos = nx.spring_layout(aggregated_graph)
+    elif layout == "circular":
+        pos = nx.circular_layout(aggregated_graph)
+    elif layout == "random":
+        pos = nx.random_layout(aggregated_graph)
+    elif layout == "kamada_kawai":
+        pos = nx.kamada_kawai_layout(aggregated_graph)
+    else:
+        pos = nx.spring_layout(aggregated_graph)
+    
+    # Create figure
+    fig, ax = plt.subplots(figsize=figsize)
+    
+    # Draw nodes once
+    nx.draw_networkx_nodes(
+        aggregated_graph,
+        pos,
+        node_size=node_size,
+        node_color=kwargs.get('node_color', 'lightblue'),
+        ax=ax
+    )
+    
+    # Draw edges per layer with different colors
+    for layer_name in layer_names:
+        edge_list = [(u, v) for u, v, _ in layers_dict[layer_name]]
+        if edge_list:
+            nx.draw_networkx_edges(
+                aggregated_graph,
+                pos,
+                edgelist=edge_list,
+                edge_color=layer_colors[layer_name],
+                alpha=edge_alpha,
+                width=2,
+                ax=ax,
+                label=f"Layer {layer_name}"
+            )
+    
+    # Add labels if requested
+    if kwargs.get('with_labels', False):
+        nx.draw_networkx_labels(aggregated_graph, pos, ax=ax)
+    
+    # Add legend
+    ax.legend(loc='best')
+    ax.set_title("Edge-Colored Multilayer Projection")
+    ax.axis('off')
+    
+    plt.tight_layout()
+    return fig
+
+
+def plot_supra_adjacency_heatmap(
+    multilayer_network,
+    include_inter_layer: bool = False,
+    inter_layer_weight: float = 1.0,
+    node_order: Optional[List[Any]] = None,
+    cmap: str = "viridis",
+    figsize: Tuple[float, float] = (10, 10),
+    **kwargs
+):
+    """Create a supra-adjacency matrix heatmap visualization.
+    
+    This visualization shows the multilayer network as a block matrix where each
+    block represents the adjacency matrix of one layer. Optionally includes
+    inter-layer connections.
+    
+    Args:
+        multilayer_network: A MultiLayerNetwork instance
+        include_inter_layer: If True, include inter-layer edges/couplings
+        inter_layer_weight: Default weight for inter-layer connections
+        node_order: Optional list specifying node ordering; if None, uses sorted order
+        cmap: Colormap name for the heatmap
+        figsize: Figure size as (width, height) tuple
+        **kwargs: Additional arguments for imshow
+        
+    Returns:
+        matplotlib.figure.Figure: The created figure
+    """
+    # Extract layer structure
+    layers_dict = {}
+    nodes_per_layer = {}
+    
+    if hasattr(multilayer_network, 'core_network') and multilayer_network.core_network is not None:
+        # Collect nodes per layer
+        for node in multilayer_network.core_network.nodes():
+            if isinstance(node, tuple) and len(node) >= 2:
+                node_id, layer_id = node[0], node[1]
+                if layer_id not in nodes_per_layer:
+                    nodes_per_layer[layer_id] = set()
+                nodes_per_layer[layer_id].add(node_id)
+        
+        # Build adjacency info per layer
+        for layer_id in nodes_per_layer:
+            layers_dict[layer_id] = {}
+        
+        for u, v, data in multilayer_network.core_network.edges(data=True):
+            if isinstance(u, tuple) and isinstance(v, tuple) and len(u) >= 2 and len(v) >= 2:
+                u_node, u_layer = u[0], u[1]
+                v_node, v_layer = v[0], v[1]
+                weight = data.get('weight', 1.0)
+                
+                if u_layer == v_layer:  # Intra-layer
+                    if (u_node, v_node) not in layers_dict[u_layer]:
+                        layers_dict[u_layer][(u_node, v_node)] = 0
+                    layers_dict[u_layer][(u_node, v_node)] += weight
+                elif include_inter_layer:  # Inter-layer
+                    # Store inter-layer edges separately
+                    pass
+    else:
+        raise ValueError("multilayer_network must have a core_network attribute")
+    
+    if not layers_dict:
+        raise ValueError("No layers found in the multilayer network")
+    
+    # Determine global node ordering
+    all_nodes = set()
+    for nodes in nodes_per_layer.values():
+        all_nodes.update(nodes)
+    
+    if node_order is None:
+        node_order = sorted(all_nodes)
+    
+    node_to_idx = {node: idx for idx, node in enumerate(node_order)}
+    n_nodes = len(node_order)
+    
+    # Build supra-adjacency matrix
+    layer_names = sorted(layers_dict.keys())
+    n_layers = len(layer_names)
+    supra_size = n_nodes * n_layers
+    supra_matrix = np.zeros((supra_size, supra_size))
+    
+    # Fill in layer blocks
+    for layer_idx, layer_name in enumerate(layer_names):
+        offset = layer_idx * n_nodes
+        for (u, v), weight in layers_dict[layer_name].items():
+            if u in node_to_idx and v in node_to_idx:
+                i, j = node_to_idx[u], node_to_idx[v]
+                supra_matrix[offset + i, offset + j] = weight
+                if not multilayer_network.directed:
+                    supra_matrix[offset + j, offset + i] = weight
+    
+    # Add inter-layer connections if requested
+    if include_inter_layer:
+        for layer_idx in range(n_layers - 1):
+            offset1 = layer_idx * n_nodes
+            offset2 = (layer_idx + 1) * n_nodes
+            # Add diagonal coupling for nodes that exist in both layers
+            layer1_nodes = nodes_per_layer[layer_names[layer_idx]]
+            layer2_nodes = nodes_per_layer[layer_names[layer_idx + 1]]
+            common_nodes = layer1_nodes.intersection(layer2_nodes)
+            for node in common_nodes:
+                if node in node_to_idx:
+                    i = node_to_idx[node]
+                    supra_matrix[offset1 + i, offset2 + i] = inter_layer_weight
+                    supra_matrix[offset2 + i, offset1 + i] = inter_layer_weight
+    
+    # Create visualization
+    fig, ax = plt.subplots(figsize=figsize)
+    im = ax.imshow(supra_matrix, cmap=cmap, interpolation='nearest', **kwargs)
+    
+    # Add grid lines to show block boundaries
+    for i in range(1, n_layers):
+        ax.axhline(y=i * n_nodes - 0.5, color='white', linewidth=2)
+        ax.axvline(x=i * n_nodes - 0.5, color='white', linewidth=2)
+    
+    # Add layer labels
+    for layer_idx, layer_name in enumerate(layer_names):
+        pos = layer_idx * n_nodes + n_nodes / 2
+        ax.text(-n_nodes * 0.05, pos, f"L{layer_name}", 
+                ha='right', va='center', fontsize=10)
+        ax.text(pos, -n_nodes * 0.05, f"L{layer_name}", 
+                ha='center', va='bottom', fontsize=10)
+    
+    ax.set_title("Supra-Adjacency Matrix")
+    plt.colorbar(im, ax=ax, label="Edge Weight")
+    
+    plt.tight_layout()
+    return fig
+
+
+def plot_radial_layers(
+    multilayer_network,
+    base_radius: float = 1.0,
+    radius_step: float = 1.0,
+    node_size: int = 50,
+    draw_inter_layer_edges: bool = True,
+    figsize: Tuple[float, float] = (10, 10),
+    edge_alpha: float = 0.3,
+    **kwargs
+):
+    """Create a radial/concentric visualization with layers as rings.
+    
+    This visualization arranges layers as concentric circles, with nodes positioned
+    on rings based on their layer. Inter-layer edges appear as radial connections.
+    
+    Args:
+        multilayer_network: A MultiLayerNetwork instance
+        base_radius: Radius of the innermost layer
+        radius_step: Distance between consecutive layer rings
+        node_size: Size of nodes
+        draw_inter_layer_edges: If True, draw edges between layers
+        figsize: Figure size as (width, height) tuple
+        edge_alpha: Transparency for edges
+        **kwargs: Additional drawing parameters
+        
+    Returns:
+        matplotlib.figure.Figure: The created figure
+    """
+    # Extract layer structure
+    layers_dict = {}
+    nodes_per_layer = {}
+    inter_layer_edges = []
+    
+    if hasattr(multilayer_network, 'core_network') and multilayer_network.core_network is not None:
+        # Collect nodes per layer
+        for node in multilayer_network.core_network.nodes():
+            if isinstance(node, tuple) and len(node) >= 2:
+                node_id, layer_id = node[0], node[1]
+                if layer_id not in nodes_per_layer:
+                    nodes_per_layer[layer_id] = []
+                if node_id not in nodes_per_layer[layer_id]:
+                    nodes_per_layer[layer_id].append(node_id)
+        
+        # Collect edges
+        for layer_id in nodes_per_layer:
+            layers_dict[layer_id] = []
+        
+        for u, v, data in multilayer_network.core_network.edges(data=True):
+            if isinstance(u, tuple) and isinstance(v, tuple) and len(u) >= 2 and len(v) >= 2:
+                if u[1] == v[1]:  # Intra-layer
+                    layers_dict[u[1]].append((u[0], v[0]))
+                else:  # Inter-layer
+                    inter_layer_edges.append((u, v))
+    else:
+        raise ValueError("multilayer_network must have a core_network attribute")
+    
+    if not layers_dict:
+        raise ValueError("No layers found in the multilayer network")
+    
+    # Assign global angles to nodes
+    all_nodes = set()
+    for nodes in nodes_per_layer.values():
+        all_nodes.update(nodes)
+    all_nodes = sorted(all_nodes)
+    
+    node_angles = {}
+    for idx, node in enumerate(all_nodes):
+        node_angles[node] = 2 * np.pi * idx / len(all_nodes)
+    
+    # Create positions for nodes
+    layer_names = sorted(layers_dict.keys())
+    positions = {}
+    
+    for layer_idx, layer_name in enumerate(layer_names):
+        radius = base_radius + layer_idx * radius_step
+        for node in nodes_per_layer[layer_name]:
+            angle = node_angles[node]
+            x = radius * np.cos(angle)
+            y = radius * np.sin(angle)
+            positions[(node, layer_name)] = (x, y)
+    
+    # Create figure
+    fig, ax = plt.subplots(figsize=figsize)
+    
+    # Draw intra-layer edges
+    for layer_idx, layer_name in enumerate(layer_names):
+        edge_list = layers_dict[layer_name]
+        layer_color = colors.colors_default[layer_idx % len(colors.colors_default)]
+        
+        for u, v in edge_list:
+            if (u, layer_name) in positions and (v, layer_name) in positions:
+                x_coords = [positions[(u, layer_name)][0], positions[(v, layer_name)][0]]
+                y_coords = [positions[(u, layer_name)][1], positions[(v, layer_name)][1]]
+                ax.plot(x_coords, y_coords, color=layer_color, alpha=edge_alpha, linewidth=1)
+    
+    # Draw inter-layer edges if requested
+    if draw_inter_layer_edges:
+        for u, v in inter_layer_edges:
+            if u in positions and v in positions:
+                x_coords = [positions[u][0], positions[v][0]]
+                y_coords = [positions[u][1], positions[v][1]]
+                ax.plot(x_coords, y_coords, color='gray', alpha=edge_alpha * 0.5, 
+                       linewidth=0.5, linestyle='--')
+    
+    # Draw nodes
+    for layer_idx, layer_name in enumerate(layer_names):
+        layer_color = colors.colors_default[layer_idx % len(colors.colors_default)]
+        for node in nodes_per_layer[layer_name]:
+            if (node, layer_name) in positions:
+                x, y = positions[(node, layer_name)]
+                ax.scatter(x, y, s=node_size, c=layer_color, alpha=0.8, 
+                          edgecolors='black', linewidth=0.5)
+    
+    # Add layer labels
+    for layer_idx, layer_name in enumerate(layer_names):
+        radius = base_radius + layer_idx * radius_step
+        ax.text(0, radius + 0.3, f"Layer {layer_name}", 
+               ha='center', va='bottom', fontsize=10, weight='bold')
+    
+    ax.set_aspect('equal')
+    ax.axis('off')
+    ax.set_title("Radial Multilayer Visualization")
+    
+    plt.tight_layout()
+    return fig
+
+
+def plot_ego_multilayer(
+    multilayer_network,
+    ego,
+    layers: Optional[List[Any]] = None,
+    max_depth: int = 1,
+    layout: str = "spring",
+    figsize: Optional[Tuple[float, float]] = None,
+    max_cols: int = 3,
+    node_size: int = 100,
+    ego_node_size: int = 300,
+    **kwargs
+):
+    """Create an ego-centric multilayer visualization.
+    
+    This visualization focuses on a single node (ego) and shows its neighborhood
+    across different layers, highlighting the ego node's position in each layer.
+    
+    Args:
+        multilayer_network: A MultiLayerNetwork instance
+        ego: The ego node to focus on
+        layers: Optional list of specific layers to visualize; if None, uses all layers
+        max_depth: Maximum depth of neighborhood to include (number of hops)
+        layout: Layout algorithm for each ego graph
+        figsize: Optional figure size; if None, auto-calculated
+        max_cols: Maximum columns in subplot grid
+        node_size: Size of regular nodes
+        ego_node_size: Size of the ego node (highlighted)
+        **kwargs: Additional drawing parameters
+        
+    Returns:
+        matplotlib.figure.Figure: The created figure
+    """
+    # Extract layers
+    layers_dict = {}
+    
+    if hasattr(multilayer_network, 'core_network') and multilayer_network.core_network is not None:
+        # Find all layers containing the ego node or extract all layers if layers is None
+        ego_layers = set()
+        for node in multilayer_network.core_network.nodes():
+            if isinstance(node, tuple) and len(node) >= 2:
+                node_id, layer_id = node[0], node[1]
+                if layers is None or layer_id in layers:
+                    if layer_id not in layers_dict:
+                        layers_dict[layer_id] = nx.Graph() if not multilayer_network.directed else nx.DiGraph()
+                    layers_dict[layer_id].add_node(node_id)
+                    if node_id == ego:
+                        ego_layers.add(layer_id)
+        
+        # Add edges
+        for u, v, data in multilayer_network.core_network.edges(data=True):
+            if isinstance(u, tuple) and isinstance(v, tuple) and len(u) >= 2 and len(v) >= 2:
+                if u[1] == v[1] and (layers is None or u[1] in layers):
+                    layers_dict[u[1]].add_edge(u[0], v[0], **data)
+    else:
+        raise ValueError("multilayer_network must have a core_network attribute")
+    
+    if not layers_dict:
+        raise ValueError("No layers found")
+    
+    # Extract ego graphs for each layer
+    layer_names = sorted(layers_dict.keys())
+    ego_graphs = {}
+    
+    for layer_name in layer_names:
+        layer_graph = layers_dict[layer_name]
+        if ego in layer_graph:
+            # Extract ego graph up to max_depth hops
+            ego_graphs[layer_name] = nx.ego_graph(layer_graph, ego, radius=max_depth)
+    
+    if not ego_graphs:
+        raise ValueError(f"Ego node '{ego}' not found in any layer")
+    
+    num_layers = len(ego_graphs)
+    num_cols = min(max_cols, num_layers)
+    num_rows = (num_layers + num_cols - 1) // num_cols
+    
+    if figsize is None:
+        figsize = (5 * num_cols, 4 * num_rows)
+    
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=figsize)
+    if num_layers == 1:
+        axes = np.array([axes])
+    axes = axes.flatten() if num_layers > 1 else axes
+    
+    # Draw each ego graph
+    for idx, layer_name in enumerate(sorted(ego_graphs.keys())):
+        ax = axes[idx]
+        ego_graph = ego_graphs[layer_name]
+        
+        # Compute layout
+        if layout == "spring":
+            pos = nx.spring_layout(ego_graph)
+        elif layout == "circular":
+            pos = nx.circular_layout(ego_graph)
+        elif layout == "kamada_kawai":
+            pos = nx.kamada_kawai_layout(ego_graph)
+        else:
+            pos = nx.spring_layout(ego_graph)
+        
+        # Draw edges
+        nx.draw_networkx_edges(ego_graph, pos, ax=ax, alpha=0.5)
+        
+        # Draw regular nodes
+        non_ego_nodes = [n for n in ego_graph.nodes() if n != ego]
+        if non_ego_nodes:
+            nx.draw_networkx_nodes(
+                ego_graph, pos, nodelist=non_ego_nodes,
+                node_size=node_size, node_color='lightblue',
+                ax=ax
+            )
+        
+        # Draw ego node with emphasis
+        nx.draw_networkx_nodes(
+            ego_graph, pos, nodelist=[ego],
+            node_size=ego_node_size, node_color='red',
+            ax=ax
+        )
+        
+        # Add labels if requested
+        if kwargs.get('with_labels', True):
+            nx.draw_networkx_labels(ego_graph, pos, ax=ax, font_size=8)
+        
+        ax.set_title(f"Layer: {layer_name}\n(Ego: {ego})")
+        ax.axis('off')
+    
+    # Hide unused subplots
+    for idx in range(num_layers, len(axes)):
+        axes[idx].axis('off')
+    
+    plt.tight_layout()
+    return fig
 
 
 if __name__ == "__main__":
