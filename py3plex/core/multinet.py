@@ -282,47 +282,71 @@ def _encode_multilayer_network(core_network, directed):
 
 
 def _encode_multiplex_network(core_network):
-    """Helper function to encode multiplex network to numeric format.
+    """Helper function to encode multiplex network to numeric format using sparse matrices.
+    
+    This implementation uses scipy.sparse block matrices for efficient memory usage
+    and faster operations on large multiplex networks. The supra-adjacency matrix
+    is constructed with intralayer adjacency matrices on the diagonal blocks and
+    identity matrices for interlayer coupling.
+    
+    Complexity: O(E + N*L) where E is edges, N nodes per layer, L layers
+    Memory: O(E + N*L) sparse vs O(N²*L²) dense
     
     Args:
         core_network: NetworkX graph with multiplex structure
         
     Returns:
         Tuple of (numeric_network, node_order)
+            - numeric_network: scipy.sparse.csr_matrix supra-adjacency matrix
+            - node_order: list of (node_id, layer) tuples in matrix order
     """
-    unique_layers = {n[1] for n in core_network.nodes()}
-    individual_adj = []
-    all_nodes = []
+    import scipy.sparse as sp
     
-    # Build adjacency matrix for each layer
+    unique_layers = sorted({n[1] for n in core_network.nodes()})
+    num_layers = len(unique_layers)
+    individual_adj_sparse = []
+    all_nodes = []
+    layer_sizes = []
+    
+    # Build sparse adjacency matrix for each layer
+    # Using sparse matrices from the start avoids dense intermediate arrays
     for layer in unique_layers:
         layer_nodes = [n for n in core_network.nodes() if n[1] == layer]
         H = core_network.subgraph(layer_nodes)
         
-        # NetworkX 3.x compatibility: use to_numpy_array instead of to_numpy_matrix
-        try:
-            adj = nx.to_numpy_array(H)
-        except AttributeError:
-            # Fallback for older NetworkX versions
-            adj = nx.to_numpy_matrix(H)
+        # Use nx_to_scipy_sparse_matrix for direct sparse conversion
+        adj_sparse = nx_to_scipy_sparse_matrix(H)
         
         all_nodes += list(H.nodes())
-        individual_adj.append(adj)
+        individual_adj_sparse.append(adj_sparse)
+        layer_sizes.append(adj_sparse.shape[0])
     
-    # Combine adjacency matrices into supra-adjacency matrix
-    whole_mat = []
-    num_adj = len(individual_adj)
-    for en, adj_mat in enumerate(individual_adj):
-        cross = np.identity(adj_mat.shape[0])
-        one_row = []
-        for j in range(num_adj):
-            if j != en:
-                one_row.append(cross)
+    # Construct supra-adjacency matrix using sparse block matrices
+    # This avoids creating large dense arrays and is memory-efficient
+    # Block structure: diagonal blocks = intralayer adjacency, off-diagonal = identity (coupling)
+    block_rows = []
+    for i, adj_i in enumerate(individual_adj_sparse):
+        n_i = layer_sizes[i]
+        row_blocks = []
+        for j in range(num_layers):
+            n_j = layer_sizes[j]
+            if i == j:
+                # Diagonal block: intralayer adjacency matrix
+                row_blocks.append(adj_i)
             else:
-                one_row.append(adj_mat)
-        whole_mat.append(np.hstack(list(one_row)))
+                # Off-diagonal block: identity matrix for interlayer coupling
+                # Only create identity if dimensions match (multiplex assumption)
+                if n_i == n_j:
+                    row_blocks.append(sp.identity(n_i, format='csr'))
+                else:
+                    # For non-multiplex or layers with different sizes, use zeros
+                    row_blocks.append(sp.csr_matrix((n_i, n_j)))
+        
+        # Horizontally stack blocks for this layer's row
+        block_rows.append(sp.hstack(row_blocks, format='csr'))
     
-    vectors = np.vstack(whole_mat)
+    # Vertically stack all block rows to form supra-adjacency matrix
+    vectors = sp.vstack(block_rows, format='csr')
     return vectors, all_nodes
 
 
