@@ -173,39 +173,47 @@ def create_compact_banner():
 
 
 def create_showcase_collage():
-    """Create a sophisticated showcase collage with varied sizes."""
+    """Create a sophisticated showcase collage with diagonal layout featured prominently."""
     
     base_dir = "/home/runner/work/py3plex/py3plex/example_images"
     
-    # Create a figure with custom layout
+    # Create a figure with custom layout emphasizing the diagonal layout
     fig = plt.figure(figsize=(24, 10), facecolor='#f8f9fa')
     
-    # Create a custom grid for a more interesting layout
-    # Large featured image on left, smaller grid on right
-    gs = GridSpec(4, 6, figure=fig, wspace=0.08, hspace=0.08,
-                  left=0.02, right=0.98, top=0.95, bottom=0.05)
+    # Create a custom grid with tighter spacing and diagonal layout as hero
+    # Reduced spacing: wspace and hspace from 0.08 to 0.03
+    gs = GridSpec(4, 7, figure=fig, wspace=0.03, hspace=0.03,
+                  left=0.01, right=0.99, top=0.96, bottom=0.04)
     
     # Define layout: (row_start, row_end, col_start, col_end, image_name)
+    # Featured: diagonal/multilayer visualization takes prominent center-left position
     layout = [
-        # Large feature image (left)
-        (0, 2, 0, 2, "multilayer.png"),
+        # HERO: Large diagonal layout visualization (featured prominently)
+        (0, 3, 0, 3, "multilayer.png"),
         
-        # Top right section
-        (0, 1, 2, 3, "multilayer_edge_projection_spring.png"),
-        (0, 1, 3, 4, "multilayer_radial_with_inter.png"),
-        (0, 1, 4, 5, "multilayer_small_multiples_shared.png"),
-        (0, 1, 5, 6, "hairball.png"),
+        # Secondary visualizations - compact grid on right
+        # Top row - different multilayer visualization styles
+        (0, 1, 3, 4, "multilayer_edge_projection_spring.png"),
+        (0, 1, 4, 5, "multilayer_radial_with_inter.png"),
+        (0, 1, 5, 6, "multilayer_small_multiples_shared.png"),
+        (0, 1, 6, 7, "multilayer_supra_heatmap_inter.png"),
         
-        # Middle right section
-        (1, 2, 2, 3, "multilayer_supra_heatmap_inter.png"),
+        # Middle row - analysis visualizations
         (1, 2, 3, 4, "communities.png"),
         (1, 2, 4, 5, "embedding.png"),
-        (1, 2, 5, 6, "temporal.png"),
+        (1, 2, 5, 6, "hairball.png"),
+        (1, 2, 6, 7, "temporal.png"),
         
-        # Bottom section - wider panels
-        (2, 4, 0, 2, "multilayer_radial_compact.png"),
-        (2, 4, 2, 4, "biomine_community.png"),
-        (2, 4, 4, 6, "complete_analysis.png"),
+        # Bottom row - compact secondary images
+        (2, 3, 3, 4, "multilayer_ego_circular.png"),
+        (2, 3, 4, 5, "multilayer_radial_compact.png"),
+        (2, 3, 5, 6, "networkx_wrapper.png"),
+        (2, 3, 6, 7, "spreading.png"),
+        
+        # Bottom row spanning full width - wider analysis examples
+        (3, 4, 0, 2, "biomine_community.png"),
+        (3, 4, 2, 4, "complete_analysis.png"),
+        (3, 4, 4, 7, "multiplex.png"),
     ]
     
     for row_start, row_end, col_start, col_end, img_name in layout:
@@ -222,19 +230,23 @@ def create_showcase_collage():
             ax.imshow(img)
             ax.axis('off')
             
-            # Add subtle border
-            for spine in ax.spines.values():
-                spine.set_edgecolor('#dee2e6')
-                spine.set_linewidth(2)
+            # Add subtle border only for hero image to emphasize it
+            if img_name == "multilayer.png":
+                for spine in ax.spines.values():
+                    spine.set_edgecolor('#0066cc')
+                    spine.set_linewidth(3)
             
         except Exception as e:
             print(f"Error processing {img_path}: {e}")
             ax.axis('off')
     
-    # Add title
+    # Add title with emphasis on diagonal layout feature
     fig.text(0.5, 0.98, 'Py3plex: Multilayer Network Analysis & Visualization',
              ha='center', va='top', fontsize=20, weight='bold',
              color='#212529')
+    fig.text(0.5, 0.965, 'Featuring diagonal projection-based multilayer network visualization',
+             ha='center', va='top', fontsize=11, style='italic',
+             color='#495057')
     
     # Save the showcase
     output_path = os.path.join(base_dir, "py3plex_showcase.png")
