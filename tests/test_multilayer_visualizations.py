@@ -45,7 +45,8 @@ try:
         plot_edge_colored_projection,
         plot_supra_adjacency_heatmap,
         plot_radial_layers,
-        plot_ego_multilayer
+        plot_ego_multilayer,
+        draw_multilayer_flow
     )
     VISUALIZATION_AVAILABLE = True
 except ImportError as e:
@@ -228,6 +229,64 @@ def test_plot_ego_multilayer():
     fig = plot_ego_multilayer(network, ego='1', max_depth=1)
     assert fig is not None
     assert len(fig.axes) >= 1  # Should have at least one subplot
+    plt.close('all')
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_draw_multilayer_flow():
+    """Test the new layered flow visualization."""
+    network = create_test_multilayer_network()
+    
+    # Get layers data
+    labels, graphs, multilinks = network.get_layers("diagonal")
+    
+    # Test basic flow visualization
+    fig, ax = plt.subplots()
+    result_ax = draw_multilayer_flow(
+        graphs,
+        multilinks,
+        labels=labels,
+        ax=ax,
+        display=False
+    )
+    
+    assert result_ax is not None
+    assert result_ax == ax
+    plt.close('all')
+    
+    # Test with custom parameters
+    fig, ax = plt.subplots()
+    result_ax = draw_multilayer_flow(
+        graphs,
+        multilinks,
+        labels=labels,
+        ax=ax,
+        display=False,
+        layer_gap=5.0,
+        node_size=50,
+        node_cmap="plasma",
+        flow_alpha=0.5,
+        flow_min_width=0.5,
+        flow_max_width=5.0
+    )
+    
+    assert result_ax is not None
+    plt.close('all')
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_visualize_network_flow_style():
+    """Test that visualize_network supports the 'flow' style."""
+    network = create_test_multilayer_network()
+    
+    # Test with 'flow' style
+    ax = network.visualize_network(style='flow', show=False)
+    assert ax is not None
+    plt.close('all')
+    
+    # Test with 'alluvial' style (alias)
+    ax = network.visualize_network(style='alluvial', show=False)
+    assert ax is not None
     plt.close('all')
 
 

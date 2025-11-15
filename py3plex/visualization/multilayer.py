@@ -1858,7 +1858,13 @@ def draw_multilayer_flow(
             node_activities[(layer_idx, node)] = layer_activities[node]
     
     # Normalize activities per layer for color mapping
-    cmap = plt.cm.get_cmap(node_cmap)
+    try:
+        # Modern matplotlib API (>= 3.7)
+        import matplotlib
+        cmap = matplotlib.colormaps.get_cmap(node_cmap)
+    except AttributeError:
+        # Fallback for older matplotlib versions
+        cmap = plt.cm.get_cmap(node_cmap)
     
     for layer_idx in range(n_layers):
         layer_acts = [node_activities.get((layer_idx, node), 0) 
