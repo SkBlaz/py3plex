@@ -1,6 +1,10 @@
 Py3plex Documentation
 **********************************
 
+.. image:: ../example_images/py3plex_showcase.png
+   :alt: Py3plex Visualization Showcase
+   :align: center
+
 .. image:: https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg
    :target: https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml
    :alt: Tests
