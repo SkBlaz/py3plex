@@ -203,6 +203,7 @@ Documentation Contents
    networkx_interop
    algorithm_guide
    algorithm_roadmap
+   ricci_curvature
    performance
    performance_guide
    statistical_comparison
