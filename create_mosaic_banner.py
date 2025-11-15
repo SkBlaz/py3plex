@@ -178,11 +178,11 @@ def create_showcase_collage():
     base_dir = "/home/runner/work/py3plex/py3plex/example_images"
     
     # Create a figure with white background
-    fig = plt.figure(figsize=(24, 12), facecolor='white')
+    fig = plt.figure(figsize=(24, 9), facecolor='white')
     
     # Create a grid with NO spacing between tiles
-    # 4 rows x 6 columns: diagonal takes 2x2 (4 tiles), others are 1x1
-    gs = GridSpec(4, 6, figure=fig, wspace=0, hspace=0,
+    # 3 rows x 6 columns: diagonal takes 2x2 (4 tiles), others are 1x1
+    gs = GridSpec(3, 6, figure=fig, wspace=0, hspace=0,
                   left=0.02, right=0.98, top=0.96, bottom=0.02)
     
     # Define layout: (row_start, row_end, col_start, col_end, image_name, description)
@@ -209,11 +209,6 @@ def create_showcase_collage():
         (2, 3, 3, 4, "spreading.png", "Information\nSpreading"),
         (2, 3, 4, 5, "part1.png", "Layer\nAnalysis"),
         (2, 3, 5, 6, "part2.png", "Network\nStatistics"),
-        
-        # Row 4 - full width
-        (3, 4, 0, 2, "biomine_community.png", "Biological Network Communities"),
-        (3, 4, 2, 4, "complete_analysis.png", "Complete Network Analysis"),
-        (3, 4, 4, 6, "multiplex.png", "Multiplex Network Structure"),
     ]
     
     for row_start, row_end, col_start, col_end, img_name, description in layout:
