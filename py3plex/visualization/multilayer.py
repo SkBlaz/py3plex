@@ -1761,6 +1761,251 @@ def plot_ego_multilayer(
     return fig
 
 
+def draw_multilayer_flow(
+    graphs: List[nx.Graph],
+    multilinks: Dict[str, List[Tuple]],
+    labels: Optional[List[str]] = None,
+    node_activity: Optional[Dict[Any, float]] = None,
+    ax: Optional[Any] = None,
+    display: bool = True,
+    layer_gap: float = 3.0,
+    node_size: float = 30,
+    node_cmap: str = "viridis",
+    flow_alpha: float = 0.3,
+    flow_min_width: float = 0.2,
+    flow_max_width: float = 4.0,
+    aggregate_by: Tuple[str, ...] = ("u", "v", "layer_u", "layer_v"),
+    **kwargs
+) -> Any:
+    """Draw multilayer network as layered flow visualization (alluvial-style).
+    
+    Shows each layer as a horizontal band with nodes positioned along the x-axis.
+    Intra-layer activity is encoded as node color/size, and inter-layer edges are
+    shown as thick flow ribbons (Bezier curves) where width encodes edge weight.
+    
+    Args:
+        graphs: List of NetworkX graphs, one per layer (from multi_layer_network.get_layers())
+        multilinks: Dictionary mapping edge_type -> list of multi-layer edges
+        labels: Optional list of layer labels. If None, uses layer indices
+        node_activity: Optional dict mapping node_id -> activity value. 
+            If None, computes intra-layer degree
+        ax: Matplotlib axes to draw on. If None, creates new figure
+        display: If True, calls plt.show() at the end
+        layer_gap: Vertical distance between layer bands
+        node_size: Base marker size for nodes
+        node_cmap: Matplotlib colormap name for node activity coloring
+        flow_alpha: Base transparency for flow ribbons
+        flow_min_width: Minimum line width for flows
+        flow_max_width: Maximum line width for flows
+        aggregate_by: Tuple of keys for aggregating flows (currently not used, for future extension)
+        **kwargs: Reserved for future extensions
+        
+    Returns:
+        Matplotlib axes object
+        
+    Examples:
+        >>> network = multi_layer_network()
+        >>> network.load_network("data.txt", input_type="multiedgelist")
+        >>> labels, graphs, multilinks = network.get_layers()
+        >>> draw_multilayer_flow(graphs, multilinks, labels=labels)
+    """
+    # Get or create axes
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(12, 8))
+    else:
+        fig = ax.get_figure()
+    
+    n_layers = len(graphs)
+    if n_layers == 0:
+        logger.warning("No layers to visualize")
+        return ax
+    
+    # Determine layer y-positions
+    y_positions = {layer_idx: layer_idx * layer_gap for layer_idx in range(n_layers)}
+    
+    # Build node positions and compute activity per layer
+    node_positions = {}  # (layer_idx, node_id) -> (x, y)
+    node_activities = {}  # (layer_idx, node_id) -> activity_value
+    
+    for layer_idx, graph in enumerate(graphs):
+        nodes = list(graph.nodes())
+        if len(nodes) == 0:
+            continue
+            
+        # Compute or get activity values for this layer
+        layer_activities = {}
+        for node in nodes:
+            if node_activity is not None and node in node_activity:
+                activity = node_activity[node]
+            else:
+                # Default: use degree (with weight if available)
+                if graph.has_node(node):
+                    activity = graph.degree(node, weight="weight")
+                else:
+                    activity = 0
+            layer_activities[node] = activity
+        
+        # Sort nodes by activity (descending) for better visual layout
+        sorted_nodes = sorted(layer_activities.keys(), 
+                            key=lambda n: layer_activities[n], 
+                            reverse=True)
+        
+        # Assign x positions (evenly spaced)
+        y_layer = y_positions[layer_idx]
+        for x_idx, node in enumerate(sorted_nodes):
+            x_pos = x_idx
+            node_positions[(layer_idx, node)] = (x_pos, y_layer)
+            node_activities[(layer_idx, node)] = layer_activities[node]
+    
+    # Normalize activities per layer for color mapping
+    cmap = plt.cm.get_cmap(node_cmap)
+    
+    for layer_idx in range(n_layers):
+        layer_acts = [node_activities.get((layer_idx, node), 0) 
+                     for node in graphs[layer_idx].nodes()]
+        if len(layer_acts) > 0 and max(layer_acts) > 0:
+            # Normalize to [0, 1]
+            min_act = min(layer_acts)
+            max_act = max(layer_acts)
+            if max_act > min_act:
+                for node in graphs[layer_idx].nodes():
+                    key = (layer_idx, node)
+                    if key in node_activities:
+                        old_val = node_activities[key]
+                        node_activities[key] = (old_val - min_act) / (max_act - min_act)
+    
+    # Plot nodes with activity-based coloring and sizing
+    for layer_idx, graph in enumerate(graphs):
+        nodes = list(graph.nodes())
+        if len(nodes) == 0:
+            continue
+            
+        xs = []
+        ys = []
+        colors_list = []
+        sizes = []
+        
+        for node in nodes:
+            key = (layer_idx, node)
+            if key in node_positions:
+                x, y = node_positions[key]
+                xs.append(x)
+                ys.append(y)
+                
+                activity_norm = node_activities.get(key, 0)
+                colors_list.append(cmap(activity_norm))
+                
+                # Scale size by activity
+                size = node_size * (0.5 + activity_norm)
+                sizes.append(size)
+        
+        if len(xs) > 0:
+            ax.scatter(xs, ys, s=sizes, c=colors_list, 
+                      edgecolors='white', linewidths=1, 
+                      alpha=0.9, zorder=3)
+    
+    # Draw layer labels
+    if labels is not None:
+        for layer_idx in range(n_layers):
+            y_layer = y_positions[layer_idx]
+            label_text = labels[layer_idx] if layer_idx < len(labels) else f"Layer {layer_idx}"
+            ax.text(-1, y_layer, label_text, 
+                   ha='right', va='center', 
+                   fontsize=10, fontweight='bold')
+    
+    # Aggregate inter-layer flows
+    # Build flow aggregation: (layer_u, node_u, layer_v, node_v) -> weight
+    flow_weights = {}
+    
+    # Build a mapping from node_id to list of layers it appears in
+    node_to_layers = {}
+    for layer_idx, graph in enumerate(graphs):
+        for node in graph.nodes():
+            if node not in node_to_layers:
+                node_to_layers[node] = []
+            node_to_layers[node].append(layer_idx)
+    
+    # Process multilinks - these represent inter-layer connections
+    # The edges in multilinks connect nodes that may exist in different layers
+    for edge_type, edges in multilinks.items():
+        for edge in edges:
+            # Edges from multilinks are typically tuples like (node_u, node_v)
+            if len(edge) >= 2:
+                node_u = edge[0]
+                node_v = edge[1]
+                
+                # Get all layer combinations where these nodes appear
+                layers_u = node_to_layers.get(node_u, [])
+                layers_v = node_to_layers.get(node_v, [])
+                
+                # Check if nodes are in different layers (inter-layer edge)
+                # In typical multilayer networks, if node_u and node_v are the same node ID
+                # appearing in different layers, this is an inter-layer coupling
+                for layer_u in layers_u:
+                    for layer_v in layers_v:
+                        if layer_u != layer_v:
+                            flow_key = (layer_u, node_u, layer_v, node_v)
+                            flow_weights[flow_key] = flow_weights.get(flow_key, 0) + 1
+    
+    # Draw flows as Bezier curves
+    if len(flow_weights) > 0:
+        # Normalize flow weights to line widths
+        min_weight = min(flow_weights.values())
+        max_weight = max(flow_weights.values())
+        
+        for flow_key, weight in flow_weights.items():
+            layer_u, node_u, layer_v, node_v = flow_key
+            
+            # Get positions
+            pos_u = node_positions.get((layer_u, node_u))
+            pos_v = node_positions.get((layer_v, node_v))
+            
+            if pos_u is not None and pos_v is not None:
+                x_u, y_u = pos_u
+                x_v, y_v = pos_v
+                
+                # Normalize weight to linewidth
+                if max_weight > min_weight:
+                    norm_weight = (weight - min_weight) / (max_weight - min_weight)
+                else:
+                    norm_weight = 1.0
+                linewidth = flow_min_width + norm_weight * (flow_max_width - flow_min_width)
+                
+                # Draw Bezier curve
+                try:
+                    p1 = [x_u, x_v]
+                    p2 = [y_u, y_v]
+                    
+                    x_curve, y_curve = bezier.draw_bezier(
+                        n_layers,
+                        p1,
+                        p2,
+                        path_height=2,
+                        inversion=False,
+                        linemode="both",
+                        resolution=0.01
+                    )
+                    
+                    ax.plot(x_curve, y_curve, 
+                           color='gray', 
+                           alpha=flow_alpha,
+                           linewidth=linewidth,
+                           zorder=1)
+                except Exception as e:
+                    logger.debug(f"Could not draw flow between {node_u} and {node_v}: {e}")
+    
+    # Cosmetics
+    ax.set_axis_off()
+    
+    # Add some padding
+    ax.margins(0.1)
+    
+    if display:
+        plt.show()
+    
+    return ax
+
+
 if __name__ == "__main__":
 
     x = generate_random_networks(4)
