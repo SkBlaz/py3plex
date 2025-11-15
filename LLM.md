@@ -1,3 +1,11 @@
+# Py3plex LLM Development Checklist
+
+![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
+
+This file tracks development tasks and improvements for py3plex, particularly for LLM-assisted development.
+
+## Completed Tasks
+
 ✅ Add __version__ attribute to py3plex.__init__.py for version detection
 ✅ Document add_nodes() requires dict format with 'source' and 'type' keys
 ✅ Document add_edges() requires dict format with 'source', 'target', and 'layer' keys

@@ -1,6 +1,11 @@
 Visualization Guide
 ===================
 
+.. image:: ../example_images/py3plex_showcase.png
+   :alt: Py3plex Visualization Showcase
+   :align: center
+   :width: 100%
+
 This guide covers multilayer network visualization in Py3plex, including preset modes,
 customization options, and best practices for different network scales.
 
