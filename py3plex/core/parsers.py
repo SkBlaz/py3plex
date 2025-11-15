@@ -406,6 +406,36 @@ def parse_simple_edgelist(
 def parse_edgelist_multi_types(
     input_name: str, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
+    """Parse an edgelist file with multiple edge types.
+
+    Reads a text file where each line represents an edge, optionally with weights
+    and edge types. Lines starting with '#' are treated as comments.
+
+    File Format:
+        node1 node2 [weight] [edge_type]
+        
+        Lines starting with '#' are ignored (comments)
+
+    Args:
+        input_name: Path to edgelist file
+        directed: Whether to create a directed graph
+
+    Returns:
+        Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]: 
+            (parsed_graph, None for labels)
+
+    Notes:
+        - All nodes are assigned to a "null" layer
+        - Default weight is 1 if not specified
+        - Edge type is optional (4th column)
+        - Handles both 2-column (node pairs) and 3+ column formats
+
+    Examples:
+        >>> # File content:
+        >>> # A B 1.0 friendship
+        >>> # B C 2.0 collaboration
+        >>> graph, _ = parse_edgelist_multi_types('edges.txt', directed=False)
+    """
     if directed:
         G = nx.MultiDiGraph()
 
@@ -431,6 +461,33 @@ def parse_edgelist_multi_types(
 
 
 def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None]:
+    """Parse SPIN format edgelist file.
+
+    SPIN format includes node pairs with edge tags and optional weights.
+
+    File Format:
+        node1 node2 tag [weight]
+        
+        Each line: source_node target_node edge_tag [optional_weight]
+
+    Args:
+        input_name: Path to SPIN edgelist file
+        directed: Whether to create directed graph (currently creates undirected)
+
+    Returns:
+        Tuple[nx.Graph, None]: (parsed_graph, None for labels)
+
+    Notes:
+        - Currently always returns nx.Graph (undirected) regardless of directed parameter
+        - Edge tag is stored in edge 'type' attribute
+        - Default weight is 1 if not specified (4th column)
+
+    Examples:
+        >>> # File content:
+        >>> # A B protein_interaction 0.95
+        >>> # B C gene_regulation 0.80
+        >>> graph, _ = parse_spin_edgelist('spin_edges.txt', directed=False)
+    """
 
     G = nx.Graph()
     with open(input_name) as IN:
@@ -514,6 +571,36 @@ def parse_multiedge_tuple_list(
 def parse_multiplex_edges(
     input_name: str, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
+    """Parse a multiplex edgelist file where each line specifies layer and edge.
+
+    File Format:
+        layer node1 node2 [weight]
+        
+        Each line: layer_id source_node target_node [optional_weight]
+
+    Args:
+        input_name: Path to multiplex edgelist file
+        directed: Whether to create a directed graph
+
+    Returns:
+        Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]: 
+            (parsed_graph, None for labels)
+
+    Notes:
+        - Each edge belongs to a specific layer (first column)
+        - Nodes are represented as (node_id, layer) tuples
+        - Default weight is 1 if not specified
+        - All edges have type='default' attribute
+        - Automatically couples nodes across layers for multiplex structure
+
+    Examples:
+        >>> # File content:
+        >>> # layer1 A B 1.5
+        >>> # layer2 A B 2.0
+        >>> # layer1 B C 1.0
+        >>> graph, _ = parse_multiplex_edges('multiplex.txt', directed=False)
+        >>> # Creates nodes: (A, layer1), (A, layer2), (B, layer1), etc.
+    """
 
     if directed:
         G = nx.MultiDiGraph()
@@ -548,6 +635,39 @@ def parse_multiplex_edges(
 def parse_multiplex_folder(
     input_folder: str, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None, pd.DataFrame]:
+    """Parse a folder containing multiplex network files.
+
+    Expects a folder with specific file formats for edges, layers, and optional activity.
+
+    Expected Files:
+        - *.edges: Edge information (format: layer_id node1 node2 weight)
+        - layers.txt: Layer definitions (format: layer_id layer_name)
+        - activity.txt: Optional temporal activity (format: node1 node2 timestamp layer_name)
+
+    Args:
+        input_folder: Path to folder containing multiplex network files
+        directed: Whether to create a directed graph
+
+    Returns:
+        Tuple containing:
+            - Union[nx.MultiGraph, nx.MultiDiGraph]: Parsed multilayer graph
+            - None: Placeholder for labels (not used)
+            - pd.DataFrame: Time series activity data (empty if no activity.txt)
+
+    Notes:
+        - Uses glob to find files with specific extensions
+        - Layer mapping is built from layers.txt
+        - Activity data is optional and returned as pandas DataFrame
+        - Nodes are represented as (node_id, layer_id) tuples
+
+    Examples:
+        >>> # Folder structure:
+        >>> # my_network/
+        >>> #   network.edges
+        >>> #   layers.txt
+        >>> #   activity.txt (optional)
+        >>> graph, _, activity_df = parse_multiplex_folder('my_network/', directed=False)
+    """
 
     # 16 17 1377438155 RT -> activity n1 n2 time label
     # 1 RT -> layer name

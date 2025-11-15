@@ -162,6 +162,24 @@ def signtest(
 
 # SIGNEDRANK
 def heaviside(X):
+    """Compute the Heaviside step function.
+
+    The Heaviside function returns 1 for positive values, 0.5 for zero, and 0 for
+    negative values. This is used in signed-rank tests for Bayesian comparisons.
+
+    Args:
+        X: Input array or scalar
+
+    Returns:
+        np.ndarray: Array with same shape as X containing:
+            - 1.0 where X > 0
+            - 0.5 where X == 0
+            - 0.0 where X < 0
+
+    Examples:
+        >>> heaviside(np.array([-1, 0, 1, 2]))
+        array([0. , 0.5, 1. , 1. ])
+    """
     Y = np.zeros(X.shape)
     Y[np.where(X > 0)] = 1
     Y[np.where(X == 0)] = 0.5
@@ -264,6 +282,43 @@ def hierarchical(
     verbose=False,
     names=("C1", "C2"),
 ):
+    """Perform hierarchical Bayesian test for comparing algorithms across multiple datasets.
+
+    This test accounts for the hierarchical structure of the data (multiple datasets,
+    each with multiple folds) and correlations due to overlapping training sets.
+
+    Args:
+        diff: Array of differences between classifier scores
+        rope: Width of the region of practical equivalence (ROPE)
+        rho: Correlation between folds (typically around 1/n_folds)
+        upperAlpha: Upper bound for alpha parameter of Gamma prior (default: 2)
+        lowerAlpha: Lower bound for alpha parameter of Gamma prior (default: 1)
+        lowerBeta: Lower bound for beta parameter of Gamma prior (default: 0.01)
+        upperBeta: Upper bound for beta parameter of Gamma prior (default: 0.1)
+        std_upper_bound: Upper bound multiplier for standard deviation prior (default: 1000)
+                        Posterior is insensitive to this if large enough (>100)
+        verbose: Whether to print probability results (default: False)
+        names: Tuple of classifier names for verbose output (default: ("C1", "C2"))
+
+    Returns:
+        Tuple[float, float, float]: (p_left, p_rope, p_right)
+            - p_left: Probability that first classifier is worse
+            - p_rope: Probability that classifiers are practically equivalent
+            - p_right: Probability that first classifier is better
+
+    Notes:
+        - The Gamma distribution parameters control the prior on degrees of freedom
+        - The hierarchical structure models between-dataset and within-dataset variance
+        - Use when comparing algorithms across multiple datasets with cross-validation
+
+    References:
+        - Benavoli, A., Corani, G., & Mangili, F. (2016). Should we really use
+          post-hoc tests based on mean-ranks? The Journal of Machine Learning Research.
+
+    See Also:
+        hierarchical_MC: Monte Carlo sampling version
+        correlated_ttest: Simpler test for single dataset comparisons
+    """
     # upperAlpha, lowerAlpha, upperBeta, lowerBeta, are the upper and lower bound for alpha and beta, which are the parameters of
     # the  Gamma distribution used as a prior for the degress of freedom.
     # std_upper_bound is a constant which multiplies the sample standard deviation, to set the upper limit of the prior on the
@@ -307,6 +362,44 @@ def hierarchical_MC(
     std_upper_bound=1000,
     names=("C1", "C2"),
 ):
+    """Monte Carlo sampling for hierarchical Bayesian test.
+
+    Generates Monte Carlo samples from the posterior distribution for hierarchical
+    comparison of algorithms across multiple datasets with cross-validation.
+
+    Args:
+        diff: Array of differences between classifier scores (shape: n_datasets x n_folds)
+        rope: Width of the region of practical equivalence (ROPE)
+        rho: Correlation between folds due to overlapping training sets
+        upperAlpha: Upper bound for alpha parameter of Gamma prior (default: 2)
+        lowerAlpha: Lower bound for alpha parameter of Gamma prior (default: 1)
+        lowerBeta: Lower bound for beta parameter of Gamma prior (default: 0.01)
+        upperBeta: Upper bound for beta parameter of Gamma prior (default: 0.1)
+        std_upper_bound: Upper bound multiplier for standard deviation prior (default: 1000)
+        names: Tuple of classifier names for identification (default: ("C1", "C2"))
+
+    Returns:
+        np.ndarray: Monte Carlo samples with shape (n_samples, 3)
+            Each row contains [p_left, p_rope, p_right] for one MC sample
+
+    Notes:
+        - Uses PyStan for Bayesian inference with hierarchical model
+        - Data is rescaled by mean standard deviation for numerical stability
+        - Hierarchical structure captures both within-dataset and between-dataset variance
+        - Requires pystan package to be installed
+
+    Implementation:
+        - Uses Stan's NUTS sampler with 4 chains
+        - Each chain runs 100 iterations (including warmup)
+        - Total posterior samples: ~200 after warmup
+
+    See Also:
+        hierarchical: Main function that processes MC samples
+        correlated_ttest_MC: Simpler MC version for single dataset
+
+    Raises:
+        ImportError: If pystan is not installed
+    """
     # upperAlpha, lowerAlpha, upperBeta, lowerBeta, are the upper and lower bound for alpha and beta, which are the parameters of
     # the  Gamma distribution used as a prior for the degress of freedom.
     # std_upper_bound is a constant which multiplies the sample standard deviation, to set the upper limit of the prior on the
