@@ -43,6 +43,18 @@ from .HINMINE.decomposition import hinmine_get_cycles
 from .HINMINE.IO import load_hinmine_object  # parse the graph
 from .nx_compat import nx_from_scipy_sparse_matrix, nx_info, nx_to_scipy_sparse_matrix
 
+# Optional Ricci curvature support
+try:
+    from py3plex.algorithms.curvature.ollivier_ricci_multilayer import (
+        compute_ollivier_ricci_single_graph,
+        compute_ollivier_ricci_flow_single_graph,
+        RicciBackendNotAvailable,
+    )
+    RICCI_AVAILABLE = True
+except ImportError:
+    RICCI_AVAILABLE = False
+    RicciBackendNotAvailable = None
+
 logger = get_logger(__name__)
 try:
     import tqdm
@@ -2346,6 +2358,382 @@ class multi_layer_network:
                 edge_info[y] = (layer, (u, v))
 
         return H, node_mapping, edge_info
+
+    # ═════════════════════════════════════════════════════════════════════════
+    # Ricci Curvature and Ricci Flow Methods
+    # ═════════════════════════════════════════════════════════════════════════
+
+    def _build_supra_graph(self, weight_attr: str = "weight", interlayer_weight: float = 1.0):
+        """Build a supra-graph representation of the multilayer network.
+        
+        The supra-graph includes both intra-layer edges (from each layer) and
+        inter-layer edges (connecting corresponding nodes across layers).
+        
+        Args:
+            weight_attr: Name of the edge attribute containing weights.
+            interlayer_weight: Weight for inter-layer coupling edges.
+        
+        Returns:
+            NetworkX graph: Supra-graph with nodes labeled as (node_id, layer_id).
+        """
+        if self.core_network is None:
+            raise ValueError("Core network is not initialized. Cannot build supra-graph.")
+        
+        # Create a new graph of the same type (directed/undirected)
+        if self.directed:
+            G_supra = nx.DiGraph()
+        else:
+            G_supra = nx.Graph()
+        
+        # Add all nodes and intra-layer edges from core_network
+        G_supra.add_nodes_from(self.core_network.nodes())
+        
+        # Add intra-layer edges with their weights
+        for u, v, key, data in self.core_network.edges(keys=True, data=True):
+            # For intra-layer edges, u and v should have the same layer
+            if isinstance(u, tuple) and isinstance(v, tuple) and len(u) >= 2 and len(v) >= 2:
+                if u[1] == v[1]:  # Same layer
+                    weight = data.get(weight_attr, 1.0)
+                    if G_supra.has_edge(u, v):
+                        # If edge exists, keep the minimum weight (or sum, depending on semantics)
+                        G_supra[u][v][weight_attr] = min(G_supra[u][v].get(weight_attr, weight), weight)
+                    else:
+                        G_supra.add_edge(u, v, **{weight_attr: weight})
+        
+        # Add inter-layer coupling edges
+        # Group nodes by node_id
+        node_layers = defaultdict(list)
+        for node in G_supra.nodes():
+            if isinstance(node, tuple) and len(node) >= 2:
+                node_id, layer = node[0], node[1]
+                node_layers[node_id].append(layer)
+        
+        # Add inter-layer edges between same nodes in different layers
+        for node_id, layers in node_layers.items():
+            if len(layers) > 1:
+                # Add edges between all pairs of layers for this node
+                for i, layer1 in enumerate(layers):
+                    for layer2 in layers[i+1:]:
+                        node1 = (node_id, layer1)
+                        node2 = (node_id, layer2)
+                        G_supra.add_edge(node1, node2, **{weight_attr: interlayer_weight})
+        
+        return G_supra
+
+    def compute_ollivier_ricci(
+        self,
+        mode: str = "core",
+        layers: Optional[List[Any]] = None,
+        alpha: float = 0.5,
+        weight_attr: str = "weight",
+        curvature_attr: str = "ricciCurvature",
+        verbose: str = "ERROR",
+        backend_kwargs: Optional[Dict[str, Any]] = None,
+        inplace: bool = True,
+        interlayer_weight: float = 1.0,
+    ) -> Dict[str, Any]:
+        """Compute Ollivier-Ricci curvature on the multilayer network.
+        
+        This method provides flexible computation of Ollivier-Ricci curvature
+        at different levels of the multilayer network:
+        
+        - **core mode**: Compute curvature on the aggregated (flattened) network
+        - **layers mode**: Compute curvature separately for each layer
+        - **supra mode**: Compute curvature on the full supra-graph including
+          both intra-layer and inter-layer edges
+        
+        Args:
+            mode: Scope of computation. Options: "core", "layers", "supra".
+            layers: List of layer identifiers to process (only for mode="layers").
+                If None, all layers are processed.
+            alpha: Ollivier-Ricci parameter in [0, 1] controlling the mass
+                distribution. Default: 0.5.
+            weight_attr: Name of edge attribute containing weights. Default: "weight".
+            curvature_attr: Name of edge attribute to store curvature values.
+                Default: "ricciCurvature".
+            verbose: Verbosity level. Options: "INFO", "DEBUG", "ERROR". Default: "ERROR".
+            backend_kwargs: Additional keyword arguments for OllivierRicci constructor.
+            inplace: If True, update internal graphs. If False, return new graphs
+                without modifying the network. Default: True.
+            interlayer_weight: Weight for inter-layer coupling edges (only for
+                mode="supra"). Default: 1.0.
+        
+        Returns:
+            Dictionary mapping scope identifiers to NetworkX graphs with computed
+            curvatures:
+            - mode="core": {"core": graph_with_curvature}
+            - mode="layers": {layer_id: graph_with_curvature, ...}
+            - mode="supra": {"supra": supra_graph_with_curvature}
+        
+        Raises:
+            RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
+            ValueError: If mode is invalid or layers contains invalid identifiers.
+        
+        Examples:
+            >>> from py3plex.core import multinet
+            >>> net = multinet.multi_layer_network()
+            >>> net.add_edges([
+            ...     ['A', 'layer1', 'B', 'layer1', 1],
+            ...     ['B', 'layer1', 'C', 'layer1', 1],
+            ... ], input_type="list")
+            >>> 
+            >>> # Compute on aggregated network
+            >>> result = net.compute_ollivier_ricci(mode="core")
+            >>> 
+            >>> # Compute per layer
+            >>> result = net.compute_ollivier_ricci(mode="layers")
+            >>> 
+            >>> # Compute on supra-graph
+            >>> result = net.compute_ollivier_ricci(mode="supra", inplace=False)
+        """
+        if not RICCI_AVAILABLE:
+            raise RicciBackendNotAvailable()
+        
+        if mode not in ["core", "layers", "supra"]:
+            raise ValueError(f"Invalid mode: {mode}. Must be 'core', 'layers', or 'supra'.")
+        
+        if self.core_network is None:
+            raise ValueError("Core network is not initialized.")
+        
+        result = {}
+        
+        if mode == "core":
+            # Compute on aggregated core network
+            G_curved = compute_ollivier_ricci_single_graph(
+                self.core_network,
+                alpha=alpha,
+                weight_attr=weight_attr,
+                curvature_attr=curvature_attr,
+                verbose=verbose,
+                backend_kwargs=backend_kwargs,
+            )
+            if inplace:
+                self.core_network = G_curved
+            result["core"] = G_curved
+        
+        elif mode == "layers":
+            # Get all unique layers
+            all_layers = set([n[1] for n in self.core_network.nodes() 
+                            if isinstance(n, tuple) and len(n) >= 2])
+            
+            # Determine which layers to process
+            if layers is None:
+                layers_to_process = all_layers
+            else:
+                layers_to_process = set(layers)
+                # Validate layer identifiers
+                invalid_layers = layers_to_process - all_layers
+                if invalid_layers:
+                    raise ValueError(f"Invalid layer identifiers: {invalid_layers}")
+            
+            # Process each layer
+            for layer in layers_to_process:
+                # Get subnetwork for this layer
+                subnet = self.subnetwork([layer], subset_by='layers')
+                
+                # Compute curvature
+                G_curved = compute_ollivier_ricci_single_graph(
+                    subnet.core_network,
+                    alpha=alpha,
+                    weight_attr=weight_attr,
+                    curvature_attr=curvature_attr,
+                    verbose=verbose,
+                    backend_kwargs=backend_kwargs,
+                )
+                
+                if inplace:
+                    # Update edges in the main core_network
+                    for u, v, data in G_curved.edges(data=True):
+                        if curvature_attr in data:
+                            # Update curvature in the core network
+                            if self.core_network.has_edge(u, v):
+                                for key in self.core_network[u][v]:
+                                    self.core_network[u][v][key][curvature_attr] = data[curvature_attr]
+                
+                result[layer] = G_curved
+        
+        elif mode == "supra":
+            # Build supra-graph
+            G_supra = self._build_supra_graph(
+                weight_attr=weight_attr,
+                interlayer_weight=interlayer_weight
+            )
+            
+            # Compute curvature on supra-graph
+            G_supra_curved = compute_ollivier_ricci_single_graph(
+                G_supra,
+                alpha=alpha,
+                weight_attr=weight_attr,
+                curvature_attr=curvature_attr,
+                verbose=verbose,
+                backend_kwargs=backend_kwargs,
+            )
+            
+            # Note: For supra mode, we don't update core_network even if inplace=True,
+            # as the supra-graph is a different representation
+            result["supra"] = G_supra_curved
+        
+        return result
+
+    def compute_ollivier_ricci_flow(
+        self,
+        mode: str = "core",
+        layers: Optional[List[Any]] = None,
+        alpha: float = 0.5,
+        iterations: int = 10,
+        method: str = "OTD",
+        weight_attr: str = "weight",
+        curvature_attr: str = "ricciCurvature",
+        verbose: str = "ERROR",
+        backend_kwargs: Optional[Dict[str, Any]] = None,
+        inplace: bool = True,
+        interlayer_weight: float = 1.0,
+    ) -> Dict[str, Any]:
+        """Compute Ollivier-Ricci flow on the multilayer network.
+        
+        Ricci flow iteratively adjusts edge weights based on their Ricci curvature,
+        effectively revealing and enhancing community structure. After Ricci flow,
+        edges with negative curvature (community boundaries) have reduced weights,
+        while edges with positive curvature have increased weights.
+        
+        Args:
+            mode: Scope of computation. Options: "core", "layers", "supra".
+            layers: List of layer identifiers to process (only for mode="layers").
+                If None, all layers are processed.
+            alpha: Ollivier-Ricci parameter in [0, 1]. Default: 0.5.
+            iterations: Number of Ricci flow iterations. Default: 10.
+            method: Ricci flow method. Options: "OTD" (Optimal Transport Distance,
+                recommended), "ATD" (Average Transport Distance). Default: "OTD".
+            weight_attr: Name of edge attribute containing weights. After Ricci flow,
+                these weights are updated to reflect the flow metric.
+            curvature_attr: Name of edge attribute for curvature values.
+                Default: "ricciCurvature".
+            verbose: Verbosity level. Options: "INFO", "DEBUG", "ERROR". Default: "ERROR".
+            backend_kwargs: Additional keyword arguments for OllivierRicci constructor.
+            inplace: If True, update internal graphs. If False, return new graphs.
+                Default: True.
+            interlayer_weight: Weight for inter-layer coupling edges (only for
+                mode="supra"). Default: 1.0.
+        
+        Returns:
+            Dictionary mapping scope identifiers to NetworkX graphs with Ricci flow
+            applied:
+            - mode="core": {"core": graph_with_flow}
+            - mode="layers": {layer_id: graph_with_flow, ...}
+            - mode="supra": {"supra": supra_graph_with_flow}
+        
+        Raises:
+            RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
+            ValueError: If mode is invalid or layers contains invalid identifiers.
+        
+        Examples:
+            >>> from py3plex.core import multinet
+            >>> net = multinet.multi_layer_network()
+            >>> net.add_edges([
+            ...     ['A', 'layer1', 'B', 'layer1', 1],
+            ...     ['B', 'layer1', 'C', 'layer1', 1],
+            ... ], input_type="list")
+            >>> 
+            >>> # Apply Ricci flow to aggregated network
+            >>> result = net.compute_ollivier_ricci_flow(mode="core", iterations=20)
+            >>> 
+            >>> # Apply to each layer
+            >>> result = net.compute_ollivier_ricci_flow(mode="layers", iterations=10)
+        """
+        if not RICCI_AVAILABLE:
+            raise RicciBackendNotAvailable()
+        
+        if mode not in ["core", "layers", "supra"]:
+            raise ValueError(f"Invalid mode: {mode}. Must be 'core', 'layers', or 'supra'.")
+        
+        if self.core_network is None:
+            raise ValueError("Core network is not initialized.")
+        
+        result = {}
+        
+        if mode == "core":
+            # Compute Ricci flow on aggregated core network
+            G_flow = compute_ollivier_ricci_flow_single_graph(
+                self.core_network,
+                alpha=alpha,
+                iterations=iterations,
+                method=method,
+                weight_attr=weight_attr,
+                curvature_attr=curvature_attr,
+                verbose=verbose,
+                backend_kwargs=backend_kwargs,
+            )
+            if inplace:
+                self.core_network = G_flow
+            result["core"] = G_flow
+        
+        elif mode == "layers":
+            # Get all unique layers
+            all_layers = set([n[1] for n in self.core_network.nodes() 
+                            if isinstance(n, tuple) and len(n) >= 2])
+            
+            # Determine which layers to process
+            if layers is None:
+                layers_to_process = all_layers
+            else:
+                layers_to_process = set(layers)
+                # Validate layer identifiers
+                invalid_layers = layers_to_process - all_layers
+                if invalid_layers:
+                    raise ValueError(f"Invalid layer identifiers: {invalid_layers}")
+            
+            # Process each layer
+            for layer in layers_to_process:
+                # Get subnetwork for this layer
+                subnet = self.subnetwork([layer], subset_by='layers')
+                
+                # Compute Ricci flow
+                G_flow = compute_ollivier_ricci_flow_single_graph(
+                    subnet.core_network,
+                    alpha=alpha,
+                    iterations=iterations,
+                    method=method,
+                    weight_attr=weight_attr,
+                    curvature_attr=curvature_attr,
+                    verbose=verbose,
+                    backend_kwargs=backend_kwargs,
+                )
+                
+                if inplace:
+                    # Update edges in the main core_network
+                    for u, v, data in G_flow.edges(data=True):
+                        # Update both weight and curvature in the core network
+                        if self.core_network.has_edge(u, v):
+                            for key in self.core_network[u][v]:
+                                if weight_attr in data:
+                                    self.core_network[u][v][key][weight_attr] = data[weight_attr]
+                                if curvature_attr in data:
+                                    self.core_network[u][v][key][curvature_attr] = data[curvature_attr]
+                
+                result[layer] = G_flow
+        
+        elif mode == "supra":
+            # Build supra-graph
+            G_supra = self._build_supra_graph(
+                weight_attr=weight_attr,
+                interlayer_weight=interlayer_weight
+            )
+            
+            # Compute Ricci flow on supra-graph
+            G_supra_flow = compute_ollivier_ricci_flow_single_graph(
+                G_supra,
+                alpha=alpha,
+                iterations=iterations,
+                method=method,
+                weight_attr=weight_attr,
+                curvature_attr=curvature_attr,
+                verbose=verbose,
+                backend_kwargs=backend_kwargs,
+            )
+            
+            result["supra"] = G_supra_flow
+        
+        return result
 
     def from_homogeneous_hypergraph(self, H):
         """
