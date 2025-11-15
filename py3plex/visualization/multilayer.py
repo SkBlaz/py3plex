@@ -1982,11 +1982,16 @@ def draw_multilayer_flow(
                     p1 = [x_u, x_v]
                     p2 = [y_u, y_v]
                     
+                    # Calculate appropriate curve height based on layer distance
+                    layer_distance = abs(y_v - y_u)
+                    # Use smaller curve height to prevent excessive overlap
+                    curve_height = min(0.5, layer_distance * 0.3)
+                    
                     x_curve, y_curve = bezier.draw_bezier(
                         n_layers,
                         p1,
                         p2,
-                        path_height=2,
+                        path_height=curve_height,
                         inversion=False,
                         linemode="both",
                         resolution=0.01

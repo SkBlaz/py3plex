@@ -119,13 +119,28 @@ def create_publication_quality_visualization():
     )
     
     # Add visual enhancements
-    # Draw layer background bands for clear separation
+    # Draw clear rectangular boxes around each layer
     layer_colors = ['#FFE6E6', '#E6F3FF', '#E6FFE6']  # Soft red, blue, green
     y_positions = [0, 2.2, 4.4]  # Match layer_gap
     
     for idx, (y_pos, color) in enumerate(zip(y_positions, layer_colors)):
-        ax.axhspan(y_pos - 0.8, y_pos + 0.8, 
-                  facecolor=color, alpha=0.15, zorder=0, linewidth=0)
+        # Get x extent for this layer
+        layer_nodes = len(graphs[idx].nodes())
+        x_min = -0.5
+        x_max = layer_nodes - 0.5
+        
+        # Draw filled rectangle with border
+        rect = mpatches.Rectangle(
+            (x_min, y_pos - 0.8), 
+            x_max - x_min, 
+            1.6,
+            facecolor=color,
+            edgecolor='#666666',
+            linewidth=2,
+            alpha=0.2,
+            zorder=0
+        )
+        ax.add_patch(rect)
     
     # Add title with better styling
     ax.text(0.5, 1.02, 'Multilayer Flow Visualization', 
