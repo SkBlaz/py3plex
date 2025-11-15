@@ -1890,6 +1890,7 @@ def draw_multilayer_flow(
         ys = []
         colors_list = []
         sizes = []
+        node_list = []  # Keep track of node objects for labeling
         
         for node in nodes:
             key = (layer_idx, node)
@@ -1897,6 +1898,7 @@ def draw_multilayer_flow(
                 x, y = node_positions[key]
                 xs.append(x)
                 ys.append(y)
+                node_list.append(node)
                 
                 activity_norm = node_activities.get(key, 0)
                 colors_list.append(cmap(activity_norm))
@@ -1909,6 +1911,14 @@ def draw_multilayer_flow(
             ax.scatter(xs, ys, s=sizes, c=colors_list, 
                       edgecolors='white', linewidths=1, 
                       alpha=0.9, zorder=3)
+            
+            # Add node labels next to each node
+            for x, y, node in zip(xs, ys, node_list):
+                ax.text(x + 0.15, y, str(node), 
+                       fontsize=8, 
+                       ha='left', va='center',
+                       color='#333333',
+                       zorder=4)
     
     # Draw layer labels
     if labels is not None:

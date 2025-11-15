@@ -111,7 +111,7 @@ def create_publication_quality_visualization():
         ax=ax,
         display=False,
         layer_gap=2.2,          # Tighter spacing to reduce whitespace
-        node_size=200,          # Much larger nodes (was 80)
+        node_size=300,          # Even larger nodes (was 200)
         node_cmap="coolwarm",   # Better contrast colormap
         flow_alpha=0.6,         # More visible flows (was 0.4)
         flow_min_width=1.5,     # Thicker minimum (was 0.5)
