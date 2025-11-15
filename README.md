@@ -1,5 +1,7 @@
 # *Py3Plex* - a library for analysis and visualization of multilayer networks
 
+![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
+
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 [![Examples](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml)
 [![Tutorial](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml)
@@ -16,8 +18,6 @@
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
 *For LLMs and AI assistants:* See [LLM.md](./LLM.md) for a comprehensive guide including quick start, API reference, usage patterns, and FAQ.
-
-![Customization](example_images/part1.png)
 ## Getting Started
 
 ### Installation (Git-Only Method)
