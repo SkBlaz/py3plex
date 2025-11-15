@@ -46,10 +46,10 @@ def create_mosaic_banner():
         # Row 1: Multilayer visualizations
         "multilayer.png",
         "multilayer_edge_projection_spring.png",
-        "multilayer_radial_with_inter.png",
+        "multilayer_flow.png",
         
         # Row 2: Different layout styles
-        "multilayer_small_multiples_shared.png",
+        "multilayer_radial_with_inter.png",
         "multilayer_supra_heatmap_inter.png",
         "hairball.png",
         
@@ -129,11 +129,11 @@ def create_compact_banner():
     # Select 5-6 most visually striking images for a compact banner
     selected_images = [
         "multilayer.png",
+        "multilayer_flow.png",
         "multilayer_edge_projection_spring.png",
         "multilayer_radial_with_inter.png",
         "multilayer_supra_heatmap_inter.png",
         "hairball.png",
-        "communities.png",
     ]
     
     # Create horizontal banner
@@ -197,7 +197,7 @@ def create_showcase_collage():
         (0, 1, 5, 6, "embedding.png", "Node\nEmbeddings"),
         
         # Row 2 - right side
-        (1, 2, 2, 3, "multilayer_small_multiples_shared.png", "Small Multiples\nShared Layout"),
+        (1, 2, 2, 3, "multilayer_flow.png", "Flow Visualization\nAlluvial Style"),
         (1, 2, 3, 4, "multilayer_supra_heatmap_inter.png", "Supra-Adjacency\nHeatmap"),
         (1, 2, 4, 5, "hairball.png", "Complex Network\nVisualization"),
         (1, 2, 5, 6, "temporal.png", "Temporal\nDynamics"),

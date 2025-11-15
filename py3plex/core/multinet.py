@@ -1941,12 +1941,13 @@ class multi_layer_network:
     ):
         """Visualize the multilayer network.
         
-        Supports two visualization styles:
+        Supports multiple visualization styles:
         - 'diagonal': Layer-centric diagonal layout with inter-layer edges
         - 'hairball': Aggregate hairball plot of all layers
+        - 'flow' or 'alluvial': Layered flow visualization with horizontal bands
         
         Args:
-            style: Visualization style ('diagonal' or 'hairball')
+            style: Visualization style ('diagonal', 'hairball', 'flow', or 'alluvial')
             parameters_layers: Custom parameters for layer drawing
             parameters_multiedges: Custom parameters for edge drawing
             show: Show plot immediately
@@ -1967,7 +1968,7 @@ class multi_layer_network:
             Matplotlib axis object
             
         Raises:
-            Exception: If style is not 'diagonal' or 'hairball'
+            Exception: If style is not recognized
             
         Performance Notes:
             For large networks (>500 nodes), visualization performance may degrade:
@@ -2012,10 +2013,38 @@ class multi_layer_network:
             )
         elif style == "hairball":
             return _visualize_hairball_style(self, axis, legend, show)
+        elif style in ("flow", "alluvial"):
+            # Import here to avoid circular dependency
+            from py3plex.visualization.multilayer import draw_multilayer_flow
+            
+            # Get layers data
+            labels_list, graphs, multilinks = self.get_layers("diagonal")
+            
+            # Extract relevant kwargs for draw_multilayer_flow
+            flow_kwargs = {}
+            if 'node_activity' in locals():
+                flow_kwargs['node_activity'] = locals()['node_activity']
+            if 'layer_gap' in locals():
+                flow_kwargs['layer_gap'] = locals()['layer_gap']
+            if 'node_size' in locals():
+                flow_kwargs['node_size'] = locals()['node_size']
+            if 'node_cmap' in locals():
+                flow_kwargs['node_cmap'] = locals()['node_cmap']
+            if 'flow_alpha' in locals():
+                flow_kwargs['flow_alpha'] = locals()['flow_alpha']
+            
+            return draw_multilayer_flow(
+                graphs,
+                multilinks,
+                labels=labels_list if not no_labels else None,
+                ax=axis,
+                display=show,
+                **flow_kwargs
+            )
         else:
             raise ValueError(
                 f"Invalid visualization style: '{style}'. "
-                f"Expected 'diagonal' or 'hairball'. "
+                f"Expected 'diagonal', 'hairball', 'flow', or 'alluvial'. "
                 f"Example: net.visualize_network(style='diagonal')"
             )
 
