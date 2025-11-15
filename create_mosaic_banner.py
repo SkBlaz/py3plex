@@ -173,50 +173,50 @@ def create_compact_banner():
 
 
 def create_showcase_collage():
-    """Create a sophisticated showcase collage with diagonal layout featured prominently."""
+    """Create a showcase collage with uniform tiles, no spacing, black borders, and descriptions."""
     
     base_dir = "/home/runner/work/py3plex/py3plex/example_images"
     
-    # Create a figure with custom layout emphasizing the diagonal layout
-    fig = plt.figure(figsize=(24, 10), facecolor='#f8f9fa')
+    # Create a figure with white background
+    fig = plt.figure(figsize=(24, 12), facecolor='white')
     
-    # Create a custom grid with tighter spacing and diagonal layout as hero
-    # Reduced spacing: wspace and hspace from 0.08 to 0.03
-    gs = GridSpec(4, 7, figure=fig, wspace=0.03, hspace=0.03,
-                  left=0.01, right=0.99, top=0.96, bottom=0.04)
+    # Create a grid with NO spacing between tiles
+    # 4 rows x 6 columns: diagonal takes 2x2 (4 tiles), others are 1x1
+    gs = GridSpec(4, 6, figure=fig, wspace=0, hspace=0,
+                  left=0.02, right=0.98, top=0.96, bottom=0.02)
     
-    # Define layout: (row_start, row_end, col_start, col_end, image_name)
-    # Featured: diagonal/multilayer visualization takes prominent center-left position
+    # Define layout: (row_start, row_end, col_start, col_end, image_name, description)
     layout = [
-        # HERO: Large diagonal layout visualization (featured prominently)
-        (0, 3, 0, 3, "multilayer.png"),
+        # HERO: Diagonal projection (2x2 = 4 tiles, making it 2x bigger than 1x1 tiles)
+        (0, 2, 0, 2, "multilayer.png", "Diagonal Projection\nMultilayer Layout"),
         
-        # Secondary visualizations - compact grid on right
-        # Top row - different multilayer visualization styles
-        (0, 1, 3, 4, "multilayer_edge_projection_spring.png"),
-        (0, 1, 4, 5, "multilayer_radial_with_inter.png"),
-        (0, 1, 5, 6, "multilayer_small_multiples_shared.png"),
-        (0, 1, 6, 7, "multilayer_supra_heatmap_inter.png"),
+        # Row 1 - right side
+        (0, 1, 2, 3, "multilayer_edge_projection_spring.png", "Spring Layout\nEdge Projection"),
+        (0, 1, 3, 4, "multilayer_radial_with_inter.png", "Radial Layout\nInter-layer Links"),
+        (0, 1, 4, 5, "communities.png", "Community\nDetection"),
+        (0, 1, 5, 6, "embedding.png", "Node\nEmbeddings"),
         
-        # Middle row - analysis visualizations
-        (1, 2, 3, 4, "communities.png"),
-        (1, 2, 4, 5, "embedding.png"),
-        (1, 2, 5, 6, "hairball.png"),
-        (1, 2, 6, 7, "temporal.png"),
+        # Row 2 - right side
+        (1, 2, 2, 3, "multilayer_small_multiples_shared.png", "Small Multiples\nShared Layout"),
+        (1, 2, 3, 4, "multilayer_supra_heatmap_inter.png", "Supra-Adjacency\nHeatmap"),
+        (1, 2, 4, 5, "hairball.png", "Complex Network\nVisualization"),
+        (1, 2, 5, 6, "temporal.png", "Temporal\nDynamics"),
         
-        # Bottom row - compact secondary images
-        (2, 3, 3, 4, "multilayer_ego_circular.png"),
-        (2, 3, 4, 5, "multilayer_radial_compact.png"),
-        (2, 3, 5, 6, "networkx_wrapper.png"),
-        (2, 3, 6, 7, "spreading.png"),
+        # Row 3 - full width
+        (2, 3, 0, 1, "multilayer_ego_circular.png", "Ego Network\nCircular"),
+        (2, 3, 1, 2, "multilayer_radial_compact.png", "Radial Compact\nLayout"),
+        (2, 3, 2, 3, "networkx_wrapper.png", "NetworkX\nIntegration"),
+        (2, 3, 3, 4, "spreading.png", "Information\nSpreading"),
+        (2, 3, 4, 5, "part1.png", "Layer\nAnalysis"),
+        (2, 3, 5, 6, "part2.png", "Network\nStatistics"),
         
-        # Bottom row spanning full width - wider analysis examples
-        (3, 4, 0, 2, "biomine_community.png"),
-        (3, 4, 2, 4, "complete_analysis.png"),
-        (3, 4, 4, 7, "multiplex.png"),
+        # Row 4 - full width
+        (3, 4, 0, 2, "biomine_community.png", "Biological Network Communities"),
+        (3, 4, 2, 4, "complete_analysis.png", "Complete Network Analysis"),
+        (3, 4, 4, 6, "multiplex.png", "Multiplex Network Structure"),
     ]
     
-    for row_start, row_end, col_start, col_end, img_name in layout:
+    for row_start, row_end, col_start, col_end, img_name, description in layout:
         img_path = os.path.join(base_dir, img_name)
         
         if not os.path.exists(img_path):
@@ -227,31 +227,44 @@ def create_showcase_collage():
         
         try:
             img = mpimg.imread(img_path)
-            ax.imshow(img)
-            ax.axis('off')
+            ax.imshow(img, aspect='auto')  # Use 'auto' to fill the tile uniformly
+            ax.axis('on')  # Turn on axis to show borders
             
-            # Add subtle border only for hero image to emphasize it
-            if img_name == "multilayer.png":
-                for spine in ax.spines.values():
-                    spine.set_edgecolor('#0066cc')
-                    spine.set_linewidth(3)
+            # Add BLACK borders to all tiles
+            for spine in ax.spines.values():
+                spine.set_edgecolor('black')
+                spine.set_linewidth(2)
+            
+            # Remove tick marks
+            ax.set_xticks([])
+            ax.set_yticks([])
+            
+            # Add description bubble (text box) at the top of each tile
+            ax.text(0.5, 0.98, description,
+                   transform=ax.transAxes,
+                   fontsize=8 if (row_end - row_start) == 1 else 10,
+                   weight='bold',
+                   ha='center',
+                   va='top',
+                   bbox=dict(boxstyle='round,pad=0.4',
+                           facecolor='white',
+                           edgecolor='black',
+                           linewidth=1.5,
+                           alpha=0.85))
             
         except Exception as e:
             print(f"Error processing {img_path}: {e}")
             ax.axis('off')
     
-    # Add title with emphasis on diagonal layout feature
-    fig.text(0.5, 0.98, 'Py3plex: Multilayer Network Analysis & Visualization',
-             ha='center', va='top', fontsize=20, weight='bold',
+    # Add title
+    fig.text(0.5, 0.99, 'Py3plex: Multilayer Network Analysis & Visualization',
+             ha='center', va='top', fontsize=22, weight='bold',
              color='#212529')
-    fig.text(0.5, 0.965, 'Featuring diagonal projection-based multilayer network visualization',
-             ha='center', va='top', fontsize=11, style='italic',
-             color='#495057')
     
     # Save the showcase
     output_path = os.path.join(base_dir, "py3plex_showcase.png")
     plt.savefig(output_path, dpi=150, bbox_inches='tight',
-                facecolor='#f8f9fa', edgecolor='none')
+                facecolor='white', edgecolor='none')
     print(f"✓ Showcase collage created: {output_path}")
     
     plt.close()
