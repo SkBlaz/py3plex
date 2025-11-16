@@ -1443,12 +1443,12 @@ def plot_radial_layers(
     multilayer_network,
     base_radius: float = 1.0,
     radius_step: float = 1.0,
-    node_size: int = 300,
+    node_size: int = 500,
     draw_inter_layer_edges: bool = True,
     figsize: Tuple[float, float] = (12, 12),
     edge_alpha: float = 0.5,
     draw_layer_bands: bool = True,
-    band_alpha: float = 0.15,
+    band_alpha: float = 0.25,
     **kwargs
 ):
     """Create a radial/concentric visualization with layers as rings.
@@ -1460,12 +1460,12 @@ def plot_radial_layers(
         multilayer_network: A MultiLayerNetwork instance
         base_radius: Radius of the innermost layer
         radius_step: Distance between consecutive layer rings
-        node_size: Size of nodes (default: 300 for better visibility)
+        node_size: Size of nodes (default: 500 for better visibility)
         draw_inter_layer_edges: If True, draw edges between layers
         figsize: Figure size as (width, height) tuple
         edge_alpha: Transparency for edges
         draw_layer_bands: If True, draw semi-transparent circular bands around layers
-        band_alpha: Transparency for layer bands (default: 0.15)
+        band_alpha: Transparency for layer bands (default: 0.25)
         **kwargs: Additional drawing parameters
         
     Returns:
@@ -1543,7 +1543,7 @@ def plot_radial_layers(
     if draw_layer_bands and MATPLOTLIB_PATCHES_AVAILABLE:
         for layer_idx, layer_name in enumerate(layer_names):
             radius = base_radius + layer_idx * radius_step
-            band_width = radius_step * 0.4  # Band extends ±40% of step on each side
+            band_width = radius_step * 0.6  # Band extends ±60% of step for better visibility
             
             if color_palette:
                 layer_color = color_palette(layer_idx / max(len(layer_names) - 1, 1))
