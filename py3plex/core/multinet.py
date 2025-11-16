@@ -960,6 +960,327 @@ class multi_layer_network:
                     for layer, count in sorted(nodes_per_layer.items()):
                         logger.info(f"  Layer '{layer}': {count} nodes")
 
+    def get_fingerprint(self, include_layer_stats: bool = True) -> "pd.DataFrame":
+        """Compute a comprehensive fingerprint of the multilayer network.
+        
+        Returns a pandas DataFrame containing key network statistics that characterize
+        the multilayer network structure. This "fingerprint" provides a compact
+        representation of network properties useful for comparison and analysis.
+        
+        The fingerprint includes:
+        - Basic network metrics (nodes, edges, layers, density)
+        - Layer-specific statistics (per-layer density, nodes, edges)
+        - Inter-layer coupling metrics (when multiple layers exist)
+        - Network-wide properties (clustering, entropy, algebraic connectivity)
+        - Centrality and structural measures
+        
+        Args:
+            include_layer_stats: If True, include per-layer statistics. 
+                                Set to False for large networks to reduce computation time.
+        
+        Returns:
+            pd.DataFrame: DataFrame with statistics as rows, containing columns:
+                         'statistic', 'value', 'description'
+        
+        Examples:
+            >>> from py3plex.core import multinet
+            >>> net = multinet.multi_layer_network(directed=False)
+            >>> net.add_edges([
+            ...     {'source': 'A', 'target': 'B', 'source_type': 'L1', 'target_type': 'L1'},
+            ...     {'source': 'B', 'target': 'C', 'source_type': 'L1', 'target_type': 'L1'},
+            ...     {'source': 'A', 'target': 'C', 'source_type': 'L2', 'target_type': 'L2'}
+            ... ])
+            >>> fingerprint = net.get_fingerprint()
+            >>> print(fingerprint)
+        
+        Notes:
+            - Some statistics may fail for certain network configurations and will be
+              marked as 'N/A' or contain error messages
+            - Computation time increases with network size; use include_layer_stats=False
+              for very large networks
+            - Requires pandas library
+        """
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ImportError(
+                "pandas is required for get_fingerprint(). "
+                "Install it with: pip install pandas"
+            )
+        
+        if self.core_network is None:
+            raise ValueError("Network is empty. Load or create a network first.")
+        
+        # Import statistics module
+        try:
+            from py3plex.algorithms.statistics import multilayer_statistics as mls
+        except ImportError:
+            mls = None
+        
+        fingerprint_data = []
+        
+        # ═════════════════════════════════════════════════════════════════════════
+        # Basic Network Statistics
+        # ═════════════════════════════════════════════════════════════════════════
+        
+        if self.verbose:
+            self.monitor("Computing network fingerprint...")
+        
+        # Get basic counts
+        total_nodes, unique_node_ids, nodes_per_layer = self.get_unique_entity_counts()
+        num_edges = self.core_network.number_of_edges()
+        num_layers = len(nodes_per_layer)
+        
+        fingerprint_data.append({
+            'statistic': 'total_node_layer_pairs',
+            'value': total_nodes,
+            'description': 'Total unique (node, layer) tuples'
+        })
+        
+        fingerprint_data.append({
+            'statistic': 'unique_nodes',
+            'value': unique_node_ids,
+            'description': 'Unique node IDs across all layers'
+        })
+        
+        fingerprint_data.append({
+            'statistic': 'total_edges',
+            'value': num_edges,
+            'description': 'Total edges in the network'
+        })
+        
+        fingerprint_data.append({
+            'statistic': 'num_layers',
+            'value': num_layers,
+            'description': 'Number of layers'
+        })
+        
+        fingerprint_data.append({
+            'statistic': 'is_directed',
+            'value': self.directed,
+            'description': 'Whether the network is directed'
+        })
+        
+        # Overall density
+        if total_nodes > 1:
+            if self.directed:
+                max_edges = total_nodes * (total_nodes - 1)
+            else:
+                max_edges = total_nodes * (total_nodes - 1) / 2
+            overall_density = num_edges / max_edges if max_edges > 0 else 0.0
+        else:
+            overall_density = 0.0
+        
+        fingerprint_data.append({
+            'statistic': 'overall_density',
+            'value': overall_density,
+            'description': 'Network density (edges/possible_edges)'
+        })
+        
+        # ═════════════════════════════════════════════════════════════════════════
+        # Layer-Specific Statistics
+        # ═════════════════════════════════════════════════════════════════════════
+        
+        if include_layer_stats and mls is not None:
+            layer_names = list(nodes_per_layer.keys())
+            
+            # Per-layer density
+            for layer in layer_names:
+                try:
+                    density = mls.layer_density(self, layer)
+                    fingerprint_data.append({
+                        'statistic': f'layer_density_{layer}',
+                        'value': density,
+                        'description': f'Density of layer {layer}'
+                    })
+                except Exception as e:
+                    fingerprint_data.append({
+                        'statistic': f'layer_density_{layer}',
+                        'value': f'Error: {str(e)}',
+                        'description': f'Density of layer {layer}'
+                    })
+            
+            # Nodes per layer
+            for layer, count in nodes_per_layer.items():
+                fingerprint_data.append({
+                    'statistic': f'nodes_in_layer_{layer}',
+                    'value': count,
+                    'description': f'Number of nodes in layer {layer}'
+                })
+            
+            # Count intra-layer and inter-layer edges
+            intra_layer_edges = 0
+            inter_layer_edges = 0
+            
+            for edge in self.get_edges(data=True):
+                (n1, l1), (n2, l2) = edge[0], edge[1]
+                if l1 == l2:
+                    intra_layer_edges += 1
+                else:
+                    inter_layer_edges += 1
+            
+            fingerprint_data.append({
+                'statistic': 'intra_layer_edges',
+                'value': intra_layer_edges,
+                'description': 'Edges within layers'
+            })
+            
+            fingerprint_data.append({
+                'statistic': 'inter_layer_edges',
+                'value': inter_layer_edges,
+                'description': 'Edges between layers'
+            })
+            
+            # Inter-layer coupling for layer pairs
+            if len(layer_names) > 1 and inter_layer_edges > 0:
+                for i, layer_i in enumerate(layer_names):
+                    for layer_j in layer_names[i+1:]:
+                        try:
+                            coupling = mls.inter_layer_coupling_strength(self, layer_i, layer_j)
+                            fingerprint_data.append({
+                                'statistic': f'coupling_{layer_i}_{layer_j}',
+                                'value': coupling,
+                                'description': f'Inter-layer coupling between {layer_i} and {layer_j}'
+                            })
+                        except Exception as e:
+                            fingerprint_data.append({
+                                'statistic': f'coupling_{layer_i}_{layer_j}',
+                                'value': f'Error: {str(e)}',
+                                'description': f'Inter-layer coupling between {layer_i} and {layer_j}'
+                            })
+        
+        # ═════════════════════════════════════════════════════════════════════════
+        # Global Network Properties
+        # ═════════════════════════════════════════════════════════════════════════
+        
+        if mls is not None:
+            # Entropy of multiplexity
+            try:
+                entropy = mls.entropy_of_multiplexity(self)
+                fingerprint_data.append({
+                    'statistic': 'entropy_of_multiplexity',
+                    'value': entropy,
+                    'description': 'Diversity of node layer participation'
+                })
+            except Exception as e:
+                fingerprint_data.append({
+                    'statistic': 'entropy_of_multiplexity',
+                    'value': f'Error: {str(e)}',
+                    'description': 'Diversity of node layer participation'
+                })
+            
+            # Algebraic connectivity (may be slow for large networks)
+            if total_nodes < 1000:  # Only compute for smaller networks
+                try:
+                    alg_conn = mls.algebraic_connectivity(self)
+                    fingerprint_data.append({
+                        'statistic': 'algebraic_connectivity',
+                        'value': alg_conn,
+                        'description': 'Second smallest Laplacian eigenvalue'
+                    })
+                except Exception as e:
+                    fingerprint_data.append({
+                        'statistic': 'algebraic_connectivity',
+                        'value': f'Error: {str(e)}',
+                        'description': 'Second smallest Laplacian eigenvalue'
+                    })
+            
+            # Average node activity
+            try:
+                all_unique_nodes = list({n for n, _ in self.get_nodes()})
+                if len(all_unique_nodes) > 0:
+                    # Sample up to 100 nodes for efficiency
+                    sample_nodes = all_unique_nodes[:min(100, len(all_unique_nodes))]
+                    activities = []
+                    for node in sample_nodes:
+                        try:
+                            activity = mls.node_activity(self, node)
+                            activities.append(activity)
+                        except:
+                            pass
+                    
+                    if activities:
+                        avg_activity = np.mean(activities)
+                        fingerprint_data.append({
+                            'statistic': 'avg_node_activity',
+                            'value': avg_activity,
+                            'description': 'Average node activity (layer participation)'
+                        })
+            except Exception as e:
+                fingerprint_data.append({
+                    'statistic': 'avg_node_activity',
+                    'value': f'Error: {str(e)}',
+                    'description': 'Average node activity (layer participation)'
+                })
+        
+        # ═════════════════════════════════════════════════════════════════════════
+        # NetworkX-based statistics
+        # ═════════════════════════════════════════════════════════════════════════
+        
+        # Average degree
+        try:
+            degrees = [d for n, d in self.core_network.degree()]
+            if degrees:
+                avg_degree = np.mean(degrees)
+                fingerprint_data.append({
+                    'statistic': 'avg_degree',
+                    'value': avg_degree,
+                    'description': 'Average node degree'
+                })
+        except Exception as e:
+            fingerprint_data.append({
+                'statistic': 'avg_degree',
+                'value': f'Error: {str(e)}',
+                'description': 'Average node degree'
+            })
+        
+        # Clustering coefficient (for undirected networks only)
+        if not self.directed and total_nodes < 5000:
+            try:
+                clustering = nx.average_clustering(self.core_network)
+                fingerprint_data.append({
+                    'statistic': 'avg_clustering_coefficient',
+                    'value': clustering,
+                    'description': 'Average clustering coefficient'
+                })
+            except Exception as e:
+                fingerprint_data.append({
+                    'statistic': 'avg_clustering_coefficient',
+                    'value': f'Error: {str(e)}',
+                    'description': 'Average clustering coefficient'
+                })
+        
+        # Number of connected components
+        try:
+            if self.directed:
+                num_components = nx.number_weakly_connected_components(self.core_network)
+                fingerprint_data.append({
+                    'statistic': 'num_weakly_connected_components',
+                    'value': num_components,
+                    'description': 'Number of weakly connected components'
+                })
+            else:
+                num_components = nx.number_connected_components(self.core_network)
+                fingerprint_data.append({
+                    'statistic': 'num_connected_components',
+                    'value': num_components,
+                    'description': 'Number of connected components'
+                })
+        except Exception as e:
+            fingerprint_data.append({
+                'statistic': 'num_components',
+                'value': f'Error: {str(e)}',
+                'description': 'Number of connected components'
+            })
+        
+        # Create DataFrame
+        df = pd.DataFrame(fingerprint_data)
+        
+        if self.verbose:
+            self.monitor(f"Fingerprint computed with {len(fingerprint_data)} statistics")
+        
+        return df
+
     def to_networkx(self) -> nx.Graph:
         """Convert the multilayer network to a NetworkX graph.
         
