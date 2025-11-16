@@ -1636,8 +1636,8 @@ def plot_ego_multilayer(
     layout: str = "spring",
     figsize: Optional[Tuple[float, float]] = None,
     max_cols: int = 3,
-    node_size: int = 100,
-    ego_node_size: int = 300,
+    node_size: int = 500,
+    ego_node_size: int = 1200,
     **kwargs
 ):
     """Create an ego-centric multilayer visualization.
@@ -1727,19 +1727,35 @@ def plot_ego_multilayer(
         
         # Compute layout with better parameters
         if layout == "spring":
-            pos = nx.spring_layout(ego_graph, k=0.5, iterations=50)
+            pos = nx.spring_layout(ego_graph, k=1.2, iterations=100, seed=42)
         elif layout == "circular":
-            pos = nx.circular_layout(ego_graph)
+            # For circular layout, position ego at center and neighbors in a circle
+            if len(ego_graph.nodes()) > 1:
+                pos = {}
+                neighbors = [n for n in ego_graph.nodes() if n != ego]
+                # Place ego at center
+                pos[ego] = np.array([0.5, 0.5])
+                # Place neighbors in circle around ego
+                n_neighbors = len(neighbors)
+                radius = 0.35  # Circle radius
+                for i, node in enumerate(neighbors):
+                    angle = 2 * np.pi * i / n_neighbors
+                    pos[node] = np.array([
+                        0.5 + radius * np.cos(angle),
+                        0.5 + radius * np.sin(angle)
+                    ])
+            else:
+                pos = {ego: np.array([0.5, 0.5])}
         elif layout == "kamada_kawai":
             pos = nx.kamada_kawai_layout(ego_graph)
         else:
-            pos = nx.spring_layout(ego_graph, k=0.5, iterations=50)
+            pos = nx.spring_layout(ego_graph, k=1.2, iterations=100, seed=42)
         
         # Draw edges with improved styling
         nx.draw_networkx_edges(
             ego_graph, pos, ax=ax, 
-            alpha=0.6, width=2, 
-            edge_color='#95a5a6'
+            alpha=0.4, width=3, 
+            edge_color='#34495e'
         )
         
         # Draw regular nodes with improved styling
@@ -1748,16 +1764,16 @@ def plot_ego_multilayer(
             nx.draw_networkx_nodes(
                 ego_graph, pos, nodelist=non_ego_nodes,
                 node_size=node_size, node_color=neighbor_color,
-                edgecolors='white', linewidths=2,
-                alpha=0.85, ax=ax
+                edgecolors='white', linewidths=3,
+                alpha=0.95, ax=ax
             )
         
         # Draw ego node with emphasis and improved styling
         nx.draw_networkx_nodes(
             ego_graph, pos, nodelist=[ego],
             node_size=ego_node_size, node_color=ego_color,
-            edgecolors='white', linewidths=3,
-            alpha=0.95, ax=ax
+            edgecolors='white', linewidths=4,
+            alpha=1.0, ax=ax
         )
         
         # Add labels if requested with improved styling
@@ -1766,7 +1782,7 @@ def plot_ego_multilayer(
             nx.draw_networkx_labels(
                 ego_graph, pos, 
                 labels={ego: str(ego)},
-                ax=ax, font_size=10, 
+                ax=ax, font_size=14, 
                 font_weight='bold',
                 font_color='white'
             )
@@ -1776,14 +1792,15 @@ def plot_ego_multilayer(
                 nx.draw_networkx_labels(
                     ego_graph, pos,
                     labels=other_labels,
-                    ax=ax, font_size=8,
-                    font_color='#2c3e50'
+                    ax=ax, font_size=11,
+                    font_weight='bold',
+                    font_color='white'
                 )
         
         # Add title with improved styling
         ax.set_title(f"Layer {layer_name}\nEgo Node: {ego}",
-                    fontsize=11, fontweight='bold',
-                    pad=10, color='#2c3e50')
+                    fontsize=14, fontweight='bold',
+                    pad=15, color='#2c3e50')
         ax.axis('off')
     
     # Hide unused subplots
@@ -1793,7 +1810,7 @@ def plot_ego_multilayer(
     
     # Add overall title
     fig.suptitle(f"Ego-Centric Network View ({max_depth}-hop neighborhood)",
-                fontsize=13, fontweight='bold', y=0.98, color='#2c3e50')
+                fontsize=16, fontweight='bold', y=0.98, color='#2c3e50')
     
     plt.tight_layout(rect=[0, 0, 1, 0.96])
     return fig

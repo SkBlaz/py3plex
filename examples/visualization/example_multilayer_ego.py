@@ -133,7 +133,7 @@ def main():
     output_dir = "/home/runner/work/py3plex/py3plex/example_images"
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "multilayer_ego_circular.png")
-    fig.savefig(output_path, dpi=150, bbox_inches='tight')
+    fig.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"✓ Saved: {output_path}")
     
     # Example 4: Ego-centric for specific layers only
