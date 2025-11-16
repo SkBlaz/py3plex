@@ -38,6 +38,7 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 
 ## Completed Tasks
 
+✅ **Selftest coverage expanded from 8 to 12 tests (Issue #475)**
 ✅ Add __version__ attribute to py3plex.__init__.py for version detection
 ✅ Document add_nodes() requires dict format with 'source' and 'type' keys
 ✅ Document add_edges() requires dict format with 'source', 'target', and 'layer' keys
