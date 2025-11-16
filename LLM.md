@@ -337,13 +337,13 @@ def test_visualize_minimal_graph_no_crash(temp_dir):
 
 ### High Priority - Core Module Testing
 Increase core/multinet.py test coverage from 32% to 65%
-Add tests for untested layer manipulation methods
-Test edge cases: empty layers, single nodes, disconnected components
-Add property-based tests for graph invariants (node/edge count consistency)
-Test NetworkX conversion roundtrips preserve graph structure
-Add tests for all methods in multi_layer_network class
-Test error handling in core operations
-Add integration tests for complete workflows
+✅ Add tests for untested layer manipulation methods
+✅ Test edge cases: empty layers, single nodes, disconnected components
+✅ Add property-based tests for graph invariants (node/edge count consistency)
+✅ Test NetworkX conversion roundtrips preserve graph structure
+✅ Add tests for all methods in multi_layer_network class
+✅ Test error handling in core operations
+✅ Add integration tests for complete workflows
 
 ### Medium Priority - Visualization Testing
 ✅ Add smoke tests for visualization module (20% → 45% target)
@@ -356,14 +356,14 @@ Add performance tests for large graph visualization
 Test output file generation for different formats (PNG, SVG, PDF)
 
 ### Medium Priority - Algorithm Testing
-Add tests with known-correct algorithm results
-Test community detection algorithms on standard benchmarks
-Add property-based tests for centrality measures
-Test algorithm behavior on edge cases (disconnected graphs, single nodes)
-Add metamorphic tests for algorithm invariants
-Test random walk generation and convergence
-Test SIR dynamics spreading models
-Add tests for embedding generation pipelines
+✅ Add tests with known-correct algorithm results
+✅ Test community detection algorithms on standard benchmarks
+✅ Add property-based tests for centrality measures
+✅ Test algorithm behavior on edge cases (disconnected graphs, single nodes)
+✅ Add metamorphic tests for algorithm invariants
+✅ Test random walk generation and convergence
+✅ Test SIR dynamics spreading models
+Test embedding generation pipelines
 
 ### Medium Priority - I/O and Parser Testing
 ✅ Add validation for malformed edgelist files with clear error messages
