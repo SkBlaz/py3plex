@@ -1564,6 +1564,196 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             traceback.print_exc()
     test_results.append(("Multilayer manipulation", manipulation_status))
 
+    # Test 9: Random generators
+    print("\n9. Testing random generators...")
+    random_gen_status = False
+    try:
+        from py3plex.core import random_generators
+        
+        # Generate a small ER multilayer network
+        np.random.seed(42)
+        random.seed(42)
+        er_network = random_generators.random_multilayer_ER(
+            10,  # nodes
+            2,   # layers
+            0.3, # edge probability
+            directed=False
+        )
+        
+        if er_network and er_network.core_network.number_of_nodes() > 0:
+            print("   [OK] Random ER multilayer network generated")
+            if verbose:
+                print(f"      Nodes: {er_network.core_network.number_of_nodes()}")
+                print(f"      Edges: {er_network.core_network.number_of_edges()}")
+            random_gen_status = True
+        else:
+            print("   [X] Random generator failed: empty network")
+    except Exception as e:
+        print(f"   [X] Random generator failed: {e}")
+        if verbose:
+            traceback.print_exc()
+    test_results.append(("Random generators", random_gen_status))
+
+    # Test 10: NetworkX wrapper
+    print("\n10. Testing NetworkX wrapper...")
+    nx_wrapper_status = False
+    try:
+        from py3plex.core import random_generators
+        
+        # Create a small network
+        np.random.seed(42)
+        random.seed(42)
+        test_network = random_generators.random_multilayer_ER(
+            15,  # nodes
+            2,   # layers
+            0.2, # edge probability
+            directed=False
+        )
+        
+        # Test monoplex_nx_wrapper with degree_centrality
+        centralities = test_network.monoplex_nx_wrapper("degree_centrality")
+        
+        if centralities and len(centralities) > 0:
+            print("   [OK] NetworkX wrapper test passed")
+            if verbose:
+                print(f"      Computed centrality for {len(centralities)} nodes")
+                top_node = max(centralities.items(), key=lambda x: x[1])
+                print(f"      Top node: {top_node[0]} (centrality: {top_node[1]:.4f})")
+            nx_wrapper_status = True
+        else:
+            print("   [X] NetworkX wrapper failed: no centralities computed")
+    except Exception as e:
+        print(f"   [X] NetworkX wrapper failed: {e}")
+        if verbose:
+            traceback.print_exc()
+    test_results.append(("NetworkX wrapper", nx_wrapper_status))
+
+    # Test 11: New I/O system
+    print("\n11. Testing new I/O system...")
+    new_io_status = False
+    try:
+        from py3plex.io import (
+            Edge,
+            Layer,
+            MultiLayerGraph,
+            Node,
+            to_networkx,
+            write,
+            read,
+        )
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Create a simple multilayer graph using new I/O
+            graph = MultiLayerGraph(directed=False)
+            graph.add_layer(Layer(id="layer1"))
+            graph.add_layer(Layer(id="layer2"))
+            
+            for i in range(3):
+                graph.add_node(Node(id=f"node{i}"))
+            
+            # Add edges in both layers
+            graph.add_edge(Edge(src="node0", dst="node1", src_layer="layer1", dst_layer="layer1"))
+            graph.add_edge(Edge(src="node1", dst="node2", src_layer="layer2", dst_layer="layer2"))
+            
+            # Test JSON I/O
+            json_file = Path(tmpdir) / "test.json"
+            write(graph, str(json_file), deterministic=True)
+            loaded_graph = read(str(json_file))
+            
+            # Test NetworkX conversion
+            G = to_networkx(loaded_graph, mode="union")
+            
+            if loaded_graph and len(loaded_graph.nodes) == 3 and G.number_of_nodes() > 0:
+                print("   [OK] New I/O system test passed")
+                if verbose:
+                    print(f"      Nodes: {len(loaded_graph.nodes)}")
+                    print(f"      Edges: {len(loaded_graph.edges)}")
+                    print(f"      Layers: {len(loaded_graph.layers)}")
+                new_io_status = True
+            else:
+                print("   [X] New I/O system failed: incorrect node count")
+    except Exception as e:
+        print(f"   [X] New I/O system failed: {e}")
+        if verbose:
+            traceback.print_exc()
+    test_results.append(("New I/O system", new_io_status))
+
+    # Test 12: Advanced multilayer statistics
+    print("\n12. Testing advanced multilayer statistics...")
+    advanced_stats_status = False
+    try:
+        from py3plex.algorithms.statistics import multilayer_statistics as mls
+        
+        # Create a small test network
+        network = multinet.multi_layer_network(directed=False)
+        
+        # Add edges in two layers
+        network.add_edges([
+            ['Alice', 'social', 'Bob', 'social', 1],
+            ['Bob', 'social', 'Carol', 'social', 1],
+            ['Alice', 'work', 'Carol', 'work', 1],
+        ], input_type='list')
+        
+        # Test multiple statistics
+        stats_tests = []
+        
+        # 1. Node activity
+        try:
+            activity = mls.node_activity(network, 'Alice')
+            if 0.0 <= activity <= 1.0:
+                stats_tests.append("node_activity")
+                if verbose:
+                    print(f"   OK Node activity: {activity:.3f}")
+        except Exception as e:
+            if verbose:
+                print(f"   ! Node activity: {e}")
+        
+        # 2. Edge overlap
+        try:
+            overlap = mls.edge_overlap(network, 'social', 'work')
+            if 0.0 <= overlap <= 1.0:
+                stats_tests.append("edge_overlap")
+                if verbose:
+                    print(f"   OK Edge overlap: {overlap:.3f}")
+        except Exception as e:
+            if verbose:
+                print(f"   ! Edge overlap: {e}")
+        
+        # 3. Layer density
+        try:
+            density = mls.layer_density(network, 'social')
+            if 0.0 <= density <= 1.0:
+                stats_tests.append("layer_density")
+                if verbose:
+                    print(f"   OK Layer density: {density:.3f}")
+        except Exception as e:
+            if verbose:
+                print(f"   ! Layer density: {e}")
+        
+        # 4. Degree vector
+        try:
+            deg_vec = mls.degree_vector(network, 'Alice')
+            if deg_vec and len(deg_vec) >= 0:
+                stats_tests.append("degree_vector")
+                if verbose:
+                    print(f"   OK Degree vector: {deg_vec}")
+        except Exception as e:
+            if verbose:
+                print(f"   ! Degree vector: {e}")
+        
+        if len(stats_tests) >= 3:  # At least 3 of 4 stats should work
+            print("   [OK] Advanced multilayer statistics test passed")
+            if verbose:
+                print(f"      Tested: {', '.join(stats_tests)}")
+            advanced_stats_status = True
+        else:
+            print(f"   [X] Advanced multilayer statistics failed: only {len(stats_tests)}/4 tests passed")
+    except Exception as e:
+        print(f"   [X] Advanced multilayer statistics failed: {e}")
+        if verbose:
+            traceback.print_exc()
+    test_results.append(("Advanced multilayer statistics", advanced_stats_status))
+
     # Performance summary
     elapsed = time.time() - start_time
     print(f"\n{'='*60}")

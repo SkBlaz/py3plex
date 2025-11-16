@@ -961,7 +961,7 @@ class TestCLISelftest:
         assert result == 0
         captured = capsys.readouterr()
         assert "Core dependencies" in captured.out
-        assert "[[OK]]" in captured.out
+        assert "[OK]" in captured.out
 
     def test_selftest_checks_graph_creation(self, capsys):
         """Test that selftest checks graph creation."""
@@ -1006,6 +1006,42 @@ class TestCLISelftest:
         assert "TEST SUMMARY" in captured.out
         assert "Tests passed:" in captured.out
         assert "Time elapsed:" in captured.out
+
+    def test_selftest_checks_random_generators(self, capsys):
+        """Test that selftest checks random generators."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Random generators" in captured.out or "Random ER" in captured.out
+
+    def test_selftest_checks_nx_wrapper(self, capsys):
+        """Test that selftest checks NetworkX wrapper."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "NetworkX wrapper" in captured.out
+
+    def test_selftest_checks_new_io(self, capsys):
+        """Test that selftest checks new I/O system."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "New I/O system" in captured.out
+
+    def test_selftest_checks_advanced_stats(self, capsys):
+        """Test that selftest checks advanced multilayer statistics."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Advanced multilayer statistics" in captured.out
+
+    def test_selftest_all_pass(self, capsys):
+        """Test that all selftest checks pass."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        # Should have 12 tests now (was 8)
+        assert "Tests passed: 12/12" in captured.out
 
 
 class TestCLIQuickstart:
