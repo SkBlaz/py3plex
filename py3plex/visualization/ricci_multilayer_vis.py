@@ -29,6 +29,38 @@ from py3plex.visualization.ricci_layout import ricci_flow_layout_single
 logger = get_logger(__name__)
 
 
+def _extract_layers_from_core(core_network, directed=False):
+    """
+    Extract individual layer graphs from a multilayer core network.
+
+    Args:
+        core_network: NetworkX graph with nodes as (node_id, layer_id) tuples
+        directed: Whether to create directed layer graphs
+
+    Returns:
+        Dictionary mapping layer_id to NetworkX graph
+    """
+    layers = {}
+
+    # Extract layers
+    for node in core_network.nodes():
+        if isinstance(node, tuple) and len(node) == 2:
+            node_id, layer_id = node
+            if layer_id not in layers:
+                layers[layer_id] = nx.DiGraph() if directed else nx.Graph()
+            layers[layer_id].add_node(node_id)
+
+    # Add edges
+    for u, v, data in core_network.edges(data=True):
+        if isinstance(u, tuple) and isinstance(v, tuple):
+            u_id, u_layer = u
+            v_id, v_layer = v
+            if u_layer == v_layer:  # intra-layer edge only
+                layers[u_layer].add_edge(u_id, v_id, **data)
+
+    return layers
+
+
 def visualize_multilayer_ricci_core(
     net,
     alpha: float = 0.5,
@@ -204,12 +236,21 @@ def _compute_node_colors(net, G, color_by, curvature_attr):
 
     if color_by == "layer_overlap":
         # Count number of layers each node appears in
+        # Extract layers from core network
+        layers = _extract_layers_from_core(net.core_network, net.directed)
+
         colors = []
         for node in nodes:
+            # Handle nodes that may be tuples (node_id, layer_id)
+            if isinstance(node, tuple) and len(node) == 2:
+                node_id, _ = node
+            else:
+                node_id = node
+
             count = sum(
                 1
-                for layer_name, layer_graph in net.layer_names.items()
-                if node in layer_graph.nodes()
+                for layer_id, layer_graph in layers.items()
+                if node_id in layer_graph.nodes()
             )
             colors.append(count)
         return np.array(colors)
@@ -415,7 +456,9 @@ def visualize_multilayer_ricci_layers(
 
     # Determine which layers to visualize
     if layers is None:
-        layers = list(net.layer_names.keys())
+        # Extract layer IDs from core network
+        extracted_layers = _extract_layers_from_core(net.core_network, net.directed)
+        layers = list(extracted_layers.keys())
 
     if len(layers) == 0:
         raise ValueError("No layers to visualize.")
@@ -463,8 +506,11 @@ def visualize_multilayer_ricci_layers(
 
     layer_positions = {}
 
+    # Extract layers from core network
+    extracted_layers = _extract_layers_from_core(net.core_network, net.directed)
+
     for idx, layer_id in enumerate(layers):
-        layer_graph = net.layer_names.get(layer_id)
+        layer_graph = extracted_layers.get(layer_id)
         if layer_graph is None or layer_graph.number_of_nodes() == 0:
             logger.warning(f"Layer {layer_id} is empty or missing. Skipping.")
             continue
@@ -731,7 +777,8 @@ def _apply_layer_separation(positions, net, separation):
     """Apply z-axis separation for layers in 3D layout."""
     # Extract layer mapping from node tuples
     layer_to_z = {}
-    layers = list(net.layer_names.keys())
+    extracted_layers = _extract_layers_from_core(net.core_network, net.directed)
+    layers = list(extracted_layers.keys())
     for idx, layer in enumerate(layers):
         layer_to_z[layer] = idx * separation
 
