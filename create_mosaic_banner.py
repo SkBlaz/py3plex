@@ -192,7 +192,7 @@ def create_showcase_collage():
         
         # Row 1 - right side
         (0, 1, 2, 3, "multilayer_edge_projection_spring.png", "Spring Layout\nEdge Projection"),
-        (0, 1, 3, 4, "multilayer_radial_with_inter.png", "Radial Layout\nInter-layer Links"),
+        (0, 1, 3, 4, "multilayer_small_multiples_shared.png", "Small Multiples\nShared Layout"),
         (0, 1, 4, 5, "communities.png", "Community\nDetection"),
         (0, 1, 5, 6, "embedding.png", "Node\nEmbeddings"),
         

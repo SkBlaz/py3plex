@@ -994,10 +994,13 @@ def plot_small_multiples(
     
     # Use a professional color palette
     try:
-        import matplotlib.cm as cm
-        color_palette = cm.get_cmap('Set2')
-    except:
-        color_palette = None
+        color_palette = plt.colormaps.get_cmap('Set2')
+    except (AttributeError, KeyError):
+        try:
+            import matplotlib.cm as cm
+            color_palette = cm.get_cmap('Set2')
+        except:
+            color_palette = None
     
     # Compute shared layout if requested
     if shared_layout:
@@ -1160,12 +1163,19 @@ def plot_edge_colored_projection(
     layer_names = sorted(layers_dict.keys())
     if layer_colors is None:
         try:
-            import matplotlib.cm as cm
-            cmap = cm.get_cmap('tab10')
+            cmap = plt.colormaps.get_cmap('tab10')
+        except (AttributeError, KeyError):
+            try:
+                import matplotlib.cm as cm
+                cmap = cm.get_cmap('tab10')
+            except:
+                cmap = None
+        
+        if cmap:
             layer_colors = {}
             for idx, layer_name in enumerate(layer_names):
                 layer_colors[layer_name] = cmap(idx / max(len(layer_names) - 1, 1))
-        except:
+        else:
             layer_colors = {}
             for idx, layer_name in enumerate(layer_names):
                 layer_colors[layer_name] = colors.colors_default[idx % len(colors.colors_default)]
@@ -1433,10 +1443,12 @@ def plot_radial_layers(
     multilayer_network,
     base_radius: float = 1.0,
     radius_step: float = 1.0,
-    node_size: int = 50,
+    node_size: int = 500,
     draw_inter_layer_edges: bool = True,
     figsize: Tuple[float, float] = (12, 12),
     edge_alpha: float = 0.5,
+    draw_layer_bands: bool = True,
+    band_alpha: float = 0.25,
     **kwargs
 ):
     """Create a radial/concentric visualization with layers as rings.
@@ -1448,10 +1460,12 @@ def plot_radial_layers(
         multilayer_network: A MultiLayerNetwork instance
         base_radius: Radius of the innermost layer
         radius_step: Distance between consecutive layer rings
-        node_size: Size of nodes
+        node_size: Size of nodes (default: 500 for better visibility)
         draw_inter_layer_edges: If True, draw edges between layers
         figsize: Figure size as (width, height) tuple
         edge_alpha: Transparency for edges
+        draw_layer_bands: If True, draw semi-transparent circular bands around layers
+        band_alpha: Transparency for layer bands (default: 0.25)
         **kwargs: Additional drawing parameters
         
     Returns:
@@ -1515,12 +1529,40 @@ def plot_radial_layers(
     fig.patch.set_facecolor('white')
     ax.set_facecolor('#f8f9fa')
     
-    # Use professional color palette
+    # Use professional color palette with improved color handling
     try:
-        import matplotlib.cm as cm
-        color_palette = cm.get_cmap('Set2')
-    except:
-        color_palette = None
+        color_palette = plt.colormaps.get_cmap('Set2')
+    except (AttributeError, KeyError):
+        try:
+            import matplotlib.cm as cm
+            color_palette = cm.get_cmap('Set2')
+        except:
+            color_palette = None
+    
+    # Draw semi-transparent circular bands around each layer for visual grouping
+    if draw_layer_bands and MATPLOTLIB_PATCHES_AVAILABLE:
+        for layer_idx, layer_name in enumerate(layer_names):
+            radius = base_radius + layer_idx * radius_step
+            band_width = radius_step * 0.6  # Band extends ±60% of step for better visibility
+            
+            if color_palette:
+                layer_color = color_palette(layer_idx / max(len(layer_names) - 1, 1))
+            else:
+                layer_color = colors.colors_default[layer_idx % len(colors.colors_default)]
+            
+            # Create a circular band around this layer
+            circle = Circle((0, 0), radius + band_width, 
+                          fill=True, facecolor=layer_color, 
+                          edgecolor='none', alpha=band_alpha, zorder=0)
+            ax.add_patch(circle)
+            
+            # Add inner circle to create ring effect
+            if radius > band_width:
+                inner_circle = Circle((0, 0), radius - band_width,
+                                    fill=True, facecolor=ax.get_facecolor(),
+                                    edgecolor='none', zorder=0.5)
+                ax.add_patch(inner_circle)
+
     
     # Draw intra-layer edges with improved styling
     for layer_idx, layer_name in enumerate(layer_names):
@@ -1535,7 +1577,7 @@ def plot_radial_layers(
                 x_coords = [positions[(u, layer_name)][0], positions[(v, layer_name)][0]]
                 y_coords = [positions[(u, layer_name)][1], positions[(v, layer_name)][1]]
                 ax.plot(x_coords, y_coords, color=layer_color, 
-                       alpha=edge_alpha, linewidth=2, zorder=1)
+                       alpha=edge_alpha, linewidth=2.5, zorder=1)
     
     # Draw inter-layer edges if requested with improved styling
     if draw_inter_layer_edges:
@@ -1547,7 +1589,7 @@ def plot_radial_layers(
                        alpha=edge_alpha * 0.4, linewidth=1, 
                        linestyle='--', zorder=0)
     
-    # Draw nodes with improved styling
+    # Draw nodes with improved styling and bigger sizes
     for layer_idx, layer_name in enumerate(layer_names):
         if color_palette:
             layer_color = color_palette(layer_idx / max(len(layer_names) - 1, 1))
@@ -1557,34 +1599,30 @@ def plot_radial_layers(
         for node in nodes_per_layer[layer_name]:
             if (node, layer_name) in positions:
                 x, y = positions[(node, layer_name)]
-                ax.scatter(x, y, s=node_size * 2, c=[layer_color], 
+                # Draw node with white border for better visibility
+                ax.scatter(x, y, s=node_size, c=[layer_color], 
                           alpha=0.9, edgecolors='white', 
-                          linewidths=2, zorder=2)
+                          linewidths=3, zorder=3)
     
     # Add layer labels with improved styling
     for layer_idx, layer_name in enumerate(layer_names):
         radius = base_radius + layer_idx * radius_step
-        ax.text(0, radius + 0.4, f"Layer {layer_name}", 
-               ha='center', va='bottom', fontsize=11, 
+        ax.text(0, radius + 0.5, f"Layer {layer_name}", 
+               ha='center', va='bottom', fontsize=12, 
                weight='bold', color='#2c3e50',
-               bbox=dict(boxstyle='round,pad=0.5', 
+               bbox=dict(boxstyle='round,pad=0.6', 
                         facecolor='white', 
-                        edgecolor='#cccccc',
-                        alpha=0.9))
+                        edgecolor='#bdc3c7',
+                        alpha=0.95,
+                        linewidth=1.5))
     
     # Add title with improved styling
     ax.set_title("Radial Multilayer Network",
-                fontsize=14, fontweight='bold', 
+                fontsize=16, fontweight='bold', 
                 pad=20, color='#2c3e50')
     
     ax.set_aspect('equal')
     ax.axis('off')
-    
-    plt.tight_layout()
-    return fig
-    ax.set_aspect('equal')
-    ax.axis('off')
-    ax.set_title("Radial Multilayer Visualization")
     
     plt.tight_layout()
     return fig
