@@ -11,7 +11,7 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 **Python Support:** 3.8, 3.9, 3.10, 3.11, 3.12  
 **Repository Stats:**
 - 126 Python source files
-- 70 example scripts across 9 categories
+- 72 example scripts across 9 categories (including 2 new interactive visualization examples)
 - 65+ test files with diverse testing strategies
 - ~80K total lines of code
 - Core multilayer network class: 2,963 lines (py3plex/core/multinet.py)
@@ -22,6 +22,7 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 - NetworkX interoperability and compatibility layer
 - Multiple I/O formats (CSV, JSON, GraphML, edgelist, etc.)
 - Advanced visualization with multiple layout algorithms
+- **Interactive visualization with Plotly (NEW - 2025-11-16)** - Web-based interactive network exploration
 - Community detection (Louvain, Leiden, Infomap)
 - Centrality analysis (degree, betweenness, versatility, multixrank)
 - Random walk and embedding generation
@@ -37,7 +38,16 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 6. Dynamics (random walks, SIR spreading)
 7. Embeddings (node2vec, visualization)
 8. Multilayer operations (incidence encoding, aggregation)
-9. Visualization (animations, layouts, community coloring)
+9. Visualization (animations, layouts, community coloring, **interactive Plotly visualizations**)
+
+**Recent Additions (2025-11-16):**
+- ✅ Interactive visualization support via Plotly
+- ✅ `interactive_hairball_plot()` function updated for modern Plotly API compatibility
+- ✅ New example: `example_interactive_hairball.py` - Basic interactive network visualization
+- ✅ New example: `example_interactive_multilayer.py` - Advanced multilayer interactive visualization
+- ✅ Documentation updated in `visualization_guide.rst` with comprehensive interactive visualization guide
+- ✅ Documentation updated in `visualization.rst` with interactive visualization quick start
+- ✅ Fixed Plotly API compatibility (deprecated `titlefont_size` and `titleside` parameters)
 
 ## Test Coverage Status (Current: ~16%)
 
@@ -309,6 +319,22 @@ def test_visualize_minimal_graph_no_crash(temp_dir):
 
 ## Completed Tasks
 
+### Visualization Enhancements (2025-11-16)
+✅ **Interactive visualization enabled and documented**
+✅ Fixed Plotly API compatibility issues in `interactive_hairball_plot()`
+✅ Updated deprecated Plotly parameters (`titlefont_size` → `title.font.size`, `titleside` → `title.side`)
+✅ Created `examples/visualization/example_interactive_hairball.py` - Basic interactive visualization
+✅ Created `examples/visualization/example_interactive_multilayer.py` - Advanced multilayer interactive visualization
+✅ Updated `docfiles/visualization_guide.rst` with comprehensive interactive visualization documentation
+✅ Updated `docfiles/visualization.rst` with interactive visualization quick start
+✅ Added interactive visualization examples to documentation (hover, zoom, pan, rotate features)
+✅ Added troubleshooting section for interactive visualizations
+✅ Added performance guidelines for interactive visualizations
+✅ Documented Jupyter notebook integration for interactive plots
+✅ Added HTML export and web embedding documentation
+✅ Updated `.gitignore` to exclude generated output files
+
+### Core Features
 ✅ **Selftest coverage expanded from 8 to 12 tests (Issue #475)**
 ✅ Add __version__ attribute to py3plex.__init__.py for version detection
 ✅ Document add_nodes() requires dict format with 'source' and 'type' keys
