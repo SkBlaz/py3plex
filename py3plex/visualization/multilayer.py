@@ -820,9 +820,11 @@ def interactive_hairball_plot(
             "size": 10,
             "colorbar": {
                 "thickness": 15,
-                "title": "Node Connections",
+                "title": {
+                    "text": "Node Connections",
+                    "side": "right"
+                },
                 "xanchor": "left",
-                "titleside": "right",
             },
             "line_width": 2,
         },
@@ -832,8 +834,10 @@ def interactive_hairball_plot(
     fig = go.Figure(
         data=[edge_trace, node_trace],
         layout=go.Layout(
-            title="Interactive relation explorer",
-            titlefont_size=16,
+            title={
+                "text": "Interactive relation explorer",
+                "font": {"size": 16}
+            },
             showlegend=False,
             hovermode="closest",
             margin={"b": 20, "l": 5, "r": 5, "t": 40},
