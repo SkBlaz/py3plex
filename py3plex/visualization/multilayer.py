@@ -994,10 +994,13 @@ def plot_small_multiples(
     
     # Use a professional color palette
     try:
-        import matplotlib.cm as cm
-        color_palette = cm.get_cmap('Set2')
-    except:
-        color_palette = None
+        color_palette = plt.colormaps.get_cmap('Set2')
+    except (AttributeError, KeyError):
+        try:
+            import matplotlib.cm as cm
+            color_palette = cm.get_cmap('Set2')
+        except:
+            color_palette = None
     
     # Compute shared layout if requested
     if shared_layout:
@@ -1160,12 +1163,19 @@ def plot_edge_colored_projection(
     layer_names = sorted(layers_dict.keys())
     if layer_colors is None:
         try:
-            import matplotlib.cm as cm
-            cmap = cm.get_cmap('tab10')
+            cmap = plt.colormaps.get_cmap('tab10')
+        except (AttributeError, KeyError):
+            try:
+                import matplotlib.cm as cm
+                cmap = cm.get_cmap('tab10')
+            except:
+                cmap = None
+        
+        if cmap:
             layer_colors = {}
             for idx, layer_name in enumerate(layer_names):
                 layer_colors[layer_name] = cmap(idx / max(len(layer_names) - 1, 1))
-        except:
+        else:
             layer_colors = {}
             for idx, layer_name in enumerate(layer_names):
                 layer_colors[layer_name] = colors.colors_default[idx % len(colors.colors_default)]
