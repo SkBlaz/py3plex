@@ -2735,6 +2735,168 @@ class multi_layer_network:
         
         return result
 
+    def visualize_ricci_core(
+        self,
+        alpha: float = 0.5,
+        iterations: int = 10,
+        layout_type: str = "mds",
+        dim: int = 2,
+        **kwargs
+    ):
+        """
+        Visualize the aggregated core network using Ricci-flow-based layout.
+        
+        This method is a high-level wrapper for Ricci-flow-based visualization
+        of the core (aggregated) network. It automatically computes Ricci flow
+        if not already done and creates an informative layout that emphasizes
+        geometric structure and communities.
+        
+        Args:
+            alpha: Ollivier-Ricci parameter for flow computation. Default: 0.5.
+            iterations: Number of Ricci flow iterations. Default: 10.
+            layout_type: Layout algorithm ("mds", "spring", "spectral"). Default: "mds".
+            dim: Dimensionality of layout (2 or 3). Default: 2.
+            **kwargs: Additional arguments passed to visualize_multilayer_ricci_core.
+        
+        Returns:
+            Tuple of (figure, axes, positions_dict).
+        
+        Raises:
+            RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
+        
+        Examples:
+            >>> from py3plex.core import multinet
+            >>> net = multinet.multi_layer_network()
+            >>> net.add_edges([
+            ...     ['A', 'layer1', 'B', 'layer1', 1],
+            ...     ['B', 'layer1', 'C', 'layer1', 1],
+            ... ], input_type="list")
+            >>> fig, ax, pos = net.visualize_ricci_core()
+            >>> import matplotlib.pyplot as plt
+            >>> plt.show()
+        
+        See Also:
+            visualize_ricci_layers: Per-layer visualization with Ricci flow
+            visualize_ricci_supra: Supra-graph visualization with Ricci flow
+        """
+        from py3plex.visualization.ricci_multilayer_vis import (
+            visualize_multilayer_ricci_core,
+        )
+        
+        return visualize_multilayer_ricci_core(
+            self,
+            alpha=alpha,
+            iterations=iterations,
+            layout_type=layout_type,
+            dim=dim,
+            **kwargs
+        )
+
+    def visualize_ricci_layers(
+        self,
+        layers: Optional[List[Any]] = None,
+        alpha: float = 0.5,
+        iterations: int = 10,
+        layout_type: str = "mds",
+        share_layout: bool = True,
+        **kwargs
+    ):
+        """
+        Visualize individual layers using Ricci-flow-based layouts.
+        
+        This method creates visualizations of individual layers with layouts
+        derived from Ricci flow. Layers can share a common coordinate system
+        (for easier comparison) or have independent layouts.
+        
+        Args:
+            layers: List of layer identifiers to visualize. If None, uses all layers.
+            alpha: Ollivier-Ricci parameter. Default: 0.5.
+            iterations: Number of Ricci flow iterations. Default: 10.
+            layout_type: Layout algorithm. Default: "mds".
+            share_layout: If True, use shared coordinates across layers. Default: True.
+            **kwargs: Additional arguments passed to visualize_multilayer_ricci_layers.
+        
+        Returns:
+            Tuple of (figure, layer_positions_dict).
+        
+        Raises:
+            RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
+        
+        Examples:
+            >>> fig, pos_dict = net.visualize_ricci_layers(
+            ...     arrangement="grid", share_layout=True
+            ... )
+            >>> import matplotlib.pyplot as plt
+            >>> plt.show()
+        
+        See Also:
+            visualize_ricci_core: Core network visualization with Ricci flow
+            visualize_ricci_supra: Supra-graph visualization with Ricci flow
+        """
+        from py3plex.visualization.ricci_multilayer_vis import (
+            visualize_multilayer_ricci_layers,
+        )
+        
+        return visualize_multilayer_ricci_layers(
+            self,
+            layers=layers,
+            alpha=alpha,
+            iterations=iterations,
+            layout_type=layout_type,
+            share_layout=share_layout,
+            **kwargs
+        )
+
+    def visualize_ricci_supra(
+        self,
+        alpha: float = 0.5,
+        iterations: int = 10,
+        layout_type: str = "mds",
+        dim: int = 2,
+        **kwargs
+    ):
+        """
+        Visualize the full supra-graph using Ricci-flow-based layout.
+        
+        This method visualizes the complete multilayer structure including both
+        intra-layer edges (within layers) and inter-layer edges (coupling between
+        layers) using a layout derived from Ricci flow.
+        
+        Args:
+            alpha: Ollivier-Ricci parameter. Default: 0.5.
+            iterations: Number of Ricci flow iterations. Default: 10.
+            layout_type: Layout algorithm. Default: "mds".
+            dim: Dimensionality (2 or 3). Default: 2.
+            **kwargs: Additional arguments passed to visualize_multilayer_ricci_supra.
+        
+        Returns:
+            Tuple of (figure, axes, positions_dict).
+        
+        Raises:
+            RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
+        
+        Examples:
+            >>> fig, ax, pos = net.visualize_ricci_supra(dim=3)
+            >>> import matplotlib.pyplot as plt
+            >>> plt.show()
+        
+        See Also:
+            visualize_ricci_core: Core network visualization with Ricci flow
+            visualize_ricci_layers: Per-layer visualization with Ricci flow
+        """
+        from py3plex.visualization.ricci_multilayer_vis import (
+            visualize_multilayer_ricci_supra,
+        )
+        
+        return visualize_multilayer_ricci_supra(
+            self,
+            alpha=alpha,
+            iterations=iterations,
+            layout_type=layout_type,
+            dim=dim,
+            **kwargs
+        )
+
     def from_homogeneous_hypergraph(self, H):
         """
         Decode a homogeneous graph created by to_homogeneous_hypergraph.

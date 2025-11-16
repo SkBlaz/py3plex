@@ -204,6 +204,7 @@ Documentation Contents
    algorithm_guide
    algorithm_roadmap
    ricci_curvature
+   ricci_visualization
    performance
    performance_guide
    statistical_comparison
