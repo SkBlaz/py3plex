@@ -30,16 +30,16 @@ def ricci_flow_layout_single(
     weight_attr: str = "weight",
     random_state: Optional[int] = None,
     layout_type: str = "mds",
-    **kwargs
+    **kwargs,
 ) -> Dict[Any, np.ndarray]:
     """
     Compute a layout for a single graph using Ricci flow edge weights.
-    
+
     This function uses edge weights updated by Ricci flow to position nodes
     in a geometric space. The resulting layout emphasizes the geometric
     structure revealed by Ricci flow, making communities and bottlenecks
     more visually apparent.
-    
+
     Args:
         G: NetworkX graph whose edge weights have been updated by Ricci flow.
             The graph should have edge weights in the `weight_attr` attribute.
@@ -56,29 +56,29 @@ def ricci_flow_layout_single(
             - "spectral": Spectral layout adapted to weighted adjacency
             Default: "mds".
         **kwargs: Additional keyword arguments passed to the layout algorithm.
-    
+
     Returns:
         Dictionary mapping nodes to position arrays of shape (dim,).
         For example: {node: np.array([x, y])} or {node: np.array([x, y, z])}.
-    
+
     Raises:
         ValueError: If the graph has no nodes, invalid layout_type, or
             incompatible parameter combinations.
-    
+
     Examples:
         >>> import networkx as nx
         >>> from py3plex.algorithms.curvature import compute_ollivier_ricci_flow_single_graph
         >>> from py3plex.visualization.ricci_layout import ricci_flow_layout_single
-        >>> 
+        >>>
         >>> # Create a graph and apply Ricci flow
         >>> G = nx.karate_club_graph()
         >>> G_flow = compute_ollivier_ricci_flow_single_graph(G, alpha=0.5, iterations=10)
-        >>> 
+        >>>
         >>> # Compute Ricci-flow-based layout
         >>> positions = ricci_flow_layout_single(G_flow, dim=2, layout_type="mds")
-        >>> 
+        >>>
         >>> # positions is a dict: {node: np.array([x, y])}
-    
+
     Notes:
         - MDS layout is recommended for distance-based layouts and works best
           with use_geodesic_distances=True.
@@ -89,43 +89,39 @@ def ricci_flow_layout_single(
     """
     if G.number_of_nodes() == 0:
         raise ValueError("Cannot compute layout for graph with no nodes.")
-    
+
     if dim not in [2, 3]:
         raise ValueError(f"dim must be 2 or 3, got {dim}")
-    
+
     if layout_type not in ["mds", "spring", "spectral"]:
         raise ValueError(
             f"Invalid layout_type: {layout_type}. "
             "Must be 'mds', 'spring', or 'spectral'."
         )
-    
+
     if layout_type == "mds" and not use_geodesic_distances:
         warnings.warn(
             "MDS layout typically works best with use_geodesic_distances=True. "
             "Consider setting use_geodesic_distances=True or using a different layout_type.",
-            UserWarning
+            UserWarning,
         )
-    
+
     # Handle single-node graph
     if G.number_of_nodes() == 1:
         node = list(G.nodes())[0]
         return {node: np.zeros(dim)}
-    
+
     # Ensure all edges have weights
     _ensure_edge_weights(G, weight_attr)
-    
+
     if layout_type == "mds":
         return _compute_mds_layout(
             G, dim, use_geodesic_distances, weight_attr, random_state, **kwargs
         )
     elif layout_type == "spring":
-        return _compute_spring_layout(
-            G, dim, weight_attr, random_state, **kwargs
-        )
+        return _compute_spring_layout(G, dim, weight_attr, random_state, **kwargs)
     elif layout_type == "spectral":
-        return _compute_spectral_layout(
-            G, dim, weight_attr, **kwargs
-        )
+        return _compute_spectral_layout(G, dim, weight_attr, **kwargs)
 
 
 def _ensure_edge_weights(G: nx.Graph, weight_attr: str) -> None:
@@ -141,12 +137,12 @@ def _compute_mds_layout(
     use_geodesic_distances: bool,
     weight_attr: str,
     random_state: Optional[int],
-    **kwargs
+    **kwargs,
 ) -> Dict[Any, np.ndarray]:
     """Compute MDS layout using geodesic or Euclidean distances."""
     nodes = list(G.nodes())
     n = len(nodes)
-    
+
     if use_geodesic_distances:
         # Compute shortest path distances using edge weights
         # Note: NetworkX treats weights as costs for shortest path
@@ -159,7 +155,7 @@ def _compute_mds_layout(
             logger.warning(f"Failed to compute shortest paths: {e}. Using fallback.")
             # Fallback: use unweighted distances
             dist_dict = dict(nx.all_pairs_shortest_path_length(G))
-        
+
         # Build distance matrix
         dist_matrix = np.zeros((n, n))
         max_dist = 0
@@ -170,8 +166,8 @@ def _compute_mds_layout(
                     max_dist = max(max_dist, dist_matrix[i, j])
                 elif i != j:
                     # Nodes not connected: use a large distance
-                    dist_matrix[i, j] = float('inf')
-        
+                    dist_matrix[i, j] = float("inf")
+
         # Replace infinite distances with a large finite value
         # Use 2x the maximum observed distance
         large_dist = max_dist * 2 if max_dist > 0 else 100.0
@@ -179,85 +175,74 @@ def _compute_mds_layout(
     else:
         # Use edge weights directly as dissimilarities
         # For this, we need a complete graph or fill in missing edges
-        dist_matrix = np.ones((n, n)) * np.max([
-            G[u][v].get(weight_attr, 1.0) for u, v in G.edges()
-        ]) * 2
+        dist_matrix = (
+            np.ones((n, n))
+            * np.max([G[u][v].get(weight_attr, 1.0) for u, v in G.edges()])
+            * 2
+        )
         for i, u in enumerate(nodes):
             for j, v in enumerate(nodes):
                 if i == j:
                     dist_matrix[i, j] = 0
                 elif G.has_edge(u, v):
                     dist_matrix[i, j] = G[u][v].get(weight_attr, 1.0)
-    
+
     # Apply MDS
     mds = MDS(
         n_components=dim,
-        dissimilarity='precomputed',
+        dissimilarity="precomputed",
         random_state=random_state,
-        **kwargs
+        **kwargs,
     )
-    
+
     try:
         coords = mds.fit_transform(dist_matrix)
     except Exception as e:
         logger.warning(f"MDS failed: {e}. Falling back to spring layout.")
         return _compute_spring_layout(G, dim, weight_attr, random_state)
-    
+
     # Build position dictionary
     positions = {node: coords[i] for i, node in enumerate(nodes)}
     return positions
 
 
 def _compute_spring_layout(
-    G: nx.Graph,
-    dim: int,
-    weight_attr: str,
-    random_state: Optional[int],
-    **kwargs
+    G: nx.Graph, dim: int, weight_attr: str, random_state: Optional[int], **kwargs
 ) -> Dict[Any, np.ndarray]:
     """Compute weighted spring layout using NetworkX."""
     # NetworkX spring_layout interprets weight as strength (higher = pull closer)
     # Ricci flow increases weights for strong community edges, which is what we want
-    
+
     # Set random seed if provided
     if random_state is not None:
         np.random.seed(random_state)
-    
+
     # spring_layout in NetworkX only supports 2D or 3D
-    pos = nx.spring_layout(
-        G,
-        dim=dim,
-        weight=weight_attr,
-        seed=random_state,
-        **kwargs
-    )
-    
+    pos = nx.spring_layout(G, dim=dim, weight=weight_attr, seed=random_state, **kwargs)
+
     # Convert to numpy arrays
     positions = {node: np.array(coords) for node, coords in pos.items()}
     return positions
 
 
 def _compute_spectral_layout(
-    G: nx.Graph,
-    dim: int,
-    weight_attr: str,
-    **kwargs
+    G: nx.Graph, dim: int, weight_attr: str, **kwargs
 ) -> Dict[Any, np.ndarray]:
     """Compute spectral layout adapted to weighted adjacency."""
     # NetworkX spectral_layout uses Laplacian eigenvectors
     # It respects edge weights
-    
+
     if dim == 3:
         # spectral_layout only supports 2D in NetworkX
         logger.warning("Spectral layout in NetworkX only supports dim=2. Using dim=2.")
         dim = 2
-    
+
     try:
         pos = nx.spectral_layout(G, weight=weight_attr, dim=dim, **kwargs)
     except Exception as e:
         logger.warning(f"Spectral layout failed: {e}. Falling back to spring layout.")
         return _compute_spring_layout(G, dim, weight_attr, None)
-    
+
     # Convert to numpy arrays
     positions = {node: np.array(coords) for node, coords in pos.items()}
     return positions
