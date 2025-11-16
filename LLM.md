@@ -4,6 +4,38 @@
 
 This file tracks development tasks and improvements for py3plex, particularly for LLM-assisted development.
 
+## Selftest Coverage Status
+
+✅ **Selftest enhanced (12 tests, covers main functionality)**
+- Core dependencies (numpy, networkx, matplotlib, scipy, pandas)
+- Basic graph creation and manipulation
+- Visualization module
+- Multilayer graph creation and layer operations
+- Community detection (Louvain)
+- File I/O (GraphML format)
+- Centrality statistics (degree, betweenness, versatility, layer density)
+- Multilayer manipulation (split_to_layers, aggregate_edges, subnetwork)
+- Random generators (Erdős-Rényi multilayer networks)
+- NetworkX wrapper (monoplex_nx_wrapper for centrality)
+- New I/O system (schema-based JSON/CSV with MultiLayerGraph)
+- Advanced multilayer statistics (node_activity, edge_overlap, layer_density, degree_vector)
+
+**Examples covered by selftest:**
+- ✅ basic/example_random_generator.py (random ER multilayer)
+- ✅ basic/example_networkx_wrapper.py (nx wrapper centrality)
+- ✅ basic/example_new_io.py (schema-based I/O)
+- ✅ multilayer/example_vectorized_aggregation.py (aggregate_layers)
+- ✅ multilayer/example_manipulation.py (add/remove nodes/edges)
+- ✅ centrality_and_statistics/example_versatility.py (versatility centrality)
+- ✅ centrality_and_statistics/example_multilayer_statistics.py (17 multilayer stats)
+
+**Not included in selftest (requires external deps or slow):**
+- Community detection examples requiring datasets (SKIP_CI: external_deps)
+- Embeddings examples requiring node2vec binary (SKIP_CI: external_deps)
+- Decomposition examples (SKIP_CI: slow)
+- Dynamics examples requiring datasets (SKIP_CI: external_deps)
+- Visualization examples with rendering (tested via module init check)
+
 ## Completed Tasks
 
 ✅ Add __version__ attribute to py3plex.__init__.py for version detection
