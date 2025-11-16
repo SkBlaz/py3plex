@@ -150,5 +150,3 @@ Resources
 - **Issues**: https://github.com/SkBlaz/py3plex/issues
 - **Examples**: https://github.com/SkBlaz/Py3Plex/tree/master/examples
 
-For comprehensive project context, see `LLM.md <https://github.com/SkBlaz/py3plex/blob/master/LLM.md>`_.
-
