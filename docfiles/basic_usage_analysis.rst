@@ -67,6 +67,56 @@ py3plex networks are compatible with NetworkX:
 
     {'A_layer1': 0.5, 'B_layer1': 1.0, 'C_layer1': 0.5, ...}
 
+Network Fingerprinting
+======================
+
+Generate a comprehensive statistical characterization of your multilayer network:
+
+.. code-block:: python
+
+    # Get comprehensive network statistics as a DataFrame
+    fingerprint = network.get_fingerprint()
+    print(fingerprint)
+    
+    # For large networks, disable detailed layer statistics for speed
+    fingerprint = network.get_fingerprint(include_layer_stats=False)
+    
+    # Export fingerprint to CSV
+    fingerprint.to_csv('network_fingerprint.csv', index=False)
+
+**Expected Output** (example fingerprint):
+
+.. code-block:: text
+
+                      statistic     value                          description
+       total_node_layer_pairs         6       Total unique (node, layer) tuples
+                 unique_nodes         3       Unique node IDs across all layers
+                  total_edges         8              Total edges in the network
+                   num_layers         2                        Number of layers
+                  is_directed     False         Whether the network is directed
+              overall_density  0.533333  Network density (edges/possible_edges)
+            intra_layer_edges         5                     Edges within layers
+            inter_layer_edges         3                    Edges between layers
+      entropy_of_multiplexity  0.970951   Diversity of node layer participation
+                   avg_degree  2.666667                     Average node degree
+    ...
+
+The fingerprint includes:
+
+- **Basic metrics**: nodes, edges, layers, density, directedness
+- **Layer statistics**: per-layer density, node counts, edge counts
+- **Inter-layer metrics**: coupling strength, edge overlap
+- **Network properties**: entropy, clustering, connectivity, activity
+- **Centrality measures**: degree, betweenness (via sampling)
+
+Use cases:
+
+- **Network comparison**: Compare networks using their fingerprints
+- **Feature extraction**: Use as input features for machine learning
+- **Quick diagnostics**: Get a rapid overview of network structure
+- **Documentation**: Generate comprehensive network reports
+- **Classification**: Identify network types based on statistical patterns
+
 For More Examples
 *****************
 

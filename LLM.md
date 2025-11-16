@@ -92,3 +92,57 @@ Add changelog generation automation
 Implement semantic versioning enforcement
 Create backward compatibility policy
 Add deprecation schedule documentation
+
+## Recent Additions
+
+### Network Fingerprinting (2025-11)
+
+✅ **Implemented `get_fingerprint()` method for comprehensive network characterization**
+
+The `get_fingerprint()` method provides a first-class citizen API for obtaining a comprehensive 
+statistical fingerprint of multilayer networks. This addresses the need for quick network 
+characterization and comparison.
+
+**Features:**
+- Returns pandas DataFrame with statistic name, value, and description
+- Includes 20+ key network metrics:
+  - Basic: nodes, edges, layers, density, directedness
+  - Layer-specific: per-layer density, node counts, inter/intra-layer edges
+  - Network-wide: entropy, clustering, connectivity, algebraic properties
+  - Structural: degree distributions, component counts, centrality measures
+- Graceful error handling for statistics that require specific configurations
+- Configurable detail level via `include_layer_stats` parameter
+- Efficient sampling for expensive computations on large networks
+
+**Usage:**
+```python
+from py3plex.core import multinet
+
+# Create or load network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([...])
+
+# Get comprehensive fingerprint
+fingerprint = net.get_fingerprint()
+
+# Export to CSV
+fingerprint.to_csv('fingerprint.csv', index=False)
+```
+
+**Use Cases:**
+- Network comparison and classification
+- Feature extraction for machine learning
+- Quick network diagnostics and reporting
+- Documentation and reproducibility
+- Temporal network analysis (comparing snapshots)
+
+**Documentation:**
+- Added to `basic_usage_analysis.rst`
+- Full example in `examples/multilayer/example_multilayer_fingerprint.py`
+- Comprehensive test suite in `tests/test_fingerprint.py`
+
+**Integration with existing functionality:**
+- Leverages existing statistics from `multilayer_statistics.py`
+- Compatible with all network types (directed/undirected, multilayer/multiplex)
+- Works seamlessly with NetworkX interoperability
+- Respects verbose logging configuration
