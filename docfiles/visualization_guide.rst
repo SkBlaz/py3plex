@@ -428,18 +428,311 @@ Interactive Visualizations
 Using Plotly (Optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-For interactive exploration, use Plotly:
+Py3plex provides interactive visualization capabilities through Plotly, allowing you to explore 
+networks dynamically in your web browser.
+
+**Installation:**
 
 .. code-block:: bash
 
-    # Install optional dependency
+    # Install plotly separately
+    pip install plotly
+    
+    # Or install py3plex with visualization extras
     pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+
+Basic Interactive Hairball Plot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``interactive_hairball_plot`` function creates an interactive 2D network visualization:
 
 .. code-block:: python
 
-    # Coming in future version - check documentation for updates
-    # from py3plex.visualization.plotly_viz import interactive_multilayer
-    # interactive_multilayer(network)
+    import networkx as nx
+    from py3plex.core import random_generators
+    from py3plex.visualization.multilayer import interactive_hairball_plot
+    
+    # Generate a network
+    multilayer_net = random_generators.random_multilayer_ER(50, 3, 0.15, directed=False)
+    
+    # Convert to NetworkX graph
+    network_colors, G = multilayer_net.get_layers(style="hairball")
+    
+    # Compute layout
+    pos = nx.spring_layout(G, iterations=50, seed=42)
+    
+    # Compute node sizes based on degree
+    degrees = dict(G.degree())
+    max_degree = max(degrees.values())
+    node_sizes = [10 + 40 * (degrees[node] / max_degree) for node in G.nodes()]
+    
+    # Create color mapping
+    color_mapping = {node: node_sizes[i] for i, node in enumerate(G.nodes())}
+    
+    # Generate interactive visualization
+    fig = interactive_hairball_plot(
+        G,
+        nsizes=node_sizes,
+        final_color_mapping=color_mapping,
+        pos=pos,
+        colorscale="Viridis"  # Options: Viridis, Rainbow, Blues, Reds, etc.
+    )
+    
+    # Save to HTML file
+    if fig:
+        fig.write_html("network.html")
+        print("Interactive visualization saved to network.html")
+
+**Interactive Features:**
+
+- **Hover**: Move your mouse over nodes to see details
+- **Zoom**: Use mouse wheel to zoom in/out
+- **Pan**: Click and drag to move the view
+- **Select**: Click nodes to highlight connections
+
+**Color Scales Available:**
+
+- ``Viridis``: Perceptually uniform, colorblind-friendly
+- ``Rainbow``: Full color spectrum
+- ``Blues``, ``Reds``, ``Greens``: Single-hue gradients
+- ``RdBu``, ``YlOrRd``: Diverging color schemes
+- ``Jet``, ``Hot``, ``Electric``: High-contrast schemes
+
+Advanced Interactive Multilayer Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For more complex multilayer networks with custom styling:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.visualization.multilayer import interactive_hairball_plot
+    import networkx as nx
+    
+    # Create multilayer network
+    network = multinet.multi_layer_network()
+    
+    # Add nodes to different layers
+    layers = ['social', 'professional', 'family']
+    nodes_per_layer = {
+        'social': ['Alice', 'Bob', 'Charlie', 'David', 'Eve'],
+        'professional': ['Alice', 'Bob', 'Frank', 'Grace', 'Henry'],
+        'family': ['Alice', 'Charlie', 'David', 'Ivan', 'Jane']
+    }
+    
+    for layer in layers:
+        for node in nodes_per_layer[layer]:
+            network.add_nodes([{'source': node, 'type': layer}])
+    
+    # Add edges (example for one layer)
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+    ])
+    
+    # Convert to aggregate graph
+    G = nx.Graph()
+    for node in set(n for layer_nodes in nodes_per_layer.values() for n in layer_nodes):
+        G.add_node(node)
+    
+    # Compute layout and visualize
+    pos = nx.spring_layout(G, seed=42)
+    degrees = dict(G.degree())
+    node_sizes = [20 + 80 * (degrees[node] / max(degrees.values())) for node in G.nodes()]
+    
+    # Assign colors by layer membership
+    layer_colors = {'social': 0, 'professional': 50, 'family': 100}
+    color_mapping = {}
+    for node in G.nodes():
+        # Find primary layer for this node
+        for layer, nodes in nodes_per_layer.items():
+            if node in nodes:
+                color_mapping[node] = layer_colors[layer]
+                break
+    
+    # Create interactive visualization
+    fig = interactive_hairball_plot(G, node_sizes, color_mapping, pos, colorscale="Viridis")
+    
+    # Customize the figure
+    if fig:
+        fig.update_layout(
+            title="Interactive Multilayer Network",
+            hovermode='closest',
+            plot_bgcolor='rgba(240, 240, 240, 0.9)'
+        )
+        fig.write_html("multilayer_network.html")
+
+**Complete Working Examples:**
+
+See the following example scripts in the repository:
+
+- ``examples/visualization/example_interactive_hairball.py`` - Basic interactive visualization
+- ``examples/visualization/example_interactive_multilayer.py`` - Advanced multilayer interactive plot
+
+These examples are standalone and can be run directly:
+
+.. code-block:: bash
+
+    cd examples/visualization
+    python example_interactive_hairball.py
+    # Opens browser with interactive visualization
+
+Jupyter Notebook Integration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Interactive visualizations work seamlessly in Jupyter notebooks:
+
+.. code-block:: python
+
+    # In Jupyter notebook
+    from py3plex.visualization.multilayer import interactive_hairball_plot
+    
+    # ... prepare your graph, positions, etc. ...
+    
+    fig = interactive_hairball_plot(G, node_sizes, color_mapping, pos)
+    
+    # The figure will be displayed inline in the notebook
+    # No need to call fig.show() - it's called automatically
+
+**Notebook Tips:**
+
+1. The interactive plot appears directly in the notebook
+2. All interactive features work in the notebook interface  
+3. Use ``fig.write_html()`` to save for sharing
+4. Interactive plots work in JupyterLab, Jupyter Notebook, and VS Code notebooks
+
+Saving Interactive Visualizations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Save your interactive visualizations for sharing or publishing:
+
+.. code-block:: python
+
+    # Create the figure
+    fig = interactive_hairball_plot(G, node_sizes, color_mapping, pos)
+    
+    # Save as standalone HTML
+    fig.write_html("network.html")
+    
+    # Save as HTML with custom configuration
+    fig.write_html(
+        "network.html",
+        config={
+            'displayModeBar': True,  # Show toolbar
+            'displaylogo': False,     # Hide Plotly logo
+            'modeBarButtonsToRemove': ['pan2d', 'lasso2d']  # Hide specific tools
+        }
+    )
+    
+    # Save as static image (requires kaleido)
+    # pip install kaleido
+    fig.write_image("network.png", width=1200, height=800)
+    fig.write_image("network.pdf")  # Vector format
+
+**HTML File Features:**
+
+- Standalone - works without internet connection
+- No dependencies needed in browser
+- Full interactivity preserved
+- Can be embedded in web pages
+- Works on mobile devices
+
+Embedding in Web Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Embed interactive visualizations in your web applications:
+
+.. code-block:: html
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Network Visualization</title>
+    </head>
+    <body>
+        <h1>My Network Analysis</h1>
+        
+        <!-- Embed the interactive plot -->
+        <iframe src="network.html" width="100%" height="600px" frameborder="0"></iframe>
+        
+        <p>Description of your network...</p>
+    </body>
+    </html>
+
+**Or include the plot div directly:**
+
+.. code-block:: python
+
+    # Generate only the div (not full HTML page)
+    fig_html = fig.to_html(
+        include_plotlyjs='cdn',  # Use CDN for Plotly.js
+        div_id='my-network-plot'
+    )
+    
+    # Use fig_html in your web framework (Flask, Django, etc.)
+
+Troubleshooting Interactive Visualizations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Issue:** Plotly not available
+
+.. code-block:: bash
+
+    # Solution: Install plotly
+    pip install plotly
+
+**Issue:** Figure doesn't show in Jupyter
+
+.. code-block:: python
+
+    # Solution: Call fig.show() explicitly
+    fig = interactive_hairball_plot(G, node_sizes, color_mapping, pos)
+    fig.show()
+
+**Issue:** Slow performance with large networks
+
+.. code-block:: python
+
+    # Solution 1: Sample nodes for interactive view
+    import random
+    sample_nodes = random.sample(list(G.nodes()), min(500, G.number_of_nodes()))
+    G_sample = G.subgraph(sample_nodes)
+    
+    # Solution 2: Use simpler layout
+    pos = nx.random_layout(G)  # Faster than spring_layout
+    
+    # Solution 3: Reduce node sizes and simplify colors
+    node_sizes = [5] * G.number_of_nodes()  # Constant size
+    color_mapping = {node: 0 for node in G.nodes()}  # Single color
+
+**Issue:** HTML file is too large
+
+.. code-block:: python
+
+    # Solution: Reduce data in the plot
+    # 1. Use fewer nodes (sample or filter)
+    # 2. Use constant node sizes instead of varying
+    # 3. Simplify color scheme
+    # 4. Remove edge traces if not needed
+
+Performance Guidelines
+~~~~~~~~~~~~~~~~~~~~~~
+
+**Network Size Recommendations:**
+
+- **< 100 nodes**: All features work smoothly
+- **100-500 nodes**: Good performance, all features
+- **500-1000 nodes**: Usable, may have slight lag
+- **1000-5000 nodes**: Sample nodes or use simplified styling
+- **> 5000 nodes**: Use static visualizations instead
+
+**Optimization Tips:**
+
+1. Use constant node sizes for large networks
+2. Simplify color schemes (single color or discrete categories)
+3. Use ``nx.random_layout()`` instead of ``nx.spring_layout()`` for speed
+4. Sample nodes for interactive exploration
+5. Consider static visualization for very large networks
 
 Jupyter Notebook Integration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

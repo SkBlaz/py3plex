@@ -47,7 +47,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -63,6 +63,8 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
@@ -81,6 +83,13 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -184,18 +193,18 @@
              
   <section id="contributing-to-py3plex">
 <h1>Contributing to py3plex<a class="headerlink" href="#contributing-to-py3plex" title="Link to this heading"></a></h1>
-<p>We <strong>welcome contributions</strong> to py3plex! This guide explains how to contribute effectively.</p>
+<p>We welcome contributions to py3plex. This guide explains how to contribute effectively.</p>
 <section id="ways-to-contribute">
 <h2>Ways to Contribute<a class="headerlink" href="#ways-to-contribute" title="Link to this heading"></a></h2>
 <p>You can contribute in many ways:</p>
 <ul class="simple">
-<li><p><strong>Report bugs</strong> - Open issues for bugs you encounter</p></li>
-<li><p><strong>Suggest features</strong> - Propose new features or improvements</p></li>
-<li><p><strong>Write documentation</strong> - Improve or expand documentation</p></li>
-<li><p><strong>Fix bugs</strong> - Submit pull requests fixing issues</p></li>
-<li><p><strong>Add features</strong> - Implement new algorithms or capabilities</p></li>
-<li><p><strong>Write tests</strong> - Improve test coverage</p></li>
-<li><p><strong>Review PRs</strong> - Help review pull requests from others</p></li>
+<li><p>Report bugs - Open issues for bugs you encounter</p></li>
+<li><p>Suggest features - Propose new features or improvements</p></li>
+<li><p>Write documentation - Improve or expand documentation</p></li>
+<li><p>Fix bugs - Submit pull requests fixing issues</p></li>
+<li><p>Add features - Implement new algorithms or capabilities</p></li>
+<li><p>Write tests - Improve test coverage</p></li>
+<li><p>Review PRs - Help review pull requests from others</p></li>
 </ul>
 </section>
 <section id="getting-started">
@@ -219,7 +228,7 @@
 </section>
 <section id="development-setup">
 <h3>Development Setup<a class="headerlink" href="#development-setup" title="Link to this heading"></a></h3>
-<p>Install in <strong>development mode</strong> with all dependencies:</p>
+<p>Install in development mode with all dependencies:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create virtual environment</span>
 python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
 <span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
@@ -230,10 +239,10 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </div>
 <p>This installs:</p>
 <ul class="simple">
-<li><p><strong>Core dependencies</strong></p></li>
-<li><p><strong>Testing tools</strong> (pytest, coverage)</p></li>
-<li><p><strong>Linting tools</strong> (black, ruff, isort, mypy)</p></li>
-<li><p><strong>Documentation tools</strong> (sphinx)</p></li>
+<li><p>Core dependencies</p></li>
+<li><p>Testing tools (pytest, coverage)</p></li>
+<li><p>Linting tools (black, ruff, isort, mypy)</p></li>
+<li><p>Documentation tools (sphinx)</p></li>
 </ul>
 </section>
 </section>
@@ -241,7 +250,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h2>
 <section id="create-a-branch">
 <h3>Create a Branch<a class="headerlink" href="#create-a-branch" title="Link to this heading"></a></h3>
-<p>Always create a <strong>new branch</strong> for your work:</p>
+<p>Always create a new branch for your work:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-new-feature
 <span class="c1"># or</span>
 git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>fix/issue-123
@@ -251,10 +260,10 @@ git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </
 <section id="make-changes">
 <h3>Make Changes<a class="headerlink" href="#make-changes" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
-<li><p>Write your code following our <strong>coding standards</strong> (see below)</p></li>
-<li><p>Add or update <strong>tests</strong></p></li>
-<li><p>Update <strong>documentation</strong></p></li>
-<li><p>Run <strong>linters</strong> and <strong>tests</strong></p></li>
+<li><p>Write your code following our coding standards (see below)</p></li>
+<li><p>Add or update tests</p></li>
+<li><p>Update documentation</p></li>
+<li><p>Run linters and tests</p></li>
 </ol>
 </section>
 <section id="run-tests">
@@ -281,7 +290,7 @@ mypy<span class="w"> </span>py3plex
 </section>
 <section id="commit-changes">
 <h3>Commit Changes<a class="headerlink" href="#commit-changes" title="Link to this heading"></a></h3>
-<p>Write <strong>clear, descriptive commit messages</strong>:</p>
+<p>Write clear, descriptive commit messages:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
 git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add feature X to support Y</span>
 
@@ -296,12 +305,12 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/my-new-feature
 </pre></div>
 </div>
-<p>Then create a <strong>Pull Request</strong> on GitHub with:</p>
+<p>Then create a Pull Request on GitHub with:</p>
 <ul class="simple">
-<li><p><strong>Clear title</strong> describing the change</p></li>
-<li><p><strong>Description</strong> of what changed and why</p></li>
-<li><p><strong>Reference to related issues</strong> (e.g., “Fixes #123”)</p></li>
-<li><p><strong>Screenshots</strong> for UI changes</p></li>
+<li><p>Clear title describing the change</p></li>
+<li><p>Description of what changed and why</p></li>
+<li><p>Reference to related issues (e.g., “Fixes #123”)</p></li>
+<li><p>Screenshots for UI changes</p></li>
 </ul>
 </section>
 </section>
@@ -309,12 +318,12 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <h2>Coding Standards<a class="headerlink" href="#coding-standards" title="Link to this heading"></a></h2>
 <section id="code-style">
 <h3>Code Style<a class="headerlink" href="#code-style" title="Link to this heading"></a></h3>
-<p>We follow <strong>PEP 8</strong> with these specifics:</p>
+<p>We follow PEP 8 with these specifics:</p>
 <ul class="simple">
-<li><p><strong>Line length:</strong> 100 characters (not 80)</p></li>
-<li><p><strong>Indentation:</strong> 4 spaces (no tabs)</p></li>
-<li><p><strong>String quotes:</strong> Single quotes preferred (‘text’ not “text”)</p></li>
-<li><p><strong>Imports:</strong> Grouped and sorted (using isort)</p></li>
+<li><p>Line length: 100 characters (not 80)</p></li>
+<li><p>Indentation: 4 spaces (no tabs)</p></li>
+<li><p>String quotes: Single quotes preferred (‘text’ not “text”)</p></li>
+<li><p>Imports: Grouped and sorted (using isort)</p></li>
 </ul>
 <p>Auto-format your code:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>format
@@ -330,10 +339,10 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <section id="naming-conventions">
 <h3>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Functions/variables:</strong> <code class="docutils literal notranslate"><span class="pre">snake_case</span></code></p></li>
-<li><p><strong>Classes:</strong> <code class="docutils literal notranslate"><span class="pre">PascalCase</span></code></p></li>
-<li><p><strong>Constants:</strong> <code class="docutils literal notranslate"><span class="pre">UPPER_SNAKE_CASE</span></code></p></li>
-<li><p><strong>Private members:</strong> <code class="docutils literal notranslate"><span class="pre">_leading_underscore</span></code></p></li>
+<li><p>Functions/variables: <code class="docutils literal notranslate"><span class="pre">snake_case</span></code></p></li>
+<li><p>Classes: <code class="docutils literal notranslate"><span class="pre">PascalCase</span></code></p></li>
+<li><p>Constants: <code class="docutils literal notranslate"><span class="pre">UPPER_SNAKE_CASE</span></code></p></li>
+<li><p>Private members: <code class="docutils literal notranslate"><span class="pre">_leading_underscore</span></code></p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good</span>
 <span class="k">def</span> <span class="nf">compute_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
@@ -349,7 +358,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </section>
 <section id="docstrings">
 <h3>Docstrings<a class="headerlink" href="#docstrings" title="Link to this heading"></a></h3>
-<p>Use <strong>NumPy-style docstrings</strong> for all public functions and classes:</p>
+<p>Use NumPy-style docstrings for all public functions and classes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">multilayer_degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute degree centrality for multilayer network.</span>
@@ -395,7 +404,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </section>
 <section id="type-hints">
 <h3>Type Hints<a class="headerlink" href="#type-hints" title="Link to this heading"></a></h3>
-<p>Add <strong>type hints</strong> to improve code clarity:</p>
+<p>Add type hints to improve code clarity:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">py3plex.core.multinet</span> <span class="kn">import</span> <span class="n">multi_layer_network</span>
 
@@ -413,12 +422,12 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <h2>Testing Guidelines<a class="headerlink" href="#testing-guidelines" title="Link to this heading"></a></h2>
 <section id="test-requirements">
 <h3>Test Requirements<a class="headerlink" href="#test-requirements" title="Link to this heading"></a></h3>
-<p>All new code should include <strong>tests</strong>:</p>
+<p>All new code should include tests:</p>
 <ul class="simple">
-<li><p><strong>Unit tests</strong> for individual functions</p></li>
-<li><p><strong>Integration tests</strong> for workflows</p></li>
-<li><p><strong>Edge cases</strong> for boundary conditions</p></li>
-<li><p><strong>Documentation tests</strong> for examples in docstrings</p></li>
+<li><p>Unit tests for individual functions</p></li>
+<li><p>Integration tests for workflows</p></li>
+<li><p>Edge cases for boundary conditions</p></li>
+<li><p>Documentation tests for examples in docstrings</p></li>
 </ul>
 </section>
 <section id="writing-tests">
@@ -456,7 +465,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </section>
 <section id="test-coverage">
 <h3>Test Coverage<a class="headerlink" href="#test-coverage" title="Link to this heading"></a></h3>
-<p>Aim for <strong>high test coverage</strong>:</p>
+<p>Aim for high test coverage:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run tests with coverage</span>
 pytest<span class="w"> </span>--cov<span class="o">=</span>py3plex<span class="w"> </span>--cov-report<span class="o">=</span>html
 
@@ -466,7 +475,7 @@ open<span class="w"> </span>htmlcov/index.html<span class="w">  </span><span cla
 xdg-open<span class="w"> </span>htmlcov/index.html<span class="w">  </span><span class="c1"># Linux</span>
 </pre></div>
 </div>
-<p>Target: <strong>&gt;80% coverage</strong> for new code</p>
+<p>Target: &gt;80% coverage for new code</p>
 </section>
 </section>
 <section id="documentation">
@@ -494,10 +503,10 @@ open<span class="w"> </span>_build/html/index.html
 <section id="documentation-style">
 <h3>Documentation Style<a class="headerlink" href="#documentation-style" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Clear and concise</strong> - Use simple language</p></li>
-<li><p><strong>Code examples</strong> - Include working examples</p></li>
-<li><p><strong>Cross-references</strong> - Link to related documentation</p></li>
-<li><p><strong>Visual aids</strong> - Add diagrams where helpful</p></li>
+<li><p>Clear and concise - Use simple language</p></li>
+<li><p>Code examples - Include working examples</p></li>
+<li><p>Cross-references - Link to related documentation</p></li>
+<li><p>Visual aids - Add diagrams where helpful</p></li>
 </ul>
 </section>
 </section>
@@ -505,23 +514,23 @@ open<span class="w"> </span>_build/html/index.html
 <h2>Pull Request Guidelines<a class="headerlink" href="#pull-request-guidelines" title="Link to this heading"></a></h2>
 <section id="before-submitting">
 <h3>Before Submitting<a class="headerlink" href="#before-submitting" title="Link to this heading"></a></h3>
-<p>✅ Code follows style guide (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> passes)</p>
-<p>✅ All tests pass (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> passes)</p>
-<p>✅ New code has tests</p>
-<p>✅ Documentation is updated</p>
-<p>✅ Commit messages are clear</p>
-<p>✅ Branch is up to date with main</p>
+<p>[OK] Code follows style guide (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> passes)</p>
+<p>[OK] All tests pass (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> passes)</p>
+<p>[OK] New code has tests</p>
+<p>[OK] Documentation is updated</p>
+<p>[OK] Commit messages are clear</p>
+<p>[OK] Branch is up to date with main</p>
 </section>
 <section id="pr-description">
 <h3>PR Description<a class="headerlink" href="#pr-description" title="Link to this heading"></a></h3>
 <p>Include in your PR description:</p>
 <ul class="simple">
-<li><p><strong>What</strong> changed</p></li>
-<li><p><strong>Why</strong> the change is needed</p></li>
-<li><p><strong>How</strong> you implemented it</p></li>
-<li><p><strong>Testing</strong> done</p></li>
-<li><p><strong>Screenshots</strong> for visual changes</p></li>
-<li><p><strong>Breaking changes</strong> if any</p></li>
+<li><p>What changed</p></li>
+<li><p>Why the change is needed</p></li>
+<li><p>How you implemented it</p></li>
+<li><p>Testing done</p></li>
+<li><p>Screenshots for visual changes</p></li>
+<li><p>Breaking changes if any</p></li>
 </ul>
 <p>Example PR template:</p>
 <div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gu">## Description</span>
@@ -568,14 +577,14 @@ None.
 <h3>Bug Reports<a class="headerlink" href="#bug-reports" title="Link to this heading"></a></h3>
 <p>When reporting bugs, include:</p>
 <ul class="simple">
-<li><p><strong>Description</strong> of the bug</p></li>
-<li><p><strong>Steps to reproduce</strong></p></li>
-<li><p><strong>Expected behavior</strong></p></li>
-<li><p><strong>Actual behavior</strong></p></li>
-<li><p><strong>Python version</strong> (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--version</span></code>)</p></li>
-<li><p><strong>py3plex version</strong></p></li>
-<li><p><strong>Operating system</strong></p></li>
-<li><p><strong>Minimal code example</strong></p></li>
+<li><p>Description of the bug</p></li>
+<li><p>Steps to reproduce</p></li>
+<li><p>Expected behavior</p></li>
+<li><p>Actual behavior</p></li>
+<li><p>Python version (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--version</span></code>)</p></li>
+<li><p>py3plex version</p></li>
+<li><p>Operating system</p></li>
+<li><p>Minimal code example</p></li>
 </ul>
 <p>Example:</p>
 <div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gu">## Bug Description</span>
@@ -611,10 +620,10 @@ Returns -0.5
 <h3>Feature Requests<a class="headerlink" href="#feature-requests" title="Link to this heading"></a></h3>
 <p>For feature requests, describe:</p>
 <ul class="simple">
-<li><p><strong>Use case</strong> - What problem does it solve?</p></li>
-<li><p><strong>Proposed solution</strong> - How should it work?</p></li>
-<li><p><strong>Alternatives</strong> - Other approaches considered</p></li>
-<li><p><strong>Additional context</strong> - Examples, papers, etc.</p></li>
+<li><p>Use case - What problem does it solve?</p></li>
+<li><p>Proposed solution - How should it work?</p></li>
+<li><p>Alternatives - Other approaches considered</p></li>
+<li><p>Additional context - Examples, papers, etc.</p></li>
 </ul>
 </section>
 </section>
@@ -644,9 +653,9 @@ Returns -0.5
 <section id="getting-help">
 <h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Questions:</strong> Open a GitHub Discussion</p></li>
-<li><p><strong>Chat:</strong> Join our community chat (link in README)</p></li>
-<li><p><strong>Email:</strong> Contact maintainers at <a class="reference external" href="mailto:blaz&#46;skrlj&#37;&#52;&#48;ijs&#46;si">blaz<span>&#46;</span>skrlj<span>&#64;</span>ijs<span>&#46;</span>si</a></p></li>
+<li><p>Questions: Open a GitHub Discussion</p></li>
+<li><p>Chat: Join our community chat (link in README)</p></li>
+<li><p>Email: Contact maintainers at <a class="reference external" href="mailto:blaz&#46;skrlj&#37;&#52;&#48;ijs&#46;si">blaz<span>&#46;</span>skrlj<span>&#64;</span>ijs<span>&#46;</span>si</a></p></li>
 </ul>
 </section>
 <section id="next-steps">
@@ -657,7 +666,7 @@ Returns -0.5
 <li><p>Browse <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">existing issues</a></p></li>
 <li><p>Check <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">good first issues</a></p></li>
 </ul>
-<p>Thank you for contributing to py3plex! 🎉</p>
+<p>Thank you for contributing to py3plex!</p>
 </section>
 </section>
 

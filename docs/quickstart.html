@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="10-Minute Tutorial: Getting Started with Py3plex" href="10min_tutorial.html" />
+    <link rel="next" title="10-Minute Tutorial: Getting Started with py3plex" href="10min_tutorial.html" />
     <link rel="prev" title="Installation and Setup" href="installation.html" /> 
 </head>
 
@@ -96,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -112,6 +112,8 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
@@ -130,6 +132,13 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -181,7 +190,7 @@
              
   <section id="quickstart-guide">
 <h1>Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Link to this heading"></a></h1>
-<p>This guide gets you started with py3plex quickly. For a more comprehensive introduction, see the <a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with Py3plex</span></a>.</p>
+<p>This guide gets you started with py3plex quickly. For a more comprehensive introduction, see the <a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with py3plex</span></a>.</p>
 <section id="quick-start-with-docker">
 <h2>Quick Start with Docker<a class="headerlink" href="#quick-start-with-docker" title="Link to this heading"></a></h2>
 <p>If you prefer using Docker, you can get started immediately without installing Python dependencies:</p>
@@ -206,7 +215,7 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 </section>
 <section id="creating-your-first-multilayer-network">
 <h2>Creating Your First Multilayer Network<a class="headerlink" href="#creating-your-first-multilayer-network" title="Link to this heading"></a></h2>
-<p>Let’s create a <strong>simple multilayer network</strong> from scratch:</p>
+<p>Create a simple multilayer network from scratch:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a new multilayer network</span>
@@ -241,7 +250,7 @@ Nodes per layer:
 <p>py3plex supports multiple input formats:</p>
 <section id="from-edge-list">
 <h3>From Edge List<a class="headerlink" href="#from-edge-list" title="Link to this heading"></a></h3>
-<p><strong>Load from a simple edge list:</strong></p>
+<p>Load from a simple edge list:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load from a simple edge list</span>
@@ -257,7 +266,7 @@ Nodes per layer:
 </section>
 <section id="from-multilayer-edge-list">
 <h3>From Multilayer Edge List<a class="headerlink" href="#from-multilayer-edge-list" title="Link to this heading"></a></h3>
-<p><strong>Load from multilayer edge list</strong> (source target layer format):</p>
+<p>Load from multilayer edge list (source target layer format):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load from multilayer edge list (source target layer format)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span>
@@ -280,11 +289,11 @@ Nodes per layer:
 <section id="supported-formats">
 <h3>Supported Formats<a class="headerlink" href="#supported-formats" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">edgelist</span></code> - <strong>Simple source-target pairs</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> - <strong>Source, target, layer</strong> format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gpickle</span></code> - <strong>NetworkX pickle</strong> format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gml</span></code> - <strong>Graph Modeling Language</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">graphml</span></code> - <strong>GraphML XML</strong> format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edgelist</span></code> - Simple source-target pairs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> - Source, target, layer format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gpickle</span></code> - NetworkX pickle format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gml</span></code> - Graph Modeling Language</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">graphml</span></code> - GraphML XML format</p></li>
 </ul>
 </section>
 </section>
@@ -340,7 +349,7 @@ Nodes per layer:
 <h2>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h2>
 <section id="using-louvain-algorithm">
 <h3>Using Louvain Algorithm<a class="headerlink" href="#using-louvain-algorithm" title="Link to this heading"></a></h3>
-<p><strong>Detect communities using Louvain</strong> modularity optimization:</p>
+<p>Detect communities using Louvain modularity optimization:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
 
 <span class="c1"># Detect communities using Louvain modularity optimization</span>
@@ -354,7 +363,7 @@ Nodes per layer:
 </section>
 <section id="using-infomap">
 <h3>Using Infomap<a class="headerlink" href="#using-infomap" title="Link to this heading"></a></h3>
-<p><strong>Detect communities using Infomap</strong> (requires infomap binary):</p>
+<p>Detect communities using Infomap (requires infomap binary):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_wrapper</span>
 
 <span class="c1"># Detect communities using Infomap (requires infomap binary)</span>
@@ -367,7 +376,7 @@ Nodes per layer:
 </section>
 <section id="multilayer-modularity">
 <h3>Multilayer Modularity<a class="headerlink" href="#multilayer-modularity" title="Link to this heading"></a></h3>
-<p><strong>Compute multilayer modularity:</strong></p>
+<p>Compute multilayer modularity:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">multilayer_modularity</span> <span class="k">as</span> <span class="n">mlm</span>
 
 <span class="c1"># Compute multilayer modularity</span>
@@ -528,7 +537,7 @@ Nodes per layer:
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <p>After this quickstart, explore:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with Py3plex</span></a> - Comprehensive 10-minute tutorial</p></li>
+<li><p><a class="reference internal" href="10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with py3plex</span></a> - Comprehensive 10-minute tutorial</p></li>
 <li><p><a class="reference internal" href="basic_usage.html"><span class="doc">Quick Start Guide</span></a> - Detailed usage guide</p></li>
 <li><p><a class="reference internal" href="tutorials/multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Multilayer centrality measures</p></li>
 <li><p><a class="reference internal" href="tutorials/community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Advanced community detection</p></li>
@@ -562,7 +571,7 @@ Nodes per layer:
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="installation.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="10min_tutorial.html" class="btn btn-neutral float-right" title="10-Minute Tutorial: Getting Started with Py3plex" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="10min_tutorial.html" class="btn btn-neutral float-right" title="10-Minute Tutorial: Getting Started with py3plex" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

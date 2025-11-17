@@ -1,20 +1,20 @@
 Contributing to py3plex
 =======================
 
-We **welcome contributions** to py3plex! This guide explains how to contribute effectively.
+We welcome contributions to py3plex. This guide explains how to contribute effectively.
 
 Ways to Contribute
 ------------------
 
 You can contribute in many ways:
 
-* **Report bugs** - Open issues for bugs you encounter
-* **Suggest features** - Propose new features or improvements
-* **Write documentation** - Improve or expand documentation
-* **Fix bugs** - Submit pull requests fixing issues
-* **Add features** - Implement new algorithms or capabilities
-* **Write tests** - Improve test coverage
-* **Review PRs** - Help review pull requests from others
+* Report bugs - Open issues for bugs you encounter
+* Suggest features - Propose new features or improvements
+* Write documentation - Improve or expand documentation
+* Fix bugs - Submit pull requests fixing issues
+* Add features - Implement new algorithms or capabilities
+* Write tests - Improve test coverage
+* Review PRs - Help review pull requests from others
 
 Getting Started
 ---------------
@@ -39,7 +39,7 @@ Fork and Clone
 Development Setup
 ~~~~~~~~~~~~~~~~~
 
-Install in **development mode** with all dependencies:
+Install in development mode with all dependencies:
 
 .. code-block:: bash
 
@@ -52,10 +52,10 @@ Install in **development mode** with all dependencies:
 
 This installs:
 
-* **Core dependencies**
-* **Testing tools** (pytest, coverage)
-* **Linting tools** (black, ruff, isort, mypy)
-* **Documentation tools** (sphinx)
+* Core dependencies
+* Testing tools (pytest, coverage)
+* Linting tools (black, ruff, isort, mypy)
+* Documentation tools (sphinx)
 
 Development Workflow
 --------------------
@@ -63,7 +63,7 @@ Development Workflow
 Create a Branch
 ~~~~~~~~~~~~~~~
 
-Always create a **new branch** for your work:
+Always create a new branch for your work:
 
 .. code-block:: bash
 
@@ -74,10 +74,10 @@ Always create a **new branch** for your work:
 Make Changes
 ~~~~~~~~~~~~
 
-1. Write your code following our **coding standards** (see below)
-2. Add or update **tests**
-3. Update **documentation**
-4. Run **linters** and **tests**
+1. Write your code following our coding standards (see below)
+2. Add or update tests
+3. Update documentation
+4. Run linters and tests
 
 Run Tests
 ~~~~~~~~~
@@ -106,7 +106,7 @@ Run Linters
 Commit Changes
 ~~~~~~~~~~~~~~
 
-Write **clear, descriptive commit messages**:
+Write clear, descriptive commit messages:
 
 .. code-block:: bash
 
@@ -124,12 +124,12 @@ Push and Create PR
 
     git push origin feature/my-new-feature
 
-Then create a **Pull Request** on GitHub with:
+Then create a Pull Request on GitHub with:
 
-* **Clear title** describing the change
-* **Description** of what changed and why
-* **Reference to related issues** (e.g., "Fixes #123")
-* **Screenshots** for UI changes
+* Clear title describing the change
+* Description of what changed and why
+* Reference to related issues (e.g., "Fixes #123")
+* Screenshots for UI changes
 
 Coding Standards
 ----------------
@@ -137,12 +137,12 @@ Coding Standards
 Code Style
 ~~~~~~~~~~
 
-We follow **PEP 8** with these specifics:
+We follow PEP 8 with these specifics:
 
-* **Line length:** 100 characters (not 80)
-* **Indentation:** 4 spaces (no tabs)
-* **String quotes:** Single quotes preferred ('text' not "text")
-* **Imports:** Grouped and sorted (using isort)
+* Line length: 100 characters (not 80)
+* Indentation: 4 spaces (no tabs)
+* String quotes: Single quotes preferred ('text' not "text")
+* Imports: Grouped and sorted (using isort)
 
 Auto-format your code:
 
@@ -159,10 +159,10 @@ This runs:
 Naming Conventions
 ~~~~~~~~~~~~~~~~~~
 
-* **Functions/variables:** ``snake_case``
-* **Classes:** ``PascalCase``
-* **Constants:** ``UPPER_SNAKE_CASE``
-* **Private members:** ``_leading_underscore``
+* Functions/variables: ``snake_case``
+* Classes: ``PascalCase``
+* Constants: ``UPPER_SNAKE_CASE``
+* Private members: ``_leading_underscore``
 
 .. code-block:: python
 
@@ -179,7 +179,7 @@ Naming Conventions
 Docstrings
 ~~~~~~~~~~
 
-Use **NumPy-style docstrings** for all public functions and classes:
+Use NumPy-style docstrings for all public functions and classes:
 
 .. code-block:: python
 
@@ -227,7 +227,7 @@ Use **NumPy-style docstrings** for all public functions and classes:
 Type Hints
 ~~~~~~~~~~
 
-Add **type hints** to improve code clarity:
+Add type hints to improve code clarity:
 
 .. code-block:: python
 
@@ -247,12 +247,12 @@ Testing Guidelines
 Test Requirements
 ~~~~~~~~~~~~~~~~~
 
-All new code should include **tests**:
+All new code should include tests:
 
-* **Unit tests** for individual functions
-* **Integration tests** for workflows
-* **Edge cases** for boundary conditions
-* **Documentation tests** for examples in docstrings
+* Unit tests for individual functions
+* Integration tests for workflows
+* Edge cases for boundary conditions
+* Documentation tests for examples in docstrings
 
 Writing Tests
 ~~~~~~~~~~~~~
@@ -292,7 +292,7 @@ Use pytest for testing:
 Test Coverage
 ~~~~~~~~~~~~~
 
-Aim for **high test coverage**:
+Aim for high test coverage:
 
 .. code-block:: bash
 
@@ -304,7 +304,7 @@ Aim for **high test coverage**:
     # or
     xdg-open htmlcov/index.html  # Linux
 
-Target: **>80% coverage** for new code
+Target: >80% coverage for new code
 
 Documentation
 -------------
@@ -333,10 +333,10 @@ Build Documentation
 Documentation Style
 ~~~~~~~~~~~~~~~~~~~
 
-* **Clear and concise** - Use simple language
-* **Code examples** - Include working examples
-* **Cross-references** - Link to related documentation
-* **Visual aids** - Add diagrams where helpful
+* Clear and concise - Use simple language
+* Code examples - Include working examples
+* Cross-references - Link to related documentation
+* Visual aids - Add diagrams where helpful
 
 Pull Request Guidelines
 ------------------------
@@ -361,12 +361,12 @@ PR Description
 
 Include in your PR description:
 
-* **What** changed
-* **Why** the change is needed
-* **How** you implemented it
-* **Testing** done
-* **Screenshots** for visual changes
-* **Breaking changes** if any
+* What changed
+* Why the change is needed
+* How you implemented it
+* Testing done
+* Screenshots for visual changes
+* Breaking changes if any
 
 Example PR template:
 
@@ -414,14 +414,14 @@ Bug Reports
 
 When reporting bugs, include:
 
-* **Description** of the bug
-* **Steps to reproduce**
-* **Expected behavior**
-* **Actual behavior**
-* **Python version** (``python --version``)
-* **py3plex version**
-* **Operating system**
-* **Minimal code example**
+* Description of the bug
+* Steps to reproduce
+* Expected behavior
+* Actual behavior
+* Python version (``python --version``)
+* py3plex version
+* Operating system
+* Minimal code example
 
 Example:
 
@@ -459,10 +459,10 @@ Feature Requests
 
 For feature requests, describe:
 
-* **Use case** - What problem does it solve?
-* **Proposed solution** - How should it work?
-* **Alternatives** - Other approaches considered
-* **Additional context** - Examples, papers, etc.
+* Use case - What problem does it solve?
+* Proposed solution - How should it work?
+* Alternatives - Other approaches considered
+* Additional context - Examples, papers, etc.
 
 Code of Conduct
 ---------------
@@ -491,9 +491,9 @@ Contributors are recognized in:
 Getting Help
 ------------
 
-* **Questions:** Open a GitHub Discussion
-* **Chat:** Join our community chat (link in README)
-* **Email:** Contact maintainers at blaz.skrlj@ijs.si
+* Questions: Open a GitHub Discussion
+* Chat: Join our community chat (link in README)
+* Email: Contact maintainers at blaz.skrlj@ijs.si
 
 Next Steps
 ----------
@@ -503,4 +503,4 @@ Next Steps
 * Browse `existing issues <https://github.com/SkBlaz/py3plex/issues>`_
 * Check `good first issues <https://github.com/SkBlaz/py3plex/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22>`_
 
-Thank you for contributing to py3plex! 
+Thank you for contributing to py3plex!

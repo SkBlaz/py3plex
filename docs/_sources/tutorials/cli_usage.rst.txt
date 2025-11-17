@@ -33,6 +33,27 @@ If you prefer Docker, the CLI is also available via the Docker container:
 
 See :doc:`docker_usage` for complete Docker documentation.
 
+Quick Start
+-----------
+
+**New to py3plex?** Start with these essential commands:
+
+.. code-block:: bash
+
+    # Run an interactive demo with example graph
+    py3plex quickstart
+
+    # Verify installation
+    py3plex selftest
+
+    # Check version
+    py3plex --version
+
+    # Get help
+    py3plex --help
+
+The ``quickstart`` command creates a small demo multilayer network, computes statistics, generates a visualization, and shows you next steps. It's the fastest way to see py3plex in action!
+
 Getting Help
 ------------
 
@@ -51,8 +72,10 @@ The CLI includes built-in documentation for all commands:
 Available Commands
 ------------------
 
-The py3plex CLI provides 8 main commands:
+The py3plex CLI provides these main commands:
 
+* ``quickstart`` - Interactive demo with example graph (recommended for new users)
+* ``selftest`` - Verify installation and core functionality
 * ``create`` - Create new multilayer networks
 * ``load`` - Load and inspect networks
 * ``community`` - Detect communities
@@ -61,6 +84,30 @@ The py3plex CLI provides 8 main commands:
 * ``visualize`` - Create network visualizations
 * ``aggregate`` - Aggregate multilayer networks into single layer
 * ``convert`` - Convert between network formats
+* ``help`` - Show detailed help information
+
+Quick Reference
+~~~~~~~~~~~~~~~
+
+**Essential flags:**
+
+* ``--version`` - Display py3plex version
+* ``--help`` - Display help for any command
+
+**Common workflows:**
+
+.. code-block:: bash
+
+    # Quick demo
+    py3plex quickstart
+
+    # Create → Analyze → Visualize
+    py3plex create --nodes 50 --layers 2 --output net.graphml
+    py3plex load net.graphml --stats
+    py3plex visualize net.graphml --output viz.png
+
+    # Community detection workflow
+    py3plex community net.graphml --algorithm louvain --output communities.json
 
 Creating Networks
 -----------------

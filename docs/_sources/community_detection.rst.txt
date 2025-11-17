@@ -27,6 +27,16 @@ Basic Usage
 
 **Infomap** (multiplex):
 
+.. note::
+
+    Infomap requires an external binary that is no longer bundled with py3plex.
+    
+    **Options:**
+    
+    - Download from: https://www.mapequation.org/infomap/
+    - Install via: ``pip install infomap``
+    - Use Louvain (above) as a Python-only alternative
+
 .. code-block:: python
 
     network = multinet.multi_layer_network(network_type="multiplex").load_network(
@@ -34,8 +44,9 @@ Basic Usage
         directed=False, 
         input_type="multiplex_edges")
     
+    # Assumes Infomap binary is in PATH or current directory
     partition = cw.infomap_communities(
-        network, binary="../bin/Infomap", multiplex=True, verbose=True)
+        network, binary="infomap", multiplex=True, verbose=True)
 
 Examples
 --------

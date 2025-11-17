@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Performance and Scalability Best Practices" href="performance_guide.html" />
-    <link rel="prev" title="Algorithm Roadmap" href="algorithm_roadmap.html" /> 
+    <link rel="prev" title="Ricci-Flow-Based Visualization" href="ricci_visualization.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,7 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -64,6 +64,8 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Performance and Scalability</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#memory-management">Memory Management</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sparse-vs-dense-matrices">Sparse vs Dense Matrices</a></li>
@@ -135,6 +137,13 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -638,22 +647,22 @@ kernprof<span class="w"> </span>-l<span class="w"> </span>-v<span class="w"> </s
 </section>
 <section id="memory-checklist">
 <h3>Memory Checklist<a class="headerlink" href="#memory-checklist" title="Link to this heading"></a></h3>
-<p>✅ Use sparse matrices (<code class="docutils literal notranslate"><span class="pre">sparse=True</span></code>)</p>
-<p>✅ Batch add edges (not one at a time)</p>
-<p>✅ Avoid repeated matrix construction</p>
-<p>✅ Use generators instead of lists where possible</p>
-<p>✅ Clear unused variables (<code class="docutils literal notranslate"><span class="pre">del</span> <span class="pre">variable</span></code>)</p>
-<p>✅ Monitor memory with <code class="docutils literal notranslate"><span class="pre">tracemalloc</span></code></p>
+<p>[OK] Use sparse matrices (<code class="docutils literal notranslate"><span class="pre">sparse=True</span></code>)</p>
+<p>[OK] Batch add edges (not one at a time)</p>
+<p>[OK] Avoid repeated matrix construction</p>
+<p>[OK] Use generators instead of lists where possible</p>
+<p>[OK] Clear unused variables (<code class="docutils literal notranslate"><span class="pre">del</span> <span class="pre">variable</span></code>)</p>
+<p>[OK] Monitor memory with <code class="docutils literal notranslate"><span class="pre">tracemalloc</span></code></p>
 </section>
 <section id="speed-checklist">
 <h3>Speed Checklist<a class="headerlink" href="#speed-checklist" title="Link to this heading"></a></h3>
-<p>✅ Choose appropriate algorithms for network size</p>
-<p>✅ Avoid O(n²) operations on large networks</p>
-<p>✅ Use NumPy vectorization</p>
-<p>✅ Cache expensive computations</p>
-<p>✅ Precompute layouts</p>
-<p>✅ Sample for exploration</p>
-<p>✅ Profile to find bottlenecks</p>
+<p>[OK] Choose appropriate algorithms for network size</p>
+<p>[OK] Avoid O(n²) operations on large networks</p>
+<p>[OK] Use NumPy vectorization</p>
+<p>[OK] Cache expensive computations</p>
+<p>[OK] Precompute layouts</p>
+<p>[OK] Sample for exploration</p>
+<p>[OK] Profile to find bottlenecks</p>
 </section>
 </section>
 <section id="benchmarking-examples">
@@ -717,7 +726,7 @@ python<span class="w"> </span>config_benchmark.py
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="algorithm_roadmap.html" class="btn btn-neutral float-left" title="Algorithm Roadmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ricci_visualization.html" class="btn btn-neutral float-left" title="Ricci-Flow-Based Visualization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="performance_guide.html" class="btn btn-neutral float-right" title="Performance and Scalability Best Practices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

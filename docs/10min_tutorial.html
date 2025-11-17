@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10-Minute Tutorial: Getting Started with Py3plex &mdash; py3plex 0.95a documentation</title>
+  <title>10-Minute Tutorial: Getting Started with py3plex &mdash; py3plex 0.95a documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -47,8 +47,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">10-Minute Tutorial: Getting Started with Py3plex</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#what-you-ll-learn">What You’ll Learn</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">10-Minute Tutorial: Getting Started with py3plex</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-will-learn">What You Will Learn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-your-first-multilayer-network-2-minutes">1. Creating Your First Multilayer Network (2 minutes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#loading-networks-from-files-1-minute">2. Loading Networks from Files (1 minute)</a></li>
@@ -102,6 +102,8 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
@@ -120,6 +122,13 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -159,7 +168,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">10-Minute Tutorial: Getting Started with Py3plex</li>
+      <li class="breadcrumb-item active">10-Minute Tutorial: Getting Started with py3plex</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/10min_tutorial.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -170,18 +179,18 @@
            <div itemprop="articleBody">
              
   <section id="minute-tutorial-getting-started-with-py3plex">
-<h1>10-Minute Tutorial: Getting Started with Py3plex<a class="headerlink" href="#minute-tutorial-getting-started-with-py3plex" title="Link to this heading"></a></h1>
-<p>This tutorial provides a <strong>quick introduction</strong> to py3plex, covering the <strong>most common tasks</strong> you’ll need to work with multilayer networks.</p>
-<section id="what-you-ll-learn">
-<h2>What You’ll Learn<a class="headerlink" href="#what-you-ll-learn" title="Link to this heading"></a></h2>
-<p>In just <strong>10 minutes</strong>, you’ll learn how to:</p>
+<h1>10-Minute Tutorial: Getting Started with py3plex<a class="headerlink" href="#minute-tutorial-getting-started-with-py3plex" title="Link to this heading"></a></h1>
+<p>This tutorial provides a quick introduction to py3plex, covering the most common tasks for working with multilayer networks.</p>
+<section id="what-you-will-learn">
+<h2>What You Will Learn<a class="headerlink" href="#what-you-will-learn" title="Link to this heading"></a></h2>
+<p>In 10 minutes, you will learn how to:</p>
 <ol class="arabic simple">
-<li><p><strong>Create and load</strong> multilayer networks</p></li>
-<li><p>Perform <strong>basic network analysis</strong></p></li>
-<li><p>Compute <strong>multilayer statistics</strong></p></li>
-<li><p>Detect <strong>communities</strong></p></li>
-<li><p>Perform <strong>random walks</strong> for embeddings</p></li>
-<li><p><strong>Visualize</strong> your networks</p></li>
+<li><p>Create and load multilayer networks</p></li>
+<li><p>Perform basic network analysis</p></li>
+<li><p>Compute multilayer statistics</p></li>
+<li><p>Detect communities</p></li>
+<li><p>Perform random walks for embeddings</p></li>
+<li><p>Visualize networks</p></li>
 </ol>
 </section>
 <section id="prerequisites">
@@ -193,7 +202,7 @@
 </section>
 <section id="creating-your-first-multilayer-network-2-minutes">
 <h2>1. Creating Your First Multilayer Network (2 minutes)<a class="headerlink" href="#creating-your-first-multilayer-network-2-minutes" title="Link to this heading"></a></h2>
-<p>Let’s start by creating a <strong>simple multilayer network</strong> from scratch:</p>
+<p>Start by creating a simple multilayer network from scratch:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a new multilayer network</span>
@@ -225,7 +234,7 @@ Nodes per layer:
 </section>
 <section id="loading-networks-from-files-1-minute">
 <h2>2. Loading Networks from Files (1 minute)<a class="headerlink" href="#loading-networks-from-files-1-minute" title="Link to this heading"></a></h2>
-<p>Py3plex supports <strong>multiple input formats</strong>. Here’s how to load from an edge list:</p>
+<p>py3plex supports multiple input formats. Here is how to load from an edge list:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load from a multiedgelist file</span>
@@ -242,10 +251,10 @@ Nodes per layer:
 </div>
 <p><strong>Supported formats:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code>: <strong>source, target, layer</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">edgelist</span></code>: <strong>simple source, target pairs</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gpickle</span></code>: <strong>NetworkX pickle</strong> format</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gml</span></code>, <code class="docutils literal notranslate"><span class="pre">graphml</span></code>: <strong>Standard graph</strong> formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> - source, target, layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edgelist</span></code> - simple source, target pairs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gpickle</span></code> - NetworkX pickle format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gml</span></code>, <code class="docutils literal notranslate"><span class="pre">graphml</span></code> - standard graph formats</p></li>
 </ul>
 </section>
 <section id="exploring-network-structure-2-minutes">
@@ -328,7 +337,7 @@ Nodes per layer:
 </section>
 <section id="multilayer-network-statistics-2-minutes">
 <h2>5. Multilayer Network Statistics (2 minutes)<a class="headerlink" href="#multilayer-network-statistics-2-minutes" title="Link to this heading"></a></h2>
-<p>Py3plex provides 17 specialized statistics for analyzing multilayer networks. Here are the most commonly used:</p>
+<p>py3plex provides 17 specialized statistics for analyzing multilayer networks. Here are the most commonly used:</p>
 <section id="basic-layer-statistics">
 <h3>Basic Layer Statistics<a class="headerlink" href="#basic-layer-statistics" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
@@ -374,7 +383,7 @@ Nodes per layer:
 </section>
 <section id="community-detection-2-minutes">
 <h2>6. Community Detection (2 minutes)<a class="headerlink" href="#community-detection-2-minutes" title="Link to this heading"></a></h2>
-<p>Py3plex provides Louvain-based community detection that works across multiple layers:</p>
+<p>py3plex provides Louvain-based community detection that works across multiple layers:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">louvain_multilayer</span>
 <span class="p">)</span>
@@ -647,7 +656,7 @@ pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com
 <li><p><strong>Seed Your Random</strong>: Use <code class="docutils literal notranslate"><span class="pre">seed</span></code> parameters in algorithms for reproducible results</p></li>
 <li><p><strong>Visualize Early</strong>: Quick plots help catch data loading issues early</p></li>
 </ol>
-<p>Happy network analysis! 🎉</p>
+<p>Happy network analysis!</p>
 </section>
 </section>
 

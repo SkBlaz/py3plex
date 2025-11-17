@@ -48,7 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -113,6 +113,8 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
@@ -131,6 +133,13 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -182,40 +191,40 @@
              
   <section id="core-concepts-and-architecture">
 <h1>Core Concepts and Architecture<a class="headerlink" href="#core-concepts-and-architecture" title="Link to this heading"></a></h1>
-<p>This guide explains the <strong>fundamental concepts</strong> and <strong>architectural design</strong> of py3plex.</p>
+<p>This guide explains the fundamental concepts and architectural design of py3plex.</p>
 <section id="what-are-multilayer-networks">
 <h2>What are Multilayer Networks?<a class="headerlink" href="#what-are-multilayer-networks" title="Link to this heading"></a></h2>
-<p>A <strong>multilayer network</strong> is a complex network structure that goes beyond traditional <strong>single-layer graphs</strong> by incorporating <strong>multiple types of relationships</strong>, <strong>node types</strong>, or <strong>interaction contexts</strong>.</p>
+<p>A multilayer network is a complex network structure that goes beyond traditional single-layer graphs by incorporating multiple types of relationships, node types, or interaction contexts.</p>
 <section id="key-characteristics">
 <h3>Key Characteristics<a class="headerlink" href="#key-characteristics" title="Link to this heading"></a></h3>
 <p><strong>Traditional (Single-Layer) Networks:</strong></p>
 <ul class="simple">
-<li><p><strong>One type</strong> of node</p></li>
-<li><p><strong>One type</strong> of edge</p></li>
-<li><p><strong>Homogeneous</strong> structure</p></li>
+<li><p>One type of node</p></li>
+<li><p>One type of edge</p></li>
+<li><p>Homogeneous structure</p></li>
 </ul>
 <p><strong>Multilayer Networks:</strong></p>
 <ul class="simple">
-<li><p><strong>Multiple node types</strong></p></li>
-<li><p><strong>Multiple edge types</strong></p></li>
-<li><p><strong>Multiple layers</strong> of interaction</p></li>
-<li><p><strong>Inter-layer</strong> and <strong>intra-layer</strong> connections</p></li>
+<li><p>Multiple node types</p></li>
+<li><p>Multiple edge types</p></li>
+<li><p>Multiple layers of interaction</p></li>
+<li><p>Inter-layer and intra-layer connections</p></li>
 </ul>
 </section>
 <section id="types-of-multilayer-networks">
 <h3>Types of Multilayer Networks<a class="headerlink" href="#types-of-multilayer-networks" title="Link to this heading"></a></h3>
 <dl>
-<dt><strong>Multiplex Networks</strong></dt><dd><p><strong>Multiple layers</strong> with the <strong>same set of nodes</strong> but <strong>different types of edges</strong>.</p>
-<p><em>Example:</em> Social network with <strong>friendship</strong>, <strong>colleague</strong>, and <strong>family</strong> layers.</p>
+<dt><strong>Multiplex Networks</strong></dt><dd><p>Multiple layers with the same set of nodes but different types of edges.</p>
+<p><em>Example:</em> Social network with friendship, colleague, and family layers.</p>
 </dd>
-<dt><strong>Heterogeneous Networks (HINs)</strong></dt><dd><p><strong>Different node types</strong> with <strong>type-specific relationships</strong>.</p>
-<p><em>Example:</em> Academic network with <strong>authors</strong>, <strong>papers</strong>, and <strong>venues</strong>.</p>
+<dt><strong>Heterogeneous Networks (HINs)</strong></dt><dd><p>Different node types with type-specific relationships.</p>
+<p><em>Example:</em> Academic network with authors, papers, and venues.</p>
 </dd>
-<dt><strong>Temporal Networks</strong></dt><dd><p>Networks that <strong>evolve over time</strong>, with <strong>time-sliced layers</strong>.</p>
-<p><em>Example:</em> Communication network across <strong>different time periods</strong>.</p>
+<dt><strong>Temporal Networks</strong></dt><dd><p>Networks that evolve over time, with time-sliced layers.</p>
+<p><em>Example:</em> Communication network across different time periods.</p>
 </dd>
-<dt><strong>Interdependent Networks</strong></dt><dd><p><strong>Multiple networks</strong> where nodes in one network <strong>depend on nodes</strong> in another.</p>
-<p><em>Example:</em> <strong>Power grid</strong> and <strong>communication network</strong> interdependency.</p>
+<dt><strong>Interdependent Networks</strong></dt><dd><p>Multiple networks where nodes in one network depend on nodes in another.</p>
+<p><em>Example:</em> Power grid and communication network interdependency.</p>
 </dd>
 </dl>
 </section>
@@ -224,12 +233,12 @@
 <h2>Core Data Structure<a class="headerlink" href="#core-data-structure" title="Link to this heading"></a></h2>
 <section id="the-multi-layer-network-class">
 <h3>The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> Class<a class="headerlink" href="#the-multi-layer-network-class" title="Link to this heading"></a></h3>
-<p>The <strong>central data structure</strong> in py3plex is the <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class, which provides:</p>
+<p>The central data structure in py3plex is the <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class, which provides:</p>
 <ul class="simple">
-<li><p><strong>Layer Management:</strong> Add, remove, and query network layers</p></li>
-<li><p><strong>Node and Edge Operations:</strong> Efficient addition and retrieval</p></li>
-<li><p><strong>NetworkX Integration:</strong> Full compatibility with NetworkX algorithms</p></li>
-<li><p><strong>Matrix Representations:</strong> Supra-adjacency and layer-specific matrices</p></li>
+<li><p>Layer Management: Add, remove, and query network layers</p></li>
+<li><p>Node and Edge Operations: Efficient addition and retrieval</p></li>
+<li><p>NetworkX Integration: Full compatibility with NetworkX algorithms</p></li>
+<li><p>Matrix Representations: Supra-adjacency and layer-specific matrices</p></li>
 </ul>
 <section id="basic-structure">
 <h4>Basic Structure<a class="headerlink" href="#basic-structure" title="Link to this heading"></a></h4>
