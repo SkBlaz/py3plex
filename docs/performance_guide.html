@@ -47,7 +47,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_idea.html">Core Principles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -63,6 +63,8 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Performance and Scalability Best Practices</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#network-scale-guidelines">Network Scale Guidelines</a></li>
@@ -138,6 +140,13 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -834,13 +843,13 @@ pip<span class="w"> </span>install<span class="w"> </span>cupy-cuda11x<span clas
 <h2><a class="toc-backref" href="#id35" role="doc-backlink">Quick Performance Checklist</a><a class="headerlink" href="#quick-performance-checklist" title="Link to this heading"></a></h2>
 <section id="before-running-on-large-network">
 <h3><a class="toc-backref" href="#id36" role="doc-backlink">Before Running on Large Network</a><a class="headerlink" href="#before-running-on-large-network" title="Link to this heading"></a></h3>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>☐ Enable sparse matrices (automatic for most ops)
-☐ Sample network if &gt;10k nodes
-☐ Choose efficient algorithms (degree &gt; betweenness)
-☐ Limit visualization detail
-☐ Monitor memory usage
-☐ Use batch processing for multiple networks
-☐ Consider alternative tools if &gt;100k nodes
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[ ] Enable sparse matrices (automatic for most ops)
+[ ] Sample network if &gt;10k nodes
+[ ] Choose efficient algorithms (degree &gt; betweenness)
+[ ] Limit visualization detail
+[ ] Monitor memory usage
+[ ] Use batch processing for multiple networks
+[ ] Consider alternative tools if &gt;100k nodes
 </pre></div>
 </div>
 </section>

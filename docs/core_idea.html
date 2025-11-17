@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Quick Start Guide" href="basic_usage.html" />
-    <link rel="prev" title="10-Minute Tutorial: Getting Started with Py3plex" href="10min_tutorial.html" /> 
+    <link rel="prev" title="10-Minute Tutorial: Getting Started with py3plex" href="10min_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,7 +47,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10min_tutorial.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Core Principles</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#key-features">Key Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#learn-more">Learn More</a></li>
@@ -67,6 +67,8 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance_guide.html">Performance and Scalability Best Practices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistical_comparison.html">Statistical Comparison Framework</a></li>
@@ -85,6 +87,13 @@
 <li class="toctree-l1"><a class="reference internal" href="multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -136,21 +145,21 @@
              
   <section id="core-principles">
 <h1>Core Principles<a class="headerlink" href="#core-principles" title="Link to this heading"></a></h1>
-<p><strong>py3plex</strong> provides <strong>simple</strong>, <strong>off-the-shelf</strong> functionality for <strong>multilayer</strong> and <strong>multiplex</strong> network analysis.</p>
+<p>py3plex provides simple, off-the-shelf functionality for multilayer and multiplex network analysis.</p>
 <section id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
-<li><p><strong>Simple API</strong> - <strong>Modular interface</strong> for multilayer networks</p></li>
-<li><p><strong>Advanced Visualization</strong> - <strong>State-of-the-art</strong> multilayer network rendering</p></li>
-<li><p><strong>NetworkX Compatible</strong> - Built on top of <strong>NetworkX</strong> for seamless integration</p></li>
+<li><p>Simple API - Modular interface for multilayer networks</p></li>
+<li><p>Advanced Visualization - State-of-the-art multilayer network rendering</p></li>
+<li><p>NetworkX Compatible - Built on top of NetworkX for seamless integration</p></li>
 </ol>
 </section>
 <section id="learn-more">
 <h2>Learn More<a class="headerlink" href="#learn-more" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Paper</strong>: <a class="reference external" href="https://link.springer.com/article/10.1007/s41109-019-0203-7">https://link.springer.com/article/10.1007/s41109-019-0203-7</a></p></li>
-<li><p><strong>Examples</strong>: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p></li>
-<li><p><strong>Repository</strong>: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex">https://github.com/SkBlaz/Py3Plex</a></p></li>
+<li><p>Paper: <a class="reference external" href="https://link.springer.com/article/10.1007/s41109-019-0203-7">https://link.springer.com/article/10.1007/s41109-019-0203-7</a></p></li>
+<li><p>Examples: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">https://github.com/SkBlaz/Py3Plex/tree/master/examples</a></p></li>
+<li><p>Repository: <a class="reference external" href="https://github.com/SkBlaz/Py3Plex">https://github.com/SkBlaz/Py3Plex</a></p></li>
 </ul>
 </section>
 </section>
@@ -159,7 +168,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="10min_tutorial.html" class="btn btn-neutral float-left" title="10-Minute Tutorial: Getting Started with Py3plex" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="10min_tutorial.html" class="btn btn-neutral float-left" title="10-Minute Tutorial: Getting Started with py3plex" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="basic_usage.html" class="btn btn-neutral float-right" title="Quick Start Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

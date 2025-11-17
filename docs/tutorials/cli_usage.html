@@ -47,7 +47,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../10min_tutorial.html">10-Minute Tutorial: Getting Started with Py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10min_tutorial.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_idea.html">Core Principles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -63,6 +63,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance and Scalability</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance_guide.html">Performance and Scalability Best Practices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../statistical_comparison.html">Statistical Comparison Framework</a></li>
@@ -71,8 +73,12 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Command-Line Interface (CLI) Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#available-commands">Available Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#available-commands">Available Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quick-reference">Quick Reference</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-networks">Creating Networks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#create-random-networks">Create Random Networks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#network-generation-models">Network Generation Models</a></li>
@@ -141,6 +147,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../multilayer_centrality_matrix_functions.html">Supra Matrix Function Centralities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../random_walks.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../supra.html">Supra-Adjacency Matrices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sir_epidemic_simulator.html">SIR Epidemic Simulator on Multiplex Graphs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI (Web Interface)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui_testing.html">GUI Testing Guide</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
 <ul>
@@ -215,6 +228,24 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 </div>
 <p>See <a class="reference internal" href="docker_usage.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation.</p>
 </section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p><strong>New to py3plex?</strong> Start with these essential commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run an interactive demo with example graph</span>
+py3plex<span class="w"> </span>quickstart
+
+<span class="c1"># Verify installation</span>
+py3plex<span class="w"> </span>selftest
+
+<span class="c1"># Check version</span>
+py3plex<span class="w"> </span>--version
+
+<span class="c1"># Get help</span>
+py3plex<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">quickstart</span></code> command creates a small demo multilayer network, computes statistics, generates a visualization, and shows you next steps. It’s the fastest way to see py3plex in action!</p>
+</section>
 <section id="getting-help">
 <h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
 <p>The CLI includes built-in documentation for all commands:</p>
@@ -230,8 +261,10 @@ py3plex<span class="w"> </span>centrality<span class="w"> </span>--help
 </section>
 <section id="available-commands">
 <h2>Available Commands<a class="headerlink" href="#available-commands" title="Link to this heading"></a></h2>
-<p>The py3plex CLI provides 8 main commands:</p>
+<p>The py3plex CLI provides these main commands:</p>
 <ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">quickstart</span></code> - Interactive demo with example graph (recommended for new users)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">selftest</span></code> - Verify installation and core functionality</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">create</span></code> - Create new multilayer networks</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">load</span></code> - Load and inspect networks</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">community</span></code> - Detect communities</p></li>
@@ -240,7 +273,29 @@ py3plex<span class="w"> </span>centrality<span class="w"> </span>--help
 <li><p><code class="docutils literal notranslate"><span class="pre">visualize</span></code> - Create network visualizations</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">aggregate</span></code> - Aggregate multilayer networks into single layer</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">convert</span></code> - Convert between network formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">help</span></code> - Show detailed help information</p></li>
 </ul>
+<section id="quick-reference">
+<h3>Quick Reference<a class="headerlink" href="#quick-reference" title="Link to this heading"></a></h3>
+<p><strong>Essential flags:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--version</span></code> - Display py3plex version</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--help</span></code> - Display help for any command</p></li>
+</ul>
+<p><strong>Common workflows:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Quick demo</span>
+py3plex<span class="w"> </span>quickstart
+
+<span class="c1"># Create → Analyze → Visualize</span>
+py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--output<span class="w"> </span>net.graphml
+py3plex<span class="w"> </span>load<span class="w"> </span>net.graphml<span class="w"> </span>--stats
+py3plex<span class="w"> </span>visualize<span class="w"> </span>net.graphml<span class="w"> </span>--output<span class="w"> </span>viz.png
+
+<span class="c1"># Community detection workflow</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>net.graphml<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--output<span class="w"> </span>communities.json
+</pre></div>
+</div>
+</section>
 </section>
 <section id="creating-networks">
 <h2>Creating Networks<a class="headerlink" href="#creating-networks" title="Link to this heading"></a></h2>
@@ -632,7 +687,7 @@ py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<
 <h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="../quickstart.html"><span class="doc">Quickstart Guide</span></a> - Python API quickstart</p></li>
-<li><p><a class="reference internal" href="../10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with Py3plex</span></a> - 10-minute Python tutorial</p></li>
+<li><p><a class="reference internal" href="../10min_tutorial.html"><span class="doc">10-Minute Tutorial: Getting Started with py3plex</span></a> - 10-minute Python tutorial</p></li>
 <li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Community detection algorithms in detail</p></li>
 <li><p><a class="reference internal" href="multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality measures for multilayer networks</p></li>
 <li><p><a class="reference internal" href="../index.html"><span class="doc">Py3plex Documentation</span></a> - Main documentation index</p></li>

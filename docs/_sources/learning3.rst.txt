@@ -3,6 +3,16 @@ Node Embeddings
 
 Generate node embeddings using Node2Vec and visualize them.
 
+.. note::
+
+    Node2Vec binary is no longer bundled with py3plex.
+    
+    **Options:**
+    
+    - Use pure Python alternatives: ``pip install node2vec`` or ``pip install pecanpy``
+    - Download C++ binary from: https://github.com/snap-stanford/snap
+    - Use py3plex's built-in random walk implementation
+
 .. code-block:: python
 
     from py3plex.core import multinet
@@ -16,16 +26,19 @@ Generate node embeddings using Node2Vec and visualize them.
     # Save as edgelist for Node2Vec
     network.save_network("../datasets/test.edgelist")
     
-    # Generate embedding
-    train_node2vec_embedding.call_node2vec_binary(
-        "../datasets/test.edgelist",
-        "../datasets/test_embedding.emb",
-        binary="../bin/node2vec",
-        weighted=False)
-    
-    # Load and visualize
-    network.load_embedding("../datasets/test_embedding.emb")
-    embedding_visualization.visualize_embedding(network)
+    try:
+        # Generate embedding (assumes node2vec binary is in PATH)
+        train_node2vec_embedding.call_node2vec_binary(
+            "../datasets/test.edgelist",
+            "../datasets/test_embedding.emb",
+            binary="node2vec",
+            weighted=False)
+        
+        # Load and visualize
+        network.load_embedding("../datasets/test_embedding.emb")
+        embedding_visualization.visualize_embedding(network)
+    except FileNotFoundError:
+        print("Node2Vec binary not found. Install with: pip install node2vec")
 
 Examples
 --------
