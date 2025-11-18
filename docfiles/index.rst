@@ -15,16 +15,6 @@ Py3plex Documentation
 
 py3plex enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.
 
-Interactive Demo
-================
-
-Explore an interactive multilayer network visualization. Hover over nodes to see details, zoom with mouse wheel, and click-drag to pan:
-
-.. raw:: html
-   :file: _static/interactive_demo.html
-
-*This interactive demo showcases py3plex's Plotly-based visualization capabilities. See* :doc:`visualization_guide` *for more examples.*
-
 Overview
 ========
 
