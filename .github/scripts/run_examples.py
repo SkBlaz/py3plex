@@ -114,6 +114,11 @@ def discover_examples(examples_dir: Path, fast_only: bool = False) -> List[Tuple
         # Skip __init__.py files
         if py_file.name == "__init__.py":
             continue
+        
+        # Skip interactive examples (require user interaction or display)
+        if "interactive" in py_file.name.lower():
+            examples.append((py_file, "skip:interactive - requires user interaction or display"))
+            continue
             
         # Check for explicit skip marker
         should_skip, reason = check_skip_marker(py_file)
