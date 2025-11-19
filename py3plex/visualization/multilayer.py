@@ -1123,11 +1123,11 @@ def interactive_diagonal_plot(
             ),
             bgcolor='rgba(250, 250, 250, 1)',
             camera=dict(
-                eye=dict(x=1.5, y=1.5, z=1.3),  # Optimal viewing angle for diagonal layout
+                eye=dict(x=1.1, y=1.1, z=0.9),  # Closer camera for better viewport utilization
                 center=dict(x=0, y=0, z=0),
                 up=dict(x=0, y=0, z=1)
             ),
-            aspectmode='cube'
+            aspectmode='data'  # Changed from 'cube' to 'data' for better scaling
         ),
         showlegend=True,
         legend=dict(
