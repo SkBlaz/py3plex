@@ -134,10 +134,9 @@ print("  This may take a moment...")
 fig = interactive_diagonal_plot(
     graphs,
     layer_labels=labels_list,
-    layout_algorithm="spring",
-    layer_gap=3.0,
-    node_size_base=8,
-    colorscale="Viridis",
+    layout_algorithm="force",
+    layer_gap=2.5,
+    node_size_base=10,
     show_interlayer_edges=True,
     interlayer_edges=inter_layer_edges_list
 )

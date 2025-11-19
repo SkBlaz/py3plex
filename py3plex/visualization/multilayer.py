@@ -862,26 +862,27 @@ def interactive_hairball_plot(
 def interactive_diagonal_plot(
     network_list: Union[List[nx.Graph], Dict[Any, nx.Graph]],
     layer_labels: Optional[List[str]] = None,
-    layout_algorithm: str = "spring",
-    layer_gap: float = 3.0,
-    node_size_base: int = 10,
-    colorscale: str = "Viridis",
+    layout_algorithm: str = "force",
+    layer_gap: float = 2.5,
+    node_size_base: int = 8,
+    layer_colors: Optional[List[str]] = None,
     show_interlayer_edges: bool = True,
     interlayer_edges: Optional[List[Tuple[Any, Any]]] = None,
 ) -> Union[bool, Any]:
-    """Create an interactive 3D diagonal multilayer plot using Plotly.
+    """Create an interactive 2.5D diagonal multilayer plot using Plotly.
     
     This function creates an interactive version of the diagonal multilayer
-    visualization, where layers are positioned diagonally in 3D space and
-    nodes can be explored interactively.
+    visualization, mimicking the traditional 2D diagonal layout but in an
+    interactive 3D environment. Each layer is positioned diagonally with
+    clear visual separation, similar to the static diagonal visualization.
     
     Args:
         network_list: List of NetworkX graphs (layers) or dict of layer_name -> graph
         layer_labels: Optional labels for each layer
-        layout_algorithm: Layout algorithm for nodes ("spring", "circular", "random")
-        layer_gap: Distance between layers in diagonal direction
-        node_size_base: Base size for nodes
-        colorscale: Plotly colorscale to use
+        layout_algorithm: Layout algorithm for nodes ("force", "circular", "random")
+        layer_gap: Distance between layers in diagonal direction (default: 2.5)
+        node_size_base: Base size for nodes (default: 8)
+        layer_colors: Optional list of colors for each layer (HTML color names or hex)
         show_interlayer_edges: Whether to show inter-layer edges
         interlayer_edges: List of tuples (node1, node2) for inter-layer connections
         
@@ -908,34 +909,65 @@ def interactive_diagonal_plot(
     if layer_labels is None:
         layer_labels = [f"Layer {i+1}" for i in range(len(network_list))]
     
+    # Define default layer colors if not provided
+    if layer_colors is None:
+        # Use distinct colors for each layer
+        default_colors = [
+            '#FF6B6B',  # Coral red
+            '#4ECDC4',  # Turquoise
+            '#FFD93D',  # Yellow
+            '#95E1D3',  # Mint
+            '#F38181',  # Light coral
+            '#AA96DA',  # Lavender
+            '#FCBAD3',  # Pink
+            '#A8D8EA',  # Light blue
+        ]
+        layer_colors = [default_colors[i % len(default_colors)] for i in range(len(network_list))]
+    
     # Prepare data structures
     all_traces = []
     layer_positions = {}
+    
+    # Calculate layer spacing based on the traditional diagonal offset
+    # In the original, each layer is offset by MULTILAYER_LAYER_OFFSET (1.5) in both x and y
+    layer_offset = layer_gap
     
     # Process each layer
     for layer_idx, (layer_graph, layer_label) in enumerate(zip(network_list, layer_labels)):
         if layer_graph.number_of_nodes() == 0:
             continue
         
-        # Compute 2D layout for this layer
-        if layout_algorithm == "spring":
-            pos_2d = nx.spring_layout(layer_graph, seed=42)
+        # Compute 2D layout for this layer independently
+        if layout_algorithm == "force":
+            pos_2d = nx.spring_layout(layer_graph, k=0.5, iterations=50, seed=42)
         elif layout_algorithm == "circular":
             pos_2d = nx.circular_layout(layer_graph)
         elif layout_algorithm == "random":
             pos_2d = nx.random_layout(layer_graph, seed=42)
         else:
-            pos_2d = nx.spring_layout(layer_graph, seed=42)
+            pos_2d = nx.spring_layout(layer_graph, k=0.5, iterations=50, seed=42)
         
-        # Convert to 3D positions with diagonal offset
-        offset = layer_idx * layer_gap
+        # Convert to 3D positions with proper diagonal offset
+        # Each layer gets its own "plane" offset diagonally
+        diagonal_offset = layer_idx * layer_offset
+        z_offset = layer_idx * 0.8  # Z separation for depth perception
+        
         pos_3d = {}
         for node, (x, y) in pos_2d.items():
-            pos_3d[node] = (x + offset, y + offset, layer_idx * 0.5)
+            # Scale the layout to fit nicely in the space
+            scaled_x = x * 1.2
+            scaled_y = y * 1.2
+            # Apply diagonal offset (mimicking the 2D diagonal layout)
+            pos_3d[node] = (
+                scaled_x + diagonal_offset,
+                scaled_y + diagonal_offset,
+                z_offset
+            )
         
         layer_positions[layer_idx] = pos_3d
+        layer_color = layer_colors[layer_idx]
         
-        # Create edge traces for this layer
+        # Create edge traces for this layer with layer-specific color
         edge_x, edge_y, edge_z = [], [], []
         for edge in layer_graph.edges():
             x0, y0, z0 = pos_3d[edge[0]]
@@ -945,22 +977,25 @@ def interactive_diagonal_plot(
             edge_z.extend([z0, z1, None])
         
         if edge_x:
+            # Convert hex color to rgba with alpha
             edge_trace = go.Scatter3d(
                 x=edge_x,
                 y=edge_y,
                 z=edge_z,
                 mode='lines',
-                line=dict(color='rgba(125, 125, 125, 0.3)', width=2),
+                line=dict(color=layer_color, width=1.5),
+                opacity=0.4,
                 hoverinfo='none',
                 name=f'{layer_label} edges',
-                showlegend=False
+                showlegend=False,
+                legendgroup=layer_label
             )
             all_traces.append(edge_trace)
         
-        # Create node trace for this layer
+        # Create node trace for this layer with distinct layer color
         node_x, node_y, node_z = [], [], []
         node_text = []
-        node_degrees = []
+        node_sizes = []
         
         for node in layer_graph.nodes():
             x, y, z = pos_3d[node]
@@ -968,32 +1003,26 @@ def interactive_diagonal_plot(
             node_y.append(y)
             node_z.append(z)
             degree = layer_graph.degree(node)
-            node_degrees.append(degree)
-            node_text.append(f"Node: {node}<br>Layer: {layer_label}<br>Degree: {degree}")
+            node_sizes.append(node_size_base + degree * 3)
+            node_text.append(f"<b>{node}</b><br>Layer: {layer_label}<br>Degree: {degree}")
         
-        # Color nodes by degree
+        # Color all nodes in this layer with the same distinct color
         node_trace = go.Scatter3d(
             x=node_x,
             y=node_y,
             z=node_z,
             mode='markers',
             marker=dict(
-                size=[node_size_base + d * 2 for d in node_degrees],
-                color=node_degrees,
-                colorscale=colorscale,
-                showscale=(layer_idx == 0),  # Show scale only for first layer
-                colorbar=dict(
-                    thickness=15,
-                    title='Node Degree',
-                    xanchor='left',
-                    x=1.02
-                ) if layer_idx == 0 else None,
-                line=dict(color='white', width=0.5)
+                size=node_sizes,
+                color=layer_color,
+                line=dict(color='white', width=1),
+                opacity=0.9
             ),
             text=node_text,
             hoverinfo='text',
             name=layer_label,
-            showlegend=True
+            showlegend=True,
+            legendgroup=layer_label
         )
         all_traces.append(node_trace)
     
@@ -1024,9 +1053,9 @@ def interactive_diagonal_plot(
                 y=inter_edge_y,
                 z=inter_edge_z,
                 mode='lines',
-                line=dict(color='rgba(255, 0, 0, 0.4)', width=3, dash='dash'),
+                line=dict(color='rgba(100, 100, 100, 0.4)', width=2, dash='dash'),
                 hoverinfo='none',
-                name='Inter-layer edges',
+                name='Inter-layer',
                 showlegend=True
             )
             all_traces.append(inter_edge_trace)
@@ -1034,30 +1063,60 @@ def interactive_diagonal_plot(
     # Create figure
     fig = go.Figure(data=all_traces)
     
-    # Update layout
+    # Update layout for optimal 2.5D diagonal view
     fig.update_layout(
         title=dict(
-            text='Interactive Diagonal Multilayer Network<br><sub>Drag to rotate, scroll to zoom, hover for details</sub>',
+            text='<b>Interactive Diagonal Multilayer Network</b><br><sub>Rotate • Zoom • Hover for details</sub>',
             x=0.5,
             xanchor='center',
-            font=dict(size=16)
+            font=dict(size=18, color='#2C3E50')
         ),
         scene=dict(
-            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False, title=''),
-            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False, title=''),
-            zaxis=dict(showgrid=False, zeroline=False, showticklabels=False, title=''),
-            bgcolor='rgba(240, 240, 240, 0.9)'
+            xaxis=dict(
+                showgrid=True, 
+                zeroline=False, 
+                showticklabels=False, 
+                title='',
+                gridcolor='rgba(200, 200, 200, 0.2)',
+                showbackground=False
+            ),
+            yaxis=dict(
+                showgrid=True, 
+                zeroline=False, 
+                showticklabels=False, 
+                title='',
+                gridcolor='rgba(200, 200, 200, 0.2)',
+                showbackground=False
+            ),
+            zaxis=dict(
+                showgrid=True, 
+                zeroline=False, 
+                showticklabels=False, 
+                title='',
+                gridcolor='rgba(200, 200, 200, 0.2)',
+                showbackground=False
+            ),
+            bgcolor='rgba(250, 250, 250, 1)',
+            camera=dict(
+                eye=dict(x=1.5, y=1.5, z=1.3),  # Optimal viewing angle for diagonal layout
+                center=dict(x=0, y=0, z=0),
+                up=dict(x=0, y=0, z=1)
+            ),
+            aspectmode='cube'
         ),
         showlegend=True,
         legend=dict(
             x=0.02,
             y=0.98,
-            bgcolor='rgba(255, 255, 255, 0.8)',
-            bordercolor='black',
-            borderwidth=1
+            bgcolor='rgba(255, 255, 255, 0.95)',
+            bordercolor='rgba(0, 0, 0, 0.2)',
+            borderwidth=1,
+            font=dict(size=11)
         ),
         hovermode='closest',
-        margin=dict(l=0, r=0, t=80, b=0)
+        margin=dict(l=0, r=0, t=80, b=0),
+        paper_bgcolor='white',
+        plot_bgcolor='white'
     )
     
     fig.show()
