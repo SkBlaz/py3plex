@@ -26,6 +26,11 @@ class TestVisualizationConvenienceImports(unittest.TestCase):
         from py3plex.visualization import draw_multiedges
         self.assertTrue(callable(draw_multiedges))
 
+    def test_interactive_diagonal_plot_import(self):
+        """Test that interactive_diagonal_plot can be imported from py3plex.visualization."""
+        from py3plex.visualization import interactive_diagonal_plot
+        self.assertTrue(callable(interactive_diagonal_plot))
+
     def test_colors_default_import(self):
         """Test that colors_default can be imported from py3plex.visualization."""
         from py3plex.visualization import colors_default
