@@ -938,14 +938,37 @@ def interactive_diagonal_plot(
             continue
         
         # Compute 2D layout for this layer independently
+        # Adjust parameters based on network size for better node dispersion
+        num_nodes = layer_graph.number_of_nodes()
+        
         if layout_algorithm == "force":
-            pos_2d = nx.spring_layout(layer_graph, k=0.5, iterations=50, seed=42)
+            # Use adaptive k parameter based on network size to prevent overlap
+            # Larger k = more spacing between nodes
+            k_param = None  # Let NetworkX auto-calculate for better spacing
+            if num_nodes > 10:
+                k_param = 1.0 / (num_nodes ** 0.5)  # Adaptive spacing
+            
+            pos_2d = nx.spring_layout(
+                layer_graph, 
+                k=k_param, 
+                iterations=100,  # More iterations for better convergence
+                seed=42
+            )
         elif layout_algorithm == "circular":
             pos_2d = nx.circular_layout(layer_graph)
         elif layout_algorithm == "random":
             pos_2d = nx.random_layout(layer_graph, seed=42)
         else:
-            pos_2d = nx.spring_layout(layer_graph, k=0.5, iterations=50, seed=42)
+            # Default to force with adaptive parameters
+            k_param = None
+            if num_nodes > 10:
+                k_param = 1.0 / (num_nodes ** 0.5)
+            pos_2d = nx.spring_layout(
+                layer_graph, 
+                k=k_param, 
+                iterations=100, 
+                seed=42
+            )
         
         # Convert to 3D positions with proper diagonal offset
         # Each layer gets its own "plane" offset diagonally
@@ -954,9 +977,11 @@ def interactive_diagonal_plot(
         
         pos_3d = {}
         for node, (x, y) in pos_2d.items():
-            # Scale the layout to fit nicely in the space
-            scaled_x = x * 1.2
-            scaled_y = y * 1.2
+            # Scale the layout more aggressively to prevent overlap
+            # Larger networks need more scaling
+            scale_factor = 1.8 if num_nodes > 10 else 1.5
+            scaled_x = x * scale_factor
+            scaled_y = y * scale_factor
             # Apply diagonal offset (mimicking the 2D diagonal layout)
             pos_3d[node] = (
                 scaled_x + diagonal_offset,
