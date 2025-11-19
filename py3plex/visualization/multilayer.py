@@ -863,7 +863,7 @@ def interactive_diagonal_plot(
     network_list: Union[List[nx.Graph], Dict[Any, nx.Graph]],
     layer_labels: Optional[List[str]] = None,
     layout_algorithm: str = "force",
-    layer_gap: float = 2.5,
+    layer_gap: float = 4.0,
     node_size_base: int = 8,
     layer_colors: Optional[List[str]] = None,
     show_interlayer_edges: bool = True,
@@ -973,13 +973,13 @@ def interactive_diagonal_plot(
         # Convert to 3D positions with proper diagonal offset
         # Each layer gets its own "plane" offset diagonally
         diagonal_offset = layer_idx * layer_offset
-        z_offset = layer_idx * 0.8  # Z separation for depth perception
+        z_offset = layer_idx * 1.2  # Increased Z separation for better depth perception
         
         pos_3d = {}
         for node, (x, y) in pos_2d.items():
-            # Scale the layout more aggressively to prevent overlap
-            # Larger networks need more scaling
-            scale_factor = 1.8 if num_nodes > 10 else 1.5
+            # Scale the layout to better fill the viewport
+            # Larger networks need more scaling to maintain spacing
+            scale_factor = 2.5 if num_nodes > 10 else 2.0
             scaled_x = x * scale_factor
             scaled_y = y * scale_factor
             # Apply diagonal offset (mimicking the 2D diagonal layout)

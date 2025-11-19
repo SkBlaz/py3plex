@@ -198,7 +198,7 @@ fig = interactive_diagonal_plot(
     graphs,
     layer_labels=labels_list,
     layout_algorithm="force",
-    layer_gap=2.5,
+    layer_gap=4.0,
     node_size_base=10,
     show_interlayer_edges=True,
     interlayer_edges=inter_layer_edges_list
