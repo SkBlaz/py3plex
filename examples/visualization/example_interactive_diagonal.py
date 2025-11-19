@@ -40,12 +40,18 @@ except ImportError:
 print("\nStep 1: Creating multilayer network...")
 network = multinet.multi_layer_network()
 
-# Define layers
+# Define layers with more nodes
 layers = ['social', 'professional', 'hobby']
 nodes_per_layer = {
-    'social': ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank'],
-    'professional': ['Alice', 'Bob', 'Grace', 'Henry', 'Ivan', 'Frank'],
-    'hobby': ['Bob', 'Charlie', 'David', 'Grace', 'Jane', 'Eve']
+    'social': ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank', 
+               'George', 'Hannah', 'Ian', 'Julia', 'Kevin', 'Laura',
+               'Mike', 'Nancy', 'Oscar', 'Paula'],
+    'professional': ['Alice', 'Bob', 'Frank', 'Grace', 'Henry', 'Ivan',
+                     'Julia', 'Kevin', 'Mike', 'Nancy', 'Quinn', 'Rachel',
+                     'Steve', 'Tina', 'Uma', 'Victor'],
+    'hobby': ['Bob', 'Charlie', 'David', 'Eve', 'Grace', 'Hannah',
+              'Ian', 'Jane', 'Laura', 'Oscar', 'Paula', 'Quinn',
+              'Rachel', 'Sam', 'Tina', 'Wendy']
 }
 
 print(f"  Layers: {layers}")
@@ -56,22 +62,60 @@ for layer in layers:
     for node in nodes_per_layer[layer]:
         network.add_nodes([{'source': node, 'type': layer}])
 
-# Add edges within layers
+# Add edges within layers - creating denser networks
 edges_by_layer = {
     'social': [
+        # Core group connections
         ('Alice', 'Bob'), ('Bob', 'Charlie'), ('Charlie', 'David'),
         ('David', 'Eve'), ('Eve', 'Frank'), ('Frank', 'Alice'),
-        ('Alice', 'Charlie'), ('Bob', 'David')
+        ('Alice', 'Charlie'), ('Bob', 'David'), ('Charlie', 'Eve'),
+        ('David', 'Frank'), ('Eve', 'Alice'), ('Frank', 'Bob'),
+        # Extended network connections
+        ('George', 'Hannah'), ('Hannah', 'Ian'), ('Ian', 'Julia'),
+        ('Julia', 'Kevin'), ('Kevin', 'Laura'), ('Laura', 'George'),
+        ('Mike', 'Nancy'), ('Nancy', 'Oscar'), ('Oscar', 'Paula'),
+        ('Paula', 'Mike'),
+        # Cross-group connections
+        ('Alice', 'George'), ('Bob', 'Hannah'), ('Charlie', 'Ian'),
+        ('David', 'Julia'), ('Eve', 'Kevin'), ('Frank', 'Laura'),
+        ('George', 'Mike'), ('Hannah', 'Nancy'), ('Ian', 'Oscar'),
+        ('Julia', 'Paula'), ('Kevin', 'Mike'), ('Laura', 'Nancy')
     ],
     'professional': [
-        ('Alice', 'Bob'), ('Bob', 'Grace'), ('Grace', 'Henry'),
-        ('Henry', 'Ivan'), ('Ivan', 'Frank'), ('Frank', 'Alice'),
-        ('Grace', 'Frank')
+        # Work team 1
+        ('Alice', 'Bob'), ('Bob', 'Frank'), ('Frank', 'Grace'),
+        ('Grace', 'Henry'), ('Henry', 'Ivan'), ('Ivan', 'Alice'),
+        ('Alice', 'Grace'), ('Bob', 'Henry'), ('Frank', 'Ivan'),
+        # Work team 2
+        ('Julia', 'Kevin'), ('Kevin', 'Mike'), ('Mike', 'Nancy'),
+        ('Nancy', 'Quinn'), ('Quinn', 'Rachel'), ('Rachel', 'Julia'),
+        ('Julia', 'Mike'), ('Kevin', 'Nancy'), ('Mike', 'Quinn'),
+        # Work team 3
+        ('Steve', 'Tina'), ('Tina', 'Uma'), ('Uma', 'Victor'),
+        ('Victor', 'Steve'),
+        # Cross-team connections
+        ('Alice', 'Julia'), ('Bob', 'Kevin'), ('Frank', 'Mike'),
+        ('Grace', 'Nancy'), ('Henry', 'Quinn'), ('Ivan', 'Rachel'),
+        ('Julia', 'Steve'), ('Kevin', 'Tina'), ('Mike', 'Uma'),
+        ('Nancy', 'Victor')
     ],
     'hobby': [
-        ('Bob', 'Charlie'), ('Charlie', 'David'), ('David', 'Grace'),
-        ('Grace', 'Jane'), ('Jane', 'Eve'), ('Eve', 'Bob'),
-        ('Charlie', 'Eve')
+        # Interest group 1
+        ('Bob', 'Charlie'), ('Charlie', 'David'), ('David', 'Eve'),
+        ('Eve', 'Grace'), ('Grace', 'Hannah'), ('Hannah', 'Bob'),
+        ('Bob', 'David'), ('Charlie', 'Eve'), ('David', 'Grace'),
+        # Interest group 2
+        ('Ian', 'Jane'), ('Jane', 'Laura'), ('Laura', 'Oscar'),
+        ('Oscar', 'Paula'), ('Paula', 'Quinn'), ('Quinn', 'Ian'),
+        ('Ian', 'Laura'), ('Jane', 'Oscar'), ('Laura', 'Paula'),
+        # Interest group 3
+        ('Rachel', 'Sam'), ('Sam', 'Tina'), ('Tina', 'Wendy'),
+        ('Wendy', 'Rachel'),
+        # Cross-interest connections
+        ('Bob', 'Ian'), ('Charlie', 'Jane'), ('David', 'Laura'),
+        ('Eve', 'Oscar'), ('Grace', 'Paula'), ('Hannah', 'Quinn'),
+        ('Ian', 'Rachel'), ('Jane', 'Sam'), ('Oscar', 'Tina'),
+        ('Paula', 'Wendy')
     ]
 }
 
@@ -89,18 +133,37 @@ for layer in layers:
 
 print(f"  Added {total_edges} intra-layer edges")
 
-# Add inter-layer edges (same person across layers)
+# Add many more inter-layer edges (representing people active across multiple contexts)
 print("\nStep 3: Adding inter-layer connections...")
 inter_layer_connections = [
+    # Social <-> Professional connections
     ('Alice', 'Alice', 'social', 'professional'),
     ('Bob', 'Bob', 'social', 'professional'),
+    ('Frank', 'Frank', 'social', 'professional'),
+    ('Julia', 'Julia', 'social', 'professional'),
+    ('Kevin', 'Kevin', 'social', 'professional'),
+    ('Mike', 'Mike', 'social', 'professional'),
+    ('Nancy', 'Nancy', 'social', 'professional'),
+    # Social <-> Hobby connections
     ('Bob', 'Bob', 'social', 'hobby'),
-    ('Bob', 'Bob', 'professional', 'hobby'),
     ('Charlie', 'Charlie', 'social', 'hobby'),
     ('David', 'David', 'social', 'hobby'),
     ('Eve', 'Eve', 'social', 'hobby'),
-    ('Frank', 'Frank', 'social', 'professional'),
+    ('Hannah', 'Hannah', 'social', 'hobby'),
+    ('Ian', 'Ian', 'social', 'hobby'),
+    ('Laura', 'Laura', 'social', 'hobby'),
+    ('Oscar', 'Oscar', 'social', 'hobby'),
+    ('Paula', 'Paula', 'social', 'hobby'),
+    # Professional <-> Hobby connections
+    ('Bob', 'Bob', 'professional', 'hobby'),
     ('Grace', 'Grace', 'professional', 'hobby'),
+    ('Julia', 'Julia', 'professional', 'hobby'),
+    ('Kevin', 'Kevin', 'professional', 'hobby'),
+    ('Mike', 'Mike', 'professional', 'hobby'),
+    ('Nancy', 'Nancy', 'professional', 'hobby'),
+    ('Quinn', 'Quinn', 'professional', 'hobby'),
+    ('Rachel', 'Rachel', 'professional', 'hobby'),
+    ('Tina', 'Tina', 'professional', 'hobby'),
 ]
 
 inter_layer_edges_list = []
@@ -142,13 +205,25 @@ fig = interactive_diagonal_plot(
 )
 
 if fig:
-    print("\n✓ Interactive visualization created!")
+    # Enhance the figure with better styling
+    fig.update_layout(
+        title={
+            'text': 'Interactive Multilayer Network<br><sub>Hover over nodes for details, drag to rotate</sub>',
+            'x': 0.5,
+            'xanchor': 'center'
+        },
+        showlegend=True,
+        hovermode='closest',
+        plot_bgcolor='rgba(240, 240, 240, 0.9)'
+    )
+    
+    print("✓ Interactive visualization created!")
     print("\nVisualization Features:")
     print("  • Layers arranged diagonally in 3D space")
+    print("  • Layer-specific colors for easy identification")
     print("  • Node size represents degree centrality")
-    print("  • Node color represents degree (darker = higher degree)")
-    print("  • Intra-layer edges: solid gray lines")
-    print("  • Inter-layer edges: dashed red lines")
+    print("  • Intra-layer edges: solid colored lines")
+    print("  • Inter-layer edges: dashed gray lines")
     print("  • Hover over nodes for details")
     print("  • Click and drag to rotate")
     print("  • Scroll to zoom")
@@ -167,28 +242,36 @@ if fig:
         print(f"\nNote: Could not save file: {e}")
     
     print("\n" + "=" * 70)
-    print("Layer Information:")
-    print("  • Social layer: Personal relationships")
-    print("  • Professional layer: Work connections")
-    print("  • Hobby layer: Shared interests")
-    print("\nCross-layer nodes (appear in multiple layers):")
-    cross_layer_nodes = set()
-    for layer_nodes in nodes_per_layer.values():
-        for node in layer_nodes:
-            appearances = sum(1 for nodes in nodes_per_layer.values() if node in nodes)
-            if appearances > 1:
-                cross_layer_nodes.add(node)
+    print("Network Statistics:")
+    print(f"  • Total unique individuals: {len(set([n for nodes in nodes_per_layer.values() for n in nodes]))}")
+    print(f"  • Total nodes (across all layers): {sum(len(nodes) for nodes in nodes_per_layer.values())}")
+    print(f"  • Total intra-layer edges: {sum(len(edges) for edges in edges_by_layer.values())}")
+    print(f"  • Total inter-layer edges: {len(inter_layer_connections)}")
+    print("\nLayer Information:")
+    print("  • Social layer: Personal relationships and friendships")
+    print("  • Professional layer: Work and business connections")
+    print("  • Hobby layer: Shared interests and activities")
+    print("\nCross-layer nodes (active in multiple contexts):")
+    cross_layer_nodes = {}
+    for node in set([n for nodes in nodes_per_layer.values() for n in nodes]):
+        appearances = [layer for layer, nodes in nodes_per_layer.items() if node in nodes]
+        if len(appearances) > 1:
+            cross_layer_nodes[node] = appearances
     
-    for node in sorted(cross_layer_nodes):
-        node_layers = [layer for layer, nodes in nodes_per_layer.items() if node in nodes]
+    # Show a sample of cross-layer nodes
+    sample_size = min(10, len(cross_layer_nodes))
+    for i, (node, node_layers) in enumerate(sorted(cross_layer_nodes.items())[:sample_size]):
         print(f"  • {node}: {', '.join(node_layers)}")
+    if len(cross_layer_nodes) > sample_size:
+        print(f"  ... and {len(cross_layer_nodes) - sample_size} more individuals active across layers")
     
     print("=" * 70)
     print("\nTip: Try these interactions:")
     print("  1. Hover over nodes to see their names and degrees")
     print("  2. Click and drag to rotate the 3D view")
     print("  3. Click legend items to show/hide specific layers")
-    print("  4. Look for red dashed lines connecting the same person across layers")
+    print("  4. Look for gray dashed lines connecting people across layers")
+    print("  5. Notice the distinct colors: red (social), turquoise (prof), yellow (hobby)")
     print("=" * 70)
 else:
     print("\n✗ Failed to create visualization")
