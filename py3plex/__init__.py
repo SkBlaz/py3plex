@@ -31,6 +31,20 @@ __version__ = "0.95a"
 __api_version__ = "0.95a"
 
 from py3plex.core.multinet import multi_layer_network
+from py3plex.core.types import (
+    Color,
+    ColorList,
+    EdgeDict,
+    EdgeTuple,
+    LayerId,
+    LayoutDict,
+    LayerGraph,
+    NetworkData,
+    Node,
+    NodeDict,
+    Position,
+    Weight,
+)
 from py3plex.exceptions import (
     AlgorithmError,
     CentralityComputationError,
@@ -47,7 +61,6 @@ from py3plex.exceptions import (
     Py3plexException,
     VisualizationError,
 )
-
 from py3plex.profiling import (
     benchmark,
     get_monitor,
@@ -61,6 +74,19 @@ __all__ = [
     "__api_version__",
     # Core classes
     "multi_layer_network",
+    # Type aliases
+    "Node",
+    "LayerId",
+    "Weight",
+    "EdgeTuple",
+    "EdgeDict",
+    "NodeDict",
+    "LayerGraph",
+    "NetworkData",
+    "Position",
+    "LayoutDict",
+    "Color",
+    "ColorList",
     # Exceptions
     "Py3plexException",
     "NetworkConstructionError",
