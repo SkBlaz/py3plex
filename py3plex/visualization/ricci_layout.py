@@ -103,6 +103,7 @@ def ricci_flow_layout_single(
             "MDS layout typically works best with use_geodesic_distances=True. "
             "Consider setting use_geodesic_distances=True or using a different layout_type.",
             UserWarning,
+            stacklevel=2
         )
 
     # Handle single-node graph

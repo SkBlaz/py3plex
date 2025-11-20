@@ -30,7 +30,7 @@ try:
 except ImportError:
     NUMPY_AVAILABLE = False
     np = None
-    warnings.warn("numpy not available, SIR epidemic simulator will not work")
+    warnings.warn("numpy not available, SIR epidemic simulator will not work", stacklevel=2)
 
 try:
     import scipy.sparse
@@ -38,7 +38,7 @@ try:
 except ImportError:
     SCIPY_AVAILABLE = False
     scipy = None
-    warnings.warn("scipy not available, SIR epidemic simulator will not work")
+    warnings.warn("scipy not available, SIR epidemic simulator will not work", stacklevel=2)
 
 
 @dataclass

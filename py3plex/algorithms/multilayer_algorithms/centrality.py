@@ -1067,7 +1067,8 @@ class MultilayerCentrality:
             warnings.warn(
                 "Information centrality is defined for undirected graphs. "
                 "Converting directed multilayer network to undirected by symmetrizing.",
-                UserWarning
+                UserWarning,
+                stacklevel=2
             )
         G = nx.Graph()
         n = matrix.shape[0]
@@ -1132,7 +1133,8 @@ class MultilayerCentrality:
             warnings.warn(
                 "Communicability betweenness is defined for undirected graphs. "
                 "Converting directed multilayer network to undirected by symmetrizing.",
-                UserWarning
+                UserWarning,
+                stacklevel=2
             )
         G = nx.Graph()
         n = matrix.shape[0]
@@ -1329,7 +1331,8 @@ class MultilayerCentrality:
             warnings.warn(
                 "Local efficiency is typically defined for undirected graphs. "
                 "Converting directed multilayer network to undirected by symmetrizing.",
-                UserWarning
+                UserWarning,
+                stacklevel=2
             )
         G = nx.Graph()
         n = matrix.shape[0]

@@ -306,7 +306,8 @@ def leiden_multilayer(
         import warnings
         warnings.warn(
             "Parallel processing is not yet implemented. Running in sequential mode.",
-            FutureWarning
+            FutureWarning,
+            stacklevel=2
         )
 
     # Set random state

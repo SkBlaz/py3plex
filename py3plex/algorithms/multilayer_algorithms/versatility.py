@@ -193,7 +193,8 @@ def _power_iteration(
         warnings.warn(
             f"Power iteration did not converge within {max_iter} iterations "
             f"(final diff={diff:.2e}). Results may be inaccurate.",
-            RuntimeWarning
+            RuntimeWarning,
+            stacklevel=2
         )
 
     return x
