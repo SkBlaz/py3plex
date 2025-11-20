@@ -218,11 +218,11 @@ def plot_critical_distance(fname: str, num_algo: int = 14) -> None:
 def plot_mean_times(fn: pd.DataFrame) -> None:
 
     # for each dataset, plot times.
-    fx = fnamex.groupby(["setting"])["time"].mean().sort_values().index.values
+    fx = fn.groupby(["setting"])["time"].mean().sort_values().index.values
     rkx = fn.groupby(["dataset", "setting"])["time"].mean()
     rkx.reset_index()
 
-    ax = sns.boxplot(x="setting", y="time", data=fnamex, color="white", order=fx)
+    ax = sns.boxplot(x="setting", y="time", data=fn, color="white", order=fx)
     plt.xticks(rotation=45)
     ax.set_xlabel("Algorithm", fontsize=20)
     ax.set_ylabel("Average execution time (s)", fontsize=20)
