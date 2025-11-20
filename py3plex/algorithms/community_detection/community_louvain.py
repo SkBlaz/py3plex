@@ -482,7 +482,7 @@ def load_binary(data):
         reader = array.array("I")
         reader.fromfile(f, num_links)
         links = reader.tolist()
-    
+
     graph = nx.Graph()
     graph.add_nodes_from(range(num_nodes))
     prec_deg = 0

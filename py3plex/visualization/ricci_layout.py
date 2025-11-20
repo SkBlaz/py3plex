@@ -10,12 +10,11 @@ The layouts are designed to work with graphs that have had Ricci flow applied,
 using the updated edge weights to inform node positioning.
 """
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 import warnings
 
 import networkx as nx
 import numpy as np
-from scipy.spatial.distance import squareform
 from sklearn.manifold import MDS
 
 from py3plex.logging_config import get_logger
@@ -104,6 +103,7 @@ def ricci_flow_layout_single(
             "MDS layout typically works best with use_geodesic_distances=True. "
             "Consider setting use_geodesic_distances=True or using a different layout_type.",
             UserWarning,
+            stacklevel=2
         )
 
     # Handle single-node graph

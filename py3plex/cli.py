@@ -8,7 +8,6 @@ with full coverage of main algorithms.
 
 import argparse
 import json
-import os
 import random
 import shutil
 import sys
@@ -31,10 +30,10 @@ logger = get_logger(__name__)
 
 def _convert_to_simple_graph(G: nx.Graph) -> nx.Graph:
     """Convert a multigraph to a simple graph for algorithms that don't support multigraphs.
-    
+
     Args:
         G: Input graph (may be MultiGraph or Graph)
-        
+
     Returns:
         Simple graph (no parallel edges)
     """
@@ -1419,13 +1418,13 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
         # Create a multilayer network for centrality testing
         network = multinet.multi_layer_network()
-        
+
         # Add nodes and edges in two layers
         for layer_idx in range(2):
             layer_name = f"layer{layer_idx + 1}"
             nodes = [{"source": f"node{i}", "type": layer_name} for i in range(6)]
             network.add_nodes(nodes, input_type="dict")
-            
+
             # Create a star topology (node0 as hub)
             for i in range(1, 6):
                 network.add_edges(
@@ -1490,13 +1489,13 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     try:
         # Create a multilayer network
         network = multinet.multi_layer_network()
-        
+
         # Add nodes in three layers
         for layer_idx in range(3):
             layer_name = f"layer{layer_idx + 1}"
             nodes = [{"source": f"node{i}", "type": layer_name} for i in range(4)]
             network.add_nodes(nodes, input_type="dict")
-            
+
             # Add edges in each layer
             for i in range(3):
                 network.add_edges(
@@ -1512,7 +1511,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
                 )
 
         initial_nodes = network.core_network.number_of_nodes()
-        initial_edges = network.core_network.number_of_edges()
 
         # Test layer splitting
         try:
@@ -1569,7 +1567,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     random_gen_status = False
     try:
         from py3plex.core import random_generators
-        
+
         # Generate a small ER multilayer network
         np.random.seed(42)
         random.seed(42)
@@ -1579,7 +1577,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             0.3, # edge probability
             directed=False
         )
-        
+
         if er_network and er_network.core_network.number_of_nodes() > 0:
             print("   [OK] Random ER multilayer network generated")
             if verbose:
@@ -1599,7 +1597,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     nx_wrapper_status = False
     try:
         from py3plex.core import random_generators
-        
+
         # Create a small network
         np.random.seed(42)
         random.seed(42)
@@ -1609,10 +1607,10 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             0.2, # edge probability
             directed=False
         )
-        
+
         # Test monoplex_nx_wrapper with degree_centrality
         centralities = test_network.monoplex_nx_wrapper("degree_centrality")
-        
+
         if centralities and len(centralities) > 0:
             print("   [OK] NetworkX wrapper test passed")
             if verbose:
@@ -1641,28 +1639,28 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             write,
             read,
         )
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create a simple multilayer graph using new I/O
             graph = MultiLayerGraph(directed=False)
             graph.add_layer(Layer(id="layer1"))
             graph.add_layer(Layer(id="layer2"))
-            
+
             for i in range(3):
                 graph.add_node(Node(id=f"node{i}"))
-            
+
             # Add edges in both layers
             graph.add_edge(Edge(src="node0", dst="node1", src_layer="layer1", dst_layer="layer1"))
             graph.add_edge(Edge(src="node1", dst="node2", src_layer="layer2", dst_layer="layer2"))
-            
+
             # Test JSON I/O
             json_file = Path(tmpdir) / "test.json"
             write(graph, str(json_file), deterministic=True)
             loaded_graph = read(str(json_file))
-            
+
             # Test NetworkX conversion
             G = to_networkx(loaded_graph, mode="union")
-            
+
             if loaded_graph and len(loaded_graph.nodes) == 3 and G.number_of_nodes() > 0:
                 print("   [OK] New I/O system test passed")
                 if verbose:
@@ -1683,20 +1681,20 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     advanced_stats_status = False
     try:
         from py3plex.algorithms.statistics import multilayer_statistics as mls
-        
+
         # Create a small test network
         network = multinet.multi_layer_network(directed=False)
-        
+
         # Add edges in two layers
         network.add_edges([
             ['Alice', 'social', 'Bob', 'social', 1],
             ['Bob', 'social', 'Carol', 'social', 1],
             ['Alice', 'work', 'Carol', 'work', 1],
         ], input_type='list')
-        
+
         # Test multiple statistics
         stats_tests = []
-        
+
         # 1. Node activity
         try:
             activity = mls.node_activity(network, 'Alice')
@@ -1707,7 +1705,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         except Exception as e:
             if verbose:
                 print(f"   ! Node activity: {e}")
-        
+
         # 2. Edge overlap
         try:
             overlap = mls.edge_overlap(network, 'social', 'work')
@@ -1718,7 +1716,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         except Exception as e:
             if verbose:
                 print(f"   ! Edge overlap: {e}")
-        
+
         # 3. Layer density
         try:
             density = mls.layer_density(network, 'social')
@@ -1729,7 +1727,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         except Exception as e:
             if verbose:
                 print(f"   ! Layer density: {e}")
-        
+
         # 4. Degree vector
         try:
             deg_vec = mls.degree_vector(network, 'Alice')
@@ -1740,7 +1738,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         except Exception as e:
             if verbose:
                 print(f"   ! Degree vector: {e}")
-        
+
         if len(stats_tests) >= 3:  # At least 3 of 4 stats should work
             print("   [OK] Advanced multilayer statistics test passed")
             if verbose:

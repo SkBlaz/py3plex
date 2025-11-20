@@ -23,10 +23,10 @@ from py3plex.exceptions import AlgorithmError
 
 class RicciBackendNotAvailable(AlgorithmError):
     """Exception raised when GraphRicciCurvature is not installed.
-    
+
     This exception provides clear installation instructions for the user.
     """
-    
+
     def __init__(self, message: Optional[str] = None):
         if message is None:
             message = (
@@ -60,14 +60,14 @@ def compute_ollivier_ricci_single_graph(
     backend_kwargs: Optional[Dict[str, Any]] = None,
 ):
     """Compute Ollivier-Ricci curvature for a single graph.
-    
+
     This function wraps GraphRicciCurvature's OllivierRicci class to compute
     Ollivier-Ricci curvature on all edges of the input graph. The curvature
     values are stored as edge attributes.
-    
+
     Note: If the input is a MultiGraph or MultiDiGraph, it will be converted
     to a simple Graph/DiGraph by aggregating parallel edges (summing weights).
-    
+
     Args:
         G: NetworkX graph (Graph, DiGraph, MultiGraph, or MultiDiGraph).
         alpha: Ollivier-Ricci parameter in [0, 1] controlling the mass
@@ -80,14 +80,14 @@ def compute_ollivier_ricci_single_graph(
             "DEBUG", "ERROR". Defaults to "ERROR".
         backend_kwargs: Optional dictionary of additional keyword arguments to
             pass to the OllivierRicci constructor.
-    
+
     Returns:
         NetworkX graph: The input graph (or converted simple graph) with edge
             curvatures computed and stored in the curvature_attr attribute.
-    
+
     Raises:
         RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
-    
+
     Examples:
         >>> import networkx as nx
         >>> from py3plex.algorithms.curvature import compute_ollivier_ricci_single_graph
@@ -98,27 +98,27 @@ def compute_ollivier_ricci_single_graph(
         >>> curvature = G_curved[edge[0]][edge[1]]['ricciCurvature']
     """
     _check_backend_availability()
-    
+
     if backend_kwargs is None:
         backend_kwargs = {}
-    
+
     # Import NetworkX here to avoid circular imports
     import networkx as nx
-    
+
     # Convert MultiGraph to simple Graph if necessary
     # GraphRicciCurvature/networkit doesn't handle MultiGraphs well
     is_directed = G.is_directed()
     is_multigraph = isinstance(G, (nx.MultiGraph, nx.MultiDiGraph))
-    
+
     if is_multigraph:
         # Convert to simple graph by aggregating parallel edges
         if is_directed:
             G_simple = nx.DiGraph()
         else:
             G_simple = nx.Graph()
-        
+
         G_simple.add_nodes_from(G.nodes(data=True))
-        
+
         # Aggregate parallel edges - sum weights
         for u, v, data in G.edges(data=True):
             if G_simple.has_edge(u, v):
@@ -129,16 +129,16 @@ def compute_ollivier_ricci_single_graph(
             else:
                 # New edge
                 G_simple.add_edge(u, v, **{weight_attr: data.get(weight_attr, 1.0)})
-        
+
         G_to_process = G_simple
     else:
         G_to_process = G.copy()
-    
+
     # Ensure all edges have the weight attribute
     for u, v in G_to_process.edges():
         if weight_attr not in G_to_process[u][v]:
             G_to_process[u][v][weight_attr] = 1.0
-    
+
     # Initialize OllivierRicci
     orc = OllivierRicci(
         G_to_process,
@@ -147,20 +147,20 @@ def compute_ollivier_ricci_single_graph(
         verbose=verbose,
         **backend_kwargs
     )
-    
+
     # Compute Ricci curvature
     orc.compute_ricci_curvature()
-    
+
     # Get the graph with curvature values
     G_curved = orc.G
-    
+
     # Ensure curvature is stored in the requested attribute name
     # GraphRicciCurvature stores it as 'ricciCurvature' by default
     if curvature_attr != "ricciCurvature":
         for u, v, data in G_curved.edges(data=True):
             if "ricciCurvature" in data:
                 data[curvature_attr] = data["ricciCurvature"]
-    
+
     return G_curved
 
 
@@ -175,16 +175,16 @@ def compute_ollivier_ricci_flow_single_graph(
     backend_kwargs: Optional[Dict[str, Any]] = None,
 ):
     """Compute Ollivier-Ricci flow for a single graph.
-    
+
     This function performs Ricci flow on the input graph by iteratively
     adjusting edge weights based on their Ricci curvature. After Ricci flow,
     edges with negative curvature (indicating community boundaries) will have
     reduced weights, while edges with positive curvature will have increased
     weights.
-    
+
     Note: If the input is a MultiGraph or MultiDiGraph, it will be converted
     to a simple Graph/DiGraph by aggregating parallel edges (summing weights).
-    
+
     Args:
         G: NetworkX graph (Graph, DiGraph, MultiGraph, or MultiDiGraph).
         alpha: Ollivier-Ricci parameter in [0, 1] controlling the mass
@@ -202,16 +202,16 @@ def compute_ollivier_ricci_flow_single_graph(
             "DEBUG", "ERROR". Defaults to "ERROR".
         backend_kwargs: Optional dictionary of additional keyword arguments to
             pass to the OllivierRicci constructor.
-    
+
     Returns:
         NetworkX graph: The input graph (or converted simple graph) with Ricci
             flow applied. Edge weights in weight_attr are updated according to
             the Ricci flow metric, and curvature values are available in
             curvature_attr.
-    
+
     Raises:
         RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
-    
+
     Examples:
         >>> import networkx as nx
         >>> from py3plex.algorithms.curvature import compute_ollivier_ricci_flow_single_graph
@@ -222,26 +222,26 @@ def compute_ollivier_ricci_flow_single_graph(
         >>> # Edge weights now reflect Ricci flow
     """
     _check_backend_availability()
-    
+
     if backend_kwargs is None:
         backend_kwargs = {}
-    
+
     # Import NetworkX here to avoid circular imports
     import networkx as nx
-    
+
     # Convert MultiGraph to simple Graph if necessary
     is_directed = G.is_directed()
     is_multigraph = isinstance(G, (nx.MultiGraph, nx.MultiDiGraph))
-    
+
     if is_multigraph:
         # Convert to simple graph by aggregating parallel edges
         if is_directed:
             G_simple = nx.DiGraph()
         else:
             G_simple = nx.Graph()
-        
+
         G_simple.add_nodes_from(G.nodes(data=True))
-        
+
         # Aggregate parallel edges - sum weights
         for u, v, data in G.edges(data=True):
             if G_simple.has_edge(u, v):
@@ -252,16 +252,16 @@ def compute_ollivier_ricci_flow_single_graph(
             else:
                 # New edge
                 G_simple.add_edge(u, v, **{weight_attr: data.get(weight_attr, 1.0)})
-        
+
         G_to_process = G_simple
     else:
         G_to_process = G.copy()
-    
+
     # Ensure all edges have the weight attribute
     for u, v in G_to_process.edges():
         if weight_attr not in G_to_process[u][v]:
             G_to_process[u][v][weight_attr] = 1.0
-    
+
     # Initialize OllivierRicci
     orc = OllivierRicci(
         G_to_process,
@@ -271,20 +271,20 @@ def compute_ollivier_ricci_flow_single_graph(
         verbose=verbose,
         **backend_kwargs
     )
-    
+
     # Compute Ricci curvature first (required before flow)
     orc.compute_ricci_curvature()
-    
+
     # Perform Ricci flow
     orc.compute_ricci_flow(iterations=iterations)
-    
+
     # Get the graph with updated weights and curvature
     G_flow = orc.G
-    
+
     # Ensure curvature is stored in the requested attribute name
     if curvature_attr != "ricciCurvature":
         for u, v, data in G_flow.edges(data=True):
             if "ricciCurvature" in data:
                 data[curvature_attr] = data["ricciCurvature"]
-    
+
     return G_flow

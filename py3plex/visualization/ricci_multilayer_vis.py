@@ -11,11 +11,8 @@ styles are supported:
 """
 
 from typing import Any, Dict, List, Optional, Tuple, Union
-import warnings
 
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-from matplotlib.colors import Normalize
 import networkx as nx
 import numpy as np
 
@@ -338,7 +335,7 @@ def _draw_2d_network(
         )
 
         if show_colorbar and edge_colors:
-            cbar_edges = plt.colorbar(edge_collection, ax=ax, label="Edge Curvature")
+            plt.colorbar(edge_collection, ax=ax, label="Edge Curvature")
 
     # Draw nodes
     if G.number_of_nodes() > 0:
@@ -355,7 +352,7 @@ def _draw_2d_network(
         )
 
         if show_colorbar and len(node_colors) > 0:
-            cbar_nodes = plt.colorbar(node_collection, ax=ax, label="Node Color")
+            plt.colorbar(node_collection, ax=ax, label="Node Color")
 
     # Draw labels for small networks
     if G.number_of_nodes() < 50:

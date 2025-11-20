@@ -275,12 +275,12 @@ def run_PPR(
         >>> import scipy.sparse as sp
         >>> # Create a small network
         >>> adj = sp.csr_matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]])
-        >>> 
+        >>>
         >>> # Compute PPR for all nodes in parallel
         >>> for batch in run_PPR(adj, cores=2, parallel=True):
         ...     for node_idx, pr_vector in batch:
         ...         print(f"Node {node_idx}: {pr_vector}")
-        >>> 
+        >>>
         >>> # Compute PPR for specific nodes without parallelism
         >>> for node_idx, pr_vector in run_PPR(adj, targets=[0, 1], parallel=False):
         ...     print(f"Node {node_idx}: {pr_vector}")

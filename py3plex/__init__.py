@@ -19,7 +19,7 @@ Quick Start:
     >>> import py3plex as p3
     >>> net = p3.multi_layer_network(network_type='multilayer')
     >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
-    >>> net.add_edges([{'source': 'A', 'target': 'B', 
+    >>> net.add_edges([{'source': 'A', 'target': 'B',
     ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
     >>> print(net)
 

@@ -161,31 +161,31 @@ def multilayer_modularity(
 
         # Build community membership vector for this layer
         community_vec = np.array([communities.get((node, lyr), -1) for node, lyr in nodes])
-        
+
         # Skip if no valid community assignments
         if np.all(community_vec == -1):
             continue
-        
+
         # Extract layer adjacency matrix
         layer_adj = supra_matrix[np.ix_(layer_idx, layer_idx)]
-        
+
         # Compute null model matrix: P_ij = (k_i * k_j) / (2m)
         if layer_weight > 0:
             # Vectorized outer product: degrees[i] * degrees[j] for all i,j
             null_model = np.outer(degrees, degrees) / layer_weight
         else:
             null_model = np.zeros((n_nodes, n_nodes))
-        
+
         # Modularity matrix: B = A - gamma * P
         B = layer_adj - gamma_layer * null_model
-        
+
         # Compute sum of B_ij for all pairs in same community
         # Use broadcasting: create boolean matrix where entry (i,j) is True if same community
         unique_communities = np.unique(community_vec[community_vec != -1])
         for community in unique_communities:
             # Mask for nodes in this community
             in_community = (community_vec == community)
-            
+
             # Sum B_ij for all i,j in this community using boolean indexing
             # This is equivalent to: sum_{i,j in C} B_ij
             community_indices = np.where(in_community)[0]

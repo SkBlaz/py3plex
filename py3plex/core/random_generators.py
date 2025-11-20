@@ -61,7 +61,7 @@ def random_multilayer_ER(
         G = nx.MultiGraph()
 
     network = nx.gnp_random_graph(n, p, seed=None, directed=directed)
-    
+
     # Ensure all layers have at least one node
     # First, assign one node to each layer
     if n >= l:
@@ -75,11 +75,11 @@ def random_multilayer_ER(
     else:
         # If n < l, just assign nodes to first n layers
         layers = dict(zip(range(n), range(n)))
-    
+
     # Add all nodes first (including isolated ones)
     for node in network.nodes():
         G.add_node((node, layers[node]), type="default")
-    
+
     # Then add edges
     for edge in network.edges():
         G.add_edge(
