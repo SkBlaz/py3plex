@@ -174,7 +174,7 @@ def infomap_communities(
     # Infomap typically writes to: <output_dir>/<input_basename>.tree
     input_basename = os.path.splitext(os.path.basename(edgelist_file))[0]
     output_tree_path = os.path.join("out", input_basename + ".tree")
-    
+
     # Verify the output file exists before parsing
     if not os.path.exists(output_tree_path):
         # Try to find any .tree file in the output directory
@@ -190,7 +190,7 @@ def infomap_communities(
                 f"The Infomap binary may have failed or written output to a different location. "
                 f"Please check the 'out/' directory for .tree files."
             )
-    
+
     partition = parse_infomap(output_tree_path)
     partition = {inverse_node_map[k]: v for k, v in partition.items()}
     non_mapped = set(graph.get_nodes()).difference(partition.keys())

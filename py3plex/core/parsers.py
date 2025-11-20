@@ -413,7 +413,7 @@ def parse_edgelist_multi_types(
 
     File Format:
         node1 node2 [weight] [edge_type]
-        
+
         Lines starting with '#' are ignored (comments)
 
     Args:
@@ -421,7 +421,7 @@ def parse_edgelist_multi_types(
         directed: Whether to create a directed graph
 
     Returns:
-        Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]: 
+        Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
             (parsed_graph, None for labels)
 
     Notes:
@@ -467,7 +467,7 @@ def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None
 
     File Format:
         node1 node2 tag [weight]
-        
+
         Each line: source_node target_node edge_tag [optional_weight]
 
     Args:
@@ -575,7 +575,7 @@ def parse_multiplex_edges(
 
     File Format:
         layer node1 node2 [weight]
-        
+
         Each line: layer_id source_node target_node [optional_weight]
 
     Args:
@@ -583,7 +583,7 @@ def parse_multiplex_edges(
         directed: Whether to create a directed graph
 
     Returns:
-        Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]: 
+        Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
             (parsed_graph, None for labels)
 
     Notes:

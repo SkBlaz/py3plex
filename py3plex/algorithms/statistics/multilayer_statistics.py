@@ -854,7 +854,7 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
 
     Reference:
         De Domenico et al. (2013), Gomez et al. (2013)
-        
+
     Notes:
         - Uses sparse eigsh() for sparse matrices (more efficient)
         - Falls back to dense computation for small matrices (n < 100) or when k is large relative to n
@@ -868,7 +868,7 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
     # Sparse is beneficial when: matrix is sparse, n is large, and k is much smaller than n
     # Threshold k < n//2 chosen empirically: eigsh() overhead worth it when computing < half eigenvalues
     use_sparse = sp.issparse(supra_adj) and n >= 100 and k < n // 2
-    
+
     # Calculate degree matrix and Laplacian
     if use_sparse:
         # Keep as sparse
@@ -1555,7 +1555,7 @@ def multiplex_rich_club_coefficient(
     # Calculate coefficient
     num_rich = len(rich_nodes)
     max_possible_edges = num_rich * (num_rich - 1) / 2
-    
+
     if max_possible_edges == 0:
         return 0.0
 

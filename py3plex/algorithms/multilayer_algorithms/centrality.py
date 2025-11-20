@@ -463,7 +463,7 @@ class MultilayerCentrality:
         Uses the standard PageRank algorithm on the supra-adjacency matrix
         representing the multilayer network. Properly handles dangling nodes
         (nodes with no outgoing edges) via teleportation.
-        
+
         This implementation preserves sparsity when possible for memory efficiency.
 
         Args:
@@ -473,7 +473,7 @@ class MultilayerCentrality:
 
         Returns:
             dict: {(node, layer): centrality_value}
-            
+
         Mathematical Invariants:
             - PageRank values sum to 1.0 (within tol=1e-6)
             - All values are non-negative
@@ -484,33 +484,33 @@ class MultilayerCentrality:
 
         # Keep as sparse if possible
         is_sparse = sp.issparse(supra_matrix)
-        
+
         if is_sparse:
             # Sparse computation
             n = supra_matrix.shape[0]
-            
+
             # Compute row sums efficiently
             row_sums = np.array(supra_matrix.sum(axis=1)).flatten()
-            
+
             # Identify dangling nodes
             dangling_mask = row_sums == 0
             n_dangling = np.sum(dangling_mask)
-            
+
             # Build sparse transition matrix
             # For non-dangling nodes: P = D^{-1} * A where D is diagonal matrix of row sums
             safe_row_sums = row_sums.copy()
             safe_row_sums[dangling_mask] = 1  # Temporary to avoid div/0
-            
+
             # Create diagonal matrix for normalization
             D_inv = sp.diags(1.0 / safe_row_sums, format='csr')
             P_sparse = D_inv @ supra_matrix
-            
+
             # For dangling nodes, we need to add uniform distribution
             # This breaks pure sparsity, but only for dangling rows
             if n_dangling > 0:
                 # Build dangling node rows efficiently using sparse matrix construction
                 uniform_prob = 1.0 / n
-                
+
                 # Create rows for dangling nodes as dense arrays (unavoidable for uniform distribution)
                 dangling_indices = np.where(dangling_mask)[0]
                 dangling_rows = sp.csr_matrix(
@@ -518,26 +518,26 @@ class MultilayerCentrality:
                      (np.repeat(np.arange(n_dangling), n), np.tile(np.arange(n), n_dangling))),
                     shape=(n_dangling, n)
                 )
-                
+
                 # Replace dangling rows in transition matrix
                 # Convert to lil for efficient row assignment
                 P_sparse = P_sparse.tolil()
                 for i, idx in enumerate(dangling_indices):
                     P_sparse[idx] = dangling_rows[i]
                 P_sparse = P_sparse.tocsr()
-            
+
             # Initialize PageRank vector
             pagerank = np.ones(n) / n
-            
+
             # Power iteration with sparse operations
             for iteration in range(max_iter):
                 # Sparse matrix-vector multiply
                 new_pagerank = (1 - damping) / n + damping * (P_sparse.T @ pagerank)
-                
+
                 if np.linalg.norm(pagerank - new_pagerank) < tol:
                     break
                 pagerank = new_pagerank
-                
+
         else:
             # Dense computation (original code path for small networks)
             if hasattr(supra_matrix, "toarray"):
@@ -549,15 +549,15 @@ class MultilayerCentrality:
 
             # Create row-stochastic transition matrix with proper dangling node handling
             row_sums = np.sum(matrix, axis=1)
-            
+
             # Identify dangling nodes (no outgoing edges)
             dangling_mask = row_sums == 0
-            
+
             # Avoid division by zero: use reciprocal where safe
             safe_row_sums = row_sums.copy()
             safe_row_sums[dangling_mask] = 1  # Temporary value to avoid div/0
             transition_matrix = matrix / safe_row_sums[:, np.newaxis]
-            
+
             # For dangling nodes, distribute probability uniformly (teleportation)
             # This ensures true stochasticity: each dangling node row sums to 1
             if dangling_mask.any():
@@ -610,7 +610,7 @@ class MultilayerCentrality:
             This implementation uses NetworkX's shortest path algorithms on
             the supra-graph representation. For large networks, this can be
             computationally expensive.
-            
+
             The wf_improved parameter controls how closeness is computed for
             nodes that cannot reach all other nodes. When True (default),
             uses the Wasserman-Faust formula that considers reachable nodes
@@ -680,7 +680,7 @@ class MultilayerCentrality:
         Note:
             This is computationally expensive for large networks as it
             requires computing shortest paths between all pairs of nodes.
-            
+
             Weight handling: Edge weights from the supra-adjacency matrix are
             converted to distances (1/weight) for shortest path computation.
             Weights must be positive (> 0). Zero or negative weights will
@@ -1042,7 +1042,7 @@ class MultilayerCentrality:
 
         For each physical node u:
             I(u) = 1 / mean_{a in U} [G[a,a] - (2/(N*L)) * sum_b G[a,b] + (1/(N*L)^2)*sum_{b,c}G[b,c]]
-        
+
         where G is the inverse of B = L + (1/(N*L)) * 1*1^T
 
         Returns:
@@ -1144,12 +1144,12 @@ class MultilayerCentrality:
         try:
             # Use NetworkX's communicability_betweenness_centrality
             nx_comm_between = nx.communicability_betweenness_centrality(G)
-            
+
             # Handle NaN values that can arise from numerical instability in matrix exponential
             # NaN typically occurs when exp(A) has very large values or numerical overflow
-            nx_comm_between = {k: 0.0 if np.isnan(v) or np.isinf(v) else v 
+            nx_comm_between = {k: 0.0 if np.isnan(v) or np.isinf(v) else v
                              for k, v in nx_comm_between.items()}
-            
+
             if normalized and nx_comm_between:
                 max_val = max(nx_comm_between.values())
                 if max_val > 0:
@@ -1204,12 +1204,12 @@ class MultilayerCentrality:
         # Create row-normalized transition matrix with proper dangling node handling
         row_sums = np.sum(matrix, axis=1)
         dangling_mask = row_sums == 0
-        
+
         # Avoid division by zero
         safe_row_sums = row_sums.copy()
         safe_row_sums[dangling_mask] = 1
         P = matrix / safe_row_sums[:, np.newaxis]
-        
+
         # For dangling nodes, use uniform distribution (teleportation)
         if dangling_mask.any():
             P[dangling_mask, :] = 1.0 / n
@@ -1824,7 +1824,7 @@ class MultilayerCentrality:
         if len(nodes_list) < 2:
             results = dict.fromkeys(node_layer_mapping.keys(), 0.0)
             return results
-        
+
         # Ensure unique nodes for sampling
         nodes_list = list(set(nodes_list))
         if len(nodes_list) < 2:
@@ -1999,7 +1999,7 @@ class MultilayerCentrality:
         return aggregated
 
 
-def compute_all_centralities(network, include_path_based=False, include_advanced=False, 
+def compute_all_centralities(network, include_path_based=False, include_advanced=False,
                            include_extended=False, preset=None, wf_improved=True):
     """
     Compute all available centrality measures for a multilayer network.
@@ -2008,7 +2008,7 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
         network: py3plex multi_layer_network object
         include_path_based: Whether to include computationally expensive path-based measures
                            (betweenness, closeness). Default: False
-        include_advanced: Whether to include advanced measures (HITS, current-flow, 
+        include_advanced: Whether to include advanced measures (HITS, current-flow,
                          communicability, k-core). Default: False
         include_extended: Whether to include extended measures (information, accessibility,
                          percolation, spreading, collective influence, load, flow betweenness,
@@ -2037,21 +2037,21 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
                 "accessibility", "harmonic_closeness", "local_efficiency", "edge_betweenness",
                 "bridging", "percolation", "spreading", "collective_influence", "load",
                 "flow_betweenness"
-    
+
     Note:
         Path-based, advanced, and extended measures are computationally expensive for large
         networks. Use flags or presets to control which measures are computed.
-        
+
     Examples:
         >>> # Compute only basic measures (fast)
         >>> results = compute_all_centralities(network)
-        
+
         >>> # Use preset for standard analysis
         >>> results = compute_all_centralities(network, preset='standard')
-        
+
         >>> # Compute everything
         >>> results = compute_all_centralities(network, preset='all')
-        
+
         >>> # Fine-grained control
         >>> results = compute_all_centralities(
         ...     network,
@@ -2083,7 +2083,7 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
                 f"Unknown preset '{preset}'. "
                 "Valid options: 'basic', 'standard', 'advanced', 'all'"
             )
-    
+
     calc = MultilayerCentrality(network)
     results = {}
 

@@ -41,14 +41,14 @@ def split_to_temporal_slices(network, slices=100, verbose=True):
         >>> # Load temporal network
         >>> net = multi_layer_network()
         >>> net.load_network('temporal_edges.csv', input_type='temporal')
-        >>> 
+        >>>
         >>> # Split into 50 time windows
         >>> time_slices = split_to_temporal_slices(net, slices=50)
-        >>> 
+        >>>
         >>> # Analyze each time slice
         >>> for t, snapshot in time_slices.items():
         ...     print(f"Time {t}: {snapshot.core_network.number_of_edges()} edges")
-        >>> 
+        >>>
         >>> # Compare community structure over time
         >>> communities_over_time = {}
         >>> for t, snapshot in time_slices.items():

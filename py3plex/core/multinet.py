@@ -95,14 +95,14 @@ def _draw_diagonal_layers(
     graphs, network_labels, parameters_layers, axis, verbose
 ):
     """Helper function to draw diagonal layer visualization.
-    
+
     Args:
         graphs: List of layer graphs
         network_labels: Labels for network layers
         parameters_layers: Custom parameters for layer drawing
         axis: Optional matplotlib axis
         verbose: Enable verbose output
-        
+
     Returns:
         Matplotlib axis object
     """
@@ -131,7 +131,7 @@ def _draw_multiedges_for_type(
     parameters_multiedges=None,
 ):
     """Helper function to draw multi-edges for a specific edge type.
-    
+
     Args:
         graphs: List of layer graphs
         edges: Edges to draw
@@ -142,13 +142,13 @@ def _draw_multiedges_for_type(
         linewidth: Width of edge lines
         resolution: Resolution for edge curves
         parameters_multiedges: Custom parameters for edge drawing
-        
+
     Returns:
         Matplotlib axis object
     """
     if parameters_multiedges is not None:
         return draw_multiedges(graphs, edges, **parameters_multiedges)
-    
+
     if edge_type == "coupling":
         return draw_multiedges(
             graphs,
@@ -190,7 +190,7 @@ def _visualize_diagonal_style(
     show,
 ):
     """Helper function for diagonal style visualization.
-    
+
     Args:
         network_obj: Multi-layer network object
         parameters_layers: Custom parameters for layer drawing
@@ -204,17 +204,17 @@ def _visualize_diagonal_style(
         linewidth: Width of edge lines
         resolution: Resolution for edge curves
         show: Show plot immediately
-        
+
     Returns:
         Matplotlib axis object
     """
     network_labels, graphs, multilinks = network_obj.get_layers("diagonal")
     if no_labels:
         network_labels = None
-    
+
     # Draw layers
     ax = _draw_diagonal_layers(graphs, network_labels, parameters_layers, axis, verbose)
-    
+
     # Draw multi-edges
     for edge_type, edges in tqdm.tqdm(multilinks.items()):
         ax = _draw_multiedges_for_type(
@@ -228,57 +228,57 @@ def _visualize_diagonal_style(
             resolution,
             parameters_multiedges,
         )
-    
+
     if show:
         plt.show()
-    
+
     return ax
 
 
 def _visualize_hairball_style(network_obj, axis, legend, show):
     """Helper function for hairball style visualization.
-    
+
     Args:
         network_obj: Multi-layer network object
         axis: Optional matplotlib axis
         legend: Show legend
         show: Show plot immediately
-        
+
     Returns:
         Matplotlib axis object
     """
     network_colors, graph = network_obj.get_layers(style="hairball")
     ax = hairball_plot(graph, network_colors, layout_algorithm="force", legend=legend)
-    
+
     if show:
         plt.show()
-    
+
     return ax
 
 
 def _encode_multilayer_network(core_network, directed):
     """Helper function to encode multilayer network to numeric format.
-    
+
     Args:
         core_network: NetworkX graph with multilayer structure
         directed: Whether the network is directed
-        
+
     Returns:
         Tuple of (numeric_network, node_order)
     """
     nmap = {}
     n_count = 0
-    
+
     # Create simple graph based on directedness
     simple_graph = nx.DiGraph() if directed else nx.Graph()
-    
+
     # First, add all nodes (including isolated nodes)
     for node in core_network.nodes():
         if node not in nmap:
             nmap[node] = n_count
             simple_graph.add_node(n_count)
             n_count += 1
-    
+
     # Then add all edges with weights
     for edge in core_network.edges(data=True):
         node_first, node_second = edge[0], edge[1]
@@ -286,53 +286,53 @@ def _encode_multilayer_network(core_network, directed):
             weight = float(edge[2]["weight"])
         except (KeyError, IndexError, ValueError, TypeError):
             weight = 1
-        
+
         simple_graph.add_edge(nmap[node_first], nmap[node_second], weight=weight)
-    
+
     vectors = nx_to_scipy_sparse_matrix(simple_graph)
     return vectors, simple_graph.nodes()
 
 
 def _encode_multiplex_network(core_network):
     """Helper function to encode multiplex network to numeric format using sparse matrices.
-    
+
     This implementation uses scipy.sparse block matrices for efficient memory usage
     and faster operations on large multiplex networks. The supra-adjacency matrix
     is constructed with intralayer adjacency matrices on the diagonal blocks and
     identity matrices for interlayer coupling.
-    
+
     Complexity: O(E + N*L) where E is edges, N nodes per layer, L layers
     Memory: O(E + N*L) sparse vs O(N²*L²) dense
-    
+
     Args:
         core_network: NetworkX graph with multiplex structure
-        
+
     Returns:
         Tuple of (numeric_network, node_order)
             - numeric_network: scipy.sparse.csr_matrix supra-adjacency matrix
             - node_order: list of (node_id, layer) tuples in matrix order
     """
     import scipy.sparse as sp
-    
+
     unique_layers = sorted({n[1] for n in core_network.nodes()})
     num_layers = len(unique_layers)
     individual_adj_sparse = []
     all_nodes = []
     layer_sizes = []
-    
+
     # Build sparse adjacency matrix for each layer
     # Using sparse matrices from the start avoids dense intermediate arrays
     for layer in unique_layers:
         layer_nodes = [n for n in core_network.nodes() if n[1] == layer]
         H = core_network.subgraph(layer_nodes)
-        
+
         # Use nx_to_scipy_sparse_matrix for direct sparse conversion
         adj_sparse = nx_to_scipy_sparse_matrix(H)
-        
+
         all_nodes += list(H.nodes())
         individual_adj_sparse.append(adj_sparse)
         layer_sizes.append(adj_sparse.shape[0])
-    
+
     # Construct supra-adjacency matrix using sparse block matrices
     # This avoids creating large dense arrays and is memory-efficient
     # Block structure: diagonal blocks = intralayer adjacency, off-diagonal = identity (coupling)
@@ -353,10 +353,10 @@ def _encode_multiplex_network(core_network):
                 else:
                     # For non-multiplex or layers with different sizes, use zeros
                     row_blocks.append(sp.csr_matrix((n_i, n_j)))
-        
+
         # Horizontally stack blocks for this layer's row
         block_rows.append(sp.hstack(row_blocks, format='csr'))
-    
+
     # Vertically stack all block rows to form supra-adjacency matrix
     vectors = sp.vstack(block_rows, format='csr')
     return vectors, all_nodes
@@ -364,16 +364,16 @@ def _encode_multiplex_network(core_network):
 
 class multi_layer_network:
     """Main class for multilayer network analysis and manipulation.
-    
+
     This class provides a comprehensive toolkit for creating, analyzing, and
     visualizing multilayer networks where nodes can exist in multiple layers
     and edges can connect nodes within or across layers.
-    
+
     Supported Network Types:
         - **multilayer**: General multilayer networks with arbitrary layer structure
         - **multiplex**: Special case where all layers share the same nodes, with
           automatic coupling edges between corresponding nodes across layers
-    
+
     Key Features:
         - Dict-based API for adding nodes and edges (see add_nodes() and add_edges())
         - NetworkX interoperability via to_networkx() and from_networkx()
@@ -381,38 +381,38 @@ class multi_layer_network:
         - Visualization methods for multilayer layouts
         - Community detection and centrality analysis
         - Random walk and embedding generation
-    
+
     Hypergraph Support:
         This class does NOT natively support true hypergraphs (edges connecting
         more than two nodes). For hypergraph-like structures, consider:
         - Using bipartite projections (nodes and hyperedges as separate node types)
         - The incidence gadget encoding via to_homogeneous_hypergraph()
         - External hypergraph libraries with conversion utilities
-    
+
     Notes:
         - Nodes in multilayer networks are represented as (node_id, layer) tuples
         - Use add_nodes() and add_edges() with dict format for easiest interaction
         - See examples/ directory for usage patterns and best practices
-    
+
     Examples:
         >>> # Create a basic multilayer network
         >>> net = multi_layer_network(network_type='multilayer', directed=False)
-        >>> 
+        >>>
         >>> # Add nodes to different layers
         >>> net.add_nodes([
         ...     {'source': 'A', 'type': 'social'},
         ...     {'source': 'B', 'type': 'social'},
         ...     {'source': 'A', 'type': 'email'}  # Same node, different layer
         ... ])
-        >>> 
+        >>>
         >>> # Add edges (intra-layer and inter-layer)
         >>> net.add_edges([
-        ...     {'source': 'A', 'target': 'B', 
+        ...     {'source': 'A', 'target': 'B',
         ...      'source_type': 'social', 'target_type': 'social'},
         ...     {'source': 'A', 'target': 'A',
         ...      'source_type': 'social', 'target_type': 'email'}
         ... ])
-        >>> 
+        >>>
         >>> print(net)  # Shows network statistics
     """
 
@@ -459,11 +459,11 @@ class multi_layer_network:
 
     def __getitem__(self, i, j=None):
         """Access network nodes using dictionary-like syntax.
-        
+
         Args:
             i: Node identifier
             j: Optional second node identifier for edge access
-            
+
         Returns:
             Node neighbors if j is None, else edge data
         """
@@ -474,23 +474,23 @@ class multi_layer_network:
 
     def __repr__(self) -> str:
         """Return a string representation of the network with statistics.
-        
+
         Returns:
             str: Network statistics including type, nodes, edges, and layers
         """
         if self.core_network is None:
             return f"<multi_layer_network (empty): type={self.network_type}, directed={self.directed}>"
-        
+
         try:
             num_nodes = self.core_network.number_of_nodes()
             num_edges = self.core_network.number_of_edges()
-            
+
             # Count unique layers
             try:
                 unique_layers = len({n[1] for n in self.core_network.nodes() if isinstance(n, tuple) and len(n) >= 2})
             except (TypeError, IndexError):
                 unique_layers = 1  # Fallback for non-multilayer networks
-            
+
             return (f"<multi_layer_network: "
                    f"type={self.network_type}, "
                    f"directed={self.directed}, "
@@ -551,7 +551,7 @@ class multi_layer_network:
         # Precondition: input_type must be from supported set
         SUPPORTED = {"edgelist", "multiedgelist", "multiplex_edges", "multiplex_folder", "gml", "gpickle", "gpickle_biomine", "graphml", "nx", "sparse"}
         assert input_type in SUPPORTED, f"input_type must be one of {SUPPORTED}, got {input_type}"
-        
+
         # Precondition: if not nx type, input_file should be provided
         if input_type != "nx":
             assert input_file is not None, "input_file must be provided for non-nx input types"
@@ -578,12 +578,12 @@ class multi_layer_network:
 
         # Postconditions: core_network should be valid
         assert self.core_network is not None, "core_network must be initialized"
-        
+
         # Only check node/edge counts for NetworkX graphs (not sparse matrices)
         if hasattr(self.core_network, 'number_of_nodes'):
             assert self.core_network.number_of_nodes() >= 0, "node count must be non-negative"
             assert self.core_network.number_of_edges() >= 0, "edge count must be non-negative"
-        
+
         # Postcondition: if directed=False, graph should be undirected
         if not directed and self.core_network is not None:
             assert not isinstance(self.core_network, (nx.DiGraph, nx.MultiDiGraph)), \
@@ -700,11 +700,11 @@ class multi_layer_network:
 
     def get_neighbors(self, node_id: str, layer_id: Optional[str] = None) -> Any:
         """Get neighbors of a node in a specific layer.
-        
+
         Args:
             node_id: Node identifier
             layer_id: Layer identifier (optional)
-            
+
         Returns:
             Iterator of neighbor nodes
         """
@@ -744,7 +744,7 @@ class multi_layer_network:
 
         Args:
             output_file: Path where the network should be saved
-            output_type: Format for saving ('edgelist', 'multiedgelist', 
+            output_type: Format for saving ('edgelist', 'multiedgelist',
                         'multiedgelist_encoded', or 'gpickle')
 
         Supported Formats:
@@ -756,10 +756,10 @@ class multi_layer_network:
         Examples:
             >>> net = multi_layer_network()
             >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
-            >>> net.add_edges([{'source': 'A', 'target': 'B', 
+            >>> net.add_edges([{'source': 'A', 'target': 'B',
             ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
             >>> net.save_network('network.txt', output_type='multiedgelist')
-            
+
             >>> # For faster I/O with all metadata preserved
             >>> net.save_network('network.gpickle', output_type='gpickle')
 
@@ -804,7 +804,7 @@ class multi_layer_network:
 
     def sparse_to_px(self, directed=None):
         """Convert sparse matrix to py3plex format
-        
+
         Args:
             directed: Whether the network is directed (uses self.directed if None)
         """
@@ -824,9 +824,9 @@ class multi_layer_network:
 
     def summary(self):
         """Generate a summary of network statistics.
-        
+
         Computes and returns key metrics about the multilayer network structure.
-        
+
         Returns:
             dict: Network statistics including:
                 - 'Number of layers': Count of unique layers
@@ -834,15 +834,15 @@ class multi_layer_network:
                 - 'Edges': Total number of edges
                 - 'Mean degree': Average node degree
                 - 'CC': Number of connected components
-        
+
         Examples:
             >>> net = multi_layer_network()
             >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
-            >>> net.add_edges([{'source': 'A', 'target': 'B', 
+            >>> net.add_edges([{'source': 'A', 'target': 'B',
             ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
             >>> stats = net.summary()
             >>> print(f"Network has {stats['Nodes']} nodes and {stats['Edges']} edges")
-        
+
         Notes:
             - Connected components are computed on the undirected version
             - Mean degree is averaged across all nodes in all layers
@@ -962,21 +962,21 @@ class multi_layer_network:
 
     def to_networkx(self) -> nx.Graph:
         """Convert the multilayer network to a NetworkX graph.
-        
+
         Returns a copy of the core network as a NetworkX graph. The returned graph
         preserves all node and edge attributes, including layer information for
         multilayer networks (where nodes are typically (node_id, layer) tuples).
-        
+
         Returns:
             nx.Graph: A NetworkX graph (MultiGraph or MultiDiGraph depending on network type)
-        
+
         Examples:
             >>> net = multi_layer_network()
             >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
             >>> nx_graph = net.to_networkx()
             >>> print(type(nx_graph))
             <class 'networkx.classes.multigraph.MultiGraph'>
-        
+
         Notes:
             - For multilayer networks, nodes are tuples: (node_id, layer)
             - All edge attributes (weight, type, etc.) are preserved
@@ -984,25 +984,25 @@ class multi_layer_network:
         """
         if self.core_network is None:
             raise ValueError("Network is empty. Load or create a network first.")
-        
+
         return self.core_network.copy()
-    
+
     @classmethod
-    def from_networkx(cls, G: nx.Graph, network_type: str = "multilayer", 
+    def from_networkx(cls, G: nx.Graph, network_type: str = "multilayer",
                      directed: Optional[bool] = None) -> "multi_layer_network":
         """Create a multi_layer_network from a NetworkX graph.
-        
+
         This class method converts a NetworkX graph into a py3plex multi_layer_network.
         For multilayer networks, nodes should be tuples of (node_id, layer).
-        
+
         Args:
             G: NetworkX graph to convert
             network_type: Type of network ('multilayer' or 'multiplex')
             directed: Whether to treat the network as directed. If None, inferred from G.
-        
+
         Returns:
             multi_layer_network: A new multi_layer_network instance
-        
+
         Examples:
             >>> import networkx as nx
             >>> G = nx.Graph()
@@ -1011,7 +1011,7 @@ class multi_layer_network:
             >>> net = multi_layer_network.from_networkx(G)
             >>> print(net)
             <multi_layer_network: type=multilayer, directed=False, nodes=2, edges=1, layers=1>
-        
+
         Notes:
             - For proper multilayer behavior, ensure nodes are (node_id, layer) tuples
             - Edge attributes are preserved during conversion
@@ -1019,13 +1019,13 @@ class multi_layer_network:
         """
         if directed is None:
             directed = G.is_directed()
-        
+
         # Create new instance
         net = cls(network_type=network_type, directed=directed, verbose=False)
-        
+
         # Copy the graph
         net.core_network = G.copy()
-        
+
         return net
 
     def get_edges(self, data: bool = False, multiplex_edges: bool = False) -> Any:
@@ -1300,7 +1300,7 @@ class multi_layer_network:
             >>> # First, prepare empty layers
             >>> net.split_to_layers()
             >>> net.remove_layer_edges()
-            >>> 
+            >>>
             >>> # Then fill with new edges
             >>> df = pd.DataFrame({
             ...     'node_first': ['A', 'B'],
@@ -1416,13 +1416,13 @@ class multi_layer_network:
         """Initialize the core network if it doesn't exist."""
         if self.core_network is None:
             self.core_network = self._create_graph()
-    
+
     def _create_graph(self, multi: bool = True) -> Union[nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph]:
         """Create an appropriate graph type based on network settings.
-        
+
         Args:
             multi: Whether to create a MultiGraph/MultiDiGraph (default: True)
-            
+
         Returns:
             NetworkX graph object of the appropriate type
         """
@@ -1434,7 +1434,7 @@ class multi_layer_network:
     def monoplex_nx_wrapper(self, method, kwargs=None):
         """
         A generic networkx function wrapper.
-        
+
         Args:
             method (str): Name of the NetworkX function to call (e.g., 'degree_centrality', 'betweenness_centrality')
             kwargs (dict, optional): Keyword arguments to pass to the NetworkX function.
@@ -1442,32 +1442,32 @@ class multi_layer_network:
                                      - weight: Edge attribute to use as weight
                                      - normalized: Whether to normalize betweenness values
                                      - distance: Edge attribute to use as distance (for closeness_centrality)
-        
+
         Returns:
             The result of the NetworkX function call.
-            
+
         Raises:
             AttributeError: If the specified method does not exist in NetworkX.
-            
+
         Example:
             # Unweighted betweenness centrality
             centralities = network.monoplex_nx_wrapper("betweenness_centrality")
-            
+
             # Weighted betweenness centrality
             centralities = network.monoplex_nx_wrapper("betweenness_centrality", kwargs={"weight": "weight"})
-            
+
             # With multiple parameters
-            centralities = network.monoplex_nx_wrapper("betweenness_centrality", 
+            centralities = network.monoplex_nx_wrapper("betweenness_centrality",
                                                        kwargs={"weight": "weight", "normalized": True})
         """
 
         if kwargs is None:
             kwargs = {}
-        
+
         # Validate that the method exists in NetworkX
         if not hasattr(nx, method):
             raise AttributeError(f"NetworkX has no method '{method}'")
-        
+
         # Get the NetworkX function and call it safely
         nx_function = getattr(nx, method)
         result = nx_function(self.core_network, **kwargs)
@@ -1531,14 +1531,14 @@ class multi_layer_network:
 
     def _generic_edge_list_manipulator(self, edge_list, target_function, raw=False):
         """Generic manipulator of edge lists.
-        
+
         Args:
             edge_list: List of edges or single edge as [node1, layer1, node2, layer2, weight]
             target_function: Name of the method to call (e.g., 'add_edge', 'remove_edge')
             raw: If True, only pass node tuples; if False, also include weight and type
         """
         func = getattr(self.core_network, target_function)
-        
+
         if isinstance(edge_list[0], list):
             for edge in edge_list:
                 n1, l1, n2, l2, w = edge
@@ -1598,13 +1598,13 @@ class multi_layer_network:
 
     def _generic_node_list_manipulator(self, node_list, target_function):
         """Generic manipulator of node lists.
-        
+
         Args:
             node_list: List of nodes or single node as [node_id, layer_id]
             target_function: Name of the method to call (e.g., 'add_node', 'remove_node')
         """
         func = getattr(self.core_network, target_function)
-        
+
         if isinstance(node_list, list):
             for node in node_list:
                 n1, l1 = node
@@ -1628,7 +1628,7 @@ class multi_layer_network:
         input_type: str = "dict",
     ) -> None:
         """Add edges to the multilayer network.
-        
+
         This method supports multiple input formats for specifying edges between nodes
         in different layers. The most common format is dict-based.
 
@@ -1648,10 +1648,10 @@ class multi_layer_network:
                 'type': 'interaction'       # Optional: edge type/label
             }
             ```
-            
+
             **List format:**
             `[node1, layer1, node2, layer2]`
-            
+
             **px_edge format:**
             `((node1, layer1), (node2, layer2), {'weight': 1.0})`
 
@@ -1664,7 +1664,7 @@ class multi_layer_network:
             ...     'source_type': 'protein',
             ...     'target_type': 'protein'
             ... }])
-            
+
             >>> # Add inter-layer edge with weight
             >>> net.add_edges([{
             ...     'source': 'gene1',
@@ -1674,7 +1674,7 @@ class multi_layer_network:
             ...     'weight': 0.95,
             ...     'type': 'expression'
             ... }])
-            
+
             >>> # Add multiple edges at once
             >>> edges = [
             ...     {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'},
@@ -1684,7 +1684,7 @@ class multi_layer_network:
 
         Raises:
             Exception: If input_type is not one of 'dict', 'list', or 'px_edge'
-            
+
         Notes:
             - For intra-layer edges, use the same layer for source_type and target_type
             - For inter-layer edges, use different layers
@@ -1745,7 +1745,7 @@ class multi_layer_network:
         self, node_dict_list: Union[List[Dict], Dict], input_type: str = "dict"
     ) -> None:
         """Add nodes to the multilayer network.
-        
+
         Nodes in a multilayer network are identified by both their ID and the layer
         they belong to. This method adds nodes using a dict-based format.
 
@@ -1768,7 +1768,7 @@ class multi_layer_network:
             >>> # Add single node
             >>> net = multi_layer_network()
             >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
-            
+
             >>> # Add multiple nodes to the same layer
             >>> nodes = [
             ...     {'source': 'A', 'type': 'protein'},
@@ -1776,7 +1776,7 @@ class multi_layer_network:
             ...     {'source': 'C', 'type': 'protein'}
             ... ]
             >>> net.add_nodes(nodes)
-            
+
             >>> # Add nodes with attributes
             >>> net.add_nodes([{
             ...     'source': 'gene1',
@@ -1785,7 +1785,7 @@ class multi_layer_network:
             ...     'label': 'BRCA1',
             ...     'chromosome': '17'
             ... }])
-            
+
             >>> # Add nodes to multiple layers
             >>> multi_layer_nodes = [
             ...     {'source': 'entity1', 'type': 'layer1'},
@@ -1842,7 +1842,7 @@ class multi_layer_network:
 
     def _encode_to_numeric(self):
         """Encode network to numeric format for matrix operations.
-        
+
         Converts the network structure to numeric matrices. For multilayer networks,
         creates a simple numeric graph. For multiplex networks, creates a supra-adjacency
         matrix with identity matrices coupling layers.
@@ -1952,12 +1952,12 @@ class multi_layer_network:
         legend=False,
     ):
         """Visualize the multilayer network.
-        
+
         Supports multiple visualization styles:
         - 'diagonal': Layer-centric diagonal layout with inter-layer edges
         - 'hairball': Aggregate hairball plot of all layers
         - 'flow' or 'alluvial': Layered flow visualization with horizontal bands
-        
+
         Args:
             style: Visualization style ('diagonal', 'hairball', 'flow', or 'alluvial')
             parameters_layers: Custom parameters for layer drawing
@@ -1975,20 +1975,20 @@ class multi_layer_network:
             alphachannel: Alpha channel for edge transparency
             linepoints: Line style for edges
             legend: Show legend (for hairball style)
-            
+
         Returns:
             Matplotlib axis object
-            
+
         Raises:
             Exception: If style is not recognized
-            
+
         Performance Notes:
             For large networks (>500 nodes), visualization performance may degrade:
             - Layout computation can be slow (O(n²) for force-directed layouts)
             - Rendering many edges is memory and CPU intensive
             - Consider filtering or sampling for exploratory visualization
             - Use simpler layouts or increase layout iteration limits
-            
+
             Approximate rendering times on typical hardware:
             - 100 nodes: <1 second
             - 500 nodes: 5-10 seconds
@@ -1997,7 +1997,7 @@ class multi_layer_network:
         """
         if server_mode:
             return 0
-        
+
         # Performance warning for large networks
         if self.core_network is not None:
             num_nodes = self.core_network.number_of_nodes()
@@ -2007,7 +2007,7 @@ class multi_layer_network:
                     "This may take significant time and memory. "
                     "Consider using network sampling or filtering for exploratory analysis."
                 )
-        
+
         if style == "diagonal":
             return _visualize_diagonal_style(
                 self,
@@ -2028,10 +2028,10 @@ class multi_layer_network:
         elif style in ("flow", "alluvial"):
             # Import here to avoid circular dependency
             from py3plex.visualization.multilayer import draw_multilayer_flow
-            
+
             # Get layers data
             labels_list, graphs, multilinks = self.get_layers("diagonal")
-            
+
             # Extract relevant kwargs for draw_multilayer_flow
             flow_kwargs = {}
             if 'node_activity' in locals():
@@ -2044,7 +2044,7 @@ class multi_layer_network:
                 flow_kwargs['node_cmap'] = locals()['node_cmap']
             if 'flow_alpha' in locals():
                 flow_kwargs['flow_alpha'] = locals()['flow_alpha']
-            
+
             return draw_multilayer_flow(
                 graphs,
                 multilinks,
@@ -2365,29 +2365,29 @@ class multi_layer_network:
 
     def _build_supra_graph(self, weight_attr: str = "weight", interlayer_weight: float = 1.0):
         """Build a supra-graph representation of the multilayer network.
-        
+
         The supra-graph includes both intra-layer edges (from each layer) and
         inter-layer edges (connecting corresponding nodes across layers).
-        
+
         Args:
             weight_attr: Name of the edge attribute containing weights.
             interlayer_weight: Weight for inter-layer coupling edges.
-        
+
         Returns:
             NetworkX graph: Supra-graph with nodes labeled as (node_id, layer_id).
         """
         if self.core_network is None:
             raise ValueError("Core network is not initialized. Cannot build supra-graph.")
-        
+
         # Create a new graph of the same type (directed/undirected)
         if self.directed:
             G_supra = nx.DiGraph()
         else:
             G_supra = nx.Graph()
-        
+
         # Add all nodes and intra-layer edges from core_network
         G_supra.add_nodes_from(self.core_network.nodes())
-        
+
         # Add intra-layer edges with their weights
         for u, v, key, data in self.core_network.edges(keys=True, data=True):
             # For intra-layer edges, u and v should have the same layer
@@ -2399,7 +2399,7 @@ class multi_layer_network:
                         G_supra[u][v][weight_attr] = min(G_supra[u][v].get(weight_attr, weight), weight)
                     else:
                         G_supra.add_edge(u, v, **{weight_attr: weight})
-        
+
         # Add inter-layer coupling edges
         # Group nodes by node_id
         node_layers = defaultdict(list)
@@ -2407,7 +2407,7 @@ class multi_layer_network:
             if isinstance(node, tuple) and len(node) >= 2:
                 node_id, layer = node[0], node[1]
                 node_layers[node_id].append(layer)
-        
+
         # Add inter-layer edges between same nodes in different layers
         for node_id, layers in node_layers.items():
             if len(layers) > 1:
@@ -2417,7 +2417,7 @@ class multi_layer_network:
                         node1 = (node_id, layer1)
                         node2 = (node_id, layer2)
                         G_supra.add_edge(node1, node2, **{weight_attr: interlayer_weight})
-        
+
         return G_supra
 
     def compute_ollivier_ricci(
@@ -2433,15 +2433,15 @@ class multi_layer_network:
         interlayer_weight: float = 1.0,
     ) -> Dict[str, Any]:
         """Compute Ollivier-Ricci curvature on the multilayer network.
-        
+
         This method provides flexible computation of Ollivier-Ricci curvature
         at different levels of the multilayer network:
-        
+
         - **core mode**: Compute curvature on the aggregated (flattened) network
         - **layers mode**: Compute curvature separately for each layer
         - **supra mode**: Compute curvature on the full supra-graph including
           both intra-layer and inter-layer edges
-        
+
         Args:
             mode: Scope of computation. Options: "core", "layers", "supra".
             layers: List of layer identifiers to process (only for mode="layers").
@@ -2457,18 +2457,18 @@ class multi_layer_network:
                 without modifying the network. Default: True.
             interlayer_weight: Weight for inter-layer coupling edges (only for
                 mode="supra"). Default: 1.0.
-        
+
         Returns:
             Dictionary mapping scope identifiers to NetworkX graphs with computed
             curvatures:
             - mode="core": {"core": graph_with_curvature}
             - mode="layers": {layer_id: graph_with_curvature, ...}
             - mode="supra": {"supra": supra_graph_with_curvature}
-        
+
         Raises:
             RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
             ValueError: If mode is invalid or layers contains invalid identifiers.
-        
+
         Examples:
             >>> from py3plex.core import multinet
             >>> net = multinet.multi_layer_network()
@@ -2476,27 +2476,27 @@ class multi_layer_network:
             ...     ['A', 'layer1', 'B', 'layer1', 1],
             ...     ['B', 'layer1', 'C', 'layer1', 1],
             ... ], input_type="list")
-            >>> 
+            >>>
             >>> # Compute on aggregated network
             >>> result = net.compute_ollivier_ricci(mode="core")
-            >>> 
+            >>>
             >>> # Compute per layer
             >>> result = net.compute_ollivier_ricci(mode="layers")
-            >>> 
+            >>>
             >>> # Compute on supra-graph
             >>> result = net.compute_ollivier_ricci(mode="supra", inplace=False)
         """
         if not RICCI_AVAILABLE:
             raise RicciBackendNotAvailable()
-        
+
         if mode not in ["core", "layers", "supra"]:
             raise ValueError(f"Invalid mode: {mode}. Must be 'core', 'layers', or 'supra'.")
-        
+
         if self.core_network is None:
             raise ValueError("Core network is not initialized.")
-        
+
         result = {}
-        
+
         if mode == "core":
             # Compute on aggregated core network
             G_curved = compute_ollivier_ricci_single_graph(
@@ -2510,12 +2510,12 @@ class multi_layer_network:
             if inplace:
                 self.core_network = G_curved
             result["core"] = G_curved
-        
+
         elif mode == "layers":
             # Get all unique layers
-            all_layers = set([n[1] for n in self.core_network.nodes() 
+            all_layers = set([n[1] for n in self.core_network.nodes()
                             if isinstance(n, tuple) and len(n) >= 2])
-            
+
             # Determine which layers to process
             if layers is None:
                 layers_to_process = all_layers
@@ -2525,12 +2525,12 @@ class multi_layer_network:
                 invalid_layers = layers_to_process - all_layers
                 if invalid_layers:
                     raise ValueError(f"Invalid layer identifiers: {invalid_layers}")
-            
+
             # Process each layer
             for layer in layers_to_process:
                 # Get subnetwork for this layer
                 subnet = self.subnetwork([layer], subset_by='layers')
-                
+
                 # Compute curvature
                 G_curved = compute_ollivier_ricci_single_graph(
                     subnet.core_network,
@@ -2540,7 +2540,7 @@ class multi_layer_network:
                     verbose=verbose,
                     backend_kwargs=backend_kwargs,
                 )
-                
+
                 if inplace:
                     # Update edges in the main core_network
                     for u, v, data in G_curved.edges(data=True):
@@ -2549,16 +2549,16 @@ class multi_layer_network:
                             if self.core_network.has_edge(u, v):
                                 for key in self.core_network[u][v]:
                                     self.core_network[u][v][key][curvature_attr] = data[curvature_attr]
-                
+
                 result[layer] = G_curved
-        
+
         elif mode == "supra":
             # Build supra-graph
             G_supra = self._build_supra_graph(
                 weight_attr=weight_attr,
                 interlayer_weight=interlayer_weight
             )
-            
+
             # Compute curvature on supra-graph
             G_supra_curved = compute_ollivier_ricci_single_graph(
                 G_supra,
@@ -2568,11 +2568,11 @@ class multi_layer_network:
                 verbose=verbose,
                 backend_kwargs=backend_kwargs,
             )
-            
+
             # Note: For supra mode, we don't update core_network even if inplace=True,
             # as the supra-graph is a different representation
             result["supra"] = G_supra_curved
-        
+
         return result
 
     def compute_ollivier_ricci_flow(
@@ -2590,12 +2590,12 @@ class multi_layer_network:
         interlayer_weight: float = 1.0,
     ) -> Dict[str, Any]:
         """Compute Ollivier-Ricci flow on the multilayer network.
-        
+
         Ricci flow iteratively adjusts edge weights based on their Ricci curvature,
         effectively revealing and enhancing community structure. After Ricci flow,
         edges with negative curvature (community boundaries) have reduced weights,
         while edges with positive curvature have increased weights.
-        
+
         Args:
             mode: Scope of computation. Options: "core", "layers", "supra".
             layers: List of layer identifiers to process (only for mode="layers").
@@ -2614,18 +2614,18 @@ class multi_layer_network:
                 Default: True.
             interlayer_weight: Weight for inter-layer coupling edges (only for
                 mode="supra"). Default: 1.0.
-        
+
         Returns:
             Dictionary mapping scope identifiers to NetworkX graphs with Ricci flow
             applied:
             - mode="core": {"core": graph_with_flow}
             - mode="layers": {layer_id: graph_with_flow, ...}
             - mode="supra": {"supra": supra_graph_with_flow}
-        
+
         Raises:
             RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
             ValueError: If mode is invalid or layers contains invalid identifiers.
-        
+
         Examples:
             >>> from py3plex.core import multinet
             >>> net = multinet.multi_layer_network()
@@ -2633,24 +2633,24 @@ class multi_layer_network:
             ...     ['A', 'layer1', 'B', 'layer1', 1],
             ...     ['B', 'layer1', 'C', 'layer1', 1],
             ... ], input_type="list")
-            >>> 
+            >>>
             >>> # Apply Ricci flow to aggregated network
             >>> result = net.compute_ollivier_ricci_flow(mode="core", iterations=20)
-            >>> 
+            >>>
             >>> # Apply to each layer
             >>> result = net.compute_ollivier_ricci_flow(mode="layers", iterations=10)
         """
         if not RICCI_AVAILABLE:
             raise RicciBackendNotAvailable()
-        
+
         if mode not in ["core", "layers", "supra"]:
             raise ValueError(f"Invalid mode: {mode}. Must be 'core', 'layers', or 'supra'.")
-        
+
         if self.core_network is None:
             raise ValueError("Core network is not initialized.")
-        
+
         result = {}
-        
+
         if mode == "core":
             # Compute Ricci flow on aggregated core network
             G_flow = compute_ollivier_ricci_flow_single_graph(
@@ -2666,12 +2666,12 @@ class multi_layer_network:
             if inplace:
                 self.core_network = G_flow
             result["core"] = G_flow
-        
+
         elif mode == "layers":
             # Get all unique layers
-            all_layers = set([n[1] for n in self.core_network.nodes() 
+            all_layers = set([n[1] for n in self.core_network.nodes()
                             if isinstance(n, tuple) and len(n) >= 2])
-            
+
             # Determine which layers to process
             if layers is None:
                 layers_to_process = all_layers
@@ -2681,12 +2681,12 @@ class multi_layer_network:
                 invalid_layers = layers_to_process - all_layers
                 if invalid_layers:
                     raise ValueError(f"Invalid layer identifiers: {invalid_layers}")
-            
+
             # Process each layer
             for layer in layers_to_process:
                 # Get subnetwork for this layer
                 subnet = self.subnetwork([layer], subset_by='layers')
-                
+
                 # Compute Ricci flow
                 G_flow = compute_ollivier_ricci_flow_single_graph(
                     subnet.core_network,
@@ -2698,7 +2698,7 @@ class multi_layer_network:
                     verbose=verbose,
                     backend_kwargs=backend_kwargs,
                 )
-                
+
                 if inplace:
                     # Update edges in the main core_network
                     for u, v, data in G_flow.edges(data=True):
@@ -2709,16 +2709,16 @@ class multi_layer_network:
                                     self.core_network[u][v][key][weight_attr] = data[weight_attr]
                                 if curvature_attr in data:
                                     self.core_network[u][v][key][curvature_attr] = data[curvature_attr]
-                
+
                 result[layer] = G_flow
-        
+
         elif mode == "supra":
             # Build supra-graph
             G_supra = self._build_supra_graph(
                 weight_attr=weight_attr,
                 interlayer_weight=interlayer_weight
             )
-            
+
             # Compute Ricci flow on supra-graph
             G_supra_flow = compute_ollivier_ricci_flow_single_graph(
                 G_supra,
@@ -2730,9 +2730,9 @@ class multi_layer_network:
                 verbose=verbose,
                 backend_kwargs=backend_kwargs,
             )
-            
+
             result["supra"] = G_supra_flow
-        
+
         return result
 
     def visualize_ricci_core(
@@ -2745,25 +2745,25 @@ class multi_layer_network:
     ):
         """
         Visualize the aggregated core network using Ricci-flow-based layout.
-        
+
         This method is a high-level wrapper for Ricci-flow-based visualization
         of the core (aggregated) network. It automatically computes Ricci flow
         if not already done and creates an informative layout that emphasizes
         geometric structure and communities.
-        
+
         Args:
             alpha: Ollivier-Ricci parameter for flow computation. Default: 0.5.
             iterations: Number of Ricci flow iterations. Default: 10.
             layout_type: Layout algorithm ("mds", "spring", "spectral"). Default: "mds".
             dim: Dimensionality of layout (2 or 3). Default: 2.
             **kwargs: Additional arguments passed to visualize_multilayer_ricci_core.
-        
+
         Returns:
             Tuple of (figure, axes, positions_dict).
-        
+
         Raises:
             RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
-        
+
         Examples:
             >>> from py3plex.core import multinet
             >>> net = multinet.multi_layer_network()
@@ -2774,7 +2774,7 @@ class multi_layer_network:
             >>> fig, ax, pos = net.visualize_ricci_core()
             >>> import matplotlib.pyplot as plt
             >>> plt.show()
-        
+
         See Also:
             visualize_ricci_layers: Per-layer visualization with Ricci flow
             visualize_ricci_supra: Supra-graph visualization with Ricci flow
@@ -2782,7 +2782,7 @@ class multi_layer_network:
         from py3plex.visualization.ricci_multilayer_vis import (
             visualize_multilayer_ricci_core,
         )
-        
+
         return visualize_multilayer_ricci_core(
             self,
             alpha=alpha,
@@ -2803,11 +2803,11 @@ class multi_layer_network:
     ):
         """
         Visualize individual layers using Ricci-flow-based layouts.
-        
+
         This method creates visualizations of individual layers with layouts
         derived from Ricci flow. Layers can share a common coordinate system
         (for easier comparison) or have independent layouts.
-        
+
         Args:
             layers: List of layer identifiers to visualize. If None, uses all layers.
             alpha: Ollivier-Ricci parameter. Default: 0.5.
@@ -2815,20 +2815,20 @@ class multi_layer_network:
             layout_type: Layout algorithm. Default: "mds".
             share_layout: If True, use shared coordinates across layers. Default: True.
             **kwargs: Additional arguments passed to visualize_multilayer_ricci_layers.
-        
+
         Returns:
             Tuple of (figure, layer_positions_dict).
-        
+
         Raises:
             RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
-        
+
         Examples:
             >>> fig, pos_dict = net.visualize_ricci_layers(
             ...     arrangement="grid", share_layout=True
             ... )
             >>> import matplotlib.pyplot as plt
             >>> plt.show()
-        
+
         See Also:
             visualize_ricci_core: Core network visualization with Ricci flow
             visualize_ricci_supra: Supra-graph visualization with Ricci flow
@@ -2836,7 +2836,7 @@ class multi_layer_network:
         from py3plex.visualization.ricci_multilayer_vis import (
             visualize_multilayer_ricci_layers,
         )
-        
+
         return visualize_multilayer_ricci_layers(
             self,
             layers=layers,
@@ -2857,29 +2857,29 @@ class multi_layer_network:
     ):
         """
         Visualize the full supra-graph using Ricci-flow-based layout.
-        
+
         This method visualizes the complete multilayer structure including both
         intra-layer edges (within layers) and inter-layer edges (coupling between
         layers) using a layout derived from Ricci flow.
-        
+
         Args:
             alpha: Ollivier-Ricci parameter. Default: 0.5.
             iterations: Number of Ricci flow iterations. Default: 10.
             layout_type: Layout algorithm. Default: "mds".
             dim: Dimensionality (2 or 3). Default: 2.
             **kwargs: Additional arguments passed to visualize_multilayer_ricci_supra.
-        
+
         Returns:
             Tuple of (figure, axes, positions_dict).
-        
+
         Raises:
             RicciBackendNotAvailable: If GraphRicciCurvature is not installed.
-        
+
         Examples:
             >>> fig, ax, pos = net.visualize_ricci_supra(dim=3)
             >>> import matplotlib.pyplot as plt
             >>> plt.show()
-        
+
         See Also:
             visualize_ricci_core: Core network visualization with Ricci flow
             visualize_ricci_layers: Per-layer visualization with Ricci flow
@@ -2887,7 +2887,7 @@ class multi_layer_network:
         from py3plex.visualization.ricci_multilayer_vis import (
             visualize_multilayer_ricci_supra,
         )
-        
+
         return visualize_multilayer_ricci_supra(
             self,
             alpha=alpha,

@@ -80,7 +80,7 @@ def parse_gaf_file(gaf_mappings, whole_list_counts=False):
         >>> mappings = parse_gaf_file('annotations.gaf.gz')
         >>> mappings['UniProt123']
         {'GO:0001234', 'GO:0005678'}
-        
+
         >>> # Get counts of all terms
         >>> mappings, all_terms = parse_gaf_file('annotations.gaf.gz',
         ...                                       whole_list_counts=True)
@@ -159,7 +159,7 @@ def read_topology_mappings(mapping):
         >>> mappings = read_topology_mappings('clusters.txt')
         >>> mappings
         {'module1': {'nodeA', 'nodeB'}, 'module2': {'nodeC'}}
-        
+
         >>> # Pass-through existing dict
         >>> existing = {'m1': {'n1', 'n2'}}
         >>> result = read_topology_mappings(existing)

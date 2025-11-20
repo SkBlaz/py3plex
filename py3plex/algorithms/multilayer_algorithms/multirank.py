@@ -102,19 +102,19 @@ def multirank(
         # Build layer-weighted supra-adjacency matrix using sparse operations
         # For each layer ℓ: A_y[ℓ] = y[ℓ] * A[ℓ]
         # Use sparse block matrix construction for memory efficiency: O(E + N*L) vs O(N²*L²)
-        
+
         # Convert layers to sparse if needed and scale by layer scores
         weighted_layers_sparse = []
         for ell in range(L):
             layer_csr = sp.csr_matrix(layer_adjacencies[ell])
             weighted_layers_sparse.append(layer_scores[ell] * layer_csr)
-        
+
         # Build block-diagonal supra matrix using sparse blocks
         # Diagonal blocks: intralayer edges weighted by layer scores
         diagonal_blocks = [[None for _ in range(L)] for _ in range(L)]
         for ell in range(L):
             diagonal_blocks[ell][ell] = weighted_layers_sparse[ell]
-        
+
         # Off-diagonal blocks: interlayer replica couplings (sparse identity matrices)
         for ell1 in range(L):
             for ell2 in range(L):
@@ -126,18 +126,18 @@ def multirank(
                     else:
                         # Zero block if no coupling
                         diagonal_blocks[ell1][ell2] = sp.csr_matrix((N, N))
-        
+
         # Construct sparse supra-adjacency matrix
         supra_matrix = sp.bmat(diagonal_blocks, format='csr')
-        
+
         # Create row-stochastic transition matrix (sparse operations)
         row_sums = np.array(supra_matrix.sum(axis=1)).flatten()
         row_sums[row_sums == 0] = 1  # Handle dangling nodes
-        
+
         # Normalize rows to create transition matrix
         row_sums_inv = sp.diags(1.0 / row_sums, format='csr')
         transition_matrix = row_sums_inv @ supra_matrix
-        
+
         # PageRank-style update on supra-matrix (sparse matrix-vector products)
         replica_scores = np.ones(N * L) / (N * L)
         for _ in range(100):  # Inner PageRank iterations
@@ -147,16 +147,16 @@ def multirank(
             if np.linalg.norm(replica_scores - new_replica_scores) < tol:
                 break
             replica_scores = new_replica_scores
-        
+
         # Aggregate replica scores to node scores (sum across layers)
         # Vectorized: reshape and sum instead of nested loops
         replica_scores_reshaped = replica_scores.reshape(L, N)
         new_node_scores = np.sum(replica_scores_reshaped, axis=0)
-        
+
         # Normalize node scores
         if np.sum(new_node_scores) > 0:
             new_node_scores = new_node_scores / np.sum(new_node_scores)
-        
+
         # === Update layer scores ===
         # Vectorized computation: for each layer ℓ, compute edge activity
         # edge_activity = sum_{i,j} A[ℓ]_{ij} * (x[i] + x[j])

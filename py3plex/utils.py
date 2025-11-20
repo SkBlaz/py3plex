@@ -81,7 +81,7 @@ def get_rng(
     Note:
         Uses numpy.random.Generator (modern API introduced in NumPy 1.17)
         rather than the legacy numpy.random.RandomState API.
-        
+
         Negative seeds are converted to positive values by taking absolute value
         to ensure compatibility with NumPy's SeedSequence.
     """
@@ -200,31 +200,31 @@ def validate_multilayer_input(network_data: Any) -> None:
 def get_data_path(relative_path: str) -> str:
     """
     Get the absolute path to a data file in the repository.
-    
+
     This function searches for data files in multiple locations to support both:
     - Running examples from a cloned repository
     - Running scripts/notebooks from any directory with datasets locally available
-    
+
     Search order:
     1. Relative to the calling script's directory (for examples in cloned repo)
     2. Relative to current working directory (for notebooks/user scripts)
     3. Relative to py3plex package location (for editable installs)
-    
+
     Args:
         relative_path: Path relative to repository root (e.g., "datasets/intact02.gpickle")
-    
+
     Returns:
         str: Absolute path to the file
-    
+
     Raises:
         FileNotFoundError: If the file cannot be found in any search location
-    
+
     Examples:
         >>> from py3plex.utils import get_data_path
         >>> path = get_data_path("datasets/intact02.gpickle")
         >>> os.path.exists(path)
         True
-    
+
     Note:
         When py3plex is installed via pip, datasets are not included in the package.
         Users should either:
@@ -233,7 +233,7 @@ def get_data_path(relative_path: str) -> str:
         - Use current working directory with datasets folder
     """
     search_paths = []
-    
+
     # 1. Try relative to the calling script's directory
     try:
         caller_path = _find_caller_script_path()
@@ -244,7 +244,7 @@ def get_data_path(relative_path: str) -> str:
                 search_paths.append(str(candidate))
     except (OSError, AttributeError):
         pass  # Continue to other search methods
-    
+
     # 2. Try relative to current working directory
     try:
         cwd_path = Path.cwd() / relative_path
@@ -253,7 +253,7 @@ def get_data_path(relative_path: str) -> str:
         search_paths.append(str(cwd_path))
     except (OSError, AttributeError):
         pass
-    
+
     # 3. Try relative to py3plex package location (for editable installs)
     try:
         utils_dir = Path(__file__).parent
@@ -264,7 +264,7 @@ def get_data_path(relative_path: str) -> str:
         search_paths.append(str(package_path))
     except (OSError, AttributeError):
         pass
-    
+
     # If we reach here, file was not found in any location
     raise FileNotFoundError(
         f"Could not find '{relative_path}' in any of the expected locations.\n"
@@ -280,16 +280,16 @@ def get_data_path(relative_path: str) -> str:
 def _find_caller_script_path() -> Path:
     """
     Find the path of the script that called get_data_path.
-    
+
     Walks up the call stack to find the first frame outside the py3plex package.
-    
+
     Returns:
         Path to the calling script, or None if not found
     """
     frame = inspect.currentframe()
     utils_file = Path(__file__).resolve()
     package_dir = utils_file.parent  # py3plex package directory
-    
+
     try:
         while frame is not None:
             frame_file = inspect.getframeinfo(frame).filename
@@ -305,21 +305,21 @@ def _find_caller_script_path() -> Path:
             frame = frame.f_back
     finally:
         del frame  # Avoid reference cycles
-    
+
     return None
 
 
 def _search_upward_from_script(script_dir: Path, relative_path: str) -> list:
     """
     Generate candidate paths by searching upward from script directory.
-    
+
     Searches the script's directory and up to MAX_UPWARD_SEARCH_LEVELS-1 parent
     directories for the requested file path.
-    
+
     Args:
         script_dir: Directory containing the calling script
         relative_path: Relative path to search for
-    
+
     Returns:
         List of candidate paths to check
     """
@@ -336,15 +336,15 @@ def _search_upward_from_script(script_dir: Path, relative_path: str) -> list:
 def get_dataset_path(filename: str) -> str:
     """
     Get the absolute path to a dataset file.
-    
+
     Convenience wrapper around get_data_path() specifically for dataset files.
-    
+
     Args:
         filename: Name or relative path of the dataset file
-    
+
     Returns:
         str: Absolute path to the dataset file
-    
+
     Examples:
         >>> from py3plex.utils import get_dataset_path
         >>> path = get_dataset_path("intact02.gpickle")
@@ -361,15 +361,15 @@ def get_dataset_path(filename: str) -> str:
 def get_example_image_path(filename: str) -> str:
     """
     Get the absolute path to an example image file.
-    
+
     Convenience wrapper around get_data_path() specifically for example image files.
-    
+
     Args:
         filename: Name or relative path of the image file
-    
+
     Returns:
         str: Absolute path to the example image file
-    
+
     Examples:
         >>> from py3plex.utils import get_example_image_path
         >>> path = get_example_image_path("intact_10_BH.png")
@@ -384,15 +384,15 @@ def get_example_image_path(filename: str) -> str:
 def get_multilayer_dataset_path(relative_path: str) -> str:
     """
     Get the absolute path to a multilayer dataset file.
-    
+
     Convenience wrapper around get_data_path() specifically for multilayer dataset files.
-    
+
     Args:
         relative_path: Relative path within multilayer_datasets directory
-    
+
     Returns:
         str: Absolute path to the multilayer dataset file
-    
+
     Examples:
         >>> from py3plex.utils import get_multilayer_dataset_path
         >>> path = get_multilayer_dataset_path("MLKing/MLKing2013_multiplex.edges")
@@ -407,16 +407,16 @@ def get_multilayer_dataset_path(relative_path: str) -> str:
 def get_background_knowledge_path(filename: str) -> str:
     """
     Get the absolute path to a background knowledge file or directory.
-    
+
     Convenience wrapper around get_data_path() specifically for background knowledge files.
-    
+
     Args:
         filename: Name or relative path of the background knowledge file.
                  Use empty string or '.' to get the background_knowledge directory itself.
-    
+
     Returns:
         str: Absolute path to the background knowledge file or directory
-    
+
     Examples:
         >>> from py3plex.utils import get_background_knowledge_path
         >>> path = get_background_knowledge_path("bk.n3")
@@ -435,10 +435,10 @@ def get_background_knowledge_path(filename: str) -> str:
 def get_background_knowledge_dir() -> str:
     """
     Get the absolute path to the background knowledge directory.
-    
+
     Returns:
         str: Absolute path to the background_knowledge directory
-    
+
     Examples:
         >>> from py3plex.utils import get_background_knowledge_dir
         >>> dir_path = get_background_knowledge_dir()
