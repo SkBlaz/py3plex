@@ -88,21 +88,32 @@ def compute_layout(
         value_pairs.append(v)
         keys.append(k)
 
-    coordinate_matrix = np.matrix(value_pairs)
-    norm_x = (coordinate_matrix[:, 0] - np.min(coordinate_matrix[:, 0])) / (
-        np.max(coordinate_matrix[:, 0]) - np.min(coordinate_matrix[:, 0])
-    )
+    # Use ndarray instead of deprecated matrix
+    coordinate_matrix = np.array(value_pairs)
+    x_min = np.min(coordinate_matrix[:, 0])
+    x_max = np.max(coordinate_matrix[:, 0])
+    y_min = np.min(coordinate_matrix[:, 1])
+    y_max = np.max(coordinate_matrix[:, 1])
 
-    norm_y = (coordinate_matrix[:, 1] - np.min(coordinate_matrix[:, 1])) / (
-        np.max(coordinate_matrix[:, 1]) - np.min(coordinate_matrix[:, 1])
-    )
+    # Normalize coordinates, handling degenerate cases
+    x_range = x_max - x_min
+    y_range = y_max - y_min
+    if x_range > 0:
+        norm_x = (coordinate_matrix[:, 0] - x_min) / x_range
+    else:
+        norm_x = np.zeros(len(coordinate_matrix))
+
+    if y_range > 0:
+        norm_y = (coordinate_matrix[:, 1] - y_min) / y_range
+    else:
+        norm_y = np.zeros(len(coordinate_matrix))
 
     coordinate_matrix[:, 0] = norm_x
     coordinate_matrix[:, 1] = norm_y
 
     tmp_pos = {}
     for enx, j in enumerate(keys):
-        tmp_pos[j] = np.asarray(coordinate_matrix[enx])[0]
+        tmp_pos[j] = coordinate_matrix[enx]
 
     for node in network.nodes(data=True):
         coordinates = tmp_pos[node[0]]
