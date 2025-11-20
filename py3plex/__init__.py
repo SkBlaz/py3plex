@@ -52,6 +52,7 @@ from py3plex.exceptions import (
     ConversionError,
     DecompositionError,
     EmbeddingError,
+    ExternalToolError,
     IncompatibleNetworkError,
     InvalidEdgeError,
     InvalidLayerError,
@@ -102,6 +103,7 @@ __all__ = [
     "EmbeddingError",
     "ConversionError",
     "IncompatibleNetworkError",
+    "ExternalToolError",
     # Profiling utilities
     "profile_performance",
     "timed_section",

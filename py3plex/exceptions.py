@@ -94,3 +94,9 @@ class Py3plexMatrixError(Py3plexException):
     """Exception raised when matrix operations fail or matrix is invalid."""
 
     pass
+
+
+class ExternalToolError(Py3plexException):
+    """Exception raised when external tool execution fails."""
+
+    pass
