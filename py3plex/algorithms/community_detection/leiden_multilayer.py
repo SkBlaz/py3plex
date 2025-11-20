@@ -46,8 +46,8 @@ class LeidenResult:
     def summary(self) -> str:
         """Generate a summary report of the results."""
         n_communities = len(set(self.communities.values()))
-        n_nodes = len(set(node for node, layer in self.communities.keys()))
-        n_layers = len(set(layer for node, layer in self.communities.keys()))
+        n_nodes = len({node for node, layer in self.communities.keys()})
+        n_layers = len({layer for node, layer in self.communities.keys()})
         
         report = []
         report.append("=" * 60)
@@ -449,7 +449,7 @@ def leiden_multilayer(
     if total_weight == 0:
         # Empty network
         return LeidenResult(
-            communities={nl: 0 for nl in node_layer_list},
+            communities=dict.fromkeys(node_layer_list, 0),
             modularity=0.0,
             iterations=0,
         )

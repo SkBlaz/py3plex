@@ -2159,9 +2159,7 @@ def draw_multilayer_flow(
     """
     # Get or create axes
     if ax is None:
-        fig, ax = plt.subplots(figsize=(12, 8))
-    else:
-        fig = ax.get_figure()
+        _fig, ax = plt.subplots(figsize=(12, 8))
     
     n_layers = len(graphs)
     if n_layers == 0:

@@ -8,7 +8,6 @@ with full coverage of main algorithms.
 
 import argparse
 import json
-import os
 import random
 import shutil
 import sys
@@ -1512,7 +1511,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
                 )
 
         initial_nodes = network.core_network.number_of_nodes()
-        initial_edges = network.core_network.number_of_edges()
 
         # Test layer splitting
         try:

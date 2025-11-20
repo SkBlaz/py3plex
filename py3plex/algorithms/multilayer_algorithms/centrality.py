@@ -1526,7 +1526,7 @@ class MultilayerCentrality:
         n = matrix.shape[0]
 
         # Initialize size tracking
-        size_accumulator = {node_layer: 0.0 for node_layer in node_layer_mapping.keys()}
+        size_accumulator = dict.fromkeys(node_layer_mapping.keys(), 0.0)
 
         # Run Monte Carlo trials
         for _ in range(trials):
@@ -1756,7 +1756,7 @@ class MultilayerCentrality:
                     G.add_edge(i, j, weight=edge_length)
 
         # Initialize load
-        load = {idx: 0.0 for idx in range(n)}
+        load = dict.fromkeys(range(n), 0.0)
 
         # Compute shortest paths for all pairs
         for source in G.nodes():
@@ -1817,18 +1817,18 @@ class MultilayerCentrality:
                     G.add_edge(i, j, capacity=matrix[i, j])
 
         # Initialize flow betweenness
-        flow_between = {idx: 0.0 for idx in range(n)}
+        flow_between = dict.fromkeys(range(n), 0.0)
 
         # Sample source-target pairs
         nodes_list = list(G.nodes())
         if len(nodes_list) < 2:
-            results = {nl: 0.0 for nl in node_layer_mapping.keys()}
+            results = dict.fromkeys(node_layer_mapping.keys(), 0.0)
             return results
         
         # Ensure unique nodes for sampling
         nodes_list = list(set(nodes_list))
         if len(nodes_list) < 2:
-            results = {nl: 0.0 for nl in node_layer_mapping.keys()}
+            results = dict.fromkeys(node_layer_mapping.keys(), 0.0)
             return results
 
         for _ in range(samples):

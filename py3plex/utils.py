@@ -7,7 +7,6 @@ including random state management for reproducibility and deprecation warnings.
 
 import functools
 import inspect
-import os
 import warnings
 from pathlib import Path
 from typing import Any, Callable, Optional, Union

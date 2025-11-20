@@ -10,12 +10,11 @@ The layouts are designed to work with graphs that have had Ricci flow applied,
 using the updated edge weights to inform node positioning.
 """
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 import warnings
 
 import networkx as nx
 import numpy as np
-from scipy.spatial.distance import squareform
 from sklearn.manifold import MDS
 
 from py3plex.logging_config import get_logger

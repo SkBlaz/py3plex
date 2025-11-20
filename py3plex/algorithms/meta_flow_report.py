@@ -10,15 +10,8 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 import warnings
-
-try:
-    import numpy as np
-    NUMPY_AVAILABLE = True
-except ImportError:
-    NUMPY_AVAILABLE = False
-    warnings.warn("numpy not available, some features may not work")
 
 
 class MetaFlowReport:
@@ -120,7 +113,7 @@ class MetaFlowReport:
             
             return centralities
         except ImportError as e:
-            warnings.warn(f"Could not compute centralities: {e}")
+            warnings.warn(f"Could not compute centralities: {e}", stacklevel=2)
             return {}
     
     def detect_communities(
@@ -174,9 +167,9 @@ class MetaFlowReport:
                     }
                     
             except ImportError as e:
-                warnings.warn(f"Could not run {method} community detection: {e}")
+                warnings.warn(f"Could not run {method} community detection: {e}", stacklevel=2)
             except Exception as e:
-                warnings.warn(f"Error running {method}: {e}")
+                warnings.warn(f"Error running {method}: {e}", stacklevel=2)
         
         return results
     
@@ -208,7 +201,7 @@ class MetaFlowReport:
                     density = mls.layer_density(self.network, layer)
                     stats['layer_densities'][layer] = density
                 except Exception as e:
-                    warnings.warn(f"Could not compute density for layer {layer}: {e}")
+                    warnings.warn(f"Could not compute density for layer {layer}: {e}", stacklevel=2)
             
             # Node activities
             try:
@@ -218,7 +211,7 @@ class MetaFlowReport:
                     activity = mls.node_activity(self.network, node)
                     stats['node_activities'][node] = activity
             except Exception as e:
-                warnings.warn(f"Could not compute node activities: {e}")
+                warnings.warn(f"Could not compute node activities: {e}", stacklevel=2)
             
             # Inter-layer coupling (for first pair of layers)
             if len(layers) >= 2:
@@ -230,7 +223,7 @@ class MetaFlowReport:
                         f"{layers[0]}-{layers[1]}": coupling
                     }
                 except Exception as e:
-                    warnings.warn(f"Could not compute inter-layer coupling: {e}")
+                    warnings.warn(f"Could not compute inter-layer coupling: {e}", stacklevel=2)
             
             # Edge overlap (for first pair of layers)
             if len(layers) >= 2:
@@ -240,7 +233,7 @@ class MetaFlowReport:
                         f"{layers[0]}-{layers[1]}": overlap
                     }
                 except Exception as e:
-                    warnings.warn(f"Could not compute edge overlap: {e}")
+                    warnings.warn(f"Could not compute edge overlap: {e}", stacklevel=2)
             
             # Advanced statistics
             if include_advanced:
@@ -250,16 +243,16 @@ class MetaFlowReport:
                     )
                     stats['versatility_centrality'] = versatility
                 except Exception as e:
-                    warnings.warn(f"Could not compute versatility centrality: {e}")
+                    warnings.warn(f"Could not compute versatility centrality: {e}", stacklevel=2)
                 
                 try:
                     clustering = mls.multilayer_clustering_coefficient(self.network)
                     stats['multilayer_clustering'] = clustering
                 except Exception as e:
-                    warnings.warn(f"Could not compute clustering: {e}")
+                    warnings.warn(f"Could not compute clustering: {e}", stacklevel=2)
         
         except ImportError as e:
-            warnings.warn(f"Could not compute statistics: {e}")
+            warnings.warn(f"Could not compute statistics: {e}", stacklevel=2)
         
         return stats
     

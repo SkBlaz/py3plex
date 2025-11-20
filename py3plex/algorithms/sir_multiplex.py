@@ -21,7 +21,7 @@ Model:
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Callable, Optional, Any
+from typing import Optional, Any
 import warnings
 
 try:
@@ -184,8 +184,6 @@ def simulate_sir_multiplex_discrete(
     
     # Simulation loop
     for k in range(steps):
-        t = times[k]
-        
         # Current infected nodes as float array for matrix multiplication
         infected = (X == 1).astype(float)
         
@@ -403,7 +401,7 @@ def simulate_sir_multiplex_gillespie(
     I_hist = [np.sum(X == 1)]
     R_hist = [np.sum(X == 2)]
     events = [] if return_event_log else None
-    layer_inc = {alpha: 0 for alpha in range(L)} if return_layer_incidence else None
+    layer_inc = dict.fromkeys(range(L), 0) if return_layer_incidence else None
     layer_inc_hist = [] if return_layer_incidence else None
     
     # Initialize infection rates per node
