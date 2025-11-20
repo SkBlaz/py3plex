@@ -36,12 +36,20 @@ def test_mpc_normalized_range(n_nodes, n_layers, seed):
     # Create a multiplex network
     multinet = multi_layer_network()
     
-    # Add edges to each layer with same nodes
+    # First, ensure all nodes appear in all layers by creating a star topology
+    # This guarantees a valid multiplex network
     for layer_idx in range(n_layers):
         layer_name = f"layer_{layer_idx}"
+        # Connect all nodes to node 0 (star topology)
+        for i in range(1, n_nodes):
+            multinet.add_edges(
+                [[0, layer_name, i, layer_name, 1.0]],
+                input_type="list"
+            )
+        # Add additional random edges
         for i in range(n_nodes):
             for j in range(i + 1, n_nodes):
-                if (seed + i * n_nodes + j + layer_idx) % 3 == 0:
+                if (seed + i * n_nodes + j + layer_idx) % 4 == 0:
                     multinet.add_edges(
                         [[i, layer_name, j, layer_name, 1.0]],
                         input_type="list"
@@ -67,12 +75,19 @@ def test_mpc_returns_dict(n_nodes, n_layers, seed):
     # Create a multiplex network
     multinet = multi_layer_network()
     
-    # Add edges to each layer
+    # Ensure all nodes appear in all layers - use star topology
     for layer_idx in range(n_layers):
         layer_name = f"layer_{layer_idx}"
+        # Connect all nodes to node 0
+        for i in range(1, n_nodes):
+            multinet.add_edges(
+                [[0, layer_name, i, layer_name, 1.0]],
+                input_type="list"
+            )
+        # Add additional random edges
         for i in range(n_nodes):
             for j in range(i + 1, n_nodes):
-                if (seed + i * n_nodes + j + layer_idx) % 3 == 0:
+                if (seed + i * n_nodes + j + layer_idx) % 4 == 0:
                     multinet.add_edges(
                         [[i, layer_name, j, layer_name, 1.0]],
                         input_type="list"
@@ -91,7 +106,7 @@ def test_mpc_returns_dict(n_nodes, n_layers, seed):
 @pytest.mark.property
 @settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
-    n_nodes=st.integers(min_value=3, max_value=8),
+    n_nodes=st.integers(min_value=4, max_value=8),
     seed=st.integers(min_value=0, max_value=10000)
 )
 def test_mpc_isolated_node_zero(n_nodes, seed):
@@ -99,12 +114,20 @@ def test_mpc_isolated_node_zero(n_nodes, seed):
     # Create a multiplex network
     multinet = multi_layer_network()
     
-    # Add edges to two layers, but leave node 0 isolated
+    # Create star topology for nodes 1..n_nodes-1 (excluding node 0)
+    # Node 0 will be isolated, all other nodes present in all layers
     for layer_idx in range(2):
         layer_name = f"layer_{layer_idx}"
+        # Connect nodes 2..n_nodes-1 to node 1 (star with node 1 as center)
+        for i in range(2, n_nodes):
+            multinet.add_edges(
+                [[1, layer_name, i, layer_name, 1.0]],
+                input_type="list"
+            )
+        # Add more random edges (still avoiding node 0)
         for i in range(1, n_nodes):
             for j in range(i + 1, n_nodes):
-                if (seed + i * n_nodes + j + layer_idx) % 3 == 0:
+                if (seed + i * n_nodes + j + layer_idx) % 4 == 0:
                     multinet.add_edges(
                         [[i, layer_name, j, layer_name, 1.0]],
                         input_type="list"
@@ -156,12 +179,19 @@ def test_mpc_unnormalized_range(n_nodes, n_layers, seed):
     # Create a multiplex network
     multinet = multi_layer_network()
     
-    # Add edges to each layer
+    # Ensure all nodes in all layers - use star topology
     for layer_idx in range(n_layers):
         layer_name = f"layer_{layer_idx}"
+        # Connect all nodes to node 0
+        for i in range(1, n_nodes):
+            multinet.add_edges(
+                [[0, layer_name, i, layer_name, 1.0]],
+                input_type="list"
+            )
+        # Add additional random edges
         for i in range(n_nodes):
             for j in range(i + 1, n_nodes):
-                if (seed + i * n_nodes + j + layer_idx) % 3 == 0:
+                if (seed + i * n_nodes + j + layer_idx) % 4 == 0:
                     multinet.add_edges(
                         [[i, layer_name, j, layer_name, 1.0]],
                         input_type="list"
@@ -189,12 +219,19 @@ def test_mpc_numeric_stability(n_nodes, n_layers, seed):
     # Create a multiplex network
     multinet = multi_layer_network()
     
-    # Add edges to each layer
+    # Ensure all nodes in all layers - use star topology
     for layer_idx in range(n_layers):
         layer_name = f"layer_{layer_idx}"
+        # Connect all nodes to node 0
+        for i in range(1, n_nodes):
+            multinet.add_edges(
+                [[0, layer_name, i, layer_name, 1.0]],
+                input_type="list"
+            )
+        # Add additional random edges
         for i in range(n_nodes):
             for j in range(i + 1, n_nodes):
-                if (seed + i * n_nodes + j + layer_idx) % 3 == 0:
+                if (seed + i * n_nodes + j + layer_idx) % 4 == 0:
                     multinet.add_edges(
                         [[i, layer_name, j, layer_name, 1.0]],
                         input_type="list"
