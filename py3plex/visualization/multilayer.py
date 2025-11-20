@@ -859,6 +859,295 @@ def interactive_hairball_plot(
     return fig  # Return the figure object
 
 
+def interactive_diagonal_plot(
+    network_list: Union[List[nx.Graph], Dict[Any, nx.Graph]],
+    layer_labels: Optional[List[str]] = None,
+    layout_algorithm: str = "force",
+    layer_gap: float = 4.0,
+    node_size_base: int = 8,
+    layer_colors: Optional[List[str]] = None,
+    show_interlayer_edges: bool = True,
+    interlayer_edges: Optional[List[Tuple[Any, Any]]] = None,
+) -> Union[bool, Any]:
+    """Create an interactive 2.5D diagonal multilayer plot using Plotly.
+    
+    This function creates an interactive version of the diagonal multilayer
+    visualization, mimicking the traditional 2D diagonal layout but in an
+    interactive 3D environment. Each layer is positioned diagonally with
+    clear visual separation, similar to the static diagonal visualization.
+    
+    Args:
+        network_list: List of NetworkX graphs (layers) or dict of layer_name -> graph
+        layer_labels: Optional labels for each layer
+        layout_algorithm: Layout algorithm for nodes ("force", "circular", "random")
+        layer_gap: Distance between layers in diagonal direction (default: 2.5)
+        node_size_base: Base size for nodes (default: 8)
+        layer_colors: Optional list of colors for each layer (HTML color names or hex)
+        show_interlayer_edges: Whether to show inter-layer edges
+        interlayer_edges: List of tuples (node1, node2) for inter-layer connections
+        
+    Returns:
+        False if plotly not available, otherwise plotly figure object
+        
+    Examples:
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network()
+        >>> net.load_network("network.txt", input_type="multiedgelist")
+        >>> labels, graphs, multilinks = net.get_layers("diagonal")
+        >>> fig = interactive_diagonal_plot(graphs, layer_labels=labels)
+    """
+    if not plotly_import:
+        logger.error("Please install plotly! Use: pip install plotly")
+        return False
+    
+    # Convert dict to list if necessary
+    if isinstance(network_list, dict):
+        if layer_labels is None:
+            layer_labels = list(network_list.keys())
+        network_list = list(network_list.values())
+    
+    if layer_labels is None:
+        layer_labels = [f"Layer {i+1}" for i in range(len(network_list))]
+    
+    # Define default layer colors if not provided
+    if layer_colors is None:
+        # Use distinct colors for each layer
+        default_colors = [
+            '#FF6B6B',  # Coral red
+            '#4ECDC4',  # Turquoise
+            '#FFD93D',  # Yellow
+            '#95E1D3',  # Mint
+            '#F38181',  # Light coral
+            '#AA96DA',  # Lavender
+            '#FCBAD3',  # Pink
+            '#A8D8EA',  # Light blue
+        ]
+        layer_colors = [default_colors[i % len(default_colors)] for i in range(len(network_list))]
+    
+    # Prepare data structures
+    all_traces = []
+    layer_positions = {}
+    
+    # Calculate layer spacing based on the traditional diagonal offset
+    # In the original, each layer is offset by MULTILAYER_LAYER_OFFSET (1.5) in both x and y
+    layer_offset = layer_gap
+    
+    # Process each layer
+    for layer_idx, (layer_graph, layer_label) in enumerate(zip(network_list, layer_labels)):
+        if layer_graph.number_of_nodes() == 0:
+            continue
+        
+        # Compute 2D layout for this layer independently
+        # Adjust parameters based on network size for better node dispersion
+        num_nodes = layer_graph.number_of_nodes()
+        
+        if layout_algorithm == "force":
+            # Use adaptive k parameter based on network size to prevent overlap
+            # Larger k = more spacing between nodes
+            k_param = None  # Let NetworkX auto-calculate for better spacing
+            if num_nodes > 10:
+                k_param = 1.0 / (num_nodes ** 0.5)  # Adaptive spacing
+            
+            pos_2d = nx.spring_layout(
+                layer_graph, 
+                k=k_param, 
+                iterations=100,  # More iterations for better convergence
+                seed=42
+            )
+        elif layout_algorithm == "circular":
+            pos_2d = nx.circular_layout(layer_graph)
+        elif layout_algorithm == "random":
+            pos_2d = nx.random_layout(layer_graph, seed=42)
+        else:
+            # Default to force with adaptive parameters
+            k_param = None
+            if num_nodes > 10:
+                k_param = 1.0 / (num_nodes ** 0.5)
+            pos_2d = nx.spring_layout(
+                layer_graph, 
+                k=k_param, 
+                iterations=100, 
+                seed=42
+            )
+        
+        # Convert to 3D positions with proper diagonal offset
+        # Each layer gets its own "plane" offset diagonally
+        diagonal_offset = layer_idx * layer_offset
+        z_offset = layer_idx * 1.2  # Increased Z separation for better depth perception
+        
+        pos_3d = {}
+        for node, (x, y) in pos_2d.items():
+            # Scale the layout to better fill the viewport
+            # Larger networks need more scaling to maintain spacing
+            scale_factor = 2.5 if num_nodes > 10 else 2.0
+            scaled_x = x * scale_factor
+            scaled_y = y * scale_factor
+            # Apply diagonal offset (mimicking the 2D diagonal layout)
+            pos_3d[node] = (
+                scaled_x + diagonal_offset,
+                scaled_y + diagonal_offset,
+                z_offset
+            )
+        
+        layer_positions[layer_idx] = pos_3d
+        layer_color = layer_colors[layer_idx]
+        
+        # Create edge traces for this layer with layer-specific color
+        edge_x, edge_y, edge_z = [], [], []
+        for edge in layer_graph.edges():
+            x0, y0, z0 = pos_3d[edge[0]]
+            x1, y1, z1 = pos_3d[edge[1]]
+            edge_x.extend([x0, x1, None])
+            edge_y.extend([y0, y1, None])
+            edge_z.extend([z0, z1, None])
+        
+        if edge_x:
+            # Convert hex color to rgba with alpha
+            edge_trace = go.Scatter3d(
+                x=edge_x,
+                y=edge_y,
+                z=edge_z,
+                mode='lines',
+                line=dict(color=layer_color, width=1.5),
+                opacity=0.4,
+                hoverinfo='none',
+                name=f'{layer_label} edges',
+                showlegend=False,
+                legendgroup=layer_label
+            )
+            all_traces.append(edge_trace)
+        
+        # Create node trace for this layer with distinct layer color
+        node_x, node_y, node_z = [], [], []
+        node_text = []
+        node_sizes = []
+        
+        for node in layer_graph.nodes():
+            x, y, z = pos_3d[node]
+            node_x.append(x)
+            node_y.append(y)
+            node_z.append(z)
+            degree = layer_graph.degree(node)
+            node_sizes.append(node_size_base + degree * 3)
+            node_text.append(f"<b>{node}</b><br>Layer: {layer_label}<br>Degree: {degree}")
+        
+        # Color all nodes in this layer with the same distinct color
+        node_trace = go.Scatter3d(
+            x=node_x,
+            y=node_y,
+            z=node_z,
+            mode='markers',
+            marker=dict(
+                size=node_sizes,
+                color=layer_color,
+                line=dict(color='white', width=1),
+                opacity=0.9
+            ),
+            text=node_text,
+            hoverinfo='text',
+            name=layer_label,
+            showlegend=True,
+            legendgroup=layer_label
+        )
+        all_traces.append(node_trace)
+    
+    # Add inter-layer edges if requested
+    if show_interlayer_edges and interlayer_edges:
+        inter_edge_x, inter_edge_y, inter_edge_z = [], [], []
+        
+        for node1, node2 in interlayer_edges:
+            # Find which layers these nodes belong to
+            found = False
+            for idx1, pos_dict1 in layer_positions.items():
+                if node1 in pos_dict1:
+                    for idx2, pos_dict2 in layer_positions.items():
+                        if idx2 != idx1 and node2 in pos_dict2:
+                            x0, y0, z0 = pos_dict1[node1]
+                            x1, y1, z1 = pos_dict2[node2]
+                            inter_edge_x.extend([x0, x1, None])
+                            inter_edge_y.extend([y0, y1, None])
+                            inter_edge_z.extend([z0, z1, None])
+                            found = True
+                            break
+                if found:
+                    break
+        
+        if inter_edge_x:
+            inter_edge_trace = go.Scatter3d(
+                x=inter_edge_x,
+                y=inter_edge_y,
+                z=inter_edge_z,
+                mode='lines',
+                line=dict(color='rgba(100, 100, 100, 0.4)', width=2, dash='dash'),
+                hoverinfo='none',
+                name='Inter-layer',
+                showlegend=True
+            )
+            all_traces.append(inter_edge_trace)
+    
+    # Create figure
+    fig = go.Figure(data=all_traces)
+    
+    # Update layout for optimal 2.5D diagonal view
+    fig.update_layout(
+        title=dict(
+            text='<b>Interactive Diagonal Multilayer Network</b><br><sub>Rotate • Zoom • Hover for details</sub>',
+            x=0.5,
+            xanchor='center',
+            font=dict(size=18, color='#2C3E50')
+        ),
+        scene=dict(
+            xaxis=dict(
+                showgrid=True, 
+                zeroline=False, 
+                showticklabels=False, 
+                title='',
+                gridcolor='rgba(200, 200, 200, 0.2)',
+                showbackground=False
+            ),
+            yaxis=dict(
+                showgrid=True, 
+                zeroline=False, 
+                showticklabels=False, 
+                title='',
+                gridcolor='rgba(200, 200, 200, 0.2)',
+                showbackground=False
+            ),
+            zaxis=dict(
+                showgrid=True, 
+                zeroline=False, 
+                showticklabels=False, 
+                title='',
+                gridcolor='rgba(200, 200, 200, 0.2)',
+                showbackground=False
+            ),
+            bgcolor='rgba(250, 250, 250, 1)',
+            camera=dict(
+                eye=dict(x=1.1, y=1.1, z=0.9),  # Closer camera for better viewport utilization
+                center=dict(x=0, y=0, z=0),
+                up=dict(x=0, y=0, z=1)
+            ),
+            aspectmode='data'  # Changed from 'cube' to 'data' for better scaling
+        ),
+        showlegend=True,
+        legend=dict(
+            x=0.02,
+            y=0.98,
+            bgcolor='rgba(255, 255, 255, 0.95)',
+            bordercolor='rgba(0, 0, 0, 0.2)',
+            borderwidth=1,
+            font=dict(size=11)
+        ),
+        hovermode='closest',
+        margin=dict(l=0, r=0, t=80, b=0),
+        paper_bgcolor='white',
+        plot_bgcolor='white'
+    )
+    
+    fig.show()
+    return fig
+
+
 def visualize_multilayer_network(
     multilayer_network,
     visualization_type: str = "diagonal",

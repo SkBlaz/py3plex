@@ -22,6 +22,7 @@ from .multilayer import (
     draw_multilayer_default,
     draw_multiedges,
     interactive_hairball_plot,
+    interactive_diagonal_plot,
 )
 
 from .colors import (
@@ -43,6 +44,7 @@ __all__ = [
     "draw_multilayer_default",
     "draw_multiedges",
     "interactive_hairball_plot",
+    "interactive_diagonal_plot",
     # Color utilities
     "colors_default",
     "colors_blue",
