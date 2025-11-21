@@ -411,6 +411,8 @@ Basic Random Walk
 
     Random walk from ('0', 'null'): [('0', 'null'), ('1', 'null'), ('4872', 'null'), ('786', 'null'), ('5382', 'null')]... (length: 11)
 
+**Note:** When loading a simple edgelist file (without explicit layer information), py3plex assigns nodes to a default layer named ``'null'``. Nodes are represented as tuples ``(node_id, layer_name)``.
+
 Node2Vec Biased Walks
 ~~~~~~~~~~~~~~~~~~~~~
 
