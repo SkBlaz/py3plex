@@ -92,20 +92,13 @@ def test_basic_random_walk_invalid_start_node():
         basic_random_walk(G, start_node=999, walk_length=3)
 
 
-def test_basic_random_walk_invalid_length():
-    """Test error handling for invalid walk length."""
+@pytest.mark.parametrize("walk_length", [0, -1, -5])
+def test_basic_random_walk_invalid_length(walk_length):
+    """Test error handling for invalid walk lengths."""
     G = nx.path_graph(5)
     
     with pytest.raises(ValueError, match="Walk length must be"):
-        basic_random_walk(G, start_node=0, walk_length=0)
-
-
-def test_basic_random_walk_zero_length():
-    """Test error on zero walk length."""
-    G = nx.path_graph(5)
-    
-    with pytest.raises(ValueError, match="Walk length must be"):
-        basic_random_walk(G, start_node=0, walk_length=-1)
+        basic_random_walk(G, start_node=0, walk_length=walk_length)
 
 
 def test_basic_random_walk_isolated_node():
