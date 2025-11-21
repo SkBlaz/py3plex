@@ -3,20 +3,24 @@ import ast
 import multiprocessing as mp
 import os
 import shutil
+import subprocess
 import tempfile
 import time
-from subprocess import call
 from typing import Any, List, Optional, Tuple
 
 from sklearn import linear_model
 from sklearn.multiclass import OneVsRestClassifier
 
 from py3plex.core.nx_compat import nx_info
+from py3plex.exceptions import ExternalToolError
 
 from ..logging_config import get_logger
 from .benchmark_nodes import benchmark_node_classification
 
 logger = get_logger(__name__)
+
+# Default binary path - can be overridden by environment variable
+DEFAULT_NODE2VEC_BINARY = os.environ.get("PY3PLEX_NODE2VEC_BINARY", "./node2vec")
 
 
 def call_node2vec_binary(
@@ -27,7 +31,8 @@ def call_node2vec_binary(
     dimension: int = 128,
     directed: bool = False,
     weighted: bool = True,
-    binary: str = "./node2vec",
+    binary: Optional[str] = None,
+    timeout: int = 300,
 ) -> None:
     """
     Call the Node2Vec C++ binary with specified parameters.
@@ -40,8 +45,24 @@ def call_node2vec_binary(
         dimension: Embedding dimension
         directed: Whether graph is directed
         weighted: Whether graph is weighted
-        binary: Path to node2vec binary
+        binary: Path to node2vec binary (defaults to PY3PLEX_NODE2VEC_BINARY env var or "./node2vec")
+        timeout: Maximum execution time in seconds
+
+    Raises:
+        ExternalToolError: If binary is not found or execution fails
     """
+    if binary is None:
+        binary = DEFAULT_NODE2VEC_BINARY
+
+    # Check if binary exists
+    if not os.path.isfile(binary) and not shutil.which(binary):
+        raise ExternalToolError(
+            f"Node2Vec binary not found at '{binary}'. "
+            f"Please install node2vec and set the path via the 'binary' parameter "
+            f"or the PY3PLEX_NODE2VEC_BINARY environment variable. "
+            f"See: https://github.com/snap-stanford/snap/tree/master/examples/node2vec"
+        )
+
     input_params: List[str] = []
     input_params.append(binary)
     input_params.append("-i:" + input_graph)
@@ -55,7 +76,30 @@ def call_node2vec_binary(
         input_params.append("-d")
     if weighted:
         input_params.append("-w")
-    call(input_params)
+
+    try:
+        result = subprocess.run(
+            input_params,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+        logger.debug("Node2Vec output: %s", result.stdout)
+    except subprocess.TimeoutExpired as e:
+        raise ExternalToolError(
+            f"Node2Vec execution timed out after {timeout} seconds. "
+            f"Consider increasing the timeout or reducing the graph size."
+        ) from e
+    except subprocess.CalledProcessError as e:
+        raise ExternalToolError(
+            f"Node2Vec execution failed with exit code {e.returncode}. "
+            f"stdout: {e.stdout}\nstderr: {e.stderr}"
+        ) from e
+    except FileNotFoundError as e:
+        raise ExternalToolError(
+            f"Failed to execute Node2Vec binary at '{binary}': {e}"
+        ) from e
 
 
 def n2v_embedding(
@@ -66,9 +110,10 @@ def n2v_embedding(
     outfile_name: str = "test.emb",
     p: Optional[float] = None,
     q: Optional[float] = None,
-    binary_path: str = "./node2vec",
+    binary_path: Optional[str] = None,
     parameter_range: Optional[List[float]] = None,
     embedding_dimension: int = 128,
+    timeout: int = 300,
 ) -> None:
     """
     Train Node2Vec embeddings with parameter optimization.
@@ -81,9 +126,10 @@ def n2v_embedding(
         outfile_name: Output embedding file name
         p: Return parameter (None triggers grid search)
         q: In-out parameter (None triggers grid search)
-        binary_path: Path to node2vec binary
+        binary_path: Path to node2vec binary (defaults to PY3PLEX_NODE2VEC_BINARY env var or "./node2vec")
         parameter_range: Range of parameters to search
         embedding_dimension: Dimension of embeddings
+        timeout: Maximum execution time in seconds per call
     """
 
     # construct the embedding and return the binary..
@@ -125,7 +171,14 @@ def n2v_embedding(
     if p is not None and q is not None:
         logger.info("Running specific config of N2V.")
         call_node2vec_binary(
-            tmp_graph, outfile_name, p=p, q=q, directed=False, weighted=True, binary=binary_path
+            tmp_graph,
+            outfile_name,
+            p=p,
+            q=q,
+            directed=False,
+            weighted=True,
+            binary=binary_path,
+            timeout=timeout,
         )
 
     else:
@@ -141,6 +194,7 @@ def n2v_embedding(
                     directed=False,
                     weighted=True,
                     binary=binary_path,
+                    timeout=timeout,
                 )
                 logger.debug("Parsing %s", outfile_name)
                 rdict = benchmark_node_classification(
@@ -171,6 +225,7 @@ def n2v_embedding(
             directed=False,
             weighted=True,
             binary=binary_path,
+            timeout=timeout,
         )
 
         with open(outfile_name) as f:
@@ -189,8 +244,9 @@ def learn_embedding(
     embedding_outfile: str = "out.emb",
     p: float = 0.1,
     q: float = 0.1,
-    binary_path: str = "./node2vec",
+    binary_path: Optional[str] = None,
     parameter_range: str = "[0.25,0.50,1,2,4]",
+    timeout: int = 300,
 ) -> Tuple[str, float]:
     """
     Learn node embeddings for a network.
@@ -202,8 +258,9 @@ def learn_embedding(
         embedding_outfile: Output file for embeddings
         p: Return parameter
         q: In-out parameter
-        binary_path: Path to node2vec binary
+        binary_path: Path to node2vec binary (defaults to PY3PLEX_NODE2VEC_BINARY env var or "./node2vec")
         parameter_range: String representation of parameter range list
+        timeout: Maximum execution time in seconds per call
 
     Returns:
         Tuple of (method_name, elapsed_time)
@@ -228,6 +285,7 @@ def learn_embedding(
             q=q,
             binary_path=binary_path,
             parameter_range=parameter_range_list,
+            timeout=timeout,
         )
     end = time.time()
     elapsed = end - start

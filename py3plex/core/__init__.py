@@ -13,6 +13,7 @@ Submodules:
     parsers: I/O parsers for various network formats
     converters: Format conversion utilities
     nx_compat: NetworkX compatibility layer
+    types: Type aliases for network components
 
 Examples:
     >>> from py3plex.core import multi_layer_network
@@ -21,5 +22,34 @@ Examples:
 """
 
 from py3plex.core.multinet import multi_layer_network
+from py3plex.core.types import (
+    Color,
+    ColorList,
+    EdgeDict,
+    EdgeTuple,
+    LayerId,
+    LayoutDict,
+    LayerGraph,
+    NetworkData,
+    Node,
+    NodeDict,
+    Position,
+    Weight,
+)
 
-__all__ = ["multi_layer_network"]
+__all__ = [
+    "multi_layer_network",
+    # Type aliases
+    "Node",
+    "LayerId",
+    "Weight",
+    "EdgeTuple",
+    "EdgeDict",
+    "NodeDict",
+    "LayerGraph",
+    "NetworkData",
+    "Position",
+    "LayoutDict",
+    "Color",
+    "ColorList",
+]
