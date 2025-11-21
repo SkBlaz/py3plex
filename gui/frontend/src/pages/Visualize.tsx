@@ -9,7 +9,7 @@ export default function Visualize() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedGraphId = sessionStorage.getItem('currentGraphId');
+    const storedGraphId = sessionStorage.getItem('currentGraphId') || localStorage.getItem('currentGraphId');
     if (storedGraphId) {
       setGraphId(storedGraphId);
       loadPositions(storedGraphId);
@@ -72,7 +72,10 @@ export default function Visualize() {
 
           {loading && (
             <div className="flex items-center justify-center h-96 bg-gray-50 rounded">
-              <p className="text-gray-500">Loading visualization...</p>
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading visualization...</p>
+              </div>
             </div>
           )}
 

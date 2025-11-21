@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Download, Package, AlertCircle } from 'lucide-react';
+import { Download, Package, AlertCircle, CheckCircle } from 'lucide-react';
 import { saveWorkspace } from '../lib/api';
+import api from '../lib/api';
 
 export default function Export() {
   const [graphId, setGraphId] = useState<string | null>(null);
@@ -8,13 +9,66 @@ export default function Export() {
   const [saving, setSaving] = useState(false);
   const [saveResult, setSaveResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedGraphId = sessionStorage.getItem('currentGraphId');
+    const storedGraphId = sessionStorage.getItem('currentGraphId') || localStorage.getItem('currentGraphId');
     if (storedGraphId) {
       setGraphId(storedGraphId);
     }
   }, []);
+
+  const handleDownload = async (type: string, filename: string) => {
+    if (!graphId) return;
+    
+    setDownloading(type);
+    setError(null);
+    
+    try {
+      let endpoint = '';
+      let contentType = '';
+      
+      switch (type) {
+        case 'centrality':
+          endpoint = `/graphs/${graphId}/analysis/centrality/export`;
+          contentType = 'text/csv';
+          break;
+        case 'community':
+          endpoint = `/graphs/${graphId}/analysis/community/export`;
+          contentType = 'application/json';
+          break;
+        case 'positions':
+          endpoint = `/graphs/${graphId}/positions/export`;
+          contentType = 'application/json';
+          break;
+        default:
+          throw new Error('Unknown export type');
+      }
+      
+      const response = await api.get(endpoint, {
+        responseType: 'blob',
+      });
+      
+      // Create download link
+      const blob = new Blob([response.data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setError(`No ${type} data available. Please run the corresponding analysis first.`);
+      } else {
+        setError(err.response?.data?.detail || `Failed to download ${type} data`);
+      }
+    } finally {
+      setDownloading(null);
+    }
+  };
 
   const handleSaveWorkspace = async () => {
     if (!graphId || !workspaceName) return;
@@ -66,23 +120,45 @@ export default function Export() {
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Export Options</h2>
 
+          {error && (
+            <div className="mb-4 bg-red-50 border border-red-200 rounded p-3 flex items-start">
+              <AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-2">Download Results</h3>
               <div className="space-y-2">
-                <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm">
+                <button 
+                  onClick={() => handleDownload('centrality', `centrality-${graphId}.csv`)}
+                  disabled={downloading === 'centrality'}
+                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
                   <Download className="h-4 w-4 mr-2" />
-                  Download Centrality CSV
+                  {downloading === 'centrality' ? 'Downloading...' : 'Download Centrality CSV'}
                 </button>
-                <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm">
+                <button 
+                  onClick={() => handleDownload('community', `community-${graphId}.json`)}
+                  disabled={downloading === 'community'}
+                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
                   <Download className="h-4 w-4 mr-2" />
-                  Download Community JSON
+                  {downloading === 'community' ? 'Downloading...' : 'Download Community JSON'}
                 </button>
-                <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm">
+                <button 
+                  onClick={() => handleDownload('positions', `positions-${graphId}.json`)}
+                  disabled={downloading === 'positions'}
+                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
                   <Download className="h-4 w-4 mr-2" />
-                  Download Layout Positions
+                  {downloading === 'positions' ? 'Downloading...' : 'Download Layout Positions'}
                 </button>
               </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Note: Data must be computed in the Analyze page before downloading
+              </p>
             </div>
 
             <div>
@@ -120,26 +196,29 @@ export default function Export() {
           <button
             onClick={handleSaveWorkspace}
             disabled={saving || !workspaceName}
-            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 flex items-center justify-center"
+            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
           >
             <Package className="h-4 w-4 mr-2" />
             {saving ? 'Saving...' : 'Save Workspace Bundle'}
           </button>
 
-          {error && (
+          {error && !downloading && (
             <div className="mt-4 bg-red-50 border border-red-200 rounded p-3">
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
 
           {saveResult && (
-            <div className="mt-4 bg-green-50 border border-green-200 rounded p-3">
-              <p className="text-sm text-green-700">
-                ✓ Workspace saved as <strong>{saveResult.filename}</strong>
-              </p>
-              <p className="text-xs text-green-600 mt-1">
-                ID: {saveResult.workspace_id}
-              </p>
+            <div className="mt-4 bg-green-50 border border-green-200 rounded p-3 flex items-start">
+              <CheckCircle className="h-5 w-5 text-green-600 mr-2 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm text-green-700">
+                  ✓ Workspace saved as <strong>{saveResult.filename}</strong>
+                </p>
+                <p className="text-xs text-green-600 mt-1">
+                  ID: {saveResult.workspace_id}
+                </p>
+              </div>
             </div>
           )}
         </div>
