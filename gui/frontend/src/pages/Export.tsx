@@ -50,6 +50,11 @@ export default function Export() {
         responseType: 'blob',
       });
       
+      // Validate response data
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
+      
       // Create download link
       const blob = new Blob([response.data], { type: contentType });
       const url = window.URL.createObjectURL(blob);

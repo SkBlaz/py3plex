@@ -21,9 +21,13 @@ export default function LoadData() {
     }
 
     // Check file extension
-    const extension = '.' + (file.name.split('.').pop()?.toLowerCase() || '');
-    if (!extension || extension === '.' || !ACCEPTED_FORMATS.includes(extension)) {
-      return `File format ${extension || 'unknown'} is not supported. Please use: ${ACCEPTED_FORMATS.join(', ')}`;
+    const parts = file.name.split('.');
+    if (parts.length < 2) {
+      return `File has no extension. Please use: ${ACCEPTED_FORMATS.join(', ')}`;
+    }
+    const extension = '.' + (parts.pop()?.toLowerCase() || '');
+    if (!ACCEPTED_FORMATS.includes(extension)) {
+      return `File format ${extension} is not supported. Please use: ${ACCEPTED_FORMATS.join(', ')}`;
     }
 
     return null;

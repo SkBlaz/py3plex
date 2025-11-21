@@ -65,9 +65,9 @@ export default function Analyze() {
         return result ? { ...j, ...result.data } : j;
       });
       
-      // Check for newly completed jobs
-      updated.forEach((job, idx) => {
-        const prevJob = prevJobsRef.current[idx];
+      // Check for newly completed jobs by comparing with previous state by job ID
+      updated.forEach((job) => {
+        const prevJob = prevJobsRef.current.find(p => p.id === job.id);
         if (prevJob && prevJob.status !== 'completed' && job.status === 'completed') {
           setNotification(`${job.type} job completed successfully!`);
           setTimeout(() => setNotification(null), 5000);
