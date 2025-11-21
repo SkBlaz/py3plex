@@ -8,7 +8,8 @@ export default function Export() {
   const [workspaceName, setWorkspaceName] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveResult, setSaveResult] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function Export() {
     if (!graphId) return;
     
     setDownloading(type);
-    setError(null);
+    setDownloadError(null);
     
     try {
       let endpoint = '';
@@ -61,9 +62,9 @@ export default function Export() {
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
       if (err.response?.status === 404) {
-        setError(`No ${type} data available. Please run the corresponding analysis first.`);
+        setDownloadError(`No ${type} data available. Please run the corresponding analysis first.`);
       } else {
-        setError(err.response?.data?.detail || `Failed to download ${type} data`);
+        setDownloadError(err.response?.data?.detail || `Failed to download ${type} data`);
       }
     } finally {
       setDownloading(null);
@@ -74,7 +75,7 @@ export default function Export() {
     if (!graphId || !workspaceName) return;
 
     setSaving(true);
-    setError(null);
+    setSaveError(null);
     setSaveResult(null);
 
     try {
@@ -85,7 +86,7 @@ export default function Export() {
       });
       setSaveResult(response.data);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to save workspace');
+      setSaveError(err.response?.data?.detail || 'Failed to save workspace');
     } finally {
       setSaving(false);
     }
@@ -120,10 +121,10 @@ export default function Export() {
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Export Options</h2>
 
-          {error && (
+          {downloadError && (
             <div className="mb-4 bg-red-50 border border-red-200 rounded p-3 flex items-start">
               <AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700">{error}</p>
+              <p className="text-sm text-red-700">{downloadError}</p>
             </div>
           )}
 
@@ -202,9 +203,9 @@ export default function Export() {
             {saving ? 'Saving...' : 'Save Workspace Bundle'}
           </button>
 
-          {error && !downloading && (
+          {saveError && (
             <div className="mt-4 bg-red-50 border border-red-200 rounded p-3">
-              <p className="text-sm text-red-700">{error}</p>
+              <p className="text-sm text-red-700">{saveError}</p>
             </div>
           )}
 
