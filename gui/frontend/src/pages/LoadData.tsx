@@ -20,12 +20,12 @@ export default function LoadData() {
       return `File size (${fileSizeMB.toFixed(1)}MB) exceeds maximum allowed size of ${MAX_FILE_SIZE_MB}MB`;
     }
 
-    // Check file extension
-    const parts = file.name.split('.');
-    if (parts.length < 2) {
+    // Check file extension - use lastIndexOf to handle filenames with multiple dots
+    const lastDotIndex = file.name.lastIndexOf('.');
+    if (lastDotIndex === -1 || lastDotIndex === file.name.length - 1) {
       return `File has no extension. Please use: ${ACCEPTED_FORMATS.join(', ')}`;
     }
-    const extension = '.' + (parts.pop()?.toLowerCase() || '');
+    const extension = file.name.substring(lastDotIndex).toLowerCase();
     if (!ACCEPTED_FORMATS.includes(extension)) {
       return `File format ${extension} is not supported. Please use: ${ACCEPTED_FORMATS.join(', ')}`;
     }

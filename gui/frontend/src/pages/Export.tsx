@@ -55,16 +55,21 @@ export default function Export() {
         throw new Error('No data received from server');
       }
       
-      // Create download link
+      // Create download link with proper cleanup
       const blob = new Blob([response.data], { type: contentType });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.download = filename;
       document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      
+      try {
+        link.click();
+      } finally {
+        // Always cleanup, even if click fails
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
     } catch (err: any) {
       if (err.response?.status === 404) {
         setDownloadError(`No ${type} data available. Please run the corresponding analysis first.`);

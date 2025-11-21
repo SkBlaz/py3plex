@@ -23,6 +23,7 @@ export default function Analyze() {
   const [notification, setNotification] = useState<string | null>(null);
   const pollTimerRef = useRef<number | null>(null);
   const prevJobsRef = useRef<any[]>([]);
+  const notificationTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const storedGraphId = sessionStorage.getItem('currentGraphId') || localStorage.getItem('currentGraphId');
@@ -69,8 +70,12 @@ export default function Analyze() {
       updated.forEach((job) => {
         const prevJob = prevJobsRef.current.find(p => p.id === job.id);
         if (prevJob && prevJob.status !== 'completed' && job.status === 'completed') {
+          // Clear any existing notification timer
+          if (notificationTimerRef.current) {
+            clearTimeout(notificationTimerRef.current);
+          }
           setNotification(`${job.type} job completed successfully!`);
-          setTimeout(() => setNotification(null), 5000);
+          notificationTimerRef.current = setTimeout(() => setNotification(null), 5000);
         }
       });
       
@@ -100,6 +105,10 @@ export default function Analyze() {
       if (pollTimerRef.current) {
         clearTimeout(pollTimerRef.current);
         pollTimerRef.current = null;
+      }
+      if (notificationTimerRef.current) {
+        clearTimeout(notificationTimerRef.current);
+        notificationTimerRef.current = null;
       }
     };
   }, [jobs, pollJobs]);
