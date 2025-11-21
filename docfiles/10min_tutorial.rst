@@ -215,7 +215,7 @@ For multilayer-specific centrality measures:
     # Initialize centrality calculator
     calc = MultilayerCentrality(network)
     
-    # Compute multilayer degree centrality (overlapping degree at node level)
+    # Compute multilayer degree centrality (considers node participation across layers)
     ml_degree = calc.overlapping_degree_centrality(weighted=False)
     print("Multilayer degree centrality:", ml_degree)
 
@@ -244,7 +244,7 @@ For multilayer-specific centrality measures:
 5. Multilayer Network Statistics (2 minutes)
 ---------------------------------------------
 
-py3plex provides specialized statistics for analyzing multilayer networks. Here are the most commonly used:
+py3plex provides many specialized statistics for analyzing multilayer networks. Here are the most commonly used:
 
 Basic Layer Statistics
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -409,7 +409,7 @@ Basic Random Walk
 
 .. code-block:: text
 
-    Random walk from ('0', 'null'): [('0', 'null'), ('1', 'null'), ('4872', 'null'), ('786', 'null'), ('5382', 'null')] (length: 11)
+    Random walk from ('0', 'null'): [('0', 'null'), ('1', 'null'), ('4872', 'null'), ('786', 'null'), ('5382', 'null')]... (length: 11)
 
 Node2Vec Biased Walks
 ~~~~~~~~~~~~~~~~~~~~~
@@ -629,6 +629,8 @@ Here's a complete workflow:
     Number of communities: 46
     
     Complete analysis saved to complete_analysis.png
+
+**Note:** In this example, the high number of communities (equal to the number of nodes) indicates that the network structure or parameters may need adjustment for meaningful community detection. In practice, adjust ``gamma`` (resolution) and ``omega`` (inter-layer coupling) parameters to achieve desired community granularity.
 
 Next Steps
 ----------
