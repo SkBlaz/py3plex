@@ -8,6 +8,7 @@ Tests compatibility functions for NetworkX operations across versions.
 import tempfile
 import os
 import pytest
+import numpy as np
 import networkx as nx
 from hypothesis import given, settings, assume, strategies as st
 from hypothesis import HealthCheck
@@ -208,21 +209,26 @@ def test_gpickle_roundtrip_preserves_node_count(num_nodes):
 @settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
     num_nodes=st.integers(min_value=2, max_value=10),
-    num_edges=st.integers(min_value=1, max_value=15)
+    num_edges=st.integers(min_value=1, max_value=15),
+    seed=st.integers(min_value=0, max_value=2**31-1)
 )
-def test_gpickle_roundtrip_preserves_edges(num_nodes, num_edges):
+def test_gpickle_roundtrip_preserves_edges(num_nodes, num_edges, seed):
     """Test that gpickle write/read preserves edges."""
     G = nx.Graph()
     G.add_nodes_from(range(num_nodes))
     
-    # Add some random edges
-    import random
-    random.seed(42)
+    # Use numpy random generator with seed from Hypothesis
+    import numpy as np
+    rng = np.random.default_rng(seed)
     edges_added = 0
-    for _ in range(num_edges):
-        if edges_added >= num_nodes * (num_nodes - 1) // 2:
+    max_edges = num_nodes * (num_nodes - 1) // 2
+    
+    for _ in range(min(num_edges, max_edges)):
+        if edges_added >= max_edges:
             break
-        u, v = random.sample(range(num_nodes), 2)
+        # Generate random edge using numpy
+        nodes = rng.choice(num_nodes, size=2, replace=False)
+        u, v = int(nodes[0]), int(nodes[1])
         if not G.has_edge(u, v):
             G.add_edge(u, v)
             edges_added += 1
