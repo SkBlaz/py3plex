@@ -8,6 +8,7 @@ including file existence checks, format validation, and error handling.
 
 import os
 import tempfile
+import pandas as pd
 import pytest
 from hypothesis import given, settings, assume, strategies as st
 from hypothesis import HealthCheck
@@ -16,7 +17,8 @@ from hypothesis import HealthCheck
 try:
     from py3plex.validation import (
         validate_file_exists,
-        validate_input_type
+        validate_input_type,
+        validate_csv_columns
     )
     from py3plex.io.schema import _is_json_serializable as schema_json_check
     from py3plex.exceptions import ParsingError
@@ -266,6 +268,138 @@ def test_validate_input_type_idempotent(input_type, call_count):
             # All calls should succeed
         except ParsingError:
             pytest.fail("All calls should succeed for valid input type")
+
+
+# ============================================================================
+# Property Tests: CSV Column Validation
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    columns=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
+        whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
+    )), min_size=1, max_size=5, unique=True)
+)
+def test_validate_csv_columns_accepts_valid_csv(columns):
+    """Test that validate_csv_columns accepts CSV with required columns."""
+    # Create a CSV with the required columns
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as f:
+        # Write header
+        f.write(','.join(columns) + '\n')
+        # Write one data row
+        f.write(','.join(['value'] * len(columns)) + '\n')
+        temp_path = f.name
+    
+    try:
+        # Should not raise exception
+        validate_csv_columns(temp_path, columns)
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    required=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
+        whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
+    )), min_size=1, max_size=3, unique=True),
+    extra=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
+        whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
+    )), min_size=1, max_size=3, unique=True)
+)
+def test_validate_csv_columns_accepts_extra_columns(required, extra):
+    """Test that validate_csv_columns allows extra columns beyond required."""
+    assume(not any(col in extra for col in required))
+    
+    all_columns = required + extra
+    
+    # Create CSV with both required and extra columns
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as f:
+        f.write(','.join(all_columns) + '\n')
+        f.write(','.join(['value'] * len(all_columns)) + '\n')
+        temp_path = f.name
+    
+    try:
+        # Should accept CSV even with extra columns
+        validate_csv_columns(temp_path, required)
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    required=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
+        whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
+    )), min_size=2, max_size=4, unique=True)
+)
+def test_validate_csv_columns_rejects_missing_columns(required):
+    """Test that validate_csv_columns rejects CSV with missing required columns."""
+    # Create CSV with only subset of required columns (at least one missing)
+    present_columns = required[:-1]  # Drop last column
+    
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as f:
+        f.write(','.join(present_columns) + '\n')
+        f.write(','.join(['value'] * len(present_columns)) + '\n')
+        temp_path = f.name
+    
+    try:
+        # Should raise ParsingError for missing columns
+        with pytest.raises(ParsingError, match="missing required column"):
+            validate_csv_columns(temp_path, required)
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    required=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
+        whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
+    )), min_size=1, max_size=3, unique=True),
+    optional=st.lists(st.text(min_size=1, max_size=20, alphabet=st.characters(
+        whitelist_categories=('Lu', 'Ll'), whitelist_characters='_'
+    )), min_size=1, max_size=2, unique=True)
+)
+def test_validate_csv_columns_with_optional_columns(required, optional):
+    """Test that validate_csv_columns handles optional columns."""
+    assume(not any(col in optional for col in required))
+    
+    # Create CSV with only required columns (no optional)
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as f:
+        f.write(','.join(required) + '\n')
+        f.write(','.join(['value'] * len(required)) + '\n')
+        temp_path = f.name
+    
+    try:
+        # Should accept CSV without optional columns
+        validate_csv_columns(temp_path, required, optional)
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(dummy=st.just(None))
+def test_validate_csv_columns_rejects_empty_csv(dummy):
+    """Test that validate_csv_columns rejects empty CSV files."""
+    # Create empty CSV file
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as f:
+        temp_path = f.name
+        # Don't write anything
+    
+    try:
+        # Should raise ParsingError for empty file
+        with pytest.raises(ParsingError, match="empty"):
+            validate_csv_columns(temp_path, ['col1'])
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
 
 
 if __name__ == '__main__':
