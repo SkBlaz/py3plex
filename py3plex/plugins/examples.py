@@ -1,0 +1,236 @@
+"""
+Example plugins demonstrating how to extend py3plex with custom algorithms.
+
+These examples show how to create plugins for different types of network analysis.
+"""
+
+from py3plex.plugins import (
+    CentralityPlugin,
+    CommunityPlugin,
+    LayoutPlugin,
+    MetricPlugin,
+    PluginRegistry,
+)
+
+
+@PluginRegistry.register("centrality", "example_degree")
+class ExampleDegreeCentrality(CentralityPlugin):
+    """
+    Example centrality plugin computing simple degree centrality.
+    
+    This is a demonstration plugin showing the plugin interface.
+    """
+
+    @property
+    def name(self) -> str:
+        return "example_degree"
+
+    @property
+    def description(self) -> str:
+        return "Example plugin computing degree centrality"
+
+    @property
+    def author(self) -> str:
+        return "Py3plex Development Team"
+
+    @property
+    def supports_weighted(self) -> bool:
+        return True
+
+    @property
+    def supports_directed(self) -> bool:
+        return True
+
+    @property
+    def supports_multilayer(self) -> bool:
+        return True
+
+    def compute(self, network, normalized=False, **kwargs):
+        """
+        Compute degree centrality for all nodes.
+        
+        Args:
+            network: A py3plex multi_layer_network object
+            normalized: Whether to normalize by max possible degree
+            **kwargs: Additional parameters
+            
+        Returns:
+            Dictionary mapping node IDs to degree centrality scores
+        """
+        centrality = {}
+
+        # Get all nodes from the network
+        try:
+            nodes = network.get_nodes()
+        except AttributeError:
+            raise ValueError("Network must be a py3plex multi_layer_network object")
+
+        # Compute degree for each node
+        for node in nodes:
+            degree = len(network.get_neighbors(node))
+            centrality[node] = degree
+
+        # Optionally normalize
+        if normalized and len(nodes) > 1:
+            max_degree = len(nodes) - 1
+            centrality = {k: v / max_degree for k, v in centrality.items()}
+
+        return centrality
+
+
+@PluginRegistry.register("community", "example_simple")
+class ExampleSimpleCommunity(CommunityPlugin):
+    """
+    Example community detection plugin using simple connected components.
+    
+    This is a demonstration plugin showing the plugin interface.
+    """
+
+    @property
+    def name(self) -> str:
+        return "example_simple"
+
+    @property
+    def description(self) -> str:
+        return "Example plugin for simple community detection"
+
+    @property
+    def author(self) -> str:
+        return "Py3plex Development Team"
+
+    def detect(self, network, **kwargs):
+        """
+        Detect communities using a simple algorithm.
+        
+        Args:
+            network: A py3plex multi_layer_network object
+            **kwargs: Additional parameters
+            
+        Returns:
+            Dictionary mapping node IDs to community IDs
+        """
+        communities = {}
+
+        try:
+            nodes = network.get_nodes()
+        except AttributeError:
+            raise ValueError("Network must be a py3plex multi_layer_network object")
+
+        # Simple assignment: assign community based on node hash
+        # This is just for demonstration
+        for i, node in enumerate(nodes):
+            communities[node] = hash(node) % 5  # 5 communities
+
+        return communities
+
+
+@PluginRegistry.register("metric", "example_density")
+class ExampleNetworkDensity(MetricPlugin):
+    """
+    Example metric plugin computing network density.
+    
+    This is a demonstration plugin showing the plugin interface.
+    """
+
+    @property
+    def name(self) -> str:
+        return "example_density"
+
+    @property
+    def description(self) -> str:
+        return "Example plugin computing network density"
+
+    @property
+    def author(self) -> str:
+        return "Py3plex Development Team"
+
+    @property
+    def metric_type(self) -> str:
+        return "global"
+
+    def compute(self, network, **kwargs):
+        """
+        Compute network density.
+        
+        Args:
+            network: A py3plex multi_layer_network object
+            **kwargs: Additional parameters
+            
+        Returns:
+            Dictionary with density metric
+        """
+        try:
+            num_nodes = len(network.get_nodes())
+            num_edges = len(network.get_edges())
+        except AttributeError:
+            raise ValueError("Network must be a py3plex multi_layer_network object")
+
+        if num_nodes < 2:
+            density = 0.0
+        else:
+            max_edges = num_nodes * (num_nodes - 1)
+            density = (2 * num_edges) / max_edges if max_edges > 0 else 0.0
+
+        return {
+            "density": density,
+            "num_nodes": num_nodes,
+            "num_edges": num_edges,
+        }
+
+
+@PluginRegistry.register("layout", "example_circular")
+class ExampleCircularLayout(LayoutPlugin):
+    """
+    Example layout plugin arranging nodes in a circle.
+    
+    This is a demonstration plugin showing the plugin interface.
+    """
+
+    @property
+    def name(self) -> str:
+        return "example_circular"
+
+    @property
+    def description(self) -> str:
+        return "Example plugin arranging nodes in a circular layout"
+
+    @property
+    def author(self) -> str:
+        return "Py3plex Development Team"
+
+    def compute_layout(self, network, dimensions=2, **kwargs):
+        """
+        Compute circular layout positions.
+        
+        Args:
+            network: A py3plex multi_layer_network object
+            dimensions: Number of dimensions (2 only for this example)
+            **kwargs: Additional parameters
+            
+        Returns:
+            Dictionary mapping node IDs to (x, y) positions
+        """
+        import math
+
+        if dimensions != 2:
+            raise ValueError("Example circular layout only supports 2D")
+
+        try:
+            nodes = list(network.get_nodes())
+        except AttributeError:
+            raise ValueError("Network must be a py3plex multi_layer_network object")
+
+        positions = {}
+        n = len(nodes)
+
+        if n == 0:
+            return positions
+
+        # Arrange nodes in a circle
+        for i, node in enumerate(nodes):
+            angle = 2 * math.pi * i / n
+            x = math.cos(angle)
+            y = math.sin(angle)
+            positions[node] = (x, y)
+
+        return positions

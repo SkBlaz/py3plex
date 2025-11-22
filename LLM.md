@@ -6,6 +6,37 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 
 ## Recent Updates (2025-11-22)
 
+### Plugin System Implementation (v0.96 - 2025-11-22)
+✅ **Introduced extensible plugin system for community contributions**
+- Created comprehensive plugin architecture with four plugin types:
+  - `CentralityPlugin`: Custom node centrality measures
+  - `CommunityPlugin`: Community detection algorithms
+  - `LayoutPlugin`: Network layout algorithms
+  - `MetricPlugin`: Custom network metrics
+- Implemented `PluginRegistry` with singleton pattern for centralized plugin management
+- Added decorator-based registration: `@PluginRegistry.register('type', 'name')`
+- Implemented plugin discovery from external directories (`~/.py3plex/plugins/`)
+- Support for environment variable `PY3PLEX_PLUGIN_DIR` for custom plugin locations
+- Created example plugins demonstrating all plugin types
+- Added comprehensive test suite (23 tests, 100% passing)
+- Created detailed plugin development guide (`PLUGIN_GUIDE.md`)
+- All plugins validated before use to ensure dependencies are met
+
+**Benefits:**
+- External developers can contribute algorithms without modifying py3plex core
+- Simple decorator-based API makes plugin creation straightforward
+- Automatic plugin discovery enables easy distribution of third-party extensions
+- Clear plugin interfaces ensure consistency and compatibility
+- Modular design allows users to install only the algorithms they need
+
+**New Files:**
+- `py3plex/plugins/__init__.py` - Plugin system public API
+- `py3plex/plugins/base.py` - Abstract base classes for all plugin types
+- `py3plex/plugins/registry.py` - Plugin registration and discovery system
+- `py3plex/plugins/examples.py` - Example plugins demonstrating usage
+- `tests/test_plugin_system.py` - Comprehensive plugin system tests
+- `PLUGIN_GUIDE.md` - Complete developer documentation for creating plugins
+
 ### Quickstart Documentation Enhancement (v0.96 - 2025-11-22)
 ✅ **Centralized code execution and output generation for quickstart documentation**
 - Created comprehensive system to execute and document all quickstart code snippets
