@@ -184,6 +184,11 @@ docs-check: ## Check API documentation consistency
 	@python docs/check_api_consistency.py --verbose
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ API consistency check complete!$(COLOR_RESET)\n"
 
+docs-quickstart: ## Generate outputs for quickstart code snippets
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Generating quickstart code snippet outputs...$(COLOR_RESET)\n"
+	@python docfiles/generate_all_outputs.py
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Quickstart outputs generated!$(COLOR_RESET)\n"
+
 type-coverage: ## Check type annotation coverage with mypy
 	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Checking type annotation coverage...$(COLOR_RESET)\n"
 	@if ! command -v mypy > /dev/null 2>&1; then \
