@@ -46,7 +46,7 @@ class TestPipelineStep:
         step = LoadStep(generator='random_er', n=10, l=2, p=0.1)
         # Can set top-level params
         step.set_params(directed=True)
-        assert step.directed == True
+        assert step.directed is True
 
 
 class TestPipeline:

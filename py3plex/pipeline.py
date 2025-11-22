@@ -44,7 +44,7 @@ class PipelineStep(ABC):
             data: Input data from previous step (or None for first step)
             
         Returns:
-            Transformed data to pass to next step
+            Any: Transformed data to pass to next step
         """
         pass
     
@@ -315,8 +315,16 @@ class LeidenMultilayer(PipelineStep):
         self.seed = seed
         self.max_iter = max_iter
     
-    def transform(self, data: multinet.multi_layer_network):
-        """Detect communities in multilayer network."""
+    def transform(self, data: multinet.multi_layer_network) -> 'LeidenResult':
+        """
+        Detect communities in multilayer network.
+        
+        Args:
+            data: Multilayer network to analyze
+            
+        Returns:
+            LeidenResult: Object containing communities and modularity information
+        """
         if not isinstance(data, multinet.multi_layer_network):
             raise TypeError(
                 f"Expected multi_layer_network, got {type(data).__name__}"
@@ -346,12 +354,17 @@ class LouvainCommunity(PipelineStep):
     """
     Detect communities using Louvain algorithm.
     
+    Note: The py3plex Louvain wrapper does not expose a resolution parameter.
+    The resolution parameter is stored for reference but does not affect
+    the algorithm. For resolution control, consider using the Louvain
+    implementation from python-louvain directly.
+    
     Args:
-        resolution: Resolution parameter (default: 1.0)
+        resolution: Resolution parameter (stored for reference only)
         seed: Random seed for reproducibility (default: None)
         
     Example:
-        >>> step = LouvainCommunity(resolution=1.0)
+        >>> step = LouvainCommunity()
     """
     
     def __init__(self, resolution: float = 1.0, seed: Optional[int] = None):
@@ -377,7 +390,7 @@ class LouvainCommunity(PipelineStep):
             else data.core_network
         )
         
-        # louvain_communities only takes network parameter, no resolution
+        # Note: py3plex's louvain_communities wrapper does not expose resolution parameter
         partition = community_wrapper.louvain_communities(G)
         communities = {str(node): int(comm) for node, comm in partition.items()}
         n_communities = len(set(communities.values()))
@@ -388,7 +401,6 @@ class LouvainCommunity(PipelineStep):
             'algorithm': 'louvain',
             'num_communities': n_communities,
             'communities': communities,
-            'resolution': self.resolution  # Store for reference
         }
 
 
