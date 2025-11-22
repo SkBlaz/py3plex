@@ -17,8 +17,8 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: Dockerfile.api
+      context: ..
+      dockerfile: gui/Dockerfile.api
       args:
         - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-api
@@ -44,8 +44,8 @@ services:
 
   worker:
     build:
-      context: .
-      dockerfile: worker/Dockerfile
+      context: ..
+      dockerfile: gui/worker/Dockerfile
       args:
         - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-worker
@@ -63,8 +63,8 @@ services:
 
   flower:
     build:
-      context: .
-      dockerfile: worker/Dockerfile
+      context: ..
+      dockerfile: gui/worker/Dockerfile
       args:
         - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-flower

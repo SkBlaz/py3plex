@@ -48,13 +48,13 @@ RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pyth
 WORKDIR /app
 
 # Copy application code
-COPY ./api/app ./app
-COPY ./ci/api-tests ./ci/api-tests
-COPY ./api/pytest.ini ./pytest.ini
+COPY gui/api/app ./app
+COPY gui/ci/api-tests ./ci/api-tests
+COPY gui/api/pytest.ini ./pytest.ini
 
-# Copy py3plex source from parent directory and install it
+# Copy py3plex source from repository root and install it
 ARG PY3PLEX_PATH=/workspace
-COPY ../ ${PY3PLEX_PATH}/
+COPY . ${PY3PLEX_PATH}/
 RUN pip install -e ${PY3PLEX_PATH}
 
 # Create data directory
