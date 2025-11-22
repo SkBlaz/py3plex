@@ -48,7 +48,7 @@ jobs:
           ~/.cache/pip
           ~/Library/Caches/pip
           ~\AppData\Local\pip\Cache
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
           ${{ runner.os }}-pip-
       timeout-minutes: 2
@@ -104,7 +104,12 @@ jobs:
         else
           source .venv/bin/activate
         fi
-        pip install --timeout 120 --retries 5 -r requirements.txt || echo "requirements.txt not found or already installed"
+        # Install from requirements.txt if it exists, otherwise skip
+        if [ -f requirements.txt ]; then
+          pip install --timeout 120 --retries 5 -r requirements.txt
+        else
+          echo "requirements.txt not found, skipping"
+        fi
         # Add py3plex to PYTHONPATH for testing without full install
         echo "PYTHONPATH=$PWD:$PYTHONPATH" >> $GITHUB_ENV
       timeout-minutes: 5
