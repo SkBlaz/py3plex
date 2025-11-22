@@ -739,8 +739,6 @@ def test_backward_compatibility():
 @pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
 def test_visualization_performance():
     """Test that visualizations complete in reasonable time."""
-    import time
-    
     network = create_complex_test_network()
     
     start = time.time()
