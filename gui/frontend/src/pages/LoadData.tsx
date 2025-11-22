@@ -4,6 +4,7 @@ import { uploadFile, getGraphSummary } from '../lib/api';
 import { useKeyboardShortcuts, ShortcutConfig } from '../hooks/useKeyboardShortcuts';
 import ShortcutsHelp from '../components/ShortcutsHelp';
 import Tooltip from '../components/Tooltip';
+import LoadingProgress from '../components/LoadingProgress';
 
 const MAX_FILE_SIZE_MB = 512;
 const ACCEPTED_FORMATS = ['.txt', '.edgelist', '.gml', '.gpickle'];
@@ -318,14 +319,13 @@ export default function LoadData() {
 
       {/* Upload Progress Indicator */}
       {uploading && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
-            <div>
-              <p className="text-blue-900 font-medium">Uploading and parsing network file...</p>
-              <p className="text-blue-700 text-sm mt-1">This may take a moment for large files</p>
-            </div>
-          </div>
+        <div className="bg-white shadow rounded-lg p-6 mb-6">
+          <LoadingProgress 
+            message="Uploading and parsing network file..."
+          />
+          <p className="text-center text-sm text-gray-600 mt-4">
+            This may take a moment for large files
+          </p>
         </div>
       )}
 
