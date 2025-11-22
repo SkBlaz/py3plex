@@ -87,6 +87,10 @@ viz = [
     "plotly>=5.0.0",
     "python-igraph>=0.10.0",
 ]
+# Optional: Config-driven workflows with YAML support
+workflows = [
+    "pyyaml>=5.1",
+]
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"
