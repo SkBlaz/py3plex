@@ -27,7 +27,7 @@ For detailed documentation, see: https://py3plex.readthedocs.io
 """
 
 # Version information
-__version__ = "0.95a"
+__version__ = "0.96"
 __api_version__ = "0.95a"
 
 from py3plex.core.multinet import multi_layer_network

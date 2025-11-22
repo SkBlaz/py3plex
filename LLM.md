@@ -4,10 +4,27 @@
 
 This file tracks development tasks and improvements for py3plex, particularly for LLM-assisted development.
 
-## Repository Overview (Last Updated: 2025-11-16)
+## Recent Updates (2025-11-22)
+
+### Configuration Consolidation (v0.96)
+✅ **Consolidated all configuration into pyproject.toml**
+- Migrated pytest configuration from `pytest.ini` to `pyproject.toml`
+- Migrated mutmut configuration from `setup.cfg` to `pyproject.toml`
+- Removed redundant `pytest.ini` and `setup.cfg` files
+- Bumped version from 0.95a to 0.96
+- All tests pass (1796 passed, 22 failed - same as before, no regressions)
+- pytest now properly uses pyproject.toml config (no more warnings)
+
+**Benefits:**
+- Single source of truth for all project configuration
+- Follows modern Python packaging standards (PEP 517/518)
+- Simplified repository structure
+- Easier maintenance and discoverability
+
+## Repository Overview (Last Updated: 2025-11-22)
 
 **Project:** py3plex - Multilayer network analysis and visualization library  
-**Version:** 0.95a  
+**Version:** 0.96  
 **Python Support:** 3.8, 3.9, 3.10, 3.11, 3.12  
 **Repository Stats:**
 - 126 Python source files
@@ -218,7 +235,7 @@ def test_cli_version():
     result = subprocess.run(['py3plex', '--version'], 
                           capture_output=True, text=True)
     assert result.returncode == 0
-    assert '0.95a' in result.stdout
+    assert '0.96' in result.stdout
 
 def test_cli_help():
     """Test py3plex --help command."""
