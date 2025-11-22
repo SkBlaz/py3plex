@@ -91,6 +91,10 @@ viz = [
 workflows = [
     "pyyaml>=5.1",
 ]
+# Optional: Apache Arrow for high-performance serialization
+arrow = [
+    "pyarrow>=10.0.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"
