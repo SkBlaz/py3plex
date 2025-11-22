@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Play, RefreshCw, CheckCircle, XCircle, Clock, AlertCircle } from 'lucide-react';
+import { Play, RefreshCw, CheckCircle, XCircle, Clock, AlertCircle, HelpCircle } from 'lucide-react';
 import {
   computeLayout,
   computeCentrality,
@@ -20,10 +20,13 @@ export default function Analyze() {
   const [graphId, setGraphId] = useState<string | null>(null);
   const [jobs, setJobs] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
   const pollTimerRef = useRef<number | null>(null);
+  const prevJobsRef = useRef<any[]>([]);
+  const notificationTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const storedGraphId = sessionStorage.getItem('currentGraphId');
+    const storedGraphId = sessionStorage.getItem('currentGraphId') || localStorage.getItem('currentGraphId');
     if (storedGraphId) {
       setGraphId(storedGraphId);
     }
@@ -57,12 +60,28 @@ export default function Analyze() {
 
     const results = await Promise.all(promises);
     
-    setJobs((prev) =>
-      prev.map((j) => {
+    setJobs((prev) => {
+      const updated = prev.map((j) => {
         const result = results.find(r => r?.id === j.id);
         return result ? { ...j, ...result.data } : j;
-      })
-    );
+      });
+      
+      // Check for newly completed jobs by comparing with previous state by job ID
+      updated.forEach((job) => {
+        const prevJob = prevJobsRef.current.find(p => p.id === job.id);
+        if (prevJob && prevJob.status !== 'completed' && job.status === 'completed') {
+          // Clear any existing notification timer
+          if (notificationTimerRef.current) {
+            clearTimeout(notificationTimerRef.current);
+          }
+          setNotification(`${job.type} job completed successfully!`);
+          notificationTimerRef.current = setTimeout(() => setNotification(null), 5000);
+        }
+      });
+      
+      prevJobsRef.current = updated;
+      return updated;
+    });
 
     // Schedule next poll with adaptive interval
     const minInterval = Math.min(
@@ -86,6 +105,10 @@ export default function Analyze() {
       if (pollTimerRef.current) {
         clearTimeout(pollTimerRef.current);
         pollTimerRef.current = null;
+      }
+      if (notificationTimerRef.current) {
+        clearTimeout(notificationTimerRef.current);
+        notificationTimerRef.current = null;
       }
     };
   }, [jobs, pollJobs]);
@@ -201,16 +224,40 @@ export default function Analyze() {
     <div className="px-4 py-6">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Analyze Network</h1>
 
+      {/* Notification Banner */}
+      {notification && (
+        <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center justify-between animate-fade-in">
+          <div className="flex items-center">
+            <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+            <p className="text-sm text-green-800">{notification}</p>
+          </div>
+          <button
+            onClick={() => setNotification(null)}
+            className="text-green-600 hover:text-green-800"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-3 gap-6 mb-6">
         {/* Layout */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Layout</h2>
+          <div className="flex items-start justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-900">Layout</h2>
+            <div className="group relative">
+              <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
+              <div className="absolute right-0 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                Computes node positions using force-directed algorithms for visualization
+              </div>
+            </div>
+          </div>
           <p className="text-sm text-gray-600 mb-4">
             Compute graph layout using force-directed algorithms
           </p>
           <button
             onClick={runLayoutJob}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center"
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center transition-colors"
           >
             <Play className="h-4 w-4 mr-2" />
             Run Spring Layout
@@ -219,13 +266,21 @@ export default function Analyze() {
 
         {/* Centrality */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Centrality</h2>
+          <div className="flex items-start justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-900">Centrality</h2>
+            <div className="group relative">
+              <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
+              <div className="absolute right-0 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                Identifies important nodes based on degree and betweenness metrics
+              </div>
+            </div>
+          </div>
           <p className="text-sm text-gray-600 mb-4">
             Compute node centrality metrics (degree, betweenness)
           </p>
           <button
             onClick={runCentralityJob}
-            className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 flex items-center justify-center"
+            className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 flex items-center justify-center transition-colors"
           >
             <Play className="h-4 w-4 mr-2" />
             Run Centrality
@@ -234,13 +289,21 @@ export default function Analyze() {
 
         {/* Community Detection */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Communities</h2>
+          <div className="flex items-start justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-900">Communities</h2>
+            <div className="group relative">
+              <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
+              <div className="absolute right-0 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                Finds groups of densely connected nodes using the Louvain algorithm
+              </div>
+            </div>
+          </div>
           <p className="text-sm text-gray-600 mb-4">
             Detect communities using Louvain algorithm
           </p>
           <button
             onClick={runCommunityJob}
-            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center"
+            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center transition-colors"
           >
             <Play className="h-4 w-4 mr-2" />
             Detect Communities
