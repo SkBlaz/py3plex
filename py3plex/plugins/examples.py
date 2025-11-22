@@ -88,6 +88,8 @@ class ExampleSimpleCommunity(CommunityPlugin):
     This is a demonstration plugin showing the plugin interface.
     """
 
+    DEFAULT_NUM_COMMUNITIES = 5  # Default number of communities to create
+
     @property
     def name(self) -> str:
         return "example_simple"
@@ -100,18 +102,23 @@ class ExampleSimpleCommunity(CommunityPlugin):
     def author(self) -> str:
         return "Py3plex Development Team"
 
-    def detect(self, network, num_communities=5, **kwargs):
+    def detect(self, network, num_communities=None, **kwargs):
         """
         Detect communities using a simple algorithm.
         
         Args:
             network: A py3plex multi_layer_network object
             num_communities: Number of communities to create (default: 5)
+                            This is a demonstration parameter showing
+                            how to make plugins configurable
             **kwargs: Additional parameters
             
         Returns:
             Dictionary mapping node IDs to community IDs
         """
+        if num_communities is None:
+            num_communities = self.DEFAULT_NUM_COMMUNITIES
+
         communities = {}
 
         try:
