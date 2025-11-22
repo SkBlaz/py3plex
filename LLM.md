@@ -6,6 +6,56 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 
 ## Recent Updates (2025-11-22)
 
+### Pipeline System Implementation (v0.96 - 2025-11-22)
+✅ **Introduced scikit-learn style pipeline abstraction for composable workflows**
+- Created comprehensive pipeline system with 7 built-in pipeline steps:
+  - `LoadStep`: Load networks from files or generate random networks
+  - `AggregateLayers`: Aggregate edges across multiple layers (sum/mean/max)
+  - `LeidenMultilayer`: Leiden algorithm for multilayer community detection
+  - `LouvainCommunity`: Louvain community detection algorithm
+  - `ComputeStats`: Compute basic network statistics
+  - `FilterNodes`: Filter nodes based on degree or explicit list
+  - `SaveNetwork`: Save networks to files
+- Implemented `Pipeline` class with scikit-learn inspired API
+- Abstract `PipelineStep` base class for creating custom steps
+- Added decorator-style parameter management (`get_params`, `set_params`)
+- Created 7 working examples demonstrating various pipeline patterns
+- Added comprehensive test suite (36 tests, 100% passing)
+- Created detailed README for examples/pipelines/
+
+**Benefits:**
+- Composable, modular workflow construction
+- Scikit-learn familiar API for data science users
+- Type-safe step validation
+- Built-in logging for pipeline execution
+- Easy to extend with custom steps
+- Reproducible analysis with seed support
+
+**New Files:**
+- `py3plex/pipeline.py` - Main pipeline implementation (550+ lines)
+- `tests/test_pipeline.py` - Comprehensive test suite
+- `examples/pipelines/example_1_basic_stats.py` - Basic statistics pipeline
+- `examples/pipelines/example_2_aggregation.py` - Layer aggregation pipeline
+- `examples/pipelines/example_3_community_detection.py` - Community detection
+- `examples/pipelines/example_4_leiden_multilayer.py` - Leiden multilayer
+- `examples/pipelines/example_5_filtering.py` - Node filtering
+- `examples/pipelines/example_6_complex_pipeline.py` - Multi-step pipeline
+- `examples/pipelines/example_7_save_load.py` - Save and load workflow
+- `examples/pipelines/README.md` - Pipeline documentation
+
+**Example Usage:**
+```python
+from py3plex.pipeline import Pipeline, LoadStep, AggregateLayers, LouvainCommunity
+
+pipe = Pipeline([
+    ("load", LoadStep(generator='random_er', n=50, l=3, p=0.1)),
+    ("aggregate", AggregateLayers(method='sum')),
+    ("community", LouvainCommunity(resolution=1.0)),
+])
+
+result = pipe.run()
+```
+
 ### Plugin System Implementation (v0.96 - 2025-11-22)
 ✅ **Introduced extensible plugin system for community contributions**
 - Created comprehensive plugin architecture with four plugin types:
