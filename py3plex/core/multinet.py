@@ -424,6 +424,7 @@ class multi_layer_network:
         dummy_layer: str = "null",
         label_delimiter: str = "---",
         coupling_weight: Union[int, float] = 1,
+        use_attribute_store: bool = False,
     ) -> None:
         """Initialize a multilayer network.
 
@@ -434,6 +435,7 @@ class multi_layer_network:
             dummy_layer: Name for dummy/placeholder layer
             label_delimiter: Delimiter used to separate layer names in node labels
             coupling_weight: Default weight for inter-layer edges in multiplex networks
+            use_attribute_store: Enable Polars-based attribute store for optimized batch operations (default False)
 
         """
         # initialize the class
@@ -452,6 +454,17 @@ class multi_layer_network:
         self.sparse_enabled: bool = False
         self.hinmine_network: Optional[Any] = None
         self.label_delimiter: str = label_delimiter
+        
+        # Optional attribute store backend for optimized queries
+        self.use_attribute_store: bool = use_attribute_store
+        self.attribute_store: Optional[Any] = None
+        if use_attribute_store:
+            try:
+                from .attribute_store import AttributeStore
+                self.attribute_store = AttributeStore()
+            except ImportError:
+                logger.warning("Polars not available, falling back to NetworkX-only mode")
+                self.use_attribute_store = False
 
     # ═════════════════════════════════════════════════════════════════════════
     # Core Data Access Methods
@@ -1500,8 +1513,22 @@ class multi_layer_network:
             edge_dict.pop("target_type", None)
             edge_dict.pop("source_type", None)
             getattr(self.core_network, target_function)(**edge_dict)
+            
+            # Sync to attribute store if enabled
+            if self.use_attribute_store and self.attribute_store is not None:
+                u, v = edge_dict["u_for_edge"], edge_dict["v_for_edge"]
+                if target_function == "add_edge":
+                    weight = edge_dict.get("weight", 1.0)
+                    edge_type = edge_dict.get("type", "default")
+                    attrs = {k: v for k, v in edge_dict.items() if k not in ["u_for_edge", "v_for_edge", "weight", "type"]}
+                    self.attribute_store.add_edge(u[0], u[1], v[0], v[1], weight=weight, edge_type=edge_type, **attrs)
+                elif target_function == "remove_edge":
+                    self.attribute_store.remove_edge(u[0], u[1], v[0], v[1])
 
         else:
+            # Handle list of edge dictionaries - use batch operation for attribute store
+            edges_to_add = []
+            
             for edge_dict_item in edge_dict_list:
                 # Work with a copy to avoid mutating the original dictionary
                 edge_dict = edge_dict_item.copy()
@@ -1528,6 +1555,14 @@ class multi_layer_network:
                 edge_dict.pop("target_type", None)
                 edge_dict.pop("source_type", None)
                 getattr(self.core_network, target_function)(**edge_dict)
+                
+                # Collect for batch operation
+                if self.use_attribute_store and self.attribute_store is not None and target_function == "add_edge":
+                    edges_to_add.append(edge_dict_item.copy())
+            
+            # Batch sync to attribute store if enabled
+            if self.use_attribute_store and self.attribute_store is not None and target_function == "add_edge" and edges_to_add:
+                self.attribute_store.add_edges_batch(edges_to_add)
 
     def _generic_edge_list_manipulator(self, edge_list, target_function, raw=False):
         """Generic manipulator of edge lists.
@@ -1572,9 +1607,20 @@ class multi_layer_network:
             node_dict.pop("type", None)
             nname = node_dict["node_for_adding"]
             getattr(self.core_network, target_function)(nname)
+            
+            # Sync to attribute store if enabled
+            if self.use_attribute_store and self.attribute_store is not None:
+                if target_function == "add_node":
+                    # Extract attributes (everything except the special keys)
+                    attrs = {k: v for k, v in node_dict.items() if k != "node_for_adding"}
+                    self.attribute_store.add_node(nname[0], nname[1], **attrs)
+                elif target_function == "remove_node":
+                    self.attribute_store.remove_node(nname[0], nname[1])
 
         else:
-            # Handle list of node dictionaries
+            # Handle list of node dictionaries - use batch operation for attribute store
+            nodes_to_add = []
+            
             for node_dict_item in node_dict_list:
                 # Work with a copy to avoid mutating the original dictionary
                 node_dict = node_dict_item.copy()
@@ -1595,6 +1641,20 @@ class multi_layer_network:
                 node_dict.pop("type", None)
                 nname = node_dict["node_for_adding"]
                 getattr(self.core_network, target_function)(nname)
+                
+                # Collect for batch operation
+                if self.use_attribute_store and self.attribute_store is not None and target_function == "add_node":
+                    node_dict_item_copy = node_dict_item.copy()
+                    # Ensure proper keys for attribute store
+                    if 'source' in node_dict_item_copy:
+                        node_dict_item_copy['node_id'] = node_dict_item_copy.pop('source')
+                    if 'type' in node_dict_item_copy:
+                        node_dict_item_copy['layer'] = node_dict_item_copy.pop('type')
+                    nodes_to_add.append(node_dict_item_copy)
+            
+            # Batch sync to attribute store if enabled
+            if self.use_attribute_store and self.attribute_store is not None and target_function == "add_node" and nodes_to_add:
+                self.attribute_store.add_nodes_batch(nodes_to_add)
 
     def _generic_node_list_manipulator(self, node_list, target_function):
         """Generic manipulator of node lists.

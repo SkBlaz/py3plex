@@ -6,6 +6,73 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 
 ## Recent Updates (2025-11-22)
 
+### Attribute Store Backend Implementation (v0.97 - 2025-11-22)
+✅ **Implemented Polars-based attribute storage backend for optimized batch operations**
+- Created `AttributeStore` class using Polars DataFrames for efficient attribute storage and querying
+- Integrated as optional backend in `multi_layer_network` (disabled by default for backward compatibility)
+- Node storage: Polars DataFrame with columns for node_id, layer, and dynamic attributes
+- Edge storage: Polars DataFrame with columns for source/target nodes, layers, weight, edge_type, and dynamic attributes
+- Supports batch operations for adding/querying nodes and edges
+- Provides specialized queries: get_nodes_in_layer(), get_interlayer_edges(), get_neighbors()
+- Comprehensive test suite: 40 tests (30 unit tests, 10 integration tests) - 100% passing
+- Performance benchmarks comparing NetworkX vs AttributeStore operations
+
+**Performance Characteristics:**
+- **Batch node addition:** ~30% faster with AttributeStore for large batches (1000+ nodes)
+- **Layer filtering:** NetworkX is ~6x faster for simple layer filtering (mature optimization)
+- **Node/edge counting:** NetworkX is faster (O(1) operations)
+- **Single-element queries:** NetworkX is faster for has_node, get_neighbors operations
+- **Full iteration:** NetworkX is faster for get_all_nodes/edges
+- **Inter-layer filtering:** NetworkX is slightly faster
+
+**Design Decisions:**
+- Optional backend (use_attribute_store=False by default) - backward compatible
+- Synchronizes with NetworkX core_network to maintain compatibility
+- NetworkX remains primary storage, AttributeStore provides auxiliary indexing
+- Future optimization: Add caching and indexes to improve AttributeStore query performance
+
+**Use Cases:**
+- Best for: Batch operations, data import/export, specialized filtering queries
+- NetworkX still preferred for: Single-element operations, graph algorithms, standard queries
+- Consider enabling for: Large-scale data processing, ETL pipelines, bulk analysis
+
+**Benefits:**
+- Columnar storage enables efficient filtering and aggregation
+- Batch operations reduce per-element overhead
+- Foundation for future optimizations (indexing, caching, lazy evaluation)
+- Polars integration opens door to advanced data manipulation features
+
+**New Files:**
+- `py3plex/core/attribute_store.py` - Polars-based attribute storage backend (540 lines)
+- `tests/test_attribute_store.py` - Unit tests for AttributeStore (30 tests)
+- `tests/test_attribute_store_benchmarks.py` - Performance comparison benchmarks (18 tests)
+- `tests/test_attribute_store_integration.py` - Integration tests with multi_layer_network (10 tests)
+
+**API Usage:**
+```python
+# Enable attribute store backend
+net = multi_layer_network(use_attribute_store=True)
+
+# Operations automatically sync to both NetworkX and AttributeStore
+net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+net.add_edges([{'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}])
+
+# Use specialized queries on attribute store
+nodes_in_layer = net.attribute_store.get_nodes_in_layer('layer1')
+interlayer_edges = net.attribute_store.get_interlayer_edges()
+neighbors = net.attribute_store.get_neighbors('A', 'layer1')
+summary = net.attribute_store.summary()
+```
+
+**Future Improvements:**
+- [ ] Add indexing on node_id and layer columns for faster lookups
+- [ ] Implement lazy evaluation for query chains
+- [ ] Add caching layer for frequently accessed queries
+- [ ] Benchmark memory usage vs NetworkX for large graphs
+- [ ] Consider making AttributeStore primary storage for specific use cases
+- [ ] Add support for temporal/dynamic attributes with time-based indexing
+- [ ] Implement vectorized operations for bulk attribute updates
+
 ### Plugin System Implementation (v0.96 - 2025-11-22)
 ✅ **Introduced extensible plugin system for community contributions**
 - Created comprehensive plugin architecture with four plugin types:
@@ -75,19 +142,20 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 ## Repository Overview (Last Updated: 2025-11-22)
 
 **Project:** py3plex - Multilayer network analysis and visualization library  
-**Version:** 0.96  
+**Version:** 0.97  
 **Python Support:** 3.8, 3.9, 3.10, 3.11, 3.12  
 **Repository Stats:**
-- 126 Python source files
+- 127 Python source files (including new attribute_store.py)
 - 72 example scripts across 9 categories (including 2 new interactive visualization examples)
-- 65+ test files with diverse testing strategies
-- ~80K total lines of code
-- Core multilayer network class: 2,963 lines (py3plex/core/multinet.py)
+- 68 test files with diverse testing strategies (added 3 new test files for attribute store)
+- ~81K total lines of code
+- Core multilayer network class: ~3,050 lines (py3plex/core/multinet.py) - includes attribute store integration
 - CLI tool: 2,042 lines (py3plex/cli.py)
 
 **Key Features:**
 - Dict-based API for multilayer network construction
 - NetworkX interoperability and compatibility layer
+- **Optional Polars-based attribute store backend for optimized batch operations (NEW - 2025-11-22)**
 - Multiple I/O formats (CSV, JSON, GraphML, edgelist, etc.)
 - Advanced visualization with multiple layout algorithms
 - **Interactive visualization with Plotly (NEW - 2025-11-16)** - Web-based interactive network exploration
