@@ -7,8 +7,14 @@ reproducible research and automated pipelines.
 """
 
 import json
+import random
 from pathlib import Path
 from typing import Any, Dict, List, Union
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 import networkx as nx
 
@@ -217,15 +223,13 @@ class WorkflowRunner:
 
         if generator == "random":
             # Generate random multilayer network
-            import random
-
             nodes = params.get("nodes", 10)
             layers = params.get("layers", 2)
             probability = params.get("probability", 0.1)
             seed = params.get("seed")
 
-            if seed is not None:
-                random.seed(seed)
+            # Use local Random instance to avoid global state changes
+            rng = random.Random(seed) if seed is not None else random.Random()
 
             # Create layers with nodes and edges
             for layer_idx in range(layers):
@@ -241,7 +245,7 @@ class WorkflowRunner:
                 edges_dict = []
                 for i in range(nodes):
                     for j in range(i + 1, nodes):
-                        if random.random() < probability:
+                        if rng.random() < probability:
                             edges_dict.append(
                                 {
                                     "source": f"node{i}",
@@ -392,11 +396,6 @@ class WorkflowRunner:
         self, network: multinet.multi_layer_network, params: Dict[str, Any]
     ) -> str:
         """Visualize network."""
-        import matplotlib
-
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-
         output = params.get("output", "network.png")
         layout = params.get("layout", "spring")
 
