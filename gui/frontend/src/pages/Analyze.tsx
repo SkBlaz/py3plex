@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Play, RefreshCw, CheckCircle, XCircle, Clock, AlertCircle, HelpCircle } from 'lucide-react';
+import { Play, RefreshCw, CheckCircle, XCircle, Clock, AlertCircle, HelpCircle, Trash2 } from 'lucide-react';
 import {
   computeLayout,
   computeCentrality,
   computeCommunity,
   getJobStatus,
 } from '../lib/api';
+import { useKeyboardShortcuts, ShortcutConfig } from '../hooks/useKeyboardShortcuts';
+import ShortcutsHelp from '../components/ShortcutsHelp';
+import Tooltip from '../components/Tooltip';
 
 // Adaptive polling intervals based on job state
 const POLL_INTERVALS = {
@@ -200,6 +203,50 @@ export default function Analyze() {
     }
   };
 
+  // Clear completed jobs
+  const clearCompletedJobs = () => {
+    setJobs(prev => prev.filter(job => job.status !== 'completed' && job.status !== 'failed'));
+  };
+
+  // Keyboard shortcuts
+  const shortcuts: ShortcutConfig[] = [
+    {
+      key: 'l',
+      ctrl: true,
+      action: runLayoutJob,
+      description: 'Run layout computation'
+    },
+    {
+      key: 'c',
+      ctrl: true,
+      shift: true,
+      action: runCentralityJob,
+      description: 'Run centrality analysis'
+    },
+    {
+      key: 'd',
+      ctrl: true,
+      action: runCommunityJob,
+      description: 'Run community detection'
+    },
+    {
+      key: 'Delete',
+      shift: true,
+      action: clearCompletedJobs,
+      description: 'Clear completed jobs'
+    },
+    {
+      key: '/',
+      ctrl: true,
+      action: () => {
+        // Handled by ShortcutsHelp component
+      },
+      description: 'Show keyboard shortcuts'
+    }
+  ];
+
+  useKeyboardShortcuts(shortcuts, !!graphId);
+
   if (!graphId) {
     return (
       <div className="px-4 py-6">
@@ -245,69 +292,66 @@ export default function Analyze() {
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex items-start justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-900">Layout</h2>
-            <div className="group relative">
+            <Tooltip content="Computes node positions using force-directed algorithms for visualization">
               <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
-              <div className="absolute right-0 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                Computes node positions using force-directed algorithms for visualization
-              </div>
-            </div>
+            </Tooltip>
           </div>
           <p className="text-sm text-gray-600 mb-4">
             Compute graph layout using force-directed algorithms
           </p>
-          <button
-            onClick={runLayoutJob}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center transition-colors"
-          >
-            <Play className="h-4 w-4 mr-2" />
-            Run Spring Layout
-          </button>
+          <Tooltip content="Run spring layout (Ctrl+L)">
+            <button
+              onClick={runLayoutJob}
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center transition-colors"
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Run Spring Layout
+            </button>
+          </Tooltip>
         </div>
 
         {/* Centrality */}
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex items-start justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-900">Centrality</h2>
-            <div className="group relative">
+            <Tooltip content="Identifies important nodes based on degree and betweenness metrics">
               <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
-              <div className="absolute right-0 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                Identifies important nodes based on degree and betweenness metrics
-              </div>
-            </div>
+            </Tooltip>
           </div>
           <p className="text-sm text-gray-600 mb-4">
             Compute node centrality metrics (degree, betweenness)
           </p>
-          <button
-            onClick={runCentralityJob}
-            className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 flex items-center justify-center transition-colors"
-          >
-            <Play className="h-4 w-4 mr-2" />
-            Run Centrality
-          </button>
+          <Tooltip content="Run centrality analysis (Ctrl+Shift+C)">
+            <button
+              onClick={runCentralityJob}
+              className="w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 flex items-center justify-center transition-colors"
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Run Centrality
+            </button>
+          </Tooltip>
         </div>
 
         {/* Community Detection */}
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex items-start justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-900">Communities</h2>
-            <div className="group relative">
+            <Tooltip content="Finds groups of densely connected nodes using the Louvain algorithm">
               <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
-              <div className="absolute right-0 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                Finds groups of densely connected nodes using the Louvain algorithm
-              </div>
-            </div>
+            </Tooltip>
           </div>
           <p className="text-sm text-gray-600 mb-4">
             Detect communities using Louvain algorithm
           </p>
-          <button
-            onClick={runCommunityJob}
-            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center transition-colors"
-          >
-            <Play className="h-4 w-4 mr-2" />
-            Detect Communities
-          </button>
+          <Tooltip content="Run community detection (Ctrl+D)">
+            <button
+              onClick={runCommunityJob}
+              className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center transition-colors"
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Detect Communities
+            </button>
+          </Tooltip>
         </div>
       </div>
 
@@ -323,10 +367,28 @@ export default function Analyze() {
 
       {/* Job Center */}
       <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Job Center</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-gray-900">Job Center</h2>
+          {jobs.some(j => j.status === 'completed' || j.status === 'failed') && (
+            <Tooltip content="Clear completed and failed jobs (Shift+Delete)">
+              <button
+                onClick={clearCompletedJobs}
+                className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center transition-colors"
+              >
+                <Trash2 className="h-4 w-4 mr-1" />
+                Clear Done
+              </button>
+            </Tooltip>
+          )}
+        </div>
 
         {jobs.length === 0 ? (
-          <p className="text-sm text-gray-500">No jobs yet. Start an analysis above.</p>
+          <div className="text-center py-8">
+            <p className="text-sm text-gray-500 mb-2">No jobs yet. Start an analysis above.</p>
+            <p className="text-xs text-gray-400">
+              💡 Tip: Use keyboard shortcuts to quickly start jobs
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
             {jobs.map((job) => (
@@ -370,6 +432,9 @@ export default function Analyze() {
           .
         </p>
       </div>
+
+      {/* Keyboard Shortcuts Help */}
+      <ShortcutsHelp shortcuts={shortcuts} />
     </div>
   );
 }

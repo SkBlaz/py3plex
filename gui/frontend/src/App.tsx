@@ -1,10 +1,22 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { useEffect } from 'react';
 import LoadData from './pages/LoadData';
 import Visualize from './pages/Visualize';
 import Analyze from './pages/Analyze';
 import Export from './pages/Export';
 
 function App() {
+  // Global keyboard shortcut for help (Escape closes modals)
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        // Let modals handle their own escape key
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, []);
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50">
