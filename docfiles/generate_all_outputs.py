@@ -12,6 +12,10 @@ os.environ['MPLBACKEND'] = 'Agg'
 
 # Suppress logging
 import logging
+
+# Logging filter patterns for clean output
+LOGGING_FILTER_PATTERNS = ['INFO', 'BarnesHut', 'took', '%|', 'Repulsion', 'Gravitational', 'Attraction', 'AdjustSpeed']
+
 logging.getLogger('py3plex').setLevel(logging.CRITICAL)
 
 def capture_output(func):
@@ -27,9 +31,9 @@ def capture_output(func):
             result = func(*args, **kwargs)
         
         output = stdout_capture.getvalue()
-        # Filter logging lines
+        # Filter logging lines using configured patterns
         filtered_lines = [line for line in output.split('\n') 
-                         if not any(x in line for x in ['INFO', 'BarnesHut', 'took', '%|'])]
+                         if not any(pattern in line for pattern in LOGGING_FILTER_PATTERNS)]
         return '\n'.join(filtered_lines).strip()
     
     return wrapper

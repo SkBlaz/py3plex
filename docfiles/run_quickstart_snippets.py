@@ -65,8 +65,8 @@ class CodeSnippet:
         
         # Check if it's just setup/imports with no expected output
         lines = [line.strip() for line in self.code.split('\n') if line.strip() and not line.strip().startswith('#')]
-        if all(line.startswith(('import ', 'from ')) or '=' in line for line in lines):
-            # Only imports and assignments, might be setup
+        if all(line.startswith(('import ', 'from ')) or ('=' in line and not any(op in line for op in ['==', '!=', '>=', '<=', '+=', '-=', '*=', '/='])) for line in lines):
+            # Only imports and assignments (not comparisons), might be setup
             if not any(func in self.code for func in ['print(', '.basic_stats()', '.show()']):
                 return SnippetCategory.SETUP_ONLY
         
@@ -275,11 +275,12 @@ class QuickstartRunner:
         return '\n'.join(report)
     
     def update_quickstart(self):
-        """Update quickstart.rst with captured outputs"""
-        # This would require careful parsing and updating of the RST file
-        # For now, we'll generate a separate report
-        print("⚠️  Auto-update of quickstart.rst not yet implemented")
-        print("    Please manually add outputs based on the generated report")
+        """Generate report for manual integration into quickstart.rst"""
+        # Note: Automated RST update is complex and error-prone
+        # This method generates a report that can be manually integrated
+        print("⚠️  Automated update of quickstart.rst not implemented")
+        print("    Generate outputs with --report and manually integrate into RST")
+        print("    This ensures quality control and proper documentation style")
 
 
 def main():
