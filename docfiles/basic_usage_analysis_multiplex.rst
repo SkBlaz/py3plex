@@ -20,6 +20,41 @@ Combine information across layers into a single network:
     aggregated1 = network.aggregate_edges(metric="count", normalize_by="degree")
     aggregated2 = network.aggregate_edges(metric="count", normalize_by="raw")
 
+The first network divides the contribution of an individual edge by the average node degree in a given layer, and the second one simply sums them.
+
+.. code-block:: python
+
+    # Examine edge weights in aggregated networks
+    for e in aggregated1.edges(data=True):
+        print(e)
+
+    for e in aggregated2.edges(data=True):
+        print(e)
+
+Subsetting Multiplex Networks
+------------------------------
+
+Subsetting operates in the same manner as for multilayer networks:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    
+    B = multinet.multi_layer_network(network_type="multiplex")
+    B.add_edges([[1,1,2,1,1],[1,2,3,2,1],[1,2,3,1,1],[2,1,3,2,1]], input_type="list")
+
+    # Subset the network by layers
+    C = B.subnetwork([2], subset_by="layers")
+    print(list(C.get_nodes()))
+
+    # Subset by node names
+    C = B.subnetwork([1], subset_by="node_names")
+    print(list(C.get_nodes()))
+
+    # Subset by specific node-layer pairs
+    C = B.subnetwork([(1,1),(1,2)], subset_by="node_layer_names")
+    print(list(C.get_nodes()))
+
 Examples
 --------
 
@@ -31,39 +66,3 @@ See:
 - ``example_new_multiplex_metrics.py`` - New multiplex centrality and robustness metrics
 
 Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples
-
-.. note::
-   However, the weights differ!
-
-.. code-block:: python
-   :linenos:
-
-   for e in aggregated_network2.edges(data=True):
-       print(e)
-
-   for e in aggregated_network1.edges(data=True):
-       print(e)
-
-The first network divides the contribution of an individual edge with the average node degree in a given layer, and the second one simply sums them.
-
-
-Subsetting
-**********
-
-Subsetting operates in the same manner than for multilayers, hence:
-
-.. code-block:: python
-   :linenos:
-
-    B = multinet.multi_layer_network(network_type="multiplex")
-    B.add_edges([[1,1,2,1,1],[1,2,3,2,1],[1,2,3,1,1],[2,1,3,2,1]],input_type="list")
-
-    ## subset the network by layers
-    C = B.subnetwork([2],subset_by="layers")
-    print(list(C.get_nodes()))
-
-    C = B.subnetwork([1],subset_by="node_names")
-    print(list(C.get_nodes()))
-
-    C = B.subnetwork([(1,1),(1,2)],subset_by="node_layer_names")
-    print(list(C.get_nodes()))

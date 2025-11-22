@@ -32,29 +32,29 @@ Repository: https://github.com/SkBlaz/Py3Plex/tree/master/examples
    :width: 500
 
 
-Some additional tensor-like indexing:
-		   
+Tensor-Like Indexing
+--------------------
+
+You can access nodes and edges using tensor-like indexing:
+
 .. code-block:: python
-   :linenos:		   
 
-	## tensor-based operations examples
+    from py3plex.core import multinet
+    from py3plex.core import random_generators
 
-	from py3plex.core import multinet
-	from py3plex.core import random_generators
+    # Initiate an instance of a random graph
+    ER_multilayer = random_generators.random_multilayer_ER(500, 8, 0.05, directed=False)
 
-	## initiate an instance of a random graph
-	ER_multilayer = random_generators.random_multilayer_ER(500,8,0.05,directed=False)
+    # Some simple visualization
+    visualization_params = {"display": True}
+    ER_multilayer.visualize_matrix(visualization_params)
 
-	## some simple visualization
-	visualization_params = {"display":True}
-	ER_multilayer.visualize_matrix(visualization_params)
+    # Get some nodes and edges
+    some_nodes = [node for node in ER_multilayer.get_nodes()][0:5]
+    some_edges = [edge for edge in ER_multilayer.get_edges()][0:5]
 
-	some_nodes = [node for node in ER_multilayer.get_nodes()][0:5]
-	some_edges = [node for node in ER_multilayer.get_edges()][0:5]
+    # Random node is accessed as follows
+    print(ER_multilayer[some_nodes[0]])
 
-
-	## random node is accessed as follows
-	print(ER_multilayer[some_nodes[0]])
-
-	## and random edge as
-	print(ER_multilayer[some_edges[0][0]][some_edges[0][1]])
+    # Random edge is accessed as
+    print(ER_multilayer[some_edges[0][0]][some_edges[0][1]])
