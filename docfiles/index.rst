@@ -196,6 +196,7 @@ Documentation Contents
    basic_usage_analysis
    basic_usage_analysis_multiplex
    multilayer_concepts
+   dsl_guide
    recipes
    visualization
    visualization_guide
