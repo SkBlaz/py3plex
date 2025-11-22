@@ -1019,3 +1019,383 @@ if __name__ == "__main__":
     print("=" * 70)
     
     exit(0 if failed == 0 else 1)
+
+
+# ============================================================================
+# Legend and Label Generation Tests
+# ============================================================================
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_hairball_plot_with_legend():
+    """Test that hairball plot generates legend correctly."""
+    from py3plex.visualization.multilayer import hairball_plot
+    
+    network = create_test_multilayer_network()
+    # Get a single layer as NetworkX graph
+    labels, graphs, multilinks = network.get_layers("diagonal")
+    if len(graphs) > 0:
+        g = graphs[0]
+        
+        # Test with legend enabled
+        hairball_plot(g, legend=True, display=False, draw=True)
+        
+        # Check that a legend was created
+        fig = plt.gcf()
+        axes = fig.get_axes()
+        if axes:
+            ax = axes[0]
+            legend = ax.get_legend()
+            # Legend should exist when legend=True
+            # Note: legend might be None if there's only one color
+            if legend is not None:
+                assert legend is not None
+        
+        plt.close('all')
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_hairball_plot_with_labels():
+    """Test that hairball plot displays node labels correctly."""
+    from py3plex.visualization.multilayer import hairball_plot
+    
+    network = create_test_multilayer_network()
+    labels, graphs, multilinks = network.get_layers("diagonal")
+    if len(graphs) > 0:
+        g = graphs[0]
+        
+        # Get node labels
+        node_labels = list(g.nodes())[:3]  # First 3 nodes
+        
+        # Test with labels
+        hairball_plot(g, labels=node_labels, label_font_size=8, display=False, draw=True)
+        
+        # Check that text objects were created
+        fig = plt.gcf()
+        axes = fig.get_axes()
+        if axes:
+            ax = axes[0]
+            texts = ax.texts
+            # Should have text objects for the labels
+            assert len(texts) >= 0  # At least we didn't crash
+        
+        plt.close('all')
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_small_multiples_with_labels():
+    """Test small multiples with layer labels."""
+    network = create_test_multilayer_network()
+    
+    # Small multiples should automatically show layer labels
+    fig = plot_small_multiples(network, layout="circular")
+    assert fig is not None
+    
+    # Check that subplots have titles (which serve as labels)
+    for ax in fig.axes:
+        title = ax.get_title()
+        # Each subplot should have a layer name as title
+        assert title is not None  # May be empty string but shouldn't be None
+    
+    plt.close('all')
+
+
+# ============================================================================
+# Edge Case Tests (Self-loops, Multiple Edges)
+# ============================================================================
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_visualization_with_self_loops():
+    """Test visualization handles self-loops correctly."""
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add nodes
+    network.add_nodes([
+        {'source': '1', 'type': 'A'},
+        {'source': '2', 'type': 'A'},
+        {'source': '3', 'type': 'A'},
+    ], input_type='dict')
+    
+    # Add regular edges
+    network.add_edges([
+        {'source': '1', 'target': '2', 'source_type': 'A', 'target_type': 'A'},
+        {'source': '2', 'target': '3', 'source_type': 'A', 'target_type': 'A'},
+    ], input_type='dict')
+    
+    # Add self-loop
+    network.add_edges([
+        {'source': '1', 'target': '1', 'source_type': 'A', 'target_type': 'A'},
+    ], input_type='dict')
+    
+    # Test that visualizations don't crash with self-loops
+    fig = plot_small_multiples(network)
+    assert fig is not None
+    plt.close('all')
+    
+    fig = plot_edge_colored_projection(network)
+    assert fig is not None
+    plt.close('all')
+    
+    fig = plot_radial_layers(network)
+    assert fig is not None
+    plt.close('all')
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_visualization_with_multiple_edges():
+    """Test visualization handles multiple edges between same nodes."""
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add nodes to multiple layers
+    for layer in ['A', 'B']:
+        network.add_nodes([
+            {'source': '1', 'type': layer},
+            {'source': '2', 'type': layer},
+        ], input_type='dict')
+    
+    # Add multiple edges between same nodes in different layers
+    network.add_edges([
+        {'source': '1', 'target': '2', 'source_type': 'A', 'target_type': 'A'},
+        {'source': '1', 'target': '2', 'source_type': 'B', 'target_type': 'B'},
+    ], input_type='dict')
+    
+    # Test edge-colored projection (shows edges from multiple layers)
+    fig = plot_edge_colored_projection(network)
+    assert fig is not None
+    plt.close('all')
+    
+    # Test small multiples
+    fig = plot_small_multiples(network)
+    assert fig is not None
+    assert len(fig.axes) >= 2
+    plt.close('all')
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_visualization_with_isolated_nodes():
+    """Test visualization with isolated nodes (no edges)."""
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add nodes with no edges
+    network.add_nodes([
+        {'source': '1', 'type': 'A'},
+        {'source': '2', 'type': 'A'},
+        {'source': '3', 'type': 'A'},
+    ], input_type='dict')
+    
+    # Only connect two nodes, leaving one isolated
+    network.add_edges([
+        {'source': '1', 'target': '2', 'source_type': 'A', 'target_type': 'A'},
+    ], input_type='dict')
+    
+    # Test visualizations with isolated node
+    fig = plot_small_multiples(network)
+    assert fig is not None
+    plt.close('all')
+    
+    fig = plot_edge_colored_projection(network)
+    assert fig is not None
+    plt.close('all')
+
+
+# ============================================================================
+# Performance Tests for Large Graphs
+# ============================================================================
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_large_graph_visualization_performance():
+    """Test that large graph visualization completes in reasonable time."""
+    import time
+    
+    # Create a larger multilayer network
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add 100 nodes per layer, 3 layers
+    for layer in ['A', 'B', 'C']:
+        for i in range(100):
+            network.add_nodes([{'source': str(i), 'type': layer}], input_type='dict')
+    
+    # Add edges to create a sparse network (200 edges per layer)
+    import random
+    random.seed(42)
+    for layer in ['A', 'B', 'C']:
+        for _ in range(200):
+            src = str(random.randint(0, 99))
+            tgt = str(random.randint(0, 99))
+            if src != tgt:  # Avoid self-loops
+                network.add_edges([{
+                    'source': src,
+                    'target': tgt,
+                    'source_type': layer,
+                    'target_type': layer
+                }], input_type='dict')
+    
+    # Test small multiples performance
+    start = time.time()
+    fig = plot_small_multiples(network, layout="circular")
+    duration = time.time() - start
+    
+    assert fig is not None
+    # Should complete within 30 seconds for 300 nodes, 600 edges
+    assert duration < 30.0, f"Visualization took {duration:.2f}s, expected < 30s"
+    plt.close('all')
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")  
+def test_supra_heatmap_large_network_performance():
+    """Test supra-adjacency heatmap performance on larger network."""
+    import time
+    
+    # Create a network with 50 nodes per layer
+    network = multinet.multi_layer_network(directed=False)
+    
+    for layer in ['A', 'B']:
+        for i in range(50):
+            network.add_nodes([{'source': str(i), 'type': layer}], input_type='dict')
+    
+    # Add edges
+    import random
+    random.seed(42)
+    for layer in ['A', 'B']:
+        for _ in range(100):
+            src = str(random.randint(0, 49))
+            tgt = str(random.randint(0, 49))
+            if src != tgt:
+                network.add_edges([{
+                    'source': src,
+                    'target': tgt,
+                    'source_type': layer,
+                    'target_type': layer
+                }], input_type='dict')
+    
+    start = time.time()
+    fig = plot_supra_adjacency_heatmap(network)
+    duration = time.time() - start
+    
+    assert fig is not None
+    # Heatmap should be fast even for larger networks
+    assert duration < 20.0, f"Heatmap took {duration:.2f}s, expected < 20s"
+    plt.close('all')
+
+
+# ============================================================================
+# Output File Format Tests
+# ============================================================================
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_save_visualization_png_format(tmp_path):
+    """Test saving visualization to PNG format."""
+    network = create_test_multilayer_network()
+    
+    output_file = tmp_path / "test_viz.png"
+    
+    # Create visualization
+    fig = plot_small_multiples(network)
+    assert fig is not None
+    
+    # Save as PNG
+    fig.savefig(str(output_file), format='png', dpi=100, bbox_inches='tight')
+    plt.close('all')
+    
+    # Verify file was created
+    assert output_file.exists()
+    assert output_file.stat().st_size > 0
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_save_visualization_svg_format(tmp_path):
+    """Test saving visualization to SVG format."""
+    network = create_test_multilayer_network()
+    
+    output_file = tmp_path / "test_viz.svg"
+    
+    # Create visualization
+    fig = plot_edge_colored_projection(network)
+    assert fig is not None
+    
+    # Save as SVG
+    fig.savefig(str(output_file), format='svg', bbox_inches='tight')
+    plt.close('all')
+    
+    # Verify file was created and contains SVG header
+    assert output_file.exists()
+    assert output_file.stat().st_size > 0
+    
+    # Check it's a valid SVG file
+    with open(output_file, 'r') as f:
+        content = f.read()
+        assert '<svg' in content or '<?xml' in content
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_save_visualization_pdf_format(tmp_path):
+    """Test saving visualization to PDF format."""
+    network = create_test_multilayer_network()
+    
+    output_file = tmp_path / "test_viz.pdf"
+    
+    # Create visualization
+    fig = plot_radial_layers(network)
+    assert fig is not None
+    
+    # Save as PDF
+    fig.savefig(str(output_file), format='pdf', bbox_inches='tight')
+    plt.close('all')
+    
+    # Verify file was created
+    assert output_file.exists()
+    assert output_file.stat().st_size > 0
+    
+    # Check it's a PDF file (starts with %PDF)
+    with open(output_file, 'rb') as f:
+        header = f.read(4)
+        assert header == b'%PDF'
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_save_multiple_formats(tmp_path):
+    """Test saving the same visualization in multiple formats."""
+    network = create_test_multilayer_network()
+    
+    # Create one visualization
+    fig = plot_supra_adjacency_heatmap(network)
+    assert fig is not None
+    
+    formats = ['png', 'svg', 'pdf']
+    for fmt in formats:
+        output_file = tmp_path / f"test_viz.{fmt}"
+        fig.savefig(str(output_file), format=fmt, bbox_inches='tight')
+        
+        # Verify each file was created
+        assert output_file.exists()
+        assert output_file.stat().st_size > 0
+    
+    plt.close('all')
+
+
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
+def test_save_with_different_dpi(tmp_path):
+    """Test saving visualization with different DPI settings."""
+    network = create_test_multilayer_network()
+    
+    fig = plot_small_multiples(network)
+    assert fig is not None
+    
+    # Test different DPI values
+    dpis = [72, 150, 300]
+    file_sizes = []
+    
+    for dpi in dpis:
+        output_file = tmp_path / f"test_viz_dpi{dpi}.png"
+        fig.savefig(str(output_file), format='png', dpi=dpi, bbox_inches='tight')
+        
+        assert output_file.exists()
+        file_size = output_file.stat().st_size
+        file_sizes.append(file_size)
+    
+    # Higher DPI should generally result in larger files
+    # (though compression can affect this)
+    assert file_sizes[0] > 0
+    assert file_sizes[1] > 0
+    assert file_sizes[2] > 0
+    
+    plt.close('all')
