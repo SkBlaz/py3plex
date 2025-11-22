@@ -4,10 +4,24 @@ Attribute store backend for efficient node/edge/metadata storage and querying.
 This module provides a high-performance storage backend using Polars DataFrames
 to store node attributes, edge attributes, and metadata. This replaces direct
 NetworkX graph access for attribute queries, providing faster indexing and filtering.
+
+Requirements:
+    - polars >= 0.15.0 (for DataFrame operations and diagonal_relaxed concat)
+
+Note:
+    Node IDs are converted to strings for consistent storage. Supported types include
+    strings, integers, and any object with a meaningful string representation.
 """
 
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
-import polars as pl
+
+try:
+    import polars as pl
+except ImportError:
+    raise ImportError(
+        "Polars is required for AttributeStore backend. "
+        "Install it with: pip install polars"
+    )
 
 
 class AttributeStore:
@@ -66,9 +80,14 @@ class AttributeStore:
         Add a single node with attributes.
         
         Args:
-            node_id: Node identifier
+            node_id: Node identifier (string, int, or any object with string representation)
             layer: Layer identifier
             **attributes: Additional node attributes
+            
+        Note:
+            Node IDs are converted to strings for consistent storage. This works
+            for strings, integers, and objects with __str__ methods. Complex objects
+            without meaningful string representations may not work as expected.
         """
         # Convert node_id to string for consistent storage
         node_id_str = str(node_id)
@@ -86,8 +105,8 @@ class AttributeStore:
         # Create new row and append
         new_row = pl.DataFrame(row_data)
         
-        # Use vertical concatenation with alignment
-        # This handles schema evolution better than diagonal concat
+        # Use diagonal_relaxed concatenation for schema evolution
+        # This allows adding new columns dynamically without schema conflicts
         if len(self.nodes_df) == 0:
             self.nodes_df = new_row
         else:

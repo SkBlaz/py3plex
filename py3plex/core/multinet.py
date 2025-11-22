@@ -462,8 +462,12 @@ class multi_layer_network:
             try:
                 from .attribute_store import AttributeStore
                 self.attribute_store = AttributeStore()
-            except ImportError:
-                logger.warning("Polars not available, falling back to NetworkX-only mode")
+            except ImportError as e:
+                logger.warning(
+                    f"AttributeStore backend unavailable: {e}. "
+                    "Install polars with: pip install polars. "
+                    "Falling back to NetworkX-only mode."
+                )
                 self.use_attribute_store = False
 
     # ═════════════════════════════════════════════════════════════════════════
@@ -1587,6 +1591,26 @@ class multi_layer_network:
                 func((n1, l1), (n2, l2))
             else:
                 func((n1, l1), (n2, l2), weight=w, type="default")
+    
+    @staticmethod
+    def _normalize_node_dict_keys(node_dict: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Normalize node dictionary keys for AttributeStore compatibility.
+        
+        Converts 'source' -> 'node_id' and 'type' -> 'layer' if present.
+        
+        Args:
+            node_dict: Node dictionary with potential legacy keys
+            
+        Returns:
+            Normalized dictionary with consistent keys
+        """
+        result = node_dict.copy()
+        if 'source' in result and 'node_id' not in result:
+            result['node_id'] = result.pop('source')
+        if 'type' in result and 'layer' not in result:
+            result['layer'] = result.pop('type')
+        return result
 
     def _generic_node_dict_manipulator(self, node_dict_list, target_function):
         """
@@ -1644,17 +1668,13 @@ class multi_layer_network:
                 
                 # Collect for batch operation
                 if self.use_attribute_store and self.attribute_store is not None and target_function == "add_node":
-                    node_dict_item_copy = node_dict_item.copy()
-                    # Ensure proper keys for attribute store
-                    if 'source' in node_dict_item_copy:
-                        node_dict_item_copy['node_id'] = node_dict_item_copy.pop('source')
-                    if 'type' in node_dict_item_copy:
-                        node_dict_item_copy['layer'] = node_dict_item_copy.pop('type')
-                    nodes_to_add.append(node_dict_item_copy)
+                    nodes_to_add.append(node_dict_item.copy())
             
             # Batch sync to attribute store if enabled
             if self.use_attribute_store and self.attribute_store is not None and target_function == "add_node" and nodes_to_add:
-                self.attribute_store.add_nodes_batch(nodes_to_add)
+                # Normalize keys for AttributeStore
+                normalized_nodes = [self._normalize_node_dict_keys(n) for n in nodes_to_add]
+                self.attribute_store.add_nodes_batch(normalized_nodes)
 
     def _generic_node_list_manipulator(self, node_list, target_function):
         """Generic manipulator of node lists.
