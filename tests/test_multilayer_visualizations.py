@@ -17,6 +17,9 @@ This module includes extensive tests covering:
 """
 
 import logging
+import random
+import time
+
 logger = logging.getLogger()
 logger.level = logging.DEBUG
 
@@ -1039,16 +1042,15 @@ def test_hairball_plot_with_legend():
         # Test with legend enabled
         hairball_plot(g, legend=True, display=False, draw=True)
         
-        # Check that a legend was created
+        # Check that a legend was created (or at least that the plot succeeded)
         fig = plt.gcf()
         axes = fig.get_axes()
-        if axes:
-            ax = axes[0]
-            legend = ax.get_legend()
-            # Legend should exist when legend=True
-            # Note: legend might be None if there's only one color
-            if legend is not None:
-                assert legend is not None
+        assert len(axes) > 0  # Should have at least one axis
+        
+        ax = axes[0]
+        legend = ax.get_legend()
+        # Legend might be None if there's only one color, which is acceptable
+        # The important thing is that the plot succeeded with legend=True
         
         plt.close('all')
 
@@ -1204,8 +1206,6 @@ def test_visualization_with_isolated_nodes():
 @pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
 def test_large_graph_visualization_performance():
     """Test that large graph visualization completes in reasonable time."""
-    import time
-    
     # Create a larger multilayer network
     network = multinet.multi_layer_network(directed=False)
     
@@ -1215,7 +1215,6 @@ def test_large_graph_visualization_performance():
             network.add_nodes([{'source': str(i), 'type': layer}], input_type='dict')
     
     # Add edges to create a sparse network (200 edges per layer)
-    import random
     random.seed(42)
     for layer in ['A', 'B', 'C']:
         for _ in range(200):
@@ -1240,11 +1239,9 @@ def test_large_graph_visualization_performance():
     plt.close('all')
 
 
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")  
+@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
 def test_supra_heatmap_large_network_performance():
     """Test supra-adjacency heatmap performance on larger network."""
-    import time
-    
     # Create a network with 50 nodes per layer
     network = multinet.multi_layer_network(directed=False)
     
@@ -1253,7 +1250,6 @@ def test_supra_heatmap_large_network_performance():
             network.add_nodes([{'source': str(i), 'type': layer}], input_type='dict')
     
     # Add edges
-    import random
     random.seed(42)
     for layer in ['A', 'B']:
         for _ in range(100):
