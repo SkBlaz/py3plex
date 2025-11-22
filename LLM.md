@@ -444,10 +444,10 @@ Increase core/multinet.py test coverage from 32% to 65%
 ✅ Test that visualization functions don't crash on minimal graphs
 ✅ Add tests for different layout algorithms
 ✅ Test color scheme generation and application
-Add tests for legend and label generation
-Test visualization with edge cases (self-loops, multiple edges)
-Add performance tests for large graph visualization
-Test output file generation for different formats (PNG, SVG, PDF)
+✅ Add tests for legend and label generation
+✅ Test visualization with edge cases (self-loops, multiple edges)
+✅ Add performance tests for large graph visualization
+✅ Test output file generation for different formats (PNG, SVG, PDF)
 
 ### Medium Priority - Algorithm Testing
 ✅ Add tests with known-correct algorithm results

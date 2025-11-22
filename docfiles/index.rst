@@ -223,6 +223,7 @@ Documentation Contents
    tutorials/community_detection
    tutorials/network_decomposition
    tutorials/incidence_gadget_encoding
+   config_workflows
    multilayer_centrality_matrix_functions
    random_walks
    supra

@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph edgedefault="directed">
+    <node id="('node0', 'layer1')" />
+    <node id="('node1', 'layer1')" />
+    <node id="('node2', 'layer1')" />
+    <node id="('node3', 'layer1')" />
+    <node id="('node4', 'layer1')" />
+    <node id="('node5', 'layer1')" />
+    <node id="('node6', 'layer1')" />
+    <node id="('node7', 'layer1')" />
+    <node id="('node8', 'layer1')" />
+    <node id="('node9', 'layer1')" />
+    <node id="('node10', 'layer1')" />
+    <node id="('node11', 'layer1')" />
+    <node id="('node12', 'layer1')" />
+    <node id="('node13', 'layer1')" />
+    <node id="('node14', 'layer1')" />
+    <node id="('node15', 'layer1')" />
+    <node id="('node16', 'layer1')" />
+    <node id="('node17', 'layer1')" />
+    <node id="('node18', 'layer1')" />
+    <node id="('node19', 'layer1')" />
+    <node id="('node0', 'layer2')" />
+    <node id="('node1', 'layer2')" />
+    <node id="('node2', 'layer2')" />
+    <node id="('node3', 'layer2')" />
+    <node id="('node4', 'layer2')" />
+    <node id="('node5', 'layer2')" />
+    <node id="('node6', 'layer2')" />
+    <node id="('node7', 'layer2')" />
+    <node id="('node8', 'layer2')" />
+    <node id="('node9', 'layer2')" />
+    <node id="('node10', 'layer2')" />
+    <node id="('node11', 'layer2')" />
+    <node id="('node12', 'layer2')" />
+    <node id="('node13', 'layer2')" />
+    <node id="('node14', 'layer2')" />
+    <node id="('node15', 'layer2')" />
+    <node id="('node16', 'layer2')" />
+    <node id="('node17', 'layer2')" />
+    <node id="('node18', 'layer2')" />
+    <node id="('node19', 'layer2')" />
+    <edge source="('node0', 'layer1')" target="('node2', 'layer1')" id="0" />
+    <edge source="('node0', 'layer1')" target="('node3', 'layer1')" id="0" />
+    <edge source="('node0', 'layer1')" target="('node4', 'layer1')" id="0" />
+    <edge source="('node0', 'layer1')" target="('node8', 'layer1')" id="0" />
+    <edge source="('node0', 'layer1')" target="('node10', 'layer1')" id="0" />
+    <edge source="('node0', 'layer1')" target="('node11', 'layer1')" id="0" />
+    <edge source="('node0', 'layer1')" target="('node13', 'layer1')" id="0" />
+    <edge source="('node0', 'layer1')" target="('node14', 'layer1')" id="0" />
+    <edge source="('node0', 'layer1')" target="('node17', 'layer1')" id="0" />
+    <edge source="('node1', 'layer1')" target="('node2', 'layer1')" id="0" />
+    <edge source="('node1', 'layer1')" target="('node6', 'layer1')" id="0" />
+    <edge source="('node1', 'layer1')" target="('node9', 'layer1')" id="0" />
+    <edge source="('node1', 'layer1')" target="('node10', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node7', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node8', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node9', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node10', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node11', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node12', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node13', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node17', 'layer1')" id="0" />
+    <edge source="('node2', 'layer1')" target="('node18', 'layer1')" id="0" />
+    <edge source="('node3', 'layer1')" target="('node6', 'layer1')" id="0" />
+    <edge source="('node3', 'layer1')" target="('node8', 'layer1')" id="0" />
+    <edge source="('node3', 'layer1')" target="('node16', 'layer1')" id="0" />
+    <edge source="('node3', 'layer1')" target="('node17', 'layer1')" id="0" />
+    <edge source="('node3', 'layer1')" target="('node19', 'layer1')" id="0" />
+    <edge source="('node4', 'layer1')" target="('node5', 'layer1')" id="0" />
+    <edge source="('node4', 'layer1')" target="('node13', 'layer1')" id="0" />
+    <edge source="('node4', 'layer1')" target="('node14', 'layer1')" id="0" />
+    <edge source="('node4', 'layer1')" target="('node16', 'layer1')" id="0" />
+    <edge source="('node5', 'layer1')" target="('node6', 'layer1')" id="0" />
+    <edge source="('node5', 'layer1')" target="('node9', 'layer1')" id="0" />
+    <edge source="('node5', 'layer1')" target="('node10', 'layer1')" id="0" />
+    <edge source="('node5', 'layer1')" target="('node11', 'layer1')" id="0" />
+    <edge source="('node5', 'layer1')" target="('node15', 'layer1')" id="0" />
+    <edge source="('node6', 'layer1')" target="('node8', 'layer1')" id="0" />
+    <edge source="('node6', 'layer1')" target="('node12', 'layer1')" id="0" />
+    <edge source="('node6', 'layer1')" target="('node14', 'layer1')" id="0" />
+    <edge source="('node6', 'layer1')" target="('node19', 'layer1')" id="0" />
+    <edge source="('node7', 'layer1')" target="('node9', 'layer1')" id="0" />
+    <edge source="('node7', 'layer1')" target="('node12', 'layer1')" id="0" />
+    <edge source="('node7', 'layer1')" target="('node15', 'layer1')" id="0" />
+    <edge source="('node8', 'layer1')" target="('node9', 'layer1')" id="0" />
+    <edge source="('node8', 'layer1')" target="('node11', 'layer1')" id="0" />
+    <edge source="('node8', 'layer1')" target="('node16', 'layer1')" id="0" />
+    <edge source="('node8', 'layer1')" target="('node19', 'layer1')" id="0" />
+    <edge source="('node9', 'layer1')" target="('node11', 'layer1')" id="0" />
+    <edge source="('node9', 'layer1')" target="('node14', 'layer1')" id="0" />
+    <edge source="('node9', 'layer1')" target="('node17', 'layer1')" id="0" />
+    <edge source="('node10', 'layer1')" target="('node11', 'layer1')" id="0" />
+    <edge source="('node10', 'layer1')" target="('node14', 'layer1')" id="0" />
+    <edge source="('node11', 'layer1')" target="('node12', 'layer1')" id="0" />
+    <edge source="('node11', 'layer1')" target="('node13', 'layer1')" id="0" />
+    <edge source="('node11', 'layer1')" target="('node16', 'layer1')" id="0" />
+    <edge source="('node11', 'layer1')" target="('node17', 'layer1')" id="0" />
+    <edge source="('node11', 'layer1')" target="('node18', 'layer1')" id="0" />
+    <edge source="('node12', 'layer1')" target="('node13', 'layer1')" id="0" />
+    <edge source="('node12', 'layer1')" target="('node16', 'layer1')" id="0" />
+    <edge source="('node12', 'layer1')" target="('node17', 'layer1')" id="0" />
+    <edge source="('node12', 'layer1')" target="('node19', 'layer1')" id="0" />
+    <edge source="('node13', 'layer1')" target="('node14', 'layer1')" id="0" />
+    <edge source="('node14', 'layer1')" target="('node15', 'layer1')" id="0" />
+    <edge source="('node14', 'layer1')" target="('node16', 'layer1')" id="0" />
+    <edge source="('node15', 'layer1')" target="('node19', 'layer1')" id="0" />
+    <edge source="('node17', 'layer1')" target="('node18', 'layer1')" id="0" />
+    <edge source="('node17', 'layer1')" target="('node19', 'layer1')" id="0" />
+    <edge source="('node0', 'layer2')" target="('node2', 'layer2')" id="0" />
+    <edge source="('node0', 'layer2')" target="('node3', 'layer2')" id="0" />
+    <edge source="('node0', 'layer2')" target="('node8', 'layer2')" id="0" />
+    <edge source="('node0', 'layer2')" target="('node14', 'layer2')" id="0" />
+    <edge source="('node0', 'layer2')" target="('node16', 'layer2')" id="0" />
+    <edge source="('node0', 'layer2')" target="('node18', 'layer2')" id="0" />
+    <edge source="('node1', 'layer2')" target="('node3', 'layer2')" id="0" />
+    <edge source="('node1', 'layer2')" target="('node11', 'layer2')" id="0" />
+    <edge source="('node1', 'layer2')" target="('node12', 'layer2')" id="0" />
+    <edge source="('node1', 'layer2')" target="('node17', 'layer2')" id="0" />
+    <edge source="('node2', 'layer2')" target="('node4', 'layer2')" id="0" />
+    <edge source="('node2', 'layer2')" target="('node6', 'layer2')" id="0" />
+    <edge source="('node2', 'layer2')" target="('node7', 'layer2')" id="0" />
+    <edge source="('node2', 'layer2')" target="('node10', 'layer2')" id="0" />
+    <edge source="('node2', 'layer2')" target="('node11', 'layer2')" id="0" />
+    <edge source="('node2', 'layer2')" target="('node13', 'layer2')" id="0" />
+    <edge source="('node3', 'layer2')" target="('node4', 'layer2')" id="0" />
+    <edge source="('node3', 'layer2')" target="('node6', 'layer2')" id="0" />
+    <edge source="('node3', 'layer2')" target="('node9', 'layer2')" id="0" />
+    <edge source="('node3', 'layer2')" target="('node12', 'layer2')" id="0" />
+    <edge source="('node3', 'layer2')" target="('node16', 'layer2')" id="0" />
+    <edge source="('node3', 'layer2')" target="('node17', 'layer2')" id="0" />
+    <edge source="('node3', 'layer2')" target="('node18', 'layer2')" id="0" />
+    <edge source="('node4', 'layer2')" target="('node8', 'layer2')" id="0" />
+    <edge source="('node4', 'layer2')" target="('node14', 'layer2')" id="0" />
+    <edge source="('node4', 'layer2')" target="('node16', 'layer2')" id="0" />
+    <edge source="('node4', 'layer2')" target="('node19', 'layer2')" id="0" />
+    <edge source="('node5', 'layer2')" target="('node6', 'layer2')" id="0" />
+    <edge source="('node5', 'layer2')" target="('node7', 'layer2')" id="0" />
+    <edge source="('node5', 'layer2')" target="('node9', 'layer2')" id="0" />
+    <edge source="('node5', 'layer2')" target="('node12', 'layer2')" id="0" />
+    <edge source="('node5', 'layer2')" target="('node14', 'layer2')" id="0" />
+    <edge source="('node5', 'layer2')" target="('node18', 'layer2')" id="0" />
+    <edge source="('node6', 'layer2')" target="('node7', 'layer2')" id="0" />
+    <edge source="('node6', 'layer2')" target="('node8', 'layer2')" id="0" />
+    <edge source="('node6', 'layer2')" target="('node11', 'layer2')" id="0" />
+    <edge source="('node6', 'layer2')" target="('node15', 'layer2')" id="0" />
+    <edge source="('node6', 'layer2')" target="('node16', 'layer2')" id="0" />
+    <edge source="('node7', 'layer2')" target="('node10', 'layer2')" id="0" />
+    <edge source="('node7', 'layer2')" target="('node11', 'layer2')" id="0" />
+    <edge source="('node7', 'layer2')" target="('node17', 'layer2')" id="0" />
+    <edge source="('node7', 'layer2')" target="('node18', 'layer2')" id="0" />
+    <edge source="('node7', 'layer2')" target="('node19', 'layer2')" id="0" />
+    <edge source="('node8', 'layer2')" target="('node13', 'layer2')" id="0" />
+    <edge source="('node8', 'layer2')" target="('node19', 'layer2')" id="0" />
+    <edge source="('node9', 'layer2')" target="('node16', 'layer2')" id="0" />
+    <edge source="('node9', 'layer2')" target="('node18', 'layer2')" id="0" />
+    <edge source="('node10', 'layer2')" target="('node12', 'layer2')" id="0" />
+    <edge source="('node10', 'layer2')" target="('node17', 'layer2')" id="0" />
+    <edge source="('node10', 'layer2')" target="('node18', 'layer2')" id="0" />
+    <edge source="('node10', 'layer2')" target="('node19', 'layer2')" id="0" />
+    <edge source="('node11', 'layer2')" target="('node15', 'layer2')" id="0" />
+    <edge source="('node12', 'layer2')" target="('node14', 'layer2')" id="0" />
+    <edge source="('node12', 'layer2')" target="('node16', 'layer2')" id="0" />
+    <edge source="('node12', 'layer2')" target="('node18', 'layer2')" id="0" />
+    <edge source="('node12', 'layer2')" target="('node19', 'layer2')" id="0" />
+    <edge source="('node14', 'layer2')" target="('node16', 'layer2')" id="0" />
+    <edge source="('node14', 'layer2')" target="('node18', 'layer2')" id="0" />
+    <edge source="('node16', 'layer2')" target="('node18', 'layer2')" id="0" />
+  </graph>
+</graphml>
