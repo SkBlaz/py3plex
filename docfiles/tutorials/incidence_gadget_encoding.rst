@@ -319,7 +319,7 @@ See Also
 Example Scripts
 ---------------
 
-See ``examples/multilayer/example_incidence_gadget_encoding.py`` for complete demonstrations:
+See ``examples/advanced/example_incidence_gadget_encoding.py`` for complete demonstrations:
 
 * Basic encoding and decoding workflow
 * Social network multiplex example  

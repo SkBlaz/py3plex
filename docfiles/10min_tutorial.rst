@@ -640,8 +640,8 @@ Next Steps
 Now that you've completed this tutorial, explore more advanced features:
 
 - **Multilayer Statistics**: Explore all available statistics in ``py3plex.algorithms.statistics.multilayer_statistics``
-- **Multilayer Centrality**: See examples in ``examples/centrality_and_statistics/``
-- **More Examples**: Check the ``examples/`` directory for 40+ examples
+- **Multilayer Centrality**: See examples in ``examples/network_analysis/``
+- **More Examples**: Check the ``examples/`` directory for 80+ examples organized by topic
 - **Full Documentation**: Visit https://skblaz.github.io/py3plex/
 
 Common Issues

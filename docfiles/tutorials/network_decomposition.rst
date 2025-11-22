@@ -478,4 +478,4 @@ Next Steps
 * :doc:`./community_detection` - Community detection tutorial
 * :doc:`./multilayer_centrality` - Centrality measures
 * :doc:`../algorithm_guide` - Algorithm selection
-* Examples in ``examples/decomposition_and_classification/example_decomposition_and_classification.py``
+* Examples in ``examples/advanced/example_decomposition_and_classification.py``
