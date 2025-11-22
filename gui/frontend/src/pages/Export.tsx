@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Download, Package, AlertCircle, CheckCircle } from 'lucide-react';
+import { Download, Package, AlertCircle, CheckCircle, HelpCircle } from 'lucide-react';
 import { saveWorkspace } from '../lib/api';
 import api from '../lib/api';
+import { useKeyboardShortcuts, ShortcutConfig } from '../hooks/useKeyboardShortcuts';
+import ShortcutsHelp from '../components/ShortcutsHelp';
+import Tooltip from '../components/Tooltip';
 
 export default function Export() {
   const [graphId, setGraphId] = useState<string | null>(null);
@@ -102,6 +105,44 @@ export default function Export() {
     }
   };
 
+  // Keyboard shortcuts
+  const shortcuts: ShortcutConfig[] = [
+    {
+      key: 's',
+      ctrl: true,
+      action: handleSaveWorkspace,
+      description: 'Save workspace'
+    },
+    {
+      key: '1',
+      ctrl: true,
+      action: () => handleDownload('centrality', `centrality-${graphId}.csv`),
+      description: 'Download centrality CSV'
+    },
+    {
+      key: '2',
+      ctrl: true,
+      action: () => handleDownload('community', `community-${graphId}.json`),
+      description: 'Download community JSON'
+    },
+    {
+      key: '3',
+      ctrl: true,
+      action: () => handleDownload('positions', `positions-${graphId}.json`),
+      description: 'Download layout positions'
+    },
+    {
+      key: '/',
+      ctrl: true,
+      action: () => {
+        // Handled by ShortcutsHelp component
+      },
+      description: 'Show keyboard shortcuts'
+    }
+  ];
+
+  useKeyboardShortcuts(shortcuts, Boolean(graphId && !saving && !downloading));
+
   if (!graphId) {
     return (
       <div className="px-4 py-6">
@@ -124,7 +165,12 @@ export default function Export() {
 
   return (
     <div className="px-4 py-6">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Export & Download</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Export & Download</h1>
+        <Tooltip content="Download analysis results and save workspace for later">
+          <HelpCircle className="h-5 w-5 text-gray-400" />
+        </Tooltip>
+      </div>
 
       <div className="grid grid-cols-2 gap-6">
         {/* Export Options */}
@@ -142,30 +188,36 @@ export default function Export() {
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-2">Download Results</h3>
               <div className="space-y-2">
-                <button 
-                  onClick={() => handleDownload('centrality', `centrality-${graphId}.csv`)}
-                  disabled={downloading === 'centrality'}
-                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  {downloading === 'centrality' ? 'Downloading...' : 'Download Centrality CSV'}
-                </button>
-                <button 
-                  onClick={() => handleDownload('community', `community-${graphId}.json`)}
-                  disabled={downloading === 'community'}
-                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  {downloading === 'community' ? 'Downloading...' : 'Download Community JSON'}
-                </button>
-                <button 
-                  onClick={() => handleDownload('positions', `positions-${graphId}.json`)}
-                  disabled={downloading === 'positions'}
-                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  {downloading === 'positions' ? 'Downloading...' : 'Download Layout Positions'}
-                </button>
+                <Tooltip content="Download centrality metrics as CSV (Ctrl+1)">
+                  <button 
+                    onClick={() => handleDownload('centrality', `centrality-${graphId}.csv`)}
+                    disabled={downloading === 'centrality'}
+                    className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    {downloading === 'centrality' ? 'Downloading...' : 'Download Centrality CSV'}
+                  </button>
+                </Tooltip>
+                <Tooltip content="Download community detection results (Ctrl+2)">
+                  <button 
+                    onClick={() => handleDownload('community', `community-${graphId}.json`)}
+                    disabled={downloading === 'community'}
+                    className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    {downloading === 'community' ? 'Downloading...' : 'Download Community JSON'}
+                  </button>
+                </Tooltip>
+                <Tooltip content="Download node positions from layout (Ctrl+3)">
+                  <button 
+                    onClick={() => handleDownload('positions', `positions-${graphId}.json`)}
+                    disabled={downloading === 'positions'}
+                    className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    {downloading === 'positions' ? 'Downloading...' : 'Download Layout Positions'}
+                  </button>
+                </Tooltip>
               </div>
               <p className="text-xs text-gray-500 mt-2">
                 Note: Data must be computed in the Analyze page before downloading
@@ -244,6 +296,9 @@ export default function Export() {
           re-computing.
         </p>
       </div>
+
+      {/* Keyboard Shortcuts Help */}
+      <ShortcutsHelp shortcuts={shortcuts} />
     </div>
   );
 }

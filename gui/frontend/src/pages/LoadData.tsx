@@ -1,9 +1,23 @@
-import { useState } from 'react';
-import { Upload, FileText, AlertCircle, CheckCircle } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Upload, FileText, AlertCircle, CheckCircle, Clock, HelpCircle } from 'lucide-react';
 import { uploadFile, getGraphSummary } from '../lib/api';
+import { useKeyboardShortcuts, ShortcutConfig } from '../hooks/useKeyboardShortcuts';
+import ShortcutsHelp from '../components/ShortcutsHelp';
+import Tooltip from '../components/Tooltip';
+import LoadingProgress from '../components/LoadingProgress';
 
 const MAX_FILE_SIZE_MB = 512;
 const ACCEPTED_FORMATS = ['.txt', '.edgelist', '.gml', '.gpickle'];
+const RECENT_FILES_KEY = 'py3plex-recent-files';
+const MAX_RECENT_FILES = 5;
+
+interface RecentFile {
+  name: string;
+  graphId: string;
+  uploadedAt: string;
+  nodes: number;
+  edges: number;
+}
 
 export default function LoadData() {
   const [file, setFile] = useState<File | null>(null);
@@ -12,6 +26,33 @@ export default function LoadData() {
   const [summary, setSummary] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [recentFiles, setRecentFiles] = useState<RecentFile[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load recent files from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem(RECENT_FILES_KEY);
+    if (stored) {
+      try {
+        setRecentFiles(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse recent files:', e);
+      }
+    }
+  }, []);
+
+  // Save recent file
+  const saveRecentFile = (fileInfo: RecentFile) => {
+    // Remove duplicate if exists, add new entry at the start, limit to MAX_RECENT_FILES
+    const existingIndex = recentFiles.findIndex(f => f.graphId === fileInfo.graphId);
+    const updatedList = existingIndex >= 0 
+      ? [fileInfo, ...recentFiles.filter((_, i) => i !== existingIndex)]
+      : [fileInfo, ...recentFiles];
+    
+    const updated = updatedList.slice(0, MAX_RECENT_FILES);
+    setRecentFiles(updated);
+    localStorage.setItem(RECENT_FILES_KEY, JSON.stringify(updated));
+  };
 
   const validateFile = (file: File): string | null => {
     // Check file size
@@ -73,6 +114,15 @@ export default function LoadData() {
       sessionStorage.setItem('currentGraphId', response.data.graph_id);
       localStorage.setItem('currentGraphId', response.data.graph_id);
       localStorage.setItem('currentGraphName', file.name);
+
+      // Save to recent files
+      saveRecentFile({
+        name: file.name,
+        graphId: response.data.graph_id,
+        uploadedAt: new Date().toISOString(),
+        nodes: summaryResponse.data.nodes,
+        edges: summaryResponse.data.edges,
+      });
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to upload file');
     } finally {
@@ -101,9 +151,100 @@ export default function LoadData() {
     e.preventDefault();
   };
 
+  // Load a recent file
+  const loadRecentFile = (recent: RecentFile) => {
+    sessionStorage.setItem('currentGraphId', recent.graphId);
+    localStorage.setItem('currentGraphId', recent.graphId);
+    localStorage.setItem('currentGraphName', recent.name);
+    
+    // Reload summary
+    getGraphSummary(recent.graphId)
+      .then(response => {
+        setSummary(response.data);
+        setUploadResult({ graph_id: recent.graphId, filename: recent.name });
+      })
+      .catch(() => {
+        setError('Failed to load recent file. It may have been deleted.');
+      });
+  };
+
+  // Keyboard shortcuts
+  const shortcuts: ShortcutConfig[] = [
+    {
+      key: 'u',
+      ctrl: true,
+      action: () => fileInputRef.current?.click(),
+      description: 'Open file picker'
+    },
+    {
+      key: 'Enter',
+      ctrl: true,
+      action: () => {
+        if (file && !uploading) {
+          handleUpload();
+        }
+      },
+      description: 'Upload selected file'
+    },
+    {
+      key: 'Escape',
+      action: () => {
+        setFile(null);
+        setError(null);
+        setValidationError(null);
+      },
+      description: 'Clear selection and errors'
+    },
+    {
+      key: '/',
+      ctrl: true,
+      action: () => {
+        // Handled by ShortcutsHelp component
+      },
+      description: 'Show keyboard shortcuts'
+    }
+  ];
+
+  useKeyboardShortcuts(shortcuts);
+
   return (
     <div className="px-4 py-6">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Load Network Data</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Load Network Data</h1>
+        <Tooltip content="Upload network files for analysis and visualization">
+          <HelpCircle className="h-5 w-5 text-gray-400" />
+        </Tooltip>
+      </div>
+
+      {/* Recent Files */}
+      {recentFiles.length > 0 && !uploadResult && (
+        <div className="bg-white shadow rounded-lg p-6 mb-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+            <Clock className="h-5 w-5 mr-2 text-gray-600" />
+            Recent Files
+          </h2>
+          <div className="space-y-2">
+            {recentFiles.map((recent, index) => (
+              <button
+                key={index}
+                onClick={() => loadRecentFile(recent)}
+                className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg text-left transition-colors"
+              >
+                <div className="flex items-center flex-1">
+                  <FileText className="h-5 w-5 text-gray-400 mr-3" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{recent.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {recent.nodes} nodes, {recent.edges} edges • {new Date(recent.uploadedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs text-blue-600 font-medium">Load →</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* File Upload Area */}
       <div className="bg-white shadow rounded-lg p-6 mb-6">
@@ -121,6 +262,7 @@ export default function LoadData() {
               <span className="text-gray-600"> or drag and drop</span>
             </label>
             <input
+              ref={fileInputRef}
               id="file-upload"
               type="file"
               className="hidden"
@@ -130,6 +272,9 @@ export default function LoadData() {
           </div>
           <p className="text-sm text-gray-500">
             Supported formats: .txt, .edgelist, .gml, .gpickle
+          </p>
+          <p className="text-xs text-gray-400 mt-2">
+            💡 Tip: Press <kbd className="px-2 py-1 text-xs bg-gray-100 border border-gray-300 rounded">Ctrl+U</kbd> to open file picker
           </p>
         </div>
 
@@ -142,13 +287,15 @@ export default function LoadData() {
                 <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
               </div>
             </div>
-            <button
-              onClick={handleUpload}
-              disabled={uploading}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {uploading ? 'Uploading...' : 'Upload & Parse'}
-            </button>
+            <Tooltip content="Upload the selected file (Ctrl+Enter)">
+              <button
+                onClick={handleUpload}
+                disabled={uploading}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              >
+                {uploading ? 'Uploading...' : 'Upload & Parse'}
+              </button>
+            </Tooltip>
           </div>
         )}
 
@@ -175,14 +322,13 @@ export default function LoadData() {
 
       {/* Upload Progress Indicator */}
       {uploading && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
-            <div>
-              <p className="text-blue-900 font-medium">Uploading and parsing network file...</p>
-              <p className="text-blue-700 text-sm mt-1">This may take a moment for large files</p>
-            </div>
-          </div>
+        <div className="bg-white shadow rounded-lg p-6 mb-6">
+          <LoadingProgress 
+            message="Uploading and parsing network file..."
+          />
+          <p className="text-center text-sm text-gray-600 mt-4">
+            This may take a moment for large files
+          </p>
         </div>
       )}
 
@@ -253,6 +399,9 @@ export default function LoadData() {
           <strong>Note:</strong> Maximum file size is {MAX_FILE_SIZE_MB}MB. Comments starting with # are supported in edgelist files.
         </p>
       </div>
+
+      {/* Keyboard Shortcuts Help */}
+      <ShortcutsHelp shortcuts={shortcuts} />
     </div>
   );
 }
