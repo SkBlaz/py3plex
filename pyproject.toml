@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "py3plex"
-version = "0.95a"
+version = "0.96"
 description = "A Multilayer network analysis python3 library"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -199,14 +199,16 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
-    "-v",
+    "-q",
     "--tb=short",
     "--strict-markers",
 ]
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
     "property: property-based tests using Hypothesis",
+    "slow: potentially slow tests",
+    "integration: integration tests that require multiple components",
+    "unit: fast unit tests",
+    "metamorphic: metamorphic tests that verify invariants under transformations",
 ]
 timeout = 300
 
@@ -233,3 +235,8 @@ exclude_lines = [
 [tool.hypothesis]
 max_examples = 100
 deadline = 500
+
+[tool.mutmut]
+paths_to_mutate = "py3plex/utils.py"
+tests_dir = "tests/"
+runner = "PYTHONPATH=/home/runner/work/py3plex/py3plex python -m pytest -x tests/test_utils.py tests/property/test_utils_properties.py"
