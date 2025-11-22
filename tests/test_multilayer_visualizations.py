@@ -1075,8 +1075,8 @@ def test_hairball_plot_with_labels():
         if axes:
             ax = axes[0]
             texts = ax.texts
-            # Should have text objects for the labels
-            assert len(texts) >= 0  # At least we didn't crash
+            # Should have created text objects for the labels we requested
+            assert len(texts) == len(node_labels), f"Expected {len(node_labels)} labels, got {len(texts)}"
         
         plt.close('all')
 
@@ -1091,10 +1091,14 @@ def test_small_multiples_with_labels():
     assert fig is not None
     
     # Check that subplots have titles (which serve as labels)
+    # The test network has layers 'A' and 'B'
+    assert len(fig.axes) >= 2, "Should have at least 2 subplots for layers A and B"
+    
+    # Verify each subplot has a title
     for ax in fig.axes:
         title = ax.get_title()
-        # Each subplot should have a layer name as title
-        assert title is not None  # May be empty string but shouldn't be None
+        assert isinstance(title, str), "Title should be a string"
+        # For small multiples, layer names should appear as titles
     
     plt.close('all')
 
