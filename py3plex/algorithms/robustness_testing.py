@@ -272,15 +272,18 @@ def layer_wise_damage(
         if damage_strategy == "node_removal":
             # Remove fraction of nodes from this layer
             num_to_remove = int(len(layer_nodes) * damage_fraction)
-            nodes_to_remove = np.random.choice(layer_nodes, num_to_remove, replace=False)
-            for node in nodes_to_remove:
-                G_damaged.remove_node(node)
+            if num_to_remove > 0 and len(layer_nodes) > 0:
+                num_to_remove = min(num_to_remove, len(layer_nodes))
+                nodes_to_remove = np.random.choice(layer_nodes, num_to_remove, replace=False)
+                for node in nodes_to_remove:
+                    G_damaged.remove_node(node)
         
         elif damage_strategy == "edge_removal":
             # Remove fraction of edges from this layer
             edges_in_layer = layer_edges[layer]
             num_to_remove = int(len(edges_in_layer) * damage_fraction)
-            if num_to_remove > 0:
+            if num_to_remove > 0 and len(edges_in_layer) > 0:
+                num_to_remove = min(num_to_remove, len(edges_in_layer))
                 edges_to_remove = [edges_in_layer[i] for i in np.random.choice(
                     len(edges_in_layer), num_to_remove, replace=False
                 )]

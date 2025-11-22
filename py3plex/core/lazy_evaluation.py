@@ -161,11 +161,14 @@ class CacheManager:
             
         Returns:
             Hash string as cache key
+        
+        Note:
+            Uses SHA-256 for better collision resistance than MD5.
         """
         # Create a deterministic representation of arguments
         key_data = (func_name, args, tuple(sorted(kwargs.items())))
         key_str = str(key_data)
-        return hashlib.md5(key_str.encode()).hexdigest()
+        return hashlib.sha256(key_str.encode()).hexdigest()
     
     def cache_info(self, cache_name: Optional[str] = None) -> Dict[str, int]:
         """Get information about cache usage.

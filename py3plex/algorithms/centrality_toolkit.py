@@ -73,7 +73,9 @@ def multilayer_pagerank(
     # Column-normalize the supra-adjacency matrix
     # out-degree of each node
     out_degree = np.array(supra_adj.sum(axis=0)).flatten()
-    out_degree[out_degree == 0] = 1  # Avoid division by zero
+    # For nodes with zero out-degree, use 1 to avoid division by zero
+    # This effectively gives them uniform transition probability
+    out_degree[out_degree == 0] = 1
     
     # Create column-normalized matrix
     D_inv = sp.diags(1.0 / out_degree)
