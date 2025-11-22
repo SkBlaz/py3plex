@@ -66,7 +66,8 @@ class AttributeStore:
         
         self.metadata: Dict[str, Any] = {}
         
-        # Cache for performance
+        # Cache for performance (placeholder for future optimization)
+        # TODO: Implement caching in get_node_attributes() and get_edge_attributes()
         self._node_cache: Dict[Tuple[str, str], Dict[str, Any]] = {}
         self._edge_cache: Dict[Tuple[Tuple[str, str], Tuple[str, str]], Dict[str, Any]] = {}
         self._cache_valid = True
@@ -88,6 +89,9 @@ class AttributeStore:
             Node IDs are converted to strings for consistent storage. This works
             for strings, integers, and objects with __str__ methods. Complex objects
             without meaningful string representations may not work as expected.
+            
+            For performance: This method creates a new DataFrame on each call.
+            Use add_nodes_batch() for adding multiple nodes efficiently.
         """
         # Convert node_id to string for consistent storage
         node_id_str = str(node_id)
@@ -256,6 +260,10 @@ class AttributeStore:
             weight: Edge weight (default 1.0)
             edge_type: Edge type/label (default 'default')
             **attributes: Additional edge attributes
+            
+        Note:
+            For performance: This method creates a new DataFrame on each call.
+            Use add_edges_batch() for adding multiple edges efficiently.
         """
         # Convert to strings
         source_id_str = str(source_id)
