@@ -493,6 +493,21 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         help="Directory for output files (default: temporary directory)",
     )
 
+    # RUN-CONFIG command
+    run_config_parser = subparsers.add_parser(
+        "run-config",
+        help="Run workflow from YAML/JSON configuration file",
+    )
+    run_config_parser.add_argument(
+        "config",
+        help="Path to workflow configuration file (.yaml, .yml, or .json)",
+    )
+    run_config_parser.add_argument(
+        "--validate-only",
+        action="store_true",
+        help="Only validate configuration without running workflow",
+    )
+
     return parser
 
 
@@ -1994,6 +2009,50 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_run_config(args: argparse.Namespace) -> int:
+    """Run workflow from configuration file.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    try:
+        from py3plex.workflows import WorkflowConfig, WorkflowRunner
+
+        logger.info(f"Loading workflow configuration from {args.config}...")
+        config = WorkflowConfig.from_file(args.config)
+
+        # Validate configuration
+        errors = config.validate()
+        if errors:
+            logger.error("Configuration validation failed:")
+            for error in errors:
+                logger.error(f"  - {error}")
+            return 1
+
+        logger.info("Configuration is valid")
+
+        if args.validate_only:
+            logger.info("Validation-only mode: skipping execution")
+            return 0
+
+        # Execute workflow
+        runner = WorkflowRunner(config)
+        runner.run()
+
+        return 0
+
+    except FileNotFoundError as e:
+        logger.error(f"Config file not found: {e}")
+        return 1
+    except Exception as e:
+        logger.error(f"Error running workflow: {e}")
+        traceback.print_exc()
+        return 1
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
@@ -2026,6 +2085,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "convert": cmd_convert,
         "selftest": cmd_selftest,
         "quickstart": cmd_quickstart,
+        "run-config": cmd_run_config,
     }
 
     handler = command_handlers.get(args.command)

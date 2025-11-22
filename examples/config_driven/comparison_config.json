@@ -1,0 +1,60 @@
+{
+  "name": "Multi-Dataset Analysis Workflow",
+  "description": "Compare statistics across multiple generated networks",
+  "datasets": [
+    {
+      "name": "sparse_network",
+      "type": "generate",
+      "generator": "random",
+      "parameters": {
+        "nodes": 30,
+        "layers": 2,
+        "probability": 0.1,
+        "seed": 123
+      }
+    },
+    {
+      "name": "dense_network",
+      "type": "generate",
+      "generator": "random",
+      "parameters": {
+        "nodes": 30,
+        "layers": 2,
+        "probability": 0.3,
+        "seed": 456
+      }
+    }
+  ],
+  "operations": [
+    {
+      "type": "stats",
+      "dataset": "sparse_network",
+      "parameters": {}
+    },
+    {
+      "type": "stats",
+      "dataset": "dense_network",
+      "parameters": {}
+    },
+    {
+      "type": "visualize",
+      "dataset": "sparse_network",
+      "parameters": {
+        "output": "sparse_network.png",
+        "layout": "spring"
+      }
+    },
+    {
+      "type": "visualize",
+      "dataset": "dense_network",
+      "parameters": {
+        "output": "dense_network.png",
+        "layout": "spring"
+      }
+    }
+  ],
+  "output": {
+    "directory": "comparison_results",
+    "summary": "comparison_summary.json"
+  }
+}
