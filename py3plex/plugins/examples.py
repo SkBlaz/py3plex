@@ -100,12 +100,13 @@ class ExampleSimpleCommunity(CommunityPlugin):
     def author(self) -> str:
         return "Py3plex Development Team"
 
-    def detect(self, network, **kwargs):
+    def detect(self, network, num_communities=5, **kwargs):
         """
         Detect communities using a simple algorithm.
         
         Args:
             network: A py3plex multi_layer_network object
+            num_communities: Number of communities to create (default: 5)
             **kwargs: Additional parameters
             
         Returns:
@@ -123,7 +124,7 @@ class ExampleSimpleCommunity(CommunityPlugin):
         # Simple assignment: assign community based on node hash
         # This is just for demonstration
         for i, node in enumerate(nodes):
-            communities[node] = hash(str(node)) % 5  # 5 communities
+            communities[node] = hash(str(node)) % num_communities
 
         return communities
 

@@ -223,6 +223,22 @@ class PluginRegistry:
         del self._plugins[plugin_type][plugin_name]
         logger.info(f"Unregistered plugin: {plugin_type}/{plugin_name}")
 
+    @classmethod
+    def reset(cls) -> None:
+        """
+        Reset the registry to initial state.
+        
+        This is primarily useful for testing. Clears all registered plugins
+        and resets the singleton instance.
+        """
+        cls._instance = None
+        cls._plugins = {
+            "centrality": {},
+            "community": {},
+            "layout": {},
+            "metric": {},
+        }
+
 
 def discover_plugins(plugin_dir: Optional[str] = None) -> int:
     """
@@ -271,27 +287,42 @@ def discover_plugins(plugin_dir: Optional[str] = None) -> int:
         len(plugins) for plugins in registry.list_plugins().values()
     )
 
-    # Add plugin directory to Python path
-    if str(plugin_path) not in sys.path:
-        sys.path.insert(0, str(plugin_path))
+    # Add plugin directory to Python path temporarily
+    plugin_path_str = str(plugin_path)
+    added_to_path = False
+    if plugin_path_str not in sys.path:
+        sys.path.insert(0, plugin_path_str)
+        added_to_path = True
 
-    # Import all Python modules in the directory
-    for py_file in plugin_path.glob("*.py"):
-        if py_file.name.startswith("_"):
-            continue  # Skip private modules
+    try:
+        # Import all Python modules in the directory
+        for py_file in plugin_path.glob("*.py"):
+            if py_file.name.startswith("_"):
+                continue  # Skip private modules
 
-        module_name = py_file.stem
+            module_name = py_file.stem
 
-        try:
-            # Import the module
-            spec = importlib.util.spec_from_file_location(module_name, py_file)
-            if spec and spec.loader:
-                module = importlib.util.module_from_spec(spec)
-                sys.modules[module_name] = module
-                spec.loader.exec_module(module)
-                logger.info(f"Loaded plugin module: {module_name}")
-        except Exception as e:
-            logger.error(f"Failed to load plugin module {module_name}: {e}")
+            # Check if module already exists to avoid conflicts
+            if module_name in sys.modules:
+                logger.warning(
+                    f"Module {module_name} already exists in sys.modules, skipping"
+                )
+                continue
+
+            try:
+                # Import the module
+                spec = importlib.util.spec_from_file_location(module_name, py_file)
+                if spec and spec.loader:
+                    module = importlib.util.module_from_spec(spec)
+                    sys.modules[module_name] = module
+                    spec.loader.exec_module(module)
+                    logger.info(f"Loaded plugin module: {module_name}")
+            except Exception as e:
+                logger.error(f"Failed to load plugin module {module_name}: {e}")
+    finally:
+        # Clean up sys.path if we added to it
+        if added_to_path and plugin_path_str in sys.path:
+            sys.path.remove(plugin_path_str)
 
     # Count newly registered plugins
     plugins_after = sum(len(plugins) for plugins in registry.list_plugins().values())

@@ -44,14 +44,8 @@ class TestPluginRegistry:
 
     def setup_method(self):
         """Clear registry before each test."""
-        # Create a fresh registry
-        PluginRegistry._instance = None
-        PluginRegistry._plugins = {
-            "centrality": {},
-            "community": {},
-            "layout": {},
-            "metric": {},
-        }
+        # Use the public reset method
+        PluginRegistry.reset()
 
     def test_registry_is_singleton(self):
         """Test that PluginRegistry is a singleton."""
@@ -327,14 +321,8 @@ class TestPluginDiscovery:
     def test_discover_plugins_from_directory(self):
         """Test discovering plugins from a directory with plugin files."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Clear registry
-            PluginRegistry._instance = None
-            PluginRegistry._plugins = {
-                "centrality": {},
-                "community": {},
-                "layout": {},
-                "metric": {},
-            }
+            # Use the public reset method
+            PluginRegistry.reset()
 
             # Create a plugin file
             plugin_file = Path(tmpdir) / "test_plugin.py"
@@ -365,14 +353,8 @@ class DiscoveredPlugin(CentralityPlugin):
     def test_discover_plugins_env_variable(self, monkeypatch):
         """Test that plugin discovery uses PY3PLEX_PLUGIN_DIR env variable."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Clear registry
-            PluginRegistry._instance = None
-            PluginRegistry._plugins = {
-                "centrality": {},
-                "community": {},
-                "layout": {},
-                "metric": {},
-            }
+            # Use the public reset method
+            PluginRegistry.reset()
 
             # Set environment variable
             monkeypatch.setenv("PY3PLEX_PLUGIN_DIR", tmpdir)
@@ -409,14 +391,8 @@ class TestExamplePlugins:
 
     def setup_method(self):
         """Import example plugins before each test."""
-        # Clear registry
-        PluginRegistry._instance = None
-        PluginRegistry._plugins = {
-            "centrality": {},
-            "community": {},
-            "layout": {},
-            "metric": {},
-        }
+        # Use the public reset method
+        PluginRegistry.reset()
         # Force re-import of examples to register them
         import sys
         import importlib
