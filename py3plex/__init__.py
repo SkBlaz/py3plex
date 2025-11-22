@@ -14,6 +14,7 @@ Key Features:
     - Visualization for multilayer layouts
     - Community detection and centrality analysis
     - Random walk and embedding generation
+    - **Plugin system for extensibility**
 
 Quick Start:
     >>> import py3plex as p3
@@ -73,6 +74,17 @@ from py3plex.profiling import (
     timed_section,
 )
 
+# Plugin system - import for easy access
+from py3plex.plugins import (
+    BasePlugin,
+    CentralityPlugin,
+    CommunityPlugin,
+    LayoutPlugin,
+    MetricPlugin,
+    PluginRegistry,
+    discover_plugins,
+)
+
 __all__ = [
     # Version info
     "__version__",
@@ -117,4 +129,12 @@ __all__ = [
     "timed_section",
     "benchmark",
     "get_monitor",
+    # Plugin system
+    "BasePlugin",
+    "CentralityPlugin",
+    "CommunityPlugin",
+    "LayoutPlugin",
+    "MetricPlugin",
+    "PluginRegistry",
+    "discover_plugins",
 ]

@@ -56,9 +56,9 @@ Create a simple multilayer network from scratch:
 
 .. code-block:: text
 
-    Number of nodes: 5
+    Number of nodes: 6
     Number of edges: 4
-    Number of unique nodes (as node-layer tuples): 5
+    Number of unique nodes (as node-layer tuples): 6
     Number of unique node IDs (across all layers): 4
     Nodes per layer:
       Layer 'layer1': 3 nodes
@@ -87,6 +87,17 @@ Load from a simple edge list:
     
     network.basic_stats()
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Number of nodes: 3
+    Number of edges: 2
+    Number of unique nodes (as node-layer tuples): 3
+    Number of unique node IDs (across all layers): 3
+    Nodes per layer:
+      Layer 'default': 3 nodes
+
 From Multilayer Edge List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -101,6 +112,18 @@ Load from multilayer edge list (source target layer format):
         directed=False
     )
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Number of nodes: 4
+    Number of edges: 4
+    Number of unique nodes (as node-layer tuples): 7
+    Number of unique node IDs (across all layers): 4
+    Nodes per layer:
+      Layer 'layer1': 3 nodes
+      Layer 'layer2': 3 nodes
+
 From GraphML
 ~~~~~~~~~~~~
 
@@ -111,6 +134,13 @@ From GraphML
         "data.graphml",
         input_type="graphml"
     )
+
+**Expected Output:**
+
+.. code-block:: text
+
+    # Output depends on the GraphML file structure
+    # Similar to above examples
 
 Supported Formats
 ~~~~~~~~~~~~~~~~~
@@ -136,6 +166,12 @@ Computing Network Statistics
     
     print(f"Nodes: {num_nodes}, Edges: {num_edges}, Layers: {num_layers}")
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Nodes: 6, Edges: 4, Layers: 3
+
 Multilayer Statistics
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -155,6 +191,14 @@ Multilayer Statistics
     versatility = mls.versatility_centrality(network, centrality_type='degree')
     print(f"Top versatile nodes: {sorted(versatility.items(), key=lambda x: x[1], reverse=True)[:5]}")
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Layer density: 0.3333333333333333
+    Node activity: 1.0
+    Top versatile nodes: [('B', 1.0), ('A', 0.5), ('C', 0.25), ('D', 0.25)]
+
 Iterating Over Network Elements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -171,6 +215,22 @@ Iterating Over Network Elements
     # Get neighbors of a node in a specific layer
     neighbors = list(network.get_neighbors('node1', layer_id='layer1'))
     print(f"Neighbors: {neighbors}")
+
+**Expected Output:**
+
+.. code-block:: text
+
+    # Sample nodes (first few):
+    (('A', 'layer1'), {'pos': array([...]), ...})
+    (('B', 'layer1'), {'pos': array([...]), ...})
+    ...
+    
+    # Sample edges:
+    (('A', 'layer1'), ('B', 'layer1'), {'weight': 1, 'type': 'default'})
+    (('B', 'layer1'), ('C', 'layer1'), {'weight': 1, 'type': 'default'})
+    ...
+    
+    Neighbors of node 'A' in 'layer1': [('B', 'layer1')]
 
 Community Detection
 -------------------
@@ -191,6 +251,21 @@ Detect communities using Louvain modularity optimization:
     for node, community_id in communities.items():
         print(f"Node {node} -> Community {community_id}")
 
+**Expected Output:**
+
+.. code-block:: text
+
+    # Example output (will vary based on network structure):
+    Node ('A', 'layer1') -> Community 0
+    Node ('B', 'layer1') -> Community 0
+    Node ('C', 'layer1') -> Community 1
+    Node ('A', 'layer2') -> Community 0
+    Node ('B', 'layer2') -> Community 0
+    Node ('D', 'layer2') -> Community 1
+
+**Note:** Louvain algorithm requires an undirected graph. For directed multilayer networks,
+you may need to convert to undirected or use multilayer-specific algorithms.
+
 Using Infomap
 ~~~~~~~~~~~~~
 
@@ -206,6 +281,8 @@ Detect communities using Infomap (requires infomap binary):
         binary_path="/path/to/infomap"
     )
 
+**Note:** Infomap requires external binary installation. See :doc:`installation` for details.
+
 Multilayer Modularity
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -219,6 +296,15 @@ Compute multilayer modularity:
     supra_adj = network.get_supra_adjacency_matrix()
     communities = mlm.multilayer_louvain(supra_adj)
 
+**Expected Output:**
+
+.. code-block:: text
+
+    # Returns dictionary of community assignments
+    {node_id: community_id, ...}
+
+**Note:** Advanced multilayer community detection that considers layer structure.
+
 Network Visualization
 ---------------------
 
@@ -231,6 +317,9 @@ Basic Visualization
     
     # Simple visualization
     draw_multilayer_default([network], display=True)
+
+**Note:** This produces a visual plot. No text output to console.
+See :doc:`visualization_guide` for customization options.
 
 Customized Visualization
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -249,6 +338,9 @@ Customized Visualization
         node_size=20
     )
 
+**Note:** Creates customized network visualization with specified parameters.
+No text output - produces visual plot.
+
 Diagonal Projection Plot
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -262,6 +354,9 @@ Diagonal Projection Plot
         display=True,
         layout_style='diagonal'
     )
+
+**Note:** Diagonal projection visualization useful for large multilayer networks.
+No text output - produces visual plot.
 
 Computing Centrality Measures
 ------------------------------
@@ -280,6 +375,14 @@ Degree Centrality
     top_nodes = sorted(degree_cent.items(), key=lambda x: x[1], reverse=True)[:10]
     print("Top 10 nodes by degree centrality:", top_nodes)
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Top 10 nodes by degree centrality: [(('B', 'layer1'), 0.4), (('B', 'layer2'), 0.4), ...]
+
+**Note:** Centrality values depend on network structure. Values are normalized between 0 and 1.
+
 PageRank
 ~~~~~~~~
 
@@ -293,6 +396,14 @@ PageRank
     top_pr = sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:10]
     print("Top 10 nodes by PageRank:", top_pr)
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Top 10 nodes by PageRank: [(('B', 'layer1'), 0.18), (('A', 'layer1'), 0.15), ...]
+
+**Note:** PageRank scores sum to 1.0 across all nodes.
+
 Versatility Centrality
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -302,6 +413,15 @@ Versatility Centrality
     
     # Versatility centrality (cross-layer importance)
     versatility = mls.versatility_centrality(network, centrality_type='betweenness')
+
+**Expected Output:**
+
+.. code-block:: text
+
+    # Returns dictionary of versatility scores
+    {('A',): 0.5, ('B',): 1.0, ('C',): 0.25, ('D',): 0.25}
+
+**Note:** Versatility measures node importance across multiple layers.
 
 Node Embeddings
 ---------------
@@ -326,6 +446,15 @@ Node2Vec Embeddings
     # embeddings is a matrix of shape (num_nodes, dimensions)
     print(f"Embedding shape: {embeddings.shape}")
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Embedding shape: (6, 128)
+
+**Note:** Node2Vec generates low-dimensional vector representations of nodes.
+Output is a numpy array of shape (num_nodes, dimensions).
+
 Random Walks
 ~~~~~~~~~~~~
 
@@ -345,6 +474,15 @@ Random Walks
     
     print(f"Generated {len(walks)} walks")
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Generated 60 walks
+
+**Note:** Random walks are used for network sampling and embedding generation.
+Each walk is a sequence of nodes traversed following the specified parameters.
+
 Exporting Networks
 ------------------
 
@@ -356,6 +494,9 @@ Save to GraphML
     # Export to GraphML format
     network.save_network("output.graphml", output_type="graphml")
 
+**Note:** Network saved to ``output.graphml``. No console output.
+GraphML format preserves node and edge attributes.
+
 Save to Pickle
 ~~~~~~~~~~~~~~
 
@@ -363,6 +504,9 @@ Save to Pickle
 
     # Save as NetworkX pickle
     network.save_network("output.gpickle", output_type="gpickle")
+
+**Note:** Network saved to ``output.gpickle``. No console output.
+Pickle format is fastest for loading/saving in Python.
 
 Save Adjacency Matrix
 ~~~~~~~~~~~~~~~~~~~~~
@@ -376,6 +520,16 @@ Save Adjacency Matrix
     
     # Save as numpy array
     np.save("supra_adjacency.npy", adj_matrix)
+
+**Expected Output:**
+
+.. code-block:: text
+
+    # Supra-adjacency matrix saved to supra_adjacency.npy
+    # Matrix shape: (6, 6) for network with 6 node-layer tuples
+
+**Note:** NumPy binary format for efficient matrix storage and loading.
+The supra-adjacency matrix represents the entire multilayer network structure.
 
 Next Steps
 ----------

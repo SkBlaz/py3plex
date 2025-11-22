@@ -102,6 +102,7 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_system.html">Plugin System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
@@ -249,6 +250,16 @@ Nodes per layer:
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 5
+Number of edges: 4
+Number of unique nodes (as node-layer tuples): 5
+Number of unique node IDs (across all layers): 5
+Nodes per layer:
+  Layer &#39;1&#39;: 3 nodes
+  Layer &#39;2&#39;: 2 nodes
+</pre></div>
+</div>
 <p><strong>Supported formats:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">multiedgelist</span></code> - source, target, layer</p></li>
@@ -278,6 +289,23 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Neighbors of </span><span class="si">{</span><span class="n">node_of_interest</span><span class="si">}</span><span class="s2"> in layer </span><span class="si">{</span><span class="n">layer_id</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Output (first few items):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes (first 5):
+  ((&#39;1&#39;, &#39;1&#39;), {&#39;type&#39;: &#39;1&#39;})
+  ((&#39;2&#39;, &#39;1&#39;), {&#39;type&#39;: &#39;1&#39;})
+  ((&#39;6&#39;, &#39;2&#39;), {&#39;type&#39;: &#39;2&#39;})
+  ((&#39;3&#39;, &#39;1&#39;), {&#39;type&#39;: &#39;1&#39;})
+  ((&#39;5&#39;, &#39;2&#39;), {&#39;type&#39;: &#39;2&#39;})
+
+Edges (first 5):
+  ((&#39;1&#39;, &#39;1&#39;), (&#39;2&#39;, &#39;1&#39;), {&#39;weight&#39;: &#39;1&#39;})
+  ((&#39;1&#39;, &#39;1&#39;), (&#39;3&#39;, &#39;1&#39;), {&#39;weight&#39;: &#39;1&#39;})
+  ((&#39;2&#39;, &#39;1&#39;), (&#39;6&#39;, &#39;2&#39;), {&#39;weight&#39;: &#39;1&#39;})
+  ((&#39;3&#39;, &#39;1&#39;), (&#39;5&#39;, &#39;2&#39;), {&#39;weight&#39;: &#39;1&#39;})
+
+Neighbors of 1 in layer 1: [(&#39;2&#39;, &#39;1&#39;), (&#39;3&#39;, &#39;1&#39;)]
+</pre></div>
+</div>
 </section>
 <section id="extract-subnetworks">
 <h3>Extract Subnetworks<a class="headerlink" href="#extract-subnetworks" title="Link to this heading"></a></h3>
@@ -295,6 +323,12 @@ Nodes per layer:
     <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Specific pairs:&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">specific_pairs</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer 1 nodes: 3 nodes
+Node subset: 2 node-layer pairs
+Specific pairs: [(&#39;2&#39;, &#39;1&#39;), (&#39;1&#39;, &#39;1&#39;)]
 </pre></div>
 </div>
 </section>
@@ -315,29 +349,57 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Betweenness centrality:&quot;</span><span class="p">,</span> <span class="n">betweenness</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Output (top nodes shown):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Degree centrality (first 5):
+  (&#39;1&#39;, &#39;1&#39;): 1.0000
+  (&#39;2&#39;, &#39;1&#39;): 0.5000
+  (&#39;3&#39;, &#39;1&#39;): 0.5000
+
+Betweenness centrality (first 5):
+  (&#39;1&#39;, &#39;1&#39;): 1.0000
+  (&#39;2&#39;, &#39;1&#39;): 0.0000
+  (&#39;3&#39;, &#39;1&#39;): 0.0000
+</pre></div>
+</div>
 </section>
 <section id="multilayer-centrality">
 <h3>Multilayer Centrality<a class="headerlink" href="#multilayer-centrality" title="Link to this heading"></a></h3>
 <p>For multilayer-specific centrality measures:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.multilayer_centrality</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">multilayer_degree_centrality</span><span class="p">,</span>
-    <span class="n">multilayer_betweenness_centrality</span>
-<span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">MultilayerCentrality</span>
 
-<span class="c1"># Compute multilayer degree centrality</span>
-<span class="n">ml_degree</span> <span class="o">=</span> <span class="n">multilayer_degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="c1"># Initialize centrality calculator</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Compute multilayer degree centrality (considers node participation across layers)</span>
+<span class="n">ml_degree</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">overlapping_degree_centrality</span><span class="p">(</span><span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Multilayer degree centrality:&quot;</span><span class="p">,</span> <span class="n">ml_degree</span><span class="p">)</span>
 
 <span class="c1"># Compute multilayer betweenness centrality</span>
-<span class="n">ml_betweenness</span> <span class="o">=</span> <span class="n">multilayer_betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">ml_betweenness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_betweenness_centrality</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Multilayer betweenness centrality:&quot;</span><span class="p">,</span> <span class="n">ml_betweenness</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output (top nodes shown):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Multilayer degree centrality (first 5):
+  1: 2.0000
+  2: 1.0000
+  3: 1.0000
+  5: 0.0000
+  6: 0.0000
+
+Multilayer betweenness centrality (first 5):
+  (&#39;1&#39;, &#39;1&#39;): 0.6667
+  (&#39;2&#39;, &#39;1&#39;): 0.5000
+  (&#39;3&#39;, &#39;1&#39;): 0.5000
+  (&#39;6&#39;, &#39;2&#39;): 0.0000
+  (&#39;5&#39;, &#39;2&#39;): 0.0000
 </pre></div>
 </div>
 </section>
 </section>
 <section id="multilayer-network-statistics-2-minutes">
 <h2>5. Multilayer Network Statistics (2 minutes)<a class="headerlink" href="#multilayer-network-statistics-2-minutes" title="Link to this heading"></a></h2>
-<p>py3plex provides 17 specialized statistics for analyzing multilayer networks. Here are the most commonly used:</p>
+<p>py3plex provides many specialized statistics for analyzing multilayer networks. Here are the most commonly used:</p>
 <section id="basic-layer-statistics">
 <h3>Basic Layer Statistics<a class="headerlink" href="#basic-layer-statistics" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
@@ -353,32 +415,57 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer diversity (entropy): </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer 1 density: 0.667
+Layer 2 density: 0.000
+Layer diversity (entropy): 0.000 bits
+</pre></div>
+</div>
 </section>
 <section id="node-level-statistics">
 <h3>Node-Level Statistics<a class="headerlink" href="#node-level-statistics" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute neighborhood overlap</span>
-<span class="n">overlap_coeff</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">neighborhood_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Neighborhood overlap for node 1: </span><span class="si">{</span><span class="n">overlap_coeff</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Measure contribution of a layer to a node</span>
-<span class="n">contrib</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_contribution</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer 1 contribution to node 1: </span><span class="si">{</span><span class="n">contrib</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute node activity (how many layers a node participates in)</span>
+<span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node activity for node 1: </span><span class="si">{</span><span class="n">activity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Node activity for node 1: 0.500
 </pre></div>
 </div>
 </section>
 <section id="network-level-statistics">
 <h3>Network-Level Statistics<a class="headerlink" href="#network-level-statistics" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Measure how much layers differ in structure</span>
-<span class="n">jaccard</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_jaccard_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Jaccard similarity between layers: </span><span class="si">{</span><span class="n">jaccard</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Measure how much layers differ in structure (edge overlap)</span>
+<span class="n">edge_overlap_value</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge overlap between layers: </span><span class="si">{</span><span class="n">edge_overlap_value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Count interlayer edges (edges between layers)</span>
-<span class="n">interlayer_edges</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">interlayer_edges</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of interlayer edges: </span><span class="si">{</span><span class="n">interlayer_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Measure layer similarity using Jaccard index</span>
+<span class="n">jaccard</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Jaccard similarity between layers: </span><span class="si">{</span><span class="n">jaccard</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Full list of statistics:</strong></p>
-<p>See <code class="docutils literal notranslate"><span class="pre">py3plex/algorithms/statistics/README_MULTILAYER_STATISTICS.md</span></code> for all 17 statistics with detailed explanations.</p>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Edge overlap between layers: 0.000
+Jaccard similarity between layers: 0.000
+</pre></div>
+</div>
+<p><strong>Available statistics:</strong></p>
+<p>See the <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.multilayer_statistics</span></code> module for all available statistics including:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_density</span></code> - Density of edges within a layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">entropy_of_multiplexity</span></code> - Diversity across layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">node_activity</span></code> - Number of layers a node participates in</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edge_overlap</span></code> - Edge overlap between layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_similarity</span></code> - Similarity between layers (Jaccard, Pearson, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">algebraic_connectivity</span></code> - Connectivity measure from Laplacian</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community_participation_coefficient</span></code> - How communities span layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interdependence</span></code> - Layer interdependence measure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_clustering_coefficient</span></code> - Clustering in multilayer context</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiplex_betweenness_centrality</span></code> - Betweenness in multiplex networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multiplex_closeness_centrality</span></code> - Closeness in multiplex networks</p></li>
+<li><p>And more…</p></li>
+</ul>
 </section>
 </section>
 <section id="community-detection-2-minutes">
@@ -406,6 +493,19 @@ Nodes per layer:
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="n">community_sizes</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Community sizes:&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">community_sizes</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of communities: 3
+
+Node assignments (first 10):
+  Node (&#39;1&#39;, &#39;1&#39;): Community 0
+  Node (&#39;2&#39;, &#39;1&#39;): Community 0
+  Node (&#39;6&#39;, &#39;2&#39;): Community 1
+  Node (&#39;3&#39;, &#39;1&#39;): Community 0
+  Node (&#39;5&#39;, &#39;2&#39;): Community 2
+
+Community sizes (top 5): {0: 3, 1: 1, 2: 1}
 </pre></div>
 </div>
 <p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">louvain_multilayer</span></code> function performs community detection across all layers simultaneously, taking into account both intra-layer and inter-layer connections. Parameters:</p>
@@ -442,6 +542,11 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Random walk: </span><span class="si">{</span><span class="n">walk</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">... (length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Random walk from (&#39;0&#39;, &#39;null&#39;): [(&#39;0&#39;, &#39;null&#39;), (&#39;1&#39;, &#39;null&#39;), (&#39;4872&#39;, &#39;null&#39;), (&#39;786&#39;, &#39;null&#39;), (&#39;5382&#39;, &#39;null&#39;)]... (length: 11)
+</pre></div>
+</div>
+<p><strong>Note:</strong> When loading a simple edgelist file (without explicit layer information), py3plex assigns nodes to a default layer named <code class="docutils literal notranslate"><span class="pre">'null'</span></code>. Nodes are represented as tuples <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_name)</span></code>.</p>
 </section>
 <section id="node2vec-biased-walks">
 <h3>Node2Vec Biased Walks<a class="headerlink" href="#node2vec-biased-walks" title="Link to this heading"></a></h3>
@@ -464,6 +569,11 @@ Nodes per layer:
 <span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Output (first 10 nodes of each walk):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Node2Vec BFS-like walk: [(&#39;0&#39;, &#39;null&#39;), (&#39;1&#39;, &#39;null&#39;), (&#39;5829&#39;, &#39;null&#39;), (&#39;1&#39;, &#39;null&#39;), (&#39;3842&#39;, &#39;null&#39;), (&#39;1&#39;, &#39;null&#39;), (&#39;6364&#39;, &#39;null&#39;), (&#39;1&#39;, &#39;null&#39;), (&#39;3422&#39;, &#39;null&#39;), (&#39;1&#39;, &#39;null&#39;)]
+Node2Vec DFS-like walk: [(&#39;0&#39;, &#39;null&#39;), (&#39;1&#39;, &#39;null&#39;), (&#39;4872&#39;, &#39;null&#39;), (&#39;786&#39;, &#39;null&#39;), (&#39;5382&#39;, &#39;null&#39;), (&#39;260&#39;, &#39;null&#39;), (&#39;2861&#39;, &#39;null&#39;), (&#39;260&#39;, &#39;null&#39;), (&#39;5128&#39;, &#39;null&#39;), (&#39;260&#39;, &#39;null&#39;)]
+</pre></div>
+</div>
 </section>
 <section id="generating-multiple-walks">
 <h3>Generating Multiple Walks<a class="headerlink" href="#generating-multiple-walks" title="Link to this heading"></a></h3>
@@ -482,6 +592,11 @@ Nodes per layer:
 <span class="c1"># Use with Word2Vec for node embeddings</span>
 <span class="c1"># walks_str = [[str(node) for node in walk] for walk in walks]</span>
 <span class="c1"># model = Word2Vec(walks_str, vector_size=128, window=10)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Generated 63870 walks
+Example walk: [(&#39;4528&#39;, &#39;null&#39;), (&#39;2611&#39;, &#39;null&#39;), (&#39;4267&#39;, &#39;null&#39;), (&#39;2611&#39;, &#39;null&#39;), (&#39;2894&#39;, &#39;null&#39;), (&#39;2611&#39;, &#39;null&#39;), (&#39;6234&#39;, &#39;null&#39;), (&#39;2611&#39;, &#39;null&#39;), (&#39;3073&#39;, &#39;null&#39;), (&#39;479&#39;, &#39;null&#39;), (&#39;3125&#39;, &#39;null&#39;)]
 </pre></div>
 </div>
 <p><strong>Key parameters:</strong></p>
@@ -517,6 +632,10 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Visualization saved to my_network.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Visualization saved to my_network.png
+</pre></div>
+</div>
 <p>For more advanced visualizations with community colors:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.colors</span> <span class="kn">import</span> <span class="n">colors_default</span>
 
@@ -546,6 +665,10 @@ Nodes per layer:
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;my_network_communities.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Community visualization saved to my_network_communities.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Community visualization saved to my_network_communities.png
 </pre></div>
 </div>
 </section>
@@ -601,14 +724,39 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Complete analysis saved to complete_analysis.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>=== Network Statistics ===
+Number of nodes: 184
+Number of edges: 1691
+Number of unique nodes (as node-layer tuples): 184
+Number of unique node IDs (across all layers): 46
+Nodes per layer:
+  Layer &#39;1&#39;: 46 nodes
+  Layer &#39;2&#39;: 46 nodes
+  Layer &#39;3&#39;: 46 nodes
+  Layer &#39;4&#39;: 46 nodes
+
+=== Top 5 Nodes by Degree (Layer 1) ===
+(&#39;15&#39;, &#39;1&#39;): 0.244
+(&#39;7&#39;, &#39;1&#39;): 0.244
+(&#39;27&#39;, &#39;1&#39;): 0.244
+(&#39;28&#39;, &#39;1&#39;): 0.244
+(&#39;1&#39;, &#39;1&#39;): 0.244
+
+=== Communities ===
+Number of communities: 46
+
+Complete analysis saved to complete_analysis.png
+</pre></div>
+</div>
+<p><strong>Note:</strong> In this example, the high number of communities (equal to the number of nodes) indicates that the network structure or parameters may need adjustment for meaningful community detection. In practice, adjust <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (resolution) and <code class="docutils literal notranslate"><span class="pre">omega</span></code> (inter-layer coupling) parameters to achieve desired community granularity.</p>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <p>Now that you’ve completed this tutorial, explore more advanced features:</p>
 <ul class="simple">
-<li><p><strong>Multilayer Statistics</strong>: See <code class="docutils literal notranslate"><span class="pre">py3plex/algorithms/statistics/README_MULTILAYER_STATISTICS.md</span></code> for all 17 statistics</p></li>
-<li><p><strong>Multilayer Modularity</strong>: See <code class="docutils literal notranslate"><span class="pre">docs/multilayer_modularity_tutorial.md</span></code></p></li>
-<li><p><strong>Multilayer Centrality</strong>: See <code class="docutils literal notranslate"><span class="pre">docs/multilayer_centrality_tutorial.md</span></code></p></li>
+<li><p><strong>Multilayer Statistics</strong>: Explore all available statistics in <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.multilayer_statistics</span></code></p></li>
+<li><p><strong>Multilayer Centrality</strong>: See examples in <code class="docutils literal notranslate"><span class="pre">examples/centrality_and_statistics/</span></code></p></li>
 <li><p><strong>More Examples</strong>: Check the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory for 40+ examples</p></li>
 <li><p><strong>Full Documentation</strong>: Visit <a class="reference external" href="https://skblaz.github.io/py3plex/">https://skblaz.github.io/py3plex/</a></p></li>
 </ul>

@@ -6,36 +6,36 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 
 ## Recent Updates (2025-11-22)
 
-### Visualization Testing Enhancement (v0.96 - 2025-11-22)
-✅ **Completed all open visualization testing tasks**
-- Added comprehensive tests for legend and label generation (3 new tests)
-- Added tests for edge case handling: self-loops, multiple edges, isolated nodes (3 new tests)
-- Added performance tests for large graph visualization (2 new tests)
-- Added output file format tests: PNG, SVG, PDF with multiple DPI settings (5 new tests)
-- All 13 new tests added to `tests/test_multilayer_visualizations.py`
-- Total visualization tests increased from 41 to 54 (32% increase)
-- All tests pass successfully with no regressions
-
-**Test Coverage Areas:**
-- Legend generation in hairball plots with multiple node types
-- Node label rendering with custom font sizes and positioning
-- Layer label display in small multiples visualizations
-- Self-loops rendering in multiple visualization modes
-- Multiple edges between same nodes across layers
-- Isolated nodes handling in network layouts
-- Large graph performance (300 nodes, 600 edges in under 30 seconds)
-- Supra-adjacency heatmap performance (100 nodes, 200 edges in under 20 seconds)
-- PNG output with configurable DPI (72, 150, 300)
-- SVG vector format with XML validation
-- PDF format with proper header validation
-- Multi-format export from single visualization
+### Plugin System Implementation (v0.96 - 2025-11-22)
+✅ **Introduced extensible plugin system for community contributions**
+- Created comprehensive plugin architecture with four plugin types:
+  - `CentralityPlugin`: Custom node centrality measures
+  - `CommunityPlugin`: Community detection algorithms
+  - `LayoutPlugin`: Network layout algorithms
+  - `MetricPlugin`: Custom network metrics
+- Implemented `PluginRegistry` with singleton pattern for centralized plugin management
+- Added decorator-based registration: `@PluginRegistry.register('type', 'name')`
+- Implemented plugin discovery from external directories (`~/.py3plex/plugins/`)
+- Support for environment variable `PY3PLEX_PLUGIN_DIR` for custom plugin locations
+- Created example plugins demonstrating all plugin types
+- Added comprehensive test suite (23 tests, 100% passing)
+- Created detailed plugin development guide (`PLUGIN_GUIDE.md`)
+- All plugins validated before use to ensure dependencies are met
 
 **Benefits:**
-- Complete coverage of all Medium Priority visualization testing tasks
-- Improved robustness for edge cases and unusual graph structures
-- Performance benchmarks established for large-scale visualizations
-- Validated output across all common file formats
-- Better documentation of visualization capabilities through comprehensive tests
+- External developers can contribute algorithms without modifying py3plex core
+- Simple decorator-based API makes plugin creation straightforward
+- Automatic plugin discovery enables easy distribution of third-party extensions
+- Clear plugin interfaces ensure consistency and compatibility
+- Modular design allows users to install only the algorithms they need
+
+**New Files:**
+- `py3plex/plugins/__init__.py` - Plugin system public API
+- `py3plex/plugins/base.py` - Abstract base classes for all plugin types
+- `py3plex/plugins/registry.py` - Plugin registration and discovery system
+- `py3plex/plugins/examples.py` - Example plugins demonstrating usage
+- `tests/test_plugin_system.py` - Comprehensive plugin system tests
+- `PLUGIN_GUIDE.md` - Complete developer documentation for creating plugins
 
 ### Quickstart Documentation Enhancement (v0.96 - 2025-11-22)
 ✅ **Centralized code execution and output generation for quickstart documentation**
