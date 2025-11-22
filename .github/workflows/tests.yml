@@ -48,7 +48,7 @@ jobs:
           ~/.cache/pip
           ~/Library/Caches/pip
           ~\AppData\Local\pip\Cache
-        key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+        key: ${{ runner.os }}-pip-v1
         restore-keys: |
           ${{ runner.os }}-pip-
       timeout-minutes: 2
