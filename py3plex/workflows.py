@@ -8,7 +8,7 @@ reproducible research and automated pipelines.
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 
 import networkx as nx
 
@@ -68,10 +68,10 @@ class WorkflowConfig:
                 raise ValueError(
                     "YAML support not available. Install PyYAML: pip install pyyaml"
                 )
-            with open(config_path, "r") as f:
+            with open(config_path) as f:
                 config_dict = yaml.safe_load(f)
         elif config_path.suffix == ".json":
-            with open(config_path, "r") as f:
+            with open(config_path) as f:
                 config_dict = json.load(f)
         else:
             raise ValueError(
@@ -201,9 +201,7 @@ class WorkflowRunner:
 
         return network
 
-    def _generate_network(
-        self, spec: Dict[str, Any]
-    ) -> multinet.multi_layer_network:
+    def _generate_network(self, spec: Dict[str, Any]) -> multinet.multi_layer_network:
         """Generate network from specification.
 
         Args:
@@ -269,9 +267,7 @@ class WorkflowRunner:
             dataset_name = operation["dataset"]
             params = operation.get("parameters", {})
 
-            logger.info(
-                f"  Operation {i+1}: {op_type} on dataset '{dataset_name}'..."
-            )
+            logger.info(f"  Operation {i+1}: {op_type} on dataset '{dataset_name}'...")
 
             if dataset_name not in self.datasets:
                 logger.error(f"    Dataset '{dataset_name}' not found, skipping")
@@ -288,7 +284,10 @@ class WorkflowRunner:
                 logger.error(f"    Failed: {e}")
 
     def _execute_operation(
-        self, op_type: str, network: multinet.multi_layer_network, params: Dict[str, Any]
+        self,
+        op_type: str,
+        network: multinet.multi_layer_network,
+        params: Dict[str, Any],
     ) -> Any:
         """Execute a single operation.
 
@@ -455,9 +454,7 @@ class WorkflowRunner:
 
         return str(output_path)
 
-    def _get_layer_names(
-        self, network: multinet.multi_layer_network
-    ) -> List[str]:
+    def _get_layer_names(self, network: multinet.multi_layer_network) -> List[str]:
         """Extract layer names from network."""
         layers = set()
         try:

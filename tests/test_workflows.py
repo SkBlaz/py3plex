@@ -21,12 +21,15 @@ def test_workflow_config_from_json():
                 "name": "test_net",
                 "type": "generate",
                 "generator": "random",
-                "parameters": {"nodes": 10, "layers": 2, "probability": 0.1, "seed": 42},
+                "parameters": {
+                    "nodes": 10,
+                    "layers": 2,
+                    "probability": 0.1,
+                    "seed": 42,
+                },
             }
         ],
-        "operations": [
-            {"type": "stats", "dataset": "test_net", "parameters": {}}
-        ],
+        "operations": [{"type": "stats", "dataset": "test_net", "parameters": {}}],
         "output": {"directory": "test_output", "summary": "summary.json"},
     }
 
@@ -49,7 +52,12 @@ def test_workflow_config_validation():
     config_data = {
         "name": "Test",
         "datasets": [
-            {"name": "net1", "type": "generate", "generator": "random", "parameters": {}}
+            {
+                "name": "net1",
+                "type": "generate",
+                "generator": "random",
+                "parameters": {},
+            }
         ],
         "operations": [{"type": "stats", "dataset": "net1", "parameters": {}}],
     }
@@ -78,7 +86,12 @@ def test_workflow_runner_generate_network():
                 "name": "test_net",
                 "type": "generate",
                 "generator": "random",
-                "parameters": {"nodes": 10, "layers": 2, "probability": 0.2, "seed": 123},
+                "parameters": {
+                    "nodes": 10,
+                    "layers": 2,
+                    "probability": 0.2,
+                    "seed": 123,
+                },
             }
         ],
         "operations": [{"type": "stats", "dataset": "test_net", "parameters": {}}],
@@ -108,7 +121,12 @@ def test_workflow_stats_operation():
                 "name": "test_net",
                 "type": "generate",
                 "generator": "random",
-                "parameters": {"nodes": 15, "layers": 2, "probability": 0.15, "seed": 42},
+                "parameters": {
+                    "nodes": 15,
+                    "layers": 2,
+                    "probability": 0.15,
+                    "seed": 42,
+                },
             }
         ],
         "operations": [{"type": "stats", "dataset": "test_net", "parameters": {}}],
@@ -137,11 +155,20 @@ def test_workflow_community_operation():
                 "name": "test_net",
                 "type": "generate",
                 "generator": "random",
-                "parameters": {"nodes": 20, "layers": 2, "probability": 0.2, "seed": 42},
+                "parameters": {
+                    "nodes": 20,
+                    "layers": 2,
+                    "probability": 0.2,
+                    "seed": 42,
+                },
             }
         ],
         "operations": [
-            {"type": "community", "dataset": "test_net", "parameters": {"algorithm": "louvain"}}
+            {
+                "type": "community",
+                "dataset": "test_net",
+                "parameters": {"algorithm": "louvain"},
+            }
         ],
         "output": {},
     }
@@ -170,11 +197,20 @@ def test_workflow_centrality_operation():
                 "name": "test_net",
                 "type": "generate",
                 "generator": "random",
-                "parameters": {"nodes": 10, "layers": 2, "probability": 0.3, "seed": 42},
+                "parameters": {
+                    "nodes": 10,
+                    "layers": 2,
+                    "probability": 0.3,
+                    "seed": 42,
+                },
             }
         ],
         "operations": [
-            {"type": "centrality", "dataset": "test_net", "parameters": {"measure": "degree"}}
+            {
+                "type": "centrality",
+                "dataset": "test_net",
+                "parameters": {"measure": "degree"},
+            }
         ],
         "output": {},
     }
@@ -202,7 +238,12 @@ def test_workflow_visualization_operation():
                 "name": "test_net",
                 "type": "generate",
                 "generator": "random",
-                "parameters": {"nodes": 10, "layers": 2, "probability": 0.2, "seed": 42},
+                "parameters": {
+                    "nodes": 10,
+                    "layers": 2,
+                    "probability": 0.2,
+                    "seed": 42,
+                },
             }
         ],
         "operations": [
