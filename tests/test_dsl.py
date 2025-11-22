@@ -224,21 +224,23 @@ class TestConvenienceFunctions:
     
     def test_select_high_degree_nodes(self, sample_network):
         """Test select_high_degree_nodes function."""
-        nodes = select_high_degree_nodes(sample_network, min_degree=1)
+        min_deg = 1
+        nodes = select_high_degree_nodes(sample_network, min_degree=min_deg)
         
         assert len(nodes) >= 0
         for node in nodes:
             degree = sample_network.core_network.degree(node)
-            assert degree > 1
+            assert degree > min_deg  # Function uses > (exclusive)
     
     def test_select_high_degree_nodes_with_layer(self, sample_network):
         """Test select_high_degree_nodes with layer filter."""
-        nodes = select_high_degree_nodes(sample_network, min_degree=1, layer='layer1')
+        min_deg = 1
+        nodes = select_high_degree_nodes(sample_network, min_degree=min_deg, layer='layer1')
         
         for node in nodes:
             assert node[1] == 'layer1'
             degree = sample_network.core_network.degree(node)
-            assert degree > 1
+            assert degree > min_deg  # Function uses > (exclusive)
     
     def test_compute_centrality_for_layer(self, sample_network):
         """Test compute_centrality_for_layer function."""

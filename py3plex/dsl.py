@@ -556,15 +556,15 @@ def select_nodes_by_layer(network: Any, layer: str) -> List[Any]:
 
 
 def select_high_degree_nodes(network: Any, min_degree: int, layer: Optional[str] = None) -> List[Any]:
-    """Select nodes with degree above threshold.
+    """Select nodes with degree greater than threshold.
     
     Args:
         network: Multilayer network object
-        min_degree: Minimum degree threshold
+        min_degree: Minimum degree threshold (exclusive - nodes must have degree > min_degree)
         layer: Optional layer to filter by
         
     Returns:
-        List of high-degree nodes
+        List of nodes with degree > min_degree
     """
     if layer:
         query = f'SELECT nodes WHERE layer="{layer}" AND degree > {min_degree}'
