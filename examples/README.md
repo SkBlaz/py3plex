@@ -36,6 +36,7 @@ These examples:
 - `multilayer/example_multilayer_vectorized_aggregation.py` - Aggregation performance
 - `multilayer/example_vectorized_aggregation.py` - Vectorized operations
 - `visualization/benchmark_layouts.py` - Layout benchmarking
+- `plugins/example_plugin_usage.py` - **NEW: Plugin system demonstration** - Create custom algorithms
 
 ### Examples Requiring Datasets (⊘ Skipped in CI)
 

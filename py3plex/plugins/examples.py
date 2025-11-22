@@ -61,13 +61,15 @@ class ExampleDegreeCentrality(CentralityPlugin):
 
         # Get all nodes from the network
         try:
-            nodes = network.get_nodes()
+            # Use the NetworkX graph directly
+            G = network.core_network
+            nodes = list(G.nodes())
         except AttributeError:
             raise ValueError("Network must be a py3plex multi_layer_network object")
 
         # Compute degree for each node
         for node in nodes:
-            degree = len(network.get_neighbors(node))
+            degree = G.degree(node)
             centrality[node] = degree
 
         # Optionally normalize
@@ -112,14 +114,16 @@ class ExampleSimpleCommunity(CommunityPlugin):
         communities = {}
 
         try:
-            nodes = network.get_nodes()
+            # Use the NetworkX graph directly
+            G = network.core_network
+            nodes = list(G.nodes())
         except AttributeError:
             raise ValueError("Network must be a py3plex multi_layer_network object")
 
         # Simple assignment: assign community based on node hash
         # This is just for demonstration
         for i, node in enumerate(nodes):
-            communities[node] = hash(node) % 5  # 5 communities
+            communities[node] = hash(str(node)) % 5  # 5 communities
 
         return communities
 
@@ -160,8 +164,10 @@ class ExampleNetworkDensity(MetricPlugin):
             Dictionary with density metric
         """
         try:
-            num_nodes = len(network.get_nodes())
-            num_edges = len(network.get_edges())
+            # Use the NetworkX graph directly
+            G = network.core_network
+            num_nodes = G.number_of_nodes()
+            num_edges = G.number_of_edges()
         except AttributeError:
             raise ValueError("Network must be a py3plex multi_layer_network object")
 
@@ -216,7 +222,9 @@ class ExampleCircularLayout(LayoutPlugin):
             raise ValueError("Example circular layout only supports 2D")
 
         try:
-            nodes = list(network.get_nodes())
+            # Use the NetworkX graph directly
+            G = network.core_network
+            nodes = list(G.nodes())
         except AttributeError:
             raise ValueError("Network must be a py3plex multi_layer_network object")
 
