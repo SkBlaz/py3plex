@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies (same as API + flower for monitoring)
-RUN pip install --no-cache-dir \
+RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org \
     fastapi==0.109.0 \
     celery==5.3.4 \
     redis==5.0.1 \
@@ -40,10 +40,11 @@ RUN pip install --no-cache-dir \
 WORKDIR /app
 
 # Copy application code
-COPY ./api/app ./app
+COPY gui/api/app ./app
 
-# Install py3plex from mounted workspace
+# Copy py3plex source from repository root and install it
 ARG PY3PLEX_PATH=/workspace
+COPY . ${PY3PLEX_PATH}/
 RUN pip install -e ${PY3PLEX_PATH}
 
 # Create data directory

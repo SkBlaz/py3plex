@@ -17,8 +17,8 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: Dockerfile.api
+      context: ..
+      dockerfile: gui/Dockerfile.api
       args:
         - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-api
@@ -28,7 +28,6 @@ services:
       - MAX_UPLOAD_MB=${MAX_UPLOAD_MB:-512}
       - DATA_DIR=/data
     volumes:
-      - ../:/workspace:ro
       - ./data:/data
       - ./api:/app
     ports:
@@ -45,8 +44,8 @@ services:
 
   worker:
     build:
-      context: .
-      dockerfile: worker/Dockerfile
+      context: ..
+      dockerfile: gui/worker/Dockerfile
       args:
         - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-worker
@@ -55,7 +54,6 @@ services:
       - CELERY_CONCURRENCY=${CELERY_CONCURRENCY:-2}
       - DATA_DIR=/data
     volumes:
-      - ../:/workspace:ro
       - ./data:/data
       - ./api:/app
     depends_on:
@@ -65,15 +63,14 @@ services:
 
   flower:
     build:
-      context: .
-      dockerfile: worker/Dockerfile
+      context: ..
+      dockerfile: gui/worker/Dockerfile
       args:
         - PY3PLEX_PATH=/workspace
     container_name: py3plex-gui-flower
     environment:
       - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ../:/workspace:ro
       - ./data:/data
       - ./api:/app
     ports:
