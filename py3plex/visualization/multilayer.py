@@ -9,6 +9,7 @@ import numpy as np
 
 from py3plex import config
 from py3plex.core.nx_compat import nx_info
+from py3plex.exceptions import Py3plexLayoutError, VisualizationError
 from py3plex.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -691,7 +692,12 @@ def hairball_plot(
     elif layout_algorithm == "custom_coordinates_initial_force":
         pos = compute_force_directed_layout(g, layout_parameters)
     else:
-        raise ValueError("Uknown layout algorithm: " + str(layout_algorithm))
+        raise Py3plexLayoutError(
+            f"Unknown layout algorithm: '{layout_algorithm}'. "
+            f"Supported algorithms: 'force', 'spring', 'circular', 'kamada_kawai', 'spectral', "
+            f"'custom_coordinates', 'custom_coordinates_initial_force'. "
+            f"Please choose a valid layout algorithm."
+        )
 
     if draw:
         nx.draw_networkx_edges(
@@ -1206,11 +1212,12 @@ def visualize_multilayer_network(
     elif visualization_type == "ego_multilayer":
         return plot_ego_multilayer(multilayer_network, **kwargs)
     else:
-        raise ValueError(
+        raise VisualizationError(
             f"Unknown visualization_type: '{visualization_type}'. "
             f"Valid options are: 'diagonal', 'small_multiples', "
             f"'edge_colored_projection', 'supra_adjacency_heatmap', "
-            f"'radial_layers', 'ego_multilayer'"
+            f"'radial_layers', 'ego_multilayer'. "
+            f"Please choose a valid visualization type."
         )
 
 
@@ -1262,10 +1269,16 @@ def plot_small_multiples(
                     layer_id = u[1]
                     layers_dict[layer_id].add_edge(u[0], v[0], **data)
     else:
-        raise ValueError("multilayer_network must have a core_network attribute")
+        raise VisualizationError(
+            "Multilayer network must have a core_network attribute. "
+            "Please ensure the network is properly constructed."
+        )
 
     if not layers_dict:
-        raise ValueError("No layers found in the multilayer network")
+        raise VisualizationError(
+            "No layers found in the multilayer network. "
+            "Please ensure the network contains at least one layer."
+        )
 
     layer_names = sorted(layers_dict.keys())
     num_layers = len(layer_names)
@@ -1447,10 +1460,16 @@ def plot_edge_colored_projection(
                     layers_dict[layer_id].append((u[0], v[0], data))
                     aggregated_graph.add_edge(u[0], v[0])
     else:
-        raise ValueError("multilayer_network must have a core_network attribute")
+        raise VisualizationError(
+            "Multilayer network must have a core_network attribute. "
+            "Please ensure the network is properly constructed."
+        )
 
     if not layers_dict:
-        raise ValueError("No layers found in the multilayer network")
+        raise VisualizationError(
+            "No layers found in the multilayer network. "
+            "Please ensure the network contains at least one layer."
+        )
 
     # Generate professional color palette if not provided
     layer_names = sorted(layers_dict.keys())
@@ -1649,10 +1668,16 @@ def plot_supra_adjacency_heatmap(
                     # Store inter-layer edges separately
                     pass
     else:
-        raise ValueError("multilayer_network must have a core_network attribute")
+        raise VisualizationError(
+            "Multilayer network must have a core_network attribute. "
+            "Please ensure the network is properly constructed."
+        )
 
     if not layers_dict:
-        raise ValueError("No layers found in the multilayer network")
+        raise VisualizationError(
+            "No layers found in the multilayer network. "
+            "Please ensure the network contains at least one layer."
+        )
 
     # Determine global node ordering
     all_nodes = set()
@@ -1790,10 +1815,16 @@ def plot_radial_layers(
                 else:  # Inter-layer
                     inter_layer_edges.append((u, v))
     else:
-        raise ValueError("multilayer_network must have a core_network attribute")
+        raise VisualizationError(
+            "Multilayer network must have a core_network attribute. "
+            "Please ensure the network is properly constructed."
+        )
 
     if not layers_dict:
-        raise ValueError("No layers found in the multilayer network")
+        raise VisualizationError(
+            "No layers found in the multilayer network. "
+            "Please ensure the network contains at least one layer."
+        )
 
     # Assign global angles to nodes
     all_nodes = set()
@@ -1975,10 +2006,16 @@ def plot_ego_multilayer(
                 if u[1] == v[1] and (layers is None or u[1] in layers):
                     layers_dict[u[1]].add_edge(u[0], v[0], **data)
     else:
-        raise ValueError("multilayer_network must have a core_network attribute")
+        raise VisualizationError(
+            "Multilayer network must have a core_network attribute. "
+            "Please ensure the network is properly constructed."
+        )
 
     if not layers_dict:
-        raise ValueError("No layers found")
+        raise VisualizationError(
+            "No layers found in the specified multilayer network. "
+            "Please ensure the network contains at least one layer."
+        )
 
     # Extract ego graphs for each layer
     layer_names = sorted(layers_dict.keys())

@@ -12,6 +12,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Union
 
+from py3plex.exceptions import Py3plexFormatError
+
 from ..schema import MultiLayerGraph
 
 
@@ -154,7 +156,10 @@ def read_jsonl(filepath: Union[str, Path], **kwargs) -> MultiLayerGraph:
             try:
                 obj = json.loads(line)
             except json.JSONDecodeError as e:
-                raise ValueError(f"Invalid JSON on line {line_num}: {e}")
+                raise Py3plexFormatError(
+                    f"Invalid JSON on line {line_num}: {e}. "
+                    f"Please ensure the JSONL file contains valid JSON objects, one per line."
+                )
 
             # First line is graph metadata
             if line_num == 1:
@@ -170,8 +175,9 @@ def read_jsonl(filepath: Union[str, Path], **kwargs) -> MultiLayerGraph:
                 elif obj_type == "edge":
                     edges.append(obj)
                 else:
-                    raise ValueError(
-                        f"Unknown object type '{obj_type}' on line {line_num}"
+                    raise Py3plexFormatError(
+                        f"Unknown object type '{obj_type}' on line {line_num}. "
+                        f"Expected types: 'node', 'layer', or 'edge'."
                     )
     finally:
         f.close()

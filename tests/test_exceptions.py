@@ -20,6 +20,9 @@ from py3plex.exceptions import (
     NetworkConstructionError,
     ParsingError,
     Py3plexException,
+    Py3plexFormatError,
+    Py3plexIOError,
+    Py3plexLayoutError,
     Py3plexMatrixError,
     VisualizationError,
 )
@@ -43,6 +46,9 @@ class TestExceptionHierarchy:
         ConversionError,
         IncompatibleNetworkError,
         Py3plexMatrixError,
+        Py3plexIOError,
+        Py3plexFormatError,
+        Py3plexLayoutError,
     ])
     def test_all_custom_exceptions_inherit_from_base(self, exc_class):
         """Test that all custom exceptions inherit from Py3plexException."""
@@ -90,6 +96,9 @@ class TestExceptionRaising:
         (ConversionError, "Format conversion failed"),
         (IncompatibleNetworkError, "Network format incompatible"),
         (Py3plexMatrixError, "Matrix operation failed"),
+        (Py3plexIOError, "Failed to read file"),
+        (Py3plexFormatError, "Invalid input format"),
+        (Py3plexLayoutError, "Layout computation failed"),
     ])
     def test_raise_specific_exceptions(self, exc_class, error_msg):
         """Test raising specific exception types with error messages."""

@@ -17,6 +17,7 @@ import networkx as nx
 import numpy as np
 from sklearn.manifold import MDS
 
+from py3plex.exceptions import Py3plexLayoutError
 from py3plex.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -87,15 +88,23 @@ def ricci_flow_layout_single(
           infinite; in such cases, the function uses a large finite value.
     """
     if G.number_of_nodes() == 0:
-        raise ValueError("Cannot compute layout for graph with no nodes.")
+        raise Py3plexLayoutError(
+            "Cannot compute layout for graph with no nodes. "
+            "Please provide a non-empty graph."
+        )
 
     if dim not in [2, 3]:
-        raise ValueError(f"dim must be 2 or 3, got {dim}")
+        raise Py3plexLayoutError(
+            f"Invalid dimension: dim must be 2 or 3, got {dim}. "
+            "2D layouts are suitable for most visualizations, 3D for specialized cases."
+        )
 
     if layout_type not in ["mds", "spring", "spectral"]:
-        raise ValueError(
-            f"Invalid layout_type: {layout_type}. "
-            "Must be 'mds', 'spring', or 'spectral'."
+        raise Py3plexLayoutError(
+            f"Invalid layout_type: '{layout_type}'. "
+            "Must be 'mds', 'spring', or 'spectral'. "
+            "Use 'mds' for distance-based layouts, 'spring' for force-directed layouts, "
+            "or 'spectral' for graph spectral layouts."
         )
 
     if layout_type == "mds" and not use_geodesic_distances:

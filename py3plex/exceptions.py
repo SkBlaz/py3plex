@@ -100,3 +100,21 @@ class ExternalToolError(Py3plexException):
     """Exception raised when external tool execution fails."""
 
     pass
+
+
+class Py3plexIOError(Py3plexException):
+    """Exception raised when I/O operations fail (file reading, writing, etc.)."""
+
+    pass
+
+
+class Py3plexFormatError(Py3plexException):
+    """Exception raised when input format is invalid or cannot be parsed."""
+
+    pass
+
+
+class Py3plexLayoutError(Py3plexException):
+    """Exception raised when layout computation or visualization positioning fails."""
+
+    pass

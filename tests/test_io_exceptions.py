@@ -7,7 +7,7 @@ FormatUnsupportedError.
 """
 import pytest
 
-from py3plex.exceptions import Py3plexException
+from py3plex.exceptions import Py3plexException, Py3plexIOError
 from py3plex.io.exceptions import (
     FormatUnsupportedError,
     ReferentialIntegrityError,
@@ -19,16 +19,19 @@ class TestIOExceptionHierarchy:
     """Test IO exception inheritance hierarchy."""
 
     def test_schema_validation_error_inherits_from_base(self):
-        """Test that SchemaValidationError inherits from Py3plexException."""
+        """Test that SchemaValidationError inherits from Py3plexIOError."""
+        assert issubclass(SchemaValidationError, Py3plexIOError)
         assert issubclass(SchemaValidationError, Py3plexException)
 
     def test_referential_integrity_error_inherits_from_schema_error(self):
         """Test that ReferentialIntegrityError inherits from SchemaValidationError."""
         assert issubclass(ReferentialIntegrityError, SchemaValidationError)
+        assert issubclass(ReferentialIntegrityError, Py3plexIOError)
         assert issubclass(ReferentialIntegrityError, Py3plexException)
 
     def test_format_unsupported_error_inherits_from_base(self):
-        """Test that FormatUnsupportedError inherits from Py3plexException."""
+        """Test that FormatUnsupportedError inherits from Py3plexIOError."""
+        assert issubclass(FormatUnsupportedError, Py3plexIOError)
         assert issubclass(FormatUnsupportedError, Py3plexException)
 
 
@@ -42,7 +45,10 @@ class TestSchemaValidationError:
         assert str(exc_info.value) == "Schema validation failed"
 
     def test_catch_with_base_exception(self):
-        """Test that SchemaValidationError can be caught by base exception."""
+        """Test that SchemaValidationError can be caught by Py3plexIOError and base exception."""
+        with pytest.raises(Py3plexIOError):
+            raise SchemaValidationError("Test error")
+        
         with pytest.raises(Py3plexException):
             raise SchemaValidationError("Test error")
 
@@ -62,7 +68,10 @@ class TestReferentialIntegrityError:
             raise ReferentialIntegrityError("Test error")
 
     def test_catch_with_base_exception(self):
-        """Test that ReferentialIntegrityError can be caught by base exception."""
+        """Test that ReferentialIntegrityError can be caught by Py3plexIOError and base exception."""
+        with pytest.raises(Py3plexIOError):
+            raise ReferentialIntegrityError("Test error")
+        
         with pytest.raises(Py3plexException):
             raise ReferentialIntegrityError("Test error")
 
@@ -104,7 +113,10 @@ class TestFormatUnsupportedError:
         assert "supported_formats" in str(exc_info.value)
 
     def test_catch_with_base_exception(self):
-        """Test that FormatUnsupportedError can be caught by base exception."""
+        """Test that FormatUnsupportedError can be caught by Py3plexIOError and base exception."""
+        with pytest.raises(Py3plexIOError):
+            raise FormatUnsupportedError("test_format")
+        
         with pytest.raises(Py3plexException):
             raise FormatUnsupportedError("test_format")
 

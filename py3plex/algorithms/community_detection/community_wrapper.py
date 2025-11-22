@@ -4,6 +4,8 @@ from typing import Any, Dict, List, Union
 
 import networkx as nx
 
+from py3plex.exceptions import Py3plexIOError
+
 from .community_louvain import best_partition
 
 try:
@@ -27,18 +29,18 @@ def run_infomap(
 
     # Check if binary exists and is executable
     if not os.path.exists(binary):
-        raise FileNotFoundError(
+        raise Py3plexIOError(
             f"Infomap binary not found at '{binary}'. "
-            "Please provide a valid path to the Infomap binary using the 'binary' parameter, "
-            "or install Infomap from https://www.mapequation.org/infomap/. "
-            "Alternatively, use Louvain community detection: "
-            "partition = louvain_communities(network)"
+            f"Please provide a valid path to the Infomap binary using the 'binary' parameter, "
+            f"or install Infomap from https://www.mapequation.org/infomap/. "
+            f"Alternatively, use Louvain community detection: "
+            f"partition = louvain_communities(network)"
         )
 
     if not os.access(binary, os.X_OK):
-        raise PermissionError(
+        raise Py3plexIOError(
             f"Infomap binary at '{binary}' is not executable. "
-            f"Run: chmod +x {binary}"
+            f"Please run: chmod +x {binary}"
         )
 
     # Ensure output directory exists
@@ -185,7 +187,7 @@ def infomap_communities(
             if verbose:
                 print(f"INFO: Using tree file: {output_tree_path}")
         else:
-            raise FileNotFoundError(
+            raise Py3plexIOError(
                 f"Infomap output file not found at expected path: {output_tree_path}. "
                 f"The Infomap binary may have failed or written output to a different location. "
                 f"Please check the 'out/' directory for .tree files."

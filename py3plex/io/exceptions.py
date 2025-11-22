@@ -2,10 +2,10 @@
 Custom exceptions for the I/O module.
 """
 
-from py3plex.exceptions import Py3plexException
+from py3plex.exceptions import Py3plexException, Py3plexIOError
 
 
-class SchemaValidationError(Py3plexException):
+class SchemaValidationError(Py3plexIOError):
     """Exception raised when schema validation fails."""
 
     pass
@@ -17,7 +17,7 @@ class ReferentialIntegrityError(SchemaValidationError):
     pass
 
 
-class FormatUnsupportedError(Py3plexException):
+class FormatUnsupportedError(Py3plexIOError):
     """Exception raised when an unsupported format is requested."""
 
     def __init__(self, format_name: str, operation: str = "read"):
