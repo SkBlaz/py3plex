@@ -37,6 +37,7 @@ except ImportError:
     logger.warning("numpy not available")
 
 from py3plex.core import multinet
+from py3plex.exceptions import VisualizationError
 
 try:
     from py3plex.visualization.multilayer import (
@@ -963,13 +964,13 @@ def test_plot_ego_multilayer_via_main_api():
 
 @pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
 def test_invalid_visualization_type():
-    """Test that invalid visualization type raises ValueError."""
+    """Test that invalid visualization type raises VisualizationError."""
     network = create_test_multilayer_network()
     
     try:
         fig = visualize_multilayer_network(network, visualization_type="invalid_type")
-        assert False, "Should have raised ValueError"
-    except ValueError as e:
+        assert False, "Should have raised VisualizationError"
+    except VisualizationError as e:
         assert "Unknown visualization_type" in str(e)
     
     plt.close('all')

@@ -188,7 +188,7 @@ def validate_multilayer_input(network_data: Any) -> None:
         >>> from py3plex.utils import validate_multilayer_input
         >>> validate_multilayer_input(my_network)
     """
-    from py3plex.exceptions import NetworkConstructionError
+    from py3plex.exceptions import NetworkConstructionError, Py3plexIOError
 
     if network_data is None:
         raise NetworkConstructionError("Network data cannot be None")
@@ -266,14 +266,15 @@ def get_data_path(relative_path: str) -> str:
         pass
 
     # If we reach here, file was not found in any location
-    raise FileNotFoundError(
-        f"Could not find '{relative_path}' in any of the expected locations.\n"
+    raise Py3plexIOError(
+        f"Could not find dataset file '{relative_path}' in any expected location.\n\n"
         f"Searched paths:\n" + "\n".join(f"  - {p}" for p in search_paths) + "\n\n"
         f"The datasets directory is not included when py3plex is installed via pip.\n"
-        f"To use examples and datasets:\n"
+        f"To resolve this issue:\n"
         f"  1. Clone the repository: git clone https://github.com/SkBlaz/py3plex.git\n"
         f"  2. Run examples from the repository root directory, OR\n"
-        f"  3. Copy the datasets directory to your working directory"
+        f"  3. Copy the datasets directory to your working directory, OR\n"
+        f"  4. Provide the absolute path to your data file"
     )
 
 

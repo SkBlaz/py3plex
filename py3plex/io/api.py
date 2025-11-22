@@ -29,7 +29,7 @@ except ImportError:
 
     ICONTRACT_AVAILABLE = False
 
-from .exceptions import FormatUnsupportedError
+from .exceptions import FormatUnsupportedError, Py3plexIOError
 from .schema import MultiLayerGraph
 
 # Type aliases
@@ -201,7 +201,10 @@ def read(
 
     # Check file exists
     if not filepath.exists():
-        raise FileNotFoundError(f"File not found: {filepath}")
+        raise Py3plexIOError(
+            f"Cannot read file '{filepath}': File does not exist. "
+            f"Please check the file path and try again."
+        )
 
     # Auto-detect format if not provided
     if format is None:
