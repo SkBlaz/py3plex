@@ -96,15 +96,15 @@ def ricci_flow_layout_single(
     if dim not in [2, 3]:
         raise Py3plexLayoutError(
             f"Invalid dimension: dim must be 2 or 3, got {dim}. "
-            f"2D layouts are suitable for most visualizations, 3D for specialized cases."
+            "2D layouts are suitable for most visualizations, 3D for specialized cases."
         )
 
     if layout_type not in ["mds", "spring", "spectral"]:
         raise Py3plexLayoutError(
             f"Invalid layout_type: '{layout_type}'. "
-            f"Must be 'mds', 'spring', or 'spectral'. "
-            f"Use 'mds' for distance-based layouts, 'spring' for force-directed layouts, "
-            f"or 'spectral' for graph spectral layouts."
+            "Must be 'mds', 'spring', or 'spectral'. "
+            "Use 'mds' for distance-based layouts, 'spring' for force-directed layouts, "
+            "or 'spectral' for graph spectral layouts."
         )
 
     if layout_type == "mds" and not use_geodesic_distances:
