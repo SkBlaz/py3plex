@@ -7,6 +7,7 @@ This directory contains examples for loading, saving, and managing multilayer ne
 ### Loading and Saving Networks
 - **`example_IO.py`** - Load networks from different file formats (edgelist, GML, etc.)
 - **`example_new_io.py`** - Use the modern I/O API for multilayer graphs
+- **`example_save_to_arrow.py`** - High-performance serialization with Apache Arrow/Parquet formats
 - **`example_save_to_edgelist.py`** - Save networks in various edgelist formats
 - **`example_save_to_gpickle.py`** - Save and load networks using NetworkX pickle format
 
