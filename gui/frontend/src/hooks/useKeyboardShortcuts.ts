@@ -27,7 +27,13 @@ export function useKeyboardShortcuts(
         const ctrlMatch = shortcut.ctrl === undefined || shortcut.ctrl === (event.ctrlKey || event.metaKey);
         const shiftMatch = shortcut.shift === undefined || shortcut.shift === event.shiftKey;
         const altMatch = shortcut.alt === undefined || shortcut.alt === event.altKey;
-        const keyMatch = event.key.toLowerCase() === shortcut.key.toLowerCase();
+        
+        // Use exact match for special keys, case-insensitive for letters
+        const eventKey = event.key;
+        const shortcutKey = shortcut.key;
+        const keyMatch = eventKey.length === 1 && shortcutKey.length === 1
+          ? eventKey.toLowerCase() === shortcutKey.toLowerCase()
+          : eventKey === shortcutKey;
 
         if (ctrlMatch && shiftMatch && altMatch && keyMatch) {
           event.preventDefault();
@@ -52,6 +58,10 @@ export function formatShortcut(config: ShortcutConfig): string {
   if (config.ctrl) parts.push('Ctrl');
   if (config.shift) parts.push('Shift');
   if (config.alt) parts.push('Alt');
-  parts.push(config.key.toUpperCase());
+  
+  // Keep special keys as-is, only uppercase single letters
+  const key = config.key.length === 1 ? config.key.toUpperCase() : config.key;
+  parts.push(key);
+  
   return parts.join('+');
 }

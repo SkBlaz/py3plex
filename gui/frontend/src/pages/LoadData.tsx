@@ -43,10 +43,13 @@ export default function LoadData() {
 
   // Save recent file
   const saveRecentFile = (fileInfo: RecentFile) => {
-    const updated = [
-      fileInfo,
-      ...recentFiles.filter(f => f.graphId !== fileInfo.graphId)
-    ].slice(0, MAX_RECENT_FILES);
+    // Remove duplicate if exists, add new entry at the start, limit to MAX_RECENT_FILES
+    const existingIndex = recentFiles.findIndex(f => f.graphId === fileInfo.graphId);
+    const updatedList = existingIndex >= 0 
+      ? [fileInfo, ...recentFiles.filter((_, i) => i !== existingIndex)]
+      : [fileInfo, ...recentFiles];
+    
+    const updated = updatedList.slice(0, MAX_RECENT_FILES);
     setRecentFiles(updated);
     localStorage.setItem(RECENT_FILES_KEY, JSON.stringify(updated));
   };

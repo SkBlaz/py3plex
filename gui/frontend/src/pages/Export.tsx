@@ -141,7 +141,7 @@ export default function Export() {
     }
   ];
 
-  useKeyboardShortcuts(shortcuts, !!graphId && !saving && !downloading);
+  useKeyboardShortcuts(shortcuts, Boolean(graphId && !saving && !downloading));
 
   if (!graphId) {
     return (

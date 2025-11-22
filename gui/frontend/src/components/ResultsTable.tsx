@@ -34,19 +34,26 @@ export default function ResultsTable({
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
+  // Memoize string values for search to avoid repeated conversions
+  const searchableData = useMemo(() => {
+    return data.map(row => {
+      const searchText = columns.map(col => {
+        const value = row[col.key];
+        return value !== null && value !== undefined ? String(value).toLowerCase() : '';
+      }).join(' ');
+      return { row, searchText };
+    });
+  }, [data, columns]);
+
   // Filter data based on search query
   const filteredData = useMemo(() => {
     if (!searchQuery) return data;
     
     const query = searchQuery.toLowerCase();
-    return data.filter(row => {
-      return columns.some(col => {
-        const value = row[col.key];
-        if (value === null || value === undefined) return false;
-        return String(value).toLowerCase().includes(query);
-      });
-    });
-  }, [data, searchQuery, columns]);
+    return searchableData
+      .filter(item => item.searchText.includes(query))
+      .map(item => item.row);
+  }, [searchableData, data, searchQuery]);
 
   // Sort filtered data
   const sortedData = useMemo(() => {
