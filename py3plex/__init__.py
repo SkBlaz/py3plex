@@ -60,6 +60,10 @@ from py3plex.exceptions import (
     NetworkConstructionError,
     ParsingError,
     Py3plexException,
+    Py3plexFormatError,
+    Py3plexIOError,
+    Py3plexLayoutError,
+    Py3plexMatrixError,
     VisualizationError,
 )
 from py3plex.profiling import (
@@ -104,6 +108,10 @@ __all__ = [
     "ConversionError",
     "IncompatibleNetworkError",
     "ExternalToolError",
+    "Py3plexIOError",
+    "Py3plexFormatError",
+    "Py3plexLayoutError",
+    "Py3plexMatrixError",
     # Profiling utilities
     "profile_performance",
     "timed_section",

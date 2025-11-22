@@ -9,6 +9,8 @@ Provides bidirectional conversion between MultiLayerGraph and popular graph libr
 
 from typing import Any, Dict, Literal
 
+from py3plex.exceptions import ConversionError
+
 from .schema import Edge, Layer, MultiLayerGraph, Node
 
 # Optional formal verification support
@@ -156,8 +158,10 @@ def to_networkx(
             G.add_edge(src_tuple, dst_tuple, key=edge.key, **edge.attributes)
 
     else:
-        raise ValueError(
-            f"Unknown mode: {mode}. Must be 'union', 'intersection', or 'multiplex'"
+        raise ConversionError(
+            f"Unknown mode: '{mode}'. Must be 'union', 'intersection', or 'multiplex'. "
+            f"Use 'union' to merge all layers, 'intersection' for common edges, "
+            f"or 'multiplex' to preserve layer information in node tuples."
         )
 
     return G
@@ -261,9 +265,9 @@ def from_networkx(
 
         for node_tuple in G.nodes():
             if not isinstance(node_tuple, tuple) or len(node_tuple) != 2:
-                raise ValueError(
+                raise ConversionError(
                     f"In 'multiplex' mode, node IDs must be (node_id, layer_id) tuples. "
-                    f"Got: {node_tuple}"
+                    f"Got: {node_tuple}. Please ensure your NetworkX graph uses proper node tuples."
                 )
             node_id, layer_id = node_tuple
             nodes_seen.add(node_id)
@@ -317,13 +321,17 @@ def from_networkx(
                 graph.add_edge(edge)
 
     elif mode == "intersection":
-        raise ValueError(
-            "Mode 'intersection' is not supported for from_networkx() - it's ambiguous. "
-            "Use 'union' or 'multiplex' instead."
+        raise ConversionError(
+            "Mode 'intersection' is not supported for from_networkx() conversion - it's ambiguous. "
+            "Please use 'union' to merge all edges or 'multiplex' to create layer-specific nodes."
         )
 
     else:
-        raise ValueError(f"Unknown mode: {mode}. Must be 'union' or 'multiplex'")
+        raise ConversionError(
+            f"Unknown mode: '{mode}'. Must be 'union' or 'multiplex'. "
+            f"Use 'union' to treat the graph as a single layer, "
+            f"or 'multiplex' to infer layers from node attributes."
+        )
 
     return graph
 
@@ -448,7 +456,10 @@ def to_igraph(graph: MultiLayerGraph, mode: ProjectionMode = "multiplex") -> Any
             g.es[key] = values
 
     else:
-        raise ValueError(f"Mode '{mode}' not implemented for igraph conversion")
+        raise ConversionError(
+            f"Mode '{mode}' not implemented for igraph conversion. "
+            f"Supported modes: 'union', 'multiplex'."
+        )
 
     return g
 
@@ -547,8 +558,9 @@ def from_igraph(
 
         for v in g.vs:
             if "node_id" not in v.attributes() or "layer_id" not in v.attributes():
-                raise ValueError(
-                    "In 'multiplex' mode, vertices must have 'node_id' and 'layer_id' attributes"
+                raise ConversionError(
+                    "In 'multiplex' mode, vertices must have 'node_id' and 'layer_id' attributes. "
+                    "Please ensure your igraph vertices have these required attributes."
                 )
 
             node_id = v["node_id"]
@@ -596,6 +608,9 @@ def from_igraph(
             graph.add_edge(edge)
 
     else:
-        raise ValueError(f"Unknown mode: {mode}")
+        raise ConversionError(
+            f"Unknown mode: '{mode}'. "
+            f"Supported modes for graph-tool conversion: 'union', 'multiplex'."
+        )
 
     return graph
