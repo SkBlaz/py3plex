@@ -12,21 +12,22 @@ from pathlib import Path
 from py3plex.workflows import WorkflowConfig, WorkflowRunner
 
 
-def run_yaml_workflow():
-    """Run workflow from YAML configuration."""
+def run_file_loading_workflow():
+    """Run workflow that loads network from file."""
     print("=" * 70)
-    print("Running YAML-based workflow...")
+    print("Example 1: Loading Network from File (YAML)")
     print("=" * 70)
 
-    # Path to the example YAML config
-    config_path = Path(__file__).parent / "example_config.yaml"
+    # Path to the file-loading YAML config
+    config_path = Path(__file__).parent / "load_from_file.yaml"
 
     # Load and validate configuration
     config = WorkflowConfig.from_file(config_path)
 
     print(f"\nWorkflow: {config.name}")
     print(f"Description: {config.description}")
-    print(f"Datasets: {len(config.datasets)}")
+    print(f"Dataset type: {config.datasets[0]['type']}")
+    print(f"Loading from: {config.datasets[0]['path']}")
     print(f"Operations: {len(config.operations)}")
 
     # Validate configuration
@@ -44,17 +45,17 @@ def run_yaml_workflow():
     runner = WorkflowRunner(config)
     runner.run()
 
-    print("\nYAML workflow completed!")
+    print("\nFile-loading workflow completed!")
 
 
-def run_json_workflow():
-    """Run workflow from JSON configuration."""
+def run_file_comparison_workflow():
+    """Run workflow comparing file-loaded and generated networks."""
     print("\n" + "=" * 70)
-    print("Running JSON-based workflow...")
+    print("Example 2: File vs Generated Network Comparison (JSON)")
     print("=" * 70)
 
-    # Path to the example JSON config
-    config_path = Path(__file__).parent / "comparison_config.json"
+    # Path to the comparison JSON config
+    config_path = Path(__file__).parent / "load_and_compare.json"
 
     # Load configuration
     config = WorkflowConfig.from_file(config_path)
@@ -62,6 +63,8 @@ def run_json_workflow():
     print(f"\nWorkflow: {config.name}")
     print(f"Description: {config.description}")
     print(f"Datasets: {len(config.datasets)}")
+    print(f"  - {config.datasets[0]['name']}: loaded from {config.datasets[0]['path']}")
+    print(f"  - {config.datasets[1]['name']}: generated")
     print(f"Operations: {len(config.operations)}")
 
     # Execute workflow
@@ -69,12 +72,36 @@ def run_json_workflow():
     runner = WorkflowRunner(config)
     runner.run()
 
-    print("\nJSON workflow completed!")
+    print("\nComparison workflow completed!")
+
+
+def run_generation_workflow():
+    """Run workflow that generates networks (for completeness)."""
+    print("\n" + "=" * 70)
+    print("Example 3: Network Generation Workflow (YAML)")
+    print("=" * 70)
+
+    # Path to the generation YAML config
+    config_path = Path(__file__).parent / "example_config.yaml"
+
+    # Load configuration
+    config = WorkflowConfig.from_file(config_path)
+
+    print(f"\nWorkflow: {config.name}")
+    print(f"Description: {config.description}")
+    print(f"Dataset type: {config.datasets[0]['type']} (for comparison)")
+
+    # Execute workflow
+    print("\nExecuting workflow...")
+    runner = WorkflowRunner(config)
+    runner.run()
+
+    print("\nGeneration workflow completed!")
 
 
 def main():
-    """Run both example workflows."""
-    print("\nConfig-Driven Workflows Example")
+    """Run all example workflows."""
+    print("\nConfig-Driven Workflows Examples")
     print("=" * 70)
     print(
         "\nThis example shows how to define network analysis pipelines"
@@ -84,23 +111,28 @@ def main():
     print("  • Reproducible research")
     print("  • Easy to share and version control")
     print("  • Pipeline automation")
+    print("  • Load existing networks or generate new ones")
     print("  • No code changes needed for different experiments")
 
     try:
-        # Run YAML example
-        run_yaml_workflow()
+        # Run file-loading example (primary focus)
+        run_file_loading_workflow()
 
-        # Run JSON example
-        run_json_workflow()
+        # Run comparison example (file + generation)
+        run_file_comparison_workflow()
+
+        # Run generation example (for completeness)
+        run_generation_workflow()
 
         print("\n" + "=" * 70)
         print("All workflows completed successfully!")
         print("=" * 70)
         print("\nTo run these workflows from CLI:")
+        print("  py3plex run-config load_from_file.yaml")
+        print("  py3plex run-config load_and_compare.json")
         print("  py3plex run-config example_config.yaml")
-        print("  py3plex run-config comparison_config.json")
         print("\nTo validate a config without running:")
-        print("  py3plex run-config example_config.yaml --validate-only")
+        print("  py3plex run-config load_from_file.yaml --validate-only")
 
     except Exception as e:
         print(f"\nError: {e}")

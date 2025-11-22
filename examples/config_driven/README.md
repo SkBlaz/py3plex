@@ -13,9 +13,19 @@ Config-driven workflows allow you to define network analysis pipelines using YAM
 
 ## Files
 
+### Sample Data
+- `sample_network.graphml` - Sample multilayer network file for examples
+
+### Config Files (Load from File Examples)
+- `load_from_file.yaml` - Load network from file and analyze (YAML)
+- `load_and_compare.json` - Compare file-loaded vs generated networks (JSON)
+
+### Config Files (Generation Examples)
 - `example_config.yaml` - Basic workflow with generated network
 - `comparison_config.json` - Multi-dataset comparison workflow
-- `example_config_workflow.py` - Python script demonstrating workflow execution
+
+### Scripts
+- `example_config_workflow.py` - Python script demonstrating all workflow types
 
 ## Running Examples
 
@@ -25,17 +35,25 @@ Config-driven workflows allow you to define network analysis pipelines using YAM
 python example_config_workflow.py
 ```
 
+This runs three examples:
+1. Loading network from file (YAML)
+2. File vs generated comparison (JSON)
+3. Network generation (YAML)
+
 ### Using CLI
 
 ```bash
-# Run YAML workflow
+# Load network from file
+py3plex run-config load_from_file.yaml
+
+# Compare file-loaded and generated networks
+py3plex run-config load_and_compare.json
+
+# Generate and analyze network
 py3plex run-config example_config.yaml
 
-# Run JSON workflow
-py3plex run-config comparison_config.json
-
 # Validate configuration without running
-py3plex run-config example_config.yaml --validate-only
+py3plex run-config load_from_file.yaml --validate-only
 ```
 
 ## Configuration Format
@@ -48,12 +66,8 @@ description: "Description of what this workflow does"
 
 datasets:
   - name: "network_name"
-    type: "generate"  # or "file"
-    generator: "random"
-    parameters:
-      nodes: 50
-      layers: 2
-      probability: 0.15
+    type: "file"  # or "generate"
+    path: "network.graphml"
 
 operations:
   - type: "stats"
@@ -67,6 +81,18 @@ output:
 
 ### Dataset Types
 
+**Load from File (Recommended):**
+```yaml
+- name: "my_network"
+  type: "file"
+  path: "data/network.graphml"
+```
+
+Supported formats:
+- GraphML (`.graphml`)
+- GPickle (`.gpickle`)
+- Multiedgelist (`.edgelist`, `.txt`)
+
 **Generate Networks:**
 ```yaml
 - name: "generated_net"
@@ -77,13 +103,6 @@ output:
     layers: 3
     probability: 0.1
     seed: 42  # optional, for reproducibility
-```
-
-**Load from File:**
-```yaml
-- name: "my_network"
-  type: "file"
-  path: "data/network.graphml"
 ```
 
 ### Available Operations

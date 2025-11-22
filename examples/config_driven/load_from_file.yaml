@@ -1,0 +1,42 @@
+# Example workflow: Loading and analyzing a network from file
+# This demonstrates loading an existing network file
+
+name: "File-Based Network Analysis"
+description: "Load a network from file and perform comprehensive analysis"
+
+# Define datasets to work with
+datasets:
+  - name: "loaded_network"
+    type: "file"
+    path: "sample_network.graphml"
+
+# Define operations to perform
+operations:
+  # Compute statistics
+  - type: "stats"
+    dataset: "loaded_network"
+    parameters: {}
+
+  # Detect communities
+  - type: "community"
+    dataset: "loaded_network"
+    parameters:
+      algorithm: "louvain"
+
+  # Compute centrality measures
+  - type: "centrality"
+    dataset: "loaded_network"
+    parameters:
+      measure: "betweenness"
+
+  # Visualize network
+  - type: "visualize"
+    dataset: "loaded_network"
+    parameters:
+      output: "loaded_network.png"
+      layout: "spring"
+
+# Output configuration
+output:
+  directory: "file_workflow_results"
+  summary: "file_summary.json"
