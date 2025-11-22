@@ -7,14 +7,19 @@
     <title>Py3plex GUI</title>
     <style>
       /* Loading indicator styles - shown while React loads */
+      :root {
+        --spinner-size: 48px;
+        --spinner-spacing: 16px;
+      }
+      
       #root:empty::before {
         content: '';
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 48px;
-        height: 48px;
+        width: var(--spinner-size);
+        height: var(--spinner-size);
         border: 4px solid #e5e7eb;
         border-top-color: #3b82f6;
         border-radius: 50%;
@@ -24,13 +29,12 @@
       #root:empty::after {
         content: 'Loading Py3plex GUI...';
         position: fixed;
-        top: calc(50% + 48px);
+        top: calc(50% + var(--spinner-size) / 2 + var(--spinner-spacing));
         left: 50%;
         transform: translateX(-50%);
         color: #6b7280;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
         font-size: 14px;
-        margin-top: 16px;
       }
       
       @keyframes spin {
