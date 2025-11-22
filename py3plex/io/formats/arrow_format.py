@@ -247,15 +247,19 @@ def write_arrow(
 
     elif format == "parquet":
         # Write as Parquet file with multiple tables
-        pq.write_table(tables["metadata"], str(filepath.with_suffix(".parquet")))
+        # Ensure .parquet extension
+        if not filepath.suffix == ".parquet":
+            filepath = filepath.with_suffix(".parquet")
+        
+        pq.write_table(tables["metadata"], str(filepath))
         pq.write_table(
-            tables["nodes"], str(filepath.with_suffix(".parquet.nodes"))
+            tables["nodes"], str(filepath.with_suffix(filepath.suffix + ".nodes"))
         )
         pq.write_table(
-            tables["layers"], str(filepath.with_suffix(".parquet.layers"))
+            tables["layers"], str(filepath.with_suffix(filepath.suffix + ".layers"))
         )
         pq.write_table(
-            tables["edges"], str(filepath.with_suffix(".parquet.edges"))
+            tables["edges"], str(filepath.with_suffix(filepath.suffix + ".edges"))
         )
     else:
         raise Py3plexFormatError(
@@ -306,15 +310,19 @@ def read_arrow(filepath: Union[str, Path], format: str = "feather", **kwargs) ->
 
     elif format == "parquet":
         # Read Parquet files
-        tables["metadata"] = pq.read_table(str(filepath.with_suffix(".parquet")))
+        # Ensure .parquet extension
+        if not filepath.suffix == ".parquet":
+            filepath = filepath.with_suffix(".parquet")
+        
+        tables["metadata"] = pq.read_table(str(filepath))
         tables["nodes"] = pq.read_table(
-            str(filepath.with_suffix(".parquet.nodes"))
+            str(filepath.with_suffix(filepath.suffix + ".nodes"))
         )
         tables["layers"] = pq.read_table(
-            str(filepath.with_suffix(".parquet.layers"))
+            str(filepath.with_suffix(filepath.suffix + ".layers"))
         )
         tables["edges"] = pq.read_table(
-            str(filepath.with_suffix(".parquet.edges"))
+            str(filepath.with_suffix(filepath.suffix + ".edges"))
         )
     else:
         raise Py3plexFormatError(
