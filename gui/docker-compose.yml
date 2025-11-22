@@ -28,7 +28,6 @@ services:
       - MAX_UPLOAD_MB=${MAX_UPLOAD_MB:-512}
       - DATA_DIR=/data
     volumes:
-      - ../:/workspace:ro
       - ./data:/data
       - ./api:/app
     ports:
@@ -55,7 +54,6 @@ services:
       - CELERY_CONCURRENCY=${CELERY_CONCURRENCY:-2}
       - DATA_DIR=/data
     volumes:
-      - ../:/workspace:ro
       - ./data:/data
       - ./api:/app
     depends_on:
@@ -73,7 +71,6 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ../:/workspace:ro
       - ./data:/data
       - ./api:/app
     ports:

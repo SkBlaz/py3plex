@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip install --no-cache-dir \
+RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org \
     fastapi==0.109.0 \
     uvicorn[standard]==0.27.0 \
     celery==5.3.4 \
@@ -52,8 +52,9 @@ COPY ./api/app ./app
 COPY ./ci/api-tests ./ci/api-tests
 COPY ./api/pytest.ini ./pytest.ini
 
-# Install py3plex from mounted workspace
+# Copy py3plex source from parent directory and install it
 ARG PY3PLEX_PATH=/workspace
+COPY ../ ${PY3PLEX_PATH}/
 RUN pip install -e ${PY3PLEX_PATH}
 
 # Create data directory
