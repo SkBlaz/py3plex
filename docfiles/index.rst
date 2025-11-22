@@ -203,6 +203,7 @@ Documentation Contents
    networkx_interop
    algorithm_guide
    algorithm_roadmap
+   plugin_system
    ricci_curvature
    ricci_visualization
    performance

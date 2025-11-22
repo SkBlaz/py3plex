@@ -62,6 +62,7 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_system.html">Plugin System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
@@ -471,6 +472,19 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="algorithm_roadmap.html#citation-information">Citation Information</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_system.html">Plugin System</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#plugin-types">Plugin Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#using-plugins">Using Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#plugin-discovery">Plugin Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#example-plugins">Example Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#contributing-plugins">Contributing Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#support">Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_system.html#see-also">See Also</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ricci_curvature.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ricci_curvature.html#installation">Installation</a></li>
@@ -788,31 +802,31 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs.html">API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.core.multinet">Core Modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.config">Configuration and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#core-modules">Core Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#configuration-and-utilities">Configuration and Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#algorithms">Algorithms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.visualization.multilayer">Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.wrappers.benchmark_nodes">Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#visualization">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#wrappers">Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#i-o-operations">I/O Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.profiling">Profiling Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.logging_config">Logging Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.io.schema">I/O Schema and Validation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.algorithms.hedwig">Hedwig Rule Learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.visualization.fa2.forceatlas2">Force Atlas 2 Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.visualization.embedding_visualization.embedding_visualization">Embedding Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#profiling-utilities">Profiling Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#logging-configuration">Logging Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#i-o-schema-and-validation">I/O Schema and Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hedwig-rule-learning">Hedwig Rule Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#force-atlas-2-visualization">Force Atlas 2 Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#embedding-visualization">Embedding Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#network-generation-and-benchmarking">Network Generation and Benchmarking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.algorithms.statistics.bayesiantests">Additional Statistics and Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.algorithms.community_detection.NoRC">Community Detection Advanced</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.algorithms.node_ranking">Node Ranking and Classification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.wrappers.train_node2vec_embedding">Embeddings and Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#additional-statistics-and-analysis">Additional Statistics and Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#community-detection-advanced">Community Detection Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#node-ranking-and-classification">Node Ranking and Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#embeddings-and-wrappers">Embeddings and Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#network-motifs-and-patterns">Network Motifs and Patterns</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.core.HINMINE.dataStructures">HINMINE Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.cli">Command-Line Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.validation">Validation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hinmine-data-structures">HINMINE Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#validation-utilities">Validation Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#network-comparison-and-testing">Network Comparison and Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.algorithms.hedwig.learners.learner">Hedwig Learning Algorithms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.algorithms.hedwig.stats.scorefunctions">Hedwig Statistics and Scoring</a></li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs.html#module-py3plex.algorithms.hedwig.core.converters">Hedwig Core Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hedwig-learning-algorithms">Hedwig Learning Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hedwig-statistics-and-scoring">Hedwig Statistics and Scoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs.html#hedwig-core-components">Hedwig Core Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#time-series-and-temporal-analysis">Time Series and Temporal Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#advanced-visualization">Advanced Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs.html#link-prediction">Link Prediction</a></li>

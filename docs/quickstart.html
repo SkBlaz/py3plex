@@ -112,6 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_system.html">Plugin System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
@@ -235,9 +236,9 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 </pre></div>
 </div>
 <p><strong>Expected Output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 5
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 6
 Number of edges: 4
-Number of unique nodes (as node-layer tuples): 5
+Number of unique nodes (as node-layer tuples): 6
 Number of unique node IDs (across all layers): 4
 Nodes per layer:
   Layer &#39;layer1&#39;: 3 nodes
@@ -263,6 +264,15 @@ Nodes per layer:
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 3
+Number of edges: 2
+Number of unique nodes (as node-layer tuples): 3
+Number of unique node IDs (across all layers): 3
+Nodes per layer:
+  Layer &#39;default&#39;: 3 nodes
+</pre></div>
+</div>
 </section>
 <section id="from-multilayer-edge-list">
 <h3>From Multilayer Edge List<a class="headerlink" href="#from-multilayer-edge-list" title="Link to this heading"></a></h3>
@@ -275,6 +285,16 @@ Nodes per layer:
 <span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 4
+Number of edges: 4
+Number of unique nodes (as node-layer tuples): 7
+Number of unique node IDs (across all layers): 4
+Nodes per layer:
+  Layer &#39;layer1&#39;: 3 nodes
+  Layer &#39;layer2&#39;: 3 nodes
+</pre></div>
+</div>
 </section>
 <section id="from-graphml">
 <h3>From GraphML<a class="headerlink" href="#from-graphml" title="Link to this heading"></a></h3>
@@ -283,6 +303,11 @@ Nodes per layer:
     <span class="s2">&quot;data.graphml&quot;</span><span class="p">,</span>
     <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span>
 <span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Output depends on the GraphML file structure
+# Similar to above examples
 </pre></div>
 </div>
 </section>
@@ -309,6 +334,10 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2">, Edges: </span><span class="si">{</span><span class="n">num_edges</span><span class="si">}</span><span class="s2">, Layers: </span><span class="si">{</span><span class="n">num_layers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes: 6, Edges: 4, Layers: 3
+</pre></div>
+</div>
 </section>
 <section id="multilayer-statistics">
 <h3>Multilayer Statistics<a class="headerlink" href="#multilayer-statistics" title="Link to this heading"></a></h3>
@@ -327,6 +356,12 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Top versatile nodes: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">versatility</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span><span class="w"> </span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer density: 0.3333333333333333
+Node activity: 1.0
+Top versatile nodes: [(&#39;B&#39;, 1.0), (&#39;A&#39;, 0.5), (&#39;C&#39;, 0.25), (&#39;D&#39;, 0.25)]
+</pre></div>
+</div>
 </section>
 <section id="iterating-over-network-elements">
 <h3>Iterating Over Network Elements<a class="headerlink" href="#iterating-over-network-elements" title="Link to this heading"></a></h3>
@@ -341,6 +376,20 @@ Nodes per layer:
 <span class="c1"># Get neighbors of a node in a specific layer</span>
 <span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s1">&#39;node1&#39;</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s1">&#39;layer1&#39;</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Neighbors: </span><span class="si">{</span><span class="n">neighbors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Sample nodes (first few):
+((&#39;A&#39;, &#39;layer1&#39;), {&#39;pos&#39;: array([...]), ...})
+((&#39;B&#39;, &#39;layer1&#39;), {&#39;pos&#39;: array([...]), ...})
+...
+
+# Sample edges:
+((&#39;A&#39;, &#39;layer1&#39;), (&#39;B&#39;, &#39;layer1&#39;), {&#39;weight&#39;: 1, &#39;type&#39;: &#39;default&#39;})
+((&#39;B&#39;, &#39;layer1&#39;), (&#39;C&#39;, &#39;layer1&#39;), {&#39;weight&#39;: 1, &#39;type&#39;: &#39;default&#39;})
+...
+
+Neighbors of node &#39;A&#39; in &#39;layer1&#39;: [(&#39;B&#39;, &#39;layer1&#39;)]
 </pre></div>
 </div>
 </section>
@@ -360,6 +409,18 @@ Nodes per layer:
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> -&gt; Community </span><span class="si">{</span><span class="n">community_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Example output (will vary based on network structure):
+Node (&#39;A&#39;, &#39;layer1&#39;) -&gt; Community 0
+Node (&#39;B&#39;, &#39;layer1&#39;) -&gt; Community 0
+Node (&#39;C&#39;, &#39;layer1&#39;) -&gt; Community 1
+Node (&#39;A&#39;, &#39;layer2&#39;) -&gt; Community 0
+Node (&#39;B&#39;, &#39;layer2&#39;) -&gt; Community 0
+Node (&#39;D&#39;, &#39;layer2&#39;) -&gt; Community 1
+</pre></div>
+</div>
+<p><strong>Note:</strong> Louvain algorithm requires an undirected graph. For directed multilayer networks,
+you may need to convert to undirected or use multilayer-specific algorithms.</p>
 </section>
 <section id="using-infomap">
 <h3>Using Infomap<a class="headerlink" href="#using-infomap" title="Link to this heading"></a></h3>
@@ -373,6 +434,7 @@ Nodes per layer:
 <span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Infomap requires external binary installation. See <a class="reference internal" href="installation.html"><span class="doc">Installation and Setup</span></a> for details.</p>
 </section>
 <section id="multilayer-modularity">
 <h3>Multilayer Modularity<a class="headerlink" href="#multilayer-modularity" title="Link to this heading"></a></h3>
@@ -384,6 +446,12 @@ Nodes per layer:
 <span class="n">communities</span> <span class="o">=</span> <span class="n">mlm</span><span class="o">.</span><span class="n">multilayer_louvain</span><span class="p">(</span><span class="n">supra_adj</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Returns dictionary of community assignments
+{node_id: community_id, ...}
+</pre></div>
+</div>
+<p><strong>Note:</strong> Advanced multilayer community detection that considers layer structure.</p>
 </section>
 </section>
 <section id="network-visualization">
@@ -396,6 +464,8 @@ Nodes per layer:
 <span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> This produces a visual plot. No text output to console.
+See <a class="reference internal" href="visualization_guide.html"><span class="doc">Visualization Guide</span></a> for customization options.</p>
 </section>
 <section id="customized-visualization">
 <h3>Customized Visualization<a class="headerlink" href="#customized-visualization" title="Link to this heading"></a></h3>
@@ -412,6 +482,8 @@ Nodes per layer:
 <span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Creates customized network visualization with specified parameters.
+No text output - produces visual plot.</p>
 </section>
 <section id="diagonal-projection-plot">
 <h3>Diagonal Projection Plot<a class="headerlink" href="#diagonal-projection-plot" title="Link to this heading"></a></h3>
@@ -425,6 +497,8 @@ Nodes per layer:
 <span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Diagonal projection visualization useful for large multilayer networks.
+No text output - produces visual plot.</p>
 </section>
 </section>
 <section id="computing-centrality-measures">
@@ -441,6 +515,11 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 nodes by degree centrality:&quot;</span><span class="p">,</span> <span class="n">top_nodes</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Top 10 nodes by degree centrality: [((&#39;B&#39;, &#39;layer1&#39;), 0.4), ((&#39;B&#39;, &#39;layer2&#39;), 0.4), ...]
+</pre></div>
+</div>
+<p><strong>Note:</strong> Centrality values depend on network structure. Values are normalized between 0 and 1.</p>
 </section>
 <section id="pagerank">
 <h3>PageRank<a class="headerlink" href="#pagerank" title="Link to this heading"></a></h3>
@@ -453,6 +532,11 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 nodes by PageRank:&quot;</span><span class="p">,</span> <span class="n">top_pr</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Top 10 nodes by PageRank: [((&#39;B&#39;, &#39;layer1&#39;), 0.18), ((&#39;A&#39;, &#39;layer1&#39;), 0.15), ...]
+</pre></div>
+</div>
+<p><strong>Note:</strong> PageRank scores sum to 1.0 across all nodes.</p>
 </section>
 <section id="versatility-centrality">
 <h3>Versatility Centrality<a class="headerlink" href="#versatility-centrality" title="Link to this heading"></a></h3>
@@ -462,6 +546,12 @@ Nodes per layer:
 <span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;betweenness&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Returns dictionary of versatility scores
+{(&#39;A&#39;,): 0.5, (&#39;B&#39;,): 1.0, (&#39;C&#39;,): 0.25, (&#39;D&#39;,): 0.25}
+</pre></div>
+</div>
+<p><strong>Note:</strong> Versatility measures node importance across multiple layers.</p>
 </section>
 </section>
 <section id="node-embeddings">
@@ -484,6 +574,12 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding shape: </span><span class="si">{</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Embedding shape: (6, 128)
+</pre></div>
+</div>
+<p><strong>Note:</strong> Node2Vec generates low-dimensional vector representations of nodes.
+Output is a numpy array of shape (num_nodes, dimensions).</p>
 </section>
 <section id="random-walks">
 <h3>Random Walks<a class="headerlink" href="#random-walks" title="Link to this heading"></a></h3>
@@ -502,6 +598,12 @@ Nodes per layer:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2"> walks&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Generated 60 walks
+</pre></div>
+</div>
+<p><strong>Note:</strong> Random walks are used for network sampling and embedding generation.
+Each walk is a sequence of nodes traversed following the specified parameters.</p>
 </section>
 </section>
 <section id="exporting-networks">
@@ -512,6 +614,8 @@ Nodes per layer:
 <span class="n">network</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">&quot;output.graphml&quot;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Network saved to <code class="docutils literal notranslate"><span class="pre">output.graphml</span></code>. No console output.
+GraphML format preserves node and edge attributes.</p>
 </section>
 <section id="save-to-pickle">
 <h3>Save to Pickle<a class="headerlink" href="#save-to-pickle" title="Link to this heading"></a></h3>
@@ -519,6 +623,8 @@ Nodes per layer:
 <span class="n">network</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">&quot;output.gpickle&quot;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> Network saved to <code class="docutils literal notranslate"><span class="pre">output.gpickle</span></code>. No console output.
+Pickle format is fastest for loading/saving in Python.</p>
 </section>
 <section id="save-adjacency-matrix">
 <h3>Save Adjacency Matrix<a class="headerlink" href="#save-adjacency-matrix" title="Link to this heading"></a></h3>
@@ -531,6 +637,13 @@ Nodes per layer:
 <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;supra_adjacency.npy&quot;</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Supra-adjacency matrix saved to supra_adjacency.npy
+# Matrix shape: (6, 6) for network with 6 node-layer tuples
+</pre></div>
+</div>
+<p><strong>Note:</strong> NumPy binary format for efficient matrix storage and loading.
+The supra-adjacency matrix represents the entire multilayer network structure.</p>
 </section>
 </section>
 <section id="next-steps">

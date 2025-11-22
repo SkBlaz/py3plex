@@ -64,6 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="networkx_interop.html">NetworkX Interoperability Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_guide.html">Algorithm Selection Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_roadmap.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_system.html">Plugin System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_curvature.html">Ollivier-Ricci Curvature and Ricci Flow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ricci_visualization.html">Ricci-Flow-Based Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance and Scalability</a></li>
@@ -211,49 +212,6 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n^2)\)</span> for sparse matrices using Krylov subspace methods, where <span class="math notranslate nohighlight">\(n\)</span> is the total number of node-layer pairs</p>
 <p><strong>Reference:</strong> Estrada, E., &amp; Hatano, N. (2008). Communicability in complex networks. Physical Review E, 77(3), 036111.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality.communicability_centrality">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality.</span></span><span class="sig-name descname"><span class="pre">communicability_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">supra_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_sparse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality.communicability_centrality" title="Link to this definition"></a></dt>
-<dd><p>Compute communicability centrality for each node-layer pair.</p>
-<p>Communicability centrality measures the weighted sum of all walks between
-nodes, with exponentially decaying weights for longer walks. It is computed
-as the row sum of the matrix exponential:</p>
-<blockquote>
-<div><p>c_i = sum_j (exp(A))_ij</p>
-</div></blockquote>
-<p>This implementation uses scipy.sparse.linalg.expm_multiply for efficient
-sparse matrix exponential computation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>supra_matrix</strong> – Sparse supra-adjacency matrix (n x n).</p></li>
-<li><p><strong>normalize</strong> – If True, normalize output to sum to 1.</p></li>
-<li><p><strong>use_sparse</strong> – If True, use sparse matrix operations. Falls back to dense
-for matrices smaller than 10000 elements.</p></li>
-<li><p><strong>max_iter</strong> – Maximum number of iterations for sparse approximation (currently unused).</p></li>
-<li><p><strong>tol</strong> – Tolerance for convergence (currently unused).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Communicability centrality scores for each node-layer pair (n,).</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="apidocs.html#py3plex.exceptions.Py3plexMatrixError" title="py3plex.exceptions.Py3plexMatrixError"><strong>Py3plexMatrixError</strong></a> – If matrix is invalid (non-square, empty, etc.).</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multiplex_ER</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">comm</span> <span class="o">=</span> <span class="n">communicability_centrality</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communicability centrality computed for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span><span class="si">}</span><span class="s2"> node-layer pairs&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </section>
 <section id="katz-centrality">
 <h3>Katz Centrality<a class="headerlink" href="#katz-centrality" title="Link to this heading"></a></h3>
@@ -271,53 +229,6 @@ for matrices smaller than 10000 elements.</p></li>
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n^2)\)</span> for sparse linear system solving, where <span class="math notranslate nohighlight">\(n\)</span> is the total number of node-layer pairs</p>
 <p><strong>Reference:</strong> Katz, L. (1953). A new status index derived from sociometric analysis. Psychometrika, 18(1), 39-43.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality.katz_centrality">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality.</span></span><span class="sig-name descname"><span class="pre">katz_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">supra_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality.katz_centrality" title="Link to this definition"></a></dt>
-<dd><p>Compute Katz centrality for each node-layer pair.</p>
-<p>Katz centrality measures node influence by accounting for all paths with
-exponentially decaying weights. It is computed as:</p>
-<blockquote>
-<div><p>x = (I - alpha * A)^{-1} * beta * 1</p>
-</div></blockquote>
-<p>where alpha &lt; 1/lambda_max(A) to ensure convergence. If alpha is not
-provided, it defaults to 0.85 / lambda_max(A).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>supra_matrix</strong> – Sparse supra-adjacency matrix (n x n).</p></li>
-<li><p><strong>alpha</strong> – Attenuation parameter. Must be less than 1/spectral_radius(A).
-If None, defaults to 0.85 / lambda_max(A).</p></li>
-<li><p><strong>beta</strong> – Weight of exogenous influence (typically 1.0).</p></li>
-<li><p><strong>tol</strong> – Tolerance for eigenvalue computation.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>Katz centrality scores for each node-layer pair (n,).</dt><dd><p>Normalized to sum to 1.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="apidocs.html#py3plex.exceptions.Py3plexMatrixError" title="py3plex.exceptions.Py3plexMatrixError"><strong>Py3plexMatrixError</strong></a> – If matrix is invalid or alpha is out of valid range.</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multiplex_ER</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">katz</span> <span class="o">=</span> <span class="n">katz_centrality</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Katz centrality computed for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">katz</span><span class="p">)</span><span class="si">}</span><span class="s2"> node-layer pairs&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># With custom alpha</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">katz_custom</span> <span class="o">=</span> <span class="n">katz_centrality</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </section>
 </section>
 <section id="usage-examples">
