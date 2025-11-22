@@ -102,8 +102,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      api:
-        condition: service_healthy
+      - api
+      - frontend
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 
