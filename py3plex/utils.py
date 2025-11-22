@@ -217,7 +217,7 @@ def get_data_path(relative_path: str) -> str:
         str: Absolute path to the file
 
     Raises:
-        FileNotFoundError: If the file cannot be found in any search location
+        Py3plexIOError: If the file cannot be found in any search location
 
     Examples:
         >>> from py3plex.utils import get_data_path
@@ -232,6 +232,8 @@ def get_data_path(relative_path: str) -> str:
         - Download datasets separately and place them relative to their scripts
         - Use current working directory with datasets folder
     """
+    from py3plex.exceptions import Py3plexIOError
+
     search_paths = []
 
     # 1. Try relative to the calling script's directory

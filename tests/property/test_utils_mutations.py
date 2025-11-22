@@ -35,6 +35,7 @@ try:
         get_background_knowledge_path,
         get_background_knowledge_dir,
     )
+    from py3plex.exceptions import Py3plexIOError
     UTILS_AVAILABLE = True
 except ImportError:
     UTILS_AVAILABLE = False
@@ -233,11 +234,11 @@ def test_get_dataset_path_prefix_handling(filename):
     assume(not filename.startswith("datasets/"))
     
     # When filename doesn't have prefix, it should be added
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(Py3plexIOError):
         # Will fail because file doesn't exist, but we can check the path tried
         try:
             result = get_dataset_path(filename)
-        except FileNotFoundError as e:
+        except Py3plexIOError as e:
             error_msg = str(e)
             # The error should mention the constructed path with "datasets/" prefix
             assert "datasets/" in error_msg or "datasets\\" in error_msg, \
@@ -256,19 +257,19 @@ def test_get_example_image_path_prefix_idempotent(filename):
     assume(not filename.startswith("example_images/"))
     
     # Should add prefix
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(Py3plexIOError):
         try:
             get_example_image_path(filename)
-        except FileNotFoundError as e:
+        except Py3plexIOError as e:
             assert "example_images" in str(e).lower()
             raise
     
     # If filename already has prefix, should not double-add
     prefixed_filename = f"example_images/{filename}"
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(Py3plexIOError):
         try:
             get_example_image_path(prefixed_filename)
-        except FileNotFoundError as e:
+        except Py3plexIOError as e:
             error_msg = str(e)
             # Should not have double prefix
             assert "example_images/example_images" not in error_msg
@@ -286,10 +287,10 @@ def test_get_multilayer_dataset_path_structure(path_part):
     assume('/' not in path_part)
     assume(not path_part.startswith("multilayer_datasets"))
     
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(Py3plexIOError):
         try:
             result = get_multilayer_dataset_path(path_part)
-        except FileNotFoundError as e:
+        except Py3plexIOError as e:
             assert "multilayer_datasets" in str(e)
             raise
 
@@ -321,10 +322,10 @@ def test_get_background_knowledge_path_empty_handling(filename):
         else:
             # For actual files, should have filename in path
             if filename != "bk.n3":  # bk.n3 actually exists
-                # test.txt doesn't exist, so this should have raised FileNotFoundError
+                # test.txt doesn't exist, so this should have raised Py3plexIOError
                 # but if it didn't raise, at least check the path structure
                 pass
-    except FileNotFoundError as e:
+    except Py3plexIOError as e:
         # This is expected for files that don't exist
         error_msg = str(e)
         assert "background_knowledge" in error_msg
