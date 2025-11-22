@@ -426,7 +426,7 @@ Direct Modularity Computation
 Complete Example
 ~~~~~~~~~~~~~~~~
 
-See ``examples/centrality_and_statistics/example_new_multiplex_metrics.py`` for a comprehensive demonstration of all new metrics.
+See ``examples/network_analysis/example_new_multiplex_metrics.py`` for a comprehensive demonstration of all new metrics.
 
 Network Statistics
 ------------------

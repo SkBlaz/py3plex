@@ -559,7 +559,7 @@ Examples
 
 Complete examples can be found in:
 
-- ``examples/dynamics/example_random_walks.py`` - Basic usage examples
+- ``examples/advanced/example_random_walks.py`` - Basic usage examples
 - ``tests/test_random_walks.py`` - Comprehensive test suite
 
 Repository: https://github.com/SkBlaz/py3plex

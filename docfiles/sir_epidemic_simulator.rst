@@ -298,7 +298,7 @@ Performance Tips
 Examples
 --------
 
-See ``examples/dynamics/example_sir_multiplex.py`` for additional examples including:
+See ``examples/advanced/example_sir_multiplex.py`` for additional examples including:
 
 - Comparison of discrete vs continuous time
 - Effect of network structure on epidemic spread
