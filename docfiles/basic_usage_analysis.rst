@@ -1,13 +1,13 @@
 Network Analysis
-################
+================
 
 Core Operations
-***************
+---------------
 
 The ``multi_layer_network`` object provides methods for network analysis and manipulation.
 
 Basic Iteration
-===============
+~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -36,7 +36,7 @@ Basic Iteration
     ...
 
 Subnetworks
-===========
+~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -51,7 +51,7 @@ Subnetworks
         [('1','1'), ('2','1')], subset_by="node_layer_names")
 
 NetworkX Integration
-====================
+~~~~~~~~~~~~~~~~~~~~
 
 py3plex networks are compatible with NetworkX:
 
@@ -68,7 +68,7 @@ py3plex networks are compatible with NetworkX:
     {'A_layer1': 0.5, 'B_layer1': 1.0, 'C_layer1': 0.5, ...}
 
 For More Examples
-*****************
+-----------------
 
 See detailed examples:
 
