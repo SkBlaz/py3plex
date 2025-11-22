@@ -123,22 +123,24 @@ class CacheManager:
             ... def compute_centrality(self, method='degree'):
             ...     return expensive_computation()
         """
+        cache_manager = self  # Capture the cache manager instance
+        
         def decorator(func: Callable) -> Callable:
             @functools.wraps(func)
-            def wrapper(self, *args, **kwargs):
+            def wrapper(obj_self, *args, **kwargs):
                 # Generate cache key from function name and arguments
-                cache_key = self._generate_cache_key(func.__name__, args, kwargs)
-                cache = self.get_cache(cache_name)
+                cache_key = cache_manager._generate_cache_key(func.__name__, args, kwargs)
+                cache = cache_manager.get_cache(cache_name)
                 
                 # Check if result is cached
                 if cache_key in cache:
                     return cache[cache_key]
                 
                 # Compute and cache result
-                result = func(self, *args, **kwargs)
+                result = func(obj_self, *args, **kwargs)
                 
                 # Implement LRU eviction if cache is full
-                if len(cache) >= self.max_size:
+                if len(cache) >= cache_manager.max_size:
                     # Remove oldest item (first key in dict)
                     oldest_key = next(iter(cache))
                     del cache[oldest_key]

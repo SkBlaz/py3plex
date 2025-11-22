@@ -12,7 +12,7 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import scipy.sparse as sp
 from collections import defaultdict
