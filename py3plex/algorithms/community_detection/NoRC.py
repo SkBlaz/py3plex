@@ -168,11 +168,15 @@ def NoRC_communities_main(
     if clustering_scheme == "hierarchical":
         # Convert sparse matrix to dense for linkage
         # Note: scipy's linkage requires dense arrays
-        if verbose and vectors.nnz / (vectors.shape[0] * vectors.shape[1]) < 0.1:
-            print(f"Matrix sparsity: {vectors.nnz / (vectors.shape[0] * vectors.shape[1]):.4f}")
+        if verbose:
+            if vectors.nnz / (vectors.shape[0] * vectors.shape[1]) < 0.1:
+                print(f"Matrix sparsity: {vectors.nnz / (vectors.shape[0] * vectors.shape[1]):.4f}")
+            print("Doing hierarchical search")
         Z = linkage(vectors.toarray(), "average")
         mod_hc_opt = -1  # Start at -1 to accept any modularity value
         opt_clust = None
+        nopt = 0
+        lag_num = 0
         for nclust in tqdm.tqdm(community_range):
             dx_hc = defaultdict(list)
             try:
@@ -182,17 +186,50 @@ def NoRC_communities_main(
                 partition_hi = dx_hc.values()
                 mod = modularity(A, partition_hi, weight="weight")
                 if mod > mod_hc_opt:
+                    lag_num = 0
                     if verbose:
                         print(
-                            f"\nImproved modularity: {mod}, communities: {len(partition_hi)}"
+                            f"Improved modularity: {mod}, found {len(partition_hi)} communities."
                         )
-
                     mod_hc_opt = mod
                     opt_clust = dx_hc
+                    nopt = nclust
                     if mod == 1:
                         return opt_clust
+                else:
+                    lag_num += 1
+                    if verbose:
+                        print(f"No improvement for {lag_num} iterations.")
+                    
+                    if lag_num > lag_threshold:
+                        break
             except Exception as es:
                 print(es)
+        
+        # fine grained search
+        if verbose:
+            print(f"Fine graining around {nopt}")
+        for nclust in range(max(1, nopt - fine_range), nopt + fine_range + 1, 1):
+            if nclust != nopt and nclust >= 1:
+                dx_hc = defaultdict(list)
+                try:
+                    cls = fcluster(Z, nclust, criterion="maxclust")
+                    for a, b in zip(cls, A.nodes()):
+                        dx_hc[a].append(b)
+                    partition_hi = dx_hc.values()
+                    mod = modularity(A, partition_hi, weight="weight")
+                    if mod > mod_hc_opt:
+                        if verbose:
+                            print(
+                                f"Improved modularity: {mod}, found {len(partition_hi)} communities."
+                            )
+                        mod_hc_opt = mod
+                        opt_clust = dx_hc
+                        if mod == 1:
+                            return opt_clust
+                except Exception as es:
+                    print(es)
+        
         return opt_clust
 
 
