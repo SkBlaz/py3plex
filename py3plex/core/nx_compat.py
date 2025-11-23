@@ -7,6 +7,7 @@ import pickle
 from typing import Any, Optional
 
 import networkx as nx
+import scipy.sparse as sp
 
 # Optional formal verification support
 try:
@@ -167,11 +168,12 @@ def nx_to_scipy_sparse_matrix(
         )
     else:
         # NetworkX >= 3.0 - use adjacency_matrix
-        # Note: nx.to_scipy_sparse_array exists but returns array, we want matrix for compatibility
+        # Note: nx.adjacency_matrix returns sparse array in 3.0+, convert to matrix
         matrix = nx.adjacency_matrix(G, nodelist=nodelist, dtype=dtype, weight=weight)
+        # Convert to requested format and ensure it's a sparse matrix
         if format != "csr":
-            matrix = matrix.asformat(format)
-        return matrix
+            return sp.csr_matrix(matrix.asformat(format))
+        return sp.csr_matrix(matrix)
 
 
 def is_string_like(obj: Any) -> bool:
