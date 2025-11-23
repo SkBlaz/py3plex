@@ -189,10 +189,14 @@ Node Ranking
 Network Classification
 ~~~~~~~~~~~~~~~~~~~~~~
 
+.. Note: :noindex: prevents duplicate object descriptions in the documentation index
+   since this module is also documented elsewhere.
+
 .. automodule:: py3plex.algorithms.network_classification.label_propagation
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 Visualization
 -------------
@@ -276,10 +280,14 @@ Logging Configuration
 I/O Schema and Validation
 -------------------------
 
+.. Note: :noindex: prevents duplicate object descriptions in the documentation index
+   since this module is documented in multiple locations.
+
 .. automodule:: py3plex.io.schema
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 .. automodule:: py3plex.io.api
    :members:

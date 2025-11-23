@@ -134,9 +134,9 @@ Directory Structure
     ├── compose.gpu.yml             # GPU override
     ├── Makefile                    # Dev commands
     ├── .env.example                # Config template
-    ├── README.md                   # User guide
-    ├── TESTING.md                  # Test guide
-    ├── ARCHITECTURE.md             # This file
+    ├── README                      # User guide
+    ├── TESTING                     # Test guide
+    ├── ARCHITECTURE                # Architecture notes
     │
     ├── nginx/
     │   └── nginx.conf              # Reverse proxy config

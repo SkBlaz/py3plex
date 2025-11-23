@@ -14,14 +14,14 @@ If you prefer using Docker, you can get started immediately without installing P
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
     docker build -t py3plex:latest .
-    
+
     # Create a data directory for files
     mkdir -p data
-    
+
     # Create a simple multilayer network
     docker run --rm -v $(pwd)/data:/data py3plex:latest \
       create --nodes 50 --layers 3 --output /data/network.edgelist
-    
+
     # Analyze it
     docker run --rm -v $(pwd)/data:/data py3plex:latest \
       load /data/network.edgelist --info
@@ -36,10 +36,10 @@ Create a simple multilayer network from scratch:
 .. code-block:: python
 
     from py3plex.core import multinet
-    
+
     # Create a new multilayer network
     network = multinet.multi_layer_network()
-    
+
     # Add edges within layers (nodes are created automatically)
     # Format: [source_node, source_layer, target_node, target_layer, weight]
     network.add_edges([
@@ -48,7 +48,7 @@ Create a simple multilayer network from scratch:
         ['A', 'layer2', 'B', 'layer2', 1],
         ['B', 'layer2', 'D', 'layer2', 1]
     ], input_type="list")
-    
+
     # Display basic statistics
     network.basic_stats()
 
@@ -77,14 +77,14 @@ Load from a simple edge list:
 .. code-block:: python
 
     from py3plex.core import multinet
-    
+
     # Load from a simple edge list
     network = multinet.multi_layer_network().load_network(
-        "data.edgelist", 
-        input_type="edgelist", 
+        "data.edgelist",
+        input_type="edgelist",
         directed=False
     )
-    
+
     network.basic_stats()
 
 **Expected Output:**
@@ -163,7 +163,7 @@ Computing Network Statistics
     num_nodes = len(network.get_nodes())
     num_edges = len(network.get_edges())
     num_layers = len(network.get_layers())
-    
+
     print(f"Nodes: {num_nodes}, Edges: {num_edges}, Layers: {num_layers}")
 
 **Expected Output:**
@@ -178,15 +178,15 @@ Multilayer Statistics
 .. code-block:: python
 
     from py3plex.algorithms.statistics import multilayer_statistics as mls
-    
+
     # Layer density
     density = mls.layer_density(network, 'layer1')
     print(f"Layer density: {density}")
-    
+
     # Node activity (fraction of layers where node is present)
     activity = mls.node_activity(network, 'node_A')
     print(f"Node activity: {activity}")
-    
+
     # Versatility centrality (importance across layers)
     versatility = mls.versatility_centrality(network, centrality_type='degree')
     print(f"Top versatile nodes: {sorted(versatility.items(), key=lambda x: x[1], reverse=True)[:5]}")
@@ -207,11 +207,11 @@ Iterating Over Network Elements
     # Iterate through nodes
     for node in network.get_nodes(data=True):
         print(node)
-    
+
     # Iterate through edges
     for edge in network.get_edges(data=True):
         print(edge)
-    
+
     # Get neighbors of a node in a specific layer
     neighbors = list(network.get_neighbors('node1', layer_id='layer1'))
     print(f"Neighbors: {neighbors}")
@@ -224,12 +224,12 @@ Iterating Over Network Elements
     (('A', 'layer1'), {'pos': array([...]), ...})
     (('B', 'layer1'), {'pos': array([...]), ...})
     ...
-    
+
     # Sample edges:
     (('A', 'layer1'), ('B', 'layer1'), {'weight': 1, 'type': 'default'})
     (('B', 'layer1'), ('C', 'layer1'), {'weight': 1, 'type': 'default'})
     ...
-    
+
     Neighbors of node 'A' in 'layer1': [('B', 'layer1')]
 
 Community Detection
@@ -243,10 +243,10 @@ Detect communities using Louvain modularity optimization:
 .. code-block:: python
 
     from py3plex.algorithms.community_detection import community_louvain
-    
+
     # Detect communities using Louvain modularity optimization
     communities = community_louvain.best_partition(network.core_network)
-    
+
     # Display communities
     for node, community_id in communities.items():
         print(f"Node {node} -> Community {community_id}")
@@ -274,7 +274,7 @@ Detect communities using Infomap (requires infomap binary):
 .. code-block:: python
 
     from py3plex.algorithms.community_detection import community_wrapper
-    
+
     # Detect communities using Infomap (requires infomap binary)
     communities = community_wrapper.infomap_communities(
         network.core_network,
@@ -291,7 +291,7 @@ Compute multilayer modularity:
 .. code-block:: python
 
     from py3plex.algorithms.community_detection import multilayer_modularity as mlm
-    
+
     # Compute multilayer modularity
     supra_adj = network.get_supra_adjacency_matrix()
     communities = mlm.multilayer_louvain(supra_adj)
@@ -314,7 +314,7 @@ Basic Visualization
 .. code-block:: python
 
     from py3plex.visualization.multilayer import draw_multilayer_default
-    
+
     # Simple visualization
     draw_multilayer_default([network], display=True)
 
@@ -328,7 +328,7 @@ Customized Visualization
 
     from py3plex.visualization.multilayer import hairball_plot
     from py3plex.visualization import drawing_machinery as dm
-    
+
     # Customize layout and appearance
     hairball_plot(
         network.core_network,
@@ -347,7 +347,7 @@ Diagonal Projection Plot
 .. code-block:: python
 
     from py3plex.visualization.multilayer import draw_multilayer_default
-    
+
     # Diagonal projection for large multilayer networks
     draw_multilayer_default(
         [network],
@@ -367,10 +367,10 @@ Degree Centrality
 .. code-block:: python
 
     from py3plex.algorithms.multilayer_algorithms import centrality
-    
+
     # Multilayer degree centrality
     degree_cent = centrality.multilayer_degree_centrality(network)
-    
+
     # Display top nodes
     top_nodes = sorted(degree_cent.items(), key=lambda x: x[1], reverse=True)[:10]
     print("Top 10 nodes by degree centrality:", top_nodes)
@@ -389,10 +389,10 @@ PageRank
 .. code-block:: python
 
     from py3plex.algorithms.community_detection import node_ranking
-    
+
     # PageRank on multilayer network
     pagerank = node_ranking.pagerank(network.core_network)
-    
+
     top_pr = sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:10]
     print("Top 10 nodes by PageRank:", top_pr)
 
@@ -410,7 +410,7 @@ Versatility Centrality
 .. code-block:: python
 
     from py3plex.algorithms.statistics import multilayer_statistics as mls
-    
+
     # Versatility centrality (cross-layer importance)
     versatility = mls.versatility_centrality(network, centrality_type='betweenness')
 
@@ -432,7 +432,7 @@ Node2Vec Embeddings
 .. code-block:: python
 
     from py3plex.wrappers import node2vec_embedding
-    
+
     # Generate Node2Vec embeddings
     embeddings = node2vec_embedding.generate_embeddings(
         network.core_network,
@@ -442,7 +442,7 @@ Node2Vec Embeddings
         p=1.0,  # Return parameter
         q=1.0   # In-out parameter
     )
-    
+
     # embeddings is a matrix of shape (num_nodes, dimensions)
     print(f"Embedding shape: {embeddings.shape}")
 
@@ -461,7 +461,7 @@ Random Walks
 .. code-block:: python
 
     from py3plex.algorithms.general.walkers import generate_walks
-    
+
     # Generate random walks
     walks = generate_walks(
         network.core_network,
@@ -471,7 +471,7 @@ Random Walks
         q=1.0,
         seed=42
     )
-    
+
     print(f"Generated {len(walks)} walks")
 
 **Expected Output:**
@@ -514,10 +514,10 @@ Save Adjacency Matrix
 .. code-block:: python
 
     import numpy as np
-    
+
     # Get supra-adjacency matrix
     adj_matrix = network.get_supra_adjacency_matrix()
-    
+
     # Save as numpy array
     np.save("supra_adjacency.npy", adj_matrix)
 

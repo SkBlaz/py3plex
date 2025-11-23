@@ -21,7 +21,7 @@ Overview
 py3plex is a lightweight Python library designed specifically for analyzing and visualizing heterogeneous and multilayer networks. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:
 
 * Multiple node types
-* Multiple edge types  
+* Multiple edge types
 * Multiple layers of interaction
 * Temporal dynamics
 * Heterogeneous attributes
@@ -107,20 +107,20 @@ Create a simple multilayer network:
 .. code-block:: python
 
     from py3plex.core import multinet
-    
+
     # Create a new multilayer network
     network = multinet.multi_layer_network()
-    
+
     # Add edges within layers
     network.add_edges([
         ['A', 'layer1', 'B', 'layer1', 1],
         ['B', 'layer1', 'C', 'layer1', 1],
         ['A', 'layer2', 'B', 'layer2', 1],
     ], input_type="list")
-    
+
     # Display basic statistics
     network.basic_stats()
-    
+
     # Visualize
     from py3plex.visualization.multilayer import draw_multilayer_default
     draw_multilayer_default([network], display=True)
@@ -132,12 +132,12 @@ Load from file and analyze:
     # Load from edge list
     network = multinet.multi_layer_network().load_network(
         "data.edgelist", input_type="edgelist", directed=False)
-    
+
     # Compute multilayer statistics
     from py3plex.algorithms.statistics import multilayer_statistics as mls
     density = mls.layer_density(network, 'layer1')
     versatility = mls.versatility_centrality(network, centrality_type='degree')
-    
+
     # Community detection
     from py3plex.algorithms.community_detection import community_wrapper
     communities = community_wrapper.best_partition(network.core_network)
@@ -310,7 +310,7 @@ If you use py3plex in your research, please cite:
 
 Indices and Tables
 ==================
- 
+
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`

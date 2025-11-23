@@ -201,9 +201,7 @@ Multilayer Network Theory
 Complete Citation List
 ----------------------
 
-For a **comprehensive list** of all algorithms and their citations, see:
-
-* `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ - **Complete list with DOIs**
+For algorithm citations, see the :doc:`algorithm_guide` which includes all major algorithms with their original references and DOIs.
 
 Acknowledgments
 ---------------
@@ -277,7 +275,7 @@ py3plex is released under the **MIT License**.
 * Infomap community detection code: **AGPLv3**
 * Louvain community detection: **BSD-3-Clause**
 
-See ``README.md`` for **detailed license compatibility** information.
+See ``LICENSE`` file in the repository for detailed license compatibility information.
 
 Contact
 -------
@@ -315,6 +313,6 @@ See Also
 --------
 
 * :doc:`acknowledgements` - Full acknowledgments
-* `ALGORITHM_CITATIONS.md <https://github.com/SkBlaz/py3plex/blob/master/docs/ALGORITHM_CITATIONS.md>`_ - Complete algorithm citations with DOIs
+* :doc:`algorithm_guide` - Complete algorithm citations with references
 * `py3plex GitHub <https://github.com/SkBlaz/py3plex>`_ - Source code and issues
 * `Applied Network Science paper <https://doi.org/10.1007/s41109-019-0203-7>`_ - Primary publication

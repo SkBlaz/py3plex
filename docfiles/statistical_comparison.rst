@@ -250,7 +250,7 @@ Effect Sizes
 
 Always report effect sizes in addition to p-values:
 
-- **Cohen's d**: |d| < 0.2 (small), 0.2-0.5 (medium), > 0.8 (large)
+- **Cohen's d**: \|d\| < 0.2 (small), 0.2-0.5 (medium), > 0.8 (large)
 - **Eta-squared**: η² < 0.01 (small), 0.01-0.06 (medium), > 0.14 (large)
 
 Use Cases

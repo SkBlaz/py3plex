@@ -133,13 +133,13 @@ Iterate Through Nodes and Edges
       (('6', '2'), {'type': '2'})
       (('3', '1'), {'type': '1'})
       (('5', '2'), {'type': '2'})
-    
+
     Edges (first 5):
       (('1', '1'), ('2', '1'), {'weight': '1'})
       (('1', '1'), ('3', '1'), {'weight': '1'})
       (('2', '1'), ('6', '2'), {'weight': '1'})
       (('3', '1'), ('5', '2'), {'weight': '1'})
-    
+
     Neighbors of 1 in layer 1: [('2', '1'), ('3', '1')]
 
 Extract Subnetworks
@@ -157,7 +157,7 @@ Extract Subnetworks
 
     # Extract specific node-layer pairs
     specific_pairs = network.subnetwork(
-        [('1', '1'), ('2', '1')], 
+        [('1', '1'), ('2', '1')],
         subset_by="node_layer_names"
     )
     print("Specific pairs:", list(specific_pairs.get_nodes()))
@@ -197,7 +197,7 @@ Basic Centrality Measures
       ('1', '1'): 1.0000
       ('2', '1'): 0.5000
       ('3', '1'): 0.5000
-    
+
     Betweenness centrality (first 5):
       ('1', '1'): 1.0000
       ('2', '1'): 0.0000
@@ -214,7 +214,7 @@ For multilayer-specific centrality measures:
 
     # Initialize centrality calculator
     calc = MultilayerCentrality(network)
-    
+
     # Compute multilayer degree centrality (considers node participation across layers)
     ml_degree = calc.overlapping_degree_centrality(weighted=False)
     print("Multilayer degree centrality:", ml_degree)
@@ -233,7 +233,7 @@ For multilayer-specific centrality measures:
       3: 1.0000
       5: 0.0000
       6: 0.0000
-    
+
     Multilayer betweenness centrality (first 5):
       ('1', '1'): 0.6667
       ('2', '1'): 0.5000
@@ -294,7 +294,7 @@ Network-Level Statistics
     # Measure how much layers differ in structure (edge overlap)
     edge_overlap_value = mls.edge_overlap(network, 'layer1', 'layer2')
     print(f"Edge overlap between layers: {edge_overlap_value:.3f}")
-    
+
     # Measure layer similarity using Jaccard index
     jaccard = mls.layer_similarity(network, 'layer1', 'layer2', method='jaccard')
     print(f"Jaccard similarity between layers: {jaccard:.3f}")
@@ -358,14 +358,14 @@ py3plex provides Louvain-based community detection that works across multiple la
 .. code-block:: text
 
     Number of communities: 3
-    
+
     Node assignments (first 10):
       Node ('1', '1'): Community 0
       Node ('2', '1'): Community 0
       Node ('6', '2'): Community 1
       Node ('3', '1'): Community 0
       Node ('5', '2'): Community 2
-    
+
     Community sizes (top 5): {0: 3, 1: 1, 2: 1}
 
 **Note:** The ``louvain_multilayer`` function performs community detection across all layers simultaneously, taking into account both intra-layer and inter-layer connections. Parameters:
@@ -393,13 +393,13 @@ Basic Random Walk
         directed=False
     )
     G = network.core_network
-    
+
     # Perform a random walk
     start_node = list(G.nodes())[0]
     walk = basic_random_walk(
-        G, 
-        start_node=start_node, 
-        walk_length=10, 
+        G,
+        start_node=start_node,
+        walk_length=10,
         weighted=True,
         seed=42
     )
@@ -423,13 +423,13 @@ Node2Vec Biased Walks
     # Biased walk with Node2Vec parameters
     # p: return parameter (higher = less likely to return)
     # q: in-out parameter (higher = stay local, lower = explore)
-    
+
     walk_bfs = node2vec_walk(
-        G, start_node, walk_length=20, 
+        G, start_node, walk_length=20,
         p=1.0, q=2.0,  # BFS-like (local)
         seed=42
     )
-    
+
     walk_dfs = node2vec_walk(
         G, start_node, walk_length=20,
         p=1.0, q=0.5,  # DFS-like (explore)
@@ -459,7 +459,7 @@ Generating Multiple Walks
         seed=42
     )
     print(f"Generated {len(walks)} walks")
-    
+
     # Use with Word2Vec for node embeddings
     # walks_str = [[str(node) for node in walk] for walk in walks]
     # model = Word2Vec(walks_str, vector_size=128, window=10)
@@ -619,17 +619,17 @@ Here's a complete workflow:
       Layer '2': 46 nodes
       Layer '3': 46 nodes
       Layer '4': 46 nodes
-    
+
     === Top 5 Nodes by Degree (Layer 1) ===
     ('15', '1'): 0.244
     ('7', '1'): 0.244
     ('27', '1'): 0.244
     ('28', '1'): 0.244
     ('1', '1'): 0.244
-    
+
     === Communities ===
     Number of communities: 46
-    
+
     Complete analysis saved to complete_analysis.png
 
 **Note:** In this example, the high number of communities (equal to the number of nodes) indicates that the network structure or parameters may need adjustment for meaningful community detection. In practice, adjust ``gamma`` (resolution) and ``omega`` (inter-layer coupling) parameters to achieve desired community granularity.
@@ -692,5 +692,5 @@ Tips for Success
 4. **Seed Your Random**: Use ``seed`` parameters in algorithms for reproducible results
 5. **Visualize Early**: Quick plots help catch data loading issues early
 
-Happy network analysis! 
+Happy network analysis!
 
