@@ -76,6 +76,7 @@ The py3plex CLI provides these main commands:
 
 * ``quickstart`` - Interactive demo with example graph (recommended for new users)
 * ``selftest`` - Verify installation and core functionality
+* ``check`` - Lint and validate graph data files
 * ``create`` - Create new multilayer networks
 * ``load`` - Load and inspect networks
 * ``community`` - Detect communities
@@ -101,6 +102,10 @@ Quick Reference
     # Quick demo
     py3plex quickstart
 
+    # Validate → Load → Analyze
+    py3plex check data.csv
+    py3plex load data.csv --stats
+    
     # Create → Analyze → Visualize
     py3plex create --nodes 50 --layers 2 --output net.graphml
     py3plex load net.graphml --stats
@@ -108,6 +113,128 @@ Quick Reference
 
     # Community detection workflow
     py3plex community net.graphml --algorithm louvain --output communities.json
+
+Validating Data Files
+---------------------
+
+Before loading network data, you can validate file format and data integrity using the ``check`` command. This helps catch common issues early and provides actionable suggestions for fixing problems.
+
+Basic Validation
+~~~~~~~~~~~~~~~~
+
+Validate a graph data file (auto-detects format):
+
+.. code-block:: bash
+
+    py3plex check network.csv
+
+**Output for valid file:**
+
+.. code-block:: text
+
+    Checking file: network.csv
+    ✓ No issues found!
+
+**Output for file with issues:**
+
+.. code-block:: text
+
+    Checking file: network.csv
+    
+    Found 5 issue(s):
+    
+    [INFO] No layer columns found - this appears to be a single-layer network
+    [ERROR] Line 3: Empty destination node
+      → Suggestion: Provide a valid destination node ID
+    [WARNING] Line 4: Negative weight: -1.5
+      → Suggestion: Negative weights may not be supported by all algorithms
+    [WARNING] Line 5: Self-loop detected: Dave -> Dave
+      → Suggestion: Self-loops may not be supported by all algorithms
+    [WARNING] Line 6: Duplicate edge: Alice -> Bob
+      → Suggestion: Remove duplicate edges or consolidate with edge weights
+    
+    Linting results:
+      Errors: 1
+      Warnings: 3
+      Info: 1
+    
+    ✗ Validation failed with errors
+
+Supported File Formats
+~~~~~~~~~~~~~~~~~~~~~~
+
+The ``check`` command automatically detects and validates these formats:
+
+* **CSV** - Comma-separated values with headers (e.g., ``network.csv``)
+* **Edgelist** - Space-separated node pairs (e.g., ``network.edgelist``)
+* **Multiedgelist** - Space-separated with layer information (e.g., ``network.txt``)
+
+Strict Mode
+~~~~~~~~~~~
+
+Use ``--strict`` to treat warnings as errors (useful for CI/CD pipelines):
+
+.. code-block:: bash
+
+    py3plex check network.csv --strict
+
+With strict mode enabled, the command exits with error code 1 if any warnings are found, making it suitable for automated validation in scripts.
+
+Validation Checks
+~~~~~~~~~~~~~~~~~
+
+The linter performs these checks:
+
+**Errors (cause validation failure):**
+
+* Missing or empty node IDs
+* Invalid weight values (non-numeric)
+* Missing required columns (for CSV files)
+* Malformed file structure
+
+**Warnings (reported but don't fail validation):**
+
+* Negative weights
+* Self-loops
+* Duplicate edges
+
+**Info (informational messages):**
+
+* Single-layer network detected (when no layer columns found)
+* Format detection results
+
+Example Workflows
+~~~~~~~~~~~~~~~~~
+
+**Validate before loading:**
+
+.. code-block:: bash
+
+    # Step 1: Validate the file
+    py3plex check my_network.csv
+    
+    # Step 2: If valid, load and analyze
+    py3plex load my_network.csv --stats
+
+**CI/CD integration:**
+
+.. code-block:: bash
+
+    # In your CI script - fail if any issues found
+    py3plex check network.csv --strict || exit 1
+    
+    # Proceed with analysis if validation passed
+    py3plex load network.csv --stats
+
+**Batch validation:**
+
+.. code-block:: bash
+
+    # Validate multiple files
+    for file in data/*.csv; do
+        echo "Checking $file..."
+        py3plex check "$file"
+    done
 
 Creating Networks
 -----------------
@@ -543,14 +670,36 @@ Example 3: Multiple Analysis Pipeline
     py3plex visualize network.graphml --layout spring --output viz_spring.png
     py3plex visualize network.graphml --layout circular --output viz_circular.png
 
+Example 4: Validate External Data Before Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    # Step 1: Validate the data file
+    py3plex check external_data.csv
+    
+    # Step 2: If validation passes, load the network
+    py3plex load external_data.csv --info
+    
+    # Step 3: Run analysis
+    py3plex stats external_data.csv --measure all --output stats.json
+    
+    # Step 4: Detect communities
+    py3plex community external_data.csv --algorithm louvain --output communities.json
+    
+    # Step 5: Create visualization
+    py3plex visualize external_data.csv --layout spring --output network_viz.png
+
 Tips and Best Practices
 ------------------------
 
-1. **Use Seeds for Reproducibility**: Always use ``--seed`` when creating networks for reproducible results.
+1. **Validate Data Files First**: Always run ``py3plex check`` on external data files before analysis to catch format issues early.
 
-2. **JSON Output for Scripting**: Use ``--output`` to save results as JSON for post-processing with other tools.
+2. **Use Seeds for Reproducibility**: Always use ``--seed`` when creating networks for reproducible results.
 
-3. **Check Help for Each Command**: Each command has detailed help with examples:
+3. **JSON Output for Scripting**: Use ``--output`` to save results as JSON for post-processing with other tools.
+
+4. **Check Help for Each Command**: Each command has detailed help with examples:
 
    .. code-block:: bash
 
