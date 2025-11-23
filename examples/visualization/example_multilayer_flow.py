@@ -157,6 +157,22 @@ def example_comparison():
     plt.close()
 
 
+def example_sankey():
+    """Example 4: Sankey diagram for inter-layer flows."""
+    print("\n" + "="*70)
+    print("Example 4: Sankey Diagram for Inter-Layer Flows")
+    print("="*70)
+    
+    network = create_example_network()
+    
+    print("\nCreating Sankey diagram showing inter-layer connection strength...")
+    ax = network.visualize_network(style='sankey', show=False)
+    
+    plt.savefig('/tmp/example_sankey.png', dpi=150, bbox_inches='tight')
+    print("✓ Saved to: /tmp/example_sankey.png")
+    plt.close()
+
+
 if __name__ == '__main__':
     print("="*70)
     print("MULTILAYER FLOW VISUALIZATION EXAMPLES")
@@ -167,11 +183,13 @@ if __name__ == '__main__':
     print("  • Nodes positioned along the x-axis within each layer")
     print("  • Node colors indicating activity (degree centrality)")
     print("  • Inter-layer connections as flowing ribbons")
+    print("  • Sankey diagrams showing inter-layer flow strength")
     
     try:
         example_basic_flow()
         example_custom_flow()
         example_comparison()
+        example_sankey()
         
         print("\n" + "="*70)
         print("✓ All examples completed successfully!")
@@ -180,6 +198,7 @@ if __name__ == '__main__':
         print("  1. /tmp/example_flow_basic.png")
         print("  2. /tmp/example_flow_custom.png")
         print("  3. /tmp/example_flow_comparison.png")
+        print("  4. /tmp/example_sankey.png")
         
     except Exception as e:
         print(f"\n✗ Error running examples: {e}")
