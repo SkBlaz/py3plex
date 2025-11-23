@@ -245,6 +245,11 @@ Quick Start:
   py3plex --help               # Show this help
 
 Examples:
+  # Check/lint a graph data file for errors
+  py3plex check network.csv                      # Validate CSV file
+  py3plex check network.edgelist                 # Validate edgelist file
+  py3plex check network.csv --strict             # Treat warnings as errors
+
   # Create a random multilayer network with 100 nodes and 3 layers
   py3plex create --nodes 100 --layers 3 --type random --probability 0.1 --output network.edgelist
 
@@ -305,6 +310,26 @@ For more information, visit: https://github.com/SkBlaz/py3plex
 
     # HELP command
     subparsers.add_parser("help", help="Show detailed help information about py3plex")
+
+    # CHECK command
+    check_parser = subparsers.add_parser(
+        "check", help="Lint and validate graph data files"
+    )
+    check_parser.add_argument(
+        "input",
+        help="Input file to check (CSV, edgelist, or multiedgelist format)",
+    )
+    check_parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Treat warnings as errors (exit with error code if warnings found)",
+    )
+    check_parser.add_argument(
+        "--format",
+        choices=["csv", "edgelist", "multiedgelist", "auto"],
+        default="auto",
+        help="Expected file format (default: auto-detect)",
+    )
 
     # CREATE command
     create_parser = subparsers.add_parser(
@@ -2009,6 +2034,53 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_check(args: argparse.Namespace) -> int:
+    """Lint and validate a graph data file.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success, non-zero for errors)
+    """
+    try:
+        from py3plex.linter import GraphFileLinter
+
+        logger.info(f"Checking file: {args.input}")
+
+        linter = GraphFileLinter(args.input)
+        issues = linter.lint()
+
+        if not issues:
+            logger.info("✓ No issues found!")
+            return 0
+
+        # Print all issues
+        logger.info(f"\nFound {len(issues)} issue(s):\n")
+        for issue in issues:
+            print(str(issue))
+
+        # Print summary
+        print()
+        linter.print_summary()
+
+        # Determine exit code
+        if linter.has_errors():
+            logger.error("\n✗ Validation failed with errors")
+            return 1
+        elif linter.has_warnings() and args.strict:
+            logger.error("\n✗ Validation failed (strict mode: warnings treated as errors)")
+            return 1
+        else:
+            logger.info("\n✓ Validation passed (with warnings)")
+            return 0
+
+    except Exception as e:
+        logger.error(f"Error checking file: {e}")
+        traceback.print_exc()
+        return 1
+
+
 def cmd_run_config(args: argparse.Namespace) -> int:
     """Run workflow from configuration file.
 
@@ -2075,6 +2147,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Dispatch to command handlers
     command_handlers = {
         "help": cmd_help,
+        "check": cmd_check,
         "create": cmd_create,
         "load": cmd_load,
         "community": cmd_community,
