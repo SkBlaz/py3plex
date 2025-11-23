@@ -193,6 +193,7 @@ Network Classification
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 Visualization
 -------------
@@ -280,6 +281,7 @@ I/O Schema and Validation
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 .. automodule:: py3plex.io.api
    :members:
