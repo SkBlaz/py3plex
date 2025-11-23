@@ -94,6 +94,22 @@ from py3plex.plugins import (
     discover_plugins,
 )
 
+# Pipeline system for composable workflows
+from py3plex.pipeline import (
+    Pipeline,
+    PipelineStep,
+    LoadStep,
+    AggregateLayers,
+    LeidenMultilayer,
+    LouvainCommunity,
+    ComputeStats,
+    FilterNodes,
+    SaveNetwork,
+)
+
+# Config-driven workflows
+from py3plex.workflows import WorkflowConfig, WorkflowRunner, run_workflow
+
 __all__ = [
     # Version info
     "__version__",
@@ -154,4 +170,18 @@ __all__ = [
     "MetricPlugin",
     "PluginRegistry",
     "discover_plugins",
+    # Pipeline system
+    "Pipeline",
+    "PipelineStep",
+    "LoadStep",
+    "AggregateLayers",
+    "LeidenMultilayer",
+    "LouvainCommunity",
+    "ComputeStats",
+    "FilterNodes",
+    "SaveNetwork",
+    # Workflows
+    "WorkflowConfig",
+    "WorkflowRunner",
+    "run_workflow",
 ]

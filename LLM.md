@@ -6,48 +6,55 @@ This file tracks development tasks and improvements for py3plex, particularly fo
 
 ## Recent Updates (2025-11-22)
 
-### Apache Arrow Serialization Support (v0.96 - 2025-11-22)
-✅ **Added high-performance Apache Arrow serialization for multilayer graphs**
-- Implemented Arrow/Feather format for fast read/write operations
-- Implemented Parquet format for compressed storage
-- Created comprehensive arrow_format.py module with read_arrow() and write_arrow() functions
-- Registered Arrow formats (arrow, feather, parquet) in I/O system
-- Added pyarrow as optional dependency in pyproject.toml [arrow] extra
-- Performance: 2-3x faster writes and 2-3x better compression vs JSON
-- Automatic format detection from file extensions (.arrow, .feather, .parquet)
-- Full support for graphs, nodes, layers, edges with complex attributes
-- Unicode support for all text fields
-
-**Testing:**
-- Created test_io_arrow.py with 14 comprehensive tests (100% passing)
-- Tests cover: roundtrip, attributes, Unicode, large graphs, format comparison
-- Validated against existing JSON format for correctness
-
-**Examples:**
-- Created example_save_to_arrow.py demonstrating all features
-- Includes performance comparisons between Arrow, Parquet, and JSON
-- Shows usage of both Feather (fast) and Parquet (compressed) formats
-- Demonstrates interoperability benefits with pandas/polars/Spark
-
-**Documentation:**
-- Created comprehensive io_serialization.rst documentation
-- Updated installation.rst to mention Arrow as optional dependency
-- Added section to index.rst under User Guide
-- Documented when to use each format (Arrow vs Parquet vs JSON vs CSV)
-- Included performance benchmarks and use cases
+### Pipeline System Implementation (v0.96 - 2025-11-22)
+✅ **Introduced scikit-learn style pipeline abstraction for composable workflows**
+- Created comprehensive pipeline system with 7 built-in pipeline steps:
+  - `LoadStep`: Load networks from files or generate random networks
+  - `AggregateLayers`: Aggregate edges across multiple layers (sum/mean/max)
+  - `LeidenMultilayer`: Leiden algorithm for multilayer community detection
+  - `LouvainCommunity`: Louvain community detection algorithm
+  - `ComputeStats`: Compute basic network statistics
+  - `FilterNodes`: Filter nodes based on degree or explicit list
+  - `SaveNetwork`: Save networks to files
+- Implemented `Pipeline` class with scikit-learn inspired API
+- Abstract `PipelineStep` base class for creating custom steps
+- Added decorator-style parameter management (`get_params`, `set_params`)
+- Created 7 working examples demonstrating various pipeline patterns
+- Added comprehensive test suite (36 tests, 100% passing)
+- Created detailed README for examples/pipelines/
 
 **Benefits:**
-- High-performance I/O for large multilayer networks
-- Excellent compression ratios (2-3x better than JSON)
-- Industry-standard format for interoperability (pandas, polars, Spark, R, Julia)
-- Type-safe serialization with schema preservation
-- Zero-copy operations in supported tools
+- Composable, modular workflow construction
+- Scikit-learn familiar API for data science users
+- Type-safe step validation
+- Built-in logging for pipeline execution
+- Easy to extend with custom steps
+- Reproducible analysis with seed support
 
 **New Files:**
-- `py3plex/io/formats/arrow_format.py` - Arrow format implementation
-- `tests/test_io_arrow.py` - Comprehensive Arrow I/O tests
-- `examples/io_and_data/example_save_to_arrow.py` - Usage examples
-- `docfiles/io_serialization.rst` - I/O and serialization documentation
+- `py3plex/pipeline.py` - Main pipeline implementation (550+ lines)
+- `tests/test_pipeline.py` - Comprehensive test suite
+- `examples/pipelines/example_1_basic_stats.py` - Basic statistics pipeline
+- `examples/pipelines/example_2_aggregation.py` - Layer aggregation pipeline
+- `examples/pipelines/example_3_community_detection.py` - Community detection
+- `examples/pipelines/example_4_leiden_multilayer.py` - Leiden multilayer
+- `examples/pipelines/example_5_filtering.py` - Node filtering
+- `examples/pipelines/example_6_complex_pipeline.py` - Multi-step pipeline
+- `examples/pipelines/example_7_save_load.py` - Save and load workflow
+- `examples/pipelines/README.md` - Pipeline documentation
+
+**Example Usage:**
+```python
+from py3plex.pipeline import Pipeline, LoadStep, AggregateLayers, LouvainCommunity
+
+pipe = Pipeline([
+    ("load", LoadStep(generator='random_er', n=50, l=3, p=0.1)),
+    ("aggregate", AggregateLayers(method='sum')),
+    ("community", LouvainCommunity(resolution=1.0)),
+])
+
+result = pipe.run()
+```
 
 ### Plugin System Implementation (v0.96 - 2025-11-22)
 ✅ **Introduced extensible plugin system for community contributions**
