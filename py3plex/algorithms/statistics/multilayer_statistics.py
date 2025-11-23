@@ -1817,6 +1817,10 @@ def layer_connectivity_entropy(network: Any, layer: str) -> float:
         Solé-Ribalta et al. (2013), "Spectral properties of complex networks"
         Shannon (1948), "A Mathematical Theory of Communication"
     """
+    # Check if network has any edges
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        return 0.0
+    
     # Get degree distribution for the layer
     degree_counts: Dict[Any, int] = {}
 
@@ -1877,6 +1881,10 @@ def inter_layer_dependence_entropy(
     Reference:
         De Domenico et al. (2015), "Ranking in interconnected multilayer networks"
     """
+    # Check if network has any edges
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        return 0.0
+    
     # Count inter-layer edges per node
     node_coupling: Dict[Any, int] = {}
 
@@ -1933,10 +1941,17 @@ def cross_layer_redundancy_entropy(network: Any) -> float:
     Reference:
         Bianconi (2018), "Multilayer Networks: Structure and Function"
     """
+    # Check if network has any nodes
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        return 0.0
+    
     # Get all layers
     all_layers = set()
-    for n, layer in network.get_nodes():
-        all_layers.add(layer)
+    try:
+        for n, layer in network.get_nodes():
+            all_layers.add(layer)
+    except (AttributeError, TypeError):
+        return 0.0
 
     layers_list = sorted(all_layers)
 
