@@ -66,7 +66,7 @@ def add_glow_effect(draw, position, text, font, color, glow_color, glow_radius=2
 
 def create_hero_banner(
     output_path="example_images/py3plex_hero_banner.png",
-    source_image="example_images/multilayer_radial_compact.png",
+    source_image="example_images/multilayer.png",
     width=1200,
     height=300,
 ):
@@ -277,11 +277,11 @@ def main():
 
     # Configuration
     # You can change these paths if needed:
-    source_image = "example_images/multilayer_radial_compact.png"
+    source_image = "example_images/multilayer.png"
     output_path = "example_images/py3plex_hero_banner.png"
 
     # Alternative source images you can try:
-    # - "example_images/multilayer.png" (simpler, cleaner)
+    # - "example_images/multilayer_radial_compact.png" (radial/circular layout)
     # - "example_images/multilayer_flow.png" (colorful flow visualization)
     # - "example_images/multilayer_sankey_diagram.png" (sankey style)
 
