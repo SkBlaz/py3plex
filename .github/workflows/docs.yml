@@ -11,7 +11,7 @@ jobs:
   build-docs:
     name: Build Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     
     steps:
     - name: Checkout code
@@ -35,6 +35,12 @@ jobs:
         pip install --timeout 120 --retries 5 -e .
       timeout-minutes: 8
     
+    - name: Install LaTeX for PDF generation
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended latexmk
+      timeout-minutes: 5
+    
     - name: Build Sphinx documentation
       run: |
         cd docfiles
@@ -43,12 +49,67 @@ jobs:
         sphinx-build -b html . _build/ --keep-going
       timeout-minutes: 5
     
+    - name: Build PDF documentation
+      run: |
+        cd docfiles
+        echo "📄 Building PDF documentation..."
+        # Build PDF using latexpdf builder
+        sphinx-build -b latex . _build/latex --keep-going
+        cd _build/latex
+        # Use latexmk for better PDF generation with explicit error handling
+        latexmk -pdf -interaction=nonstopmode -halt-on-error py3plex.tex || {
+          echo "❌ PDF generation failed"
+          exit 1
+        }
+        echo "✅ PDF generated successfully"
+      timeout-minutes: 10
+    
+    - name: Copy PDF to docs directory
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      run: |
+        echo "📦 Copying PDF to docs directory..."
+        mkdir -p docs
+        # Verify PDF exists before copying
+        if [ ! -f "docfiles/_build/latex/py3plex.pdf" ]; then
+          echo "❌ Error: PDF file not found at docfiles/_build/latex/py3plex.pdf"
+          exit 1
+        fi
+        cp docfiles/_build/latex/py3plex.pdf docs/py3plex_documentation.pdf
+        ls -lh docs/py3plex_documentation.pdf
+        echo "✅ PDF copied successfully"
+      timeout-minutes: 1
+    
+    - name: Commit and push PDF to repository
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add docs/py3plex_documentation.pdf
+        # Commit only if there are changes
+        if ! git diff --staged --quiet; then
+          git commit -m "Update documentation PDF [skip ci]"
+          git push
+          echo "✅ PDF committed and pushed"
+        else
+          echo "ℹ️ No changes to PDF, skipping commit"
+        fi
+      timeout-minutes: 2
+    
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: documentation-html
         path: docfiles/_build/
+        retention-days: 30
+      timeout-minutes: 2
+    
+    - name: Upload PDF artifact
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: documentation-pdf
+        path: docfiles/_build/latex/py3plex.pdf
         retention-days: 30
       timeout-minutes: 2
     
