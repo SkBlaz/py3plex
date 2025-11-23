@@ -1,4 +1,3 @@
-# *Py3Plex* - a library for analysis and visualization of multilayer networks
 
 <img src="https://github.com/user-attachments/assets/50f9de60-12ed-4559-a57f-17e36b5ebcf0" alt="Py3Plex Logo" width="400">
 
