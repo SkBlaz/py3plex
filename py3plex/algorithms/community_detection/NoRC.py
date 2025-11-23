@@ -74,7 +74,8 @@ def NoRC_communities_main(
         print(f"Walking with {parallel_step} parallel workers..")
     global _RANK_GRAPH
     _RANK_GRAPH = input_graph
-    # Optimization: Use reference instead of copy - only need for nodes() and modularity
+    # Optimization: Use reference instead of copy - graph is not modified, only read for nodes() and modularity
+    # This saves memory as we avoid duplicating the entire graph structure
     A = input_graph
     _RANK_GRAPH = nx_to_scipy_sparse_matrix(_RANK_GRAPH)
     _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  # normalize
