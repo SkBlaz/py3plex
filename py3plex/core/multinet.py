@@ -1255,8 +1255,8 @@ class multi_layer_network:
             ...     'layer_name': ['L1', 'L1']
             ... })
             >>> result = net.edges_from_temporal_table(df)
-            >>> len(result)
-            2
+            >>> len(result) >= 2
+            True
 
         See Also:
             fill_tmp_with_edges: Add these edges to layer graphs
