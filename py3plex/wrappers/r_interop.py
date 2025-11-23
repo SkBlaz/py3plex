@@ -15,20 +15,20 @@ R Usage Example (via reticulate):
     ```R
     library(reticulate)
     library(igraph)
-    
+
     # Import py3plex
     py3plex <- import("py3plex")
     r_interop <- import("py3plex.wrappers.r_interop")
-    
+
     # Create a multilayer network in Python
     net <- py3plex$multi_layer_network()
     net$add_nodes(list(list(source='A', type='layer1')))
-    net$add_edges(list(list(source='A', target='B', 
+    net$add_edges(list(list(source='A', target='B',
                              source_type='layer1', target_type='layer1')))
-    
+
     # Convert to igraph for R
     g <- r_interop$to_igraph_for_r(net, mode='union')
-    
+
     # Now use R's igraph functions
     degree(g)
     plot(g)
@@ -38,16 +38,16 @@ Alternative Export Formats:
     ```R
     # Export as edge list
     edges <- r_interop$export_edgelist(net)
-    
+
     # Export as adjacency matrix
     adj <- r_interop$export_adjacency(net)
-    
+
     # Export comprehensive graph data
     graph_data <- r_interop$export_graph_data(net)
     ```
 """
 
-from typing import Any, Dict, List, Literal, Optional, Tuple, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 import networkx as nx
 
@@ -56,7 +56,7 @@ from py3plex.exceptions import ConversionError
 
 # Try to import optional dependencies
 try:
-    from py3plex.io import MultiLayerGraph, from_networkx, to_igraph, to_networkx
+    from py3plex.io import MultiLayerGraph, to_igraph
 
     NEW_IO_AVAILABLE = True
 except ImportError:
@@ -80,11 +80,11 @@ def to_igraph_for_r(
 ) -> Any:
     """
     Convert py3plex network to igraph format optimized for R usage.
-    
+
     This function is specifically designed for R users accessing py3plex
     via reticulate. It handles the conversion from py3plex's internal
     representation to igraph, which can then be used with R's igraph package.
-    
+
     Args:
         network: py3plex multi_layer_network or MultiLayerGraph instance
         mode: How to handle multiple layers:
@@ -93,36 +93,36 @@ def to_igraph_for_r(
             - "multiplex": Preserve layer structure (advanced usage)
         layer: Optional specific layer to extract. If specified, only this
                layer is converted. Overrides mode parameter.
-    
+
     Returns:
         igraph.Graph instance compatible with R's igraph package
-    
+
     Raises:
         ImportError: If igraph is not installed
         ConversionError: If conversion fails
-    
+
     R Usage Example:
         ```R
         library(reticulate)
         library(igraph)
-        
+
         # Import and create network
         py3plex <- import("py3plex")
         r_interop <- import("py3plex.wrappers.r_interop")
-        
+
         net <- py3plex$multi_layer_network()
         # ... add nodes and edges ...
-        
+
         # Convert to igraph (union mode - simplest)
         g <- r_interop$to_igraph_for_r(net, mode='union')
-        
+
         # Use R igraph functions
         V(g)  # Vertices
         E(g)  # Edges
         degree(g)  # Degree distribution
         plot(g)  # Visualization
         ```
-    
+
     Note:
         For most R users, 'union' mode is recommended as it creates a standard
         igraph object that works with all R igraph functions. The 'multiplex'
@@ -152,10 +152,13 @@ def to_igraph_for_r(
         if nx_graph is None:
             # Handle empty network - create empty igraph
             import igraph as ig
+
             return ig.Graph(directed=False)
 
         # Use NetworkX to igraph conversion
-        if not isinstance(nx_graph, (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)):
+        if not isinstance(
+            nx_graph, (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)
+        ):
             raise ConversionError(
                 f"core_network must be a NetworkX graph, got {type(nx_graph)}"
             )
@@ -219,11 +222,11 @@ def _extract_layer_to_igraph(
 ) -> Any:
     """
     Extract a specific layer and convert to igraph.
-    
+
     Args:
         network: py3plex network
         layer: Layer identifier to extract
-    
+
     Returns:
         igraph.Graph of the specified layer
     """
@@ -258,7 +261,9 @@ def _extract_layer_to_igraph(
             g.add_vertex(name=str(node))
             node_to_idx[node] = idx
 
-        edge_list = [(node_to_idx[src], node_to_idx[dst]) for src, dst in layer_graph.edges()]
+        edge_list = [
+            (node_to_idx[src], node_to_idx[dst]) for src, dst in layer_graph.edges()
+        ]
         g.add_edges(edge_list)
 
         return g
@@ -292,30 +297,30 @@ def export_edgelist(
 ) -> List[Dict[str, Any]]:
     """
     Export network as edge list in R-friendly format.
-    
+
     Returns a list of dictionaries representing edges, which can be easily
     converted to an R data frame via reticulate.
-    
+
     Args:
         network: py3plex network
         include_attributes: Whether to include edge attributes
-    
+
     Returns:
         List of edge dictionaries with keys: src, dst, src_layer, dst_layer,
         and optionally edge attributes
-    
+
     R Usage Example:
         ```R
         library(reticulate)
-        
+
         r_interop <- import("py3plex.wrappers.r_interop")
-        
+
         # Get edge list
         edges <- r_interop$export_edgelist(net)
-        
+
         # Convert to R data frame
         df <- as.data.frame(do.call(rbind, lapply(edges, as.data.frame)))
-        
+
         # Now use R data manipulation
         head(df)
         summary(df)
@@ -354,7 +359,12 @@ def export_edgelist(
             if include_attributes:
                 # Add other attributes
                 for key, value in data.items():
-                    if key not in {"source_type", "target_type", "src_layer", "dst_layer"}:
+                    if key not in {
+                        "source_type",
+                        "target_type",
+                        "src_layer",
+                        "dst_layer",
+                    }:
                         edge_dict[key] = value
             edges.append(edge_dict)
 
@@ -367,26 +377,26 @@ def export_nodelist(
 ) -> List[Dict[str, Any]]:
     """
     Export network nodes as list in R-friendly format.
-    
+
     Returns a list of dictionaries representing nodes, which can be easily
     converted to an R data frame via reticulate.
-    
+
     Args:
         network: py3plex network
         include_attributes: Whether to include node attributes
-    
+
     Returns:
         List of node dictionaries with keys: id and optionally node attributes
-    
+
     R Usage Example:
         ```R
         library(reticulate)
-        
+
         r_interop <- import("py3plex.wrappers.r_interop")
-        
+
         # Get node list
         nodes <- r_interop$export_nodelist(net)
-        
+
         # Convert to R data frame
         df <- as.data.frame(do.call(rbind, lapply(nodes, as.data.frame)))
         ```
@@ -418,30 +428,28 @@ def export_nodelist(
     return nodes
 
 
-def export_graph_data(
-    network: Union[multi_layer_network, Any]
-) -> Dict[str, Any]:
+def export_graph_data(network: Union[multi_layer_network, Any]) -> Dict[str, Any]:
     """
     Export complete graph data in R-friendly format.
-    
+
     Returns a dictionary containing nodes, edges, layers, and metadata
     that can be easily used in R via reticulate.
-    
+
     Args:
         network: py3plex network
-    
+
     Returns:
         Dictionary with keys: nodes, edges, layers, directed, attributes
-    
+
     R Usage Example:
         ```R
         library(reticulate)
-        
+
         r_interop <- import("py3plex.wrappers.r_interop")
-        
+
         # Get complete graph data
         graph_data <- r_interop$export_graph_data(net)
-        
+
         # Access components
         nodes <- as.data.frame(do.call(rbind, lapply(graph_data$nodes, as.data.frame)))
         edges <- as.data.frame(do.call(rbind, lapply(graph_data$edges, as.data.frame)))
@@ -481,31 +489,31 @@ def export_adjacency(
 ) -> List[List[float]]:
     """
     Export adjacency matrix in R-friendly format.
-    
+
     Returns a 2D list (nested lists) that can be converted to an R matrix.
-    
+
     Args:
         network: py3plex network
         layer: Optional specific layer to export
         mode: How to handle multiple layers (same as to_igraph_for_r)
-    
+
     Returns:
         2D list representing adjacency matrix
-    
+
     R Usage Example:
         ```R
         library(reticulate)
-        
+
         r_interop <- import("py3plex.wrappers.r_interop")
-        
+
         # Get adjacency matrix
         adj_list <- r_interop$export_adjacency(net)
-        
+
         # Convert to R matrix
-        adj_matrix <- matrix(unlist(adj_list), 
-                             nrow=length(adj_list), 
+        adj_matrix <- matrix(unlist(adj_list),
+                             nrow=length(adj_list),
                              byrow=TRUE)
-        
+
         # Use in R
         eigen(adj_matrix)
         ```
@@ -531,13 +539,13 @@ def export_adjacency(
 def get_layer_names(network: Union[multi_layer_network, Any]) -> List[str]:
     """
     Get list of layer names in the network.
-    
+
     Args:
         network: py3plex network
-    
+
     Returns:
         List of layer names/identifiers
-    
+
     R Usage Example:
         ```R
         r_interop <- import("py3plex.wrappers.r_interop")
@@ -560,14 +568,14 @@ def get_layer_names(network: Union[multi_layer_network, Any]) -> List[str]:
 def get_network_stats(network: Union[multi_layer_network, Any]) -> Dict[str, Any]:
     """
     Get basic network statistics in R-friendly format.
-    
+
     Args:
         network: py3plex network
-    
+
     Returns:
         Dictionary with keys: num_nodes, num_edges, num_layers, directed,
         and per-layer statistics if available
-    
+
     R Usage Example:
         ```R
         r_interop <- import("py3plex.wrappers.r_interop")
@@ -594,7 +602,8 @@ def get_network_stats(network: Union[multi_layer_network, Any]) -> Dict[str, Any
         # Per-layer statistics
         for layer_id in network.layers:
             layer_edges = [
-                e for e in network.edges 
+                e
+                for e in network.edges
                 if e.src_layer == layer_id and e.dst_layer == layer_id
             ]
             stats["layer_stats"][layer_id] = {

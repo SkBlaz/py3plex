@@ -17,14 +17,14 @@ import py3plex as p3
 
 # Check for optional dependencies
 try:
-    import igraph as ig
+    import igraph  # noqa: F401
 
     IGRAPH_AVAILABLE = True
 except ImportError:
     IGRAPH_AVAILABLE = False
 
 try:
-    from py3plex.wrappers import r_interop
+    from py3plex.wrappers import r_interop  # noqa: F401
 
     R_INTEROP_AVAILABLE = True
 except ImportError:
