@@ -1,25 +1,38 @@
 #!/usr/bin/env python3
 """
-Centralized script to execute all code snippets from quickstart.rst and capture outputs.
+[DEPRECATED] This script was for the old quickstart.rst file which has been removed.
 
-This script:
-1. Extracts all Python code blocks from quickstart.rst
-2. Executes each snippet in a controlled environment
-3. Captures stdout/stderr output
-4. Updates quickstart.rst with actual execution results
-5. Ensures 100% coverage of code snippets with outputs
+The quickstart content is now in docfiles/getting_started/quickstart_5min.rst.
+If you need to regenerate outputs for that file, this script should be updated
+to reference the new location and file structure.
 
-Usage:
-    python docfiles/run_quickstart_snippets.py [--update]
-    
-Options:
-    --update    Update quickstart.rst with captured outputs (default: dry-run)
+This script is no longer maintained and may not work correctly.
 """
+
+import sys
+
+# Prevent execution of deprecated script
+print("=" * 70)
+print("ERROR: This script is DEPRECATED and should not be executed.")
+print("=" * 70)
+print("")
+print("The quickstart.rst file has been removed and consolidated into:")
+print("  docfiles/getting_started/quickstart_5min.rst")
+print("")
+print("If you need to regenerate outputs for the new quickstart file,")
+print("please create a new script or update this one to reference the")
+print("new file structure.")
+print("")
+print("=" * 70)
+sys.exit(1)
+
+# ============================================================================
+# Original implementation below - DO NOT USE
+# ============================================================================
 
 import io
 import os
 import re
-import sys
 import tempfile
 import traceback
 from contextlib import redirect_stdout, redirect_stderr
