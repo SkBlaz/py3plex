@@ -3,6 +3,7 @@ Visualization module for py3plex.
 
 This module provides visualization tools for multilayer networks, including:
 - Multilayer network layouts (diagonal, hairball, force-directed)
+- Sankey diagrams for inter-layer flows
 - Color utilities for node and edge coloring
 - Embedding visualization tools
 - Layout algorithms
@@ -14,6 +15,7 @@ Traditional imports (also supported for backwards compatibility):
     from py3plex.visualization.multilayer import hairball_plot, draw_multilayer_default
     from py3plex.visualization.colors import colors_default
     from py3plex.visualization.embedding_visualization import embedding_tools
+    from py3plex.visualization.sankey import draw_multilayer_sankey
 """
 
 # Import most commonly used visualization functions for convenience
@@ -24,6 +26,8 @@ from .multilayer import (
     interactive_hairball_plot,
     interactive_diagonal_plot,
 )
+
+from .sankey import draw_multilayer_sankey
 
 from .colors import (
     colors_default,
@@ -43,6 +47,7 @@ __all__ = [
     "hairball_plot",
     "draw_multilayer_default",
     "draw_multiedges",
+    "draw_multilayer_sankey",
     "interactive_hairball_plot",
     "interactive_diagonal_plot",
     # Color utilities

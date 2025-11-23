@@ -1961,9 +1961,10 @@ class multi_layer_network:
         - 'diagonal': Layer-centric diagonal layout with inter-layer edges
         - 'hairball': Aggregate hairball plot of all layers
         - 'flow' or 'alluvial': Layered flow visualization with horizontal bands
+        - 'sankey': Sankey diagram showing inter-layer flow strength
 
         Args:
-            style: Visualization style ('diagonal', 'hairball', 'flow', or 'alluvial')
+            style: Visualization style ('diagonal', 'hairball', 'flow', 'alluvial', or 'sankey')
             parameters_layers: Custom parameters for layer drawing
             parameters_multiedges: Custom parameters for edge drawing
             show: Show plot immediately
@@ -2057,10 +2058,24 @@ class multi_layer_network:
                 display=show,
                 **flow_kwargs
             )
+        elif style == "sankey":
+            # Import here to avoid circular dependency
+            from py3plex.visualization.sankey import draw_multilayer_sankey
+
+            # Get layers data (using "diagonal" layout type to extract layer structure)
+            labels_list, graphs, multilinks = self.get_layers("diagonal")
+
+            return draw_multilayer_sankey(
+                graphs,
+                multilinks,
+                labels=labels_list if not no_labels else None,
+                ax=axis,
+                display=show
+            )
         else:
             raise ValueError(
                 f"Invalid visualization style: '{style}'. "
-                f"Expected 'diagonal', 'hairball', 'flow', or 'alluvial'. "
+                f"Expected 'diagonal', 'hairball', 'flow', 'alluvial', or 'sankey'. "
                 f"Example: net.visualize_network(style='diagonal')"
             )
 

@@ -875,6 +875,8 @@ The following visualization modes are available:
 4. **supra_adjacency_heatmap**: Matrix representation of the multilayer structure
 5. **radial_layers**: Concentric circles with layers as rings
 6. **ego_multilayer**: Focus on a single node's neighborhood across layers
+7. **flow/alluvial**: Layered flow visualization with horizontal bands
+8. **sankey**: Sankey diagram showing inter-layer flow strength
 
 Unified API
 ~~~~~~~~~~~
@@ -1158,6 +1160,97 @@ highlighting the ego node's position in each layer context.
 - Red node = the ego (focal node)
 - Blue nodes = neighbors of the ego
 - Each subplot = ego's neighborhood in one layer
+
+Flow and Sankey Diagrams
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Py3plex provides two complementary visualizations for understanding inter-layer connectivity:
+flow/alluvial diagrams and Sankey diagrams. Both show how nodes and connections flow between
+layers, but with different visual approaches.
+
+Flow/Alluvial Visualization
+++++++++++++++++++++++++++++
+
+The flow visualization shows each layer as a horizontal band with nodes positioned along the
+x-axis. Inter-layer connections are drawn as flowing Bezier curves, with node activity encoded
+by color and size.
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    
+    # Load network
+    network = multinet.multi_layer_network()
+    network.load_network("network.txt", input_type="multiedgelist")
+    
+    # Flow visualization
+    ax = network.visualize_network(style='flow', show=True)
+    
+    # Or use 'alluvial' (same as 'flow')
+    ax = network.visualize_network(style='alluvial', show=True)
+
+**Best for:**
+
+- Visualizing node-level connectivity across layers
+- Understanding individual node trajectories
+- Showing how specific nodes connect between layers
+- Networks with up to 5-6 layers
+
+Sankey Diagram for Inter-Layer Flows
++++++++++++++++++++++++++++++++++++++
+
+The Sankey-style diagram provides an aggregate view of inter-layer connection strength.
+The visualization uses text and arrows where width represents the number of connections
+between layers. This is ideal for understanding overall flow patterns rather than
+individual node connections.
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    
+    # Load network
+    network = multinet.multi_layer_network()
+    network.load_network("network.txt", input_type="multiedgelist")
+    
+    # Sankey-style diagram showing inter-layer flow strength
+    ax = network.visualize_network(style='sankey', show=True)
+
+You can also use the function directly:
+
+.. code-block:: python
+
+    from py3plex.visualization.sankey import draw_multilayer_sankey
+    
+    # Get layers
+    labels, graphs, multilinks = network.get_layers()
+    
+    # Create Sankey-style diagram
+    ax = draw_multilayer_sankey(
+        graphs,
+        multilinks,
+        labels=labels,
+        display=True
+    )
+
+**Best for:**
+
+- Analyzing aggregate inter-layer connection patterns
+- Understanding flow strength between layers
+- Identifying dominant layer connections
+- Networks with 2-5 layers
+- Summarizing inter-layer connectivity
+
+**Interpretation:**
+
+- Text shows layer-to-layer connections with counts
+- Arrows indicate connection direction
+- Arrow width proportional to connection strength
+- Useful for identifying which layer pairs have strongest connections
+
+**Note:**
+
+This uses a simplified flow diagram approach rather than matplotlib's traditional
+Sankey class, as it's better suited for multilayer network inter-layer connections.
 
 Example Workflows
 ~~~~~~~~~~~~~~~~~
