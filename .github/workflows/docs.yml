@@ -56,7 +56,12 @@ jobs:
         # Build PDF using latexpdf builder
         sphinx-build -b latex . _build/latex --keep-going
         cd _build/latex
-        make
+        # Use latexmk for better PDF generation with explicit error handling
+        latexmk -pdf -interaction=nonstopmode -halt-on-error py3plex.tex || {
+          echo "❌ PDF generation failed"
+          exit 1
+        }
+        echo "✅ PDF generated successfully"
       timeout-minutes: 10
     
     - name: Copy PDF to docs directory
@@ -64,8 +69,14 @@ jobs:
       run: |
         echo "📦 Copying PDF to docs directory..."
         mkdir -p docs
+        # Verify PDF exists before copying
+        if [ ! -f "docfiles/_build/latex/py3plex.pdf" ]; then
+          echo "❌ Error: PDF file not found at docfiles/_build/latex/py3plex.pdf"
+          exit 1
+        fi
         cp docfiles/_build/latex/py3plex.pdf docs/py3plex_documentation.pdf
         ls -lh docs/py3plex_documentation.pdf
+        echo "✅ PDF copied successfully"
       timeout-minutes: 1
     
     - name: Commit and push PDF to repository
@@ -74,8 +85,14 @@ jobs:
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add docs/py3plex_documentation.pdf
-        git diff --staged --quiet || git commit -m "Update documentation PDF [skip ci]"
-        git push
+        # Commit only if there are changes
+        if ! git diff --staged --quiet; then
+          git commit -m "Update documentation PDF [skip ci]"
+          git push
+          echo "✅ PDF committed and pushed"
+        else
+          echo "ℹ️ No changes to PDF, skipping commit"
+        fi
       timeout-minutes: 2
     
     - name: Upload documentation artifacts
