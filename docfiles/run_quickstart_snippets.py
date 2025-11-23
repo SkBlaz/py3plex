@@ -4,22 +4,9 @@
 
 The quickstart content is now in docfiles/getting_started/quickstart_5min.rst.
 If you need to regenerate outputs for that file, this script should be updated
-to reference the new location.
+to reference the new location and file structure.
 
-Centralized script to execute all code snippets from quickstart.rst and capture outputs.
-
-This script:
-1. Extracts all Python code blocks from quickstart.rst
-2. Executes each snippet in a controlled environment
-3. Captures stdout/stderr output
-4. Updates quickstart.rst with actual execution results
-5. Ensures 100% coverage of code snippets with outputs
-
-Usage:
-    python docfiles/run_quickstart_snippets.py [--update]
-    
-Options:
-    --update    Update quickstart.rst with captured outputs (default: dry-run)
+This script is no longer maintained and may not work correctly.
 """
 
 import io

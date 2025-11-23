@@ -4,12 +4,9 @@
 
 The quickstart content is now in docfiles/getting_started/quickstart_5min.rst.
 If you need to regenerate outputs for that file, this script should be updated
-to reference the new location.
+to reference the new location and file structure.
 
-Generate actual outputs for all quickstart.rst code snippets.
-
-This script executes working snippets and generates a comprehensive
-guide for manually updating quickstart.rst with actual outputs.
+This script is no longer maintained and may not work correctly.
 """
 
 import sys
