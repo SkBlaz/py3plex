@@ -2058,7 +2058,7 @@ class multi_layer_network:
             # Import here to avoid circular dependency
             from py3plex.visualization.sankey import draw_multilayer_sankey
 
-            # Get layers data
+            # Get layers data (using "diagonal" layout type to extract layer structure)
             labels_list, graphs, multilinks = self.get_layers("diagonal")
 
             return draw_multilayer_sankey(

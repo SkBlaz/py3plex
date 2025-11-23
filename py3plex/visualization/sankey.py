@@ -199,10 +199,14 @@ def _draw_aggregated_flow_diagram(labels, flow_matrix, n_layers, ax):
     y_pos -= 0.1
 
     # Calculate total connections per layer (counting each connection once)
+    # Since flow_matrix only stores upper triangle (i < j), we need to count
+    # both directions to get all connections involving each layer
     layer_flows = {}
     for i in range(n_layers):
-        # Count connections where this layer is involved
-        total = np.sum(flow_matrix[i, :]) + np.sum(flow_matrix[:, i])
+        # Count connections where this layer is source or target
+        # Row i: connections from layer i to higher layers
+        # Column i: connections from lower layers to layer i
+        total = int(np.sum(flow_matrix[i, :]) + np.sum(flow_matrix[:, i]))
         if total > 0:
             layer_flows[i] = total
 
