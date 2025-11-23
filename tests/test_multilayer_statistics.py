@@ -470,5 +470,356 @@ class TestStatisticsIntegration(unittest.TestCase):
         self.assertTrue(-1 <= corr <= 1)
 
 
+class TestNewMultilayerMetrics(unittest.TestCase):
+    """Test cases for newly added multilayer metrics (entropy, mutual information, etc.)."""
+    
+    def setUp(self):
+        """Set up test networks."""
+        if not DEPENDENCIES_AVAILABLE:
+            self.skipTest("Dependencies not available for new metrics tests")
+        
+        # Create a 3-layer test network with varying structures
+        self.test_network = multinet.multi_layer_network(directed=False)
+        
+        # Layer 1: Dense connectivity (complete triangle)
+        self.test_network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['B', 'L1', 'C', 'L1', 1],
+            ['C', 'L1', 'A', 'L1', 1],
+            ['A', 'L1', 'D', 'L1', 1],
+        ], input_type='list')
+        
+        # Layer 2: Sparse connectivity (path)
+        self.test_network.add_edges([
+            ['A', 'L2', 'B', 'L2', 2],
+            ['B', 'L2', 'C', 'L2', 2],
+        ], input_type='list')
+        
+        # Layer 3: Mixed connectivity
+        self.test_network.add_edges([
+            ['A', 'L3', 'C', 'L3', 1],
+            ['B', 'L3', 'D', 'L3', 1],
+        ], input_type='list')
+        
+        # Add inter-layer edges
+        self.test_network.add_edges([
+            ['A', 'L1', 'A', 'L2', 1],
+            ['A', 'L2', 'A', 'L3', 1],
+            ['B', 'L1', 'B', 'L2', 1],
+            ['C', 'L1', 'C', 'L2', 1],
+            ['D', 'L1', 'D', 'L3', 1],
+        ], input_type='list')
+    
+    @skip_if_no_deps
+    def test_layer_connectivity_entropy(self):
+        """Test layer connectivity entropy calculation."""
+        # Test for each layer
+        entropy_l1 = mls.layer_connectivity_entropy(self.test_network, 'L1')
+        entropy_l2 = mls.layer_connectivity_entropy(self.test_network, 'L2')
+        entropy_l3 = mls.layer_connectivity_entropy(self.test_network, 'L3')
+        
+        # All entropies should be non-negative
+        self.assertTrue(entropy_l1 >= 0)
+        self.assertTrue(entropy_l2 >= 0)
+        self.assertTrue(entropy_l3 >= 0)
+        
+        # L1 has more varied degrees, should have higher entropy than L2
+        self.assertGreater(entropy_l1, 0)
+        
+        # Test empty layer
+        entropy_empty = mls.layer_connectivity_entropy(self.test_network, 'L_empty')
+        self.assertEqual(entropy_empty, 0.0)
+    
+    @skip_if_no_deps
+    def test_inter_layer_dependence_entropy(self):
+        """Test inter-layer dependence entropy."""
+        # Test various layer pairs
+        entropy_l1_l2 = mls.inter_layer_dependence_entropy(
+            self.test_network, 'L1', 'L2'
+        )
+        entropy_l2_l3 = mls.inter_layer_dependence_entropy(
+            self.test_network, 'L2', 'L3'
+        )
+        
+        # Should be non-negative
+        self.assertTrue(entropy_l1_l2 >= 0)
+        self.assertTrue(entropy_l2_l3 >= 0)
+        
+        # Test symmetric property
+        entropy_l2_l1 = mls.inter_layer_dependence_entropy(
+            self.test_network, 'L2', 'L1'
+        )
+        self.assertAlmostEqual(entropy_l1_l2, entropy_l2_l1, places=6)
+        
+        # Test with layers that have no inter-layer edges
+        network = multinet.multi_layer_network(directed=False)
+        network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['C', 'L2', 'D', 'L2', 1]
+        ], input_type='list')
+        entropy_no_coupling = mls.inter_layer_dependence_entropy(network, 'L1', 'L2')
+        self.assertEqual(entropy_no_coupling, 0.0)
+    
+    @skip_if_no_deps
+    def test_cross_layer_redundancy_entropy(self):
+        """Test cross-layer redundancy entropy."""
+        entropy = mls.cross_layer_redundancy_entropy(self.test_network)
+        
+        # Should be non-negative
+        self.assertTrue(entropy >= 0)
+        
+        # Test network with only one layer
+        single_layer_network = multinet.multi_layer_network(directed=False)
+        single_layer_network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1]
+        ], input_type='list')
+        entropy_single = mls.cross_layer_redundancy_entropy(single_layer_network)
+        self.assertEqual(entropy_single, 0.0)
+        
+        # Test network with complete overlap
+        overlap_network = multinet.multi_layer_network(directed=False)
+        overlap_network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['A', 'L2', 'B', 'L2', 1],
+        ], input_type='list')
+        entropy_overlap = mls.cross_layer_redundancy_entropy(overlap_network)
+        self.assertTrue(entropy_overlap >= 0)
+    
+    @skip_if_no_deps
+    def test_cross_layer_mutual_information(self):
+        """Test cross-layer mutual information."""
+        # Test between different layer pairs
+        mi_l1_l2 = mls.cross_layer_mutual_information(
+            self.test_network, 'L1', 'L2', bins=5
+        )
+        mi_l1_l3 = mls.cross_layer_mutual_information(
+            self.test_network, 'L1', 'L3', bins=5
+        )
+        
+        # MI should be non-negative
+        self.assertTrue(mi_l1_l2 >= 0)
+        self.assertTrue(mi_l1_l3 >= 0)
+        
+        # Test symmetric property
+        mi_l2_l1 = mls.cross_layer_mutual_information(
+            self.test_network, 'L2', 'L1', bins=5
+        )
+        self.assertAlmostEqual(mi_l1_l2, mi_l2_l1, places=5)
+        
+        # Test with layers having few common nodes
+        network = multinet.multi_layer_network(directed=False)
+        network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['C', 'L2', 'D', 'L2', 1]
+        ], input_type='list')
+        mi_no_common = mls.cross_layer_mutual_information(network, 'L1', 'L2')
+        self.assertEqual(mi_no_common, 0.0)
+        
+        # Test with uniform degrees (no information)
+        uniform_network = multinet.multi_layer_network(directed=False)
+        uniform_network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['C', 'L1', 'D', 'L1', 1],
+            ['A', 'L2', 'B', 'L2', 1],
+            ['C', 'L2', 'D', 'L2', 1],
+        ], input_type='list')
+        mi_uniform = mls.cross_layer_mutual_information(uniform_network, 'L1', 'L2')
+        self.assertEqual(mi_uniform, 0.0)
+    
+    @skip_if_no_deps
+    def test_layer_influence_centrality_coupling(self):
+        """Test layer influence centrality with coupling method."""
+        # Test coupling-based influence for each layer
+        influence_l1 = mls.layer_influence_centrality(
+            self.test_network, 'L1', method='coupling'
+        )
+        influence_l2 = mls.layer_influence_centrality(
+            self.test_network, 'L2', method='coupling'
+        )
+        influence_l3 = mls.layer_influence_centrality(
+            self.test_network, 'L3', method='coupling'
+        )
+        
+        # All influences should be non-negative
+        self.assertTrue(influence_l1 >= 0)
+        self.assertTrue(influence_l2 >= 0)
+        self.assertTrue(influence_l3 >= 0)
+        
+        # L1 and L2 have more inter-layer connections
+        self.assertGreater(influence_l1, 0)
+        self.assertGreater(influence_l2, 0)
+        
+        # Test single layer network
+        single_layer = multinet.multi_layer_network(directed=False)
+        single_layer.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        influence_single = mls.layer_influence_centrality(
+            single_layer, 'L1', method='coupling'
+        )
+        self.assertEqual(influence_single, 0.0)
+    
+    @skip_if_no_deps
+    def test_layer_influence_centrality_flow(self):
+        """Test layer influence centrality with flow method."""
+        influence_flow = mls.layer_influence_centrality(
+            self.test_network, 'L1', method='flow', sample_size=50
+        )
+        
+        # Flow influence should be non-negative
+        self.assertTrue(influence_flow >= 0)
+        
+        # Should be a probability (between 0 and 1)
+        self.assertTrue(influence_flow <= 1.0)
+    
+    @skip_if_no_deps
+    def test_layer_influence_centrality_invalid_method(self):
+        """Test layer influence centrality with invalid method."""
+        with self.assertRaises(ValueError):
+            mls.layer_influence_centrality(
+                self.test_network, 'L1', method='invalid_method'
+            )
+    
+    @skip_if_no_deps
+    def test_multilayer_betweenness_surface(self):
+        """Test multilayer betweenness surface calculation."""
+        surface, (nodes, layers) = mls.multilayer_betweenness_surface(
+            self.test_network, normalized=True
+        )
+        
+        # Should return a 2D array
+        self.assertIsInstance(surface, np.ndarray)
+        self.assertEqual(len(surface.shape), 2)
+        
+        # Dimensions should match nodes and layers
+        self.assertEqual(surface.shape[0], len(nodes))
+        self.assertEqual(surface.shape[1], len(layers))
+        
+        # All values should be non-negative
+        self.assertTrue(np.all(surface >= 0))
+        
+        # Node and layer lists should not be empty
+        self.assertGreater(len(nodes), 0)
+        self.assertGreater(len(layers), 0)
+        
+        # Test with empty network
+        empty_network = multinet.multi_layer_network(directed=False)
+        surface_empty, (nodes_empty, layers_empty) = mls.multilayer_betweenness_surface(
+            empty_network
+        )
+        self.assertEqual(len(nodes_empty), 0)
+        self.assertEqual(len(layers_empty), 0)
+    
+    @skip_if_no_deps
+    def test_interlayer_degree_correlation_matrix(self):
+        """Test inter-layer degree correlation matrix."""
+        corr_matrix, layers = mls.interlayer_degree_correlation_matrix(
+            self.test_network
+        )
+        
+        # Should return a square matrix
+        self.assertIsInstance(corr_matrix, np.ndarray)
+        self.assertEqual(len(corr_matrix.shape), 2)
+        self.assertEqual(corr_matrix.shape[0], corr_matrix.shape[1])
+        
+        # Dimensions should match number of layers
+        self.assertEqual(corr_matrix.shape[0], len(layers))
+        self.assertEqual(len(layers), 3)
+        
+        # Diagonal should be all 1.0 (self-correlation)
+        for i in range(len(layers)):
+            self.assertAlmostEqual(corr_matrix[i, i], 1.0, places=6)
+        
+        # Matrix should be symmetric
+        for i in range(len(layers)):
+            for j in range(len(layers)):
+                self.assertAlmostEqual(
+                    corr_matrix[i, j], corr_matrix[j, i], places=6
+                )
+        
+        # All correlations should be in [-1, 1]
+        self.assertTrue(np.all(corr_matrix >= -1.0))
+        self.assertTrue(np.all(corr_matrix <= 1.0))
+        
+        # Test with single layer
+        single_layer = multinet.multi_layer_network(directed=False)
+        single_layer.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
+        corr_single, layers_single = mls.interlayer_degree_correlation_matrix(
+            single_layer
+        )
+        self.assertEqual(corr_single.shape, (1, 1))
+        self.assertEqual(corr_single[0, 0], 1.0)
+
+
+class TestNewMetricsPropertyBased(unittest.TestCase):
+    """Property-based tests for new metrics."""
+    
+    def setUp(self):
+        """Set up for property tests."""
+        if not DEPENDENCIES_AVAILABLE:
+            self.skipTest("Dependencies not available")
+    
+    @skip_if_no_deps
+    def test_entropy_properties(self):
+        """Test mathematical properties of entropy measures."""
+        # Create a network with uniform edge distribution
+        uniform_network = multinet.multi_layer_network(directed=False)
+        for layer in ['L1', 'L2', 'L3']:
+            uniform_network.add_edges([
+                ['A', layer, 'B', layer, 1],
+                ['B', layer, 'C', layer, 1],
+            ], input_type='list')
+        
+        # Entropy of multiplexity should be close to log2(3)
+        entropy = mls.entropy_of_multiplexity(uniform_network)
+        expected_max = np.log2(3)
+        self.assertAlmostEqual(entropy, expected_max, places=1)
+    
+    @skip_if_no_deps
+    def test_mutual_information_symmetry(self):
+        """Test that mutual information is symmetric."""
+        network = multinet.multi_layer_network(directed=False)
+        network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['B', 'L1', 'C', 'L1', 1],
+            ['A', 'L2', 'B', 'L2', 1],
+            ['B', 'L2', 'C', 'L2', 1],
+        ], input_type='list')
+        
+        mi_12 = mls.cross_layer_mutual_information(network, 'L1', 'L2')
+        mi_21 = mls.cross_layer_mutual_information(network, 'L2', 'L1')
+        
+        self.assertAlmostEqual(mi_12, mi_21, places=6)
+    
+    @skip_if_no_deps
+    def test_correlation_matrix_symmetry(self):
+        """Test that correlation matrix is symmetric."""
+        network = multinet.multi_layer_network(directed=False)
+        for layer in ['L1', 'L2', 'L3']:
+            network.add_edges([
+                ['A', layer, 'B', layer, 1],
+                ['B', layer, 'C', layer, 1],
+            ], input_type='list')
+        
+        corr_matrix, _ = mls.interlayer_degree_correlation_matrix(network)
+        
+        # Check symmetry
+        self.assertTrue(np.allclose(corr_matrix, corr_matrix.T))
+    
+    @skip_if_no_deps
+    def test_betweenness_surface_normalization(self):
+        """Test that normalized betweenness surface has values in [0, 1]."""
+        network = multinet.multi_layer_network(directed=False)
+        network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['B', 'L1', 'C', 'L1', 1],
+            ['A', 'L2', 'C', 'L2', 1],
+        ], input_type='list')
+        
+        surface, _ = mls.multilayer_betweenness_surface(network, normalized=True)
+        
+        # All values should be in [0, 1] for normalized betweenness
+        self.assertTrue(np.all(surface >= 0))
+        self.assertTrue(np.all(surface <= 1))
+
+
 if __name__ == '__main__':
     unittest.main()
