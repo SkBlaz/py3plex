@@ -4,6 +4,38 @@ GUI Testing Guide
 
 Complete testing guide for the Py3plex GUI, including automated CI tests and manual validation.
 
+Visual Interface Preview
+========================
+
+The Py3plex GUI consists of several key pages that work together for network analysis:
+
+.. image:: ../example_images/gui_load_data.png
+   :width: 600px
+   :alt: Load Data Interface
+   :align: center
+
+*Load Data Page - Upload and parse network files*
+
+|
+
+.. image:: ../example_images/gui_visualize.png
+   :width: 600px
+   :alt: Visualization Interface
+   :align: center
+
+*Visualize Page - Interactive network view with layer controls*
+
+|
+
+.. image:: ../example_images/gui_analyze.png
+   :width: 600px
+   :alt: Analysis Interface
+   :align: center
+
+*Analyze Page - Run jobs and monitor progress*
+
+|
+
 Automated Testing (CI)
 ======================
 
@@ -129,6 +161,15 @@ Flower Dashboard
 Open browser to ``http://localhost:5555``
 
 **Expected**: Celery Flower dashboard loads showing workers.
+
+.. image:: ../example_images/gui_flower_dashboard.png
+   :width: 700px
+   :alt: Flower Dashboard
+   :align: center
+
+*Flower monitoring dashboard showing task history and worker status*
+
+|
 
 Test 2: Upload Network
 ----------------------

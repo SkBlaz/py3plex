@@ -212,6 +212,38 @@ Directory Structure
 Component Responsibilities
 ==========================
 
+Visual Component Reference
+--------------------------
+
+The architecture components are realized in the following user interface pages:
+
+.. image:: ../example_images/gui_load_data.png
+   :width: 600px
+   :alt: Load Data Page
+   :align: center
+
+*Figure 1: Frontend - Load Data page utilizing the IO service*
+
+|
+
+.. image:: ../example_images/gui_analyze.png
+   :width: 600px
+   :alt: Analysis Page
+   :align: center
+
+*Figure 2: Job orchestration - Analysis page with Celery task execution*
+
+|
+
+.. image:: ../example_images/gui_flower_dashboard.png
+   :width: 600px
+   :alt: Flower Dashboard
+   :align: center
+
+*Figure 3: Worker monitoring - Flower dashboard showing task queue and execution*
+
+|
+
 Frontend
 --------
 

@@ -10,6 +10,20 @@ A production-ready web-based GUI for **py3plex** multilayer network analysis, ru
 .. image:: https://img.shields.io/badge/docker-compose-blue
    :alt: Docker
 
+Visual Overview
+===============
+
+The Py3plex GUI provides an intuitive web interface for multilayer network analysis. Below are screenshots of the main interface pages:
+
+.. image:: ../example_images/gui_load_data.png
+   :width: 800px
+   :alt: Load Data Page
+   :align: center
+
+*Figure 1: Load Data page for uploading network files in various formats*
+
+|
+
 Quick Start
 ===========
 
@@ -102,6 +116,17 @@ Data Loading
 Visualization
 -------------
 
+.. image:: ../example_images/gui_visualize.png
+   :width: 800px
+   :alt: Visualization Page
+   :align: center
+
+*Figure 2: Network visualization with layer controls and node inspection panel*
+
+|
+
+**Features:**
+
 - Layer-centric view
 - Interactive node/edge inspection
 - Configurable layouts
@@ -109,6 +134,17 @@ Visualization
 
 Analysis (Async via Celery)
 ---------------------------
+
+.. image:: ../example_images/gui_analyze.png
+   :width: 800px
+   :alt: Analysis Page
+   :align: center
+
+*Figure 3: Analysis page with job controls and real-time progress tracking*
+
+|
+
+**Available Analysis Tools:**
 
 - **Layouts**: Spring, Kamada-Kawai, Circular, Random
 - **Centrality**: Degree, Betweenness, Closeness, Eigenvector, PageRank
@@ -118,6 +154,17 @@ Analysis (Async via Celery)
 
 Export
 ------
+
+.. image:: ../example_images/gui_export.png
+   :width: 800px
+   :alt: Export Page
+   :align: center
+
+*Figure 4: Export page for saving analysis results and workspace bundles*
+
+|
+
+**Export Options:**
 
 - CSV summaries (centrality, communities)
 - JSON position data
@@ -137,6 +184,28 @@ Save and restore complete analysis sessions:
     # - Centrality results
     # - Community assignments
     # - UI view state
+
+Job Monitoring
+--------------
+
+The GUI includes Flower dashboard for real-time monitoring of background jobs:
+
+.. image:: ../example_images/gui_flower_dashboard.png
+   :width: 800px
+   :alt: Flower Dashboard
+   :align: center
+
+*Figure 5: Flower dashboard showing task history and worker status*
+
+|
+
+**Monitoring Features:**
+
+- Track task execution in real-time
+- View worker status and performance
+- Inspect task history and results
+- Monitor task queue and completion rates
+- Access at http://localhost:5555 when running
 
 Development Guide
 =================
