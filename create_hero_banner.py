@@ -3,7 +3,7 @@ Create a professional hero banner for the Py3plex README.
 
 This script creates a modern, polished hero banner (1200x300 px) with:
 - Left side: Text block with gradient background and professional typography
-- Right side: Network visualization with sophisticated overlay effects
+- Right side: Mosaic of network visualizations showing diverse capabilities
 
 The banner uses a premium design with gradients, shadows, and accent colors.
 """
@@ -64,9 +64,82 @@ def add_glow_effect(draw, position, text, font, color, glow_color, glow_radius=2
     draw.text(position, text, fill=color, font=font)
 
 
+def create_mosaic(image_paths, mosaic_width, mosaic_height, grid_rows=2, grid_cols=2):
+    """
+    Create a mosaic of multiple images arranged in a grid.
+
+    Args:
+        image_paths: List of paths to images to include in mosaic
+        mosaic_width: Width of the resulting mosaic
+        mosaic_height: Height of the resulting mosaic
+        grid_rows: Number of rows in the grid
+        grid_cols: Number of columns in the grid
+
+    Returns:
+        PIL Image object containing the mosaic
+    """
+    # Create blank canvas for mosaic
+    mosaic = Image.new("RGB", (mosaic_width, mosaic_height), GRADIENT_END)
+
+    # Calculate cell dimensions
+    cell_width = mosaic_width // grid_cols
+    cell_height = mosaic_height // grid_rows
+
+    # Spacing between images (small gap)
+    gap = 2
+
+    # Place images in grid
+    img_index = 0
+    for row in range(grid_rows):
+        for col in range(grid_cols):
+            if img_index >= len(image_paths):
+                break
+
+            try:
+                # Load and resize image to fit cell
+                img = Image.open(image_paths[img_index])
+
+                # Calculate target size (with gap consideration)
+                target_width = cell_width - gap * 2
+                target_height = cell_height - gap * 2
+
+                # Resize while maintaining aspect ratio
+                img_aspect = img.width / img.height
+                cell_aspect = target_width / target_height
+
+                if img_aspect > cell_aspect:
+                    # Image is wider - fit to width
+                    new_width = target_width
+                    new_height = int(target_width / img_aspect)
+                else:
+                    # Image is taller - fit to height
+                    new_height = target_height
+                    new_width = int(target_height * img_aspect)
+
+                # Resize with high quality
+                try:
+                    img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                except AttributeError:
+                    img = img.resize((new_width, new_height), Image.LANCZOS)
+
+                # Center the image in the cell
+                x_offset = col * cell_width + (cell_width - new_width) // 2
+                y_offset = row * cell_height + (cell_height - new_height) // 2
+
+                # Paste the image
+                mosaic.paste(img, (x_offset, y_offset))
+
+            except Exception as e:
+                print(f"Warning: Could not load {image_paths[img_index]}: {e}")
+
+            img_index += 1
+
+    return mosaic
+
+
 def create_hero_banner(
     output_path="example_images/py3plex_hero_banner.png",
-    source_image="example_images/multilayer.png",
+    source_images=None,
     width=1200,
     height=300,
 ):
@@ -75,56 +148,42 @@ def create_hero_banner(
 
     Args:
         output_path: Path where the banner will be saved
-        source_image: Path to the network visualization to use
+        source_images: List of paths to network visualizations for mosaic (default: predefined selection)
         width: Banner width in pixels (default: 1200)
         height: Banner height in pixels (default: 300)
     """
+
+    # Default selection of diverse network visualizations for mosaic
+    if source_images is None:
+        source_images = [
+            "example_images/multilayer.png",  # Diagonal plot with inter-links
+            "example_images/multilayer_radial_compact.png",  # Radial layout
+            "example_images/communities.png",  # Community detection
+            "example_images/multilayer_flow.png",  # Flow visualization
+        ]
 
     # Create gradient background
     banner = create_gradient_background(width, height, GRADIENT_START, GRADIENT_END)
     draw = ImageDraw.Draw(banner)
 
-    # --- Right side: Network visualization ---
-    # Load the source network image
+    # --- Right side: Network visualization mosaic ---
+    # Create mosaic from multiple network images
     try:
-        network_img = Image.open(source_image)
-        print(f"✓ Loaded source image: {source_image} ({network_img.size})")
-
         # Calculate dimensions for the right side using layout constant
         right_width = int(width * RIGHT_SECTION_RATIO)
         right_x = width - right_width
 
-        # Resize and crop the network image to fit the right side
-        # Maintain aspect ratio and center crop
-        aspect_ratio = network_img.width / network_img.height
-        if aspect_ratio > (right_width / height):
-            # Image is wider - fit to height
-            new_height = height
-            new_width = int(height * aspect_ratio)
-        else:
-            # Image is taller - fit to width
-            new_width = right_width
-            new_height = int(right_width / aspect_ratio)
+        print(f"✓ Creating mosaic from {len(source_images)} images...")
+        # Create mosaic (2x2 grid by default)
+        mosaic_img = create_mosaic(
+            source_images, right_width, height, grid_rows=2, grid_cols=2
+        )
 
-        # Use LANCZOS resampling (compatible with older Pillow versions)
-        try:
-            network_img = network_img.resize(
-                (new_width, new_height), Image.Resampling.LANCZOS
-            )
-        except AttributeError:
-            # Fallback for older Pillow versions
-            network_img = network_img.resize((new_width, new_height), Image.LANCZOS)
+        # Apply a subtle blur for a sophisticated look
+        mosaic_img = mosaic_img.filter(ImageFilter.GaussianBlur(radius=BLUR_RADIUS))
 
-        # Center crop to exact dimensions
-        left = (new_width - right_width) // 2
-        top = (new_height - height) // 2
-        network_img = network_img.crop((left, top, left + right_width, top + height))
-
-        # Apply a moderate blur for a sophisticated look
-        network_img = network_img.filter(ImageFilter.GaussianBlur(radius=BLUR_RADIUS))
-
-        # Paste the network image on the right side
-        banner.paste(network_img, (right_x, 0))
+        # Paste the mosaic on the right side
+        banner.paste(mosaic_img, (right_x, 0))
 
         # Add a sophisticated gradient overlay from left to right
         # This creates depth and ensures text is readable
@@ -149,10 +208,10 @@ def create_hero_banner(
         banner = banner_rgba.convert("RGB")
         draw = ImageDraw.Draw(banner)
 
-        print("✓ Network visualization applied to right side")
+        print("✓ Mosaic visualization applied to right side")
 
     except Exception as e:
-        print(f"Warning: Could not load source image: {e}")
+        print(f"Warning: Could not create mosaic: {e}")
         print("Continuing with text-only banner...")
 
     # --- Left side: Professional text block ---
@@ -277,15 +336,34 @@ def main():
 
     # Configuration
     # You can change these paths if needed:
-    source_image = "example_images/multilayer.png"
+    source_images = [
+        "example_images/multilayer.png",  # Diagonal plot with inter-links
+        "example_images/multilayer_radial_compact.png",  # Radial layout
+        "example_images/communities.png",  # Community detection
+        "example_images/multilayer_flow.png",  # Flow visualization
+    ]
     output_path = "example_images/py3plex_hero_banner.png"
 
-    # Alternative source images you can try:
-    # - "example_images/multilayer_radial_compact.png" (radial/circular layout)
-    # - "example_images/multilayer_flow.png" (colorful flow visualization)
-    # - "example_images/multilayer_sankey_diagram.png" (sankey style)
+    # Alternative image selections you can try:
+    # Option 1: Different visualization types
+    # source_images = [
+    #     "example_images/multilayer.png",
+    #     "example_images/multilayer_sankey_diagram.png",
+    #     "example_images/embedding.png",
+    #     "example_images/hairball.png",
+    # ]
+    #
+    # Option 2: Focus on multilayer layouts
+    # source_images = [
+    #     "example_images/multilayer_edge_projection_spring.png",
+    #     "example_images/multilayer_radial_with_inter.png",
+    #     "example_images/multilayer_supra_heatmap_inter.png",
+    #     "example_images/multilayer_small_multiples_shared.png",
+    # ]
 
-    print(f"Source image: {source_image}")
+    print(f"Source images: {len(source_images)} images for mosaic")
+    for img in source_images:
+        print(f"  - {img}")
     print(f"Output path: {output_path}")
     print()
 
@@ -293,7 +371,7 @@ def main():
     try:
         create_hero_banner(
             output_path=output_path,
-            source_image=source_image,
+            source_images=source_images,
             width=1200,
             height=300,
         )
