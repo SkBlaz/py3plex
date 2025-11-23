@@ -240,6 +240,48 @@ Benchmark results are automatically collected in CI and made available as workfl
 
 We welcome contributions! See the [online documentation](https://skblaz.github.io/py3plex/) for development guidelines, testing procedures, and code quality standards.
 
+## Building Documentation
+
+Py3plex uses Sphinx to generate comprehensive documentation in both HTML and PDF formats.
+
+### Building HTML Documentation
+
+```bash
+make docs
+# Output: docfiles/_build/html/index.html
+```
+
+Or directly with Sphinx:
+```bash
+cd docfiles
+sphinx-build -b html . _build/html
+```
+
+### Generating PDF Documentation
+
+The documentation can be exported as a PDF file for offline reading and distribution.
+
+**Using Make:**
+```bash
+make docs-pdf
+# Output: docs/py3plex_documentation.pdf
+```
+
+**Using the standalone script:**
+```bash
+cd docfiles
+./generate_pdf.sh
+# Output: ../docs/py3plex_documentation.pdf
+```
+
+**Requirements:**
+- Sphinx and extensions: `pip install sphinx sphinx-rtd-theme`
+- LaTeX distribution (Ubuntu/Debian): `sudo apt-get install texlive-latex-base texlive-latex-extra latexmk`
+- LaTeX distribution (macOS): `brew install --cask mactex`
+
+The PDF is automatically generated and committed by the GitHub Actions workflow on pushes to the main branch.
+
+**Download the latest PDF:** [py3plex_documentation.pdf](docs/py3plex_documentation.pdf)
 
 # Citations
 ```

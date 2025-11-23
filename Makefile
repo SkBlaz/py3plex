@@ -170,13 +170,27 @@ docs: ## Build Sphinx documentation
 	@$(VENV_BIN)/sphinx-build -b html docfiles docfiles/_build/html
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ Documentation built! Open docfiles/_build/html/index.html$(COLOR_RESET)\n"
 
-docs-pdf: ## Generate PDF from master documentation
+docs-pdf: ## Generate PDF documentation using Sphinx
 	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Generating PDF documentation...$(COLOR_RESET)\n"
-	@if [ ! -f "docs/MASTER_DOCUMENTATION.md" ]; then \
-		printf "$(COLOR_RED)✗ Master documentation not found.$(COLOR_RESET)\n"; \
+	@if [ ! -d "$(VENV)" ]; then \
+		printf "$(COLOR_RED)✗ Virtual environment not found. Run 'make setup' first.$(COLOR_RESET)\n"; \
 		exit 1; \
 	fi
-	@cd docs && ./generate_pdf.sh MASTER_DOCUMENTATION.md py3plex_documentation.pdf
+	@if [ ! -d "docfiles" ]; then \
+		printf "$(COLOR_RED)✗ Documentation source directory 'docfiles' not found.$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(COLOR_GREEN)✓ Building LaTeX from Sphinx documentation...$(COLOR_RESET)\n"
+	@$(VENV_BIN)/sphinx-build -b latex docfiles docfiles/_build/latex --keep-going
+	@printf "$(COLOR_GREEN)✓ Compiling PDF with latexmk...$(COLOR_RESET)\n"
+	@cd docfiles/_build/latex && latexmk -pdf -interaction=nonstopmode py3plex.tex || true
+	@if [ ! -f "docfiles/_build/latex/py3plex.pdf" ]; then \
+		printf "$(COLOR_RED)✗ PDF generation failed - py3plex.pdf not created.$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(COLOR_GREEN)✓ Copying PDF to docs directory...$(COLOR_RESET)\n"
+	@mkdir -p docs
+	@cp docfiles/_build/latex/py3plex.pdf docs/py3plex_documentation.pdf
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ PDF generated: docs/py3plex_documentation.pdf$(COLOR_RESET)\n"
 
 docs-check: ## Check API documentation consistency
