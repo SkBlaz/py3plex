@@ -97,3 +97,5 @@ examples/output/
 *_results/
 workflow_results/
 comparison_results/
+network.gpickle
+network.txt
