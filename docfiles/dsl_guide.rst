@@ -481,7 +481,7 @@ Find and rank important nodes using multiple centrality measures::
         centralities = result['computed']['betweenness_centrality']
         sorted_nodes = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
         
-        print("\\nTop nodes by betweenness centrality:")
+        print("\nTop nodes by betweenness centrality:")
         for node, centrality in sorted_nodes[:5]:
             print(f"  {node}: {centrality:.4f}")
 
@@ -523,7 +523,7 @@ Compare network structure across different layers::
             }
     
     # Print comparison
-    print("\\nLayer Comparison:")
+    print("\nLayer Comparison:")
     print(f"{'Layer':<12} {'Nodes':<8} {'Avg Centrality':<16} {'Max Centrality':<16}")
     print("-" * 55)
     for layer, stats in layer_stats.items():
