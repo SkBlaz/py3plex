@@ -1,5 +1,7 @@
 # *Py3Plex* - a library for analysis and visualization of multilayer networks
 
+<img src="https://github.com/user-attachments/assets/50f9de60-12ed-4559-a57f-17e36b5ebcf0">
+
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
