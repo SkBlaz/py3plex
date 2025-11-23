@@ -55,7 +55,7 @@ For a containerized environment with all dependencies pre-installed, use Docker:
 * Consistent environment across different systems
 * Isolated from system Python installation
 
-See :doc:`tutorials/docker_usage` for complete Docker documentation including:
+See :doc:`../deployment/cli_and_docker` for complete Docker documentation including:
 
 * Building and running the container
 * Working with data files via volume mounts
@@ -105,7 +105,7 @@ Install pyarrow for high-performance I/O with Arrow/Parquet formats:
     pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[arrow]
 
 Arrow format provides 2-3x faster read/write operations and better compression compared to JSON.
-See :doc:`io_serialization` for details on using Arrow format.
+See :doc:`../user_guide/io_and_formats` for details on using Arrow format.
 
 Multiple Extras
 ~~~~~~~~~~~~~~~
@@ -391,9 +391,9 @@ Next Steps
 
 After installation, proceed to:
 
-* :doc:`quickstart` - Quick introduction to basic features
-* :doc:`10min_tutorial` - Comprehensive 10-minute tutorial
-* :doc:`basic_usage` - Detailed usage guide
+* :doc:`quickstart_5min` - Quick 5-minute introduction
+* :doc:`tutorial_10min` - Comprehensive 10-minute tutorial
+* :doc:`../user_guide/networks` - Detailed usage guide
 
 Getting Help
 ------------
