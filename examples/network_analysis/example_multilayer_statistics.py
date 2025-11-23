@@ -2,7 +2,7 @@
 """
 Example script demonstrating multilayer network statistics.
 
-This script showcases all 17 multilayer network statistics implemented
+This script showcases 25 multilayer network statistics implemented
 in py3plex.algorithms.statistics.multilayer_statistics.
 
 Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
@@ -167,8 +167,53 @@ try:
     Q = mls.multilayer_modularity(network, communities)
     print(f"    - Q = {Q:.3f}")
 
+    # 19. Layer Connectivity Entropy
+    print("\n19. Layer Connectivity Entropy (H_c)")
+    print("    Heterogeneity of degree distribution within layers:")
+    for layer in ['facebook', 'twitter', 'linkedin']:
+        h_c = mls.layer_connectivity_entropy(network, layer)
+        print(f"    - {layer}: {h_c:.3f} bits")
+
+    # 20. Inter-layer Dependence Entropy
+    print("\n20. Inter-layer Dependence Entropy (H_dep)")
+    print("    Coupling pattern diversity:")
+    h_dep = mls.inter_layer_dependence_entropy(network, 'facebook', 'twitter')
+    print(f"    - facebook ↔ twitter: {h_dep:.3f} bits")
+
+    # 21. Cross-layer Redundancy Entropy
+    print("\n21. Cross-layer Redundancy Entropy (H_r)")
+    h_r = mls.cross_layer_redundancy_entropy(network)
+    print(f"    - Structural overlap diversity: {h_r:.3f} bits")
+
+    # 22. Cross-layer Mutual Information
+    print("\n22. Cross-layer Mutual Information (I)")
+    print("    Statistical dependence between layer degree distributions:")
+    mi = mls.cross_layer_mutual_information(network, 'facebook', 'twitter', bins=5)
+    print(f"    - I(facebook; twitter): {mi:.3f} bits")
+
+    # 23. Layer Influence Centrality
+    print("\n23. Layer Influence Centrality (I_layer)")
+    print("    Which layers influence others:")
+    for layer in ['facebook', 'twitter', 'linkedin']:
+        influence = mls.layer_influence_centrality(network, layer, method='coupling')
+        print(f"    - {layer}: {influence:.3f}")
+
+    # 24. Multilayer Betweenness Surface
+    print("\n24. Multilayer Betweenness Surface")
+    print("    Betweenness centrality matrix (nodes × layers):")
+    surface, (nodes, layers) = mls.multilayer_betweenness_surface(network)
+    print(f"    - Surface shape: {surface.shape}")
+    print(f"    - Mean betweenness: {surface.mean():.3f}")
+
+    # 25. Inter-layer Degree Correlation Matrix
+    print("\n25. Inter-layer Degree Correlation Matrix")
+    print("    Pearson correlations between layer degree patterns:")
+    corr_matrix, layers_list = mls.interlayer_degree_correlation_matrix(network)
+    print(f"    - Matrix shape: {corr_matrix.shape}")
+    print(f"    - facebook-twitter correlation: {corr_matrix[0, 1]:.3f}")
+
     print("\n" + "=" * 70)
-    print("All 17 multilayer statistics computed successfully!")
+    print("All 25 multilayer statistics computed successfully!")
     print("=" * 70)
 
 except ImportError as e:

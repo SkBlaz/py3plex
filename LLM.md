@@ -4,6 +4,68 @@
 
 This file tracks development tasks and improvements for py3plex, particularly for LLM-assisted development.
 
+## Recent Updates (2025-11-23)
+
+### Advanced Multilayer Metrics Implementation (v0.96 - 2025-11-23)
+✅ **Implemented entropy-based, information-theoretic, and influence metrics**
+- Added 7 new advanced metrics for multilayer network analysis:
+  - `layer_connectivity_entropy`: Shannon entropy of degree distribution within layers
+  - `inter_layer_dependence_entropy`: Heterogeneity of inter-layer coupling patterns
+  - `cross_layer_redundancy_entropy`: Diversity of structural overlap across layer pairs
+  - `cross_layer_mutual_information`: Statistical dependence between degree distributions
+  - `layer_influence_centrality`: Layer influence via coupling strength or flow simulations
+  - `multilayer_betweenness_surface`: Betweenness centrality as 2D nodes × layers matrix
+  - `interlayer_degree_correlation_matrix`: Pearson correlations of degrees across layers
+- Implemented comprehensive test suite (43 tests, 100% passing)
+- Created detailed example demonstrating all new metrics
+- Added extensive RST documentation with mathematical formulas and use cases
+
+**Benefits:**
+- Entropy measures quantify structural complexity and heterogeneity
+- Mutual information reveals functional layer dependencies
+- Influence centrality identifies critical layers for interventions
+- Betweenness surface visualizes node-level centrality patterns across layers
+- Correlation matrix analyzes layer similarity and redundancy
+
+**New Files:**
+- Enhanced `py3plex/algorithms/statistics/multilayer_statistics.py` (+500 lines)
+- Enhanced `tests/test_multilayer_statistics.py` (+300 lines, 2 new test classes)
+- `examples/network_analysis/example_advanced_multilayer_metrics.py` - Comprehensive demo
+- `docfiles/advanced_multilayer_metrics.rst` - Complete documentation with examples
+
+**Example Usage:**
+```python
+from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+# Entropy-based complexity
+entropy = mls.layer_connectivity_entropy(network, 'L1')
+redundancy = mls.cross_layer_redundancy_entropy(network)
+
+# Information-theoretic dependency
+mi = mls.cross_layer_mutual_information(network, 'L1', 'L2', bins=10)
+
+# Layer influence analysis
+influence = mls.layer_influence_centrality(network, 'L1', method='coupling')
+
+# Visualization-ready outputs
+surface, (nodes, layers) = mls.multilayer_betweenness_surface(network)
+corr_matrix, layers = mls.interlayer_degree_correlation_matrix(network)
+```
+
+**Mathematical Foundation:**
+- Shannon entropy for complexity quantification
+- Mutual information for dependency analysis
+- Random walk simulations for flow-based influence
+- NetworkX betweenness extended to multilayer context
+- Pearson correlation for degree relationship analysis
+
+**Property Tests:**
+- Entropy values are non-negative
+- Mutual information is symmetric
+- Correlation matrix is symmetric with diagonal = 1
+- Betweenness surface has correct dimensionality
+- Edge cases handled (empty networks, single layers)
+
 ## Recent Updates (2025-11-22)
 
 ### Pipeline System Implementation (v0.96 - 2025-11-22)

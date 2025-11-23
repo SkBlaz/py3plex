@@ -1246,6 +1246,8 @@ def multiplex_betweenness_centrality(
         De Domenico et al. (2015), "Structural reducibility of multilayer networks"
     """
     G = network.core_network
+    if G is None or len(G) == 0:
+        return {}
     betweenness = nx.betweenness_centrality(G, normalized=normalized, weight=weight)
     return betweenness
 
@@ -1777,6 +1779,546 @@ def multilayer_modularity(
     return mm(network, communities, gamma, omega, weight)
 
 
+def layer_connectivity_entropy(network: Any, layer: str) -> float:
+    """
+    Calculate entropy of layer connectivity (H_connectivity).
+
+    Formula: H_c = -Σᵢ (kᵢ/Σⱼkⱼ) log₂(kᵢ/Σⱼkⱼ)
+
+    Shannon entropy of degree distribution within a layer; measures
+    heterogeneity of node connectivity patterns.
+
+    Variables:
+        kᵢ = degree of node i in the layer
+        Σⱼkⱼ = sum of all degrees (2 * edges for undirected)
+
+    Properties:
+        H_c = 0 when all nodes have the same degree (uniform distribution)
+        H_c is maximized when degree distribution is highly uneven
+
+    Args:
+        network: py3plex multi_layer_network object
+        layer: Layer identifier
+
+    Returns:
+        Entropy value in bits
+
+    Examples:
+        >>> from py3plex.core import multinet
+        >>> network = multinet.multi_layer_network(directed=False)
+        >>> network.add_edges([
+        ...     ['A', 'L1', 'B', 'L1', 1],
+        ...     ['B', 'L1', 'C', 'L1', 1]
+        ... ], input_type='list')
+        >>> entropy = layer_connectivity_entropy(network, 'L1')
+        >>> print(f"Connectivity entropy: {entropy:.3f}")
+
+    Reference:
+        Solé-Ribalta et al. (2013), "Spectral properties of complex networks"
+        Shannon (1948), "A Mathematical Theory of Communication"
+    """
+    # Check if network has any edges
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        return 0.0
+    
+    # Get degree distribution for the layer
+    degree_counts: Dict[Any, int] = {}
+
+    for edge in network.get_edges():
+        (n1, l1), (n2, l2) = edge[0], edge[1]
+        if l1 == l2 == layer:
+            degree_counts[n1] = degree_counts.get(n1, 0) + 1
+            if n1 != n2:  # Don't double count self-loops
+                degree_counts[n2] = degree_counts.get(n2, 0) + 1
+
+    if not degree_counts:
+        return 0.0
+
+    # Calculate total degree
+    total_degree = sum(degree_counts.values())
+
+    if total_degree == 0:
+        return 0.0
+
+    # Calculate entropy
+    entropy = 0.0
+    for degree in degree_counts.values():
+        if degree > 0:
+            p = degree / total_degree
+            entropy -= p * np.log2(p)
+
+    return float(entropy)
+
+
+def inter_layer_dependence_entropy(
+    network: Any, layer_i: str, layer_j: str
+) -> float:
+    """
+    Calculate inter-layer dependence entropy (H_dep).
+
+    Formula: H_dep = -Σₙ pₙ log₂(pₙ), where pₙ is the proportion of inter-layer
+    edges for each node n connecting layers i and j.
+
+    Measures heterogeneity in how nodes couple the two layers; high entropy
+    indicates diverse coupling patterns, low entropy indicates uniform coupling.
+
+    Variables:
+        pₙ = proportion of inter-layer edges incident to node n
+        Total over all nodes connecting the two layers
+
+    Args:
+        network: py3plex multi_layer_network object
+        layer_i: First layer identifier
+        layer_j: Second layer identifier
+
+    Returns:
+        Entropy value in bits
+
+    Examples:
+        >>> entropy = inter_layer_dependence_entropy(network, 'L1', 'L2')
+        >>> print(f"Inter-layer dependence entropy: {entropy:.3f}")
+
+    Reference:
+        De Domenico et al. (2015), "Ranking in interconnected multilayer networks"
+    """
+    # Check if network has any edges
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        return 0.0
+    
+    # Count inter-layer edges per node
+    node_coupling: Dict[Any, int] = {}
+
+    for edge in network.get_edges():
+        (n1, l1), (n2, l2) = edge[0], edge[1]
+        # Inter-layer edges between specified layers
+        if (l1 == layer_i and l2 == layer_j) or (l1 == layer_j and l2 == layer_i):
+            node_coupling[n1] = node_coupling.get(n1, 0) + 1
+            if n1 != n2:
+                node_coupling[n2] = node_coupling.get(n2, 0) + 1
+
+    if not node_coupling:
+        return 0.0
+
+    total_coupling = sum(node_coupling.values())
+
+    if total_coupling == 0:
+        return 0.0
+
+    # Calculate entropy
+    entropy = 0.0
+    for count in node_coupling.values():
+        if count > 0:
+            p = count / total_coupling
+            entropy -= p * np.log2(p)
+
+    return float(entropy)
+
+
+def cross_layer_redundancy_entropy(network: Any) -> float:
+    """
+    Calculate cross-layer redundancy entropy (H_redundancy).
+
+    Formula: H_r = -Σᵢⱼ rᵢⱼ log₂(rᵢⱼ), where rᵢⱼ is the normalized edge overlap
+    between layers i and j.
+
+    Measures diversity in structural redundancy across layer pairs; high entropy
+    indicates varied overlap patterns, low entropy indicates uniform redundancy.
+
+    Variables:
+        rᵢⱼ = edge_overlap(i,j) / Σₐᵦ edge_overlap(α,β)
+        Normalized overlap proportion for each layer pair
+
+    Args:
+        network: py3plex multi_layer_network object
+
+    Returns:
+        Entropy value in bits
+
+    Examples:
+        >>> entropy = cross_layer_redundancy_entropy(network)
+        >>> print(f"Cross-layer redundancy entropy: {entropy:.3f}")
+
+    Reference:
+        Bianconi (2018), "Multilayer Networks: Structure and Function"
+    """
+    # Check if network has any nodes
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        return 0.0
+    
+    # Get all layers
+    all_layers = set()
+    try:
+        for n, layer in network.get_nodes():
+            all_layers.add(layer)
+    except (AttributeError, TypeError):
+        return 0.0
+
+    layers_list = sorted(all_layers)
+
+    if len(layers_list) < 2:
+        return 0.0
+
+    # Calculate edge overlap for all layer pairs
+    overlaps = []
+    for i, layer_i in enumerate(layers_list):
+        for j, layer_j in enumerate(layers_list):
+            if i < j:
+                overlap = edge_overlap(network, layer_i, layer_j)
+                overlaps.append(overlap)
+
+    if not overlaps or sum(overlaps) == 0:
+        return 0.0
+
+    total_overlap = sum(overlaps)
+
+    # Calculate entropy
+    entropy = 0.0
+    for overlap in overlaps:
+        if overlap > 0:
+            p = overlap / total_overlap
+            entropy -= p * np.log2(p)
+
+    return float(entropy)
+
+
+def cross_layer_mutual_information(
+    network: Any,
+    layer_i: str,
+    layer_j: str,
+    bins: int = 10,
+) -> float:
+    """
+    Calculate cross-layer mutual information (I(Lᵢ; Lⱼ)).
+
+    Formula: I(Lᵢ; Lⱼ) = H(Lᵢ) + H(Lⱼ) - H(Lᵢ, Lⱼ)
+
+    Measures statistical dependence between degree distributions in two layers;
+    quantifies how much knowing a node's degree in one layer tells us about
+    its degree in another layer.
+
+    Variables:
+        H(Lᵢ) = entropy of degree distribution in layer i
+        H(Lⱼ) = entropy of degree distribution in layer j
+        H(Lᵢ, Lⱼ) = joint entropy of degree distributions
+
+    Properties:
+        I = 0 when layers are independent
+        I > 0 indicates statistical dependence (higher = stronger)
+        I(Lᵢ; Lⱼ) ≤ min(H(Lᵢ), H(Lⱼ))
+
+    Args:
+        network: py3plex multi_layer_network object
+        layer_i: First layer identifier
+        layer_j: Second layer identifier
+        bins: Number of bins for discretizing degree distributions
+
+    Returns:
+        Mutual information value in bits
+
+    Examples:
+        >>> mi = cross_layer_mutual_information(network, 'L1', 'L2', bins=10)
+        >>> print(f"Mutual information: {mi:.3f} bits")
+
+    Reference:
+        Cover & Thomas (2006), "Elements of Information Theory"
+        De Domenico et al. (2015), "Structural reducibility"
+    """
+    # Get common nodes
+    nodes_i = set()
+    nodes_j = set()
+
+    for n, layer in network.get_nodes():
+        if layer == layer_i:
+            nodes_i.add(n)
+        if layer == layer_j:
+            nodes_j.add(n)
+
+    common_nodes = sorted(nodes_i & nodes_j)
+
+    if len(common_nodes) < 2:
+        return 0.0
+
+    # Get degree vectors for common nodes
+    degrees_i = []
+    degrees_j = []
+
+    for node in common_nodes:
+        deg_vec = degree_vector(network, node)
+        degrees_i.append(deg_vec.get(layer_i, 0))
+        degrees_j.append(deg_vec.get(layer_j, 0))
+
+    # Convert to numpy arrays
+    degrees_i_arr = np.array(degrees_i)
+    degrees_j_arr = np.array(degrees_j)
+
+    # Discretize into bins
+    if np.max(degrees_i_arr) == np.min(degrees_i_arr):
+        # All same degree in layer i
+        return 0.0
+    if np.max(degrees_j_arr) == np.min(degrees_j_arr):
+        # All same degree in layer j
+        return 0.0
+
+    # Create histogram bins
+    bins_i = np.linspace(
+        np.min(degrees_i_arr), np.max(degrees_i_arr) + 1e-10, bins + 1
+    )
+    bins_j = np.linspace(
+        np.min(degrees_j_arr), np.max(degrees_j_arr) + 1e-10, bins + 1
+    )
+
+    # Discretize degrees
+    disc_i = np.digitize(degrees_i_arr, bins_i) - 1
+    disc_j = np.digitize(degrees_j_arr, bins_j) - 1
+
+    # Calculate marginal entropies
+    def calc_entropy(values):
+        _, counts = np.unique(values, return_counts=True)
+        probs = counts / len(values)
+        return -np.sum(probs * np.log2(probs + 1e-10))
+
+    H_i = calc_entropy(disc_i)
+    H_j = calc_entropy(disc_j)
+
+    # Calculate joint entropy
+    joint_values = list(zip(disc_i, disc_j))
+    _, counts = np.unique(joint_values, axis=0, return_counts=True)
+    joint_probs = counts / len(joint_values)
+    H_ij = -np.sum(joint_probs * np.log2(joint_probs + 1e-10))
+
+    # Mutual information
+    mi = H_i + H_j - H_ij
+
+    return float(max(0.0, mi))  # Ensure non-negative due to numerical issues
+
+
+def layer_influence_centrality(
+    network: Any,
+    layer: str,
+    method: str = "coupling",
+    sample_size: int = 100,
+) -> float:
+    """
+    Calculate layer influence centrality (Iᵅ).
+
+    Formula (coupling): Iᵅ = Σᵦ≠ᵅ C^αβ / (L-1)
+    Formula (flow): Iᵅ = Σᵦ≠ᵅ F^αβ / (L-1)
+
+    Quantifies how much a layer influences other layers through inter-layer
+    connections (coupling method) or information flow (flow method).
+
+    Variables:
+        C^αβ = inter-layer coupling strength between layers α and β
+        F^αβ = flow from layer α to layer β (random walk transition probability)
+        L = total number of layers
+
+    Properties:
+        Higher values indicate layers that strongly influence others
+        Useful for identifying critical layers in the multilayer structure
+
+    Args:
+        network: py3plex multi_layer_network object
+        layer: Layer identifier
+        method: 'coupling' for structural influence, 'flow' for dynamic influence
+        sample_size: Number of random walk steps for flow simulation
+
+    Returns:
+        Influence centrality value
+
+    Examples:
+        >>> influence = layer_influence_centrality(network, 'L1', method='coupling')
+        >>> print(f"Layer L1 influence: {influence:.3f}")
+
+    Reference:
+        Cozzo et al. (2013), "Mathematical formulation of multilayer networks"
+        De Domenico et al. (2014), "Identifying modular flows"
+    """
+    # Get all layers
+    all_layers = set()
+    for n, layer_name in network.get_nodes():
+        all_layers.add(layer_name)
+
+    if len(all_layers) < 2:
+        return 0.0
+
+    if method == "coupling":
+        # Coupling-based influence
+        total_coupling = 0.0
+        for other_layer in all_layers:
+            if other_layer != layer:
+                coupling = inter_layer_coupling_strength(network, layer, other_layer)
+                total_coupling += coupling
+
+        return float(total_coupling / (len(all_layers) - 1))
+
+    elif method == "flow":
+        # Flow-based influence using random walk simulation
+        # Build transition matrix on supra-graph
+        G = network.core_network
+
+        if len(G) == 0:
+            return 0.0
+
+        # Get nodes in the target layer
+        layer_nodes = [(n, l) for n, l in G.nodes() if l == layer]
+
+        if not layer_nodes:
+            return 0.0
+
+        # Random walk simulation
+        total_flow = 0.0
+
+        for _ in range(sample_size):
+            # Start from random node in target layer
+            current = layer_nodes[np.random.randint(len(layer_nodes))]
+
+            # Take one step
+            neighbors = list(G.neighbors(current))
+            if neighbors:
+                next_node = neighbors[np.random.randint(len(neighbors))]
+                # Check if we moved to a different layer
+                if next_node[1] != layer:
+                    total_flow += 1.0
+
+        # Normalize by sample size
+        return float(total_flow / sample_size)
+
+    else:
+        raise ValueError(f"Unknown method: {method}. Use 'coupling' or 'flow'.")
+
+
+def multilayer_betweenness_surface(
+    network: Any,
+    normalized: bool = True,
+    weight: Optional[str] = None,
+) -> np.ndarray:
+    """
+    Calculate multilayer betweenness surface (tensor representation).
+
+    Computes betweenness centrality for each node-layer pair and organizes
+    the results as a 2D array (nodes × layers) that can be visualized as
+    a heatmap or surface plot.
+
+    Formula: Surface[i,α] = Bᵢᵅ
+
+    where Bᵢᵅ is the betweenness centrality of node i in layer α.
+
+    Args:
+        network: py3plex multi_layer_network object
+        normalized: Whether to normalize betweenness values
+        weight: Edge weight attribute name (None for unweighted)
+
+    Returns:
+        2D numpy array of shape (num_nodes, num_layers) containing betweenness values.
+        Also returns tuple of (node_labels, layer_labels) for axis labeling.
+
+    Examples:
+        >>> surface, (nodes, layers) = multilayer_betweenness_surface(network)
+        >>> import matplotlib.pyplot as plt
+        >>> plt.imshow(surface, aspect='auto', cmap='viridis')
+        >>> plt.xlabel('Layers')
+        >>> plt.ylabel('Nodes')
+        >>> plt.xticks(range(len(layers)), layers)
+        >>> plt.yticks(range(len(nodes)), nodes)
+        >>> plt.colorbar(label='Betweenness Centrality')
+        >>> plt.title('Multilayer Betweenness Surface')
+        >>> plt.show()
+
+    Reference:
+        De Domenico et al. (2015), "Structural reducibility of multilayer networks"
+    """
+    # Get betweenness for all node-layer pairs
+    betweenness = multiplex_betweenness_centrality(
+        network, normalized=normalized, weight=weight
+    )
+
+    if not betweenness:
+        return np.array([]), ([], [])
+
+    # Extract unique nodes and layers
+    node_layer_pairs = list(betweenness.keys())
+    nodes = sorted(set(nl[0] for nl in node_layer_pairs))
+    layers = sorted(set(nl[1] for nl in node_layer_pairs))
+
+    # Create 2D surface array
+    surface = np.zeros((len(nodes), len(layers)))
+
+    node_to_idx = {node: idx for idx, node in enumerate(nodes)}
+    layer_to_idx = {layer: idx for idx, layer in enumerate(layers)}
+
+    for (node, layer), value in betweenness.items():
+        i = node_to_idx[node]
+        j = layer_to_idx[layer]
+        surface[i, j] = value
+
+    return surface, (nodes, layers)
+
+
+def interlayer_degree_correlation_matrix(network: Any) -> Tuple[np.ndarray, list]:
+    """
+    Calculate inter-layer degree correlation matrix.
+
+    Computes Pearson correlation coefficients for node degrees between all
+    pairs of layers, organized as a symmetric correlation matrix.
+
+    Formula: Matrix[α,β] = r^αβ = corr(k^α, k^β)
+
+    where k^α and k^β are degree vectors for layers α and β over common nodes.
+
+    Properties:
+        - Diagonal elements are 1.0 (self-correlation)
+        - Off-diagonal elements in [-1, 1]
+        - Symmetric matrix
+        - Positive values indicate positive degree correlation
+        - Negative values indicate negative degree correlation
+
+    Args:
+        network: py3plex multi_layer_network object
+
+    Returns:
+        Tuple of (correlation_matrix, layer_labels):
+            - correlation_matrix: 2D numpy array of shape (num_layers, num_layers)
+            - layer_labels: List of layer names corresponding to matrix indices
+
+    Examples:
+        >>> corr_matrix, layers = interlayer_degree_correlation_matrix(network)
+        >>> import matplotlib.pyplot as plt
+        >>> import seaborn as sns
+        >>> sns.heatmap(corr_matrix, annot=True, xticklabels=layers,
+        ...             yticklabels=layers, cmap='coolwarm', center=0,
+        ...             vmin=-1, vmax=1)
+        >>> plt.title('Inter-layer Degree Correlation Matrix')
+        >>> plt.show()
+
+    Reference:
+        Nicosia & Latora (2015), "Measuring and modeling correlations in multiplex networks"
+        Battiston et al. (2014), "Structural measures for multiplex networks"
+    """
+    # Get all layers
+    all_layers = set()
+    for n, layer in network.get_nodes():
+        all_layers.add(layer)
+
+    layers = sorted(all_layers)
+    n_layers = len(layers)
+
+    if n_layers < 2:
+        return np.array([[1.0]]), layers
+
+    # Initialize correlation matrix
+    corr_matrix = np.eye(n_layers)
+
+    # Calculate correlations for each layer pair
+    for i, layer_i in enumerate(layers):
+        for j, layer_j in enumerate(layers):
+            if i < j:
+                corr = inter_layer_degree_correlation(network, layer_i, layer_j)
+                corr_matrix[i, j] = corr
+                corr_matrix[j, i] = corr  # Symmetric
+
+    return corr_matrix, layers
+
+
 # Export all functions
 __all__ = [
     "layer_density",
@@ -1806,4 +2348,11 @@ __all__ = [
     "percolation_threshold",
     "targeted_layer_removal",
     "compute_modularity_score",
+    "layer_connectivity_entropy",
+    "inter_layer_dependence_entropy",
+    "cross_layer_redundancy_entropy",
+    "cross_layer_mutual_information",
+    "layer_influence_centrality",
+    "multilayer_betweenness_surface",
+    "interlayer_degree_correlation_matrix",
 ]
