@@ -61,7 +61,8 @@ jobs:
         latexmk -pdf -interaction=nonstopmode -f py3plex.tex || true
         # Check if PDF was actually generated
         if [ -f "py3plex.pdf" ] && [ -s "py3plex.pdf" ]; then
-          echo "✅ PDF generated successfully ($(stat -f%z py3plex.pdf 2>/dev/null || stat -c%s py3plex.pdf) bytes)"
+          PDF_SIZE=$(wc -c < py3plex.pdf)
+          echo "✅ PDF generated successfully ($PDF_SIZE bytes)"
         else
           echo "❌ PDF generation failed - file not created or empty"
           exit 1
