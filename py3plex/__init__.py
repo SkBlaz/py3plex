@@ -46,6 +46,15 @@ from py3plex.core.types import (
     Position,
     Weight,
 )
+from py3plex.dsl import (
+    DSLExecutionError,
+    DSLSyntaxError,
+    execute_query,
+    format_result,
+    select_nodes_by_layer,
+    select_high_degree_nodes,
+    compute_centrality_for_layer,
+)
 from py3plex.exceptions import (
     AlgorithmError,
     CentralityComputationError,
@@ -120,6 +129,14 @@ __all__ = [
     "LayoutDict",
     "Color",
     "ColorList",
+    # DSL functions
+    "execute_query",
+    "format_result",
+    "select_nodes_by_layer",
+    "select_high_degree_nodes",
+    "compute_centrality_for_layer",
+    "DSLSyntaxError",
+    "DSLExecutionError",
     # Exceptions
     "Py3plexException",
     "NetworkConstructionError",

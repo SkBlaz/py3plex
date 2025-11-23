@@ -1,105 +1,156 @@
 # Py3plex Examples
 
-This directory contains 50+ example scripts demonstrating various features of py3plex.
+This directory contains 80+ example scripts demonstrating various features of py3plex. Examples are organized by topic to provide an intuitive learning path.
 
-## Running Examples
+## 🚀 Quick Start
 
-You can run any example directly with Python:
+**New to py3plex?** Start here:
 
 ```bash
-python examples/basic/example_random_generator.py
+# Run the 10-minute tutorial
+python examples/getting_started/tutorial_10min.py
+
+# Generate your first network
+python examples/getting_started/example_random_generator.py
 ```
 
-## Example Categories
+## 📂 Browse Examples by Topic
 
-Examples are categorized by their runtime characteristics and dependencies:
+Examples are organized into intuitive categories based on what you want to accomplish:
 
-### Fast Standalone Examples ([OK] Run in CI)
+### [🎓 Getting Started](getting_started/)
+**New to py3plex? Start here!**
+- 10-minute tutorial covering essentials
+- Creating and manipulating networks
+- Basic NetworkX integration
+- **7 examples** - All fast and beginner-friendly
 
-These examples:
-- Complete in under 5 seconds
-- Don't require external dataset files
-- Are automatically tested in CI
+### [💾 I/O and Data](io_and_data/)
+**Load, save, and manage network data**
+- Load from multiple formats (edgelist, GML, GraphML, etc.)
+- Save networks in various formats
+- Data validation and schema checking
+- Performance optimization (caching, lazy evaluation)
+- **8 examples** - Essential for data workflows
 
-**List of fast standalone examples:**
-- `basic/example_random_generator.py` - Generate random multilayer networks
-- `basic/example_networkx_wrapper.py` - Apply NetworkX algorithms
-- `basic/example_nx_wrapper.py` - Betweenness centrality example
-- `basic/example_new_io.py` - I/O system demonstration
-- `basic/example_networkx_wrapper_kwargs.py` - NetworkX wrapper with kwargs
-- `benchmarks_and_tutorials/compare_multilayer_networks_example.py` - Statistical comparison
-- `centrality_and_statistics/example_multilayer_statistics.py` - Network statistics
-- `centrality_and_statistics/example_networkx_node_similarity.py` - Node similarity
-- `centrality_and_statistics/example_versatility.py` - Multilayer eigenvector centrality
-- `multilayer/example_manipulation.py` - Network manipulation
-- `multilayer/example_multilayer_modularity.py` - Community detection
-- `multilayer/example_multilayer_vectorized_aggregation.py` - Aggregation performance
-- `multilayer/example_vectorized_aggregation.py` - Vectorized operations
-- `visualization/benchmark_layouts.py` - Layout benchmarking
-- `plugins/example_plugin_usage.py` - **NEW: Plugin system demonstration** - Create custom algorithms
+### [📊 Network Analysis](network_analysis/)
+**Analyze network properties and compute metrics**
+- Network statistics and metrics
+- Centrality measures (degree, betweenness, eigenvector, etc.)
+- Node and layer similarity
+- Statistical reports and comparisons
+- **16 examples** - Comprehensive analysis toolkit
 
-### Examples Requiring Datasets (⊘ Skipped in CI)
+### [👥 Communities](communities/)
+**Detect and analyze community structure**
+- Louvain, Leiden, Infomap algorithms
+- Label propagation
+- Multilayer modularity
+- Multiplex community detection
+- **6 examples** - State-of-the-art methods
 
-These examples require specific dataset files and are marked with `SKIP_CI: external_deps`:
-- Examples in `community_detection/` (except those marked FAST)
-- Examples in `decomposition_and_classification/`
-- Examples in `dynamics/` that load datasets
-- Examples in `embeddings/` that require data files
-- Visualization examples that load specific networks
+### [🎨 Visualization](visualization/)
+**Create beautiful network visualizations**
+- Multiple layout styles (diagonal, hairball, radial, etc.)
+- Interactive visualizations with Plotly
+- Community coloring
+- Animations and dynamic views
+- **17 examples** - Rich visualization toolkit
 
-### Slow Examples (⊘ Skipped in CI)
+### [🔬 Advanced](advanced/)
+**Specialized techniques for power users**
+- Network embeddings (Node2Vec)
+- Dynamics and spreading processes
+- Network decomposition and classification
+- Tensor operations and matrix methods
+- Geometric analysis (Ricci curvature)
+- **29 examples** - Advanced algorithms
 
-These examples take more than 10 seconds to complete and are marked with `SKIP_CI: slow`:
-- Community detection with large networks
-- Comprehensive analysis workflows
-- Simulation-heavy examples (e.g., epidemic spreading)
+### [⚙️ Workflows](workflows/)
+**Complete pipelines and extensibility**
+- Config-driven analysis workflows
+- Plugin system for custom algorithms
+- End-to-end Jupyter notebooks
+- Batch processing
+- **2 examples + notebooks** - Production-ready workflows
 
-### Interactive Examples (⊘ Skipped in CI)
+## 📖 Running Examples
 
-These examples require user interaction or display GUIs and are marked with `SKIP_CI: interactive`:
-- Examples that use `show=True` for matplotlib
-- Animation examples requiring imagemagick
+Run any example directly with Python:
 
-## Adding New Examples
+```bash
+python examples/network_analysis/example_multilayer_statistics.py
+```
 
-When creating a new example:
+## ⚡ Example Types
 
-1. **Add a descriptive docstring** at the top explaining what the example demonstrates
-2. **Mark the runtime category** in the docstring:
-   - `Runtime: FAST (< 5 seconds) - Standalone example suitable for CI` for fast standalone examples
-3. **Add SKIP_CI marker if needed**:
-   - `SKIP_CI: external_deps` - If it requires dataset files
-   - `SKIP_CI: slow` - If it takes more than 10 seconds
-   - `SKIP_CI: interactive` - If it requires user interaction
-4. **Use environment checks** for optional visualizations:
-   ```python
-   import os
-   if os.environ.get('MPLBACKEND') == 'Agg':
-       print("Running in CI mode - skipping visualization")
-   else:
-       network.visualize_network(show=True)
-   ```
+Examples are marked with runtime characteristics:
 
-## CI Testing
+- **FAST** (< 5 seconds) - Quick to run, great for learning
+- **SKIP_CI: slow** - Takes 10+ seconds to complete
+- **SKIP_CI: external_deps** - Requires external dataset files
+- **SKIP_CI: interactive** - Requires user interaction or displays GUI
 
-The examples CI workflow runs all fast standalone examples to ensure they work correctly. This helps catch:
-- Import errors
-- API breaking changes
-- Basic functionality issues
+## 🎯 Learning Paths
 
-To test examples locally as CI does:
+Different learning paths based on your goals:
+
+### Path 1: Complete Beginner
+1. Start with [Getting Started](getting_started/) - basics and tutorial
+2. Try [I/O and Data](io_and_data/) - loading real data
+3. Explore [Network Analysis](network_analysis/) - analyzing networks
+4. Learn [Visualization](visualization/) - making it beautiful
+
+### Path 2: Network Scientist
+1. Review [Getting Started](getting_started/) - quick overview
+2. Focus on [Network Analysis](network_analysis/) - metrics and centrality
+3. Dive into [Communities](communities/) - finding structure
+4. Try [Advanced](advanced/) - cutting-edge techniques
+
+### Path 3: Software Engineer
+1. Check [Getting Started](getting_started/) - understand the API
+2. Explore [I/O and Data](io_and_data/) - data pipelines
+3. Study [Workflows](workflows/) - automation and plugins
+4. Use [Visualization](visualization/) - creating outputs
+
+## 🧪 Testing Examples
+
+The examples CI workflow runs all fast standalone examples to ensure they work correctly.
+
+Test examples locally as CI does:
 ```bash
 python .github/scripts/run_examples.py --fast-only --timeout 30
 ```
 
-## Documentation
+## 📚 Additional Resources
 
-For detailed API documentation, visit: https://skblaz.github.io/py3plex/
+- **API Documentation**: https://skblaz.github.io/py3plex/
+- **Plugin Guide**: [PLUGIN_GUIDE.md](../PLUGIN_GUIDE.md)
+- **CLI Tutorial**: Run `py3plex quickstart` for interactive demo
 
-## Contributing
+## ✍️ Contributing Examples
 
-When updating examples, ensure:
-- Examples are self-contained and well-documented
-- Runtime classifications are accurate
-- SKIP_CI markers are appropriate
-- The example works in both interactive and CI modes
+When creating a new example:
+
+1. **Place it in the right category** based on its primary purpose
+2. **Add a descriptive docstring** explaining what it demonstrates
+3. **Mark runtime characteristics**:
+   - `Runtime: FAST (< 5 seconds)` for fast examples
+   - `SKIP_CI: slow` if it takes 10+ seconds
+   - `SKIP_CI: external_deps` if it needs dataset files
+   - `SKIP_CI: interactive` if it requires user interaction
+4. **Use environment checks** for visualizations:
+   ```python
+   import os
+   if os.environ.get('MPLBACKEND') != 'Agg':
+       network.visualize_network(show=True)
+   ```
+5. **Add README updates** if creating new workflows
+
+## 🗂️ Example Organization
+
+Examples are organized by **user goals** rather than technical features:
+- ✅ Topic-based: "I want to detect communities"
+- ❌ Feature-based: "centrality_and_statistics"
+
+This makes it easier for users to find relevant examples for their specific use case.

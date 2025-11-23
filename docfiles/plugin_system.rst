@@ -423,7 +423,7 @@ Py3plex includes example plugins demonstrating all plugin types. Import them to 
 Complete Example
 ~~~~~~~~~~~~~~~~
 
-See ``examples/plugins/example_plugin_usage.py`` for a complete working example demonstrating:
+See ``examples/workflows/example_plugin_usage.py`` for a complete working example demonstrating:
 
 * Creating custom centrality plugins
 * Creating custom community detection plugins

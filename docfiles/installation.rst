@@ -95,6 +95,18 @@ Install Plotly and igraph for interactive and advanced visualizations:
 
     pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
 
+Apache Arrow Support
+~~~~~~~~~~~~~~~~~~~~
+
+Install pyarrow for high-performance I/O with Arrow/Parquet formats:
+
+.. code-block:: bash
+
+    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[arrow]
+
+Arrow format provides 2-3x faster read/write operations and better compression compared to JSON.
+See :doc:`io_serialization` for details on using Arrow format.
+
 Multiple Extras
 ~~~~~~~~~~~~~~~
 
@@ -102,7 +114,7 @@ Install multiple feature sets at once:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap,viz,algos]
+    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap,viz,algos,arrow]
 
 Development Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~

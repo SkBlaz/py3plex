@@ -170,6 +170,9 @@ def _detect_format(filepath: Union[str, Path]) -> Optional[str]:
         "gexf": "gexf",
         "h5": "hdf5",
         "hdf5": "hdf5",
+        "arrow": "arrow",
+        "feather": "feather",
+        "parquet": "parquet",
     }
 
     return extension_map.get(ext)
@@ -280,6 +283,28 @@ def _register_builtin_formats():
     # Register CSV format
     register_reader("csv", read_csv)
     register_writer("csv", write_csv)
+
+    # Register Arrow format if pyarrow is available
+    try:
+        from .formats.arrow_format import read_arrow, write_arrow
+
+        def read_parquet(filepath, **kwargs):
+            """Read graph from Parquet format."""
+            return read_arrow(filepath, format="parquet", **kwargs)
+
+        def write_parquet(graph, filepath, **kwargs):
+            """Write graph to Parquet format."""
+            return write_arrow(graph, filepath, format="parquet", **kwargs)
+
+        register_reader("arrow", read_arrow)
+        register_writer("arrow", write_arrow)
+        register_reader("feather", read_arrow)
+        register_writer("feather", write_arrow)
+        register_reader("parquet", read_parquet)
+        register_writer("parquet", write_parquet)
+    except ImportError:
+        # pyarrow not installed, Arrow formats not available
+        pass
 
 
 # Register built-in formats on module load
