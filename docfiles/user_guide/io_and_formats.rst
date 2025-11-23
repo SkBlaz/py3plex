@@ -357,7 +357,7 @@ Complete examples are available in ``examples/io_and_data/``:
 See Also
 --------
 
-* :doc:`quickstart` - Getting started guide
-* :doc:`basic_usage` - Basic network operations
-* :doc:`networkx_interop` - NetworkX integration details
-* :doc:`performance_guide` - Performance optimization tips
+* :doc:`../getting_started/quickstart_5min` - Getting started guide
+* :doc:`networks` - Basic network operations
+* :doc:`../concepts/py3plex_core_model` - NetworkX integration details
+* :doc:`../deployment/performance_scalability` - Performance optimization tips

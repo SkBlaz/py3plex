@@ -593,9 +593,8 @@ Optimization Order
 Next Steps
 ----------
 
-- :doc:`dependencies_guide` - Install optional performance packages
-- :doc:`visualization_guide` - Optimize visualizations
-- :doc:`networkx_interop` - Use NetworkX algorithms
-- :doc:`tutorials/csv_loading` - Efficient data loading
+- :doc:`../user_guide/io_and_formats` - Efficient data loading
+- :doc:`../user_guide/visualization` - Optimize visualizations
+- :doc:`cli_and_docker` - Docker deployment for production
 
 For performance issues, open an issue on `GitHub Issues <https://github.com/SkBlaz/py3plex/issues>`_.

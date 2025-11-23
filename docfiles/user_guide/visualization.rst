@@ -1348,10 +1348,10 @@ Use this guide to select the appropriate visualization mode:
 Next Steps
 ----------
 
-- :doc:`basic_usage_analysis` - Analyze network properties
+- :doc:`networks` - Network operations
 - :doc:`community_detection` - Detect communities for coloring
-- :doc:`performance` - Optimize for large networks
-- :doc:`tutorials/csv_loading` - Load data from CSV
+- :doc:`io_and_formats` - Load data from various formats
+- :doc:`../deployment/performance_scalability` - Optimize for large networks
 
 For more examples, see the `visualization examples <https://github.com/SkBlaz/py3plex/tree/main/examples>`_ 
 in the GitHub repository.

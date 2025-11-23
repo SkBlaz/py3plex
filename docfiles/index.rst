@@ -64,7 +64,7 @@ py3plex is also available as a Docker container with all dependencies pre-instal
     docker run --rm py3plex:latest --version
     docker run --rm py3plex:latest selftest
 
-See :doc:`tutorials/docker_usage` for complete Docker documentation.
+See :doc:`deployment/cli_and_docker` for complete Docker documentation.
 
 Install from source for development
 ------------------------------------

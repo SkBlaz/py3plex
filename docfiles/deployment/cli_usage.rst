@@ -31,7 +31,7 @@ If you prefer Docker, the CLI is also available via the Docker container:
     docker run --rm py3plex:latest --help
     docker run --rm -v $(pwd)/data:/data py3plex:latest create --nodes 100 --output /data/network.edgelist
 
-See :doc:`docker_usage` for complete Docker documentation.
+See :doc:`cli_and_docker` for complete Docker documentation.
 
 Quick Start
 -----------

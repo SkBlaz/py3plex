@@ -926,11 +926,11 @@ Further Reading
 
 For detailed usage examples and parameter descriptions:
 
-* :doc:`algorithm_guide` - Algorithm selection guide with complexity analysis
-* :doc:`tutorials/community_detection` - Community detection examples
-* :doc:`tutorials/multilayer_centrality` - Centrality computation examples
-* :doc:`performance_guide` - Performance optimization tips
-* :doc:`apidocs` - Complete API reference
+* :doc:`../concepts/algorithm_landscape` - Algorithm selection guide with complexity analysis
+* :doc:`../user_guide/community_detection` - Community detection examples
+* :doc:`../user_guide/statistics` - Centrality computation examples
+* :doc:`../deployment/performance_scalability` - Performance optimization tips
+* :doc:`api_index` - Complete API reference
 
 Citation Information
 --------------------
