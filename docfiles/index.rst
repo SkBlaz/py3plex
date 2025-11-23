@@ -203,6 +203,7 @@ Documentation Contents
    visualization_guide
    dependencies_guide
    networkx_interop
+   r_interop
    algorithm_guide
    algorithm_roadmap
    plugin_system
