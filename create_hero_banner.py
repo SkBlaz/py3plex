@@ -25,6 +25,9 @@ TAGLINE_COLOR = "#E2E8F0"  # Light slate for tagline
 SUBLINE_COLOR = "#94A3B8"  # Muted slate for subline
 ACCENT_TEXT = "#3B82F6"  # Bright blue for accents
 
+# Layout constants
+RIGHT_SECTION_RATIO = 0.50  # Right side takes 50% of banner width
+
 # Visual effects
 OVERLAY_GRADIENT_START = 180  # Darker overlay on left
 OVERLAY_GRADIENT_END = 40  # Lighter overlay on right
@@ -87,8 +90,8 @@ def create_hero_banner(
         network_img = Image.open(source_image)
         print(f"✓ Loaded source image: {source_image} ({network_img.size})")
 
-        # Calculate dimensions for the right side (about 50% of banner width)
-        right_width = int(width * 0.50)
+        # Calculate dimensions for the right side using layout constant
+        right_width = int(width * RIGHT_SECTION_RATIO)
         right_x = width - right_width
 
         # Resize and crop the network image to fit the right side
@@ -230,12 +233,13 @@ def create_hero_banner(
     for i in range(4):
         opacity = 255 - i * 50
         line_width = 2 if i == 0 else 1
+        # Explicitly construct RGBA tuple for clarity
         underline_draw.line(
             [
                 (left_margin, underline_y + i),
                 (left_margin + int(title_width * 0.4), underline_y + i),
             ],
-            fill=ACCENT_RGB + (opacity,),
+            fill=(*ACCENT_RGB, opacity),
             width=line_width,
         )
 
