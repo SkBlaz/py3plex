@@ -197,6 +197,7 @@ Documentation Contents
    basic_usage_analysis_multiplex
    io_serialization
    multilayer_concepts
+   dsl_guide
    recipes
    visualization
    visualization_guide
