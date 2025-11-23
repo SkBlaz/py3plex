@@ -724,4 +724,4 @@ Next Steps
 
 * :doc:`tutorials/community_detection` - Community detection tutorial
 * :doc:`tutorials/multilayer_centrality` - Centrality measures tutorial
-* :doc:`performance` - Performance optimization guide
+* :doc:`deployment/performance_scalability` - Performance optimization guide

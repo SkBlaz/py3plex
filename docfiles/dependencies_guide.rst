@@ -562,7 +562,7 @@ Next Steps
 ----------
 
 - :doc:`installation` - Full installation guide
-- :doc:`quickstart` - Get started with Py3plex
+- :doc:`getting_started/quickstart_5min` - Get started with Py3plex
 - :doc:`tutorials/csv_loading` - Load your data
 - :doc:`visualization_guide` - Create visualizations
 

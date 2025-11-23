@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """
+[DEPRECATED] This script was for the old quickstart.rst file which has been removed.
+
+The quickstart content is now in docfiles/getting_started/quickstart_5min.rst.
+If you need to regenerate outputs for that file, this script should be updated
+to reference the new location.
+
 Centralized script to execute all code snippets from quickstart.rst and capture outputs.
 
 This script:

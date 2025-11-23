@@ -391,8 +391,8 @@ Next Steps
 
 After installation, proceed to:
 
-* :doc:`quickstart` - Quick introduction to basic features
-* :doc:`10min_tutorial` - Comprehensive 10-minute tutorial
+* :doc:`getting_started/quickstart_5min` - Quick introduction to basic features
+* :doc:`getting_started/tutorial_10min` - Comprehensive 10-minute tutorial
 * :doc:`basic_usage` - Detailed usage guide
 
 Getting Help
