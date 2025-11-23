@@ -1199,9 +1199,10 @@ by color and size.
 Sankey Diagram for Inter-Layer Flows
 +++++++++++++++++++++++++++++++++++++
 
-The Sankey diagram provides an aggregate view of inter-layer connection strength, where
-the width of flows represents the number of connections between layers. This is ideal
-for understanding overall flow patterns rather than individual node connections.
+The Sankey-style diagram provides an aggregate view of inter-layer connection strength.
+The visualization uses text and arrows where width represents the number of connections
+between layers. This is ideal for understanding overall flow patterns rather than
+individual node connections.
 
 .. code-block:: python
 
@@ -1211,7 +1212,7 @@ for understanding overall flow patterns rather than individual node connections.
     network = multinet.multi_layer_network()
     network.load_network("network.txt", input_type="multiedgelist")
     
-    # Sankey diagram showing inter-layer flow strength
+    # Sankey-style diagram showing inter-layer flow strength
     ax = network.visualize_network(style='sankey', show=True)
 
 You can also use the function directly:
@@ -1223,7 +1224,7 @@ You can also use the function directly:
     # Get layers
     labels, graphs, multilinks = network.get_layers()
     
-    # Create Sankey diagram
+    # Create Sankey-style diagram
     ax = draw_multilayer_sankey(
         graphs,
         multilinks,
@@ -1241,16 +1242,15 @@ You can also use the function directly:
 
 **Interpretation:**
 
-- Each layer appears as a labeled section
-- Arrows show connections between layers
-- Arrow width indicates connection strength (number of edges)
+- Text shows layer-to-layer connections with counts
+- Arrows indicate connection direction
+- Arrow width proportional to connection strength
 - Useful for identifying which layer pairs have strongest connections
 
-**Parameters:**
+**Note:**
 
-- ``scale``: Scaling factor for flow widths (default 0.01)
-- ``unit``: Unit label for flows (default "connections")
-- Additional matplotlib Sankey parameters supported
+This uses a simplified flow diagram approach rather than matplotlib's traditional
+Sankey class, as it's better suited for multilayer network inter-layer connections.
 
 Example Workflows
 ~~~~~~~~~~~~~~~~~

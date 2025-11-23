@@ -1,15 +1,18 @@
 """
 Sankey diagram visualization for multilayer networks.
 
-This module provides Sankey diagram visualization to show flow strength
-between layers in multilayer networks. The width of flows represents the
-number of inter-layer connections.
+This module provides inter-layer flow visualization to show connection strength
+between layers in multilayer networks. The visualization displays flows as arrows
+with widths proportional to the number of inter-layer connections.
+
+Note: This uses a simplified flow diagram approach rather than matplotlib's Sankey
+class, as the Sankey class is designed for more complex flow networks and doesn't
+map directly to multilayer network inter-layer connections.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
-import matplotlib.sankey as mpl_sankey
 import networkx as nx
 import numpy as np
 
@@ -24,16 +27,14 @@ def draw_multilayer_sankey(
     labels: Optional[List[str]] = None,
     ax: Optional[Any] = None,
     display: bool = True,
-    scale: float = 0.01,
-    unit: str = "connections",
     **kwargs
 ) -> Any:
-    """Draw Sankey diagram showing inter-layer flow strength in multilayer networks.
+    """Draw inter-layer flow diagram showing connection strength in multilayer networks.
 
-    Creates a Sankey diagram where:
-    - Each layer is represented as a node in the Sankey diagram
+    Creates a flow visualization where:
+    - Each layer is represented in the diagram
     - Flows between layers show the strength (number) of inter-layer connections
-    - Flow width is proportional to the number of inter-layer edges
+    - Flow width/text indicates the number of inter-layer edges
 
     Args:
         graphs: List of NetworkX graphs, one per layer
@@ -41,9 +42,7 @@ def draw_multilayer_sankey(
         labels: Optional list of layer labels. If None, uses layer indices
         ax: Matplotlib axes to draw on. If None, creates new figure
         display: If True, calls plt.show() at the end
-        scale: Scaling factor for flow widths (default 0.01)
-        unit: Unit label for flows (default "connections")
-        **kwargs: Additional keyword arguments passed to Sankey
+        **kwargs: Reserved for future extensions
 
     Returns:
         Matplotlib axes object
@@ -57,6 +56,7 @@ def draw_multilayer_sankey(
     Note:
         This visualization is most effective for networks with 2-5 layers.
         For networks with many layers, the diagram may become cluttered.
+        The implementation uses a simplified flow visualization approach.
     """
     # Get or create axes
     if ax is None:
@@ -109,17 +109,13 @@ def draw_multilayer_sankey(
     # Check if there are any inter-layer flows
     total_flows = np.sum(flow_matrix)
     if total_flows == 0:
-        logger.warning("No inter-layer connections found. Cannot create Sankey diagram.")
+        logger.warning("No inter-layer connections found. Cannot create flow diagram.")
         ax.text(0.5, 0.5, "No inter-layer connections found",
                 ha='center', va='center', fontsize=14, transform=ax.transAxes)
         ax.axis('off')
         if display:
             plt.show()
         return ax
-
-    # Create Sankey diagram using matplotlib's Sankey class
-    # For multilayer networks, we'll create a simplified Sankey showing
-    # flows between consecutive or connected layers
 
     # Find all layer pairs with connections
     layer_connections = []
@@ -140,23 +136,16 @@ def draw_multilayer_sankey(
     # Sort connections by layer order for better visualization
     layer_connections.sort(key=lambda x: (x[0], x[1]))
 
-    # Build flows for Sankey diagram
-    # We'll use a simplified approach for multilayer networks
-    # by showing flows between adjacent or connected layers
-
-    sankey = mpl_sankey.Sankey(ax=ax, scale=scale, unit=unit, **kwargs)
-
-    # For simplicity, we'll create a linear flow diagram
-    # showing the strongest connections between layers
+    # Choose visualization approach based on network complexity
     if n_layers <= 3:
-        # Simple case: can show all connections
-        _draw_simple_sankey(sankey, labels, layer_connections, ax)
+        # Simple case: can show all connections clearly
+        _draw_simple_flow_diagram(labels, layer_connections, ax)
     else:
-        # Complex case: show main flows between consecutive layers
-        _draw_aggregated_sankey(sankey, labels, flow_matrix, n_layers, ax)
+        # Complex case: show aggregated statistics
+        _draw_aggregated_flow_diagram(labels, flow_matrix, n_layers, ax)
 
     # Format the plot
-    ax.set_title("Inter-Layer Flow Diagram (Sankey)", fontsize=14, fontweight='bold', pad=20)
+    ax.set_title("Inter-Layer Flow Diagram", fontsize=14, fontweight='bold', pad=20)
     ax.axis('off')
 
     if display:
@@ -166,8 +155,8 @@ def draw_multilayer_sankey(
     return ax
 
 
-def _draw_simple_sankey(sankey, labels, layer_connections, ax):
-    """Draw simple Sankey for networks with few layers."""
+def _draw_simple_flow_diagram(labels, layer_connections, ax):
+    """Draw simple flow diagram for networks with few layers."""
     # Create a series of connected Sankey diagrams
     # For now, show flows in a simplified format
 
@@ -200,8 +189,8 @@ def _draw_simple_sankey(sankey, labels, layer_connections, ax):
         y_pos -= 0.05
 
 
-def _draw_aggregated_sankey(sankey, labels, flow_matrix, n_layers, ax):
-    """Draw aggregated Sankey for networks with many layers."""
+def _draw_aggregated_flow_diagram(labels, flow_matrix, n_layers, ax):
+    """Draw aggregated flow diagram for networks with many layers."""
     # Show aggregated statistics
     y_pos = 0.9
     ax.text(0.5, y_pos, "Inter-Layer Connection Summary", ha='center', va='top',
@@ -209,12 +198,11 @@ def _draw_aggregated_sankey(sankey, labels, flow_matrix, n_layers, ax):
 
     y_pos -= 0.1
 
-    # Calculate total flows per layer
+    # Calculate total connections per layer (counting each connection once)
     layer_flows = {}
     for i in range(n_layers):
-        outgoing = np.sum(flow_matrix[i, :])
-        incoming = np.sum(flow_matrix[:, i])
-        total = outgoing + incoming
+        # Count connections where this layer is involved
+        total = np.sum(flow_matrix[i, :]) + np.sum(flow_matrix[:, i])
         if total > 0:
             layer_flows[i] = total
 
@@ -222,7 +210,7 @@ def _draw_aggregated_sankey(sankey, labels, flow_matrix, n_layers, ax):
     sorted_layers = sorted(layer_flows.items(), key=lambda x: x[1], reverse=True)
 
     for layer_idx, total_flow in sorted_layers[:10]:  # Show top 10
-        flow_text = f"{labels[layer_idx]}: {total_flow} total connections"
+        flow_text = f"{labels[layer_idx]}: {int(total_flow)} total connections"
         ax.text(0.5, y_pos, flow_text, ha='center', va='top',
                 fontsize=10, transform=ax.transAxes)
         y_pos -= 0.08
@@ -243,12 +231,12 @@ def _draw_aggregated_sankey(sankey, labels, flow_matrix, n_layers, ax):
     top_connections.sort(key=lambda x: x[2], reverse=True)
 
     for src, dst, flow in top_connections[:5]:  # Show top 5
-        flow_text = f"{labels[src]} ↔ {labels[dst]}: {flow} connections"
+        flow_text = f"{labels[src]} ↔ {labels[dst]}: {int(flow)} connections"
         ax.text(0.5, y_pos, flow_text, ha='center', va='top',
                 fontsize=10, transform=ax.transAxes)
         y_pos -= 0.08
 
-        # Draw flow arrow
+        # Draw flow arrow with width proportional to connection count
         arrow_y = y_pos + 0.02
         ax.annotate('', xy=(0.7, arrow_y), xytext=(0.3, arrow_y),
                    arrowprops=dict(arrowstyle='->', lw=max(1, flow/5),
