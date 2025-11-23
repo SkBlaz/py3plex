@@ -10,7 +10,6 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from py3plex.exceptions import ParsingError
 from py3plex.logging_config import get_logger
 
 logger = get_logger(__name__)

@@ -354,7 +354,7 @@ class TestGraphFileLinter:
     def test_comments_in_edgelist(self):
         """Test that comments are properly skipped in edgelist."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".edgelist", delete=False) as f:
-            f.write("#Comment\n")  # No spaces after # to avoid parsing issues
+            f.write("#Comment\n")
             f.write("A B\n")
             f.write("#AnotherComment\n")
             f.write("B C\n")

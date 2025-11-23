@@ -104,6 +104,8 @@ def test_cli_check_warnings_non_strict():
         )
         # Should pass with warnings (exit code 0)
         assert result.returncode == 0
-        assert "warning" in result.stdout.lower()
+        # Check both stdout and stderr (logger output may be in either)
+        output = result.stdout + result.stderr
+        assert "warning" in output.lower()
     finally:
         Path(temp_file).unlink()
