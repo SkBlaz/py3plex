@@ -75,7 +75,7 @@ All GUI tests run automatically on GitHub Actions:
    - Build production bundle
    - Verify dist output
 
-**View Results**: Check the Actions tab on GitHub or the badge in README.md
+**View Results**: Check the Actions tab on GitHub or the CI badges in the repository README
 
 Running CI Tests Locally
 ------------------------

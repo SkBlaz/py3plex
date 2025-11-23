@@ -317,7 +317,7 @@ When adding features, update:
 1. **Docstrings** in the code
 2. **RST files** in ``docfiles/`` if adding major features
 3. **Examples** in ``examples/`` directory
-4. **README.md** if changing installation or basic usage
+4. **README** if changing installation or basic usage
 
 Build Documentation
 ~~~~~~~~~~~~~~~~~~~
@@ -472,7 +472,7 @@ Code of Conduct
 * Focus on what is best for the community
 * Show empathy towards other community members
 
-See our full `Code of Conduct <https://github.com/SkBlaz/py3plex/blob/master/CODE_OF_CONDUCT.md>`_.
+Contributors are expected to follow these principles to foster a welcoming and productive community.
 
 License
 -------
@@ -484,9 +484,9 @@ Recognition
 
 Contributors are recognized in:
 
-* ``CONTRIBUTORS.md`` file
+* GitHub contributors page
 * Release notes
-* ``AUTHORS`` section in the documentation
+* :doc:`acknowledgements` section in the documentation
 
 Getting Help
 ------------

@@ -498,7 +498,7 @@ Plugin Package Structure
 
     my-py3plex-plugin/
     ├── setup.py
-    ├── README.md
+    ├── README
     ├── my_plugin/
     │   ├── __init__.py
     │   └── plugin.py
