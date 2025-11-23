@@ -1,17 +1,25 @@
 SQL-like DSL for Multilayer Networks
 =====================================
 
+.. contents:: Table of Contents
+   :local:
+   :depth: 2
+
 Overview
 --------
 
 Py3plex provides a Domain-Specific Language (DSL) for querying and analyzing multilayer networks using SQL-like syntax. This intuitive interface allows users to filter nodes and edges, compute network measures, and perform complex analyses with simple, readable queries.
 
+The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write::
+
+    execute_query(network, 'SELECT nodes WHERE layer="social" AND degree > 5')
+
 The DSL is particularly useful for:
 
-- Interactive network exploration
-- Rapid prototyping of analyses
-- Educational purposes
-- Building analysis pipelines
+- **Interactive network exploration**: Quickly test hypotheses and explore network structure
+- **Rapid prototyping**: Build analysis workflows without extensive coding
+- **Educational purposes**: Learn network concepts with intuitive queries
+- **Production pipelines**: Create maintainable, self-documenting analysis code
 
 Basic Syntax
 ------------
@@ -26,35 +34,49 @@ Where:
 - **conditions**: Filtering criteria (optional)
 - **measures**: Network measures to compute (optional)
 
-Quick Start
------------
+Quick Start Example
+-------------------
 
-Basic node selection by layer::
+Here's a complete working example to get you started::
 
     from py3plex.core import multinet
-    from py3plex.dsl import execute_query
+    from py3plex.dsl import execute_query, format_result
     
-    # Create and populate network
-    network = multinet.multi_layer_network()
-    # ... add nodes and edges ...
+    # Create a multilayer network
+    network = multinet.multi_layer_network(directed=False)
     
-    # Query nodes in a specific layer
-    result = execute_query(network, 'SELECT nodes WHERE layer="transport"')
-    nodes = result['nodes']
-
-Filtering by degree::
-
-    # Find nodes with high degree
-    result = execute_query(network, 'SELECT nodes WHERE degree > 5')
-
-Computing centrality measures::
-
-    # Compute betweenness centrality for filtered nodes
+    # Add nodes to different layers
+    network.add_nodes([
+        {'source': 'Alice', 'type': 'social'},
+        {'source': 'Bob', 'type': 'social'},
+        {'source': 'Charlie', 'type': 'social'},
+        {'source': 'Alice', 'type': 'work'},
+        {'source': 'Bob', 'type': 'work'},
+    ])
+    
+    # Add edges
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
+    ])
+    
+    # Query 1: Select all nodes in the social layer
+    result = execute_query(network, 'SELECT nodes WHERE layer="social"')
+    print(f"Found {result['count']} nodes in social layer")
+    print(result['nodes'])
+    
+    # Query 2: Find high-degree nodes
+    result = execute_query(network, 'SELECT nodes WHERE degree > 1')
+    print(format_result(result))
+    
+    # Query 3: Compute centrality for filtered nodes
     result = execute_query(
         network,
         'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality'
     )
-    centralities = result['computed']['betweenness_centrality']
+    for node, centrality in result['computed']['betweenness_centrality'].items():
+        print(f"{node}: {centrality:.4f}")
 
 Query Components
 ----------------
@@ -347,15 +369,175 @@ Common syntax errors:
 - Unknown operators
 - Invalid measure names
 
-Examples
---------
+Complete Working Examples
+-------------------------
 
-Complete examples are available in the examples directory:
+This section provides complete, runnable examples demonstrating various DSL features.
 
-- ``examples/network_analysis/example_dsl_queries.py`` - Basic DSL usage
-- ``examples/network_analysis/example_dsl_advanced.py`` - Advanced queries and analysis
+Example 1: Basic Network Querying
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run examples::
+Create a simple social network and query it::
+
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query, format_result
+    
+    # Create network
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add nodes in social layer
+    network.add_nodes([
+        {'source': 'Alice', 'type': 'social'},
+        {'source': 'Bob', 'type': 'social'},
+        {'source': 'Charlie', 'type': 'social'},
+        {'source': 'David', 'type': 'social'},
+    ])
+    
+    # Add edges
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Charlie', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+    ])
+    
+    # Query all nodes
+    result = execute_query(network, 'SELECT nodes WHERE layer="social"')
+    print(format_result(result))
+    
+    # Find high-degree nodes
+    result = execute_query(network, 'SELECT nodes WHERE degree > 1')
+    print(f"High-degree nodes: {result['count']}")
+
+Example 2: Multilayer Network Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Analyze a network with multiple layers::
+
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query
+    
+    # Create multilayer network
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add nodes to multiple layers
+    nodes = []
+    for person in ['Alice', 'Bob', 'Charlie']:
+        for layer in ['social', 'work', 'family']:
+            nodes.append({'source': person, 'type': layer})
+    network.add_nodes(nodes)
+    
+    # Add edges in different layers
+    edges = [
+        # Social connections
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+        # Work connections
+        {'source': 'Alice', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
+        # Family connections
+        {'source': 'Alice', 'target': 'Charlie', 'source_type': 'family', 'target_type': 'family'},
+    ]
+    network.add_edges(edges)
+    
+    # Compare layers
+    for layer in ['social', 'work', 'family']:
+        result = execute_query(network, f'SELECT nodes WHERE layer="{layer}"')
+        print(f"{layer} layer: {result['count']} nodes")
+        
+        # Compute degree for this layer
+        result = execute_query(network, f'SELECT nodes WHERE layer="{layer}" COMPUTE degree')
+        degrees = result['computed']['degree']
+        avg_degree = sum(degrees.values()) / len(degrees) if degrees else 0
+        print(f"  Average degree: {avg_degree:.2f}")
+
+Example 3: Hub Identification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Find and rank important nodes using multiple centrality measures::
+
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query
+    
+    # Create network (assuming network is already created)
+    network = multinet.multi_layer_network(directed=False)
+    # ... add nodes and edges ...
+    
+    # Find high-degree nodes in social layer
+    result = execute_query(
+        network,
+        'SELECT nodes WHERE layer="social" AND degree >= 2'
+    )
+    print(f"Found {result['count']} hub nodes")
+    
+    # Compute multiple centrality measures for hubs
+    result = execute_query(
+        network,
+        'SELECT nodes WHERE layer="social" AND degree >= 2 '
+        'COMPUTE betweenness_centrality closeness_centrality degree_centrality'
+    )
+    
+    # Rank nodes by betweenness centrality
+    if 'computed' in result and 'betweenness_centrality' in result['computed']:
+        centralities = result['computed']['betweenness_centrality']
+        sorted_nodes = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+        
+        print("\\nTop nodes by betweenness centrality:")
+        for node, centrality in sorted_nodes[:5]:
+            print(f"  {node}: {centrality:.4f}")
+
+Example 4: Layer Comparison Workflow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Compare network structure across different layers::
+
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query
+    
+    # Assuming multilayer network is created
+    network = multinet.multi_layer_network(directed=False)
+    # ... add nodes and edges ...
+    
+    layers = ['social', 'work', 'transport']
+    layer_stats = {}
+    
+    for layer in layers:
+        # Get nodes in this layer
+        result = execute_query(network, f'SELECT nodes WHERE layer="{layer}"')
+        node_count = result['count']
+        
+        # Compute centrality measures
+        result = execute_query(
+            network,
+            f'SELECT nodes WHERE layer="{layer}" COMPUTE betweenness_centrality'
+        )
+        
+        if 'computed' in result and 'betweenness_centrality' in result['computed']:
+            centralities = result['computed']['betweenness_centrality']
+            avg_centrality = sum(centralities.values()) / len(centralities) if centralities else 0
+            max_centrality = max(centralities.values()) if centralities else 0
+            
+            layer_stats[layer] = {
+                'nodes': node_count,
+                'avg_centrality': avg_centrality,
+                'max_centrality': max_centrality
+            }
+    
+    # Print comparison
+    print("\\nLayer Comparison:")
+    print(f"{'Layer':<12} {'Nodes':<8} {'Avg Centrality':<16} {'Max Centrality':<16}")
+    print("-" * 55)
+    for layer, stats in layer_stats.items():
+        print(f"{layer:<12} {stats['nodes']:<8} {stats['avg_centrality']:<16.4f} {stats['max_centrality']:<16.4f}")
+
+Example Files
+~~~~~~~~~~~~~
+
+Additional complete examples are available in the repository:
+
+- ``examples/network_analysis/example_dsl_queries.py`` - Basic DSL usage with detailed output
+- ``examples/network_analysis/example_dsl_advanced.py`` - Advanced queries and transportation network analysis
+
+Run these examples::
 
     cd examples/network_analysis
     python example_dsl_queries.py
