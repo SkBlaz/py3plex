@@ -170,10 +170,10 @@ def nx_to_scipy_sparse_matrix(
         # NetworkX >= 3.0 - use adjacency_matrix
         # Note: nx.adjacency_matrix returns sparse array in 3.0+, convert to matrix
         matrix = nx.adjacency_matrix(G, nodelist=nodelist, dtype=dtype, weight=weight)
+        # Convert to requested format and ensure it's a sparse matrix
         if format != "csr":
-            matrix = matrix.asformat(format)
-        # Convert sparse array to sparse matrix for compatibility with older code
-        return sp.csr_matrix(matrix) if format == "csr" else matrix.asformat(format)
+            return sp.csr_matrix(matrix.asformat(format))
+        return sp.csr_matrix(matrix)
 
 
 def is_string_like(obj: Any) -> bool:

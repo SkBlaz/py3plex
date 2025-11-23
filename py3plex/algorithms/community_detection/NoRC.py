@@ -50,7 +50,7 @@ def NoRC_communities_main(
     clustering_scheme="hierarchical",
     max_com_num=100,
     verbose=False,
-    sparisfy=True,
+    sparsify=True,
     parallel_step=None,
     prob_threshold=0.0005,
     community_range=None,
@@ -166,15 +166,11 @@ def NoRC_communities_main(
         return opt_clust
 
     if clustering_scheme == "hierarchical":
-        # Optimize: Use sparse array directly with linkage if possible
-        # For large sparse matrices, convert only the non-zero structure
-        if vectors.nnz / (vectors.shape[0] * vectors.shape[1]) < 0.1:
-            # For very sparse matrices, use only non-zero rows
-            if verbose:
-                print(f"Using sparse-aware linkage (sparsity: {vectors.nnz / (vectors.shape[0] * vectors.shape[1]):.4f})")
-            Z = linkage(vectors.toarray(), "average")
-        else:
-            Z = linkage(vectors.toarray(), "average")
+        # Convert sparse matrix to dense for linkage
+        # Note: scipy's linkage requires dense arrays
+        if verbose and vectors.nnz / (vectors.shape[0] * vectors.shape[1]) < 0.1:
+            print(f"Matrix sparsity: {vectors.nnz / (vectors.shape[0] * vectors.shape[1]):.4f}")
+        Z = linkage(vectors.toarray(), "average")
         mod_hc_opt = -1  # Start at -1 to accept any modularity value
         opt_clust = None
         for nclust in tqdm.tqdm(community_range):
