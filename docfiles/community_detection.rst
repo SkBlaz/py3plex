@@ -9,6 +9,7 @@ Supported Algorithms
 - **Infomap** - **Information-theoretic**, supports overlapping communities
 - **Louvain** - **Modularity optimization**
 - **Label Propagation** - **Semi-supervised learning**
+- **NoRC (Node Ranking and Clustering)** - **PageRank-based hierarchical clustering**
 
 Basic Usage
 -----------
@@ -24,6 +25,41 @@ Basic Usage
         "../datasets/cora.mat", directed=False, input_type="sparse")
     
     partition = cw.louvain_communities(network)
+
+**NoRC (Node Ranking and Clustering):**
+
+.. code-block:: python
+
+    from py3plex.algorithms.community_detection.NoRC import NoRC_communities_main
+    import networkx as nx
+    
+    # Create or load a graph
+    G = nx.karate_club_graph()
+    
+    # Detect communities using k-means clustering
+    communities_kmeans = NoRC_communities_main(
+        G,
+        clustering_scheme="kmeans",
+        verbose=True,
+        community_range=[2, 3, 5, 7, 10]
+    )
+    
+    # Or use hierarchical clustering
+    communities_hierarchical = NoRC_communities_main(
+        G,
+        clustering_scheme="hierarchical",
+        verbose=True,
+        community_range=[2, 3, 5, 7, 10]
+    )
+
+**NoRC Parameters:**
+
+- ``clustering_scheme``: "kmeans" or "hierarchical" (default: "hierarchical")
+- ``parallel_step``: Number of parallel workers (default: auto-detect based on CPU count)
+- ``prob_threshold``: Threshold for PageRank probabilities (default: 0.0005)
+- ``community_range``: List of community counts to try (default: [1, 3, 5, 7, 11, 20, 40, 50, 100, 200, 300])
+- ``lag_threshold``: Early stopping after N iterations without improvement (default: 10)
+- ``fine_range``: Range for fine-grained search around optimal solution (default: 3)
 
 **Infomap** (multiplex):
 
