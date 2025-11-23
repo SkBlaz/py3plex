@@ -434,7 +434,7 @@ def parse_edgelist_multi_types(
         >>> # File content:
         >>> # A B 1.0 friendship
         >>> # B C 2.0 collaboration
-        >>> graph, _ = parse_edgelist_multi_types('edges.txt', directed=False)
+        >>> graph, _ = parse_edgelist_multi_types('edges.txt', directed=False)  # doctest: +SKIP
     """
     if directed:
         G = nx.MultiDiGraph()
@@ -486,7 +486,7 @@ def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None
         >>> # File content:
         >>> # A B protein_interaction 0.95
         >>> # B C gene_regulation 0.80
-        >>> graph, _ = parse_spin_edgelist('spin_edges.txt', directed=False)
+        >>> graph, _ = parse_spin_edgelist('spin_edges.txt', directed=False)  # doctest: +SKIP
     """
 
     G = nx.Graph()
@@ -598,7 +598,7 @@ def parse_multiplex_edges(
         >>> # layer1 A B 1.5
         >>> # layer2 A B 2.0
         >>> # layer1 B C 1.0
-        >>> graph, _ = parse_multiplex_edges('multiplex.txt', directed=False)
+        >>> graph, _ = parse_multiplex_edges('multiplex.txt', directed=False)  # doctest: +SKIP
         >>> # Creates nodes: (A, layer1), (A, layer2), (B, layer1), etc.
     """
 

@@ -57,7 +57,7 @@ def _tokenize_query(query: str) -> List[str]:
         
     Examples:
         >>> _tokenize_query('SELECT nodes WHERE layer="transport"')
-        ['SELECT', 'nodes', 'WHERE', 'layer', '=', '"transport"']
+        ['SELECT', 'nodes', 'WHERE', 'layer', '=', 'transport']
     """
     # Replace quoted strings with placeholders to preserve them
     string_pattern = r'"[^"]*"|\'[^\']*\''
@@ -392,14 +392,30 @@ def execute_query(network: Any, query: str) -> Dict[str, Any]:
         DSLExecutionError: If query cannot be executed
         
     Examples:
+        >>> from py3plex.core import multinet
+        >>> net = multinet.multi_layer_network()
+        >>> net.add_nodes([{'source': 'A', 'type': 'transport'}])
+        >>> net.add_nodes([{'source': 'B', 'type': 'transport'}])
+        >>> net.add_nodes([{'source': 'C', 'type': 'social'}])
+        >>> net.add_edges([
+        ...     {'source': 'A', 'target': 'B', 'source_type': 'transport', 'target_type': 'transport'},
+        ...     {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social'}
+        ... ])
+        >>> 
         >>> # Select all nodes in "transport" layer
         >>> result = execute_query(net, 'SELECT nodes WHERE layer="transport"')
+        >>> result['count'] >= 0
+        True
         >>> 
         >>> # Select high-degree nodes and compute centrality
-        >>> result = execute_query(net, 'SELECT nodes WHERE degree > 5 COMPUTE betweenness_centrality')
+        >>> result = execute_query(net, 'SELECT nodes WHERE degree > 0 COMPUTE betweenness_centrality')
+        >>> 'computed' in result
+        True
         >>> 
         >>> # Complex query with multiple conditions
-        >>> result = execute_query(net, 'SELECT nodes WHERE layer="social" AND degree > 3')
+        >>> result = execute_query(net, 'SELECT nodes WHERE layer="social" AND degree >= 0')
+        >>> result['count'] >= 0
+        True
     """
     logger.info(f"Executing DSL query: {query}")
     

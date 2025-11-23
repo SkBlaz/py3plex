@@ -164,7 +164,7 @@ def parse_gaf_to_uniprot_GO(
         Dictionary mapping UniProt IDs to lists of associated GO terms.
 
     Example:
-        >>> mappings = parse_gaf_to_uniprot_GO("gaf_file.gaf", filter_terms=5)
+        >>> mappings = parse_gaf_to_uniprot_GO("gaf_file.gaf", filter_terms=5)  # doctest: +SKIP
     """
     uniGO = defaultdict(list)
     with open(gaf_mappings) as im:

@@ -202,7 +202,7 @@ exclude = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "py3plex"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
@@ -210,6 +210,8 @@ addopts = [
     "-q",
     "--tb=short",
     "--strict-markers",
+    "--doctest-modules",
+    "--doctest-continue-on-failure",
 ]
 markers = [
     "property: property-based tests using Hypothesis",
@@ -219,6 +221,11 @@ markers = [
     "metamorphic: metamorphic tests that verify invariants under transformations",
 ]
 timeout = 300
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "ELLIPSIS",
+    "IGNORE_EXCEPTION_DETAIL",
+]
 
 [tool.coverage.run]
 source = ["py3plex"]
