@@ -12,6 +12,14 @@ import os
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import sys
 
+# Design constants
+BACKGROUND_COLOR = "#F6F8FA"  # Light gray background
+BACKGROUND_RGB = (246, 248, 250)  # RGB version for overlays
+OVERLAY_ALPHA = 100  # Semi-transparent overlay alpha value
+TITLE_COLOR = "#24292F"  # GitHub's primary text color
+TEXT_COLOR = "#57606A"  # GitHub's secondary text color
+SEPARATOR_COLOR = "#D0D7DE"  # Light gray separator
+
 
 def create_hero_banner(
     output_path="example_images/py3plex_hero_banner.png",
@@ -31,7 +39,7 @@ def create_hero_banner(
 
     # Create a new image with a neutral background
     # Using a light gray that works well on both light and dark themes
-    banner = Image.new("RGB", (width, height), color="#F6F8FA")
+    banner = Image.new("RGB", (width, height), color=BACKGROUND_COLOR)
     draw = ImageDraw.Draw(banner)
 
     # --- Right side: Network visualization ---
@@ -77,7 +85,9 @@ def create_hero_banner(
         banner.paste(network_img, (right_x, 0))
 
         # Add a semi-transparent overlay to the right side to soften the image
-        overlay = Image.new("RGBA", (right_width, height), color=(246, 248, 250, 100))
+        overlay = Image.new(
+            "RGBA", (right_width, height), color=(*BACKGROUND_RGB, OVERLAY_ALPHA)
+        )
         banner_rgba = banner.convert("RGBA")
         banner_rgba.paste(overlay, (right_x, 0), overlay)
         banner = banner_rgba.convert("RGB")
@@ -130,30 +140,29 @@ def create_hero_banner(
 
     # Text content
     title = "Py3plex"
+    # Using explicit line breaks for better control over layout
     tagline = "Multilayer network analysis and\nvisualization for Python and R users."
     subline = "Built on NetworkX · 50+ examples · Web GUI & CLI included"
-
-    # Text colors (dark gray, readable on light background)
-    title_color = "#24292F"  # GitHub's primary text color
-    text_color = "#57606A"  # GitHub's secondary text color
 
     # Position text vertically centered with proper spacing
     y_start = 50
 
     # Draw title
-    draw.text((left_margin, y_start), title, fill=title_color, font=title_font)
+    draw.text((left_margin, y_start), title, fill=TITLE_COLOR, font=title_font)
 
     # Draw tagline (with line breaks)
     tagline_y = y_start + 80
-    draw.text((left_margin, tagline_y), tagline, fill=text_color, font=tagline_font)
+    draw.text((left_margin, tagline_y), tagline, fill=TEXT_COLOR, font=tagline_font)
 
     # Draw subline
     subline_y = tagline_y + 75
-    draw.text((left_margin, subline_y), subline, fill=text_color, font=subline_font)
+    draw.text((left_margin, subline_y), subline, fill=TEXT_COLOR, font=subline_font)
 
     # Add a subtle vertical separator line between text and image
     separator_x = int(width * 0.45)
-    draw.line([(separator_x, 40), (separator_x, height - 40)], fill="#D0D7DE", width=2)
+    draw.line(
+        [(separator_x, 40), (separator_x, height - 40)], fill=SEPARATOR_COLOR, width=2
+    )
 
     print("✓ Text content rendered")
 
