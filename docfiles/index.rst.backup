@@ -64,7 +64,7 @@ py3plex is also available as a Docker container with all dependencies pre-instal
     docker run --rm py3plex:latest --version
     docker run --rm py3plex:latest selftest
 
-See :doc:`deployment/cli_and_docker` for complete Docker documentation.
+See :doc:`tutorials/docker_usage` for complete Docker documentation.
 
 Install from source for development
 ------------------------------------
@@ -176,21 +176,6 @@ py3plex is particularly well-suited for:
 * **Transportation:** Multi-modal networks (bus, train, air), urban mobility
 * **Temporal networks:** Evolving social networks, dynamic community evolution
 
-What's in this Documentation?
-==============================
-
-This documentation is organized to help different types of users find what they need quickly:
-
-**New to py3plex?** Start with :doc:`getting_started/quickstart_5min` for a 5-minute introduction, then explore :doc:`getting_started/tutorial_10min` for a comprehensive walkthrough.
-
-**Power users?** Jump to the :doc:`user_guide/networks` and other user guide sections for detailed how-tos, or browse the :doc:`examples/index` for working code.
-
-**Want to understand the concepts?** Check out :doc:`concepts/multilayer_networks_101` and :doc:`concepts/py3plex_core_model` for deep conceptual explanations.
-
-**Deploying in production?** See the :doc:`deployment/cli_and_docker` and :doc:`deployment/performance_scalability` guides.
-
-**Contributing?** Read the :doc:`dev/development_guide` and :doc:`dev/contributing` pages.
-
 Documentation Contents
 ======================
 
@@ -198,71 +183,94 @@ Documentation Contents
    :maxdepth: 2
    :caption: Getting Started
 
-   getting_started/quickstart_5min
-   getting_started/tutorial_10min
-   getting_started/installation
-   getting_started/common_issues
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Concepts & Architecture
-
-   concepts/multilayer_networks_101
-   concepts/py3plex_core_model
-   concepts/design_principles
-   concepts/algorithm_landscape
+   installation
+   quickstart
+   10min_tutorial
+   core_idea
 
 .. toctree::
    :maxdepth: 2
    :caption: User Guide
 
-   user_guide/networks
-   user_guide/statistics
-   user_guide/community_detection
-   user_guide/random_walks_embeddings
-   user_guide/io_and_formats
-   user_guide/visualization
-   user_guide/recipes_and_workflows
+   basic_usage
+   basic_usage_analysis
+   basic_usage_analysis_multiplex
+   io_serialization
+   multilayer_concepts
+   dsl_guide
+   recipes
+   visualization
+   visualization_guide
+   dependencies_guide
+   networkx_interop
+   r_interop
+   algorithm_guide
+   algorithm_roadmap
+   plugin_system
+   ricci_curvature
+   ricci_visualization
+   performance
+   performance_guide
+   statistical_comparison
+   advanced_multilayer_metrics
 
 .. toctree::
    :maxdepth: 2
-   :caption: Environments & Deployment
+   :caption: Tutorials
 
-   deployment/cli_and_docker
-   deployment/performance_scalability
+   tutorials/cli_usage
+   tutorials/docker_usage
+   tutorials/csv_loading
+   tutorials/multilayer_centrality
+   tutorials/meta_flow_report
+   tutorials/multilayer_modularity
+   tutorials/community_detection
+   tutorials/network_decomposition
+   tutorials/incidence_gadget_encoding
+   config_workflows
+   multilayer_centrality_matrix_functions
+   random_walks
+   supra
+   sir_epidemic_simulator
 
 .. toctree::
    :maxdepth: 2
-   :caption: Py3plex GUI
+   :caption: GUI (Web Interface)
 
-   gui/gui_user_guide
-   gui/gui_deployment
-   gui/gui_api_reference
-   gui/gui_architecture
-   gui/gui_testing
+   gui
+   gui_architecture
+   gui_testing
 
 .. toctree::
    :maxdepth: 2
-   :caption: Developer & Contributor Docs
+   :caption: Advanced Topics
 
-   dev/development_guide
-   dev/code_architecture
-   dev/repo_layout
-   dev/contributing
+   learning
+   learning2
+   learning3
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference
+
+   apidocs
+   core
+   community_detection
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contributing
+
+   contributing
+   development
+   architecture
+   citation
 
 .. toctree::
    :maxdepth: 1
-   :caption: Examples
+   :caption: Additional Resources
 
-   examples/index
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Reference & Citation
-
-   reference/algorithm_reference
-   reference/api_index
-   reference/citation_and_acknowledgements
+   acknowledgements
 
 Examples
 ========
