@@ -59,7 +59,6 @@ dev = [
     "crosshair-tool>=0.0.60",  # Formal verification
     "icontract>=2.6.0",  # Design by contract
     "z3-solver>=4.12.0",  # SMT solver for CrossHair
-    "atheris>=2.3.0",  # Coverage-guided fuzzing
     "hypothesis>=6.0",  # Property-based testing
 ]
 # Testing dependencies (for property-based and integration tests)
