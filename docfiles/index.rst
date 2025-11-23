@@ -211,6 +211,7 @@ Documentation Contents
    performance
    performance_guide
    statistical_comparison
+   advanced_multilayer_metrics
 
 .. toctree::
    :maxdepth: 2
