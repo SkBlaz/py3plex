@@ -6,6 +6,9 @@ via the reticulate package. It serves as both documentation and a
 reference implementation.
 
 Save this as r_interop_example.py and use from R as shown below.
+
+Note: This example requires python-igraph to be installed.
+Install with: pip install python-igraph
 """
 
 import sys
@@ -15,7 +18,18 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import py3plex as p3
-from py3plex.wrappers import r_interop
+
+# Check if python-igraph is available
+try:
+    import igraph  # noqa: F401
+
+    IGRAPH_AVAILABLE = True
+except ImportError:
+    IGRAPH_AVAILABLE = False
+
+# Only import r_interop if we're going to use it
+if IGRAPH_AVAILABLE:
+    from py3plex.wrappers import r_interop
 
 
 def create_sample_multilayer_network():
@@ -319,6 +333,20 @@ def main():
     print("=" * 60)
     print("py3plex R Interoperability Examples")
     print("=" * 60)
+
+    if not IGRAPH_AVAILABLE:
+        print("\n[SKIPPED] python-igraph is not installed.")
+        print("This example requires python-igraph for R interop functionality.")
+        print("\nTo install python-igraph, run:")
+        print("  pip install python-igraph")
+        print("\nThis example is designed to demonstrate R integration via reticulate.")
+        print("When python-igraph is installed, it will show:")
+        print("  - Creating multilayer networks")
+        print("  - Converting to igraph format")
+        print("  - Exporting data for R analysis")
+        print("  - Computing network statistics")
+        print("\n" + "=" * 60)
+        return
 
     example_basic_conversion()
     example_export_dataframes()
