@@ -1,8 +1,6 @@
 
 <img src="https://github.com/user-attachments/assets/50f9de60-12ed-4559-a57f-17e36b5ebcf0" alt="Py3Plex Logo" width="400">
 
-![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
-
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 [![Examples](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml)
 [![Tutorial](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml)
@@ -14,6 +12,9 @@
 ![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 ![Docker](https://img.shields.io/badge/Docker-Available-blue)
 ![Lines of Code](https://img.shields.io/badge/lines-89.7K-blue)
+
+![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
+
 
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
