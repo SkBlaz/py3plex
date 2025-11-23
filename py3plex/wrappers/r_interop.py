@@ -63,7 +63,7 @@ except ImportError:
     NEW_IO_AVAILABLE = False
 
 try:
-    import igraph as ig
+    import igraph as ig  # noqa: F401
 
     IGRAPH_AVAILABLE = True
 except ImportError:
@@ -233,6 +233,8 @@ def _extract_layer_to_igraph(
     if not IGRAPH_AVAILABLE:
         raise ImportError("python-igraph is required")
 
+    import igraph as ig
+
     # For legacy networks
     if isinstance(network, multi_layer_network):
         # Get subgraph for specific layer
@@ -271,7 +273,7 @@ def _extract_layer_to_igraph(
     # For new I/O system
     if NEW_IO_AVAILABLE and hasattr(network, "layers"):
         if layer not in network.layers:
-            raise ValueError(f"Layer '{layer}' not found in network")
+            raise ConversionError(f"Layer '{layer}' not found in network")
 
         # Create filtered graph with only edges from specified layer
         filtered = MultiLayerGraph(directed=network.directed)

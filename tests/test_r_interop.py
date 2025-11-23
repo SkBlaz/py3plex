@@ -5,13 +5,7 @@ This test suite validates that py3plex networks can be successfully converted
 and exported in R-friendly formats for use with reticulate, igraph, and MLnet.
 """
 
-import sys
-from pathlib import Path
-
 import pytest
-
-# Add parent directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import py3plex as p3
 
