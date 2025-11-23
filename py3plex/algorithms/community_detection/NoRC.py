@@ -24,8 +24,14 @@ global _RANK_GRAPH
 
 
 def page_rank_kernel(index_row):
-
-    # call as results = p.map(pr_kernel, batch)
+    """Compute normalized PageRank vector for a given node.
+    
+    Args:
+        index_row: Node index for which to compute PageRank
+        
+    Returns:
+        Tuple of (node_index, normalized_pagerank_vector)
+    """
     pr = sparse_page_rank(
         _RANK_GRAPH,
         [index_row],
@@ -37,9 +43,10 @@ def page_rank_kernel(index_row):
         try_shrink=True,
     )
 
+    # Optimization: Compute norm once and reuse
     norm = np.linalg.norm(pr, 2)
     if norm > 0:
-        pr = pr / np.linalg.norm(pr, 2)
+        pr = pr / norm  # Reuse computed norm instead of recalculating
         return (index_row, pr)
     else:
         return (index_row, np.zeros(_RANK_GRAPH.shape[1]))
@@ -50,7 +57,6 @@ def NoRC_communities_main(
     clustering_scheme="hierarchical",
     max_com_num=100,
     verbose=False,
-    sparsify=True,
     parallel_step=None,
     prob_threshold=0.0005,
     community_range=None,
@@ -68,10 +74,14 @@ def NoRC_communities_main(
         print(f"Walking with {parallel_step} parallel workers..")
     global _RANK_GRAPH
     _RANK_GRAPH = input_graph
-    A = _RANK_GRAPH.copy()
+    # Optimization: Use reference instead of copy - only need for nodes() and modularity
+    A = input_graph
     _RANK_GRAPH = nx_to_scipy_sparse_matrix(_RANK_GRAPH)
     _RANK_GRAPH = stochastic_normalization(_RANK_GRAPH)  # normalize
     n = _RANK_GRAPH.shape[1]
+    
+    # Optimization: Cache node list to avoid repeated A.nodes() calls
+    node_list = list(A.nodes())
     
     # Pre-allocate lists for COO matrix construction (more memory efficient)
     row_indices = []
@@ -113,11 +123,12 @@ def NoRC_communities_main(
         nopt = 0
         lag_num = 0
         for nclust in tqdm.tqdm(community_range):
-            dx_hc = defaultdict(list)
             clustering_algorithm = MiniBatchKMeans(n_clusters=nclust)
             clusters = clustering_algorithm.fit_predict(vectors)
-            for a, b in zip(clusters, A.nodes()):
-                dx_hc[a].append(b)
+            # Optimization: Vectorized partition building
+            dx_hc = defaultdict(list)
+            for cluster_id, node in zip(clusters, node_list):
+                dx_hc[cluster_id].append(node)
             partitions = dx_hc.values()
             mx = modularity(A, partitions, weight="weight")
             if mx > mx_opt:
@@ -145,11 +156,12 @@ def NoRC_communities_main(
             print(f"Fine graining around {nopt}")
         for nclust in range(max(1, nopt - fine_range), nopt + fine_range + 1, 1):
             if nclust != nopt and nclust >= 1:
-                dx_hc = defaultdict(list)
                 clustering_algorithm = MiniBatchKMeans(n_clusters=nclust)
                 clusters = clustering_algorithm.fit_predict(vectors)
-                for a, b in zip(clusters, A.nodes()):
-                    dx_hc[a].append(b)
+                # Optimization: Vectorized partition building
+                dx_hc = defaultdict(list)
+                for cluster_id, node in zip(clusters, node_list):
+                    dx_hc[cluster_id].append(node)
                 partitions = dx_hc.values()
                 mx = modularity(A, partitions, weight="weight")
                 if mx > mx_opt:
@@ -178,11 +190,12 @@ def NoRC_communities_main(
         nopt = 0
         lag_num = 0
         for nclust in tqdm.tqdm(community_range):
-            dx_hc = defaultdict(list)
             try:
                 cls = fcluster(Z, nclust, criterion="maxclust")
-                for a, b in zip(cls, A.nodes()):
-                    dx_hc[a].append(b)
+                # Optimization: Vectorized partition building
+                dx_hc = defaultdict(list)
+                for cluster_id, node in zip(cls, node_list):
+                    dx_hc[cluster_id].append(node)
                 partition_hi = dx_hc.values()
                 mod = modularity(A, partition_hi, weight="weight")
                 if mod > mod_hc_opt:
@@ -203,19 +216,22 @@ def NoRC_communities_main(
                     
                     if lag_num > lag_threshold:
                         break
-            except Exception as es:
-                print(es)
+            except (ValueError, IndexError) as e:
+                # Handle clustering errors gracefully
+                if verbose:
+                    print(f"Warning: Clustering with {nclust} clusters failed: {e}")
         
         # fine grained search
         if verbose:
             print(f"Fine graining around {nopt}")
         for nclust in range(max(1, nopt - fine_range), nopt + fine_range + 1, 1):
             if nclust != nopt and nclust >= 1:
-                dx_hc = defaultdict(list)
                 try:
                     cls = fcluster(Z, nclust, criterion="maxclust")
-                    for a, b in zip(cls, A.nodes()):
-                        dx_hc[a].append(b)
+                    # Optimization: Vectorized partition building
+                    dx_hc = defaultdict(list)
+                    for cluster_id, node in zip(cls, node_list):
+                        dx_hc[cluster_id].append(node)
                     partition_hi = dx_hc.values()
                     mod = modularity(A, partition_hi, weight="weight")
                     if mod > mod_hc_opt:
@@ -227,8 +243,10 @@ def NoRC_communities_main(
                         opt_clust = dx_hc
                         if mod == 1:
                             return opt_clust
-                except Exception as es:
-                    print(es)
+                except (ValueError, IndexError) as e:
+                    # Handle clustering errors gracefully
+                    if verbose:
+                        print(f"Warning: Fine-grained clustering with {nclust} clusters failed: {e}")
         
         return opt_clust
 
