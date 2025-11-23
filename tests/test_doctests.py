@@ -28,7 +28,6 @@ Note:
 
 import pytest
 import doctest
-import importlib
 
 
 def test_doctests_in_dsl():
