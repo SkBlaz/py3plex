@@ -9,10 +9,30 @@ to reference the new location and file structure.
 This script is no longer maintained and may not work correctly.
 """
 
+import sys
+
+# Prevent execution of deprecated script
+print("=" * 70)
+print("ERROR: This script is DEPRECATED and should not be executed.")
+print("=" * 70)
+print("")
+print("The quickstart.rst file has been removed and consolidated into:")
+print("  docfiles/getting_started/quickstart_5min.rst")
+print("")
+print("If you need to regenerate outputs for the new quickstart file,")
+print("please create a new script or update this one to reference the")
+print("new file structure.")
+print("")
+print("=" * 70)
+sys.exit(1)
+
+# ============================================================================
+# Original implementation below - DO NOT USE
+# ============================================================================
+
 import io
 import os
 import re
-import sys
 import tempfile
 import traceback
 from contextlib import redirect_stdout, redirect_stderr
