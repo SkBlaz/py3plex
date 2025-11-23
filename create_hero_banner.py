@@ -221,17 +221,29 @@ def create_hero_banner(
     title_bbox = draw.textbbox((left_margin, y_start), title, font=title_font)
     title_width = title_bbox[2] - title_bbox[0]
     underline_y = title_bbox[3] + 8
-    # Draw gradient underline
+
+    # Create underline with gradient effect using RGBA layer
+    underline_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    underline_draw = ImageDraw.Draw(underline_layer)
+
+    # Draw gradient underline with varying opacity on RGBA layer
     for i in range(4):
-        alpha = int(255 - i * 50)
-        draw.line(
+        opacity = 255 - i * 50
+        line_width = 2 if i == 0 else 1
+        underline_draw.line(
             [
                 (left_margin, underline_y + i),
-                (left_margin + title_width * 0.4, underline_y + i),
+                (left_margin + int(title_width * 0.4), underline_y + i),
             ],
-            fill=(*ACCENT_RGB, alpha) if i < 3 else ACCENT_RGB,
-            width=2 if i == 0 else 1,
+            fill=ACCENT_RGB + (opacity,),
+            width=line_width,
         )
+
+    # Composite the underline onto the banner
+    banner_rgba = banner.convert("RGBA")
+    banner_rgba = Image.alpha_composite(banner_rgba, underline_layer)
+    banner = banner_rgba.convert("RGB")
+    draw = ImageDraw.Draw(banner)
 
     # Draw tagline with better spacing
     tagline_y = underline_y + 20
