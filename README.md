@@ -97,6 +97,55 @@ make up
 - Python 3.8 or higher
 - NetworkX, NumPy, SciPy, and other dependencies (automatically installed)
 
+### R Integration (via reticulate)
+
+Py3plex provides seamless integration with R through the **reticulate** package, enabling R users (especially those familiar with igraph or MLnet) to leverage py3plex's multilayer network capabilities.
+
+**Key Features:**
+- Convert py3plex networks to igraph format (compatible with R's igraph package)
+- Export graph data as R data frames for analysis
+- Access comprehensive network statistics
+- Support for both directed and undirected multilayer networks
+
+**Quick Start (R):**
+```R
+library(reticulate)
+library(igraph)
+
+# Import py3plex
+py3plex <- import("py3plex")
+r_interop <- import("py3plex.wrappers.r_interop")
+
+# Create a multilayer network
+net <- py3plex$multi_layer_network()
+net$add_nodes(list(list(source='A'), list(source='B')))
+net$add_edges(list(list(source='A', target='B')))
+
+# Convert to igraph for R analysis
+g <- r_interop$to_igraph_for_r(net, mode='union')
+
+# Use R's igraph functions
+degree(g)
+plot(g)
+```
+
+**Available R Interop Functions:**
+- `to_igraph_for_r()` - Convert to igraph (optimized for R usage)
+- `export_edgelist()` - Export edges as R-friendly data structure
+- `export_nodelist()` - Export nodes as R-friendly data structure
+- `export_graph_data()` - Export complete graph data
+- `export_adjacency()` - Export adjacency matrix
+- `get_network_stats()` - Get network statistics
+
+**See:** [R Interop Example](examples/r_interop_example.py) for complete usage demonstrations.
+
+**Installation for R users:**
+```bash
+# Install py3plex with igraph support
+pip install git+https://github.com/SkBlaz/py3plex.git
+pip install python-igraph
+```
+
 ### External Binaries (Optional)
 
 **Note**: As of October 2025, py3plex no longer bundles external binaries (Infomap, Node2Vec) to reduce repository size and improve licensing clarity. If you need these tools:
