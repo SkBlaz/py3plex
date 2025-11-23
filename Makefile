@@ -183,7 +183,11 @@ docs-pdf: ## Generate PDF documentation using Sphinx
 	@printf "$(COLOR_GREEN)✓ Building LaTeX from Sphinx documentation...$(COLOR_RESET)\n"
 	@$(VENV_BIN)/sphinx-build -b latex docfiles docfiles/_build/latex --keep-going
 	@printf "$(COLOR_GREEN)✓ Compiling PDF with latexmk...$(COLOR_RESET)\n"
-	@cd docfiles/_build/latex && latexmk -pdf -interaction=nonstopmode py3plex.tex
+	@cd docfiles/_build/latex && latexmk -pdf -interaction=nonstopmode py3plex.tex || true
+	@if [ ! -f "docfiles/_build/latex/py3plex.pdf" ]; then \
+		printf "$(COLOR_RED)✗ PDF generation failed - py3plex.pdf not created.$(COLOR_RESET)\n"; \
+		exit 1; \
+	fi
 	@printf "$(COLOR_GREEN)✓ Copying PDF to docs directory...$(COLOR_RESET)\n"
 	@mkdir -p docs
 	@cp docfiles/_build/latex/py3plex.pdf docs/py3plex_documentation.pdf

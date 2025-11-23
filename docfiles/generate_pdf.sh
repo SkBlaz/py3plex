@@ -66,10 +66,10 @@ fi
 echo ""
 echo -e "${GREEN}Step 2/3: Compiling PDF with latexmk...${NC}"
 cd _build/latex
-latexmk -pdf -interaction=nonstopmode py3plex.tex
 
-if [ $? -ne 0 ]; then
-    echo -e "${YELLOW}Warning: PDF compilation had some issues, but may have succeeded.${NC}"
+# Try to compile PDF, but don't fail immediately as LaTeX often succeeds despite warnings
+if ! latexmk -pdf -interaction=nonstopmode py3plex.tex; then
+    echo -e "${YELLOW}Warning: latexmk reported errors, but may have produced output.${NC}"
 fi
 
 # Check if PDF was created
@@ -101,7 +101,7 @@ fi
 # Show page count (requires pdfinfo)
 if command -v pdfinfo &> /dev/null; then
     PAGES=$(pdfinfo ../docs/py3plex_documentation.pdf 2>/dev/null | grep "Pages:" | awk '{print $2}')
-    if [ ! -z "$PAGES" ]; then
+    if [[ -n "$PAGES" ]]; then
         echo -e "Pages:       ${BLUE}${PAGES}${NC}"
     fi
 fi
