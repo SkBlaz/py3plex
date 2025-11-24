@@ -222,7 +222,7 @@ Documentation Contents
    user_guide/random_walks_embeddings
    user_guide/io_and_formats
    user_guide/visualization
-   dsl_guide
+   user_guide/dsl
    user_guide/recipes_and_workflows
 
 .. toctree::
