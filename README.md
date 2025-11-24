@@ -16,6 +16,12 @@
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
+**Key Features:**
+* SQL-like DSL for intuitive network queries
+* Multilayer network visualization and analysis
+* Community detection and centrality measures
+* Network decomposition and embeddings
+
 ![Py3plex Visualization Showcase](example_images/py3plex_showcase.png)
 
 ## Getting Started

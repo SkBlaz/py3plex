@@ -94,12 +94,36 @@ Compute some basic network statistics:
 
 Bob appears in both layers (100% activity) and both layers are well-connected.
 
+Query with DSL (SQL-like)
+--------------------------
+
+Use SQL-like queries for intuitive network analysis:
+
+.. code-block:: python
+
+    from py3plex.dsl import execute_query
+    
+    # Find nodes with high degree
+    result = execute_query(network, 'SELECT nodes WHERE degree > 1')
+    print(f"Found {result['count']} high-degree nodes")
+    
+    # Get nodes in a specific layer
+    result = execute_query(network, 'SELECT nodes WHERE layer="friends"')
+    print(f"Friends layer has {result['count']} nodes")
+    
+    # Compute centrality
+    result = execute_query(network, 
+        'SELECT nodes WHERE layer="friends" COMPUTE betweenness_centrality')
+    
+See :doc:`../user_guide/dsl` for comprehensive DSL documentation.
+
 What's Next?
 ------------
 
 Congratulations! You've created your first multilayer network. To dive deeper:
 
 * :doc:`tutorial_10min` - Comprehensive 10-minute tutorial with more features
+* :doc:`../user_guide/dsl` - SQL-like DSL for network queries
 * :doc:`installation` - Complete installation guide with optional dependencies
 * :doc:`common_issues` - Troubleshooting common problems
 * :doc:`../user_guide/networks` - Learn more about creating and loading networks
