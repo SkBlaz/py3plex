@@ -28,7 +28,7 @@ jobs:
     
     - name: Check documentation coverage
       run: |
-        cd docs
+        cd docfiles
         python3 check_doc_coverage.py --json ../doc-coverage.json
       timeout-minutes: 3
     

@@ -195,7 +195,7 @@ docs-pdf: ## Generate PDF documentation using Sphinx
 
 docs-check: ## Check API documentation consistency
 	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Checking API documentation consistency...$(COLOR_RESET)\n"
-	@python docs/check_api_consistency.py --verbose
+	@python docfiles/check_api_consistency.py --verbose
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN)✓ API consistency check complete!$(COLOR_RESET)\n"
 
 docs-quickstart: ## Generate outputs for quickstart code snippets
