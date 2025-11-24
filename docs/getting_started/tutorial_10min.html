@@ -186,7 +186,7 @@
 <section id="creating-your-first-multilayer-network-2-minutes">
 <h2>1. Creating Your First Multilayer Network (2 minutes)<a class="headerlink" href="#creating-your-first-multilayer-network-2-minutes" title="Link to this heading"></a></h2>
 <p>Start by creating a simple multilayer network from scratch:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a new multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -218,7 +218,7 @@ Nodes per layer:
 <section id="loading-networks-from-files-1-minute">
 <h2>2. Loading Networks from Files (1 minute)<a class="headerlink" href="#loading-networks-from-files-1-minute" title="Link to this heading"></a></h2>
 <p>py3plex supports multiple input formats. Here is how to load from an edge list:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load from a multiedgelist file</span>
 <span class="c1"># Format: source target layer</span>
@@ -347,7 +347,7 @@ Betweenness centrality (first 5):
 <section id="multilayer-centrality">
 <h3>Multilayer Centrality<a class="headerlink" href="#multilayer-centrality" title="Link to this heading"></a></h3>
 <p>For multilayer-specific centrality measures:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">MultilayerCentrality</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultilayerCentrality</span>
 
 <span class="c1"># Initialize centrality calculator</span>
 <span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -384,7 +384,7 @@ Multilayer betweenness centrality (first 5):
 <p>py3plex provides many specialized statistics for analyzing multilayer networks. Here are the most commonly used:</p>
 <section id="basic-layer-statistics">
 <h3>Basic Layer Statistics<a class="headerlink" href="#basic-layer-statistics" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="c1"># Measure how densely connected each layer is</span>
 <span class="n">density_layer1</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
@@ -453,7 +453,7 @@ Jaccard similarity between layers: 0.000
 <section id="community-detection-2-minutes">
 <h2>6. Community Detection (2 minutes)<a class="headerlink" href="#community-detection-2-minutes" title="Link to this heading"></a></h2>
 <p>py3plex provides Louvain-based community detection that works across multiple layers:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">louvain_multilayer</span>
 <span class="p">)</span>
 
@@ -472,7 +472,7 @@ Jaccard similarity between layers: 0.000
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: Community </span><span class="si">{</span><span class="n">community</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Count community sizes</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 <span class="n">community_sizes</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Community sizes:&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">community_sizes</span><span class="p">))</span>
 </pre></div>
@@ -502,7 +502,7 @@ Community sizes (top 5): {0: 3, 1: 1, 2: 1}
 <p>Random walks are fundamental for graph embeddings (Node2Vec, DeepWalk) and analyzing network structure:</p>
 <section id="basic-random-walk">
 <h3>Basic Random Walk<a class="headerlink" href="#basic-random-walk" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">basic_random_walk</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">basic_random_walk</span>
 
 <span class="c1"># Load a network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
@@ -532,7 +532,7 @@ Community sizes (top 5): {0: 3, 1: 1, 2: 1}
 </section>
 <section id="node2vec-biased-walks">
 <h3>Node2Vec Biased Walks<a class="headerlink" href="#node2vec-biased-walks" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">node2vec_walk</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">node2vec_walk</span>
 
 <span class="c1"># Biased walk with Node2Vec parameters</span>
 <span class="c1"># p: return parameter (higher = less likely to return)</span>
@@ -559,7 +559,7 @@ Node2Vec DFS-like walk: [(&#39;0&#39;, &#39;null&#39;), (&#39;1&#39;, &#39;null&
 </section>
 <section id="generating-multiple-walks">
 <h3>Generating Multiple Walks<a class="headerlink" href="#generating-multiple-walks" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_walks</span>
 
 <span class="c1"># Generate walks from all nodes for embeddings</span>
 <span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
@@ -594,8 +594,8 @@ Example walk: [(&#39;4528&#39;, &#39;null&#39;), (&#39;2611&#39;, &#39;null&#39;
 <section id="basic-visualization-1-minute">
 <h2>8. Basic Visualization (1 minute)<a class="headerlink" href="#basic-visualization-1-minute" title="Link to this heading"></a></h2>
 <p>Visualize your multilayer network:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">hairball_plot</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Get network for visualization</span>
 <span class="n">network_colors</span><span class="p">,</span> <span class="n">graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;hairball&quot;</span><span class="p">)</span>
@@ -619,7 +619,7 @@ Example walk: [(&#39;4528&#39;, &#39;null&#39;), (&#39;2611&#39;, &#39;null&#39;
 </pre></div>
 </div>
 <p>For more advanced visualizations with community colors:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.colors</span> <span class="kn">import</span> <span class="n">colors_default</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors_default</span>
 
 <span class="c1"># Get communities</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -657,12 +657,12 @@ Example walk: [(&#39;4528&#39;, &#39;null&#39;), (&#39;2611&#39;, &#39;null&#39;
 <section id="complete-example-putting-it-all-together">
 <h2>Complete Example: Putting It All Together<a class="headerlink" href="#complete-example-putting-it-all-together" title="Link to this heading"></a></h2>
 <p>Here’s a complete workflow:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="n">louvain_multilayer</span>
-<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">hairball_plot</span>
-<span class="kn">from</span> <span class="nn">py3plex.visualization.colors</span> <span class="kn">import</span> <span class="n">colors_default</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors_default</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
@@ -748,7 +748,7 @@ Complete analysis saved to complete_analysis.png
 <section id="file-not-found">
 <h3>File Not Found<a class="headerlink" href="#file-not-found" title="Link to this heading"></a></h3>
 <p>Make sure you’re running from the repository root or use absolute paths:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="n">base_path</span> <span class="o">=</span> <span class="s2">&quot;/path/to/py3plex&quot;</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="s2">&quot;datasets/multiedgelist.txt&quot;</span><span class="p">),</span>

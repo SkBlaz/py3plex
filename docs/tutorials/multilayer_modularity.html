@@ -153,8 +153,8 @@
 <h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
 <section id="calculating-multilayer-modularity">
 <h3>Calculating Multilayer Modularity<a class="headerlink" href="#calculating-multilayer-modularity" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="n">multilayer_modularity</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_modularity</span>
 
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -195,7 +195,7 @@
 <section id="custom-inter-layer-coupling">
 <h3>Custom Inter-Layer Coupling<a class="headerlink" href="#custom-inter-layer-coupling" title="Link to this heading"></a></h3>
 <p>You can specify layer-pair specific coupling strengths:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Custom coupling matrix (3x3 for 3 layers)</span>
 <span class="n">omega_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
@@ -214,7 +214,7 @@
 <section id="generalized-louvain-algorithm">
 <h3>Generalized Louvain Algorithm<a class="headerlink" href="#generalized-louvain-algorithm" title="Link to this heading"></a></h3>
 <p>The generalized Louvain algorithm greedily maximizes multilayer modularity:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
 
 <span class="c1"># Detect communities using Louvain</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
@@ -254,7 +254,7 @@
 <section id="supra-modularity-matrix">
 <h2>Supra-Modularity Matrix<a class="headerlink" href="#supra-modularity-matrix" title="Link to this heading"></a></h2>
 <p>For spectral methods, you can build the supra-modularity matrix:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="n">build_supra_modularity_matrix</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_supra_modularity_matrix</span>
 
 <span class="c1"># Build modularity matrix</span>
 <span class="n">B</span><span class="p">,</span> <span class="n">node_layer_list</span> <span class="o">=</span> <span class="n">build_supra_modularity_matrix</span><span class="p">(</span>
@@ -267,7 +267,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node-layer pairs: </span><span class="si">{</span><span class="n">node_layer_list</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Use for spectral analysis</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Leading eigenvalues: </span><span class="si">{</span><span class="n">eigenvalues</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -278,7 +278,7 @@
 <section id="multilayer-lfr-benchmark">
 <h3>Multilayer LFR Benchmark<a class="headerlink" href="#multilayer-lfr-benchmark" title="Link to this heading"></a></h3>
 <p>Generate multilayer networks with ground-truth communities:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span> <span class="kn">import</span> <span class="n">generate_multilayer_lfr</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_multilayer_lfr</span>
 
 <span class="c1"># Generate with identical communities across layers</span>
 <span class="n">network</span><span class="p">,</span> <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">generate_multilayer_lfr</span><span class="p">(</span>
@@ -366,7 +366,7 @@
 <section id="coupled-erdos-renyi-models">
 <h2>Coupled Erdős-Rényi Models<a class="headerlink" href="#coupled-erdos-renyi-models" title="Link to this heading"></a></h2>
 <p>Generate random multilayer networks with controllable coupling:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span> <span class="kn">import</span> <span class="n">generate_coupled_er_multilayer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_coupled_er_multilayer</span>
 
 <span class="c1"># Full multiplex (all nodes coupled)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">generate_coupled_er_multilayer</span><span class="p">(</span>
@@ -406,7 +406,7 @@
 <section id="stochastic-block-model">
 <h2>Stochastic Block Model<a class="headerlink" href="#stochastic-block-model" title="Link to this heading"></a></h2>
 <p>Generate multilayer networks with explicit block structure:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span> <span class="kn">import</span> <span class="n">generate_sbm_multilayer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_sbm_multilayer</span>
 
 <span class="c1"># Define communities</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="p">[</span>
@@ -436,7 +436,7 @@
 <section id="parameter-tuning">
 <h3>Parameter Tuning<a class="headerlink" href="#parameter-tuning" title="Link to this heading"></a></h3>
 <p>Finding optimal resolution and coupling parameters:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Test range of parameters</span>
 <span class="n">gammas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>

@@ -127,7 +127,7 @@ static and interactive visualizations.</p>
 <section id="basic-visualization">
 <h2>Basic Visualization<a class="headerlink" href="#basic-visualization" title="Link to this heading"></a></h2>
 <p>Hairball plot (standard network layout):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="s2">&quot;../datasets/goslim_mirna.gpickle&quot;</span><span class="p">,</span>
@@ -145,8 +145,8 @@ static and interactive visualizations.</p>
 <section id="interactive-visualization">
 <h2>Interactive Visualization<a class="headerlink" href="#interactive-visualization" title="Link to this heading"></a></h2>
 <p>For interactive exploration in web browsers or Jupyter notebooks:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">interactive_hairball_plot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">interactive_hairball_plot</span>
 
 <span class="c1"># Get network as NetworkX graph</span>
 <span class="n">network_colors</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;hairball&quot;</span><span class="p">)</span>
