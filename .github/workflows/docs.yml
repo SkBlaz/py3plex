@@ -88,22 +88,6 @@ jobs:
         echo "✅ PDF copied successfully"
       timeout-minutes: 1
     
-    - name: Commit and push PDF to repository
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git add docs/py3plex_documentation.pdf
-        # Commit only if there are changes
-        if ! git diff --staged --quiet; then
-          git commit -m "Update documentation PDF [skip ci]"
-          git push
-          echo "✅ PDF committed and pushed"
-        else
-          echo "ℹ️ No changes to PDF, skipping commit"
-        fi
-      timeout-minutes: 2
-    
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v4
       if: always()
@@ -137,7 +121,7 @@ jobs:
         ls -la docs/ | head -20
       timeout-minutes: 1
     
-    - name: Commit and push HTML documentation
+    - name: Commit and push documentation
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -145,10 +129,10 @@ jobs:
         git add docs/
         # Commit only if there are changes
         if ! git diff --staged --quiet; then
-          git commit -m "Update documentation HTML [skip ci]"
+          git commit -m "Update documentation (HTML + PDF) [skip ci]"
           git push
-          echo "✅ HTML documentation committed and pushed"
+          echo "✅ Documentation committed and pushed"
         else
-          echo "ℹ️ No changes to HTML documentation, skipping commit"
+          echo "ℹ️ No changes to documentation, skipping commit"
         fi
       timeout-minutes: 2
