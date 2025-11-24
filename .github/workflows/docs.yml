@@ -126,11 +126,11 @@ jobs:
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
         echo "📦 Deploying HTML documentation to docs/ folder..."
-        # Remove old HTML files but keep README.md and PDF
+        # Remove old HTML files but keep PDF
         find docs -type f -name "*.html" -delete
         find docs -type d \( -name "_static" -o -name "_images" -o -name "_sources" \) -exec rm -rf {} + 2>/dev/null || true
-        # Copy built HTML files to docs/ (excluding build artifacts)
-        rsync -av --exclude='.buildinfo' --exclude='.doctrees' docfiles/_build/ docs/
+        # Copy built HTML files to docs/ (excluding build artifacts and README)
+        rsync -av --exclude='.buildinfo' --exclude='.doctrees' --exclude='README.md' docfiles/_build/ docs/
         # Create .nojekyll to prevent Jekyll processing
         touch docs/.nojekyll
         echo "✅ HTML files copied to docs/"
