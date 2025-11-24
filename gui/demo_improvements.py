@@ -50,15 +50,15 @@ def demo_comment_handling():
         f.write("alice   eve     friend      0.4\n")
         filepath = f.name
     
-    print(f"\n📄 Sample file with comments:")
+    print(f"\nSample file with comments:")
     with open(filepath, 'r') as f:
         print(f.read())
     
     try:
-        print("🔧 Parsing file...")
+        print("Parsing file...")
         graph = load_multilayer_edgelist(filepath)
         
-        print(f"✅ SUCCESS! Parsed graph with:")
+        print(f"SUCCESS! Parsed graph with:")
         print(f"   - {graph.number_of_nodes()} nodes")
         print(f"   - {graph.number_of_edges()} edges")
         
@@ -69,7 +69,7 @@ def demo_comment_handling():
                 layers.add(data['layer'])
         print(f"   - Layers: {', '.join(sorted(layers))}")
         
-        print("\n💡 Comments are now properly skipped!")
+        print("\nComments are now properly skipped!")
         
     finally:
         os.unlink(filepath)
@@ -88,20 +88,20 @@ def demo_simple_format():
         f.write("5 1\n")
         filepath = f.name
     
-    print(f"\n📄 Simple 2-column edgelist:")
+    print(f"\nSimple 2-column edgelist:")
     with open(filepath, 'r') as f:
         print(f.read())
     
     try:
-        print("🔧 Parsing file...")
+        print("Parsing file...")
         graph = load_multilayer_edgelist(filepath)
         
-        print(f"✅ SUCCESS! Parsed as multi-layer graph:")
+        print(f"SUCCESS! Parsed as multi-layer graph:")
         print(f"   - {graph.number_of_nodes()} nodes")
         print(f"   - {graph.number_of_edges()} edges")
         print(f"   - Default layer assigned to all edges")
         
-        print("\n💡 Simple edgelists now work with sensible defaults!")
+        print("\nSimple edgelists now work with sensible defaults!")
         
     finally:
         os.unlink(filepath)
@@ -126,15 +126,15 @@ def demo_multilayer_centrality():
         f.write("1 5 work 2.5\n")
         filepath = f.name
     
-    print(f"\n📄 Multi-layer network:")
+    print(f"\nMulti-layer network:")
     with open(filepath, 'r') as f:
         print(f.read())
     
     try:
-        print("🔧 Parsing file...")
+        print("Parsing file...")
         graph = load_multilayer_edgelist(filepath)
         
-        print(f"✅ Parsed multi-layer graph:")
+        print(f"Parsed multi-layer graph:")
         print(f"   - {graph.number_of_nodes()} nodes")
         print(f"   - {graph.number_of_edges()} edges")
         
@@ -157,10 +157,10 @@ def demo_multilayer_centrality():
             'metadata': {}
         }
         
-        print("\n🔧 Computing centrality metrics...")
+        print("\nComputing centrality metrics...")
         results = compute_centrality(graph_id, ['degree', 'betweenness'])
         
-        print(f"✅ SUCCESS! Centrality computed on multi-layer network:")
+        print(f"SUCCESS! Centrality computed on multi-layer network:")
         
         for metric, data in results.items():
             if isinstance(data, list) and len(data) > 0:
@@ -168,7 +168,7 @@ def demo_multilayer_centrality():
                 for i, node_data in enumerate(data[:3]):
                     print(f"     {i+1}. Node {node_data['node']}: {node_data['value']:.4f}")
         
-        print("\n💡 Multi-layer networks now properly converted for centrality!")
+        print("\nMulti-layer networks now properly converted for centrality!")
         print("   (Multiple edges aggregated with weight summation)")
         
     finally:
@@ -190,7 +190,7 @@ def demo_weight_aware():
         f.write("center node4 social 0.5\n")
         filepath = f.name
     
-    print(f"\n📄 Weighted network (star topology):")
+    print(f"\nWeighted network (star topology):")
     with open(filepath, 'r') as f:
         print(f.read())
     
@@ -204,16 +204,16 @@ def demo_weight_aware():
             'metadata': {}
         }
         
-        print("🔧 Computing weighted degree centrality...")
+        print("Computing weighted degree centrality...")
         results = compute_centrality(graph_id, ['degree'])
         
-        print(f"✅ SUCCESS! Weight-aware centrality:")
+        print(f"SUCCESS! Weight-aware centrality:")
         for node_data in results['degree']:
             node = node_data['node']
             value = node_data['value']
             print(f"   - {node}: {value:.1f}")
         
-        print("\n💡 Center node has highest centrality (9.5) due to weighted connections!")
+        print("\nCenter node has highest centrality (9.5) due to weighted connections!")
         print("   (5.0 + 3.0 + 1.0 + 0.5 = 9.5)")
         
     finally:
@@ -240,9 +240,9 @@ def main():
     demo_weight_aware()
     
     print("\n" + "=" * 70)
-    print("  🎉 ALL DEMONSTRATIONS COMPLETED SUCCESSFULLY! 🎉")
+    print("  ALL DEMONSTRATIONS COMPLETED SUCCESSFULLY!")
     print("=" * 70)
-    print("\n✅ The GUI user journey is now frictionless for:")
+    print("\nThe GUI user journey is now frictionless for:")
     print("   - Loading multi-layer edgelist files with comments")
     print("   - Using simple or complex edgelist formats")
     print("   - Computing centrality on multi-layer networks")

@@ -172,7 +172,7 @@ if __name__ == '__main__':
     test_multigraph_to_graph_conversion()
     test_empty_lines_handling()
     
-    print("\n✅ All unit tests passed!")
+    print("\nAll unit tests passed!")
     print("\nFriction points fixed:")
     print("  1. Comments in edgelist files now properly skipped")
     print("  2. Simple 2-column edgelists now supported")

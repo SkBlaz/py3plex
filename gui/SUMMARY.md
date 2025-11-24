@@ -135,12 +135,12 @@ gui/frontend/src/pages/Export.tsx     - Added shortcuts, tooltips
 
 All features follow WCAG 2.1 AA guidelines:
 
-- ✅ Keyboard navigation for all interactive elements
-- ✅ ARIA labels and roles properly set
-- ✅ Focus indicators visible and clear
-- ✅ Color contrast meets AA standards
-- ✅ Screen reader compatible
-- ✅ No keyboard traps
+- Keyboard navigation for all interactive elements
+- ARIA labels and roles properly set
+- Focus indicators visible and clear
+- Color contrast meets AA standards
+- Screen reader compatible
+- No keyboard traps
 
 ## Performance Impact
 

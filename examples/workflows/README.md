@@ -70,10 +70,10 @@ See `example_plugin_usage.py` for complete examples.
 
 ## Benefits of Workflows
 
-✅ **Reproducibility**: Save and share exact analysis configurations  
-✅ **Automation**: Run the same analysis on multiple networks  
-✅ **Documentation**: Config files document your analysis  
-✅ **Extensibility**: Add custom algorithms via plugins  
+**Reproducibility**: Save and share exact analysis configurations  
+**Automation**: Run the same analysis on multiple networks  
+**Documentation**: Config files document your analysis  
+**Extensibility**: Add custom algorithms via plugins  
 
 ## Use Cases
 

@@ -57,7 +57,7 @@ def test_multiedgelist_centrality_user_journey():
     upload_data = upload_response.json()
     assert "graph_id" in upload_data, "Response should contain graph_id"
     graph_id = upload_data["graph_id"]
-    print(f"✓ Step 1: Uploaded multi-layer network, graph_id={graph_id}")
+    print(f"Step 1: Uploaded multi-layer network, graph_id={graph_id}")
     
     # Step 2: User views network summary (as displayed on Load Data page)
     summary_response = client.get(f"/api/graphs/{graph_id}/summary")
@@ -69,7 +69,7 @@ def test_multiedgelist_centrality_user_journey():
     assert summary["edges"] > 0, "Network should have edges"
     assert "layers" in summary, "Summary should include layer information"
     
-    print(f"✓ Step 2: Network summary retrieved:")
+    print(f"Step 2: Network summary retrieved:")
     print(f"  - Nodes: {summary['nodes']}")
     print(f"  - Edges: {summary['edges']}")
     print(f"  - Layers: {summary.get('layers', [])}")
@@ -90,7 +90,7 @@ def test_multiedgelist_centrality_user_journey():
     assert "job_id" in job_data, "Response should contain job_id"
     assert job_data["status"] in ["queued", "running"], "Job should be queued or running"
     job_id = job_data["job_id"]
-    print(f"✓ Step 3: Centrality job started, job_id={job_id}")
+    print(f"Step 3: Centrality job started, job_id={job_id}")
     
     # Step 4: User monitors job progress (simulates polling in Analyze.tsx)
     # In real GUI, this happens via useEffect polling every 2 seconds
@@ -105,7 +105,7 @@ def test_multiedgelist_centrality_user_journey():
         print(f"  Poll {i+1}: status={job_status.get('status')}, progress={job_status.get('progress', 0)}%")
         
         if job_status["status"] == "completed":
-            print(f"✓ Step 4: Job completed successfully")
+            print(f"Step 4: Job completed successfully")
             break
         elif job_status["status"] == "failed":
             error_msg = job_status.get("error", "Unknown error")
@@ -124,7 +124,7 @@ def test_multiedgelist_centrality_user_journey():
     
     if "result" in job_status and job_status["result"]:
         result = job_status["result"]
-        print(f"✓ Step 5: Results available:")
+        print(f"Step 5: Results available:")
         
         # Verify centrality metrics were computed
         if "metrics" in result:
@@ -139,7 +139,7 @@ def test_multiedgelist_centrality_user_journey():
                         top_node = metric_results[0]
                         print(f"  - {metric}: top node={top_node.get('node')}, value={top_node.get('value'):.4f}")
     
-    print("\n✅ Complete user journey test passed!")
+    print("\nComplete user journey test passed!")
     print("No friction detected in multi-edgelist → centrality workflow")
 
 
@@ -187,7 +187,7 @@ def test_multiedgelist_all_centrality_metrics():
             job_status = status_response.json()
             
             if job_status["status"] == "completed":
-                print(f"  ✓ {metric} completed successfully")
+                print(f"  {metric} completed successfully")
                 break
             elif job_status["status"] == "failed":
                 print(f"  ⚠ {metric} failed: {job_status.get('error', 'Unknown error')}")
@@ -196,7 +196,7 @@ def test_multiedgelist_all_centrality_metrics():
             
             time.sleep(0.1)
     
-    print("\n✅ All centrality metrics tested")
+    print("\nAll centrality metrics tested")
 
 
 def test_friction_point_no_graph_loaded():
@@ -219,7 +219,7 @@ def test_friction_point_no_graph_loaded():
     # The API should return an error (4xx or 5xx)
     # This is expected behavior and helps prevent user confusion
     assert response.status_code >= 400, "Should return error for nonexistent graph"
-    print(f"✓ Friction point handled: Returns {response.status_code} for nonexistent graph")
+    print(f"Friction point handled: Returns {response.status_code} for nonexistent graph")
 
 
 def test_multiedgelist_format_variations():
@@ -255,9 +255,9 @@ def test_multiedgelist_format_variations():
         if response.status_code == 200:
             graph_id = response.json()["graph_id"]
             summary = client.get(f"/api/graphs/{graph_id}/summary").json()
-            print(f"  ✓ Parsed successfully: {summary['nodes']} nodes, {summary['edges']} edges")
+            print(f"  Parsed successfully: {summary['nodes']} nodes, {summary['edges']} edges")
         else:
             print(f"  ⚠ Failed to parse: {response.status_code}")
             # Some formats might not be supported, document this
     
-    print("\n✅ Format variation testing complete")
+    print("\nFormat variation testing complete")

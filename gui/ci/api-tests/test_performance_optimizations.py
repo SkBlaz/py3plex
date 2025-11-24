@@ -242,7 +242,7 @@ if __name__ == '__main__':
     test_optimized_graph_filtering()
     test_multigraph_centrality_with_optimization()
     
-    print("\n✅ All performance optimization tests passed!")
+    print("\nAll performance optimization tests passed!")
     print("\nOptimizations validated:")
     print("  1. Graph summary and position caching")
     print("  2. Adaptive layout algorithms for large graphs")

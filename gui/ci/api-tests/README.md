@@ -36,12 +36,12 @@ pytest test_upload.py
 Comprehensive unit tests for multi-edgelist parsing improvements.
 
 **What it tests:**
-- ✅ Comment handling (lines starting with #)
-- ✅ Simple 2-column edgelist support
-- ✅ Edge weight parsing
-- ✅ Default weight assignment
-- ✅ MultiGraph to Graph conversion
-- ✅ Empty line handling
+- Comment handling (lines starting with #)
+- Simple 2-column edgelist support
+- Edge weight parsing
+- Default weight assignment
+- MultiGraph to Graph conversion
+- Empty line handling
 
 **Run:**
 ```bash
@@ -209,4 +209,4 @@ When adding new tests:
 
 **Last Updated:** 2025-11-10  
 **Test Count:** 10+ test cases  
-**Status:** ✅ All passing
+**Status:** All passing
