@@ -170,13 +170,14 @@ latex_elements = {
 ''',
 
     # Latex figure (float) alignment
-    'figure_align': 'H',  # Use 'H' for better figure placement
+    # 'H' forces exact placement (requires float package), may cause spacing issues with large figures
+    'figure_align': 'H',
 
     # Disable blank pages between chapters (more concise)
     'extraclassoptions': 'openany',
 
-    # Better table styling
-    'tableofcontents': ' ',
+    # Use default table of contents styling
+    # 'tableofcontents': '',
 }
 
 # Additional LaTeX configuration for hyperref (links)
@@ -197,7 +198,7 @@ latex_documents = [
      'Blaž Škrlj', 'manual'),
 ]
 
-# Logo for the title page
+# Logo for the title page - ensure logo.png exists in the docfiles directory
 latex_logo = 'logo.png'
 
 # -- Options for manual page output ---------------------------------------
