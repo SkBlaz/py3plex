@@ -1,0 +1,641 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ollivier-Ricci Curvature and Ricci Flow &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Ollivier-Ricci Curvature and Ricci Flow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ricci_curvature.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ollivier-ricci-curvature-and-ricci-flow">
+<h1>Ollivier-Ricci Curvature and Ricci Flow<a class="headerlink" href="#ollivier-ricci-curvature-and-ricci-flow" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>py3plex now provides support for <strong>Ollivier-Ricci curvature</strong> and <strong>Ricci flow</strong> on multilayer networks. These geometric measures reveal important structural properties of networks, including community boundaries, bottlenecks, and hierarchical organization.</p>
+<section id="what-is-ollivier-ricci-curvature">
+<h3>What is Ollivier-Ricci Curvature?<a class="headerlink" href="#what-is-ollivier-ricci-curvature" title="Link to this heading"></a></h3>
+<p>Ollivier-Ricci curvature is a discrete analog of Ricci curvature from differential geometry, adapted for graphs. For each edge in a network, the Ollivier-Ricci curvature measures the local connectivity between the neighborhoods of the edge’s endpoints:</p>
+<ul class="simple">
+<li><p><strong>Positive curvature</strong> indicates well-connected regions (dense communities)</p></li>
+<li><p><strong>Negative curvature</strong> indicates bottlenecks or community boundaries</p></li>
+<li><p><strong>Near-zero curvature</strong> indicates transitional regions</p></li>
+</ul>
+</section>
+<section id="what-is-ricci-flow">
+<h3>What is Ricci Flow?<a class="headerlink" href="#what-is-ricci-flow" title="Link to this heading"></a></h3>
+<p>Ricci flow is a geometric process that iteratively adjusts edge weights based on their curvature. The flow amplifies structural features:</p>
+<ul class="simple">
+<li><p>Edges with <strong>negative curvature</strong> (community boundaries) have their weights <strong>reduced</strong></p></li>
+<li><p>Edges with <strong>positive curvature</strong> (within communities) have their weights <strong>increased</strong></p></li>
+</ul>
+<p>After Ricci flow, community detection becomes more effective, and the network’s geometric structure is more pronounced.</p>
+</section>
+<section id="why-use-these-for-multilayer-networks">
+<h3>Why Use These for Multilayer Networks?<a class="headerlink" href="#why-use-these-for-multilayer-networks" title="Link to this heading"></a></h3>
+<p>Multilayer networks represent complex systems with multiple types of interactions. Ollivier-Ricci curvature and flow help:</p>
+<ul class="simple">
+<li><p>Identify cross-layer community boundaries</p></li>
+<li><p>Reveal hierarchical organization across layers</p></li>
+<li><p>Detect structural bottlenecks in coupled systems</p></li>
+<li><p>Enhance community detection on aggregated or supra-graph representations</p></li>
+</ul>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>To use Ollivier-Ricci curvature and Ricci flow, you must install the optional <strong>GraphRicciCurvature</strong> library:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>GraphRicciCurvature
+</pre></div>
+</div>
+<p>If GraphRicciCurvature is not installed, py3plex will raise a clear error message with installation instructions when you attempt to use these features.</p>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<section id="computing-curvature-on-the-aggregated-network">
+<h3>Computing Curvature on the Aggregated Network<a class="headerlink" href="#computing-curvature-on-the-aggregated-network" title="Link to this heading"></a></h3>
+<p>The simplest use case is computing curvature on the <strong>aggregated (core) network</strong>, which combines all layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load or create a multilayer network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;path/to/multilayer_network.txt&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Compute Ollivier-Ricci curvature on the aggregated core network</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">curvature_attr</span><span class="o">=</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Access the graph with curvatures</span>
+<span class="n">G_core</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">]</span>
+
+<span class="c1"># Inspect edge curvatures</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_core</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s2">&quot;ricciCurvature&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ricciCurvature&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After this, edges in <code class="docutils literal notranslate"><span class="pre">net.core_network</span></code> (if <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>) will have a <code class="docutils literal notranslate"><span class="pre">ricciCurvature</span></code> attribute containing the computed curvature value.</p>
+</section>
+<section id="applying-ricci-flow">
+<h3>Applying Ricci Flow<a class="headerlink" href="#applying-ricci-flow" title="Link to this heading"></a></h3>
+<p>Once curvature is computed, you can apply Ricci flow to adjust edge weights:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run Ricci flow on the core network</span>
+<span class="n">result_flow</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci_flow</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;OTD&quot;</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Now edge weights in net.core_network reflect the Ricci flow metric</span>
+<span class="n">G_flow</span> <span class="o">=</span> <span class="n">result_flow</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">]</span>
+
+<span class="c1"># Edge weights are updated to reflect Ricci flow</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_flow</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: weight after flow = </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After Ricci flow, edges with negative curvature (community boundaries) will have reduced weights, making them easier to identify or remove during community detection.</p>
+</section>
+<section id="per-layer-curvature">
+<h3>Per-Layer Curvature<a class="headerlink" href="#per-layer-curvature" title="Link to this heading"></a></h3>
+<p>To compute curvature separately for each layer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature separately for each layer</span>
+<span class="n">layer_results</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># None means all layers</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># layer_results is a dictionary mapping layer identifiers to NetworkX graphs</span>
+<span class="k">for</span> <span class="n">layer_id</span><span class="p">,</span> <span class="n">G_layer</span> <span class="ow">in</span> <span class="n">layer_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layer: </span><span class="si">{</span><span class="n">layer_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_layer</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;ricciCurvature&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ricciCurvature&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also specify a subset of layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature only for specific layers</span>
+<span class="n">layer_results</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">,</span> <span class="s2">&quot;layer2&quot;</span><span class="p">],</span>  <span class="c1"># Only these layers</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="supra-graph-curvature">
+<h3>Supra-Graph Curvature<a class="headerlink" href="#supra-graph-curvature" title="Link to this heading"></a></h3>
+<p>The <strong>supra-graph</strong> representation includes both intra-layer edges (within each layer) and inter-layer edges (coupling nodes across layers). This is the most comprehensive view of the multilayer network:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature on the supra-graph representation</span>
+<span class="n">supra_result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;supra&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">interlayer_weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Weight for inter-layer coupling edges</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">G_supra</span> <span class="o">=</span> <span class="n">supra_result</span><span class="p">[</span><span class="s2">&quot;supra&quot;</span><span class="p">]</span>
+
+<span class="c1"># Identify inter-layer edges with negative curvature (weak coupling)</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_supra</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># Same node, different layers</span>
+            <span class="n">curvature</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-layer edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">curvature</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Similarly, you can apply Ricci flow to the supra-graph:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply Ricci flow on the supra-graph</span>
+<span class="n">supra_flow_result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci_flow</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;supra&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">G_supra_flow</span> <span class="o">=</span> <span class="n">supra_flow_result</span><span class="p">[</span><span class="s2">&quot;supra&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="compute-ollivier-ricci">
+<h3>compute_ollivier_ricci<a class="headerlink" href="#compute-ollivier-ricci" title="Link to this heading"></a></h3>
+<p>Compute Ollivier-Ricci curvature on the multilayer network.</p>
+<p><strong>Signature:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_ollivier_ricci</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">weight_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;weight&quot;</span><span class="p">,</span>
+    <span class="n">curvature_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+    <span class="n">backend_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">interlayer_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">mode</span></code><span class="classifier">str, default “core”</span></dt><dd><p>Scope of the computation. Options:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;core&quot;</span></code>: Compute curvature on the aggregated (core) network</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;layers&quot;</span></code>: Compute curvature separately for each layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;supra&quot;</span></code>: Compute curvature on the supra-graph (includes inter-layer edges)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">layers</span></code><span class="classifier">list or None, default None</span></dt><dd><p>List of layer identifiers to process when <code class="docutils literal notranslate"><span class="pre">mode=&quot;layers&quot;</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all layers are processed. Ignored for other modes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">alpha</span></code><span class="classifier">float, default 0.5</span></dt><dd><p>Ollivier-Ricci parameter in [0, 1] controlling the mass distribution. <code class="docutils literal notranslate"><span class="pre">alpha=0</span></code> uses pure neighbors, <code class="docutils literal notranslate"><span class="pre">alpha=0.5</span></code> is standard, and <code class="docutils literal notranslate"><span class="pre">alpha=1</span></code> uses uniform distribution over all nodes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">weight_attr</span></code><span class="classifier">str, default “weight”</span></dt><dd><p>Name of the edge attribute containing edge weights.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">curvature_attr</span></code><span class="classifier">str, default “ricciCurvature”</span></dt><dd><p>Name of the edge attribute to store computed curvature values.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">verbose</span></code><span class="classifier">str, default “ERROR”</span></dt><dd><p>Verbosity level for GraphRicciCurvature. Options: <code class="docutils literal notranslate"><span class="pre">&quot;INFO&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;DEBUG&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ERROR&quot;</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">backend_kwargs</span></code><span class="classifier">dict or None, default None</span></dt><dd><p>Optional dictionary of additional keyword arguments to pass to the <code class="docutils literal notranslate"><span class="pre">OllivierRicci</span></code> constructor from GraphRicciCurvature.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">inplace</span></code><span class="classifier">bool, default True</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, update internal graphs (e.g., <code class="docutils literal notranslate"><span class="pre">self.core_network</span></code>). If <code class="docutils literal notranslate"><span class="pre">False</span></code>, return new graphs without modifying the network.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">interlayer_weight</span></code><span class="classifier">float, default 1.0</span></dt><dd><p>Weight for inter-layer coupling edges (only used when <code class="docutils literal notranslate"><span class="pre">mode=&quot;supra&quot;</span></code>).</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dict</span></code></dt><dd><p>Dictionary mapping scope identifiers to NetworkX graphs with computed curvatures:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode=&quot;core&quot;</span></code>: <code class="docutils literal notranslate"><span class="pre">{&quot;core&quot;:</span> <span class="pre">graph_with_curvature}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode=&quot;layers&quot;</span></code>: <code class="docutils literal notranslate"><span class="pre">{layer_id:</span> <span class="pre">graph_with_curvature,</span> <span class="pre">...}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode=&quot;supra&quot;</span></code>: <code class="docutils literal notranslate"><span class="pre">{&quot;supra&quot;:</span> <span class="pre">supra_graph_with_curvature}</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">RicciBackendNotAvailable</span></code></dt><dd><p>If GraphRicciCurvature is not installed.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ValueError</span></code></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">mode</span></code> is invalid or <code class="docutils literal notranslate"><span class="pre">layers</span></code> contains invalid identifiers.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="compute-ollivier-ricci-flow">
+<h3>compute_ollivier_ricci_flow<a class="headerlink" href="#compute-ollivier-ricci-flow" title="Link to this heading"></a></h3>
+<p>Compute Ollivier-Ricci flow on the multilayer network.</p>
+<p><strong>Signature:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_ollivier_ricci_flow</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;OTD&quot;</span><span class="p">,</span>
+    <span class="n">weight_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;weight&quot;</span><span class="p">,</span>
+    <span class="n">curvature_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+    <span class="n">backend_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">interlayer_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">mode</span></code><span class="classifier">str, default “core”</span></dt><dd><p>Scope of the computation. Same options as <code class="docutils literal notranslate"><span class="pre">compute_ollivier_ricci</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">layers</span></code><span class="classifier">list or None, default None</span></dt><dd><p>List of layer identifiers to process when <code class="docutils literal notranslate"><span class="pre">mode=&quot;layers&quot;</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">alpha</span></code><span class="classifier">float, default 0.5</span></dt><dd><p>Ollivier-Ricci parameter in [0, 1].</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">iterations</span></code><span class="classifier">int, default 10</span></dt><dd><p>Number of Ricci flow iterations to perform. More iterations lead to stronger effects but take longer to compute.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">method</span></code><span class="classifier">str, default “OTD”</span></dt><dd><p>Method for Ricci flow computation. Options:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;OTD&quot;</span></code>: Optimal Transport Distance (recommended)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;ATD&quot;</span></code>: Average Transport Distance</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">weight_attr</span></code><span class="classifier">str, default “weight”</span></dt><dd><p>Name of the edge attribute containing edge weights. After Ricci flow, these weights are updated to reflect the flow metric.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">curvature_attr</span></code><span class="classifier">str, default “ricciCurvature”</span></dt><dd><p>Name of the edge attribute to store curvature values.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">verbose</span></code><span class="classifier">str, default “ERROR”</span></dt><dd><p>Verbosity level.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">backend_kwargs</span></code><span class="classifier">dict or None, default None</span></dt><dd><p>Additional keyword arguments for the <code class="docutils literal notranslate"><span class="pre">OllivierRicci</span></code> constructor.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">inplace</span></code><span class="classifier">bool, default True</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, update internal graphs. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, return new graphs.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">interlayer_weight</span></code><span class="classifier">float, default 1.0</span></dt><dd><p>Weight for inter-layer coupling edges (only for <code class="docutils literal notranslate"><span class="pre">mode=&quot;supra&quot;</span></code>).</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dict</span></code></dt><dd><p>Dictionary mapping scope identifiers to NetworkX graphs with Ricci flow applied.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">RicciBackendNotAvailable</span></code></dt><dd><p>If GraphRicciCurvature is not installed.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ValueError</span></code></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">mode</span></code> is invalid or <code class="docutils literal notranslate"><span class="pre">layers</span></code> contains invalid identifiers.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
+<section id="advanced-examples">
+<h2>Advanced Examples<a class="headerlink" href="#advanced-examples" title="Link to this heading"></a></h2>
+<section id="identifying-community-boundaries">
+<h3>Identifying Community Boundaries<a class="headerlink" href="#identifying-community-boundaries" title="Link to this heading"></a></h3>
+<p>Edges with negative curvature often correspond to community boundaries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">]</span>
+
+<span class="c1"># Find edges with negative curvature (potential community boundaries)</span>
+<span class="n">boundary_edges</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.1</span>  <span class="c1"># Threshold</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">boundary_edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> potential community boundary edges&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">curvature</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">boundary_edges</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">curvature</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="enhanced-community-detection-with-ricci-flow">
+<h3>Enhanced Community Detection with Ricci Flow<a class="headerlink" href="#enhanced-community-detection-with-ricci-flow" title="Link to this heading"></a></h3>
+<p>Ricci flow can improve community detection by reducing weights on boundary edges:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_wrapper</span>
+
+<span class="c1"># Apply Ricci flow</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci_flow</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="n">G_flow</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">]</span>
+
+<span class="c1"># Run community detection on the flow-adjusted network</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">G_flow</span><span class="p">)</span>
+
+<span class="c1"># Analyze communities</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="n">comm_sizes</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">comm_sizes</span><span class="p">[</span><span class="n">comm_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comm_sizes</span><span class="p">)</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">comm_sizes</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cross-layer-analysis-with-supra-graph">
+<h3>Cross-Layer Analysis with Supra-Graph<a class="headerlink" href="#cross-layer-analysis-with-supra-graph" title="Link to this heading"></a></h3>
+<p>Use the supra-graph to analyze relationships between layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature on supra-graph</span>
+<span class="n">supra_result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;supra&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">interlayer_weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">G_supra</span> <span class="o">=</span> <span class="n">supra_result</span><span class="p">[</span><span class="s2">&quot;supra&quot;</span><span class="p">]</span>
+
+<span class="c1"># Analyze intra-layer vs. inter-layer curvatures</span>
+<span class="n">intra_curvatures</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">inter_curvatures</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_supra</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">curvature</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># Same layer (intra-layer edge)</span>
+            <span class="n">intra_curvatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curvature</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># Same node, different layers (inter-layer edge)</span>
+            <span class="n">inter_curvatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curvature</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Intra-layer curvature: mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">intra_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;std=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">intra_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-layer curvature: mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">inter_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;std=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">inter_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<p>Computing Ollivier-Ricci curvature can be computationally expensive for large networks, as it involves optimal transport calculations for each edge. Here are some tips:</p>
+<ul class="simple">
+<li><p><strong>Start small</strong>: Test on small networks or subgraphs first</p></li>
+<li><p><strong>Use mode=”layers”</strong>: If you only need per-layer analysis, this avoids processing the full core network</p></li>
+<li><p><strong>Adjust alpha</strong>: Lower values of alpha (e.g., 0.3) can be faster to compute</p></li>
+<li><p><strong>Reduce iterations</strong>: For Ricci flow, start with fewer iterations (e.g., 5-10) and increase as needed</p></li>
+<li><p><strong>Parallel computation</strong>: GraphRicciCurvature supports parallel computation via <code class="docutils literal notranslate"><span class="pre">backend_kwargs={&quot;proc&quot;:</span> <span class="pre">4}</span></code> (use number of CPU cores)</p></li>
+</ul>
+<p>Example with parallel computation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use 4 CPU cores for parallel computation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">backend_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;proc&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Ni, C. C., Lin, Y. Y., Gao, J., Gu, X. D., &amp; Saucan, E. (2015). Ricci curvature of the Internet topology. <em>2015 IEEE Conference on Computer Communications (INFOCOM)</em>, 2758-2766.</p></li>
+<li><p>Ni, C. C., Lin, Y. Y., Luo, F., &amp; Gao, J. (2019). Community detection on networks with Ricci flow. <em>Scientific Reports</em>, 9(1), 9984.</p></li>
+<li><p>Ollivier, Y. (2009). Ricci curvature of Markov chains on metric spaces. <em>Journal of Functional Analysis</em>, 256(3), 810-864.</p></li>
+<li><p>GraphRicciCurvature library: <a class="reference external" href="https://github.com/saibalmars/GraphRicciCurvature">https://github.com/saibalmars/GraphRicciCurvature</a></p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="ricci_visualization.html"><span class="doc">Ricci-Flow-Based Visualization</span></a> - Ricci-flow-based visualization utilities</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection</span></a> - Community detection algorithms</p></li>
+<li><p><a class="reference internal" href="multilayer_concepts.html"><span class="doc">Core Concepts and Architecture</span></a> - Understanding multilayer networks</p></li>
+<li><p><a class="reference internal" href="supra.html"><span class="doc">Supra-Adjacency Matrices</span></a> - Supra-adjacency matrix representation</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

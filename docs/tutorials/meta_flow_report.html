@@ -1,0 +1,615 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meta Flow Report - Comprehensive Network Analysis &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Meta Flow Report - Comprehensive Network Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/meta_flow_report.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="meta-flow-report-comprehensive-network-analysis">
+<h1>Meta Flow Report - Comprehensive Network Analysis<a class="headerlink" href="#meta-flow-report-comprehensive-network-analysis" title="Link to this heading"></a></h1>
+<p>The <strong>Meta Flow Report</strong> provides a unified interface for conducting multiple multilayer network analyses at once. Instead of running centrality measures, community detection, and statistics separately, you can now perform comprehensive analysis with a single function call.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The meta flow report enables you to:</p>
+<ul class="simple">
+<li><p>Compute <strong>multiple centrality measures</strong> simultaneously (degree, eigenvector, betweenness, etc.)</p></li>
+<li><p>Run <strong>multiple community detection algorithms</strong> at once (Louvain, Leiden)</p></li>
+<li><p>Calculate <strong>various network statistics</strong> together (density, clustering, etc.)</p></li>
+<li><p>Generate <strong>human-readable reports</strong> summarizing all results</p></li>
+<li><p><strong>Export results</strong> for further analysis</p></li>
+</ul>
+<p>This is particularly useful for:</p>
+<ul class="simple">
+<li><p><strong>Exploratory analysis</strong>: Get a comprehensive view of your network quickly</p></li>
+<li><p><strong>Comparative studies</strong>: Analyze multiple networks with consistent metrics</p></li>
+<li><p><strong>Reporting</strong>: Generate summaries for papers, presentations, or documentation</p></li>
+<li><p><strong>Teaching</strong>: Demonstrate multiple network analysis concepts at once</p></li>
+</ul>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<p>The simplest way to use the meta flow report is with the <code class="docutils literal notranslate"><span class="pre">run_meta_analysis()</span></code> convenience function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.meta_flow_report</span> <span class="kn">import</span> <span class="n">run_meta_analysis</span>
+
+<span class="c1"># Create or load your network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Run comprehensive analysis with automatic summary</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">run_meta_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Computing centrality measures...
+Running community detection...
+Computing network statistics...
+
+================================================================================
+META FLOW REPORT - Multilayer Network Analysis Summary
+================================================================================
+
+================================================================================
+CENTRALITY MEASURES
+================================================================================
+
+Overlapping Degree:
+  Alice                          2.000000
+  Bob                            2.000000
+  Carol                          2.000000
+
+[... more centrality measures ...]
+
+================================================================================
+COMMUNITY DETECTION
+================================================================================
+
+Louvain Communities:
+  Number of communities: 2
+  Community sizes: {0: 4, 1: 2}
+
+[... more results ...]
+</pre></div>
+</div>
+</section>
+<section id="selective-analysis">
+<h3>Selective Analysis<a class="headerlink" href="#selective-analysis" title="Link to this heading"></a></h3>
+<p>You can choose which analyses to run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.meta_flow_report</span> <span class="kn">import</span> <span class="n">run_meta_analysis</span>
+
+<span class="c1"># Run only centralities and statistics (skip communities)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">run_meta_analysis</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">include_centralities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_communities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_statistics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">print_summary</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="fine-grained-control">
+<h3>Fine-Grained Control<a class="headerlink" href="#fine-grained-control" title="Link to this heading"></a></h3>
+<p>For more control, use the <code class="docutils literal notranslate"><span class="pre">MetaFlowReport</span></code> class directly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.meta_flow_report</span> <span class="kn">import</span> <span class="n">MetaFlowReport</span>
+
+<span class="c1"># Create report generator</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">MetaFlowReport</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Run analyses separately</span>
+<span class="n">centralities</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">compute_centralities</span><span class="p">(</span>
+    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="n">communities</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">detect_communities</span><span class="p">(</span>
+    <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;louvain&#39;</span><span class="p">],</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="p">)</span>
+
+<span class="n">statistics</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">compute_statistics</span><span class="p">(</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Or run all at once with custom options</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">run_all_analyses</span><span class="p">(</span>
+    <span class="n">include_centralities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_communities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_statistics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Print summary</span>
+<span class="n">report</span><span class="o">.</span><span class="n">print_summary</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="analysis-components">
+<h2>Analysis Components<a class="headerlink" href="#analysis-components" title="Link to this heading"></a></h2>
+<section id="centrality-measures">
+<h3>Centrality Measures<a class="headerlink" href="#centrality-measures" title="Link to this heading"></a></h3>
+<p>The report computes the following centrality measures:</p>
+<p><strong>Degree-based:</strong></p>
+<ul class="simple">
+<li><p>Layer-specific degree/strength</p></li>
+<li><p>Supra degree/strength</p></li>
+<li><p>Overlapping degree/strength</p></li>
+<li><p>Participation coefficient</p></li>
+</ul>
+<p><strong>Eigenvector-based:</strong></p>
+<ul class="simple">
+<li><p>Multiplex eigenvector centrality</p></li>
+<li><p>Eigenvector versatility</p></li>
+<li><p>Katz-Bonacich centrality</p></li>
+<li><p>PageRank centrality</p></li>
+</ul>
+<p><strong>Path-based</strong> (optional, computationally expensive):</p>
+<ul class="simple">
+<li><p>Multilayer closeness centrality</p></li>
+<li><p>Multilayer betweenness centrality</p></li>
+</ul>
+<p><strong>Advanced</strong> (optional, computationally expensive):</p>
+<ul class="simple">
+<li><p>HITS centrality</p></li>
+<li><p>Current-flow closeness/betweenness</p></li>
+<li><p>Subgraph centrality</p></li>
+<li><p>Total communicability</p></li>
+<li><p>Multiplex k-core</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Include only basic measures (fast)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">compute_centralities</span><span class="p">(</span>
+    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Include all measures (slow for large networks)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">compute_centralities</span><span class="p">(</span>
+    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="community-detection">
+<h3>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h3>
+<p>The report supports multiple community detection algorithms:</p>
+<ul class="simple">
+<li><p><strong>Louvain</strong>: Fast modularity optimization</p></li>
+<li><p><strong>Leiden</strong>: Improved Louvain algorithm</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run specific methods</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">detect_communities</span><span class="p">(</span>
+    <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;louvain&#39;</span><span class="p">,</span> <span class="s1">&#39;leiden&#39;</span><span class="p">],</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>   <span class="c1"># Resolution parameter</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span>    <span class="c1"># Inter-layer coupling</span>
+<span class="p">)</span>
+
+<span class="c1"># Results include community assignments and modularity scores</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">communities</span><span class="p">[</span><span class="s1">&#39;louvain&#39;</span><span class="p">])</span>
+<span class="c1"># {(&#39;Alice&#39;, &#39;facebook&#39;): 0, (&#39;Bob&#39;, &#39;facebook&#39;): 0, ...}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">communities</span><span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">][</span><span class="s1">&#39;modularity&#39;</span><span class="p">])</span>
+<span class="c1"># 0.523</span>
+</pre></div>
+</div>
+</section>
+<section id="network-statistics">
+<h3>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading"></a></h3>
+<p>The report computes various network statistics:</p>
+<p><strong>Basic statistics:</strong></p>
+<ul class="simple">
+<li><p>Layer densities</p></li>
+<li><p>Node activities</p></li>
+<li><p>Inter-layer coupling strength</p></li>
+<li><p>Edge overlap between layers</p></li>
+</ul>
+<p><strong>Advanced statistics</strong> (optional):</p>
+<ul class="simple">
+<li><p>Versatility centrality</p></li>
+<li><p>Multilayer clustering coefficient</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">stats</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">compute_statistics</span><span class="p">(</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Access individual statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;layer_densities&#39;</span><span class="p">])</span>
+<span class="c1"># {&#39;facebook&#39;: 0.667, &#39;twitter&#39;: 0.333}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;node_activities&#39;</span><span class="p">])</span>
+<span class="c1"># {&#39;Alice&#39;: 1.0, &#39;Bob&#39;: 0.5, ...}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="working-with-results">
+<h2>Working with Results<a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
+<section id="extracting-top-nodes">
+<h3>Extracting Top Nodes<a class="headerlink" href="#extracting-top-nodes" title="Link to this heading"></a></h3>
+<p>Get the most important nodes by any measure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run analysis first</span>
+<span class="n">report</span><span class="o">.</span><span class="n">run_all_analyses</span><span class="p">()</span>
+
+<span class="c1"># Get top nodes by specific measures</span>
+<span class="n">top_by_degree</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">get_top_nodes</span><span class="p">(</span>
+    <span class="n">measure</span><span class="o">=</span><span class="s1">&#39;overlapping_degree&#39;</span><span class="p">,</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">category</span><span class="o">=</span><span class="s1">&#39;centralities&#39;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">top_by_degree</span><span class="p">)</span>
+<span class="c1"># [(&#39;Alice&#39;, 4.0), (&#39;Bob&#39;, 3.5), ...]</span>
+
+<span class="n">top_by_eigenvector</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">get_top_nodes</span><span class="p">(</span>
+    <span class="n">measure</span><span class="o">=</span><span class="s1">&#39;multiplex_eigenvector&#39;</span><span class="p">,</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">category</span><span class="o">=</span><span class="s1">&#39;centralities&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="exporting-results">
+<h3>Exporting Results<a class="headerlink" href="#exporting-results" title="Link to this heading"></a></h3>
+<p>Export all results as a dictionary for further processing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run analysis</span>
+<span class="n">report</span><span class="o">.</span><span class="n">run_all_analyses</span><span class="p">()</span>
+
+<span class="c1"># Export results</span>
+<span class="n">results_dict</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">export_to_dict</span><span class="p">()</span>
+
+<span class="c1"># Access specific results</span>
+<span class="n">centralities</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s1">&#39;centralities&#39;</span><span class="p">]</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s1">&#39;communities&#39;</span><span class="p">]</span>
+<span class="n">statistics</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="s1">&#39;statistics&#39;</span><span class="p">]</span>
+
+<span class="c1"># Save to file (example)</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;network_analysis.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">results_dict</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-summaries">
+<h3>Custom Summaries<a class="headerlink" href="#custom-summaries" title="Link to this heading"></a></h3>
+<p>Print custom summaries with different options:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show top 10 nodes instead of default 5</span>
+<span class="n">report</span><span class="o">.</span><span class="n">print_summary</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Or create your own summary</span>
+<span class="k">if</span> <span class="s1">&#39;centralities&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="n">overlapping</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;centralities&#39;</span><span class="p">][</span><span class="s1">&#39;overlapping_degree&#39;</span><span class="p">]</span>
+    <span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">overlapping</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Most Central Nodes:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">centrality</span> <span class="ow">in</span> <span class="n">top_nodes</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">centrality</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<p>The meta flow report is designed to be efficient, but some measures are computationally expensive:</p>
+<p><strong>Fast</strong> (suitable for large networks):</p>
+<ul class="simple">
+<li><p>Degree-based centralities</p></li>
+<li><p>Eigenvector-based centralities</p></li>
+<li><p>Basic statistics</p></li>
+</ul>
+<p><strong>Slow</strong> (expensive for large networks):</p>
+<ul class="simple">
+<li><p>Path-based centralities (closeness, betweenness)</p></li>
+<li><p>Advanced centralities (current-flow, communicability)</p></li>
+<li><p>Advanced statistics</p></li>
+</ul>
+<p><strong>Recommendations:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For large networks (&gt;10,000 nodes): use basic measures only</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">run_meta_analysis</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># For medium networks (1,000-10,000 nodes): include path-based</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">run_meta_analysis</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># For small networks (&lt;1,000 nodes): include all measures</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">run_meta_analysis</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-example">
+<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
+<p>Here’s a complete example analyzing a social network:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.meta_flow_report</span> <span class="kn">import</span> <span class="n">MetaFlowReport</span>
+
+<span class="c1"># Create a 3-layer social network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Add connections in different platforms</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="c1"># Facebook layer</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+
+    <span class="c1"># Twitter layer</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+
+    <span class="c1"># LinkedIn layer</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+
+    <span class="c1"># Inter-layer connections</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Run comprehensive analysis</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">MetaFlowReport</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">run_all_analyses</span><span class="p">(</span>
+    <span class="n">include_centralities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_communities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_statistics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_advanced</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="p">)</span>
+
+<span class="c1"># Print summary</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NETWORK ANALYSIS SUMMARY&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="n">report</span><span class="o">.</span><span class="n">print_summary</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Extract key insights</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;KEY INSIGHTS&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+
+<span class="c1"># Most influential users</span>
+<span class="n">top_users</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">get_top_nodes</span><span class="p">(</span><span class="s1">&#39;overlapping_degree&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s1">&#39;centralities&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Most Active Users:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">user</span><span class="p">,</span> <span class="n">degree</span> <span class="ow">in</span> <span class="n">top_users</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s2"> connections&quot;</span><span class="p">)</span>
+
+<span class="c1"># Community structure</span>
+<span class="k">if</span> <span class="s1">&#39;communities&#39;</span> <span class="ow">in</span> <span class="n">results</span> <span class="ow">and</span> <span class="s1">&#39;louvain&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;communities&#39;</span><span class="p">]:</span>
+    <span class="n">comms</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;communities&#39;</span><span class="p">][</span><span class="s1">&#39;louvain&#39;</span><span class="p">]</span>
+    <span class="n">num_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">comms</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Community Structure:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> communities detected&quot;</span><span class="p">)</span>
+
+<span class="c1"># Layer densities</span>
+<span class="k">if</span> <span class="s1">&#39;statistics&#39;</span> <span class="ow">in</span> <span class="n">results</span> <span class="ow">and</span> <span class="s1">&#39;layer_densities&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;statistics&#39;</span><span class="p">]:</span>
+    <span class="n">densities</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;statistics&#39;</span><span class="p">][</span><span class="s1">&#39;layer_densities&#39;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layer Activity:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">density</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">densities</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2"> of possible connections&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="run-meta-analysis-network">
+<h3><code class="docutils literal notranslate"><span class="pre">run_meta_analysis(network,</span> <span class="pre">...)</span></code><a class="headerlink" href="#run-meta-analysis-network" title="Link to this heading"></a></h3>
+<p>Convenience function for quick comprehensive analysis.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">network</span></code>: py3plex multi_layer_network object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include_centralities</span></code> (bool): Compute centrality measures (default: True)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include_communities</span></code> (bool): Run community detection (default: True)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include_statistics</span></code> (bool): Compute statistics (default: True)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include_path_based</span></code> (bool): Include expensive path-based measures (default: False)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include_advanced</span></code> (bool): Include expensive advanced measures (default: False)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">print_summary</span></code> (bool): Print summary of results (default: True)</p></li>
+</ul>
+<p><strong>Returns:</strong> Dictionary with analysis results</p>
+</section>
+<section id="metaflowreport-class">
+<h3><code class="docutils literal notranslate"><span class="pre">MetaFlowReport</span></code> Class<a class="headerlink" href="#metaflowreport-class" title="Link to this heading"></a></h3>
+<p>Main class for comprehensive network analysis.</p>
+<p><strong>Methods:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_centralities(include_path_based,</span> <span class="pre">include_advanced)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">detect_communities(methods,</span> <span class="pre">gamma,</span> <span class="pre">omega)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_statistics(include_advanced)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_all_analyses(...)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">print_summary(results,</span> <span class="pre">top_n)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_to_dict()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_top_nodes(measure,</span> <span class="pre">n,</span> <span class="pre">category)</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Detailed centrality measures documentation</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Community detection algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_meta_flow_report.py</span></code> - Complete example</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>This module integrates multiple analysis approaches from:</p>
+<ul class="simple">
+<li><p>Kivelä, M., et al. (2014). “Multilayer networks”. Journal of complex networks, 2(3), 203-271.</p></li>
+<li><p>Mucha, P. J., et al. (2010). “Community structure in time-dependent, multiscale, and multiplex networks”. Science, 328(5980), 876-878.</p></li>
+<li><p>De Domenico, M., et al. (2013). “Mathematical formulation of multilayer networks”. Physical Review X, 3(4), 041022.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

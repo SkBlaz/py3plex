@@ -52,17 +52,22 @@ benchmark-*.json
 # Documentation builds
 docfiles/_build/
 docfiles/build/
-docs/_build/
+
+# Ignore build artifacts in docs/ but track the deployed HTML
+# The docs/ folder is served by GitHub Pages and contains:
+# - index.html and other HTML files (tracked)
+# - _static/, _images/, _sources/ directories (tracked)
+# - py3plex_documentation.pdf (tracked)
+# - README.md (tracked)
+# - .nojekyll file (tracked)
+docs/.buildinfo
+docs/.doctrees/
 
 # Auto-generated API documentation (not needed in git, regenerated on build)
 docfiles/AUTOGEN_results/
 docfiles/sources/
 docfiles/source/
 docfiles/_sources/
-
-# Note: Only docs/py3plex_documentation.pdf is tracked for distribution
-# HTML documentation is auto-deployed to GitHub Pages from docfiles/ RST sources
-# The GitHub Actions workflow (docs.yml) builds and deploys automatically
 
 # Binaries (users should install separately)
 bin/Infomap

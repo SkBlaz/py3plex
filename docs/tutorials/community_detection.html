@@ -1,0 +1,598 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Detection Tutorial &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Community Detection Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/community_detection.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="community-detection-tutorial">
+<h1>Community Detection Tutorial<a class="headerlink" href="#community-detection-tutorial" title="Link to this heading"></a></h1>
+<p>This tutorial demonstrates <strong>community detection algorithms</strong> for <strong>multilayer networks</strong> using py3plex.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Community detection identifies <strong>groups of nodes</strong> that are more <strong>densely connected</strong> to each other than to the rest of the network. For <strong>multilayer networks</strong>, communities can <strong>span multiple layers</strong>, accounting for both <strong>intra-layer</strong> and <strong>inter-layer</strong> structure.</p>
+</section>
+<section id="supported-algorithms">
+<h2>Supported Algorithms<a class="headerlink" href="#supported-algorithms" title="Link to this heading"></a></h2>
+<p>py3plex provides <strong>several community detection algorithms</strong>:</p>
+<ul class="simple">
+<li><p><strong>Louvain</strong> - <strong>Fast modularity optimization</strong> (recommended for most use cases)</p></li>
+<li><p><strong>Infomap</strong> - <strong>Flow-based</strong> community detection (requires external binary)</p></li>
+<li><p><strong>Label Propagation</strong> - <strong>Semi-supervised</strong> approach with known seed communities</p></li>
+<li><p><strong>Multilayer Modularity</strong> - <strong>True multilayer</strong> community detection (Mucha et al. 2010)</p></li>
+</ul>
+</section>
+<section id="louvain-algorithm">
+<h2>Louvain Algorithm<a class="headerlink" href="#louvain-algorithm" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<p><strong>Fastest algorithm</strong> for large networks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+
+<span class="c1"># Create or load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.graphml&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Detect communities using Louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Print results</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">community_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> -&gt; Community </span><span class="si">{</span><span class="n">community_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># With custom resolution parameter</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span>  <span class="c1"># Higher = more communities, Lower = fewer communities</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Resolution parameter:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution=1.0</span></code> - <strong>Standard modularity</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution&gt;1.0</span></code> - <strong>More, smaller communities</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution&lt;1.0</span></code> - <strong>Fewer, larger communities</strong></p></li>
+</ul>
+</section>
+<section id="advantages">
+<h3>Advantages<a class="headerlink" href="#advantages" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Very fast</strong>: <span class="math notranslate nohighlight">\(O(n \log n)\)</span></p></li>
+<li><p><strong>Scales to millions</strong> of nodes</p></li>
+<li><p><strong>BSD license</strong> (commercial-friendly)</p></li>
+<li><p><strong>Well-established</strong> and widely used</p></li>
+</ul>
+</section>
+<section id="disadvantages">
+<h3>Disadvantages<a class="headerlink" href="#disadvantages" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Non-deterministic</strong> (random initialization)</p></li>
+<li><p><strong>Cannot find overlapping</strong> communities</p></li>
+<li><p><strong>Resolution limit</strong> issues</p></li>
+</ul>
+</section>
+</section>
+<section id="infomap-algorithm">
+<h2>Infomap Algorithm<a class="headerlink" href="#infomap-algorithm" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Basic Usage<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Flow-based approach for detecting communities:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_wrapper</span>
+
+<span class="c1"># Detect communities using Infomap</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/infomap&quot;</span>  <span class="c1"># Path to Infomap binary</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="with-hierarchical-structure">
+<h3>With Hierarchical Structure<a class="headerlink" href="#with-hierarchical-structure" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get hierarchical community structure</span>
+<span class="n">hierarchical_communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/infomap&quot;</span><span class="p">,</span>
+    <span class="n">hierarchical</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>Advantages<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Can detect overlapping communities</p></li>
+<li><p>Flow-based (natural for many applications)</p></li>
+<li><p>Hierarchical structure</p></li>
+<li><p>Information-theoretic foundation</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>Disadvantages<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Requires external binary</p></li>
+<li><p>AGPLv3 license (viral copyleft - problematic for commercial use)</p></li>
+<li><p>Slower than Louvain</p></li>
+</ul>
+</section>
+</section>
+<section id="label-propagation">
+<h2>Label Propagation<a class="headerlink" href="#label-propagation" title="Link to this heading"></a></h2>
+<section id="semi-supervised-detection">
+<h3>Semi-Supervised Detection<a class="headerlink" href="#semi-supervised-detection" title="Link to this heading"></a></h3>
+<p>Use when you have some known community memberships:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">label_propagation</span>
+
+<span class="c1"># Provide seed labels for some nodes</span>
+<span class="n">seed_labels</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;node1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;node2&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;node3&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;node4&#39;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="c1"># Propagate labels to unlabeled nodes</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">seed_labels</span><span class="o">=</span><span class="n">seed_labels</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="fully-unsupervised">
+<h3>Fully Unsupervised<a class="headerlink" href="#fully-unsupervised" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Without seed labels (random initialization)</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>Advantages<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Very fast: <span class="math notranslate nohighlight">\(O(m)\)</span> linear in edges</p></li>
+<li><p>Can incorporate prior knowledge</p></li>
+<li><p>MIT license</p></li>
+<li><p>Simple and interpretable</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>Disadvantages<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Non-deterministic</p></li>
+<li><p>Sensitive to initialization</p></li>
+<li><p>May not converge</p></li>
+<li><p>Lower quality than Louvain/Infomap</p></li>
+</ul>
+</section>
+</section>
+<section id="multilayer-modularity">
+<h2>Multilayer Modularity<a class="headerlink" href="#multilayer-modularity" title="Link to this heading"></a></h2>
+<section id="true-multilayer-detection">
+<h3>True Multilayer Detection<a class="headerlink" href="#true-multilayer-detection" title="Link to this heading"></a></h3>
+<p>Accounts for multilayer structure following Mucha et al. (2010):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">multilayer_modularity</span> <span class="k">as</span> <span class="n">mlm</span>
+
+<span class="c1"># Get supra-adjacency matrix</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Detect communities with multilayer modularity</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">mlm</span><span class="o">.</span><span class="n">multilayer_louvain</span><span class="p">(</span>
+    <span class="n">supra_adj</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Resolution parameter</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span>       <span class="c1"># Inter-layer coupling strength</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="parameter-tuning">
+<h3>Parameter Tuning<a class="headerlink" href="#parameter-tuning" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Emphasize layer-specific structure</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">mlm</span><span class="o">.</span><span class="n">multilayer_louvain</span><span class="p">(</span>
+    <span class="n">supra_adj</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">0.1</span>  <span class="c1"># Low coupling = layer-specific communities</span>
+<span class="p">)</span>
+
+<span class="c1"># Emphasize cross-layer structure</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">mlm</span><span class="o">.</span><span class="n">multilayer_louvain</span><span class="p">(</span>
+    <span class="n">supra_adj</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span>  <span class="c1"># High coupling = cross-layer communities</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mathematical-formulation">
+<h3>Mathematical Formulation<a class="headerlink" href="#mathematical-formulation" title="Link to this heading"></a></h3>
+<p>Multilayer modularity is defined as:</p>
+<div class="math notranslate nohighlight">
+\[Q^{ML} = \frac{1}{2\mu} \sum_{ij\alpha\beta} \left[ (A_{ij}^{[\alpha]} - \gamma_{\alpha} P_{ij}^{[\alpha]})\delta_{\alpha\beta} + \omega_{\alpha\beta}\delta_{ij} \right] \delta(g_{i}^{[\alpha]}, g_{j}^{[\beta]})\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(A_{ij}^{[\alpha]}\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\alpha\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(P_{ij}^{[\alpha]}\)</span> is the null model (e.g., configuration model)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\gamma_{\alpha}\)</span> is the resolution parameter for layer <span class="math notranslate nohighlight">\(\alpha\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\omega_{\alpha\beta}\)</span> is the coupling strength between layers</p></li>
+<li><p><span class="math notranslate nohighlight">\(\delta(g_{i}^{[\alpha]}, g_{j}^{[\beta]})\)</span> is 1 if nodes are in the same community, 0 otherwise</p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>Advantages<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Accounts for multilayer structure</p></li>
+<li><p>Implements state-of-the-art algorithm</p></li>
+<li><p>Configurable inter-layer coupling</p></li>
+<li><p>Published in Science (Mucha et al. 2010)</p></li>
+</ul>
+</section>
+<section id="id7">
+<h3>Disadvantages<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>More computationally expensive</p></li>
+<li><p>Requires parameter tuning</p></li>
+<li><p>May not scale to very large networks (&gt;100k nodes)</p></li>
+</ul>
+</section>
+</section>
+<section id="evaluating-community-quality">
+<h2>Evaluating Community Quality<a class="headerlink" href="#evaluating-community-quality" title="Link to this heading"></a></h2>
+<section id="modularity-score">
+<h3>Modularity Score<a class="headerlink" href="#modularity-score" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Compute modularity</span>
+<span class="n">modularity</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">modularity</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">communities</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Modularity: </span><span class="si">{</span><span class="n">modularity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Q &gt; 0.3\)</span>: Good community structure</p></li>
+<li><p><span class="math notranslate nohighlight">\(Q &gt; 0.5\)</span>: Strong community structure</p></li>
+<li><p><span class="math notranslate nohighlight">\(Q &lt; 0.3\)</span>: Weak or no community structure</p></li>
+</ul>
+</section>
+<section id="coverage-and-performance">
+<h3>Coverage and Performance<a class="headerlink" href="#coverage-and-performance" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Coverage: fraction of edges within communities</span>
+<span class="n">coverage</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">communities</span><span class="p">)</span>
+
+<span class="c1"># Performance: fraction of correctly classified node pairs</span>
+<span class="n">performance</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">performance</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">communities</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coverage: </span><span class="si">{</span><span class="n">coverage</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Performance: </span><span class="si">{</span><span class="n">performance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="visualizing-communities">
+<h2>Visualizing Communities<a class="headerlink" href="#visualizing-communities" title="Link to this heading"></a></h2>
+<section id="color-by-community">
+<h3>Color by Community<a class="headerlink" href="#color-by-community" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">hairball_plot</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Map communities to colors</span>
+<span class="n">node_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">communities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+<span class="c1"># Visualize with community colors</span>
+<span class="n">hairball_plot</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">node_color</span><span class="o">=</span><span class="n">node_colors</span><span class="p">,</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force&#39;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;tab10&#39;</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="community-size-distribution">
+<h3>Community Size Distribution<a class="headerlink" href="#community-size-distribution" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Count community sizes</span>
+<span class="n">community_sizes</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="n">sizes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">community_sizes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+<span class="c1"># Plot distribution</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">sizes</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Community Size&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Community Size Distribution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="comparing-algorithms">
+<h2>Comparing Algorithms<a class="headerlink" href="#comparing-algorithms" title="Link to this heading"></a></h2>
+<section id="run-multiple-algorithms">
+<h3>Run Multiple Algorithms<a class="headerlink" href="#run-multiple-algorithms" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run different algorithms</span>
+<span class="n">louvain_comms</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+<span class="n">label_prop_comms</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Compare number of communities</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Louvain: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">louvain_comms</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label Prop: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">label_prop_comms</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compare modularity</span>
+<span class="n">louvain_mod</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">modularity</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+                                      <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">louvain_comms</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
+                                       <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">louvain_comms</span><span class="o">.</span><span class="n">values</span><span class="p">())])</span>
+<span class="n">label_mod</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">modularity</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+                                    <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">label_prop_comms</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
+                                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">label_prop_comms</span><span class="o">.</span><span class="n">values</span><span class="p">())])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Louvain modularity: </span><span class="si">{</span><span class="n">louvain_mod</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label Prop modularity: </span><span class="si">{</span><span class="n">label_mod</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="normalized-mutual-information">
+<h3>Normalized Mutual Information<a class="headerlink" href="#normalized-mutual-information" title="Link to this heading"></a></h3>
+<p>Compare similarity between community structures:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">normalized_mutual_info_score</span>
+
+<span class="c1"># Convert to lists</span>
+<span class="n">louvain_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">louvain_comms</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+<span class="n">label_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">label_prop_comms</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+<span class="c1"># Compute NMI</span>
+<span class="n">nmi</span> <span class="o">=</span> <span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">louvain_list</span><span class="p">,</span> <span class="n">label_list</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NMI between Louvain and Label Prop: </span><span class="si">{</span><span class="n">nmi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>NMI = 1.0: Identical community structures</p></li>
+<li><p>NMI = 0.0: Completely different structures</p></li>
+<li><p>NMI &gt; 0.5: Similar structures</p></li>
+</ul>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="algorithm-selection">
+<h3>Algorithm Selection<a class="headerlink" href="#algorithm-selection" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Network Size</p></th>
+<th class="head"><p>Speed Priority</p></th>
+<th class="head"><p>Quality Priority</p></th>
+<th class="head"><p>Recommendation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Small (&lt;1K)</p></td>
+<td><p>Any</p></td>
+<td><p>Any</p></td>
+<td><p>Try all algorithms</p></td>
+</tr>
+<tr class="row-odd"><td><p>Medium (1K-10K)</p></td>
+<td><p>Louvain</p></td>
+<td><p>Louvain/Infomap</p></td>
+<td><p>Louvain (good balance)</p></td>
+</tr>
+<tr class="row-even"><td><p>Large (10K-100K)</p></td>
+<td><p>Louvain/Label Prop</p></td>
+<td><p>Louvain</p></td>
+<td><p>Louvain</p></td>
+</tr>
+<tr class="row-odd"><td><p>Very Large (&gt;100K)</p></td>
+<td><p>Label Prop</p></td>
+<td><p>Louvain</p></td>
+<td><p>Label Prop or sample</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="parameter-guidelines">
+<h3>Parameter Guidelines<a class="headerlink" href="#parameter-guidelines" title="Link to this heading"></a></h3>
+<p><strong>Louvain resolution:</strong></p>
+<ul class="simple">
+<li><p>Start with <code class="docutils literal notranslate"><span class="pre">resolution=1.0</span></code></p></li>
+<li><p>Increase if communities are too large</p></li>
+<li><p>Decrease if communities are too fragmented</p></li>
+</ul>
+<p><strong>Multilayer coupling (omega):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">omega=1.0</span></code> - Default, balanced</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">omega&lt;1.0</span></code> - Emphasize layer-specific structure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">omega&gt;1.0</span></code> - Emphasize cross-layer structure</p></li>
+</ul>
+</section>
+<section id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Link to this heading"></a></h3>
+<p>Always validate community detection results:</p>
+<ol class="arabic simple">
+<li><p><strong>Visual inspection</strong> - Plot and examine communities</p></li>
+<li><p><strong>Modularity</strong> - Check modularity score (&gt;0.3 is good)</p></li>
+<li><p><strong>Size distribution</strong> - Check for giant communities or singletons</p></li>
+<li><p><strong>Domain knowledge</strong> - Do communities make sense for your application?</p></li>
+</ol>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p><strong>Louvain:</strong></p>
+<p>Blondel, V. D., et al. (2008). Fast unfolding of communities in large networks. <em>Journal of Statistical Mechanics</em>.</p>
+<p><strong>Infomap:</strong></p>
+<p>Rosvall, M., &amp; Bergstrom, C. T. (2008). Maps of random walks on complex networks reveal community structure. <em>PNAS</em>, 105(4), 1118-1123.</p>
+<p><strong>Multilayer Modularity:</strong></p>
+<p>Mucha, P. J., et al. (2010). Community structure in time-dependent, multiscale, and multiplex networks. <em>Science</em>, 328(5980), 876-878.</p>
+<p>See <a class="reference internal" href="../citation.html"><span class="doc">Citation and References</span></a> for complete citations with DOIs.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality measures tutorial</p></li>
+<li><p><a class="reference internal" href="multilayer_modularity.html"><span class="doc">Multilayer Modularity and Community Detection</span></a> - Multilayer modularity details</p></li>
+<li><p><a class="reference internal" href="../algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> - Algorithm selection guide</p></li>
+<li><p>Examples in <code class="docutils literal notranslate"><span class="pre">examples/communities/example_community_detection.py</span></code></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

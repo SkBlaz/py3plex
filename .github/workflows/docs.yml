@@ -12,6 +12,10 @@ jobs:
     name: Build Documentation
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     
     steps:
     - name: Checkout code
@@ -118,11 +122,33 @@ jobs:
         retention-days: 30
       timeout-minutes: 2
     
-    - name: Deploy to GitHub Pages
+    - name: Deploy HTML to docs folder for GitHub Pages
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docfiles/_build
-        force_orphan: true
-      timeout-minutes: 3
+      run: |
+        echo "📦 Deploying HTML documentation to docs/ folder..."
+        # Remove old HTML files but keep README.md and PDF
+        find docs -type f -name "*.html" -delete
+        find docs -type d \( -name "_static" -o -name "_images" -o -name "_sources" \) -exec rm -rf {} + 2>/dev/null || true
+        # Copy built HTML files to docs/ (excluding build artifacts)
+        rsync -av --exclude='.buildinfo' --exclude='.doctrees' docfiles/_build/ docs/
+        # Create .nojekyll to prevent Jekyll processing
+        touch docs/.nojekyll
+        echo "✅ HTML files copied to docs/"
+        ls -la docs/ | head -20
+      timeout-minutes: 1
+    
+    - name: Commit and push HTML documentation
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add docs/
+        # Commit only if there are changes
+        if ! git diff --staged --quiet; then
+          git commit -m "Update documentation HTML [skip ci]"
+          git push
+          echo "✅ HTML documentation committed and pushed"
+        else
+          echo "ℹ️ No changes to HTML documentation, skipping commit"
+        fi
+      timeout-minutes: 2

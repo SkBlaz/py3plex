@@ -1,0 +1,668 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dependency Management and Troubleshooting &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Dependency Management and Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/dependencies_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dependency-management-and-troubleshooting">
+<h1>Dependency Management and Troubleshooting<a class="headerlink" href="#dependency-management-and-troubleshooting" title="Link to this heading"></a></h1>
+<p>This guide covers dependency installation, optional features, and common troubleshooting scenarios.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#core-dependencies" id="id1">Core Dependencies</a></p>
+<ul>
+<li><p><a class="reference internal" href="#automatic-installation" id="id2">Automatic Installation</a></p></li>
+<li><p><a class="reference internal" href="#verifying-installation" id="id3">Verifying Installation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#optional-dependencies" id="id4">Optional Dependencies</a></p>
+<ul>
+<li><p><a class="reference internal" href="#advanced-visualization-recommended" id="id5">Advanced Visualization (Recommended)</a></p></li>
+<li><p><a class="reference internal" href="#additional-algorithms" id="id6">Additional Algorithms</a></p></li>
+<li><p><a class="reference internal" href="#infomap-community-detection" id="id7">Infomap Community Detection</a></p></li>
+<li><p><a class="reference internal" href="#installing-all-optional-features" id="id8">Installing All Optional Features</a></p></li>
+<li><p><a class="reference internal" href="#development-dependencies" id="id9">Development Dependencies</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dependency-troubleshooting" id="id10">Dependency Troubleshooting</a></p>
+<ul>
+<li><p><a class="reference internal" href="#common-installation-issues" id="id11">Common Installation Issues</a></p></li>
+<li><p><a class="reference internal" href="#runtime-dependency-issues" id="id12">Runtime Dependency Issues</a></p></li>
+<li><p><a class="reference internal" href="#version-conflicts" id="id13">Version Conflicts</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#llm-friendly-dependency-guidance" id="id14">LLM-Friendly Dependency Guidance</a></p>
+<ul>
+<li><p><a class="reference internal" href="#for-ai-assistants-helping-users" id="id15">For AI Assistants Helping Users</a></p></li>
+<li><p><a class="reference internal" href="#quick-dependency-checker-script" id="id16">Quick Dependency Checker Script</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#best-practices" id="id17">Best Practices</a></p>
+<ul>
+<li><p><a class="reference internal" href="#recommendations-for-different-use-cases" id="id18">Recommendations for Different Use Cases</a></p></li>
+<li><p><a class="reference internal" href="#virtual-environment-workflow" id="id19">Virtual Environment Workflow</a></p></li>
+<li><p><a class="reference internal" href="#keeping-dependencies-updated" id="id20">Keeping Dependencies Updated</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#next-steps" id="id21">Next Steps</a></p></li>
+</ul>
+</nav>
+<section id="core-dependencies">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Core Dependencies</a><a class="headerlink" href="#core-dependencies" title="Link to this heading"></a></h2>
+<section id="automatic-installation">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Automatic Installation</a><a class="headerlink" href="#automatic-installation" title="Link to this heading"></a></h3>
+<p>Core dependencies are <strong>automatically installed</strong> when you install Py3plex:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+<p><strong>Core dependencies include:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">networkx</span> <span class="pre">&gt;=</span> <span class="pre">2.5</span></code> - Graph data structures and algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy</span> <span class="pre">&gt;=</span> <span class="pre">1.19.0</span></code> - Numerical computing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scipy</span> <span class="pre">&gt;=</span> <span class="pre">1.5.0</span></code> - Scientific computing and sparse matrices</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">matplotlib</span> <span class="pre">&gt;=</span> <span class="pre">3.3.0</span></code> - Static visualization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pandas</span></code> - Data manipulation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scikit-learn</span> <span class="pre">&gt;=</span> <span class="pre">0.24.0</span></code> - Machine learning utilities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tqdm</span> <span class="pre">&gt;=</span> <span class="pre">4.40.0</span></code> - Progress bars</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rdflib</span> <span class="pre">&gt;=</span> <span class="pre">6.0.0</span></code> - Semantic web support</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitarray</span> <span class="pre">&gt;=</span> <span class="pre">2.0.0</span></code> - Efficient boolean arrays</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seaborn</span> <span class="pre">&gt;=</span> <span class="pre">0.11.0</span></code> - Statistical visualization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gensim</span> <span class="pre">&gt;=</span> <span class="pre">4.0.0</span></code> - Topic modeling and embeddings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cython</span> <span class="pre">&gt;=</span> <span class="pre">0.29.0</span></code> - C extensions for performance</p></li>
+</ul>
+</section>
+<section id="verifying-installation">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Verifying Installation</a><a class="headerlink" href="#verifying-installation" title="Link to this heading"></a></h3>
+<p>Check that Py3plex and dependencies are installed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3plex</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Py3plex version: </span><span class="si">{</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check key dependencies</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NetworkX: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NumPy: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SciPy: </span><span class="si">{</span><span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matplotlib: </span><span class="si">{</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[OK] All core dependencies available&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="optional-dependencies">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Optional Dependencies</a><a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h2>
+<p>Py3plex offers several optional feature sets. Install only what you need.</p>
+<section id="advanced-visualization-recommended">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Advanced Visualization (Recommended)</a><a class="headerlink" href="#advanced-visualization-recommended" title="Link to this heading"></a></h3>
+<p>Install Plotly and igraph for interactive and advanced visualizations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Provides:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">plotly</span> <span class="pre">&gt;=</span> <span class="pre">5.0.0</span></code> - Interactive network plots</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">python-igraph</span> <span class="pre">&gt;=</span> <span class="pre">0.10.0</span></code> - Fast C-based graph algorithms</p></li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul class="simple">
+<li><p>Interactive exploration in Jupyter notebooks</p></li>
+<li><p>Web-based visualizations</p></li>
+<li><p>Fast layout computation</p></li>
+<li><p>Large network rendering</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if available</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">plotly</span>
+    <span class="kn">import</span> <span class="nn">igraph</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[OK] Advanced visualization available&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[X] Install with: pip install py3plex[viz]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="additional-algorithms">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Additional Algorithms</a><a class="headerlink" href="#additional-algorithms" title="Link to this heading"></a></h3>
+<p>Install extra community detection and clustering algorithms:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>algos<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Provides:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">python-louvain</span> <span class="pre">&gt;=</span> <span class="pre">0.16</span></code> - Louvain modularity optimization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cdlib</span> <span class="pre">&gt;=</span> <span class="pre">0.3.0</span></code> - Community discovery library (many algorithms)</p></li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul class="simple">
+<li><p>Advanced community detection</p></li>
+<li><p>Algorithm comparison studies</p></li>
+<li><p>Overlapping community detection</p></li>
+<li><p>Hierarchical clustering</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Louvain algorithm</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="infomap-community-detection">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Infomap Community Detection</a><a class="headerlink" href="#infomap-community-detection" title="Link to this heading"></a></h3>
+<p>Install Infomap for information-theoretic community detection:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Provides:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">infomap</span> <span class="pre">&gt;=</span> <span class="pre">2.0.0</span></code> - Information flow-based community detection</p></li>
+</ul>
+<p><strong>WARNING️ Important licensing note:</strong></p>
+<p>Infomap is licensed under <strong>AGPLv3</strong> (viral copyleft license). If you use Infomap functions
+in your project, your project may also need to be AGPLv3 licensed.</p>
+<p><strong>For commercial/proprietary projects:</strong> Use alternative algorithms:</p>
+<ul class="simple">
+<li><p>Louvain (BSD-3-Clause)</p></li>
+<li><p>Label propagation (MIT)</p></li>
+<li><p>Built-in NetworkX algorithms (BSD)</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if available</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">infomap</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[OK] Infomap available&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[X] Install with: pip install py3plex[infomap]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  OR use Louvain algorithm instead&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="installing-all-optional-features">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Installing All Optional Features</a><a class="headerlink" href="#installing-all-optional-features" title="Link to this heading"></a></h3>
+<p>Install everything at once:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz,algos,infomap<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="development-dependencies">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Development Dependencies</a><a class="headerlink" href="#development-dependencies" title="Link to this heading"></a></h3>
+<p>For contributors and developers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+<p><strong>Provides:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pytest</span></code> - Testing framework</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pytest-cov</span></code> - Coverage reporting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pytest-benchmark</span></code> - Performance testing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">black</span></code> - Code formatting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ruff</span></code> - Linting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mypy</span></code> - Type checking</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sphinx</span></code> - Documentation building</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">crosshair-tool</span></code> - Formal verification</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hypothesis</span></code> - Property-based testing</p></li>
+</ul>
+</section>
+</section>
+<section id="dependency-troubleshooting">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Dependency Troubleshooting</a><a class="headerlink" href="#dependency-troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-installation-issues">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Common Installation Issues</a><a class="headerlink" href="#common-installation-issues" title="Link to this heading"></a></h3>
+<section id="issue-could-not-find-a-version-that-satisfies-the-requirement">
+<h4>Issue: “Could not find a version that satisfies the requirement”<a class="headerlink" href="#issue-could-not-find-a-version-that-satisfies-the-requirement" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Python version too old or package unavailable</p>
+<p><strong>Solution 1:</strong> Upgrade Python to 3.8 or higher</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>--version<span class="w">  </span><span class="c1"># Check current version</span>
+<span class="c1"># If &lt; 3.8, install Python 3.10 or 3.11</span>
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> Update pip</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
+</pre></div>
+</div>
+<p><strong>Solution 3:</strong> Check PyPI availability</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>search<span class="w"> </span>networkx<span class="w">  </span><span class="c1"># Check if package exists</span>
+</pre></div>
+</div>
+</section>
+<section id="issue-no-matching-distribution-found">
+<h4>Issue: “No matching distribution found”<a class="headerlink" href="#issue-no-matching-distribution-found" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Network issues or package not available for your platform</p>
+<p><strong>Solution 1:</strong> Check internet connection</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ping<span class="w"> </span>pypi.org
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> Use alternative index</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--index-url<span class="w"> </span>https://pypi.org/simple/<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+<p><strong>Solution 3:</strong> Check platform compatibility</p>
+<p>Some packages may not be available for all platforms (e.g., Windows ARM, older macOS).</p>
+</section>
+<section id="issue-failed-building-wheel">
+<h4>Issue: “Failed building wheel”<a class="headerlink" href="#issue-failed-building-wheel" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Missing C compiler or development headers</p>
+<p><strong>Solution (Ubuntu/Debian):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3-dev<span class="w"> </span>build-essential
+</pre></div>
+</div>
+<p><strong>Solution (macOS):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xcode-select<span class="w"> </span>--install
+</pre></div>
+</div>
+<p><strong>Solution (Windows):</strong></p>
+<ol class="arabic simple">
+<li><p>Download Visual C++ Build Tools</p></li>
+<li><p>Install “Desktop development with C++”</p></li>
+<li><p>Restart and try again</p></li>
+</ol>
+</section>
+<section id="issue-permission-denied">
+<h4>Issue: “Permission denied”<a class="headerlink" href="#issue-permission-denied" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Trying to install in system Python without sudo</p>
+<p><strong>Solution 1:</strong> Use virtual environment (recommended)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>py3plex-env
+<span class="nb">source</span><span class="w"> </span>py3plex-env/bin/activate<span class="w">  </span><span class="c1"># Linux/macOS</span>
+<span class="c1"># OR: py3plex-env\Scripts\activate  # Windows</span>
+
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> User installation</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+</section>
+<section id="runtime-dependency-issues">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Runtime Dependency Issues</a><a class="headerlink" href="#runtime-dependency-issues" title="Link to this heading"></a></h3>
+<section id="issue-no-module-named-plotly">
+<h4>Issue: “No module named ‘plotly’”<a class="headerlink" href="#issue-no-module-named-plotly" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Optional visualization dependency not installed</p>
+<p><strong>Solution:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+
+<span class="c1"># OR install just what you need</span>
+pip<span class="w"> </span>install<span class="w"> </span>plotly
+</pre></div>
+</div>
+<p><strong>Workaround:</strong> Use matplotlib for visualization (included by default)</p>
+</section>
+<section id="issue-importerror-cannot-import-name-infomap">
+<h4>Issue: “ImportError: cannot import name ‘infomap’”<a class="headerlink" href="#issue-importerror-cannot-import-name-infomap" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Optional Infomap package not installed</p>
+<p><strong>Solution:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Alternative:</strong> Use Louvain algorithm instead:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="issue-qt-platform-plugin-could-not-be-initialized">
+<h4>Issue: “Qt platform plugin could not be initialized”<a class="headerlink" href="#issue-qt-platform-plugin-could-not-be-initialized" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Matplotlib backend issue (usually on headless servers)</p>
+<p><strong>Solution:</strong> Use non-interactive backend</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</section>
+<section id="issue-memoryerror-with-large-networks">
+<h4>Issue: “MemoryError” with large networks<a class="headerlink" href="#issue-memoryerror-with-large-networks" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Insufficient RAM for dense operations</p>
+<p><strong>Solution 1:</strong> Use sparse matrices (automatic for most operations)</p>
+<p><strong>Solution 2:</strong> Sample network</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="c1"># Sample 10% of nodes</span>
+<span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="n">sample_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span>
+<span class="n">sample_nodes</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>
+
+<span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_subnetwork</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Solution 3:</strong> Increase swap space or use machine with more RAM</p>
+</section>
+</section>
+<section id="version-conflicts">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Version Conflicts</a><a class="headerlink" href="#version-conflicts" title="Link to this heading"></a></h3>
+<section id="issue-incompatible-versions-of-numpy-and-scipy">
+<h4>Issue: “Incompatible versions of numpy and scipy”<a class="headerlink" href="#issue-incompatible-versions-of-numpy-and-scipy" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> Version mismatch between numerical packages</p>
+<p><strong>Solution:</strong> Reinstall in correct order</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>uninstall<span class="w"> </span>numpy<span class="w"> </span>scipy
+pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+<section id="issue-attributeerror-module-networkx-has-no-attribute-x">
+<h4>Issue: “AttributeError: module ‘networkx’ has no attribute ‘X’”<a class="headerlink" href="#issue-attributeerror-module-networkx-has-no-attribute-x" title="Link to this heading"></a></h4>
+<p><strong>Cause:</strong> NetworkX version too old</p>
+<p><strong>Solution:</strong> Upgrade NetworkX</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>networkx
+
+<span class="c1"># Verify version</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import networkx; print(networkx.__version__)&quot;</span>
+<span class="c1"># Should be &gt;= 2.5</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="llm-friendly-dependency-guidance">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">LLM-Friendly Dependency Guidance</a><a class="headerlink" href="#llm-friendly-dependency-guidance" title="Link to this heading"></a></h2>
+<section id="for-ai-assistants-helping-users">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">For AI Assistants Helping Users</a><a class="headerlink" href="#for-ai-assistants-helping-users" title="Link to this heading"></a></h3>
+<p>When a user encounters a missing dependency error:</p>
+<p><strong>Step 1:</strong> Identify the missing package from the error message</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example error:</span>
+<span class="c1"># ModuleNotFoundError: No module named &#39;plotly&#39;</span>
+</pre></div>
+</div>
+<p><strong>Step 2:</strong> Suggest appropriate installation command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For plotly (visualization):</span>
+pip<span class="w"> </span>install<span class="w"> </span>plotly
+
+<span class="c1"># OR install full viz bundle:</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Step 3:</strong> Provide alternative solutions</p>
+<p>If installation fails, suggest:</p>
+<ol class="arabic simple">
+<li><p>Using built-in alternatives (matplotlib instead of plotly)</p></li>
+<li><p>Checking Python version compatibility</p></li>
+<li><p>Using virtual environment</p></li>
+<li><p>Checking firewall/proxy settings</p></li>
+</ol>
+</section>
+<section id="quick-dependency-checker-script">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Quick Dependency Checker Script</a><a class="headerlink" href="#quick-dependency-checker-script" title="Link to this heading"></a></h3>
+<p>Provide users with this diagnostic script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Check Py3plex dependencies.&quot;&quot;&quot;</span>
+
+<span class="k">def</span> <span class="nf">check_dependencies</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check which dependencies are available.&quot;&quot;&quot;</span>
+
+    <span class="n">required</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;networkx&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;scipy&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;matplotlib&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pandas&#39;</span><span class="p">:</span> <span class="s1">&#39;Core&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">optional</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;plotly&#39;</span><span class="p">:</span> <span class="s1">&#39;Visualization&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;igraph&#39;</span><span class="p">:</span> <span class="s1">&#39;Visualization&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;infomap&#39;</span><span class="p">:</span> <span class="s1">&#39;Community detection&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;python-louvain&#39;</span><span class="p">:</span> <span class="s1">&#39;Community detection&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Py3plex Dependency Check ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Required packages:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">package</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">required</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">__import__</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [OK] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [X] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">) - MISSING!&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Optional packages:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">package</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">optional</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">__import__</span><span class="p">(</span><span class="n">package</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [OK] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [X] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">) - Not installed&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Installation commands:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Core: pip install git+https://github.com/SkBlaz/py3plex.git&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Viz:  pip install py3plex[viz]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  All:  pip install py3plex[viz,algos]&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">check_dependencies</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Save as <code class="docutils literal notranslate"><span class="pre">check_deps.py</span></code> and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>check_deps.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="recommendations-for-different-use-cases">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Recommendations for Different Use Cases</a><a class="headerlink" href="#recommendations-for-different-use-cases" title="Link to this heading"></a></h3>
+<p><strong>For research (exploratory):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Core only</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+<p><strong>For visualization-heavy work:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Core + visualization</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>For comprehensive analysis:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Everything except Infomap (avoid AGPLv3 license)</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz,algos<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>For commercial projects:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Core + algos (all permissive licenses)</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz,algos<span class="o">]</span>
+<span class="c1"># Avoid: infomap (AGPLv3)</span>
+</pre></div>
+</div>
+</section>
+<section id="virtual-environment-workflow">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Virtual Environment Workflow</a><a class="headerlink" href="#virtual-environment-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create project directory</span>
+mkdir<span class="w"> </span>my_network_project
+<span class="nb">cd</span><span class="w"> </span>my_network_project
+
+<span class="c1"># Create virtual environment</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># Linux/macOS</span>
+
+<span class="c1"># Install Py3plex</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz,algos<span class="o">]</span>
+
+<span class="c1"># Save dependencies</span>
+pip<span class="w"> </span>freeze<span class="w"> </span>&gt;<span class="w"> </span>requirements.txt
+
+<span class="c1"># Later, recreate environment</span>
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="keeping-dependencies-updated">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Keeping Dependencies Updated</a><a class="headerlink" href="#keeping-dependencies-updated" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Update Py3plex</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+
+<span class="c1"># Update all dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>numpy<span class="w"> </span>scipy<span class="w"> </span>networkx<span class="w"> </span>matplotlib
+
+<span class="c1"># Check for outdated packages</span>
+pip<span class="w"> </span>list<span class="w"> </span>--outdated
+</pre></div>
+</div>
+</section>
+</section>
+<section id="next-steps">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Next Steps</a><a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="installation.html"><span class="doc">Installation and Setup</span></a> - Full installation guide</p></li>
+<li><p><a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a> - Get started with Py3plex</p></li>
+<li><p><a class="reference internal" href="tutorials/csv_loading.html"><span class="doc">CSV Data Loading Examples</span></a> - Load your data</p></li>
+<li><p><a class="reference internal" href="visualization_guide.html"><span class="doc">Visualization Guide</span></a> - Create visualizations</p></li>
+</ul>
+<p>For installation help, open an issue on <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">GitHub Issues</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

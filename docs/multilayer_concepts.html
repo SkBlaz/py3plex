@@ -1,0 +1,551 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Concepts and Architecture &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Core Concepts and Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/multilayer_concepts.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="core-concepts-and-architecture">
+<h1>Core Concepts and Architecture<a class="headerlink" href="#core-concepts-and-architecture" title="Link to this heading"></a></h1>
+<p>This guide explains the fundamental concepts and architectural design of py3plex.</p>
+<section id="what-are-multilayer-networks">
+<h2>What are Multilayer Networks?<a class="headerlink" href="#what-are-multilayer-networks" title="Link to this heading"></a></h2>
+<p>A multilayer network is a complex network structure that goes beyond traditional single-layer graphs by incorporating multiple types of relationships, node types, or interaction contexts.</p>
+<section id="key-characteristics">
+<h3>Key Characteristics<a class="headerlink" href="#key-characteristics" title="Link to this heading"></a></h3>
+<p><strong>Traditional (Single-Layer) Networks:</strong></p>
+<ul class="simple">
+<li><p>One type of node</p></li>
+<li><p>One type of edge</p></li>
+<li><p>Homogeneous structure</p></li>
+</ul>
+<p><strong>Multilayer Networks:</strong></p>
+<ul class="simple">
+<li><p>Multiple node types</p></li>
+<li><p>Multiple edge types</p></li>
+<li><p>Multiple layers of interaction</p></li>
+<li><p>Inter-layer and intra-layer connections</p></li>
+</ul>
+</section>
+<section id="types-of-multilayer-networks">
+<h3>Types of Multilayer Networks<a class="headerlink" href="#types-of-multilayer-networks" title="Link to this heading"></a></h3>
+<dl>
+<dt><strong>Multiplex Networks</strong></dt><dd><p>Multiple layers with the same set of nodes but different types of edges.</p>
+<p><em>Example:</em> Social network with friendship, colleague, and family layers.</p>
+</dd>
+<dt><strong>Heterogeneous Networks (HINs)</strong></dt><dd><p>Different node types with type-specific relationships.</p>
+<p><em>Example:</em> Academic network with authors, papers, and venues.</p>
+</dd>
+<dt><strong>Temporal Networks</strong></dt><dd><p>Networks that evolve over time, with time-sliced layers.</p>
+<p><em>Example:</em> Communication network across different time periods.</p>
+</dd>
+<dt><strong>Interdependent Networks</strong></dt><dd><p>Multiple networks where nodes in one network depend on nodes in another.</p>
+<p><em>Example:</em> Power grid and communication network interdependency.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="core-data-structure">
+<h2>Core Data Structure<a class="headerlink" href="#core-data-structure" title="Link to this heading"></a></h2>
+<section id="the-multi-layer-network-class">
+<h3>The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> Class<a class="headerlink" href="#the-multi-layer-network-class" title="Link to this heading"></a></h3>
+<p>The central data structure in py3plex is the <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class, which provides:</p>
+<ul class="simple">
+<li><p>Layer Management: Add, remove, and query network layers</p></li>
+<li><p>Node and Edge Operations: Efficient addition and retrieval</p></li>
+<li><p>NetworkX Integration: Full compatibility with NetworkX algorithms</p></li>
+<li><p>Matrix Representations: Supra-adjacency and layer-specific matrices</p></li>
+</ul>
+<section id="basic-structure">
+<h4>Basic Structure<a class="headerlink" href="#basic-structure" title="Link to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create a multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># The underlying NetworkX graph</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>  <span class="c1"># MultiDiGraph or MultiGraph</span>
+
+<span class="c1"># Layer management</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>  <span class="c1"># List of layer names</span>
+<span class="n">layer_map</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layer_name_map</span>  <span class="c1"># Layer name to ID mapping</span>
+</pre></div>
+</div>
+</section>
+<section id="internal-representation">
+<h4>Internal Representation<a class="headerlink" href="#internal-representation" title="Link to this heading"></a></h4>
+<p>py3plex represents multilayer networks using:</p>
+<ol class="arabic simple">
+<li><p><strong>Core NetworkX Graph:</strong> A <code class="docutils literal notranslate"><span class="pre">MultiDiGraph</span></code> or <code class="docutils literal notranslate"><span class="pre">MultiGraph</span></code> storing all nodes and edges</p></li>
+<li><p><strong>Layer Encoding:</strong> Nodes are encoded as <code class="docutils literal notranslate"><span class="pre">node_id---layer_id</span></code> using a delimiter (default: <code class="docutils literal notranslate"><span class="pre">---</span></code>)</p></li>
+<li><p><strong>Layer Mapping:</strong> Bidirectional mapping between layer names and integer IDs</p></li>
+<li><p><strong>Attributes:</strong> Node and edge attributes stored in the NetworkX graph</p></li>
+</ol>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Node &#39;A&#39; in &#39;layer1&#39; is stored as &#39;A---layer1&#39;</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)])</span>
+
+<span class="c1"># Access the encoded node</span>
+<span class="n">encoded_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+<span class="c1"># [&#39;A---layer1&#39;]</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="network-construction">
+<h2>Network Construction<a class="headerlink" href="#network-construction" title="Link to this heading"></a></h2>
+<section id="creating-networks-from-scratch">
+<h3>Creating Networks from Scratch<a class="headerlink" href="#creating-networks-from-scratch" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Add layers explicitly (optional)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;social&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;professional&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add nodes (layer is created if it doesn&#39;t exist)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;professional&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;professional&#39;</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="c1"># Add edges within layers (intra-layer)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="c1"># Add edges between layers (inter-layer)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;professional&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="loading-from-files">
+<h3>Loading from Files<a class="headerlink" href="#loading-from-files" title="Link to this heading"></a></h3>
+<p>py3plex supports multiple input formats:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From edge list</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># From multilayer edge list (source, target, layer)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># From GraphML</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.graphml&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="network-operations">
+<h2>Network Operations<a class="headerlink" href="#network-operations" title="Link to this heading"></a></h2>
+<section id="querying-network-elements">
+<h3>Querying Network Elements<a class="headerlink" href="#querying-network-elements" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all nodes</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Get nodes in a specific layer</span>
+<span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get all edges</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Get neighbors of a node in a layer</span>
+<span class="n">neighbors</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s1">&#39;social&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get all layers</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="network-transformations">
+<h3>Network Transformations<a class="headerlink" href="#network-transformations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Aggregate multiple layers into one</span>
+<span class="n">aggregated</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">aggregate_layers</span><span class="p">([</span><span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">],</span> <span class="s1">&#39;combined&#39;</span><span class="p">)</span>
+
+<span class="c1"># Extract a single layer as a NetworkX graph</span>
+<span class="n">layer_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layer_subgraph</span><span class="p">(</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+
+<span class="c1"># Project to a node type (for heterogeneous networks)</span>
+<span class="n">projected</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">project_to_node_type</span><span class="p">(</span><span class="s1">&#39;author&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="matrix-representations">
+<h3>Matrix Representations<a class="headerlink" href="#matrix-representations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get supra-adjacency matrix (all layers stacked)</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
+
+<span class="c1"># Get adjacency matrix for a single layer</span>
+<span class="n">layer_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_adjacency_matrix</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get inter-layer coupling matrix</span>
+<span class="n">coupling</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_coupling_matrix</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="architectural-design">
+<h2>Architectural Design<a class="headerlink" href="#architectural-design" title="Link to this heading"></a></h2>
+<section id="modular-structure">
+<h3>Modular Structure<a class="headerlink" href="#modular-structure" title="Link to this heading"></a></h3>
+<p>py3plex follows a modular architecture:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>py3plex/
+├── core/                   # Core data structures
+│   ├── multinet.py         # multi_layer_network class
+│   ├── parsers.py          # I/O for various formats
+│   └── converters.py       # Format conversion utilities
+├── algorithms/             # Network algorithms
+│   ├── community_detection/
+│   ├── statistics/
+│   ├── multilayer_algorithms/
+│   └── general/
+├── visualization/          # Plotting and rendering
+│   ├── multilayer.py
+│   ├── drawing_machinery.py
+│   └── layout_algorithms.py
+└── wrappers/               # High-level interfaces
+</pre></div>
+</div>
+</section>
+<section id="design-principles">
+<h3>Design Principles<a class="headerlink" href="#design-principles" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>1. NetworkX Compatibility</strong></dt><dd><p>All operations are compatible with NetworkX, allowing use of NetworkX algorithms.</p>
+</dd>
+<dt><strong>2. Lazy Evaluation</strong></dt><dd><p>Expensive operations (e.g., matrix construction) are computed on demand.</p>
+</dd>
+<dt><strong>3. Graceful Degradation</strong></dt><dd><p>Optional features fail gracefully if dependencies are missing.</p>
+</dd>
+<dt><strong>4. Extensibility</strong></dt><dd><p>Easy to extend with custom algorithms and visualizations.</p>
+</dd>
+</dl>
+</section>
+<section id="data-flow">
+<h3>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Input Data (files, NetworkX, edge lists)
+    ↓
+Parsers → multi_layer_network object
+    ↓
+Network Operations (add, remove, query)
+    ↓
+├→ Algorithms → Metrics, Communities, Centrality
+├→ Visualization → Plots, Layouts
+└→ Export → Files, Matrices, NetworkX
+</pre></div>
+</div>
+</section>
+</section>
+<section id="integration-with-networkx">
+<h2>Integration with NetworkX<a class="headerlink" href="#integration-with-networkx" title="Link to this heading"></a></h2>
+<section id="full-networkx-compatibility">
+<h3>Full NetworkX Compatibility<a class="headerlink" href="#full-networkx-compatibility" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">core_network</span></code> attribute is a standard NetworkX graph:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create py3plex network</span>
+<span class="n">mlnet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">mlnet</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+<span class="c1"># Access underlying NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">mlnet</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Use any NetworkX function</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">louvain_communities</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">diameter</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="converting-to-from-networkx">
+<h3>Converting to/from NetworkX<a class="headerlink" href="#converting-to-from-networkx" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From NetworkX to py3plex</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+<span class="n">mlnet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">mlnet</span><span class="o">.</span><span class="n">load_network_from_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+<span class="c1"># From py3plex to NetworkX</span>
+<span class="n">G_export</span> <span class="o">=</span> <span class="n">mlnet</span><span class="o">.</span><span class="n">core_network</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="supra-adjacency-matrix">
+<h2>Supra-Adjacency Matrix<a class="headerlink" href="#supra-adjacency-matrix" title="Link to this heading"></a></h2>
+<section id="mathematical-definition">
+<h3>Mathematical Definition<a class="headerlink" href="#mathematical-definition" title="Link to this heading"></a></h3>
+<p>The <strong>supra-adjacency matrix</strong> is a block matrix representation of a multilayer network:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{S} = \begin{bmatrix}
+A_1 &amp; C_{12} &amp; \cdots &amp; C_{1L} \\
+C_{21} &amp; A_2 &amp; \cdots &amp; C_{2L} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
+\end{bmatrix}\end{split}\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(A_\alpha\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\alpha\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(C_{\alpha\beta}\)</span> is the coupling matrix between layers <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span></p></li>
+</ul>
+</section>
+<section id="construction-in-py3plex">
+<h3>Construction in py3plex<a class="headerlink" href="#construction-in-py3plex" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># ... add nodes and edges ...</span>
+
+<span class="c1"># Get supra-adjacency matrix (sparse by default)</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Shape: (total_nodes, total_nodes)</span>
+<span class="c1"># where total_nodes = sum of nodes across all layers</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Supra-adjacency shape: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="layer-specific-operations">
+<h2>Layer-Specific Operations<a class="headerlink" href="#layer-specific-operations" title="Link to this heading"></a></h2>
+<section id="working-with-individual-layers">
+<h3>Working with Individual Layers<a class="headerlink" href="#working-with-individual-layers" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get layer as NetworkX subgraph</span>
+<span class="n">layer_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layer_subgraph</span><span class="p">(</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+
+<span class="c1"># Compute layer-specific metrics</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">layer_graph</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="inter-layer-analysis">
+<h3>Inter-Layer Analysis<a class="headerlink" href="#inter-layer-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inter-layer degree correlation</span>
+<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+
+<span class="c1"># Edge overlap between layers</span>
+<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+
+<span class="c1"># Layer similarity</span>
+<span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="extensibility">
+<h2>Extensibility<a class="headerlink" href="#extensibility" title="Link to this heading"></a></h2>
+<section id="adding-custom-algorithms">
+<h3>Adding Custom Algorithms<a class="headerlink" href="#adding-custom-algorithms" title="Link to this heading"></a></h3>
+<p>Extend py3plex by adding custom algorithms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="k">def</span> <span class="nf">my_custom_centrality</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute custom centrality for multilayer network.&quot;&quot;&quot;</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span>
+
+    <span class="c1"># Implement your algorithm</span>
+    <span class="n">centrality</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+        <span class="c1"># Custom computation</span>
+        <span class="n">centrality</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_score</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">centrality</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-visualization">
+<h3>Custom Visualization<a class="headerlink" href="#custom-visualization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization</span> <span class="kn">import</span> <span class="n">drawing_machinery</span> <span class="k">as</span> <span class="n">dm</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">custom_plot</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create custom visualization.&quot;&quot;&quot;</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+    <span class="c1"># Use drawing machinery primitives</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">dm</span><span class="o">.</span><span class="n">compute_layout</span><span class="p">(</span><span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">)</span>
+    <span class="n">dm</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+    <span class="n">dm</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="basic_usage.html"><span class="doc">Quick Start Guide</span></a> - Practical usage examples</p></li>
+<li><p><a class="reference internal" href="tutorials/multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality measures</p></li>
+<li><p><a class="reference internal" href="tutorials/multilayer_modularity.html"><span class="doc">Multilayer Modularity and Community Detection</span></a> - Community detection</p></li>
+<li><p><a class="reference internal" href="algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> - Algorithm selection guide</p></li>
+<li><p><a class="reference internal" href="architecture.html"><span class="doc">Architecture and Design</span></a> - Detailed architecture documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
