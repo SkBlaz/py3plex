@@ -121,30 +121,85 @@ htmlhelp_basename = 'py3plexdoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
+    # The paper size - A4 is more professional and book-like
+    'papersize': 'a4paper',
 
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
+    # Larger font size for better readability
+    'pointsize': '11pt',
 
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
+    # Additional stuff for the LaTeX preamble for professional styling
+    'preamble': r'''
+% Professional book-like styling improvements
+\usepackage{lmodern}            % Latin Modern fonts for better rendering
+
+% Better spacing and margins for book-like appearance
+\usepackage[top=1in, bottom=1.2in, left=1.25in, right=1.25in]{geometry}
+
+% Improved paragraph spacing
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+% Improved table of contents depth
+\setcounter{tocdepth}{2}        % Show subsections in TOC
+
+% Better colors for links
+\definecolor{InnerLinkColor}{rgb}{0.0,0.3,0.6}
+\definecolor{OuterLinkColor}{rgb}{0.0,0.3,0.6}
+
+% Professional headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\nouppercase{\rightmark}}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Code block improvements for better readability
+\fvset{fontsize=\small, baselinestretch=1.0}
+
+% Better list spacing
+\usepackage{enumitem}
+\setlist{itemsep=0.25em, parsep=0em, topsep=0.5em}
+
+% Professional captions
+\usepackage[font=small,labelfont=bf,tableposition=top]{caption}
+\captionsetup[figure]{skip=10pt}
+\captionsetup[table]{skip=10pt}
+''',
 
     # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
+    # 'H' forces exact placement (requires float package), may cause spacing issues with large figures
+    'figure_align': 'H',
+
+    # Disable blank pages between chapters (more concise)
+    'extraclassoptions': 'openany',
+
+    # Use default table of contents styling
+    # 'tableofcontents': '',
+}
+
+# Additional LaTeX configuration for hyperref (links)
+latex_show_urls = 'footnote'  # Show URLs in footnotes for cleaner appearance
+latex_show_pagerefs = False   # Don't show page references
+
+# Use manual class for book-like appearance
+latex_docclass = {
+    'manual': 'sphinxmanual',
+    'howto': 'sphinxhowto',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'py3plex.tex', 'py3plex Documentation', 'Blaž Škrlj',
-     'manual'),
+    (master_doc, 'py3plex.tex', 'Py3plex: Multilayer Network Analysis in Python',
+     'Blaž Škrlj', 'manual'),
 ]
+
+# Logo for the title page - ensure logo.png exists in the docfiles directory
+latex_logo = 'logo.png'
 
 # -- Options for manual page output ---------------------------------------
 
