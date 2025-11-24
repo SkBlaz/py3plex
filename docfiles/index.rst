@@ -31,6 +31,7 @@ py3plex is a lightweight Python library designed specifically for analyzing and 
 **Key Features:**
 
 * Native support for multiplex and multilayer network structures
+* **SQL-like DSL** for intuitive network queries and analysis
 * Diagonal projection visualization for large multilayer networks
 * Comprehensive multilayer centrality measures
 * Community detection across network layers
@@ -142,6 +143,20 @@ Load from file and analyze:
     from py3plex.algorithms.community_detection import community_wrapper
     communities = community_wrapper.best_partition(network.core_network)
 
+Query with DSL (SQL-like syntax):
+
+.. code-block:: python
+
+    from py3plex.dsl import execute_query
+    
+    # Query nodes by layer and degree
+    result = execute_query(network, 'SELECT nodes WHERE layer="layer1" AND degree > 1')
+    
+    # Compute centrality for filtered nodes
+    result = execute_query(network, 'SELECT nodes WHERE layer="layer1" COMPUTE betweenness_centrality')
+    
+See :doc:`user_guide/dsl` for comprehensive DSL documentation.
+
 Why py3plex?
 ============
 
@@ -222,6 +237,7 @@ Documentation Contents
    user_guide/random_walks_embeddings
    user_guide/io_and_formats
    user_guide/visualization
+   user_guide/dsl
    user_guide/recipes_and_workflows
 
 .. toctree::
@@ -274,6 +290,8 @@ All examples are available in the `examples/ directory <https://github.com/SkBla
 Key examples:
 
 * ``tutorial_10min.py`` - Executable version of the 10-minute tutorial
+* ``example_dsl_queries.py`` - SQL-like DSL for network queries
+* ``example_dsl_advanced.py`` - Advanced DSL queries and analysis
 * ``example_random_walks.py`` - Random walk primitives (Node2Vec, DeepWalk)
 * ``example_multilayer_visualization.py`` - Network visualization
 * ``example_community_detection.py`` - Community detection with Louvain and Infomap

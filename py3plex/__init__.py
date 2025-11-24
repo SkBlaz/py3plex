@@ -8,6 +8,7 @@ Main Classes:
     multi_layer_network: Core class for creating and analyzing multilayer networks
 
 Key Features:
+    - **SQL-like DSL for intuitive network queries**
     - Dict-based API for adding nodes and edges
     - NetworkX interoperability
     - Multiple I/O formats (edgelist, GML, GraphML, etc.)
@@ -23,6 +24,10 @@ Quick Start:
     >>> net.add_edges([{'source': 'A', 'target': 'B',
     ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
     >>> print(net)
+    
+    # Use SQL-like DSL for queries
+    >>> result = p3.execute_query(net, 'SELECT nodes WHERE layer="layer1"')
+    >>> result = p3.execute_query(net, 'SELECT nodes WHERE degree > 1 COMPUTE betweenness_centrality')
 
 For detailed documentation, see: https://py3plex.readthedocs.io
 """
