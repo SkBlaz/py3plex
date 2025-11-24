@@ -73,6 +73,14 @@ Configuration and Utilities
    :undoc-members:
    :show-inheritance:
 
+Domain-Specific Language (DSL)
+-------------------------------
+
+.. automodule:: py3plex.dsl
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Algorithms
 ----------
 
