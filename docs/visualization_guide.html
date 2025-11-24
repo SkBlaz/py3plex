@@ -1,0 +1,1472 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualization Guide &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Visualization Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/visualization_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="visualization-guide">
+<h1>Visualization Guide<a class="headerlink" href="#visualization-guide" title="Link to this heading"></a></h1>
+<a class="reference internal image-reference" href="_images/py3plex_showcase.png"><img alt="Py3plex Visualization Showcase" class="align-center" src="_images/py3plex_showcase.png" style="width: 100%;" />
+</a>
+<p>This guide covers multilayer network visualization in Py3plex, including preset modes,
+customization options, and best practices for different network scales.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#quick-start" id="id2">Quick Start</a></p>
+<ul>
+<li><p><a class="reference internal" href="#basic-multilayer-visualization" id="id3">Basic Multilayer Visualization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#preset-visualization-modes" id="id4">Preset Visualization Modes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#minimal-mode-large-networks-1000-nodes" id="id5">Minimal Mode (Large Networks &gt;1000 nodes)</a></p></li>
+<li><p><a class="reference internal" href="#balanced-mode-medium-networks-100-1000-nodes" id="id6">Balanced Mode (Medium Networks 100-1000 nodes)</a></p></li>
+<li><p><a class="reference internal" href="#dense-mode-small-networks-100-nodes" id="id7">Dense Mode (Small Networks &lt;100 nodes)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#layout-options" id="id8">Layout Options</a></p>
+<ul>
+<li><p><a class="reference internal" href="#circular-layout-default" id="id9">Circular Layout (Default)</a></p></li>
+<li><p><a class="reference internal" href="#rectangular-layout" id="id10">Rectangular Layout</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#auto-scaling-features" id="id11">Auto-Scaling Features</a></p>
+<ul>
+<li><p><a class="reference internal" href="#automatic-node-sizing" id="id12">Automatic Node Sizing</a></p></li>
+<li><p><a class="reference internal" href="#automatic-color-assignment" id="id13">Automatic Color Assignment</a></p></li>
+<li><p><a class="reference internal" href="#automatic-layout-adjustment" id="id14">Automatic Layout Adjustment</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#customization-options" id="id15">Customization Options</a></p>
+<ul>
+<li><p><a class="reference internal" href="#complete-parameter-reference" id="id16">Complete Parameter Reference</a></p></li>
+<li><p><a class="reference internal" href="#layer-specific-customization" id="id17">Layer-Specific Customization</a></p></li>
+<li><p><a class="reference internal" href="#color-coding-by-community" id="id18">Color-Coding by Community</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#exporting-visualizations" id="id19">Exporting Visualizations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#save-to-file" id="id20">Save to File</a></p></li>
+<li><p><a class="reference internal" href="#high-quality-publications" id="id21">High-Quality Publications</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#interactive-visualizations" id="id22">Interactive Visualizations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#using-plotly-optional" id="id23">Using Plotly (Optional)</a></p></li>
+<li><p><a class="reference internal" href="#basic-interactive-hairball-plot" id="id24">Basic Interactive Hairball Plot</a></p></li>
+<li><p><a class="reference internal" href="#advanced-interactive-multilayer-example" id="id25">Advanced Interactive Multilayer Example</a></p></li>
+<li><p><a class="reference internal" href="#jupyter-notebook-integration" id="id26">Jupyter Notebook Integration</a></p></li>
+<li><p><a class="reference internal" href="#saving-interactive-visualizations" id="id27">Saving Interactive Visualizations</a></p></li>
+<li><p><a class="reference internal" href="#embedding-in-web-applications" id="id28">Embedding in Web Applications</a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting-interactive-visualizations" id="id29">Troubleshooting Interactive Visualizations</a></p></li>
+<li><p><a class="reference internal" href="#performance-guidelines" id="id30">Performance Guidelines</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id31">Jupyter Notebook Integration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#performance-tips" id="id32">Performance Tips</a></p>
+<ul>
+<li><p><a class="reference internal" href="#for-large-networks" id="id33">For Large Networks</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#troubleshooting" id="id34">Troubleshooting</a></p>
+<ul>
+<li><p><a class="reference internal" href="#visualization-not-showing" id="id35">Visualization Not Showing</a></p></li>
+<li><p><a class="reference internal" href="#nodes-overlapping" id="id36">Nodes Overlapping</a></p></li>
+<li><p><a class="reference internal" href="#labels-too-crowded" id="id37">Labels Too Crowded</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#advanced-visualization-modes" id="id38">Advanced Visualization Modes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview-of-visualization-modes" id="id39">Overview of Visualization Modes</a></p></li>
+<li><p><a class="reference internal" href="#unified-api" id="id40">Unified API</a></p></li>
+<li><p><a class="reference internal" href="#small-multiples-view" id="id41">Small Multiples View</a></p></li>
+<li><p><a class="reference internal" href="#edge-colored-projection" id="id42">Edge-Colored Projection</a></p></li>
+<li><p><a class="reference internal" href="#supra-adjacency-heatmap" id="id43">Supra-Adjacency Heatmap</a></p></li>
+<li><p><a class="reference internal" href="#radial-concentric-layers" id="id44">Radial/Concentric Layers</a></p></li>
+<li><p><a class="reference internal" href="#ego-centric-multilayer-view" id="id45">Ego-Centric Multilayer View</a></p></li>
+<li><p><a class="reference internal" href="#flow-and-sankey-diagrams" id="id46">Flow and Sankey Diagrams</a></p></li>
+<li><p><a class="reference internal" href="#example-workflows" id="id47">Example Workflows</a></p></li>
+<li><p><a class="reference internal" href="#choosing-the-right-visualization" id="id48">Choosing the Right Visualization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#next-steps" id="id49">Next Steps</a></p></li>
+</ul>
+</nav>
+<section id="quick-start">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Quick Start</a><a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="basic-multilayer-visualization">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Basic Multilayer Visualization</a><a class="headerlink" href="#basic-multilayer-visualization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Visualize with defaults</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="preset-visualization-modes">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Preset Visualization Modes</a><a class="headerlink" href="#preset-visualization-modes" title="Link to this heading"></a></h2>
+<p>Py3plex provides three preset modes optimized for different network scales and use cases.</p>
+<section id="minimal-mode-large-networks-1000-nodes">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Minimal Mode (Large Networks &gt;1000 nodes)</a><a class="headerlink" href="#minimal-mode-large-networks-1000-nodes" title="Link to this heading"></a></h3>
+<p>Optimized for networks with many nodes where detail isn’t critical.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+
+<span class="c1"># Minimal preset for large networks</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="c1"># Node settings</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>              <span class="c1"># Small nodes</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>             <span class="c1"># No node labels (too cluttered)</span>
+    <span class="n">node_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>        <span class="c1"># No node IDs</span>
+
+    <span class="c1"># Edge settings</span>
+    <span class="n">edge_size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>            <span class="c1"># Thin edges</span>
+    <span class="n">alphalevel</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>           <span class="c1"># Transparent edges (reduce clutter)</span>
+
+    <span class="c1"># Layout</span>
+    <span class="n">background_shape</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>  <span class="c1"># Circular layout</span>
+
+    <span class="c1"># Display</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">remove_isolated_nodes</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Clean up isolated nodes</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use cases:</strong>
+- Large social networks (&gt;1000 nodes)
+- Overview visualizations
+- Pattern detection at macro level
+- Network topology understanding</p>
+<p><strong>Advantages:</strong>
+- Fast rendering
+- Reduced visual clutter
+- Shows overall structure
+- Works with many nodes</p>
+</section>
+<section id="balanced-mode-medium-networks-100-1000-nodes">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Balanced Mode (Medium Networks 100-1000 nodes)</a><a class="headerlink" href="#balanced-mode-medium-networks-100-1000-nodes" title="Link to this heading"></a></h3>
+<p>Default settings that work well for most networks. Good balance between detail and clarity.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Balanced preset (this is the default)</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="c1"># Node settings</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>             <span class="c1"># Medium nodes</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Show layer labels</span>
+    <span class="n">node_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>        <span class="c1"># Node IDs hidden by default</span>
+
+    <span class="c1"># Edge settings</span>
+    <span class="n">edge_size</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>            <span class="c1"># Normal edge width</span>
+    <span class="n">alphalevel</span><span class="o">=</span><span class="mf">0.13</span><span class="p">,</span>          <span class="c1"># Semi-transparent edges</span>
+
+    <span class="c1"># Layout</span>
+    <span class="n">background_shape</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>  <span class="c1"># Circular layout</span>
+    <span class="n">networks_color</span><span class="o">=</span><span class="s2">&quot;rainbow&quot;</span><span class="p">,</span>   <span class="c1"># Auto-assign colors</span>
+
+    <span class="c1"># Display</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use cases:</strong>
+- Most research networks
+- Exploratory data analysis
+- Publication figures (moderate detail)
+- Interactive exploration</p>
+<p><strong>Advantages:</strong>
+- Good readability
+- Reasonable performance
+- Balanced aesthetics
+- Suitable for most publications</p>
+</section>
+<section id="dense-mode-small-networks-100-nodes">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Dense Mode (Small Networks &lt;100 nodes)</a><a class="headerlink" href="#dense-mode-small-networks-100-nodes" title="Link to this heading"></a></h3>
+<p>Maximum detail for small networks where every node and edge matters.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dense preset for small, detailed networks</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="c1"># Node settings</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>             <span class="c1"># Large nodes</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Show all labels</span>
+    <span class="n">node_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>         <span class="c1"># Show node IDs</span>
+    <span class="n">node_font_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>        <span class="c1"># Readable font</span>
+    <span class="n">scale_by_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>       <span class="c1"># Scale by degree</span>
+
+    <span class="c1"># Edge settings</span>
+    <span class="n">edge_size</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>            <span class="c1"># Thick edges</span>
+    <span class="n">alphalevel</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>           <span class="c1"># Mostly opaque</span>
+    <span class="n">arrowsize</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>            <span class="c1"># Visible arrows (if directed)</span>
+
+    <span class="c1"># Layout</span>
+    <span class="n">background_shape</span><span class="o">=</span><span class="s2">&quot;rectangle&quot;</span><span class="p">,</span>  <span class="c1"># Rectangular layout</span>
+    <span class="n">networks_color</span><span class="o">=</span><span class="s2">&quot;rainbow&quot;</span><span class="p">,</span>
+
+    <span class="c1"># Display</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Use cases:</strong>
+- Small case studies
+- Detailed analysis
+- Node-level examination
+- High-quality publication figures</p>
+<p><strong>Advantages:</strong>
+- Maximum detail
+- Clear node identification
+- Edge weights visible
+- Professional appearance</p>
+</section>
+</section>
+<section id="layout-options">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Layout Options</a><a class="headerlink" href="#layout-options" title="Link to this heading"></a></h2>
+<p>Py3plex supports multiple layout algorithms for different network structures.</p>
+<section id="circular-layout-default">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Circular Layout (Default)</a><a class="headerlink" href="#circular-layout-default" title="Link to this heading"></a></h3>
+<p>Arranges layers in a circle. Good for showing inter-layer connections.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">background_shape</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="n">rectanglex</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Circle radius x</span>
+    <span class="n">rectangley</span><span class="o">=</span><span class="mf">1.0</span>   <span class="c1"># Circle radius y</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong>
+- 2-10 layers
+- Symmetric layer interactions
+- Publication figures</p>
+</section>
+<section id="rectangular-layout">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Rectangular Layout</a><a class="headerlink" href="#rectangular-layout" title="Link to this heading"></a></h3>
+<p>Arranges layers in a grid. Good for many layers or hierarchical structures.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">background_shape</span><span class="o">=</span><span class="s2">&quot;rectangle&quot;</span><span class="p">,</span>
+    <span class="n">rectanglex</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>  <span class="c1"># Width of layout</span>
+    <span class="n">rectangley</span><span class="o">=</span><span class="mf">1.0</span>   <span class="c1"># Height of layout</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong>
+- Many layers (&gt;10)
+- Hierarchical networks
+- Time-series data
+- Wide figures</p>
+</section>
+</section>
+<section id="auto-scaling-features">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Auto-Scaling Features</a><a class="headerlink" href="#auto-scaling-features" title="Link to this heading"></a></h2>
+<p>Py3plex automatically adjusts visualization parameters based on network size.</p>
+<section id="automatic-node-sizing">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Automatic Node Sizing</a><a class="headerlink" href="#automatic-node-sizing" title="Link to this heading"></a></h3>
+<p>Scale node sizes by degree (number of connections):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">scale_by_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>    <span class="c1"># Enable auto-scaling</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">10</span>           <span class="c1"># Base size (scaled up/down by degree)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>How it works:</strong></p>
+<ul class="simple">
+<li><p>Nodes with more connections → larger size</p></li>
+<li><p>Isolated nodes → smaller size</p></li>
+<li><p>Hub nodes are easily identifiable</p></li>
+</ul>
+</section>
+<section id="automatic-color-assignment">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Automatic Color Assignment</a><a class="headerlink" href="#automatic-color-assignment" title="Link to this heading"></a></h3>
+<p>Py3plex uses colorblind-safe palettes by default:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rainbow colors (automatic assignment)</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">networks_color</span><span class="o">=</span><span class="s2">&quot;rainbow&quot;</span>  <span class="c1"># Auto-assign distinct colors</span>
+<span class="p">)</span>
+
+<span class="c1"># Custom palette</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">networks_color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;#FF6B6B&quot;</span><span class="p">,</span> <span class="s2">&quot;#4ECDC4&quot;</span><span class="p">,</span> <span class="s2">&quot;#45B7D1&quot;</span><span class="p">,</span> <span class="s2">&quot;#FFA07A&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Available palettes</strong> (from <code class="docutils literal notranslate"><span class="pre">py3plex.config</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">colorblind_safe</span></code>: 8 colors safe for colorblind viewers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wong</span></code>: 7-color palette (scientifically validated)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tol_bright</span></code>: 7 bright colors</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rainbow</span></code>: Automatic generation</p></li>
+</ul>
+</section>
+<section id="automatic-layout-adjustment">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Automatic Layout Adjustment</a><a class="headerlink" href="#automatic-layout-adjustment" title="Link to this heading"></a></h3>
+<p>Layout parameters auto-adjust to network size:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For small networks, layout is compact</span>
+<span class="n">small_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># ... load 50-node network ...</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">small_network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>  <span class="c1"># Compact layout</span>
+
+<span class="c1"># For large networks, layout expands</span>
+<span class="n">large_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># ... load 1000-node network ...</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">large_network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>  <span class="c1"># Expanded layout</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="customization-options">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Customization Options</a><a class="headerlink" href="#customization-options" title="Link to this heading"></a></h2>
+<section id="complete-parameter-reference">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Complete Parameter Reference</a><a class="headerlink" href="#complete-parameter-reference" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network_list</span><span class="p">,</span>             <span class="c1"># List of layer subgraphs</span>
+
+    <span class="c1"># Display control</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>             <span class="c1"># Show plot immediately</span>
+    <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># Matplotlib axis (None = create new)</span>
+
+    <span class="c1"># Node appearance</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>             <span class="c1"># Base node size</span>
+    <span class="n">scale_by_size</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>      <span class="c1"># Scale by degree?</span>
+    <span class="n">node_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>        <span class="c1"># Show node IDs?</span>
+    <span class="n">node_font_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>         <span class="c1"># Font size for node labels</span>
+
+    <span class="c1"># Edge appearance</span>
+    <span class="n">edge_size</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>            <span class="c1"># Edge thickness</span>
+    <span class="n">alphalevel</span><span class="o">=</span><span class="mf">0.13</span><span class="p">,</span>          <span class="c1"># Edge transparency (0=invisible, 1=opaque)</span>
+    <span class="n">arrowsize</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>            <span class="c1"># Arrow size (for directed graphs)</span>
+
+    <span class="c1"># Layout</span>
+    <span class="n">background_shape</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>  <span class="c1"># &quot;circle&quot; or &quot;rectangle&quot;</span>
+    <span class="n">rectanglex</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>           <span class="c1"># Layout width/radius</span>
+    <span class="n">rectangley</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>           <span class="c1"># Layout height/radius</span>
+
+    <span class="c1"># Colors</span>
+    <span class="n">networks_color</span><span class="o">=</span><span class="s2">&quot;rainbow&quot;</span><span class="p">,</span> <span class="c1"># &quot;rainbow&quot; or list of colors</span>
+    <span class="n">background_color</span><span class="o">=</span><span class="s2">&quot;rainbow&quot;</span><span class="p">,</span>  <span class="c1"># Background color scheme</span>
+
+    <span class="c1"># Labels</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Show layer labels?</span>
+    <span class="n">label_position</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>       <span class="c1"># Label distance from center</span>
+
+    <span class="c1"># Cleanup</span>
+    <span class="n">remove_isolated_nodes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Remove disconnected nodes?</span>
+
+    <span class="c1"># Debugging</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>             <span class="c1"># Print debug info?</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-customization">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Layer-Specific Customization</a><a class="headerlink" href="#layer-specific-customization" title="Link to this heading"></a></h3>
+<p>Customize individual layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+
+<span class="c1"># Get layers</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+
+<span class="c1"># Modify specific layer (e.g., highlight layer 0)</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+    <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span>
+    <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="c1"># Visualize with custom layer</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="color-coding-by-community">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Color-Coding by Community</a><a class="headerlink" href="#color-coding-by-community" title="Link to this heading"></a></h3>
+<p>Color nodes by community membership:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
+
+<span class="c1"># Detect communities</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Assign colors</span>
+<span class="n">num_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">rainbow</span><span class="p">([</span><span class="n">i</span><span class="o">/</span><span class="n">num_communities</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_communities</span><span class="p">)])</span>
+
+<span class="c1"># Apply to network</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">comm_id</span><span class="p">]</span>
+
+<span class="c1"># Visualize</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="exporting-visualizations">
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Exporting Visualizations</a><a class="headerlink" href="#exporting-visualizations" title="Link to this heading"></a></h2>
+<section id="save-to-file">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Save to File</a><a class="headerlink" href="#save-to-file" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Create figure</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="c1"># Draw network</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">axis</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+
+<span class="c1"># Customize and save</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Multilayer Network Visualization&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;network.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;network.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>  <span class="c1"># Vector format</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Visualization saved to network.png and network.pdf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="high-quality-publications">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">High-Quality Publications</a><a class="headerlink" href="#high-quality-publications" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Use publication settings</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.family&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;serif&#39;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.dpi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span>
+
+<span class="c1"># Large figure for detail</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="c1"># Dense mode for publications</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">alphalevel</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">background_shape</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Figure 1: Multilayer Network Structure&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;publication_figure.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;publication_figure.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="interactive-visualizations">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">Interactive Visualizations</a><a class="headerlink" href="#interactive-visualizations" title="Link to this heading"></a></h2>
+<section id="using-plotly-optional">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Using Plotly (Optional)</a><a class="headerlink" href="#using-plotly-optional" title="Link to this heading"></a></h3>
+<p>Py3plex provides interactive visualization capabilities through Plotly, allowing you to explore
+networks dynamically in your web browser.</p>
+<p><strong>Installation:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install plotly separately</span>
+pip<span class="w"> </span>install<span class="w"> </span>plotly
+
+<span class="c1"># Or install py3plex with visualization extras</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="basic-interactive-hairball-plot">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Basic Interactive Hairball Plot</a><a class="headerlink" href="#basic-interactive-hairball-plot" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">interactive_hairball_plot</span></code> function creates an interactive 2D network visualization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">interactive_hairball_plot</span>
+
+<span class="c1"># Generate a network</span>
+<span class="n">multilayer_net</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Convert to NetworkX graph</span>
+<span class="n">network_colors</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">multilayer_net</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;hairball&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compute layout</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Compute node sizes based on degree</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
+<span class="n">max_degree</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">degrees</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span> <span class="o">+</span> <span class="mi">40</span> <span class="o">*</span> <span class="p">(</span><span class="n">degrees</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">/</span> <span class="n">max_degree</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+<span class="c1"># Create color mapping</span>
+<span class="n">color_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="n">node_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())}</span>
+
+<span class="c1"># Generate interactive visualization</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">interactive_hairball_plot</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">nsizes</span><span class="o">=</span><span class="n">node_sizes</span><span class="p">,</span>
+    <span class="n">final_color_mapping</span><span class="o">=</span><span class="n">color_mapping</span><span class="p">,</span>
+    <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span>
+    <span class="n">colorscale</span><span class="o">=</span><span class="s2">&quot;Viridis&quot;</span>  <span class="c1"># Options: Viridis, Rainbow, Blues, Reds, etc.</span>
+<span class="p">)</span>
+
+<span class="c1"># Save to HTML file</span>
+<span class="k">if</span> <span class="n">fig</span><span class="p">:</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="s2">&quot;network.html&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interactive visualization saved to network.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interactive Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Hover</strong>: Move your mouse over nodes to see details</p></li>
+<li><p><strong>Zoom</strong>: Use mouse wheel to zoom in/out</p></li>
+<li><p><strong>Pan</strong>: Click and drag to move the view</p></li>
+<li><p><strong>Select</strong>: Click nodes to highlight connections</p></li>
+</ul>
+<p><strong>Color Scales Available:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Viridis</span></code>: Perceptually uniform, colorblind-friendly</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Rainbow</span></code>: Full color spectrum</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Blues</span></code>, <code class="docutils literal notranslate"><span class="pre">Reds</span></code>, <code class="docutils literal notranslate"><span class="pre">Greens</span></code>: Single-hue gradients</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RdBu</span></code>, <code class="docutils literal notranslate"><span class="pre">YlOrRd</span></code>: Diverging color schemes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Jet</span></code>, <code class="docutils literal notranslate"><span class="pre">Hot</span></code>, <code class="docutils literal notranslate"><span class="pre">Electric</span></code>: High-contrast schemes</p></li>
+</ul>
+</section>
+<section id="advanced-interactive-multilayer-example">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Advanced Interactive Multilayer Example</a><a class="headerlink" href="#advanced-interactive-multilayer-example" title="Link to this heading"></a></h3>
+<p>For more complex multilayer networks with custom styling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">interactive_hairball_plot</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Create multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Add nodes to different layers</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;professional&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">]</span>
+<span class="n">nodes_per_layer</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;social&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;Eve&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;professional&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Frank&#39;</span><span class="p">,</span> <span class="s1">&#39;Grace&#39;</span><span class="p">,</span> <span class="s1">&#39;Henry&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;family&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;Ivan&#39;</span><span class="p">,</span> <span class="s1">&#39;Jane&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes_per_layer</span><span class="p">[</span><span class="n">layer</span><span class="p">]:</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="p">}])</span>
+
+<span class="c1"># Add edges (example for one layer)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Convert to aggregate graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">layer_nodes</span> <span class="ow">in</span> <span class="n">nodes_per_layer</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">layer_nodes</span><span class="p">):</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+<span class="c1"># Compute layout and visualize</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
+<span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="mi">80</span> <span class="o">*</span> <span class="p">(</span><span class="n">degrees</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">degrees</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+<span class="c1"># Assign colors by layer membership</span>
+<span class="n">layer_colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;social&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;professional&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+<span class="n">color_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+    <span class="c1"># Find primary layer for this node</span>
+    <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">nodes_per_layer</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">color_mapping</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_colors</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+            <span class="k">break</span>
+
+<span class="c1"># Create interactive visualization</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">interactive_hairball_plot</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_sizes</span><span class="p">,</span> <span class="n">color_mapping</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s2">&quot;Viridis&quot;</span><span class="p">)</span>
+
+<span class="c1"># Customize the figure</span>
+<span class="k">if</span> <span class="n">fig</span><span class="p">:</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Interactive Multilayer Network&quot;</span><span class="p">,</span>
+        <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span>
+        <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(240, 240, 240, 0.9)&#39;</span>
+    <span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="s2">&quot;multilayer_network.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Complete Working Examples:</strong></p>
+<p>See the following example scripts in the repository:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/visualization/example_interactive_hairball.py</span></code> - Basic interactive visualization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/visualization/example_interactive_multilayer.py</span></code> - Advanced multilayer interactive plot</p></li>
+</ul>
+<p>These examples are standalone and can be run directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/visualization
+python<span class="w"> </span>example_interactive_hairball.py
+<span class="c1"># Opens browser with interactive visualization</span>
+</pre></div>
+</div>
+</section>
+<section id="jupyter-notebook-integration">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Jupyter Notebook Integration</a><a class="headerlink" href="#jupyter-notebook-integration" title="Link to this heading"></a></h3>
+<p>Interactive visualizations work seamlessly in Jupyter notebooks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In Jupyter notebook</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">interactive_hairball_plot</span>
+
+<span class="c1"># ... prepare your graph, positions, etc. ...</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">interactive_hairball_plot</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_sizes</span><span class="p">,</span> <span class="n">color_mapping</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+<span class="c1"># The figure will be displayed inline in the notebook</span>
+<span class="c1"># No need to call fig.show() - it&#39;s called automatically</span>
+</pre></div>
+</div>
+<p><strong>Notebook Tips:</strong></p>
+<ol class="arabic simple">
+<li><p>The interactive plot appears directly in the notebook</p></li>
+<li><p>All interactive features work in the notebook interface</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">fig.write_html()</span></code> to save for sharing</p></li>
+<li><p>Interactive plots work in JupyterLab, Jupyter Notebook, and VS Code notebooks</p></li>
+</ol>
+</section>
+<section id="saving-interactive-visualizations">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Saving Interactive Visualizations</a><a class="headerlink" href="#saving-interactive-visualizations" title="Link to this heading"></a></h3>
+<p>Save your interactive visualizations for sharing or publishing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">interactive_hairball_plot</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_sizes</span><span class="p">,</span> <span class="n">color_mapping</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+<span class="c1"># Save as standalone HTML</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="s2">&quot;network.html&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save as HTML with custom configuration</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span>
+    <span class="s2">&quot;network.html&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;displayModeBar&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Show toolbar</span>
+        <span class="s1">&#39;displaylogo&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>     <span class="c1"># Hide Plotly logo</span>
+        <span class="s1">&#39;modeBarButtonsToRemove&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;pan2d&#39;</span><span class="p">,</span> <span class="s1">&#39;lasso2d&#39;</span><span class="p">]</span>  <span class="c1"># Hide specific tools</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Save as static image (requires kaleido)</span>
+<span class="c1"># pip install kaleido</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="s2">&quot;network.png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="s2">&quot;network.pdf&quot;</span><span class="p">)</span>  <span class="c1"># Vector format</span>
+</pre></div>
+</div>
+<p><strong>HTML File Features:</strong></p>
+<ul class="simple">
+<li><p>Standalone - works without internet connection</p></li>
+<li><p>No dependencies needed in browser</p></li>
+<li><p>Full interactivity preserved</p></li>
+<li><p>Can be embedded in web pages</p></li>
+<li><p>Works on mobile devices</p></li>
+</ul>
+</section>
+<section id="embedding-in-web-applications">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Embedding in Web Applications</a><a class="headerlink" href="#embedding-in-web-applications" title="Link to this heading"></a></h3>
+<p>Embed interactive visualizations in your web applications:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Network Visualization<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>My Network Analysis<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+    <span class="cm">&lt;!-- Embed the interactive plot --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">iframe</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;network.html&quot;</span> <span class="na">width</span><span class="o">=</span><span class="s">&quot;100%&quot;</span> <span class="na">height</span><span class="o">=</span><span class="s">&quot;600px&quot;</span> <span class="na">frameborder</span><span class="o">=</span><span class="s">&quot;0&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">iframe</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Description of your network...<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p><strong>Or include the plot div directly:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate only the div (not full HTML page)</span>
+<span class="n">fig_html</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
+    <span class="n">include_plotlyjs</span><span class="o">=</span><span class="s1">&#39;cdn&#39;</span><span class="p">,</span>  <span class="c1"># Use CDN for Plotly.js</span>
+    <span class="n">div_id</span><span class="o">=</span><span class="s1">&#39;my-network-plot&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Use fig_html in your web framework (Flask, Django, etc.)</span>
+</pre></div>
+</div>
+</section>
+<section id="troubleshooting-interactive-visualizations">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Troubleshooting Interactive Visualizations</a><a class="headerlink" href="#troubleshooting-interactive-visualizations" title="Link to this heading"></a></h3>
+<p><strong>Issue:</strong> Plotly not available</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution: Install plotly</span>
+pip<span class="w"> </span>install<span class="w"> </span>plotly
+</pre></div>
+</div>
+<p><strong>Issue:</strong> Figure doesn’t show in Jupyter</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution: Call fig.show() explicitly</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">interactive_hairball_plot</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_sizes</span><span class="p">,</span> <span class="n">color_mapping</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Issue:</strong> Slow performance with large networks</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution 1: Sample nodes for interactive view</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="n">sample_nodes</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()),</span> <span class="nb">min</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()))</span>
+<span class="n">G_sample</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">)</span>
+
+<span class="c1"># Solution 2: Use simpler layout</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">random_layout</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>  <span class="c1"># Faster than spring_layout</span>
+
+<span class="c1"># Solution 3: Reduce node sizes and simplify colors</span>
+<span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>  <span class="c1"># Constant size</span>
+<span class="n">color_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>  <span class="c1"># Single color</span>
+</pre></div>
+</div>
+<p><strong>Issue:</strong> HTML file is too large</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solution: Reduce data in the plot</span>
+<span class="c1"># 1. Use fewer nodes (sample or filter)</span>
+<span class="c1"># 2. Use constant node sizes instead of varying</span>
+<span class="c1"># 3. Simplify color scheme</span>
+<span class="c1"># 4. Remove edge traces if not needed</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-guidelines">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Performance Guidelines</a><a class="headerlink" href="#performance-guidelines" title="Link to this heading"></a></h3>
+<p><strong>Network Size Recommendations:</strong></p>
+<ul class="simple">
+<li><p><strong>&lt; 100 nodes</strong>: All features work smoothly</p></li>
+<li><p><strong>100-500 nodes</strong>: Good performance, all features</p></li>
+<li><p><strong>500-1000 nodes</strong>: Usable, may have slight lag</p></li>
+<li><p><strong>1000-5000 nodes</strong>: Sample nodes or use simplified styling</p></li>
+<li><p><strong>&gt; 5000 nodes</strong>: Use static visualizations instead</p></li>
+</ul>
+<p><strong>Optimization Tips:</strong></p>
+<ol class="arabic simple">
+<li><p>Use constant node sizes for large networks</p></li>
+<li><p>Simplify color schemes (single color or discrete categories)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">nx.random_layout()</span></code> instead of <code class="docutils literal notranslate"><span class="pre">nx.spring_layout()</span></code> for speed</p></li>
+<li><p>Sample nodes for interactive exploration</p></li>
+<li><p>Consider static visualization for very large networks</p></li>
+</ol>
+</section>
+<section id="id1">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Jupyter Notebook Integration</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable inline plotting</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="c1"># Or for interactive plots</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">notebook</span>
+
+<span class="c1"># Visualize</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-tips">
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">Performance Tips</a><a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h2>
+<section id="for-large-networks">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">For Large Networks</a><a class="headerlink" href="#for-large-networks" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Use minimal mode</strong> (small nodes, no labels)</p></li>
+<li><p><strong>Sample nodes</strong> if network is too large:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="c1"># Sample 1000 random nodes</span>
+<span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="n">sample_nodes</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_nodes</span><span class="p">)))</span>
+
+<span class="c1"># Create subnetwork</span>
+<span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_subnetwork</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">)</span>
+
+<span class="c1"># Visualize sample</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">subnetwork</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Remove isolated nodes</strong>:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">remove_isolated_nodes</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Faster rendering</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Use lower resolution</strong> for interactive exploration:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>  <span class="c1"># Lower DPI for speed</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2><a class="toc-backref" href="#id34" role="doc-backlink">Troubleshooting</a><a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="visualization-not-showing">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Visualization Not Showing</a><a class="headerlink" href="#visualization-not-showing" title="Link to this heading"></a></h3>
+<p><strong>Issue:</strong> Plot doesn’t appear</p>
+<p><strong>Solutions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Jupyter notebook: Enable inline plots</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="c1"># Python script: Add plt.show()</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Headless server: Save to file</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
+</pre></div>
+</div>
+</section>
+<section id="nodes-overlapping">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Nodes Overlapping</a><a class="headerlink" href="#nodes-overlapping" title="Link to this heading"></a></h3>
+<p><strong>Issue:</strong> Nodes overlap and are hard to distinguish</p>
+<p><strong>Solutions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Use smaller node size</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># 2. Increase layout area</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">rectanglex</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>  <span class="c1"># Wider layout</span>
+    <span class="n">rectangley</span><span class="o">=</span><span class="mf">2.0</span>   <span class="c1"># Taller layout</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. Sample nodes</span>
+<span class="c1"># (See &quot;Performance Tips&quot; above)</span>
+</pre></div>
+</div>
+</section>
+<section id="labels-too-crowded">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">Labels Too Crowded</a><a class="headerlink" href="#labels-too-crowded" title="Link to this heading"></a></h3>
+<p><strong>Issue:</strong> Layer labels overlap or are too dense</p>
+<p><strong>Solutions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Disable labels for large networks</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># 2. Adjust label position</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">label_position</span><span class="o">=</span><span class="mf">1.2</span>  <span class="c1"># Move labels outward</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. Use smaller font</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">node_font_size</span><span class="o">=</span><span class="mi">3</span>  <span class="c1"># Smaller font</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-visualization-modes">
+<h2><a class="toc-backref" href="#id38" role="doc-backlink">Advanced Visualization Modes</a><a class="headerlink" href="#advanced-visualization-modes" title="Link to this heading"></a></h2>
+<p>Py3plex provides multiple specialized visualization modes for multilayer networks,
+each optimized for different analysis goals. These modes can be accessed through
+the unified <code class="docutils literal notranslate"><span class="pre">visualize_multilayer_network</span></code> API or by calling individual plot functions.</p>
+<section id="overview-of-visualization-modes">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">Overview of Visualization Modes</a><a class="headerlink" href="#overview-of-visualization-modes" title="Link to this heading"></a></h3>
+<p>The following visualization modes are available:</p>
+<ol class="arabic simple">
+<li><p><strong>diagonal</strong> (default): Layer-centric diagonal layout with inter-layer edges</p></li>
+<li><p><strong>small_multiples</strong>: Side-by-side comparison of layers in a grid</p></li>
+<li><p><strong>edge_colored_projection</strong>: Aggregated view with color-coded edges by layer</p></li>
+<li><p><strong>supra_adjacency_heatmap</strong>: Matrix representation of the multilayer structure</p></li>
+<li><p><strong>radial_layers</strong>: Concentric circles with layers as rings</p></li>
+<li><p><strong>ego_multilayer</strong>: Focus on a single node’s neighborhood across layers</p></li>
+<li><p><strong>flow/alluvial</strong>: Layered flow visualization with horizontal bands</p></li>
+<li><p><strong>sankey</strong>: Sankey diagram showing inter-layer flow strength</p></li>
+</ol>
+</section>
+<section id="unified-api">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">Unified API</a><a class="headerlink" href="#unified-api" title="Link to this heading"></a></h3>
+<p>All visualization modes can be accessed through the <code class="docutils literal notranslate"><span class="pre">visualize_multilayer_network</span></code> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use any visualization mode</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;small_multiples&quot;</span>  <span class="c1"># or any other mode</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="small-multiples-view">
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">Small Multiples View</a><a class="headerlink" href="#small-multiples-view" title="Link to this heading"></a></h3>
+<p>Displays each layer as a separate subplot in a grid layout, making it easy to compare
+layer structures side-by-side.</p>
+<a class="reference internal image-reference" href="_images/multilayer_small_multiples_shared.png"><img alt="Small multiples visualization with shared layout" class="align-center" src="_images/multilayer_small_multiples_shared.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
+
+<span class="c1"># Shared layout (nodes appear at same positions across layers)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;small_multiples&quot;</span><span class="p">,</span>
+    <span class="n">shared_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>       <span class="c1"># Same node positions in all layers</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;spring&quot;</span><span class="p">,</span>          <span class="c1"># Layout algorithm</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+    <span class="n">max_cols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>               <span class="c1"># Maximum columns in grid</span>
+    <span class="n">show_layer_titles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Independent layouts (optimized per layer)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;small_multiples&quot;</span><span class="p">,</span>
+    <span class="n">shared_layout</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>      <span class="c1"># Different layouts per layer</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;circular&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Comparing layer structures</p></li>
+<li><p>Identifying layer-specific patterns</p></li>
+<li><p>Understanding node presence across layers</p></li>
+<li><p>Networks with 2-10 layers</p></li>
+</ul>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shared_layout</span></code>: Use same node positions across layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code>: “spring”, “circular”, “random”, “kamada_kawai”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_cols</span></code>: Maximum number of columns in grid</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">show_layer_titles</span></code>: Display layer names</p></li>
+</ul>
+</section>
+<section id="edge-colored-projection">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">Edge-Colored Projection</a><a class="headerlink" href="#edge-colored-projection" title="Link to this heading"></a></h3>
+<p>Projects all layers onto a single 2D graph, using edge colors to indicate layer membership.
+Useful for seeing the overall structure while maintaining layer information.</p>
+<a class="reference internal image-reference" href="_images/multilayer_edge_projection_spring.png"><img alt="Edge-colored projection visualization" class="align-center" src="_images/multilayer_edge_projection_spring.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
+
+<span class="c1"># Basic projection</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;edge_colored_projection&quot;</span><span class="p">,</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;spring&quot;</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">edge_alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>           <span class="c1"># Edge transparency</span>
+    <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Custom layer colors</span>
+<span class="n">custom_colors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;layer1&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;layer2&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;layer3&#39;</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span>
+<span class="p">}</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;edge_colored_projection&quot;</span><span class="p">,</span>
+    <span class="n">layer_colors</span><span class="o">=</span><span class="n">custom_colors</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Aggregate network structure</p></li>
+<li><p>Comparing edge distributions across layers</p></li>
+<li><p>Identifying layer-dominant connections</p></li>
+<li><p>Networks where edges don’t heavily overlap</p></li>
+</ul>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code>: Layout algorithm for the aggregated graph</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_colors</span></code>: Dict mapping layer names to colors</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edge_alpha</span></code>: Transparency level for edges (0-1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figsize</span></code>: Figure dimensions</p></li>
+</ul>
+</section>
+<section id="supra-adjacency-heatmap">
+<h3><a class="toc-backref" href="#id43" role="doc-backlink">Supra-Adjacency Heatmap</a><a class="headerlink" href="#supra-adjacency-heatmap" title="Link to this heading"></a></h3>
+<p>Shows the multilayer network as a block matrix where each block represents the
+adjacency matrix of one layer. Can optionally include inter-layer connections.</p>
+<a class="reference internal image-reference" href="_images/multilayer_supra_heatmap_inter.png"><img alt="Supra-adjacency heatmap with inter-layer connections" class="align-center" src="_images/multilayer_supra_heatmap_inter.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
+
+<span class="c1"># Intra-layer only (block-diagonal structure)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;supra_adjacency_heatmap&quot;</span><span class="p">,</span>
+    <span class="n">include_inter_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Blues&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># With inter-layer coupling</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;supra_adjacency_heatmap&quot;</span><span class="p">,</span>
+    <span class="n">include_inter_layer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">inter_layer_weight</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>   <span class="c1"># Weight for inter-layer edges</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Mathematical analysis of structure</p></li>
+<li><p>Identifying block patterns</p></li>
+<li><p>Understanding coupling between layers</p></li>
+<li><p>Spectral analysis preparation</p></li>
+</ul>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">include_inter_layer</span></code>: Show inter-layer connections</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inter_layer_weight</span></code>: Default weight for inter-layer edges</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmap</span></code>: Matplotlib colormap name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figsize</span></code>: Figure dimensions</p></li>
+</ul>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>Diagonal blocks = intra-layer adjacency matrices</p></li>
+<li><p>Off-diagonal blocks = inter-layer connections</p></li>
+<li><p>White grid lines = layer boundaries</p></li>
+</ul>
+</section>
+<section id="radial-concentric-layers">
+<h3><a class="toc-backref" href="#id44" role="doc-backlink">Radial/Concentric Layers</a><a class="headerlink" href="#radial-concentric-layers" title="Link to this heading"></a></h3>
+<p>Arranges layers as concentric circles, with nodes positioned on rings and
+inter-layer edges shown as radial connections.</p>
+<a class="reference internal image-reference" href="_images/multilayer_radial_with_inter.png"><img alt="Radial layers visualization with concentric circles" class="align-center" src="_images/multilayer_radial_with_inter.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
+
+<span class="c1"># With inter-layer edges</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;radial_layers&quot;</span><span class="p">,</span>
+    <span class="n">base_radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>          <span class="c1"># Radius of innermost layer</span>
+    <span class="n">radius_step</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>          <span class="c1"># Distance between layers</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">draw_inter_layer_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">edge_alpha</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+
+<span class="c1"># Intra-layer only</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;radial_layers&quot;</span><span class="p">,</span>
+    <span class="n">draw_inter_layer_edges</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Temporal networks (layers as time steps)</p></li>
+<li><p>Hierarchical multilayer networks</p></li>
+<li><p>Visualizing node evolution across layers</p></li>
+<li><p>Networks with clear layer ordering</p></li>
+</ul>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">base_radius</span></code>: Radius of innermost ring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">radius_step</span></code>: Distance between consecutive rings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">draw_inter_layer_edges</span></code>: Show inter-layer connections</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">node_size</span></code>: Size of nodes</p></li>
+</ul>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>Each ring = one layer</p></li>
+<li><p>Same node appears at same angle on all rings</p></li>
+<li><p>Dashed lines = inter-layer connections</p></li>
+</ul>
+</section>
+<section id="ego-centric-multilayer-view">
+<h3><a class="toc-backref" href="#id45" role="doc-backlink">Ego-Centric Multilayer View</a><a class="headerlink" href="#ego-centric-multilayer-view" title="Link to this heading"></a></h3>
+<p>Focuses on a single node (the “ego”) and shows its neighborhood across different layers,
+highlighting the ego node’s position in each layer context.</p>
+<a class="reference internal image-reference" href="_images/multilayer_ego_node3_1hop.png"><img alt="Ego-centric multilayer visualization showing node neighborhood" class="align-center" src="_images/multilayer_ego_node3_1hop.png" style="width: 600px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
+
+<span class="c1"># Basic ego view</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;ego_multilayer&quot;</span><span class="p">,</span>
+    <span class="n">ego</span><span class="o">=</span><span class="s1">&#39;node_id&#39;</span><span class="p">,</span>            <span class="c1"># Node to focus on</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>              <span class="c1"># Neighborhood depth (hops)</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;spring&quot;</span><span class="p">,</span>
+    <span class="n">node_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">ego_node_size</span><span class="o">=</span><span class="mi">400</span>         <span class="c1"># Highlight ego node</span>
+<span class="p">)</span>
+
+<span class="c1"># Specific layers only</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;ego_multilayer&quot;</span><span class="p">,</span>
+    <span class="n">ego</span><span class="o">=</span><span class="s1">&#39;node_id&#39;</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">],</span>  <span class="c1"># Only these layers</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>              <span class="c1"># 2-hop neighborhood</span>
+    <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Analyzing individual node behavior</p></li>
+<li><p>Comparing local structure across layers</p></li>
+<li><p>Identifying layer-specific influential neighbors</p></li>
+<li><p>Understanding node role variations</p></li>
+</ul>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ego</span></code>: Node ID to focus on</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layers</span></code>: Specific layers to visualize (or None for all)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_depth</span></code>: Neighborhood depth in hops</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code>: Layout algorithm per ego graph</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ego_node_size</span></code>: Size of the highlighted ego node</p></li>
+</ul>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>Red node = the ego (focal node)</p></li>
+<li><p>Blue nodes = neighbors of the ego</p></li>
+<li><p>Each subplot = ego’s neighborhood in one layer</p></li>
+</ul>
+</section>
+<section id="flow-and-sankey-diagrams">
+<h3><a class="toc-backref" href="#id46" role="doc-backlink">Flow and Sankey Diagrams</a><a class="headerlink" href="#flow-and-sankey-diagrams" title="Link to this heading"></a></h3>
+<p>Py3plex provides two complementary visualizations for understanding inter-layer connectivity:
+flow/alluvial diagrams and Sankey diagrams. Both show how nodes and connections flow between
+layers, but with different visual approaches.</p>
+<section id="flow-alluvial-visualization">
+<h4>Flow/Alluvial Visualization<a class="headerlink" href="#flow-alluvial-visualization" title="Link to this heading"></a></h4>
+<p>The flow visualization shows each layer as a horizontal band with nodes positioned along the
+x-axis. Inter-layer connections are drawn as flowing Bezier curves, with node activity encoded
+by color and size.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Flow visualization</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Or use &#39;alluvial&#39; (same as &#39;flow&#39;)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;alluvial&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Visualizing node-level connectivity across layers</p></li>
+<li><p>Understanding individual node trajectories</p></li>
+<li><p>Showing how specific nodes connect between layers</p></li>
+<li><p>Networks with up to 5-6 layers</p></li>
+</ul>
+</section>
+<section id="sankey-diagram-for-inter-layer-flows">
+<h4>Sankey Diagram for Inter-Layer Flows<a class="headerlink" href="#sankey-diagram-for-inter-layer-flows" title="Link to this heading"></a></h4>
+<p>The Sankey-style diagram provides an aggregate view of inter-layer connection strength.
+The visualization uses text and arrows where width represents the number of connections
+between layers. This is ideal for understanding overall flow patterns rather than
+individual node connections.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Sankey-style diagram showing inter-layer flow strength</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;sankey&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also use the function directly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.sankey</span> <span class="kn">import</span> <span class="n">draw_multilayer_sankey</span>
+
+<span class="c1"># Get layers</span>
+<span class="n">labels</span><span class="p">,</span> <span class="n">graphs</span><span class="p">,</span> <span class="n">multilinks</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+
+<span class="c1"># Create Sankey-style diagram</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">draw_multilayer_sankey</span><span class="p">(</span>
+    <span class="n">graphs</span><span class="p">,</span>
+    <span class="n">multilinks</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Analyzing aggregate inter-layer connection patterns</p></li>
+<li><p>Understanding flow strength between layers</p></li>
+<li><p>Identifying dominant layer connections</p></li>
+<li><p>Networks with 2-5 layers</p></li>
+<li><p>Summarizing inter-layer connectivity</p></li>
+</ul>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>Text shows layer-to-layer connections with counts</p></li>
+<li><p>Arrows indicate connection direction</p></li>
+<li><p>Arrow width proportional to connection strength</p></li>
+<li><p>Useful for identifying which layer pairs have strongest connections</p></li>
+</ul>
+<p><strong>Note:</strong></p>
+<p>This uses a simplified flow diagram approach rather than matplotlib’s traditional
+Sankey class, as it’s better suited for multilayer network inter-layer connections.</p>
+</section>
+</section>
+<section id="example-workflows">
+<h3><a class="toc-backref" href="#id47" role="doc-backlink">Example Workflows</a><a class="headerlink" href="#example-workflows" title="Link to this heading"></a></h3>
+<section id="comparing-visualization-modes">
+<h4>Comparing Visualization Modes<a class="headerlink" href="#comparing-visualization-modes" title="Link to this heading"></a></h4>
+<p>Different modes reveal different aspects of the same network:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compare multiple views</span>
+<span class="n">modes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;small_multiples&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;edge_colored_projection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;supra_adjacency_heatmap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;radial_layers&quot;</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">:</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">visualization_type</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;network_</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="analyzing-specific-nodes">
+<h4>Analyzing Specific Nodes<a class="headerlink" href="#analyzing-specific-nodes" title="Link to this heading"></a></h4>
+<p>Use ego-centric view to understand individual nodes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find high-degree nodes</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Get aggregated network</span>
+<span class="n">agg_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="n">agg_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
+    <span class="n">agg_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># Get top nodes by degree</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">agg_graph</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
+<span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">degrees</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">degrees</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+
+<span class="c1"># Visualize each top node&#39;s ego network</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">top_nodes</span><span class="p">:</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_multilayer_network</span><span class="p">(</span>
+        <span class="n">network</span><span class="p">,</span>
+        <span class="n">visualization_type</span><span class="o">=</span><span class="s2">&quot;ego_multilayer&quot;</span><span class="p">,</span>
+        <span class="n">ego</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+        <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ego_</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">.png&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="choosing-the-right-visualization">
+<h3><a class="toc-backref" href="#id48" role="doc-backlink">Choosing the Right Visualization</a><a class="headerlink" href="#choosing-the-right-visualization" title="Link to this heading"></a></h3>
+<p>Use this guide to select the appropriate visualization mode:</p>
+<p><strong>For structural comparison:</strong></p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">small_multiples</span></code> to compare layer structures side-by-side</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">edge_colored_projection</span></code> to see aggregated structure with layer info</p></li>
+</ul>
+<p><strong>For mathematical analysis:</strong></p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">supra_adjacency_heatmap</span></code> for matrix-based analysis</p></li>
+<li><p>Useful for spectral methods and linear algebra operations</p></li>
+</ul>
+<p><strong>For temporal or hierarchical networks:</strong></p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">radial_layers</span></code> when layers have natural ordering</p></li>
+<li><p>Shows progression or hierarchy clearly</p></li>
+</ul>
+<p><strong>For local analysis:</strong></p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">ego_multilayer</span></code> to understand individual nodes</p></li>
+<li><p>Compare how a node’s role varies across layers</p></li>
+</ul>
+<p><strong>For presentations:</strong></p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">edge_colored_projection</span></code> for clean, simple overview</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">small_multiples</span></code> when detail matters</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">radial_layers</span></code> for visually striking displays</p></li>
+</ul>
+</section>
+</section>
+<section id="next-steps">
+<h2><a class="toc-backref" href="#id49" role="doc-backlink">Next Steps</a><a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="basic_usage_analysis.html"><span class="doc">Network Analysis</span></a> - Analyze network properties</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection</span></a> - Detect communities for coloring</p></li>
+<li><p><a class="reference internal" href="deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> - Optimize for large networks</p></li>
+<li><p><a class="reference internal" href="tutorials/csv_loading.html"><span class="doc">CSV Data Loading Examples</span></a> - Load data from CSV</p></li>
+</ul>
+<p>For more examples, see the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/main/examples">visualization examples</a>
+in the GitHub repository.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

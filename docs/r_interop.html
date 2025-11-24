@@ -1,0 +1,682 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R Interoperability Guide &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">R Interoperability Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/r_interop.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="r-interoperability-guide">
+<h1>R Interoperability Guide<a class="headerlink" href="#r-interoperability-guide" title="Link to this heading"></a></h1>
+<p>This guide shows how to use py3plex from R via the <strong>reticulate</strong> package, enabling R users (especially those familiar with igraph or MLnet) to leverage py3plex’s multilayer network capabilities.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#why-use-py3plex-from-r" id="id1">Why Use py3plex from R?</a></p></li>
+<li><p><a class="reference internal" href="#prerequisites" id="id2">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#quick-start-simple-use-case-with-centrality" id="id3">Quick Start: Simple Use Case with Centrality</a></p>
+<ul>
+<li><p><a class="reference internal" href="#complete-r-workflow" id="id4">Complete R Workflow</a></p></li>
+<li><p><a class="reference internal" href="#expected-output" id="id5">Expected Output</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#core-functions" id="id6">Core Functions</a></p>
+<ul>
+<li><p><a class="reference internal" href="#to-igraph-for-r" id="id7">to_igraph_for_r()</a></p></li>
+<li><p><a class="reference internal" href="#export-edgelist" id="id8">export_edgelist()</a></p></li>
+<li><p><a class="reference internal" href="#export-nodelist" id="id9">export_nodelist()</a></p></li>
+<li><p><a class="reference internal" href="#export-adjacency" id="id10">export_adjacency()</a></p></li>
+<li><p><a class="reference internal" href="#get-network-stats" id="id11">get_network_stats()</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#advanced-examples" id="id12">Advanced Examples</a></p>
+<ul>
+<li><p><a class="reference internal" href="#example-1-layer-by-layer-analysis" id="id13">Example 1: Layer-by-Layer Analysis</a></p></li>
+<li><p><a class="reference internal" href="#example-2-combining-with-r-statistical-analysis" id="id14">Example 2: Combining with R Statistical Analysis</a></p></li>
+<li><p><a class="reference internal" href="#example-3-time-series-of-multilayer-networks" id="id15">Example 3: Time Series of Multilayer Networks</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#working-with-csv-files" id="id16">Working with CSV Files</a></p></li>
+<li><p><a class="reference internal" href="#integration-with-mlnet" id="id17">Integration with MLnet</a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting" id="id18">Troubleshooting</a></p>
+<ul>
+<li><p><a class="reference internal" href="#python-module-not-found" id="id19">Python Module Not Found</a></p></li>
+<li><p><a class="reference internal" href="#igraph-import-error" id="id20">igraph Import Error</a></p></li>
+<li><p><a class="reference internal" href="#conversion-issues" id="id21">Conversion Issues</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#performance-tips" id="id22">Performance Tips</a></p>
+<ul>
+<li><p><a class="reference internal" href="#for-large-networks" id="id23">For Large Networks</a></p></li>
+<li><p><a class="reference internal" href="#memory-management" id="id24">Memory Management</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#next-steps" id="id25">Next Steps</a></p></li>
+</ul>
+</nav>
+<section id="why-use-py3plex-from-r">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Why Use py3plex from R?</a><a class="headerlink" href="#why-use-py3plex-from-r" title="Link to this heading"></a></h2>
+<p>py3plex provides specialized multilayer network analysis that complements R’s igraph package:</p>
+<ul class="simple">
+<li><p><strong>Native multilayer support</strong> - Layer-aware algorithms and statistics</p></li>
+<li><p><strong>Specialized visualizations</strong> - Diagonal projection for large multilayer networks</p></li>
+<li><p><strong>Seamless conversion</strong> - Export to R igraph format for further analysis</p></li>
+<li><p><strong>Rich ecosystem</strong> - Combine py3plex multilayer capabilities with R’s statistical tools</p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Install required packages:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># In R</span>
+<span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;reticulate&quot;</span><span class="p">)</span>
+<span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;igraph&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># In terminal/shell</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+pip<span class="w"> </span>install<span class="w"> </span>python-igraph
+</pre></div>
+</div>
+</section>
+<section id="quick-start-simple-use-case-with-centrality">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Quick Start: Simple Use Case with Centrality</a><a class="headerlink" href="#quick-start-simple-use-case-with-centrality" title="Link to this heading"></a></h2>
+<p>This example demonstrates creating a multilayer social network, converting it to igraph, and computing centrality measures in R.</p>
+<section id="complete-r-workflow">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Complete R Workflow</a><a class="headerlink" href="#complete-r-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">reticulate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">igraph</span><span class="p">)</span>
+
+<span class="c1"># Import py3plex modules</span>
+<span class="n">py3plex</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">r_interop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex.wrappers.r_interop&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create a multilayer social network</span>
+<span class="c1"># Two layers: Facebook and Twitter</span>
+<span class="n">net</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">py3plex</span><span class="o">$</span><span class="nf">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Add nodes</span>
+<span class="n">net</span><span class="o">$</span><span class="nf">add_nodes</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Alice&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;facebook&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;facebook&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Charlie&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;facebook&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Alice&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Diana&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">)</span>
+<span class="p">))</span>
+
+<span class="c1"># Add edges (connections within each platform)</span>
+<span class="n">net</span><span class="o">$</span><span class="nf">add_edges</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Alice&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">source_type</span><span class="o">=</span><span class="s">&#39;facebook&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">target_type</span><span class="o">=</span><span class="s">&#39;facebook&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="o">=</span><span class="m">0.8</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="o">=</span><span class="s">&#39;Charlie&#39;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">source_type</span><span class="o">=</span><span class="s">&#39;facebook&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">target_type</span><span class="o">=</span><span class="s">&#39;facebook&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="o">=</span><span class="m">0.6</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Alice&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">source_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">target_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="o">=</span><span class="m">0.9</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="o">=</span><span class="s">&#39;Diana&#39;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">source_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">target_type</span><span class="o">=</span><span class="s">&#39;twitter&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="o">=</span><span class="m">0.7</span><span class="p">)</span>
+<span class="p">))</span>
+
+<span class="c1"># Convert to igraph for R analysis (union mode merges all layers)</span>
+<span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;union&#39;</span><span class="p">)</span>
+
+<span class="c1"># Now use R&#39;s igraph functions for centrality analysis</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;=== Network Statistics ===&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Vertices:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">vcount</span><span class="p">(</span><span class="n">g</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Edges:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">ecount</span><span class="p">(</span><span class="n">g</span><span class="p">)))</span>
+
+<span class="c1"># Compute centrality measures</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;\n=== Centrality Measures ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># Degree centrality</span>
+<span class="n">deg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">degree</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;\nDegree centrality:&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">sort</span><span class="p">(</span><span class="n">deg</span><span class="p">,</span><span class="w"> </span><span class="n">decreasing</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="c1"># Betweenness centrality</span>
+<span class="n">between</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">betweenness</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;\nBetweenness centrality:&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">sort</span><span class="p">(</span><span class="n">between</span><span class="p">,</span><span class="w"> </span><span class="n">decreasing</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="c1"># Closeness centrality</span>
+<span class="n">close</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">closeness</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;\nCloseness centrality:&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">sort</span><span class="p">(</span><span class="n">close</span><span class="p">,</span><span class="w"> </span><span class="n">decreasing</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="c1"># PageRank</span>
+<span class="n">pr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">page_rank</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">$</span><span class="n">vector</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;\nPageRank:&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">sort</span><span class="p">(</span><span class="n">pr</span><span class="p">,</span><span class="w"> </span><span class="n">decreasing</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="c1"># Visualize the network</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span>
+<span class="w">     </span><span class="n">vertex.size</span><span class="o">=</span><span class="n">deg</span><span class="o">*</span><span class="m">5</span><span class="p">,</span><span class="w">           </span><span class="c1"># Size by degree</span>
+<span class="w">     </span><span class="n">vertex.label</span><span class="o">=</span><span class="nf">V</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">$</span><span class="n">name</span><span class="p">,</span>
+<span class="w">     </span><span class="n">edge.width</span><span class="o">=</span><span class="nf">E</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">$</span><span class="n">weight</span><span class="o">*</span><span class="m">2</span><span class="p">,</span><span class="w">    </span><span class="c1"># Width by weight</span>
+<span class="w">     </span><span class="n">main</span><span class="o">=</span><span class="s">&quot;Multilayer Social Network&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="expected-output">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Expected Output</a><a class="headerlink" href="#expected-output" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>=== Network Statistics ===
+[1] &quot;Vertices: 6&quot;
+[1] &quot;Edges: 4&quot;
+
+=== Centrality Measures ===
+
+Degree centrality:
+(&#39;Bob&#39;, &#39;facebook&#39;)     2
+(&#39;Alice&#39;, &#39;facebook&#39;)   1
+(&#39;Charlie&#39;, &#39;facebook&#39;) 1
+(&#39;Bob&#39;, &#39;twitter&#39;)      2
+(&#39;Alice&#39;, &#39;twitter&#39;)    1
+(&#39;Diana&#39;, &#39;twitter&#39;)    1
+
+Betweenness centrality:
+(&#39;Bob&#39;, &#39;facebook&#39;)     2.0
+(&#39;Bob&#39;, &#39;twitter&#39;)      2.0
+(&#39;Alice&#39;, &#39;facebook&#39;)   0.0
+...
+</pre></div>
+</div>
+<p>This demonstrates how py3plex enables you to:</p>
+<ol class="arabic simple">
+<li><p>Create complex multilayer networks in Python</p></li>
+<li><p>Export them to R igraph format</p></li>
+<li><p>Use all R igraph centrality functions</p></li>
+<li><p>Visualize and analyze with R’s rich statistical tools</p></li>
+</ol>
+</section>
+</section>
+<section id="core-functions">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Core Functions</a><a class="headerlink" href="#core-functions" title="Link to this heading"></a></h2>
+<section id="to-igraph-for-r">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">to_igraph_for_r()</a><a class="headerlink" href="#to-igraph-for-r" title="Link to this heading"></a></h3>
+<p>Convert py3plex network to igraph format optimized for R.</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Union mode: Merge all layers (recommended for most use cases)</span>
+<span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;union&#39;</span><span class="p">)</span>
+
+<span class="c1"># Multiplex mode: Preserve layer structure</span>
+<span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;multiplex&#39;</span><span class="p">)</span>
+
+<span class="c1"># Extract specific layer only</span>
+<span class="n">g_facebook</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="o">=</span><span class="s">&#39;facebook&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code> - How to handle layers: <code class="docutils literal notranslate"><span class="pre">'union'</span></code> (merge), <code class="docutils literal notranslate"><span class="pre">'multiplex'</span></code> (preserve), <code class="docutils literal notranslate"><span class="pre">'intersection'</span></code> (common edges)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer</span></code> - Extract specific layer (overrides mode)</p></li>
+</ul>
+</section>
+<section id="export-edgelist">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">export_edgelist()</a><a class="headerlink" href="#export-edgelist" title="Link to this heading"></a></h3>
+<p>Export edges as R data frame compatible structure.</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get edge list</span>
+<span class="n">edges</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">export_edgelist</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">include_attributes</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="c1"># Convert to R data frame</span>
+<span class="n">edges_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="o">$</span><span class="n">src</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="o">$</span><span class="n">dst</span><span class="p">,</span>
+<span class="w">    </span><span class="n">src_layer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="o">$</span><span class="n">src_layer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dst_layer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="o">$</span><span class="n">dst_layer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">e</span><span class="o">$</span><span class="n">weight</span><span class="p">),</span><span class="w"> </span><span class="m">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="o">$</span><span class="n">weight</span><span class="p">),</span>
+<span class="w">    </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}))</span>
+
+<span class="c1"># Analyze with R</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">head</span><span class="p">(</span><span class="n">edges_df</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">edges_df</span><span class="o">$</span><span class="n">weight</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="export-nodelist">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">export_nodelist()</a><a class="headerlink" href="#export-nodelist" title="Link to this heading"></a></h3>
+<p>Export nodes as R data frame compatible structure.</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get node list</span>
+<span class="n">nodes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">export_nodelist</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">include_attributes</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="c1"># Convert to R data frame</span>
+<span class="n">nodes_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">head</span><span class="p">(</span><span class="n">nodes_df</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="export-adjacency">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">export_adjacency()</a><a class="headerlink" href="#export-adjacency" title="Link to this heading"></a></h3>
+<p>Export adjacency matrix for matrix operations in R.</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get adjacency matrix</span>
+<span class="n">adj_list</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">export_adjacency</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;union&#39;</span><span class="p">)</span>
+
+<span class="c1"># Convert to R matrix</span>
+<span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">adj_list</span><span class="p">)</span>
+<span class="n">adj_matrix</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="nf">unlist</span><span class="p">(</span><span class="n">adj_list</span><span class="p">),</span><span class="w"> </span><span class="n">nrow</span><span class="o">=</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="c1"># Matrix operations</span>
+<span class="n">eigenvalues</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">eigen</span><span class="p">(</span><span class="n">adj_matrix</span><span class="p">)</span><span class="o">$</span><span class="n">values</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Largest eigenvalue:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="nf">Re</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">))))</span>
+</pre></div>
+</div>
+</section>
+<section id="get-network-stats">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">get_network_stats()</a><a class="headerlink" href="#get-network-stats" title="Link to this heading"></a></h3>
+<p>Get comprehensive network statistics.</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get statistics</span>
+<span class="n">stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">get_network_stats</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Nodes:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stats</span><span class="o">$</span><span class="n">num_nodes</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Edges:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stats</span><span class="o">$</span><span class="n">num_edges</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Layers:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stats</span><span class="o">$</span><span class="n">num_layers</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Directed:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stats</span><span class="o">$</span><span class="n">directed</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-examples">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Advanced Examples</a><a class="headerlink" href="#advanced-examples" title="Link to this heading"></a></h2>
+<section id="example-1-layer-by-layer-analysis">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Example 1: Layer-by-Layer Analysis</a><a class="headerlink" href="#example-1-layer-by-layer-analysis" title="Link to this heading"></a></h3>
+<p>Analyze each layer separately:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">reticulate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">igraph</span><span class="p">)</span>
+
+<span class="n">py3plex</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">r_interop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex.wrappers.r_interop&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create multilayer network (code from Quick Start)</span>
+<span class="n">net</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">py3plex</span><span class="o">$</span><span class="nf">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># ... add nodes and edges ...</span>
+
+<span class="c1"># Get layer names</span>
+<span class="n">layers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">get_layer_names</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+
+<span class="c1"># Analyze each layer</span>
+<span class="nf">for </span><span class="p">(</span><span class="n">layer</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">layers</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\n=== Layer: %s ===\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="p">))</span>
+
+<span class="w">  </span><span class="c1"># Extract layer-specific graph</span>
+<span class="w">  </span><span class="n">g_layer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
+
+<span class="w">  </span><span class="c1"># Compute centrality for this layer</span>
+<span class="w">  </span><span class="n">deg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">degree</span><span class="p">(</span><span class="n">g_layer</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Average degree: %.2f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">deg</span><span class="p">)))</span>
+
+<span class="w">  </span><span class="c1"># Community detection</span>
+<span class="w">  </span><span class="n">comm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cluster_louvain</span><span class="p">(</span><span class="n">g_layer</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Communities: %d\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">comm</span><span class="p">)))</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2-combining-with-r-statistical-analysis">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Example 2: Combining with R Statistical Analysis</a><a class="headerlink" href="#example-2-combining-with-r-statistical-analysis" title="Link to this heading"></a></h3>
+<p>Use R’s statistical tools on network data:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">reticulate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">igraph</span><span class="p">)</span>
+
+<span class="n">py3plex</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">r_interop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex.wrappers.r_interop&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create network</span>
+<span class="n">net</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">py3plex</span><span class="o">$</span><span class="nf">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># ... build network ...</span>
+
+<span class="c1"># Export to igraph</span>
+<span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;union&#39;</span><span class="p">)</span>
+
+<span class="c1"># Compute multiple centrality measures</span>
+<span class="n">deg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">degree</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="n">between</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">betweenness</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="n">close</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">closeness</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+<span class="c1"># Create data frame for analysis</span>
+<span class="n">centrality_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">V</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">$</span><span class="n">name</span><span class="p">,</span>
+<span class="w">  </span><span class="n">degree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deg</span><span class="p">,</span>
+<span class="w">  </span><span class="n">betweenness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">between</span><span class="p">,</span>
+<span class="w">  </span><span class="n">closeness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">close</span>
+<span class="p">)</span>
+
+<span class="c1"># Statistical analysis</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;=== Centrality Correlations ===&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">cor</span><span class="p">(</span><span class="n">centrality_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;degree&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;betweenness&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;closeness&quot;</span><span class="p">)]))</span>
+
+<span class="c1"># Regression analysis</span>
+<span class="n">model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">betweenness</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">degree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">closeness</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">centrality_df</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+
+<span class="c1"># Visualization</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">centrality_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">betweenness</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_smooth</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">&quot;lm&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Degree vs Betweenness Centrality&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;Degree&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Betweenness&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3-time-series-of-multilayer-networks">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Example 3: Time Series of Multilayer Networks</a><a class="headerlink" href="#example-3-time-series-of-multilayer-networks" title="Link to this heading"></a></h3>
+<p>Analyze temporal evolution:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">reticulate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">igraph</span><span class="p">)</span>
+
+<span class="n">py3plex</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">r_interop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex.wrappers.r_interop&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create networks for different time points</span>
+<span class="n">time_points</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;2020&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2021&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2022&quot;</span><span class="p">)</span>
+<span class="n">networks</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">()</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">time_points</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1"># Load or create network for this time point</span>
+<span class="w">  </span><span class="n">net</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">py3plex</span><span class="o">$</span><span class="nf">multi_layer_network</span><span class="p">()</span>
+<span class="w">  </span><span class="c1"># ... load data for time t ...</span>
+
+<span class="w">  </span><span class="c1"># Convert and store</span>
+<span class="w">  </span><span class="n">networks</span><span class="p">[[</span><span class="n">t</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;union&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Compare network evolution</span>
+<span class="n">metrics</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time_points</span><span class="p">,</span>
+<span class="w">  </span><span class="n">nodes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sapply</span><span class="p">(</span><span class="n">networks</span><span class="p">,</span><span class="w"> </span><span class="n">vcount</span><span class="p">),</span>
+<span class="w">  </span><span class="n">edges</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sapply</span><span class="p">(</span><span class="n">networks</span><span class="p">,</span><span class="w"> </span><span class="n">ecount</span><span class="p">),</span>
+<span class="w">  </span><span class="n">density</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sapply</span><span class="p">(</span><span class="n">networks</span><span class="p">,</span><span class="w"> </span><span class="n">graph.density</span><span class="p">),</span>
+<span class="w">  </span><span class="n">clustering</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sapply</span><span class="p">(</span><span class="n">networks</span><span class="p">,</span><span class="w"> </span><span class="n">transitivity</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+
+<span class="c1"># Plot evolution</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">density</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="o">=</span><span class="m">1</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">()</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Network Density Over Time&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="working-with-csv-files">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">Working with CSV Files</a><a class="headerlink" href="#working-with-csv-files" title="Link to this heading"></a></h2>
+<p>Load multilayer network data from CSV:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">reticulate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">igraph</span><span class="p">)</span>
+
+<span class="n">py3plex</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">r_interop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex.wrappers.r_interop&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create network</span>
+<span class="n">net</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">py3plex</span><span class="o">$</span><span class="nf">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Load from CSV file</span>
+<span class="c1"># CSV format: source,source_type,target,target_type,weight</span>
+<span class="n">net</span><span class="o">$</span><span class="nf">load_network</span><span class="p">(</span><span class="s">&quot;network_data.csv&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">input_type</span><span class="o">=</span><span class="s">&quot;multiedgelist&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">directed</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="c1"># Convert and analyze</span>
+<span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;union&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get statistics</span>
+<span class="n">stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">get_network_stats</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-with-mlnet">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Integration with MLnet</a><a class="headerlink" href="#integration-with-mlnet" title="Link to this heading"></a></h2>
+<p>For users familiar with MLnet (R package for multilayer networks):</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">reticulate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">igraph</span><span class="p">)</span>
+<span class="c1"># library(multinet)  # If you have MLnet installed</span>
+
+<span class="n">py3plex</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">r_interop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;py3plex.wrappers.r_interop&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create py3plex network</span>
+<span class="n">net</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">py3plex</span><span class="o">$</span><span class="nf">multi_layer_network</span><span class="p">()</span>
+<span class="c1"># ... build network ...</span>
+
+<span class="c1"># Export layer-by-layer for MLnet compatibility</span>
+<span class="n">layers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">get_layer_names</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">layer</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">layers</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1"># Get igraph for this layer</span>
+<span class="w">  </span><span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
+
+<span class="w">  </span><span class="c1"># Save as GraphML (MLnet compatible)</span>
+<span class="w">  </span><span class="nf">write_graph</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;layer_%s.graphml&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="p">),</span><span class="w"> </span><span class="n">format</span><span class="o">=</span><span class="s">&quot;graphml&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Now you can import these layers into MLnet</span>
+<span class="c1"># Or continue using igraph functions directly</span>
+</pre></div>
+</div>
+</section>
+<section id="troubleshooting">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Troubleshooting</a><a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="python-module-not-found">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Python Module Not Found</a><a class="headerlink" href="#python-module-not-found" title="Link to this heading"></a></h3>
+<p>If you get <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError:</span> <span class="pre">No</span> <span class="pre">module</span> <span class="pre">named</span> <span class="pre">'py3plex'</span></code>:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">reticulate</span><span class="p">)</span>
+
+<span class="c1"># Check which Python reticulate is using</span>
+<span class="nf">py_config</span><span class="p">()</span>
+
+<span class="c1"># Install py3plex in that Python</span>
+<span class="nf">py_install</span><span class="p">(</span><span class="s">&quot;git+https://github.com/SkBlaz/py3plex.git&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="igraph-import-error">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">igraph Import Error</a><a class="headerlink" href="#igraph-import-error" title="Link to this heading"></a></h3>
+<p>If <code class="docutils literal notranslate"><span class="pre">to_igraph_for_r()</span></code> fails with import error:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install python-igraph</span>
+pip<span class="w"> </span>install<span class="w"> </span>python-igraph
+</pre></div>
+</div>
+</section>
+<section id="conversion-issues">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Conversion Issues</a><a class="headerlink" href="#conversion-issues" title="Link to this heading"></a></h3>
+<p>If conversion produces unexpected results:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check network statistics first</span>
+<span class="n">stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">get_network_stats</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+
+<span class="c1"># Try different modes</span>
+<span class="n">g_union</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;union&#39;</span><span class="p">)</span>
+<span class="n">g_multiplex</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;multiplex&#39;</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Union:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">vcount</span><span class="p">(</span><span class="n">g_union</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;nodes&quot;</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Multiplex:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">vcount</span><span class="p">(</span><span class="n">g_multiplex</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;nodes&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-tips">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">Performance Tips</a><a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h2>
+<section id="for-large-networks">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">For Large Networks</a><a class="headerlink" href="#for-large-networks" title="Link to this heading"></a></h3>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use union mode for faster processing</span>
+<span class="n">g</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">r_interop</span><span class="o">$</span><span class="nf">to_igraph_for_r</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;union&#39;</span><span class="p">)</span>
+
+<span class="c1"># For very large networks, export to file instead</span>
+<span class="c1"># Then use igraph&#39;s file reading functions</span>
+</pre></div>
+</div>
+</section>
+<section id="memory-management">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Memory Management</a><a class="headerlink" href="#memory-management" title="Link to this heading"></a></h3>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clear Python objects when done</span>
+<span class="nf">rm</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="nf">gc</span><span class="p">()</span>
+
+<span class="c1"># Or restart Python session</span>
+<span class="nf">py_run_string</span><span class="p">(</span><span class="s">&quot;import gc; gc.collect()&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="next-steps">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Next Steps</a><a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="networkx_interop.html"><span class="doc">NetworkX Interoperability Guide</span></a> - NetworkX integration for Python workflows</p></li>
+<li><p><a class="reference internal" href="basic_usage_analysis.html"><span class="doc">Network Analysis</span></a> - Network analysis methods</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection</span></a> - Community detection algorithms</p></li>
+<li><p><a class="reference internal" href="visualization_guide.html"><span class="doc">Visualization Guide</span></a> - Visualization options</p></li>
+</ul>
+<p>For Python examples with R code snippets, see <a class="reference external" href="https://github.com/SkBlaz/py3plex/blob/main/examples/r_interop_example.py">examples/r_interop_example.py</a> in the GitHub repository.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

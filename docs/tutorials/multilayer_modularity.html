@@ -1,0 +1,587 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multilayer Modularity and Community Detection &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multilayer Modularity and Community Detection</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/multilayer_modularity.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multilayer-modularity-and-community-detection">
+<h1>Multilayer Modularity and Community Detection<a class="headerlink" href="#multilayer-modularity-and-community-detection" title="Link to this heading"></a></h1>
+<p>This tutorial demonstrates how to use py3plex’s multilayer modularity maximization and community detection capabilities based on Mucha et al. (2010).</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Multilayer modularity extends Newman’s modularity to networks with multiple layers (e.g., temporal or multiplex networks). The key idea is that each node-layer pair can be assigned to a community, allowing the same physical node to belong to different communities in different layers.</p>
+</section>
+<section id="mathematical-background">
+<h2>Mathematical Background<a class="headerlink" href="#mathematical-background" title="Link to this heading"></a></h2>
+<section id="multilayer-modularity-quality-function">
+<h3>Multilayer Modularity Quality Function<a class="headerlink" href="#multilayer-modularity-quality-function" title="Link to this heading"></a></h3>
+<p>The multilayer modularity <span class="math notranslate nohighlight">\(Q\)</span> is defined as:</p>
+<div class="math notranslate nohighlight">
+\[Q_{\text{multilayer}} = \frac{1}{2\mu} \sum_{i,j}\sum_{\alpha,\beta} \Big[ \big(A^{[\alpha]}_{ij} - \gamma^{[\alpha]}P^{[\alpha]}_{ij}\big)\,\delta_{\alpha\beta} + \delta_{ij}\,\omega_{\alpha\beta}\Big]\,\delta\big(g_{i,\alpha},\,g_{j,\beta}\big)\]</div>
+<p>where:
+* <span class="math notranslate nohighlight">\(A^{[\alpha]}_{ij}\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\alpha\)</span>
+* <span class="math notranslate nohighlight">\(P^{[\alpha]}_{ij}\)</span> is the expected weight under a null model (e.g., <span class="math notranslate nohighlight">\(k_i^\alpha k_j^\alpha / 2m_\alpha\)</span>)
+* <span class="math notranslate nohighlight">\(\gamma^{[\alpha]}\)</span> is the resolution parameter for layer <span class="math notranslate nohighlight">\(\alpha\)</span>
+* <span class="math notranslate nohighlight">\(\omega_{\alpha\beta}\)</span> is the inter-layer coupling strength
+* <span class="math notranslate nohighlight">\(\delta(g_{i,\alpha}, g_{j,\beta}) = 1\)</span> if node <span class="math notranslate nohighlight">\(i\)</span> in layer <span class="math notranslate nohighlight">\(\alpha\)</span> and node <span class="math notranslate nohighlight">\(j\)</span> in layer <span class="math notranslate nohighlight">\(\beta\)</span> are in the same community</p>
+</section>
+<section id="supra-adjacency-matrix-representation">
+<h3>Supra-Adjacency Matrix Representation<a class="headerlink" href="#supra-adjacency-matrix-representation" title="Link to this heading"></a></h3>
+<p>A multilayer network can be represented as a supra-adjacency matrix of size <span class="math notranslate nohighlight">\(NL \times NL\)</span> (for <span class="math notranslate nohighlight">\(N\)</span> nodes and <span class="math notranslate nohighlight">\(L\)</span> layers), where:
+* Diagonal blocks contain the intra-layer adjacency matrices <span class="math notranslate nohighlight">\(A^{[\alpha]}\)</span>
+* Off-diagonal blocks encode inter-layer connections (e.g., <span class="math notranslate nohighlight">\(\omega I\)</span> for identity coupling)</p>
+</section>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<section id="calculating-multilayer-modularity">
+<h3>Calculating Multilayer Modularity<a class="headerlink" href="#calculating-multilayer-modularity" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="n">multilayer_modularity</span>
+
+<span class="c1"># Create a multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Assign communities (node-layer pairs to community IDs)</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">):</span> <span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="c1"># Calculate modularity with uniform parameters</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Modularity: </span><span class="si">{</span><span class="n">Q</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-specific-resolution-parameters">
+<h3>Layer-Specific Resolution Parameters<a class="headerlink" href="#layer-specific-resolution-parameters" title="Link to this heading"></a></h3>
+<p>You can specify different resolution parameters for each layer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Different resolution per layer</span>
+<span class="n">gamma_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;L1&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># Lower resolution (larger communities)</span>
+    <span class="s1">&#39;L2&#39;</span><span class="p">:</span> <span class="mf">2.0</span>   <span class="c1"># Higher resolution (smaller communities)</span>
+<span class="p">}</span>
+
+<span class="n">Q</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma_dict</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Modularity with layer-specific gamma: </span><span class="si">{</span><span class="n">Q</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-inter-layer-coupling">
+<h3>Custom Inter-Layer Coupling<a class="headerlink" href="#custom-inter-layer-coupling" title="Link to this heading"></a></h3>
+<p>You can specify layer-pair specific coupling strengths:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Custom coupling matrix (3x3 for 3 layers)</span>
+<span class="n">omega_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>  <span class="c1"># Layer 0 couplings</span>
+    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>  <span class="c1"># Layer 1 couplings</span>
+    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>   <span class="c1"># Layer 2 couplings</span>
+<span class="p">])</span>
+
+<span class="n">Q</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="n">omega_matrix</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="community-detection">
+<h2>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h2>
+<section id="generalized-louvain-algorithm">
+<h3>Generalized Louvain Algorithm<a class="headerlink" href="#generalized-louvain-algorithm" title="Link to this heading"></a></h3>
+<p>The generalized Louvain algorithm greedily maximizes multilayer modularity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="n">louvain_multilayer</span>
+
+<span class="c1"># Detect communities using Louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Print results</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">community_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> in layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: Community </span><span class="si">{</span><span class="n">community_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Calculate resulting modularity</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final modularity: </span><span class="si">{</span><span class="n">Q</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="effect-of-coupling-strength">
+<h3>Effect of Coupling Strength<a class="headerlink" href="#effect-of-coupling-strength" title="Link to this heading"></a></h3>
+<p>The coupling parameter <span class="math notranslate nohighlight">\(\omega\)</span> controls how much communities align across layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Weak coupling (independent layers)</span>
+<span class="n">communities_weak</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># Strong coupling (same communities across layers)</span>
+<span class="n">communities_strong</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+<span class="c1"># Compare results</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Weak coupling communities:&quot;</span><span class="p">,</span> <span class="n">communities_weak</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Strong coupling communities:&quot;</span><span class="p">,</span> <span class="n">communities_strong</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="supra-modularity-matrix">
+<h2>Supra-Modularity Matrix<a class="headerlink" href="#supra-modularity-matrix" title="Link to this heading"></a></h2>
+<p>For spectral methods, you can build the supra-modularity matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="n">build_supra_modularity_matrix</span>
+
+<span class="c1"># Build modularity matrix</span>
+<span class="n">B</span><span class="p">,</span> <span class="n">node_layer_list</span> <span class="o">=</span> <span class="n">build_supra_modularity_matrix</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Supra-modularity matrix shape: </span><span class="si">{</span><span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node-layer pairs: </span><span class="si">{</span><span class="n">node_layer_list</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use for spectral analysis</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Leading eigenvalues: </span><span class="si">{</span><span class="n">eigenvalues</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="synthetic-benchmark-networks">
+<h2>Synthetic Benchmark Networks<a class="headerlink" href="#synthetic-benchmark-networks" title="Link to this heading"></a></h2>
+<section id="multilayer-lfr-benchmark">
+<h3>Multilayer LFR Benchmark<a class="headerlink" href="#multilayer-lfr-benchmark" title="Link to this heading"></a></h3>
+<p>Generate multilayer networks with ground-truth communities:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span> <span class="kn">import</span> <span class="n">generate_multilayer_lfr</span>
+
+<span class="c1"># Generate with identical communities across layers</span>
+<span class="n">network</span><span class="p">,</span> <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">generate_multilayer_lfr</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">],</span>
+    <span class="n">tau1</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>           <span class="c1"># Degree distribution exponent</span>
+    <span class="n">tau2</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>           <span class="c1"># Community size distribution exponent</span>
+    <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>             <span class="c1"># Mixing parameter (10% external edges)</span>
+    <span class="n">avg_degree</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">min_community</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">community_persistence</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Same communities in all layers</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Check ground truth</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+
+<span class="c1"># Detect communities</span>
+<span class="n">detected</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># Compare with ground truth</span>
+<span class="c1"># (would need to implement community comparison metrics)</span>
+</pre></div>
+</div>
+</section>
+<section id="evolving-communities">
+<h3>Evolving Communities<a class="headerlink" href="#evolving-communities" title="Link to this heading"></a></h3>
+<p>Generate networks where communities evolve across layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate with evolving communities</span>
+<span class="n">network</span><span class="p">,</span> <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">generate_multilayer_lfr</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T0&#39;</span><span class="p">,</span> <span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">,</span> <span class="s1">&#39;T3&#39;</span><span class="p">],</span>  <span class="c1"># Temporal layers</span>
+    <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">avg_degree</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">community_persistence</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>  <span class="c1"># 70% nodes keep community</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Analyze community persistence</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;T0&#39;</span><span class="p">,</span> <span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">,</span> <span class="s1">&#39;T3&#39;</span><span class="p">]:</span>
+    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="p">[(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ground_truth</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">layer</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="overlapping-communities">
+<h3>Overlapping Communities<a class="headerlink" href="#overlapping-communities" title="Link to this heading"></a></h3>
+<p>Generate networks with nodes belonging to multiple communities:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate with overlapping communities</span>
+<span class="n">network</span><span class="p">,</span> <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">generate_multilayer_lfr</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">],</span>
+    <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">overlapping_nodes</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>        <span class="c1"># 20 nodes overlap</span>
+    <span class="n">overlapping_membership</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>    <span class="c1"># Each belongs to 2 communities</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Check overlapping nodes</span>
+<span class="n">overlapping_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">coms</span> <span class="ow">in</span> <span class="n">ground_truth</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes with multiple communities: </span><span class="si">{</span><span class="n">overlapping_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="partial-node-overlap">
+<h3>Partial Node Overlap<a class="headerlink" href="#partial-node-overlap" title="Link to this heading"></a></h3>
+<p>Generate networks where not all nodes appear in all layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate with partial node presence</span>
+<span class="n">network</span><span class="p">,</span> <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">generate_multilayer_lfr</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Social&#39;</span><span class="p">,</span> <span class="s1">&#39;Work&#39;</span><span class="p">,</span> <span class="s1">&#39;Family&#39;</span><span class="p">],</span>
+    <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">node_overlap</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>  <span class="c1"># 70% nodes in all layers</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Check node presence per layer</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Social&#39;</span><span class="p">,</span> <span class="s1">&#39;Work&#39;</span><span class="p">,</span> <span class="s1">&#39;Family&#39;</span><span class="p">]:</span>
+    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ground_truth</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">layer</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="coupled-erdos-renyi-models">
+<h2>Coupled Erdős-Rényi Models<a class="headerlink" href="#coupled-erdos-renyi-models" title="Link to this heading"></a></h2>
+<p>Generate random multilayer networks with controllable coupling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span> <span class="kn">import</span> <span class="n">generate_coupled_er_multilayer</span>
+
+<span class="c1"># Full multiplex (all nodes coupled)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">generate_coupled_er_multilayer</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">],</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>              <span class="c1"># Edge probability per layer</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>          <span class="c1"># Coupling strength</span>
+    <span class="n">coupling_probability</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># All nodes coupled</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Interdependent networks (partial coupling)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">generate_coupled_er_multilayer</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">],</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">coupling_probability</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># Only 50% nodes coupled</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<section id="layer-specific-edge-probabilities">
+<h3>Layer-Specific Edge Probabilities<a class="headerlink" href="#layer-specific-edge-probabilities" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Different density per layer</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">generate_coupled_er_multilayer</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sparse&#39;</span><span class="p">,</span> <span class="s1">&#39;Dense&#39;</span><span class="p">],</span>
+    <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>  <span class="c1"># Different probabilities</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="stochastic-block-model">
+<h2>Stochastic Block Model<a class="headerlink" href="#stochastic-block-model" title="Link to this heading"></a></h2>
+<p>Generate multilayer networks with explicit block structure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_benchmark</span> <span class="kn">import</span> <span class="n">generate_sbm_multilayer</span>
+
+<span class="c1"># Define communities</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">},</span>      <span class="c1"># Community 0</span>
+    <span class="p">{</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">},</span>      <span class="c1"># Community 1</span>
+    <span class="p">{</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">}</span>  <span class="c1"># Community 2</span>
+<span class="p">]</span>
+
+<span class="c1"># Generate with high intra-community, low inter-community edges</span>
+<span class="n">network</span><span class="p">,</span> <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">generate_sbm_multilayer</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">],</span>
+    <span class="n">communities</span><span class="o">=</span><span class="n">communities</span><span class="p">,</span>
+    <span class="n">p_in</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>   <span class="c1"># 70% intra-community edges</span>
+    <span class="n">p_out</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="c1"># 5% inter-community edges</span>
+    <span class="n">community_persistence</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Verify structure</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ground truth communities: </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-examples">
+<h2>Advanced Examples<a class="headerlink" href="#advanced-examples" title="Link to this heading"></a></h2>
+<section id="parameter-tuning">
+<h3>Parameter Tuning<a class="headerlink" href="#parameter-tuning" title="Link to this heading"></a></h3>
+<p>Finding optimal resolution and coupling parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Test range of parameters</span>
+<span class="n">gammas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<span class="n">omegas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">gamma</span> <span class="ow">in</span> <span class="n">gammas</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">omega</span> <span class="ow">in</span> <span class="n">omegas</span><span class="p">:</span>
+        <span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="n">omega</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="n">omega</span><span class="p">)</span>
+        <span class="n">n_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">gamma</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">n_communities</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;γ=</span><span class="si">{</span><span class="n">gamma</span><span class="si">}</span><span class="s2">, ω=</span><span class="si">{</span><span class="n">omega</span><span class="si">}</span><span class="s2">: Q=</span><span class="si">{</span><span class="n">Q</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, n_com=</span><span class="si">{</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Find best parameters</span>
+<span class="n">best</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Best: γ=</span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, ω=</span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, Q=</span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="temporal-community-detection">
+<h3>Temporal Community Detection<a class="headerlink" href="#temporal-community-detection" title="Link to this heading"></a></h3>
+<p>Analyzing community evolution over time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate temporal network</span>
+<span class="n">network</span><span class="p">,</span> <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">generate_multilayer_lfr</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;T</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>  <span class="c1"># 10 time steps</span>
+    <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">community_persistence</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>  <span class="c1"># Slowly evolving</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Detect communities</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># Track community evolution</span>
+<span class="n">node</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Track first node</span>
+<span class="n">timeline</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">com</span> <span class="o">=</span> <span class="n">communities</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;T</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">timeline</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> community timeline: </span><span class="si">{</span><span class="n">timeline</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="comparing-detection-methods">
+<h3>Comparing Detection Methods<a class="headerlink" href="#comparing-detection-methods" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare different coupling strengths</span>
+<span class="n">weak_coupling</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">strong_coupling</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+<span class="n">Q_weak</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">weak_coupling</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">Q_strong</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">strong_coupling</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weak coupling: Q=</span><span class="si">{</span><span class="n">Q_weak</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, n_com=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">weak_coupling</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Strong coupling: Q=</span><span class="si">{</span><span class="n">Q_strong</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, n_com=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">strong_coupling</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<section id="large-networks">
+<h3>Large Networks<a class="headerlink" href="#large-networks" title="Link to this heading"></a></h3>
+<p>For large networks, the Louvain algorithm can be slow. Consider:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Limit iterations</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">50</span>  <span class="c1"># Reduce from default 100</span>
+<span class="p">)</span>
+
+<span class="c1"># Use lower coupling for faster convergence</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># Lower coupling = faster</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="memory-usage">
+<h3>Memory Usage<a class="headerlink" href="#memory-usage" title="Link to this heading"></a></h3>
+<p>The supra-adjacency matrix can be large. Use sparse representations when possible:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The network internally uses sparse matrices</span>
+<span class="n">supra_matrix</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Supra-matrix is sparse: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">supra_matrix</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Mucha et al., “Community Structure in Time-Dependent, Multiscale, and Multiplex Networks”</strong>, Science 328:876-878 (2010)
+* Original multilayer modularity formulation</p></li>
+<li><p><strong>Kivelä et al., “Multilayer networks”</strong>, J. Complex Netw. 2:203 (2014)
+* Comprehensive review of multilayer network analysis</p></li>
+<li><p><strong>De Domenico et al., “Mathematical Formulation of Multilayer Networks”</strong>, Phys. Rev. X 3, 041022 (2013)
+* Mathematical foundations and tensor representation</p></li>
+<li><p><strong>Granell et al., “Benchmark model to assess community structure in evolving networks”</strong>, Phys. Rev. E 92, 012805 (2015)
+* Temporal network benchmarks</p></li>
+<li><p><strong>Pamfil et al., “Relating modularity maximization and stochastic block models”</strong>, SIAM J. Data Science 1(4):667 (2019)
+* Theoretical grounding for parameter selection</p></li>
+</ol>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="multilayer_centrality_tutorial.md">Multilayer Centrality Tutorial</a></p></li>
+<li><p><a class="reference external" href="../docfiles/supra.rst">Supra-Adjacency Matrices</a></p></li>
+<li><p>Community Detection in py3plex</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

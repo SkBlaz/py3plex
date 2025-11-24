@@ -1,12 +1,17 @@
 # Documentation
 
-This directory contains the PDF version of the py3plex documentation.
+This directory contains the py3plex documentation served by GitHub Pages.
+
+## Documentation Files
+
+- **HTML Documentation**: All `.html` files and supporting directories (`_static`, `_images`, `_sources`) - auto-deployed from RST sources
+- **PDF Documentation**: `py3plex_documentation.pdf` - auto-generated and updated by GitHub Actions
+- **README**: This file
 
 ## Documentation Sources
 
 - **RST Source Files**: Located in `../docfiles/` directory
-- **HTML Documentation**: Available at https://skblaz.github.io/py3plex/ (auto-deployed from RST sources)
-- **PDF Documentation**: `py3plex_documentation.pdf` (auto-generated and updated by GitHub Actions)
+- **Published Documentation**: Available at https://skblaz.github.io/py3plex/
 
 ## Building Documentation
 
@@ -14,7 +19,7 @@ To build the HTML documentation from RST sources:
 
 ```bash
 cd docfiles
-sphinx-build -b html . _build/html
+sphinx-build -b html . _build/
 ```
 
 Or use the Makefile from the repository root:
@@ -23,8 +28,8 @@ Or use the Makefile from the repository root:
 make docs
 ```
 
-The built HTML is automatically deployed to GitHub Pages via GitHub Actions workflow.
+The built HTML is automatically deployed to this `docs/` folder via GitHub Actions workflow.
 
 ## Note
 
-This directory previously contained static HTML files which caused drift between the source RST files and the published documentation. These have been removed, and only the GitHub Pages site (https://skblaz.github.io/py3plex/) should be used for HTML documentation.
+GitHub Pages is configured to serve from this `/docs` folder in the master branch. The documentation is automatically built and deployed by the GitHub Actions workflow on every push to master.

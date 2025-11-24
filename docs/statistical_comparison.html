@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistical Comparison Framework &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Statistical Comparison Framework</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/statistical_comparison.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="statistical-comparison-framework">
+<h1>Statistical Comparison Framework<a class="headerlink" href="#statistical-comparison-framework" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">stats_comparison</span></code> module provides a comprehensive framework for performing statistical comparisons between multilayer networks. This enables quantification of structural or topological differences across network ensembles or experimental conditions.</p>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Pairwise and Multi-group Comparisons</strong>: Compare 2 or more multilayer networks</p></li>
+<li><p><strong>Multiple Statistical Tests</strong>:</p>
+<ul>
+<li><p>Parametric: t-test, ANOVA</p></li>
+<li><p>Non-parametric: Mann-Whitney U, Kruskal-Wallis</p></li>
+<li><p>Permutation-based: Empirical null hypothesis testing</p></li>
+</ul>
+</li>
+<li><p><strong>Effect Size Estimation</strong>: Cohen’s d, eta-squared</p></li>
+<li><p><strong>Multiple Comparison Correction</strong>: Bonferroni, Holm-Bonferroni, FDR (Benjamini-Hochberg)</p></li>
+<li><p><strong>Bootstrap Confidence Intervals</strong>: Estimate metric uncertainty</p></li>
+<li><p><strong>Comprehensive Metrics</strong>: Density, degree, clustering, node activity, coupling strength, entropy</p></li>
+</ul>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>The module is part of py3plex. Ensure you have the required dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy<span class="w"> </span>pandas<span class="w"> </span>networkx
+</pre></div>
+</div>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.stats_comparison</span> <span class="kn">import</span> <span class="n">compare_multilayer_networks</span>
+
+<span class="c1"># Create networks</span>
+<span class="n">net1</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net1</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="n">net2</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net2</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Compare networks</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">net1</span><span class="p">,</span> <span class="n">net2</span><span class="p">],</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;average_degree&#39;</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;permutation&#39;</span><span class="p">,</span>
+    <span class="n">n_permutations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">correction</span><span class="o">=</span><span class="s1">&#39;fdr_bh&#39;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected Output (pandas DataFrame):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>   metric layer  statistic   p_value  adjusted_p_value  effect_size  significant  mean_group_0  mean_group_1
+0  density    L1      0.250     0.132             0.132        0.500        False         1.000         0.667
+1  average_degree  L1  0.667     0.215             0.215        0.816        False         2.000         1.333
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="compare-multilayer-networks">
+<h3>compare_multilayer_networks()<a class="headerlink" href="#compare-multilayer-networks" title="Link to this heading"></a></h3>
+<p>Main function for comparing multilayer networks.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">networks</span></code> (List[MultilayerNetwork]): List of networks to compare (minimum 2)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metrics</span></code> (List[str], optional): Metrics to compute. Options:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">'density'</span></code>: Layer density</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'average_degree'</span></code>: Mean node degree</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'clustering'</span></code>: Clustering coefficient</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'node_activity'</span></code>: Node activity across layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'coupling_strength'</span></code>: Inter-layer coupling</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'entropy'</span></code>: Entropy of multiplexity</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">['average_degree',</span> <span class="pre">'density',</span> <span class="pre">'clustering']</span></code></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span></code> (str, optional): Statistical test type. Options:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">'permutation'</span></code>: Permutation test (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'t-test'</span></code>: Student’s t-test (2 groups)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'mann-whitney'</span></code>: Mann-Whitney U test (2 groups)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'anova'</span></code>: One-way ANOVA (2+ groups)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'kruskal'</span></code>: Kruskal-Wallis H test (2+ groups)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_permutations</span></code> (int, optional): Number of permutations (default: 1000)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha</span></code> (float, optional): Significance level (default: 0.05)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">correction</span></code> (str, optional): Multiple comparison correction. Options:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">'bonferroni'</span></code>: Bonferroni correction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'holm'</span></code>: Holm-Bonferroni correction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'fdr_bh'</span></code>: Benjamini-Hochberg FDR (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: No correction</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">node_mapping</span></code> (Dict, optional): Node correspondence mapping across networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_scope</span></code> (str, optional): Layer scope (<code class="docutils literal notranslate"><span class="pre">'intralayer'</span></code>, <code class="docutils literal notranslate"><span class="pre">'interlayer'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'both'</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">custom_metrics</span></code> (Dict[str, Callable], optional): Custom metric functions</p></li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>pandas.DataFrame with columns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">metric</span></code>: Metric name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer</span></code>: Layer identifier or ‘global’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">statistic</span></code>: Test statistic value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_value</span></code>: Raw p-value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adjusted_p_value</span></code>: Corrected p-value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">effect_size</span></code>: Effect size (Cohen’s d or similar)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">significant</span></code>: Boolean indicating significance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mean_group_0</span></code>, <code class="docutils literal notranslate"><span class="pre">mean_group_1</span></code>, …: Mean values per group</p></li>
+</ul>
+</section>
+<section id="bootstrap-confidence-interval">
+<h3>bootstrap_confidence_interval()<a class="headerlink" href="#bootstrap-confidence-interval" title="Link to this heading"></a></h3>
+<p>Compute bootstrap confidence intervals for network metrics.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">networks</span></code> (List[MultilayerNetwork]): List of networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metric_func</span></code> (Callable): Function mapping network to scalar metric</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_bootstrap</span></code> (int, optional): Number of bootstrap samples (default: 1000)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">confidence_level</span></code> (float, optional): Confidence level (default: 0.95)</p></li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Dictionary mapping group indices to (lower, upper) CI bounds.</p>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="basic-two-network-comparison">
+<h3>Basic Two-Network Comparison<a class="headerlink" href="#basic-two-network-comparison" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.stats_comparison</span> <span class="kn">import</span> <span class="n">compare_multilayer_networks</span>
+
+<span class="c1"># Create networks with different densities</span>
+<span class="n">net1</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net1</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Triangle</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="n">net2</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net2</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Line</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Compare using permutation test</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">net1</span><span class="p">,</span> <span class="n">net2</span><span class="p">],</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;clustering&#39;</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;permutation&#39;</span><span class="p">,</span>
+    <span class="n">n_permutations</span><span class="o">=</span><span class="mi">10000</span>
+<span class="p">)</span>
+
+<span class="c1"># Show significant differences</span>
+<span class="n">significant</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;significant&#39;</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">significant</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="multi-group-comparison">
+<h3>Multi-Group Comparison<a class="headerlink" href="#multi-group-comparison" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare three or more networks</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">net1</span><span class="p">,</span> <span class="n">net2</span><span class="p">,</span> <span class="n">net3</span><span class="p">,</span> <span class="n">net4</span><span class="p">],</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;average_degree&#39;</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;kruskal&#39;</span><span class="p">,</span>  <span class="c1"># Non-parametric for multiple groups</span>
+    <span class="n">correction</span><span class="o">=</span><span class="s1">&#39;holm&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Filter by metric</span>
+<span class="n">density_results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;metric&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;density&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">density_results</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="bootstrap-confidence-intervals">
+<h3>Bootstrap Confidence Intervals<a class="headerlink" href="#bootstrap-confidence-intervals" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.stats_comparison</span> <span class="kn">import</span> <span class="n">bootstrap_confidence_interval</span>
+
+<span class="k">def</span> <span class="nf">avg_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute average clustering coefficient.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+    <span class="n">clustering</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multilayer_clustering_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">clustering</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+<span class="c1"># Get 95% CI for clustering</span>
+<span class="n">ci</span> <span class="o">=</span> <span class="n">bootstrap_confidence_interval</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">net1</span><span class="p">,</span> <span class="n">net2</span><span class="p">],</span>
+    <span class="n">avg_clustering</span><span class="p">,</span>
+    <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">confidence_level</span><span class="o">=</span><span class="mf">0.95</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ci</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">: [</span><span class="si">{</span><span class="n">lower</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">upper</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="choosing-statistical-tests">
+<h3>Choosing Statistical Tests<a class="headerlink" href="#choosing-statistical-tests" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Sample Size &lt; 30</strong>: Use permutation or non-parametric tests</p></li>
+<li><p><strong>Normal Distribution</strong>: Parametric tests (t-test, ANOVA) have more power</p></li>
+<li><p><strong>Two Groups</strong>: t-test (parametric) or Mann-Whitney (non-parametric)</p></li>
+<li><p><strong>Multiple Groups</strong>: ANOVA (parametric) or Kruskal-Wallis (non-parametric)</p></li>
+<li><p><strong>Unknown Distribution</strong>: Permutation test (most general)</p></li>
+</ol>
+</section>
+<section id="multiple-comparison-correction">
+<h3>Multiple Comparison Correction<a class="headerlink" href="#multiple-comparison-correction" title="Link to this heading"></a></h3>
+<p>When testing multiple metrics or layers:</p>
+<ol class="arabic simple">
+<li><p><strong>Conservative</strong>: Use Bonferroni (controls family-wise error rate)</p></li>
+<li><p><strong>Less Conservative</strong>: Use Holm-Bonferroni (sequential Bonferroni)</p></li>
+<li><p><strong>Recommended</strong>: Use FDR (Benjamini-Hochberg) - balances power and error control</p></li>
+</ol>
+</section>
+<section id="effect-sizes">
+<h3>Effect Sizes<a class="headerlink" href="#effect-sizes" title="Link to this heading"></a></h3>
+<p>Always report effect sizes in addition to p-values:</p>
+<ul class="simple">
+<li><p><strong>Cohen’s d</strong>: |d| &lt; 0.2 (small), 0.2-0.5 (medium), &gt; 0.8 (large)</p></li>
+<li><p><strong>Eta-squared</strong>: η² &lt; 0.01 (small), 0.01-0.06 (medium), &gt; 0.14 (large)</p></li>
+</ul>
+</section>
+</section>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<section id="biological-networks">
+<h3>Biological Networks<a class="headerlink" href="#biological-networks" title="Link to this heading"></a></h3>
+<p>Compare disease vs. healthy protein interaction networks across multiple tissues:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
+    <span class="n">disease_networks</span> <span class="o">+</span> <span class="n">healthy_networks</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;clustering&#39;</span><span class="p">,</span> <span class="s1">&#39;node_activity&#39;</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;mann-whitney&#39;</span><span class="p">,</span>
+    <span class="n">correction</span><span class="o">=</span><span class="s1">&#39;fdr_bh&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="social-networks">
+<h3>Social Networks<a class="headerlink" href="#social-networks" title="Link to this heading"></a></h3>
+<p>Analyze structural differences in social networks before/after interventions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">pre_intervention_net</span><span class="p">,</span> <span class="n">post_intervention_net</span><span class="p">],</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;average_degree&#39;</span><span class="p">,</span> <span class="s1">&#39;coupling_strength&#39;</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;permutation&#39;</span><span class="p">,</span>
+    <span class="n">n_permutations</span><span class="o">=</span><span class="mi">10000</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="temporal-networks">
+<h3>Temporal Networks<a class="headerlink" href="#temporal-networks" title="Link to this heading"></a></h3>
+<p>Compare network snapshots across time periods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">t1_network</span><span class="p">,</span> <span class="n">t2_network</span><span class="p">,</span> <span class="n">t3_network</span><span class="p">],</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;entropy&#39;</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;kruskal&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Example notebook: <code class="docutils literal notranslate"><span class="pre">examples/statistical_comparison_example.ipynb</span></code></p></li>
+<li><p>Example script: <code class="docutils literal notranslate"><span class="pre">examples/compare_multilayer_networks_example.py</span></code></p></li>
+<li><p>Module documentation: <code class="xref py py-mod docutils literal notranslate"><span class="pre">py3plex.algorithms.statistics.stats_comparison</span></code></p></li>
+<li><p>Related: <a class="reference internal" href="multilayer_centrality_matrix_functions.html"><span class="doc">Supra Matrix Function Centralities</span></a></p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Kivelä, M., et al. (2014). “Multilayer networks.” <em>Journal of Complex Networks</em>, 2(3), 203-271.</p></li>
+<li><p>Good, P. (2013). “Permutation Tests: A Practical Guide to Resampling Methods for Testing Hypotheses.”</p></li>
+<li><p>Efron, B., &amp; Tibshirani, R. J. (1994). “An Introduction to the Bootstrap.”</p></li>
+<li><p>Benjamini, Y., &amp; Hochberg, Y. (1995). “Controlling the false discovery rate: a practical and powerful approach to multiple testing.”</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

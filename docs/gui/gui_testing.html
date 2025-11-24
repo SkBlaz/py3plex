@@ -1,0 +1,642 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GUI Testing Guide &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Development Guide" href="../dev/development_guide.html" />
+    <link rel="prev" title="Py3plex GUI Architecture" href="gui_architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GUI Testing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#visual-interface-preview">Visual Interface Preview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#automated-testing-ci">Automated Testing (CI)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#github-actions-workflow">GitHub Actions Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-ci-tests-locally">Running CI Tests Locally</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-testing-guide">Manual Testing Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-1-health-check">Test 1: Health Check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-2-upload-network">Test 2: Upload Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-3-visualize-network">Test 3: Visualize Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-4-run-layout-job">Test 4: Run Layout Job</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-5-run-centrality-analysis">Test 5: Run Centrality Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-6-run-community-detection">Test 6: Run Community Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-7-export-workspace">Test 7: Export Workspace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-8-api-direct-testing">Test 8: API Direct Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-9-logs-inspection">Test 9: Logs Inspection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-10-container-health">Test 10: Container Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-11-data-persistence">Test 11: Data Persistence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-12-multiple-jobs">Test 12: Multiple Jobs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#port-already-in-use">Port Already in Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#container-won-t-start">Container Won’t Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#permission-errors">Permission Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-can-t-reach-api">Frontend Can’t Reach API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cleanup">Cleanup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-checklist">Test Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-benchmarks">Performance Benchmarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#security-testing-development-mode">Security Testing (Development Mode)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GUI Testing Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/gui/gui_testing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gui-testing-guide">
+<h1>GUI Testing Guide<a class="headerlink" href="#gui-testing-guide" title="Link to this heading"></a></h1>
+<p>Complete testing guide for the Py3plex GUI, including automated CI tests and manual validation.</p>
+<section id="visual-interface-preview">
+<h2>Visual Interface Preview<a class="headerlink" href="#visual-interface-preview" title="Link to this heading"></a></h2>
+<p>The Py3plex GUI consists of several key pages that work together for network analysis:</p>
+<a class="reference internal image-reference" href="example_images/gui_load_data.png"><img alt="Load Data Interface" class="align-center" src="example_images/gui_load_data.png" style="width: 600px;" />
+</a>
+<p><em>Load Data Page - Upload and parse network files</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<a class="reference internal image-reference" href="example_images/gui_visualize.png"><img alt="Visualization Interface" class="align-center" src="example_images/gui_visualize.png" style="width: 600px;" />
+</a>
+<p><em>Visualize Page - Interactive network view with layer controls</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<a class="reference internal image-reference" href="example_images/gui_analyze.png"><img alt="Analysis Interface" class="align-center" src="example_images/gui_analyze.png" style="width: 600px;" />
+</a>
+<p><em>Analyze Page - Run jobs and monitor progress</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="automated-testing-ci">
+<h2>Automated Testing (CI)<a class="headerlink" href="#automated-testing-ci" title="Link to this heading"></a></h2>
+<section id="github-actions-workflow">
+<h3>GitHub Actions Workflow<a class="headerlink" href="#github-actions-workflow" title="Link to this heading"></a></h3>
+<p>All GUI tests run automatically on GitHub Actions:</p>
+<p><strong>Workflow</strong>: <code class="docutils literal notranslate"><span class="pre">.github/workflows/gui-tests.yml</span></code></p>
+<p><strong>Triggers</strong>:</p>
+<ul class="simple">
+<li><p>Push to main/master/develop branches (if <code class="docutils literal notranslate"><span class="pre">gui/</span></code> files changed)</p></li>
+<li><p>Pull requests targeting main/master/develop (if <code class="docutils literal notranslate"><span class="pre">gui/</span></code> files changed)</p></li>
+<li><p>Manual workflow dispatch</p></li>
+</ul>
+<p><strong>Test Jobs</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>API Tests</strong> (~5 min)</p>
+<ul class="simple">
+<li><p>Build API, worker, redis containers</p></li>
+<li><p>Run pytest suite: <code class="docutils literal notranslate"><span class="pre">ci/api-tests/</span></code></p></li>
+<li><p>Validate health endpoint</p></li>
+<li><p>Test file upload functionality</p></li>
+</ul>
+</li>
+<li><p><strong>Integration Tests</strong> (~10 min)</p>
+<ul class="simple">
+<li><p>Build all services (including nginx, frontend)</p></li>
+<li><p>Test full upload → analyze → export flow</p></li>
+<li><p>Validate layout job execution</p></li>
+<li><p>Test centrality computation</p></li>
+<li><p>Verify service health</p></li>
+</ul>
+</li>
+<li><p><strong>Frontend Build</strong> (~5 min)</p>
+<ul class="simple">
+<li><p>Type check TypeScript</p></li>
+<li><p>Build production bundle</p></li>
+<li><p>Verify dist output</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>View Results</strong>: Check the Actions tab on GitHub or the CI badges in the repository README</p>
+</section>
+<section id="running-ci-tests-locally">
+<h3>Running CI Tests Locally<a class="headerlink" href="#running-ci-tests-locally" title="Link to this heading"></a></h3>
+<p>You can run the same tests locally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
+
+<span class="c1"># API tests</span>
+docker<span class="w"> </span>compose<span class="w"> </span>build<span class="w"> </span>api<span class="w"> </span>worker<span class="w"> </span>redis
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>api<span class="w"> </span>worker<span class="w"> </span>redis
+docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>api<span class="w"> </span>pytest<span class="w"> </span>ci/api-tests/<span class="w"> </span>-v
+docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"> </span>-v
+
+<span class="c1"># Integration tests</span>
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--build
+<span class="c1"># Wait for services</span>
+curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8080/api/health
+<span class="c1"># Run manual integration tests (see below)</span>
+docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"> </span>-v
+
+<span class="c1"># Frontend build</span>
+<span class="nb">cd</span><span class="w"> </span>frontend
+npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>build
+</pre></div>
+</div>
+</section>
+</section>
+<section id="manual-testing-guide">
+<h2>Manual Testing Guide<a class="headerlink" href="#manual-testing-guide" title="Link to this heading"></a></h2>
+<p>Manual testing guide for the Py3plex GUI. Follow these steps to validate the implementation.</p>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Docker and Docker Compose installed</p></li>
+<li><p>At least 4GB RAM available</p></li>
+<li><p>Ports 8080, 5555, 8000, 6379 available</p></li>
+</ul>
+</section>
+<section id="setup">
+<h3>Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
+cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+make<span class="w"> </span>up
+</pre></div>
+</div>
+<p><strong>Expected</strong>: All containers start successfully. Check with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">ps</span></code>.</p>
+</section>
+<section id="test-1-health-check">
+<h3>Test 1: Health Check<a class="headerlink" href="#test-1-health-check" title="Link to this heading"></a></h3>
+<section id="api-health">
+<h4>API Health<a class="headerlink" href="#api-health" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:8080/api/health
+</pre></div>
+</div>
+<p><strong>Expected Response</strong>:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="s2">&quot;ok&quot;</span><span class="p">,</span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="s2">&quot;0.1.0&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="frontend-access">
+<h4>Frontend Access<a class="headerlink" href="#frontend-access" title="Link to this heading"></a></h4>
+<p>Open browser to <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code></p>
+<p><strong>Expected</strong>: React app loads with navigation bar showing:</p>
+<ul class="simple">
+<li><p>Load Data</p></li>
+<li><p>Visualize</p></li>
+<li><p>Analyze</p></li>
+<li><p>Export</p></li>
+</ul>
+</section>
+<section id="flower-dashboard">
+<h4>Flower Dashboard<a class="headerlink" href="#flower-dashboard" title="Link to this heading"></a></h4>
+<p>Open browser to <code class="docutils literal notranslate"><span class="pre">http://localhost:5555</span></code></p>
+<p><strong>Expected</strong>: Celery Flower dashboard loads showing workers.</p>
+<a class="reference internal image-reference" href="example_images/gui_flower_dashboard.png"><img alt="Flower Dashboard" class="align-center" src="example_images/gui_flower_dashboard.png" style="width: 700px;" />
+</a>
+<p><em>Flower monitoring dashboard showing task history and worker status</em></p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+</section>
+<section id="test-2-upload-network">
+<h3>Test 2: Upload Network<a class="headerlink" href="#test-2-upload-network" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Navigate to <strong>Load Data</strong> page</p></li>
+<li><p>Click “Click to upload” or drag and drop <code class="docutils literal notranslate"><span class="pre">toy_network.edgelist</span></code></p></li>
+<li><p>Click “Upload &amp; Parse”</p></li>
+</ol>
+<p><strong>Expected</strong>:</p>
+<ul class="simple">
+<li><p>Upload progress indicator appears</p></li>
+<li><p>Network Summary displays:</p>
+<ul>
+<li><p>Graph ID (UUID)</p></li>
+<li><p>Filename: <code class="docutils literal notranslate"><span class="pre">toy_network.edgelist</span></code></p></li>
+<li><p>Nodes: 6</p></li>
+<li><p>Edges: 14</p></li>
+<li><p>Layers: hobby, social, work</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="test-3-visualize-network">
+<h3>Test 3: Visualize Network<a class="headerlink" href="#test-3-visualize-network" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Click “Visualize Network →” or navigate to <strong>Visualize</strong> page</p></li>
+</ol>
+<p><strong>Expected</strong>:</p>
+<ul class="simple">
+<li><p>Page shows three panels: Layers, Network View, Inspect</p></li>
+<li><p>Network View shows placeholder with “Graph with X nodes”</p></li>
+<li><p>No errors in console</p></li>
+</ul>
+</section>
+<section id="test-4-run-layout-job">
+<h3>Test 4: Run Layout Job<a class="headerlink" href="#test-4-run-layout-job" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Navigate to <strong>Analyze</strong> page</p></li>
+<li><p>Click “Run Spring Layout” button</p></li>
+</ol>
+<p><strong>Expected</strong>:</p>
+<ul class="simple">
+<li><p>Job appears in Job Center below</p></li>
+<li><p>Status shows “queued” → “running” → “completed”</p></li>
+<li><p>Progress updates (10% → 30% → 80% → 100%)</p></li>
+<li><p>Job shows green checkmark when complete</p></li>
+</ul>
+<section id="verify-in-flower">
+<h4>Verify in Flower<a class="headerlink" href="#verify-in-flower" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">http://localhost:5555</span></code></p></li>
+<li><p>Check “Tasks” tab</p></li>
+</ol>
+<p><strong>Expected</strong>: Layout task appears with status SUCCESS</p>
+</section>
+</section>
+<section id="test-5-run-centrality-analysis">
+<h3>Test 5: Run Centrality Analysis<a class="headerlink" href="#test-5-run-centrality-analysis" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>On <strong>Analyze</strong> page, click “Run Centrality” button</p></li>
+</ol>
+<p><strong>Expected</strong>:</p>
+<ul class="simple">
+<li><p>New job appears in Job Center</p></li>
+<li><p>Type: “Centrality”</p></li>
+<li><p>Status progresses to “completed”</p></li>
+<li><p>No errors</p></li>
+</ul>
+</section>
+<section id="test-6-run-community-detection">
+<h3>Test 6: Run Community Detection<a class="headerlink" href="#test-6-run-community-detection" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>On <strong>Analyze</strong> page, click “Detect Communities” button</p></li>
+</ol>
+<p><strong>Expected</strong>:</p>
+<ul class="simple">
+<li><p>New job appears in Job Center</p></li>
+<li><p>Type: “Community Detection”</p></li>
+<li><p>Status progresses to “completed”</p></li>
+<li><p>Result includes number of communities found</p></li>
+</ul>
+</section>
+<section id="test-7-export-workspace">
+<h3>Test 7: Export Workspace<a class="headerlink" href="#test-7-export-workspace" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Navigate to <strong>Export</strong> page</p></li>
+<li><p>Enter workspace name: “test-workspace”</p></li>
+<li><p>Click “Save Workspace Bundle”</p></li>
+</ol>
+<p><strong>Expected</strong>:</p>
+<ul class="simple">
+<li><p>Success message: “Workspace saved as test-workspace_{uuid}.zip”</p></li>
+<li><p>Workspace ID displayed</p></li>
+</ul>
+<section id="verify-file-created">
+<h4>Verify File Created<a class="headerlink" href="#verify-file-created" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-lh<span class="w"> </span>gui/data/workspaces/
+</pre></div>
+</div>
+<p><strong>Expected</strong>: Zip file exists with recent timestamp</p>
+</section>
+</section>
+<section id="test-8-api-direct-testing">
+<h3>Test 8: API Direct Testing<a class="headerlink" href="#test-8-api-direct-testing" title="Link to this heading"></a></h3>
+<section id="upload-via-api">
+<h4>Upload via API<a class="headerlink" href="#upload-via-api" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@toy_network.edgelist&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>http://localhost:8080/api/upload
+</pre></div>
+</div>
+<p><strong>Expected</strong>: JSON response with <code class="docutils literal notranslate"><span class="pre">graph_id</span></code></p>
+</section>
+<section id="get-graph-summary">
+<h4>Get Graph Summary<a class="headerlink" href="#get-graph-summary" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">GRAPH_ID</span><span class="o">=</span>&lt;from_previous_step&gt;
+curl<span class="w"> </span>http://localhost:8080/api/graphs/<span class="nv">$GRAPH_ID</span>/summary
+</pre></div>
+</div>
+<p><strong>Expected</strong>: JSON with nodes, edges, layers</p>
+</section>
+<section id="start-layout-job">
+<h4>Start Layout Job<a class="headerlink" href="#start-layout-job" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;algorithm&quot;:&quot;spring&quot;,&quot;seed&quot;:42,&quot;dimensions&quot;:2}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>http://localhost:8080/api/graphs/<span class="nv">$GRAPH_ID</span>/layout
+</pre></div>
+</div>
+<p><strong>Expected</strong>: JSON response with <code class="docutils literal notranslate"><span class="pre">job_id</span></code></p>
+</section>
+<section id="check-job-status">
+<h4>Check Job Status<a class="headerlink" href="#check-job-status" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">JOB_ID</span><span class="o">=</span>&lt;from_previous_step&gt;
+curl<span class="w"> </span>http://localhost:8080/api/jobs/<span class="nv">$JOB_ID</span>
+</pre></div>
+</div>
+<p><strong>Expected</strong>: JSON with status, progress, result</p>
+</section>
+</section>
+<section id="test-9-logs-inspection">
+<h3>Test 9: Logs Inspection<a class="headerlink" href="#test-9-logs-inspection" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View all logs</span>
+make<span class="w"> </span>logs
+
+<span class="c1"># Or individual services</span>
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>api
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>worker
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>frontend
+</pre></div>
+</div>
+<p><strong>Expected</strong>: No error messages, only INFO level logs</p>
+</section>
+<section id="test-10-container-health">
+<h3>Test 10: Container Health<a class="headerlink" href="#test-10-container-health" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>ps
+</pre></div>
+</div>
+<p><strong>Expected</strong>: All services show “healthy” or “running”</p>
+</section>
+<section id="test-11-data-persistence">
+<h3>Test 11: Data Persistence<a class="headerlink" href="#test-11-data-persistence" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Upload a network</p></li>
+<li><p>Run a layout job</p></li>
+<li><p>Stop containers: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">down</span></code></p></li>
+<li><p>Restart: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">up</span></code></p></li>
+<li><p>Upload same network again</p></li>
+</ol>
+<p><strong>Expected</strong>:</p>
+<ul class="simple">
+<li><p>Uploads work after restart</p></li>
+<li><p>Previous artifacts still in <code class="docutils literal notranslate"><span class="pre">gui/data/</span></code></p></li>
+</ul>
+</section>
+<section id="test-12-multiple-jobs">
+<h3>Test 12: Multiple Jobs<a class="headerlink" href="#test-12-multiple-jobs" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Navigate to <strong>Analyze</strong> page</p></li>
+<li><p>Quickly click:</p>
+<ul class="simple">
+<li><p>Run Spring Layout</p></li>
+<li><p>Run Centrality</p></li>
+<li><p>Detect Communities</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Expected</strong>:</p>
+<ul class="simple">
+<li><p>All three jobs appear in Job Center</p></li>
+<li><p>Jobs process in parallel (check Flower)</p></li>
+<li><p>All complete successfully</p></li>
+</ul>
+</section>
+</section>
+<section id="common-issues">
+<h2>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h2>
+<section id="port-already-in-use">
+<h3>Port Already in Use<a class="headerlink" href="#port-already-in-use" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find and kill process</span>
+lsof<span class="w"> </span>-ti:8080<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-9
+
+<span class="c1"># Or change port in docker-compose.yml</span>
+ports:
+<span class="w">  </span>-<span class="w"> </span><span class="s2">&quot;8081:80&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="container-won-t-start">
+<h3>Container Won’t Start<a class="headerlink" href="#container-won-t-start" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check logs</span>
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>&lt;service&gt;
+
+<span class="c1"># Rebuild</span>
+make<span class="w"> </span>down<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>up
+</pre></div>
+</div>
+</section>
+<section id="permission-errors">
+<h3>Permission Errors<a class="headerlink" href="#permission-errors" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fix data directory permissions</span>
+sudo<span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span><span class="k">$(</span>whoami<span class="k">)</span>:<span class="k">$(</span>whoami<span class="k">)</span><span class="w"> </span>gui/data/
+</pre></div>
+</div>
+</section>
+<section id="frontend-can-t-reach-api">
+<h3>Frontend Can’t Reach API<a class="headerlink" href="#frontend-can-t-reach-api" title="Link to this heading"></a></h3>
+<p>Check nginx config:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>nginx<span class="w"> </span>cat<span class="w"> </span>/etc/nginx/nginx.conf
+</pre></div>
+</div>
+<p>Test API directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:8000/api/health
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cleanup">
+<h2>Cleanup<a class="headerlink" href="#cleanup" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop and remove everything</span>
+make<span class="w"> </span>down
+
+<span class="c1"># Full cleanup including data</span>
+make<span class="w"> </span>clean
+</pre></div>
+</div>
+</section>
+<section id="test-checklist">
+<h2>Test Checklist<a class="headerlink" href="#test-checklist" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>[ ] Health endpoints respond</p></li>
+<li><p>[ ] Frontend loads</p></li>
+<li><p>[ ] Flower dashboard accessible</p></li>
+<li><p>[ ] File upload works</p></li>
+<li><p>[ ] Graph summary displays</p></li>
+<li><p>[ ] Layout job completes</p></li>
+<li><p>[ ] Centrality job completes</p></li>
+<li><p>[ ] Community detection works</p></li>
+<li><p>[ ] Workspace save succeeds</p></li>
+<li><p>[ ] Job progress updates in real-time</p></li>
+<li><p>[ ] Multiple concurrent jobs work</p></li>
+<li><p>[ ] Logs show no errors</p></li>
+<li><p>[ ] Data persists across restarts</p></li>
+</ul>
+</section>
+<section id="performance-benchmarks">
+<h2>Performance Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Link to this heading"></a></h2>
+<p>For reference, on a typical development machine:</p>
+<ul class="simple">
+<li><p><strong>Startup time</strong>: 30-60 seconds (first build: 3-5 minutes)</p></li>
+<li><p><strong>Upload (toy network)</strong>: &lt; 1 second</p></li>
+<li><p><strong>Layout job</strong>: 2-5 seconds</p></li>
+<li><p><strong>Centrality job</strong>: 1-3 seconds</p></li>
+<li><p><strong>Community detection</strong>: 1-3 seconds</p></li>
+</ul>
+<p>Larger networks (1000+ nodes) may take proportionally longer.</p>
+</section>
+<section id="security-testing-development-mode">
+<h2>Security Testing (Development Mode)<a class="headerlink" href="#security-testing-development-mode" title="Link to this heading"></a></h2>
+<p><strong>WARNING</strong>: <strong>Do NOT expose to public internet</strong> without:</p>
+<ul class="simple">
+<li><p>[ ] Changing CORS settings</p></li>
+<li><p>[ ] Adding authentication</p></li>
+<li><p>[ ] Enabling HTTPS</p></li>
+<li><p>[ ] Setting rate limits</p></li>
+<li><p>[ ] Validating file uploads strictly</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>If all tests pass:</p>
+<ol class="arabic simple">
+<li><p>Try with real network datasets</p></li>
+<li><p>Test with large graphs (1000+ nodes)</p></li>
+<li><p>Load test with concurrent users</p></li>
+<li><p>Profile memory usage</p></li>
+<li><p>Test edge cases (malformed files, very large files)</p></li>
+</ol>
+<p>—</p>
+<p><strong>Last Updated</strong>: 2025-11-09</p>
+<p><strong>Version</strong>: 0.1.0</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gui_architecture.html" class="btn btn-neutral float-left" title="Py3plex GUI Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../dev/development_guide.html" class="btn btn-neutral float-right" title="Development Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

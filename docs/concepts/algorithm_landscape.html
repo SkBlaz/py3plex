@@ -1,0 +1,828 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Landscape &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Working with Networks" href="../user_guide/networks.html" />
+    <link rel="prev" title="Design Principles" href="design_principles.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_principles.html">Design Principles</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithm Landscape</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#community-detection">Community Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#when-to-use">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#algorithm-families">Algorithm Families</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-a-community-detection-method">Choosing a Community Detection Method</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#centrality-importance">Centrality &amp; Importance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Algorithm Families</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-a-centrality-measure">Choosing a Centrality Measure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-statistics">Network Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#statistic-families">Statistic Families</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#random-walks-embeddings">Random Walks &amp; Embeddings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Algorithm Families</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-walk-parameters">Choosing Walk Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#visualization-layout">Visualization &amp; Layout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layout-families">Layout Families</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#benchmarking-generation">Benchmarking &amp; Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">When to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generator-families">Generator Families</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#algorithm-combinations">Algorithm Combinations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-workflows">Common Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-considerations">Performance Considerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#algorithm-complexity">Algorithm Complexity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Algorithm Landscape</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/concepts/algorithm_landscape.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="algorithm-landscape">
+<h1>Algorithm Landscape<a class="headerlink" href="#algorithm-landscape" title="Link to this heading"></a></h1>
+<p>This guide provides a narrative overview of the algorithm families available in py3plex, helping you understand when to use each type of algorithm for multilayer network analysis.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>py3plex provides algorithms in seven main categories:</p>
+<ol class="arabic simple">
+<li><p><strong>Community Detection</strong> - Finding groups of densely connected nodes</p></li>
+<li><p><strong>Centrality &amp; Importance</strong> - Measuring node and edge importance</p></li>
+<li><p><strong>Network Statistics</strong> - Computing network-level and layer-specific metrics</p></li>
+<li><p><strong>Random Walks &amp; Embeddings</strong> - Node representations and sampling</p></li>
+<li><p><strong>Node Ranking &amp; Classification</strong> - Ordering and classifying nodes</p></li>
+<li><p><strong>Visualization &amp; Layout</strong> - Rendering and spatial arrangement</p></li>
+<li><p><strong>Benchmarking &amp; Generation</strong> - Testing and synthetic network creation</p></li>
+</ol>
+<p>For detailed parameter lists and API reference, see <a class="reference internal" href="../reference/algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a>.</p>
+</section>
+<section id="community-detection">
+<h2>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Identify groups of nodes that are more densely connected to each other than to the rest of the network.</p>
+<section id="when-to-use">
+<h3>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h3>
+<p>Use community detection when you want to:</p>
+<ul class="simple">
+<li><p>Discover functional modules in biological networks</p></li>
+<li><p>Find social groups in multilayer social networks</p></li>
+<li><p>Identify topical clusters in citation networks</p></li>
+<li><p>Understand organizational structure</p></li>
+<li><p>Detect anomalies (nodes that don’t fit any community)</p></li>
+</ul>
+</section>
+<section id="algorithm-families">
+<h3>Algorithm Families<a class="headerlink" href="#algorithm-families" title="Link to this heading"></a></h3>
+<p><strong>Modularity-Based Methods</strong></p>
+<p><em>Best for:</em> Fast community detection on large networks</p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>Louvain</strong> - Fast, greedy modularity optimization</p></li>
+<li><p><strong>Leiden</strong> - Improved version of Louvain with better stability</p></li>
+<li><p><strong>Multilayer Louvain</strong> - Extends Louvain to multiple layers with inter-layer coupling</p></li>
+</ul>
+<p><em>Trade-offs:</em></p>
+<ul class="simple">
+<li><p>✓ Fast (scales to millions of nodes)</p></li>
+<li><p>✓ Easy to use (minimal parameters)</p></li>
+<li><p>✗ Resolution limit (may miss small communities)</p></li>
+<li><p>✗ Stochastic (different runs give different results)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_louvain</span>
+
+<span class="c1"># Single-layer Louvain</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Multilayer Louvain</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">louvain_multilayer</span>
+<span class="p">)</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Flow-Based Methods</strong></p>
+<p><em>Best for:</em> Finding communities based on information flow</p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>Infomap</strong> - Minimizes description length of random walks</p></li>
+<li><p><strong>Walktrap</strong> - Based on random walk distances</p></li>
+</ul>
+<p><em>Trade-offs:</em></p>
+<ul class="simple">
+<li><p>✓ Theoretically grounded (information theory)</p></li>
+<li><p>✓ Finds hierarchical structure</p></li>
+<li><p>✗ Slower than modularity methods</p></li>
+<li><p>✗ May require external binaries</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_wrapper</span>
+
+<span class="c1"># Infomap (requires binary)</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/infomap&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Overlapping Community Detection</strong></p>
+<p><em>Best for:</em> Networks where nodes belong to multiple communities</p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>NoRC</strong> - Network of Ranked Communities</p></li>
+<li><p><strong>Clique Percolation</strong> - Based on overlapping cliques</p></li>
+</ul>
+<p><em>Trade-offs:</em></p>
+<ul class="simple">
+<li><p>✓ More realistic for many real networks</p></li>
+<li><p>✓ Captures multi-role nodes</p></li>
+<li><p>✗ More complex to interpret</p></li>
+<li><p>✗ Computationally expensive</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">community_wrapper</span>
+
+<span class="c1"># NoRC overlapping communities</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">NoRC_communities</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="choosing-a-community-detection-method">
+<h3>Choosing a Community Detection Method<a class="headerlink" href="#choosing-a-community-detection-method" title="Link to this heading"></a></h3>
+<p>Use this decision tree:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Do you need overlapping communities?
+├─ Yes → NoRC or Clique Percolation
+└─ No
+   └─ Is your network multilayer?
+      ├─ Yes → Multilayer Louvain or Leiden
+      └─ No
+         └─ What&#39;s most important?
+            ├─ Speed → Louvain
+            ├─ Stability → Leiden
+            └─ Theory → Infomap
+</pre></div>
+</div>
+</section>
+</section>
+<section id="centrality-importance">
+<h2>Centrality &amp; Importance<a class="headerlink" href="#centrality-importance" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Quantify the importance of nodes or edges in the network.</p>
+<section id="id1">
+<h3>When to Use<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Use centrality measures when you want to:</p>
+<ul class="simple">
+<li><p>Identify influential nodes (e.g., key proteins, opinion leaders)</p></li>
+<li><p>Find bottlenecks in flow networks</p></li>
+<li><p>Prioritize nodes for intervention or study</p></li>
+<li><p>Understand network vulnerability</p></li>
+<li><p>Analyze node roles across layers</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>Algorithm Families<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p><strong>Degree-Based Centrality</strong></p>
+<p><em>Measures:</em> Local connectivity</p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>Degree Centrality</strong> - Number of connections</p></li>
+<li><p><strong>Multilayer Degree</strong> - Degree summed across layers</p></li>
+<li><p><strong>Versatility</strong> - Participation across layers</p></li>
+</ul>
+<p><em>When to use:</em></p>
+<ul class="simple">
+<li><p>Quick assessment of connectivity</p></li>
+<li><p>Identifying hubs</p></li>
+<li><p>Local importance measures</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="c1"># Single-layer degree centrality</span>
+<span class="n">degree_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Multilayer versatility</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Distance-Based Centrality</strong></p>
+<p><em>Measures:</em> Global position in network</p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>Closeness Centrality</strong> - Average distance to all other nodes</p></li>
+<li><p><strong>Betweenness Centrality</strong> - Fraction of shortest paths through node</p></li>
+<li><p><strong>Harmonic Centrality</strong> - Harmonic mean of distances</p></li>
+</ul>
+<p><em>When to use:</em></p>
+<ul class="simple">
+<li><p>Identifying central nodes</p></li>
+<li><p>Finding information brokers</p></li>
+<li><p>Understanding information flow</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Betweenness centrality</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Closeness centrality</span>
+<span class="n">closeness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">closeness_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Eigenvector-Based Centrality</strong></p>
+<p><em>Measures:</em> Importance based on connections to important nodes</p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>Eigenvector Centrality</strong> - First eigenvector of adjacency matrix</p></li>
+<li><p><strong>PageRank</strong> - Google’s ranking algorithm</p></li>
+<li><p><strong>HITS</strong> - Hubs and authorities</p></li>
+</ul>
+<p><em>When to use:</em></p>
+<ul class="simple">
+<li><p>Ranking web pages or citations</p></li>
+<li><p>Finding influential nodes in social networks</p></li>
+<li><p>Authority/hub analysis</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># PageRank</span>
+<span class="n">pagerank</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">pagerank</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Eigenvector centrality</span>
+<span class="n">eigenvector</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">eigenvector_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="choosing-a-centrality-measure">
+<h3>Choosing a Centrality Measure<a class="headerlink" href="#choosing-a-centrality-measure" title="Link to this heading"></a></h3>
+<p>Consider these questions:</p>
+<ol class="arabic simple">
+<li><p><strong>Local vs. Global?</strong>
+- Local → Degree centrality
+- Global → Closeness or betweenness</p></li>
+<li><p><strong>Direct connections or influence?</strong>
+- Direct → Degree
+- Influence → PageRank or eigenvector</p></li>
+<li><p><strong>Network type?</strong>
+- Directed → PageRank or HITS
+- Undirected → Any method
+- Weighted → Use weight-aware versions</p></li>
+<li><p><strong>Computational cost?</strong>
+- Large network → Degree or PageRank (fast)
+- Small network → Betweenness (expensive but informative)</p></li>
+</ol>
+</section>
+</section>
+<section id="network-statistics">
+<h2>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Characterize network structure at the global, layer, or node level.</p>
+<section id="id3">
+<h3>When to Use<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Use network statistics when you want to:</p>
+<ul class="simple">
+<li><p>Compare networks quantitatively</p></li>
+<li><p>Understand structural properties</p></li>
+<li><p>Validate network models</p></li>
+<li><p>Monitor network evolution</p></li>
+<li><p>Detect anomalies</p></li>
+</ul>
+</section>
+<section id="statistic-families">
+<h3>Statistic Families<a class="headerlink" href="#statistic-families" title="Link to this heading"></a></h3>
+<p><strong>Global Statistics</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p>Number of nodes, edges, layers</p></li>
+<li><p>Density, clustering coefficient</p></li>
+<li><p>Average path length</p></li>
+<li><p>Degree distribution</p></li>
+</ul>
+<p><em>When to use:</em> Basic network characterization</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic stats</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># Clustering</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Density</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Layer-Specific Statistics</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p>Layer density</p></li>
+<li><p>Layer similarity (Jaccard, correlation)</p></li>
+<li><p>Edge overlap between layers</p></li>
+<li><p>Inter-layer degree correlation</p></li>
+</ul>
+<p><em>When to use:</em> Comparing layers, understanding layer relationships</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+
+<span class="c1"># Layer density</span>
+<span class="n">density_l1</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+
+<span class="c1"># Layer similarity</span>
+<span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span><span class="p">)</span>
+
+<span class="c1"># Edge overlap</span>
+<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Node-Level Statistics</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p>Node activity (presence across layers)</p></li>
+<li><p>Participation coefficient</p></li>
+<li><p>Cross-layer degree correlation</p></li>
+</ul>
+<p><em>When to use:</em> Characterizing node behavior across layers</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+
+<span class="c1"># Node activity</span>
+<span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">)</span>
+
+<span class="c1"># Participation coefficient</span>
+<span class="n">participation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">partition</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="random-walks-embeddings">
+<h2>Random Walks &amp; Embeddings<a class="headerlink" href="#random-walks-embeddings" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Generate node representations or sample the network through traversal.</p>
+<section id="id4">
+<h3>When to Use<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>Use random walks and embeddings when you want to:</p>
+<ul class="simple">
+<li><p>Create low-dimensional node representations for ML</p></li>
+<li><p>Sample large networks efficiently</p></li>
+<li><p>Measure node similarity</p></li>
+<li><p>Generate features for classification/clustering</p></li>
+<li><p>Understand structural equivalence</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>Algorithm Families<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p><strong>Random Walk Algorithms</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>Basic Random Walk</strong> - Uniform random traversal</p></li>
+<li><p><strong>Node2Vec</strong> - Biased walks (BFS/DFS-like)</p></li>
+<li><p><strong>DeepWalk</strong> - Uniform random walks for embeddings</p></li>
+</ul>
+<p><em>Parameters:</em></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">walk_length</span></code> - Steps per walk</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_walks</span></code> - Walks per node</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> (Node2Vec) - Return parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code> (Node2Vec) - In-out parameter</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span><span class="p">,</span> <span class="n">node2vec_walk</span>
+
+<span class="c1"># Basic walks</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span>
+<span class="p">)</span>
+
+<span class="c1"># Node2Vec walks (BFS-like: stay local)</span>
+<span class="n">walks_bfs</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">2.0</span>  <span class="c1"># BFS-like</span>
+<span class="p">)</span>
+
+<span class="c1"># Node2Vec walks (DFS-like: explore)</span>
+<span class="n">walks_dfs</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.5</span>  <span class="c1"># DFS-like</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Embedding Methods</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>Node2Vec</strong> - Skip-gram on random walks</p></li>
+<li><p><strong>DeepWalk</strong> - Word2Vec on uniform walks</p></li>
+<li><p><strong>LINE</strong> - First/second-order proximity preservation</p></li>
+</ul>
+<p><em>When to use:</em></p>
+<ul class="simple">
+<li><p>Node classification</p></li>
+<li><p>Link prediction</p></li>
+<li><p>Visualization in 2D/3D</p></li>
+<li><p>Clustering</p></li>
+<li><p>Similarity computation</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.wrappers</span> <span class="kn">import</span> <span class="n">node2vec_embedding</span>
+
+<span class="c1"># Generate embeddings</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="p">)</span>
+
+<span class="c1"># Use embeddings for ML</span>
+<span class="c1"># embeddings is a numpy array: (num_nodes, dimensions)</span>
+</pre></div>
+</div>
+</section>
+<section id="choosing-walk-parameters">
+<h3>Choosing Walk Parameters<a class="headerlink" href="#choosing-walk-parameters" title="Link to this heading"></a></h3>
+<p><strong>walk_length:</strong></p>
+<ul class="simple">
+<li><p>Short (10-20): Fast, local neighborhood</p></li>
+<li><p>Medium (40-80): Balanced, standard choice</p></li>
+<li><p>Long (100+): Global structure, slower</p></li>
+</ul>
+<p><strong>p (return parameter):</strong></p>
+<ul class="simple">
+<li><p>p &lt; 1: More likely to return to previous node</p></li>
+<li><p>p = 1: Balanced</p></li>
+<li><p>p &gt; 1: Less likely to return</p></li>
+</ul>
+<p><strong>q (in-out parameter):</strong></p>
+<ul class="simple">
+<li><p>q &lt; 1: DFS-like (explore distant nodes)</p></li>
+<li><p>q = 1: Balanced</p></li>
+<li><p>q &gt; 1: BFS-like (stay in local neighborhood)</p></li>
+</ul>
+</section>
+</section>
+<section id="visualization-layout">
+<h2>Visualization &amp; Layout<a class="headerlink" href="#visualization-layout" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Create visual representations of multilayer networks.</p>
+<section id="id6">
+<h3>When to Use<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>Use visualization when you want to:</p>
+<ul class="simple">
+<li><p>Explore network structure</p></li>
+<li><p>Present findings</p></li>
+<li><p>Communicate patterns</p></li>
+<li><p>Identify visual anomalies</p></li>
+<li><p>Create publication-ready figures</p></li>
+</ul>
+</section>
+<section id="layout-families">
+<h3>Layout Families<a class="headerlink" href="#layout-families" title="Link to this heading"></a></h3>
+<p><strong>Force-Directed Layouts</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p>Spring layout</p></li>
+<li><p>Fruchterman-Reingold</p></li>
+<li><p>Force Atlas</p></li>
+</ul>
+<p><em>Best for:</em> General-purpose visualization, showing community structure</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">hairball_plot</span>
+
+<span class="n">hairball_plot</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">,</span>
+    <span class="n">layout_parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Specialized Multilayer Layouts</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p>Diagonal projection</p></li>
+<li><p>Layered stacking</p></li>
+<li><p>Circular layer arrangement</p></li>
+</ul>
+<p><em>Best for:</em> Emphasizing multilayer structure</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+
+<span class="c1"># Diagonal layout for multilayer networks</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">network</span><span class="p">],</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">layout_style</span><span class="o">=</span><span class="s1">&#39;diagonal&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Hierarchical Layouts</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p>Reingold-Tilford tree</p></li>
+<li><p>Radial tree</p></li>
+<li><p>Sugiyama layered</p></li>
+</ul>
+<p><em>Best for:</em> Trees and DAGs</p>
+<p>For complete visualization documentation, see <a class="reference internal" href="../user_guide/visualization.html"><span class="doc">Visualization Guide</span></a>.</p>
+</section>
+</section>
+<section id="benchmarking-generation">
+<h2>Benchmarking &amp; Generation<a class="headerlink" href="#benchmarking-generation" title="Link to this heading"></a></h2>
+<p><strong>Goal:</strong> Create synthetic networks for testing and validation.</p>
+<section id="id7">
+<h3>When to Use<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p>Use synthetic network generation when you want to:</p>
+<ul class="simple">
+<li><p>Test algorithm performance</p></li>
+<li><p>Validate implementations</p></li>
+<li><p>Create controlled experiments</p></li>
+<li><p>Generate training data</p></li>
+<li><p>Benchmark scalability</p></li>
+</ul>
+</section>
+<section id="generator-families">
+<h3>Generator Families<a class="headerlink" href="#generator-families" title="Link to this heading"></a></h3>
+<p><strong>Random Network Models</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p><strong>Erdős-Rényi</strong> - Random edges with fixed probability</p></li>
+<li><p><strong>Barabási-Albert</strong> - Preferential attachment (scale-free)</p></li>
+<li><p><strong>Watts-Strogatz</strong> - Small-world networks</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
+
+<span class="c1"># Random multilayer ER network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span>
+    <span class="n">num_nodes</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">probability</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Benchmark Networks</strong></p>
+<p><em>Examples:</em></p>
+<ul class="simple">
+<li><p>LFR benchmark (with ground-truth communities)</p></li>
+<li><p>Configuration model (preserving degree distribution)</p></li>
+<li><p>Block model (with planted partition)</p></li>
+</ul>
+</section>
+</section>
+<section id="algorithm-combinations">
+<h2>Algorithm Combinations<a class="headerlink" href="#algorithm-combinations" title="Link to this heading"></a></h2>
+<section id="common-workflows">
+<h3>Common Workflows<a class="headerlink" href="#common-workflows" title="Link to this heading"></a></h3>
+<p><strong>Community Detection + Visualization:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Detect communities</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Visualize with community colors</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">hairball_plot</span>
+<span class="kn">from</span> <span class="nn">py3plex.visualization.colors</span> <span class="kn">import</span> <span class="n">colors_default</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="n">top_communities</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<span class="n">color_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">top_communities</span><span class="p">,</span> <span class="n">colors_default</span><span class="p">[:</span><span class="mi">5</span><span class="p">]))</span>
+<span class="n">node_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">),</span> <span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()]</span>
+
+<span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">node_colors</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Centrality + Ranking:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute centrality</span>
+<span class="n">centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Rank nodes</span>
+<span class="n">ranked</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">centrality</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Top 10</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 nodes:&quot;</span><span class="p">,</span> <span class="n">ranked</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>Embeddings + Classification:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate embeddings</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+
+<span class="c1"># Use for classification (with sklearn)</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+<span class="c1"># clf.fit(embeddings, labels)</span>
+<span class="c1"># predictions = clf.predict(embeddings_test)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<section id="algorithm-complexity">
+<h3>Algorithm Complexity<a class="headerlink" href="#algorithm-complexity" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Algorithm Family</p></th>
+<th class="head"><p>Typical Complexity</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Degree Centrality</p></td>
+<td><p>O(m)</p></td>
+<td><p>Fast, scales well</p></td>
+</tr>
+<tr class="row-odd"><td><p>Betweenness</p></td>
+<td><p>O(nm) or O(nm + n²log n)</p></td>
+<td><p>Expensive for large networks</p></td>
+</tr>
+<tr class="row-even"><td><p>Louvain</p></td>
+<td><p>O(n log n)</p></td>
+<td><p>Fast community detection</p></td>
+</tr>
+<tr class="row-odd"><td><p>Node2Vec</p></td>
+<td><p>O(k·l·n)</p></td>
+<td><p>k=walks, l=length, n=nodes</p></td>
+</tr>
+<tr class="row-even"><td><p>Force Layout</p></td>
+<td><p>O(n²)</p></td>
+<td><p>Slow for &gt;1000 nodes</p></td>
+</tr>
+</tbody>
+</table>
+<p>When working with large networks:</p>
+<ul class="simple">
+<li><p>Use approximate algorithms (e.g., sampling for betweenness)</p></li>
+<li><p>Consider layer-by-layer analysis</p></li>
+<li><p>Use sparse representations</p></li>
+<li><p>See <a class="reference internal" href="../deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a></p></li>
+</ul>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../user_guide/community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Detailed community detection guide</p></li>
+<li><p><a class="reference internal" href="../user_guide/statistics.html"><span class="doc">Network Statistics</span></a> - Complete statistics reference</p></li>
+<li><p><a class="reference internal" href="../user_guide/random_walks_embeddings.html"><span class="doc">Random Walk Algorithms</span></a> - Embeddings and walks</p></li>
+<li><p><a class="reference internal" href="../user_guide/visualization.html"><span class="doc">Visualization Guide</span></a> - Visualization techniques</p></li>
+<li><p><a class="reference internal" href="../reference/algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> - Detailed algorithm parameters and API</p></li>
+</ul>
+<p><strong>Academic References:</strong></p>
+<ul class="simple">
+<li><p>Fortunato &amp; Hric (2016). “Community detection in networks: A user guide.” <em>Physics Reports</em> 659: 1-44.</p></li>
+<li><p>Grover &amp; Leskovec (2016). “node2vec: Scalable feature learning for networks.” <em>KDD</em>.</p></li>
+<li><p>Newman (2018). “Networks” (2nd ed.). Oxford University Press.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="design_principles.html" class="btn btn-neutral float-left" title="Design Principles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../user_guide/networks.html" class="btn btn-neutral float-right" title="Working with Networks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
