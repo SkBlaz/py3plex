@@ -1,0 +1,541 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I/O and Serialization &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Visualization Guide" href="visualization.html" />
+    <link rel="prev" title="Random Walk Algorithms" href="random_walks_embeddings.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">I/O and Serialization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#supported-formats">Supported Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reading-graphs">Reading Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-graphs">Writing Graphs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-graphs-with-the-schema-api">Creating Graphs with the Schema API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#apache-arrow-format">Apache Arrow Format</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installing-arrow-support">Installing Arrow Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-arrow-format">Using Arrow Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#benefits-of-arrow-format">Benefits of Arrow Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-comparison">Performance Comparison</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-to-use-each-format">When to Use Each Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#csv-format-with-sidecars">CSV Format with Sidecars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integration-with-networkx">Integration with NetworkX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-complete-workflow">Example: Complete Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checking-supported-formats">Checking Supported Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schema-validation">Schema Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-custom-formats">Advanced: Custom Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">I/O and Serialization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/io_and_formats.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="i-o-and-serialization">
+<h1>I/O and Serialization<a class="headerlink" href="#i-o-and-serialization" title="Link to this heading"></a></h1>
+<p>py3plex provides a comprehensive I/O system for reading and writing multilayer graphs in various formats. The system is designed to be extensible, efficient, and easy to use.</p>
+<section id="supported-formats">
+<h2>Supported Formats<a class="headerlink" href="#supported-formats" title="Link to this heading"></a></h2>
+<p>The I/O system supports multiple file formats, each with different trade-offs:</p>
+<ul class="simple">
+<li><p><strong>JSON</strong> - Human-readable, widely compatible, good for small to medium networks</p></li>
+<li><p><strong>JSONL</strong> - Streaming JSON format, efficient for large networks</p></li>
+<li><p><strong>CSV</strong> - Spreadsheet-compatible, easy to edit manually</p></li>
+<li><p><strong>Arrow/Feather</strong> - High-performance columnar format (requires pyarrow)</p></li>
+<li><p><strong>Parquet</strong> - Compressed columnar format, best for storage (requires pyarrow)</p></li>
+</ul>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<p>The I/O system provides two main functions: <code class="docutils literal notranslate"><span class="pre">read()</span></code> and <code class="docutils literal notranslate"><span class="pre">write()</span></code>.</p>
+<section id="reading-graphs">
+<h3>Reading Graphs<a class="headerlink" href="#reading-graphs" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
+
+<span class="c1"># Auto-detect format from extension</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.csv&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+
+<span class="c1"># Or specify format explicitly</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;myfile.dat&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="writing-graphs">
+<h3>Writing Graphs<a class="headerlink" href="#writing-graphs" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
+
+<span class="c1"># Auto-detect format from extension</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
+
+<span class="c1"># Or specify format explicitly</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;myfile.dat&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="creating-graphs-with-the-schema-api">
+<h2>Creating Graphs with the Schema API<a class="headerlink" href="#creating-graphs-with-the-schema-api" title="Link to this heading"></a></h2>
+<p>The modern I/O system uses a schema-based API for creating graphs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Edge</span>
+
+<span class="c1"># Create graph</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">(</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Social Network&#39;</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Add layers</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">}))</span>
+
+<span class="c1"># Add nodes</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">}))</span>
+
+<span class="c1"># Add edges</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
+    <span class="n">src</span><span class="o">=</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span>
+    <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span>
+    <span class="n">src_layer</span><span class="o">=</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span>
+    <span class="n">dst_layer</span><span class="o">=</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span>
+    <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}</span>
+<span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="apache-arrow-format">
+<h2>Apache Arrow Format<a class="headerlink" href="#apache-arrow-format" title="Link to this heading"></a></h2>
+<p>Apache Arrow is a high-performance columnar format designed for efficient data interchange. py3plex supports Arrow through two sub-formats:</p>
+<ul class="simple">
+<li><p><strong>Feather</strong> - Fast, uncompressed format ideal for temporary storage</p></li>
+<li><p><strong>Parquet</strong> - Compressed format ideal for long-term storage</p></li>
+</ul>
+<section id="installing-arrow-support">
+<h3>Installing Arrow Support<a class="headerlink" href="#installing-arrow-support" title="Link to this heading"></a></h3>
+<p>Arrow support requires the pyarrow package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;py3plex[arrow]&#39;</span>
+<span class="c1"># or directly</span>
+pip<span class="w"> </span>install<span class="w"> </span>pyarrow
+</pre></div>
+</div>
+</section>
+<section id="using-arrow-format">
+<h3>Using Arrow Format<a class="headerlink" href="#using-arrow-format" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+
+<span class="c1"># Feather format (fast, uncompressed)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+
+<span class="c1"># Parquet format (compressed)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;parquet&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.parquet&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;parquet&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="benefits-of-arrow-format">
+<h3>Benefits of Arrow Format<a class="headerlink" href="#benefits-of-arrow-format" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Performance</strong>: Columnar storage enables fast read/write operations</p></li>
+<li><p><strong>Compression</strong>: Parquet format provides excellent compression ratios</p></li>
+<li><p><strong>Interoperability</strong>: Arrow is an industry-standard format supported by:</p>
+<ul class="simple">
+<li><p>pandas, polars (Python data analysis)</p></li>
+<li><p>Apache Spark (big data processing)</p></li>
+<li><p>R, Julia (statistical computing)</p></li>
+<li><p>DuckDB (analytical database)</p></li>
+</ul>
+</li>
+<li><p><strong>Type Safety</strong>: Schema preservation with strong typing</p></li>
+<li><p><strong>Zero-Copy</strong>: Efficient in-memory representation</p></li>
+</ol>
+</section>
+<section id="performance-comparison">
+<h3>Performance Comparison<a class="headerlink" href="#performance-comparison" title="Link to this heading"></a></h3>
+<p>For a typical multilayer network with 1000 nodes and ~5000 edges:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Format</p></th>
+<th class="head"><p>Write Time</p></th>
+<th class="head"><p>Read Time</p></th>
+<th class="head"><p>File Size</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Arrow</p></td>
+<td><p>0.016s</p></td>
+<td><p>0.008s</p></td>
+<td><p>0.46 MB</p></td>
+</tr>
+<tr class="row-odd"><td><p>Parquet</p></td>
+<td><p>0.020s</p></td>
+<td><p>0.010s</p></td>
+<td><p>0.35 MB</p></td>
+</tr>
+<tr class="row-even"><td><p>JSON</p></td>
+<td><p>0.046s</p></td>
+<td><p>0.030s</p></td>
+<td><p>1.09 MB</p></td>
+</tr>
+</tbody>
+</table>
+<p>Arrow format is <strong>2-3x faster</strong> for writes and provides <strong>2-3x better compression</strong> compared to JSON.</p>
+</section>
+<section id="when-to-use-each-format">
+<h3>When to Use Each Format<a class="headerlink" href="#when-to-use-each-format" title="Link to this heading"></a></h3>
+<p><strong>Use Arrow/Feather when:</strong></p>
+<ul class="simple">
+<li><p>You need maximum read/write performance</p></li>
+<li><p>Working with large networks (&gt;10k nodes)</p></li>
+<li><p>Interoperating with data science tools (pandas, polars)</p></li>
+<li><p>Building data pipelines</p></li>
+</ul>
+<p><strong>Use Parquet when:</strong></p>
+<ul class="simple">
+<li><p>Long-term storage is important</p></li>
+<li><p>Minimizing storage costs</p></li>
+<li><p>Sharing data across platforms</p></li>
+<li><p>Archiving networks</p></li>
+</ul>
+<p><strong>Use JSON when:</strong></p>
+<ul class="simple">
+<li><p>Human readability is important</p></li>
+<li><p>Working with small networks</p></li>
+<li><p>Debugging or manual editing</p></li>
+<li><p>Maximum compatibility needed</p></li>
+</ul>
+<p><strong>Use CSV when:</strong></p>
+<ul class="simple">
+<li><p>Working with spreadsheet tools (Excel)</p></li>
+<li><p>Simple edge lists</p></li>
+<li><p>Manual data entry/editing</p></li>
+</ul>
+</section>
+</section>
+<section id="csv-format-with-sidecars">
+<h2>CSV Format with Sidecars<a class="headerlink" href="#csv-format-with-sidecars" title="Link to this heading"></a></h2>
+<p>CSV format supports optional sidecar files for node and layer attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+
+<span class="c1"># Write with sidecars</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;edges.csv&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="n">write_sidecars</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Creates: edges.csv, nodes.csv, layers.csv</span>
+
+<span class="c1"># Read with sidecars</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;edges.csv&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span>
+             <span class="n">nodes_file</span><span class="o">=</span><span class="s1">&#39;nodes.csv&#39;</span><span class="p">,</span>
+             <span class="n">layers_file</span><span class="o">=</span><span class="s1">&#39;layers.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-with-networkx">
+<h2>Integration with NetworkX<a class="headerlink" href="#integration-with-networkx" title="Link to this heading"></a></h2>
+<p>Convert between py3plex I/O format and NetworkX:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">to_networkx</span><span class="p">,</span> <span class="n">from_networkx</span>
+
+<span class="c1"># Load graph</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
+
+<span class="c1"># Convert to NetworkX</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;union&#39;</span><span class="p">)</span>  <span class="c1"># Merge all layers</span>
+<span class="c1"># or</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>  <span class="c1"># Preserve layers as (node, layer)</span>
+
+<span class="c1"># Convert back from NetworkX</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">from_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-complete-workflow">
+<h2>Example: Complete Workflow<a class="headerlink" href="#example-complete-workflow" title="Link to this heading"></a></h2>
+<p>Here’s a complete example demonstrating the I/O system:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Edge</span><span class="p">,</span>
+    <span class="n">read</span><span class="p">,</span> <span class="n">write</span><span class="p">,</span> <span class="n">to_networkx</span>
+<span class="p">)</span>
+
+<span class="c1"># Create a multilayer network</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Add layers</span>
+<span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">]:</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">layer_id</span><span class="p">))</span>
+
+<span class="c1"># Add nodes</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;charlie&#39;</span><span class="p">]:</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+
+<span class="c1"># Add edges</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src_layer</span><span class="p">,</span> <span class="n">dst_layer</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
+        <span class="n">src</span><span class="o">=</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="n">dst</span><span class="p">,</span>
+        <span class="n">src_layer</span><span class="o">=</span><span class="n">src_layer</span><span class="p">,</span> <span class="n">dst_layer</span><span class="o">=</span><span class="n">dst_layer</span><span class="p">,</span>
+        <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="n">weight</span><span class="p">}</span>
+    <span class="p">))</span>
+
+<span class="c1"># Save in multiple formats</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load back</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+
+<span class="c1"># Convert to NetworkX for analysis</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">loaded</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;union&#39;</span><span class="p">)</span>
+
+<span class="c1"># Use NetworkX algorithms</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="n">centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most central node: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">centrality</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="o">=</span><span class="n">centrality</span><span class="o">.</span><span class="n">get</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="checking-supported-formats">
+<h2>Checking Supported Formats<a class="headerlink" href="#checking-supported-formats" title="Link to this heading"></a></h2>
+<p>You can query which formats are available at runtime:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">supported_formats</span>
+
+<span class="n">formats</span> <span class="o">=</span> <span class="n">supported_formats</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read formats: </span><span class="si">{</span><span class="n">formats</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write formats: </span><span class="si">{</span><span class="n">formats</span><span class="p">[</span><span class="s1">&#39;write&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is useful for checking if optional dependencies (like pyarrow) are installed.</p>
+</section>
+<section id="schema-validation">
+<h2>Schema Validation<a class="headerlink" href="#schema-validation" title="Link to this heading"></a></h2>
+<p>The I/O system includes automatic validation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Edge</span><span class="p">,</span>
+    <span class="n">ReferentialIntegrityError</span>
+<span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">()</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;alice&#39;</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># This will fail - bob doesn&#39;t exist</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
+        <span class="n">src</span><span class="o">=</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span>
+        <span class="n">src_layer</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="n">dst_layer</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span>
+    <span class="p">))</span>
+<span class="k">except</span> <span class="n">ReferentialIntegrityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Validation ensures:</p>
+<ol class="arabic simple">
+<li><p>All edge endpoints reference existing nodes</p></li>
+<li><p>All edge layers reference existing layers</p></li>
+<li><p>All attributes are JSON-serializable</p></li>
+<li><p>No duplicate edges (by src, dst, src_layer, dst_layer, key)</p></li>
+</ol>
+</section>
+<section id="advanced-custom-formats">
+<h2>Advanced: Custom Formats<a class="headerlink" href="#advanced-custom-formats" title="Link to this heading"></a></h2>
+<p>The I/O system is extensible. You can register custom format readers/writers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_reader</span><span class="p">,</span> <span class="n">register_writer</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_reader</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c1"># Custom reading logic</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">()</span>
+    <span class="c1"># ... populate graph ...</span>
+    <span class="k">return</span> <span class="n">graph</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_writer</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c1"># Custom writing logic</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="c1"># ... write graph ...</span>
+        <span class="k">pass</span>
+
+<span class="c1"># Register</span>
+<span class="n">register_reader</span><span class="p">(</span><span class="s1">&#39;myformat&#39;</span><span class="p">,</span> <span class="n">my_reader</span><span class="p">)</span>
+<span class="n">register_writer</span><span class="p">(</span><span class="s1">&#39;myformat&#39;</span><span class="p">,</span> <span class="n">my_writer</span><span class="p">)</span>
+
+<span class="c1"># Now you can use it</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.myformat&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.myformat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>Complete examples are available in <code class="docutils literal notranslate"><span class="pre">examples/io_and_data/</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_new_io.py</span></code> - Comprehensive I/O demonstration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_save_to_arrow.py</span></code> - Apache Arrow format usage</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_save_to_gpickle.py</span></code> - NetworkX pickle format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_save_to_edgelist.py</span></code> - Edge list format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_schema_validation.py</span></code> - Schema validation examples</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a> - Getting started guide</p></li>
+<li><p><a class="reference internal" href="networks.html"><span class="doc">Working with Networks</span></a> - Basic network operations</p></li>
+<li><p><a class="reference internal" href="../concepts/py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> - NetworkX integration details</p></li>
+<li><p><a class="reference internal" href="../deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> - Performance optimization tips</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="random_walks_embeddings.html" class="btn btn-neutral float-left" title="Random Walk Algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="visualization.html" class="btn btn-neutral float-right" title="Visualization Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

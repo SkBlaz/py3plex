@@ -1,0 +1,673 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Multilayer Metrics &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Advanced Multilayer Metrics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/advanced_multilayer_metrics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advanced-multilayer-metrics">
+<h1>Advanced Multilayer Metrics<a class="headerlink" href="#advanced-multilayer-metrics" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">multilayer_statistics</span></code> module provides advanced entropy-based, information-theoretic, and influence metrics for multilayer network analysis. These metrics enable deep characterization of structural complexity, layer interdependencies, and centrality patterns across network layers.</p>
+</section>
+<section id="new-metrics-v0-96">
+<h2>New Metrics (v0.96+)<a class="headerlink" href="#new-metrics-v0-96" title="Link to this heading"></a></h2>
+<p>The following advanced metrics have been added to py3plex for comprehensive multilayer network analysis:</p>
+<ol class="arabic simple">
+<li><p><strong>Entropy-based Layer Complexity Measures</strong></p></li>
+<li><p><strong>Cross-layer Mutual Information</strong></p></li>
+<li><p><strong>Layer Influence Centrality</strong></p></li>
+<li><p><strong>Multilayer Betweenness Surface</strong></p></li>
+<li><p><strong>Inter-layer Degree Correlation Matrix</strong></p></li>
+</ol>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>These metrics are included in py3plex. Ensure you have the required dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy<span class="w"> </span>networkx<span class="w"> </span>matplotlib<span class="w"> </span>seaborn
+</pre></div>
+</div>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+
+<span class="c1"># Create a multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Inter-layer edge</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Calculate entropy-based metrics</span>
+<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_connectivity_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">)</span>
+<span class="n">mi</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">)</span>
+<span class="n">influence</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connectivity entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mutual information: </span><span class="si">{</span><span class="n">mi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer influence: </span><span class="si">{</span><span class="n">influence</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Connectivity entropy: 1.500
+Mutual information: 0.500
+Layer influence: 1.000
+</pre></div>
+</div>
+</section>
+<section id="entropy-based-complexity-measures">
+<h2>Entropy-based Complexity Measures<a class="headerlink" href="#entropy-based-complexity-measures" title="Link to this heading"></a></h2>
+<p>These metrics quantify structural complexity using information-theoretic entropy.</p>
+<section id="layer-connectivity-entropy">
+<h3>Layer Connectivity Entropy<a class="headerlink" href="#layer-connectivity-entropy" title="Link to this heading"></a></h3>
+<p>Measures heterogeneity of node connectivity within a layer using Shannon entropy of the degree distribution.</p>
+<p><strong>Formula:</strong> H_c = -Σᵢ (kᵢ/Σⱼkⱼ) log₂(kᵢ/Σⱼkⱼ)</p>
+<p><strong>Interpretation:</strong>
+- H_c = 0: uniform degree distribution (all nodes have same degree)
+- Higher values: more diverse connectivity patterns
+- Useful for identifying layers with hub-and-spoke vs. distributed structures</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate for each layer</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">]:</span>
+    <span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_connectivity_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> connectivity entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer L1 connectivity entropy: 2.000
+Layer L2 connectivity entropy: 1.585
+Layer L3 connectivity entropy: 2.252
+</pre></div>
+</div>
+</section>
+<section id="inter-layer-dependence-entropy">
+<h3>Inter-layer Dependence Entropy<a class="headerlink" href="#inter-layer-dependence-entropy" title="Link to this heading"></a></h3>
+<p>Measures diversity in how nodes couple two layers through inter-layer edges.</p>
+<p><strong>Formula:</strong> H_dep = -Σₙ pₙ log₂(pₙ), where pₙ is the proportion of inter-layer edges for node n</p>
+<p><strong>Interpretation:</strong>
+- H_dep = 0: uniform coupling (all nodes equally involved in inter-layer connections)
+- Higher values: more heterogeneous coupling patterns
+- Identifies layers with specialized bridge nodes</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate inter-layer dependence</span>
+<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_dependence_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-layer dependence entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Inter-layer dependence entropy: 1.500
+</pre></div>
+</div>
+</section>
+<section id="cross-layer-redundancy-entropy">
+<h3>Cross-layer Redundancy Entropy<a class="headerlink" href="#cross-layer-redundancy-entropy" title="Link to this heading"></a></h3>
+<p>Measures diversity in structural overlap across all layer pairs using edge overlap.</p>
+<p><strong>Formula:</strong> H_r = -Σᵢⱼ rᵢⱼ log₂(rᵢⱼ), where rᵢⱼ is normalized edge overlap</p>
+<p><strong>Interpretation:</strong>
+- H_r = 0: uniform redundancy across all layer pairs
+- Higher values: varied overlap patterns (some layers very similar, others distinct)
+- Useful for identifying functionally redundant vs. complementary layers</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate global redundancy entropy</span>
+<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_redundancy_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cross-layer redundancy entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Cross-layer redundancy entropy: 1.000
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cross-layer-mutual-information">
+<h2>Cross-layer Mutual Information<a class="headerlink" href="#cross-layer-mutual-information" title="Link to this heading"></a></h2>
+<p>Quantifies statistical dependence between degree distributions in two layers.</p>
+<p><strong>Formula:</strong> I(Lᵢ; Lⱼ) = H(Lᵢ) + H(Lⱼ) - H(Lᵢ, Lⱼ)</p>
+<p><strong>Properties:</strong>
+- I = 0: layers are statistically independent
+- I &gt; 0: layers are dependent (higher values = stronger dependence)
+- I(Lᵢ; Lⱼ) ≤ min(H(Lᵢ), H(Lⱼ))
+- Symmetric: I(Lᵢ; Lⱼ) = I(Lⱼ; Lᵢ)</p>
+<p><strong>Use Cases:</strong>
+- Identify functionally related layers
+- Detect redundant vs. complementary layers
+- Guide layer aggregation or dimensionality reduction
+- Predict cross-layer influence patterns</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate mutual information between layer pairs</span>
+<span class="n">mi_12</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mi_13</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mi_23</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I(L1; L2) = </span><span class="si">{</span><span class="n">mi_12</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I(L1; L3) = </span><span class="si">{</span><span class="n">mi_13</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I(L2; L3) = </span><span class="si">{</span><span class="n">mi_23</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>I(L1; L2) = 0.250 bits
+I(L1; L3) = 0.000 bits
+I(L2; L3) = 0.150 bits
+</pre></div>
+</div>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code>: py3plex multi_layer_network object
+- <code class="docutils literal notranslate"><span class="pre">layer_i</span></code>: First layer identifier
+- <code class="docutils literal notranslate"><span class="pre">layer_j</span></code>: Second layer identifier
+- <code class="docutils literal notranslate"><span class="pre">bins</span></code>: Number of bins for discretizing degree distributions (default: 10)</p>
+</section>
+<section id="layer-influence-centrality">
+<h2>Layer Influence Centrality<a class="headerlink" href="#layer-influence-centrality" title="Link to this heading"></a></h2>
+<p>Quantifies how much a layer influences others through inter-layer connections or information flow.</p>
+<p><strong>Two Methods:</strong></p>
+<ol class="arabic">
+<li><p><strong>Coupling-based Influence</strong></p>
+<p><strong>Formula:</strong> Iᵅ = Σᵦ≠ᵅ C^αβ / (L-1)</p>
+<ul class="simple">
+<li><p>Based on inter-layer coupling strength</p></li>
+<li><p>Structural measure</p></li>
+<li><p>Fast to compute</p></li>
+</ul>
+</li>
+<li><p><strong>Flow-based Influence</strong></p>
+<p><strong>Formula:</strong> Iᵅ = flow probability from layer α to other layers</p>
+<ul class="simple">
+<li><p>Based on random walk simulations</p></li>
+<li><p>Dynamic measure</p></li>
+<li><p>Captures indirect influence</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Interpretation:</strong>
+- Higher values indicate layers that strongly influence others
+- Useful for identifying critical layers in multilayer infrastructure
+- Guides targeted interventions or layer removal strategies</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Coupling-based influence</span>
+<span class="n">influence_coupling</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;coupling&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Flow-based influence</span>
+<span class="n">influence_flow</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer L1 coupling influence: </span><span class="si">{</span><span class="n">influence_coupling</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer L1 flow influence: </span><span class="si">{</span><span class="n">influence_flow</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer L1 coupling influence: 1.250
+Layer L1 flow influence: 0.420
+</pre></div>
+</div>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code>: py3plex multi_layer_network object
+- <code class="docutils literal notranslate"><span class="pre">layer</span></code>: Layer identifier
+- <code class="docutils literal notranslate"><span class="pre">method</span></code>: ‘coupling’ or ‘flow’ (default: ‘coupling’)
+- <code class="docutils literal notranslate"><span class="pre">sample_size</span></code>: Number of random walk steps for flow method (default: 100)</p>
+</section>
+<section id="multilayer-betweenness-surface">
+<h2>Multilayer Betweenness Surface<a class="headerlink" href="#multilayer-betweenness-surface" title="Link to this heading"></a></h2>
+<p>Visualizes betweenness centrality across all node-layer pairs as a 2D matrix (surface).</p>
+<p><strong>Output:</strong> 2D array of shape (num_nodes, num_layers)</p>
+<p><strong>Applications:</strong>
+- Identify bridge nodes that connect different layers
+- Visualize centrality patterns as heatmaps or 3D surfaces
+- Compare node importance across layers
+- Detect layer-specific vs. global central nodes</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate betweenness surface</span>
+<span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">layers</span><span class="p">)</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multilayer_betweenness_surface</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Visualize as heatmap</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.3f&#39;</span><span class="p">,</span>
+            <span class="n">xticklabels</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">yticklabels</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;YlOrRd&#39;</span><span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Betweenness Centrality&#39;</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Layers&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Nodes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Multilayer Betweenness Surface&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;betweenness_surface.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Surface shape: (5, 3) nodes × layers
+
+Node     L1      L2      L3
+--------------------------------
+Alice    0.250   0.333   0.115
+Bob      0.280   0.000   0.154
+Carol    0.180   0.038   0.295
+David    0.128   0.038   0.000
+Eve      0.000   0.000   0.000
+</pre></div>
+</div>
+<p><strong>Visualization Tips:</strong>
+- Use heatmaps for quick overview
+- Use 3D surface plots for presentations
+- Cluster rows (nodes) to identify groups with similar patterns
+- Compare surfaces across different time points or conditions</p>
+</section>
+<section id="inter-layer-degree-correlation-matrix">
+<h2>Inter-layer Degree Correlation Matrix<a class="headerlink" href="#inter-layer-degree-correlation-matrix" title="Link to this heading"></a></h2>
+<p>Computes Pearson correlations of node degrees between all pairs of layers.</p>
+<p><strong>Output:</strong> Symmetric correlation matrix (num_layers × num_layers)</p>
+<p><strong>Properties:</strong>
+- Diagonal elements are 1.0 (self-correlation)
+- Off-diagonal elements in [-1, 1]
+- Positive values: nodes with high degree in one layer tend to have high degree in another
+- Negative values: inverse relationship (hubs in one layer are peripheral in another)</p>
+<p><strong>Applications:</strong>
+- Identify correlated vs. independent layers
+- Detect layer redundancy for network compression
+- Guide layer aggregation strategies
+- Understand cross-layer degree assortativity</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate correlation matrix</span>
+<span class="n">corr_matrix</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">interlayer_degree_correlation_matrix</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Visualize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.3f&#39;</span><span class="p">,</span>
+            <span class="n">xticklabels</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">yticklabels</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Pearson Correlation&#39;</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Inter-layer Degree Correlation Matrix&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;degree_correlation_matrix.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Correlation Matrix:
+             L1       L2       L3
+L1          1.000    0.750   -0.250
+L2          0.750    1.000    0.000
+L3         -0.250    0.000    1.000
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong>
+- L1 and L2 are strongly positively correlated (r = 0.75)
+- L1 and L3 are negatively correlated (r = -0.25)
+- L2 and L3 are independent (r = 0.00)</p>
+</section>
+<section id="complete-example">
+<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
+<p>This example demonstrates all advanced metrics on a social-professional network:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Create 3-layer social-professional network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Facebook layer (social)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># LinkedIn layer (professional)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Twitter layer (public)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Inter-layer connections</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># 1. Entropy-based complexity measures</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== ENTROPY-BASED MEASURES ===&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">]:</span>
+    <span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_connectivity_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. Cross-layer mutual information</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== MUTUAL INFORMATION ===&quot;</span><span class="p">)</span>
+<span class="n">mi</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I(facebook; linkedin) = </span><span class="si">{</span><span class="n">mi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+
+<span class="c1"># 3. Layer influence centrality</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== LAYER INFLUENCE ===&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">]:</span>
+    <span class="n">influence</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;coupling&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">influence</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 4. Betweenness surface</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== BETWEENNESS SURFACE ===&quot;</span><span class="p">)</span>
+<span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">layers</span><span class="p">)</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multilayer_betweenness_surface</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean betweenness: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 5. Degree correlation matrix</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== DEGREE CORRELATION MATRIX ===&quot;</span><span class="p">)</span>
+<span class="n">corr_matrix</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">interlayer_degree_correlation_matrix</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Correlation matrix:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>=== ENTROPY-BASED MEASURES ===
+facebook: 1.585 bits
+linkedin: 1.500 bits
+twitter: 1.500 bits
+
+=== MUTUAL INFORMATION ===
+I(facebook; linkedin) = 0.000 bits
+
+=== LAYER INFLUENCE ===
+facebook: 1.000
+linkedin: 1.000
+twitter: 1.000
+
+=== BETWEENNESS SURFACE ===
+Shape: (4, 3)
+Mean betweenness: 0.158
+
+=== DEGREE CORRELATION MATRIX ===
+Correlation matrix:
+[[ 1.     0.5   -0.5  ]
+ [ 0.5    1.     0.   ]
+ [-0.5    0.     1.   ]]
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="layer-connectivity-entropy-network-layer">
+<h3>layer_connectivity_entropy(network, layer)<a class="headerlink" href="#layer-connectivity-entropy-network-layer" title="Link to this heading"></a></h3>
+<p>Calculate Shannon entropy of degree distribution within a layer.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code> (multi_layer_network): The multilayer network
+- <code class="docutils literal notranslate"><span class="pre">layer</span></code> (str): Layer identifier</p>
+<p><strong>Returns:</strong>
+- <code class="docutils literal notranslate"><span class="pre">float</span></code>: Entropy in bits (≥ 0)</p>
+</section>
+<section id="inter-layer-dependence-entropy-network-layer-i-layer-j">
+<h3>inter_layer_dependence_entropy(network, layer_i, layer_j)<a class="headerlink" href="#inter-layer-dependence-entropy-network-layer-i-layer-j" title="Link to this heading"></a></h3>
+<p>Calculate entropy of inter-layer coupling patterns.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code> (multi_layer_network): The multilayer network
+- <code class="docutils literal notranslate"><span class="pre">layer_i</span></code> (str): First layer identifier
+- <code class="docutils literal notranslate"><span class="pre">layer_j</span></code> (str): Second layer identifier</p>
+<p><strong>Returns:</strong>
+- <code class="docutils literal notranslate"><span class="pre">float</span></code>: Entropy in bits (≥ 0)</p>
+</section>
+<section id="cross-layer-redundancy-entropy-network">
+<h3>cross_layer_redundancy_entropy(network)<a class="headerlink" href="#cross-layer-redundancy-entropy-network" title="Link to this heading"></a></h3>
+<p>Calculate entropy of edge overlap across all layer pairs.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code> (multi_layer_network): The multilayer network</p>
+<p><strong>Returns:</strong>
+- <code class="docutils literal notranslate"><span class="pre">float</span></code>: Entropy in bits (≥ 0)</p>
+</section>
+<section id="cross-layer-mutual-information-network-layer-i-layer-j-bins-10">
+<h3>cross_layer_mutual_information(network, layer_i, layer_j, bins=10)<a class="headerlink" href="#cross-layer-mutual-information-network-layer-i-layer-j-bins-10" title="Link to this heading"></a></h3>
+<p>Calculate mutual information between degree distributions.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code> (multi_layer_network): The multilayer network
+- <code class="docutils literal notranslate"><span class="pre">layer_i</span></code> (str): First layer identifier
+- <code class="docutils literal notranslate"><span class="pre">layer_j</span></code> (str): Second layer identifier
+- <code class="docutils literal notranslate"><span class="pre">bins</span></code> (int): Number of bins for discretization (default: 10)</p>
+<p><strong>Returns:</strong>
+- <code class="docutils literal notranslate"><span class="pre">float</span></code>: Mutual information in bits (≥ 0)</p>
+</section>
+<section id="layer-influence-centrality-network-layer-method-coupling-sample-size-100">
+<h3>layer_influence_centrality(network, layer, method=’coupling’, sample_size=100)<a class="headerlink" href="#layer-influence-centrality-network-layer-method-coupling-sample-size-100" title="Link to this heading"></a></h3>
+<p>Calculate layer influence through coupling or flow.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code> (multi_layer_network): The multilayer network
+- <code class="docutils literal notranslate"><span class="pre">layer</span></code> (str): Layer identifier
+- <code class="docutils literal notranslate"><span class="pre">method</span></code> (str): ‘coupling’ or ‘flow’ (default: ‘coupling’)
+- <code class="docutils literal notranslate"><span class="pre">sample_size</span></code> (int): Number of random walk steps for flow method (default: 100)</p>
+<p><strong>Returns:</strong>
+- <code class="docutils literal notranslate"><span class="pre">float</span></code>: Influence centrality value (≥ 0)</p>
+</section>
+<section id="multilayer-betweenness-surface-network-normalized-true-weight-none">
+<h3>multilayer_betweenness_surface(network, normalized=True, weight=None)<a class="headerlink" href="#multilayer-betweenness-surface-network-normalized-true-weight-none" title="Link to this heading"></a></h3>
+<p>Calculate betweenness centrality matrix for all node-layer pairs.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code> (multi_layer_network): The multilayer network
+- <code class="docutils literal notranslate"><span class="pre">normalized</span></code> (bool): Normalize betweenness values (default: True)
+- <code class="docutils literal notranslate"><span class="pre">weight</span></code> (str): Edge weight attribute (default: None)</p>
+<p><strong>Returns:</strong>
+- <code class="docutils literal notranslate"><span class="pre">tuple</span></code>: (surface, (nodes, layers))</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">surface</span></code> (np.ndarray): 2D array of shape (num_nodes, num_layers)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nodes</span></code> (list): Node labels</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layers</span></code> (list): Layer labels</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="interlayer-degree-correlation-matrix-network">
+<h3>interlayer_degree_correlation_matrix(network)<a class="headerlink" href="#interlayer-degree-correlation-matrix-network" title="Link to this heading"></a></h3>
+<p>Calculate Pearson correlations of node degrees between all layer pairs.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">network</span></code> (multi_layer_network): The multilayer network</p>
+<p><strong>Returns:</strong>
+- <code class="docutils literal notranslate"><span class="pre">tuple</span></code>: (corr_matrix, layers)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">corr_matrix</span></code> (np.ndarray): Symmetric correlation matrix</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layers</span></code> (list): Layer labels</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<p><strong>Choosing Metrics:</strong>
+- Use entropy measures for structural complexity analysis
+- Use mutual information for layer dependency analysis
+- Use influence centrality for identifying critical layers
+- Use betweenness surface for node-level analysis across layers
+- Use correlation matrix for layer similarity analysis</p>
+<p><strong>Computational Considerations:</strong>
+- Entropy and correlation metrics are fast (O(E) or O(N×L))
+- Mutual information requires discretization (adjust <code class="docutils literal notranslate"><span class="pre">bins</span></code> parameter)
+- Flow-based influence requires random walk simulation (adjust <code class="docutils literal notranslate"><span class="pre">sample_size</span></code>)
+- Betweenness surface can be slow for large networks (consider sampling)</p>
+<p><strong>Interpretation Guidelines:</strong>
+- Compare metric values across networks, not absolute values
+- Use entropy as a relative measure of heterogeneity
+- Mutual information identifies functional dependencies
+- Layer influence guides intervention strategies
+- Betweenness surface reveals cross-layer bridge nodes</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Shannon, C. E. (1948). “A Mathematical Theory of Communication.” <em>Bell System Technical Journal</em>, 27(3), 379-423.</p></li>
+<li><p>Cover, T. M., &amp; Thomas, J. A. (2006). <em>Elements of Information Theory</em>. John Wiley &amp; Sons.</p></li>
+<li><p>De Domenico, M., et al. (2013). “Mathematical formulation of multilayer networks.” <em>Physical Review X</em>, 3(4), 041022.</p></li>
+<li><p>De Domenico, M., et al. (2015). “Structural reducibility of multilayer networks.” <em>Nature Communications</em>, 6, 6864.</p></li>
+<li><p>Bianconi, G. (2018). <em>Multilayer Networks: Structure and Function</em>. Oxford University Press.</p></li>
+<li><p>Kivelä, M., et al. (2014). “Multilayer networks.” <em>Journal of Complex Networks</em>, 2(3), 203-271.</p></li>
+<li><p>Cozzo, E., et al. (2013). “Mathematical formulation of multilayer networks.” <em>Physical Review E</em>, 88(5), 050801.</p></li>
+</ol>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>See the following example scripts in the repository:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_advanced_multilayer_metrics.py</span></code> - Comprehensive demonstration of all new metrics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_multilayer_statistics.py</span></code> - Basic multilayer statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_new_multiplex_metrics.py</span></code> - Multiplex-specific metrics</p></li>
+</ul>
+<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">https://github.com/SkBlaz/py3plex/tree/master/examples</a></p>
+</section>
+<section id="related-documentation">
+<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="basic_usage_analysis_multiplex.html"><span class="doc">Multiplex Network Analysis</span></a> - Basic multiplex network analysis</p></li>
+<li><p><a class="reference internal" href="statistical_comparison.html"><span class="doc">Statistical Comparison Framework</span></a> - Statistical comparison framework</p></li>
+<li><p><a class="reference internal" href="multilayer_centrality_matrix_functions.html"><span class="doc">Supra Matrix Function Centralities</span></a> - Centrality measures</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

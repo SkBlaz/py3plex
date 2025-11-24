@@ -1,0 +1,682 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Principles &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Algorithm Landscape" href="algorithm_landscape.html" />
+    <link rel="prev" title="py3plex Core Model" href="py3plex_core_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core-philosophy">Core Philosophy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-off-the-shelf-functionality">Simple, Off-the-Shelf Functionality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#networkx-compatibility">NetworkX Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modular-architecture">Modular Architecture</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-principles">Implementation Principles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#flexibility">Flexibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lazy-evaluation">Lazy Evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graceful-degradation">Graceful Degradation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#explicit-over-implicit">Explicit Over Implicit</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-considerations">Performance Considerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sparse-representations">Sparse Representations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#efficient-data-structures">Efficient Data Structures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#algorithmic-defaults">Algorithmic Defaults</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#extensibility">Extensibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plugin-friendly-architecture">Plugin-Friendly Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clear-interfaces">Clear Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-and-testing">Documentation and Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#comprehensive-documentation">Comprehensive Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extensive-testing">Extensive Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interoperability">Interoperability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#standard-formats">Standard Formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cross-platform-compatibility">Cross-Platform Compatibility</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#research-oriented-design">Research-Oriented Design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#citation-and-attribution">Citation and Attribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reproducibility">Reproducibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validation-and-benchmarking">Validation and Benchmarking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#practical-implications">Practical Implications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-users">For Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#for-contributors">For Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-with-other-libraries">Comparison with Other Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex-vs-pure-networkx">py3plex vs. Pure NetworkX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex-vs-other-multilayer-tools">py3plex vs. Other Multilayer Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#related-documentation">Related Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Design Principles</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/concepts/design_principles.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="design-principles">
+<h1>Design Principles<a class="headerlink" href="#design-principles" title="Link to this heading"></a></h1>
+<p>py3plex is built on a foundation of key design principles that guide its development and usage. Understanding these principles helps you use the library effectively and extend it for your needs.</p>
+<section id="core-philosophy">
+<h2>Core Philosophy<a class="headerlink" href="#core-philosophy" title="Link to this heading"></a></h2>
+<section id="simple-off-the-shelf-functionality">
+<h3>Simple, Off-the-Shelf Functionality<a class="headerlink" href="#simple-off-the-shelf-functionality" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Provide ready-to-use tools that work out of the box with minimal configuration.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Simple, intuitive API</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>  <span class="c1"># Works immediately</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Researchers and practitioners need tools that are easy to adopt without extensive setup or configuration. py3plex aims to minimize the barrier to entry for multilayer network analysis.</p>
+</section>
+<section id="networkx-compatibility">
+<h3>NetworkX Compatibility<a class="headerlink" href="#networkx-compatibility" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Build on NetworkX rather than reinventing the wheel.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Direct access to NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Use any NetworkX function</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">louvain_communities</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> NetworkX is the de facto standard for network analysis in Python. By building on it, py3plex:</p>
+<ul class="simple">
+<li><p>Leverages a mature, well-tested codebase</p></li>
+<li><p>Provides access to hundreds of NetworkX algorithms</p></li>
+<li><p>Ensures interoperability with the broader Python ecosystem</p></li>
+<li><p>Reduces learning curve for users familiar with NetworkX</p></li>
+</ul>
+</section>
+<section id="modular-architecture">
+<h3>Modular Architecture<a class="headerlink" href="#modular-architecture" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Separate concerns into independent, composable modules.</p>
+<p><strong>Structure:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>py3plex/
+├── core/                   # Data structures
+├── algorithms/             # Analysis methods
+│   ├── community_detection/
+│   ├── statistics/
+│   └── multilayer_algorithms/
+├── visualization/          # Plotting
+└── wrappers/               # High-level interfaces
+</pre></div>
+</div>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import only what you need</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Modular design allows users to:</p>
+<ul class="simple">
+<li><p>Import only the functionality they need</p></li>
+<li><p>Understand and maintain code more easily</p></li>
+<li><p>Extend the library with custom modules</p></li>
+<li><p>Mix and match components flexibly</p></li>
+</ul>
+</section>
+</section>
+<section id="implementation-principles">
+<h2>Implementation Principles<a class="headerlink" href="#implementation-principles" title="Link to this heading"></a></h2>
+<section id="flexibility">
+<h3>Flexibility<a class="headerlink" href="#flexibility" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Support multiple ways to accomplish tasks, accommodating different workflows.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Multiple ways to create networks</span>
+
+<span class="c1"># Method 1: Direct edge addition</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Method 2: Load from file</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Method 3: From NetworkX</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network_from_networkx</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">)</span>
+
+<span class="c1"># Multiple ways to access nodes</span>
+<span class="n">nodes1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
+<span class="n">nodes2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+<span class="n">nodes3</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">&#39;L1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Different users have different preferences and workflows. Flexibility ensures py3plex adapts to the user’s needs, not vice versa.</p>
+</section>
+<section id="lazy-evaluation">
+<h3>Lazy Evaluation<a class="headerlink" href="#lazy-evaluation" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Compute expensive operations only when needed.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Supra-adjacency matrix is not computed on network creation</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span><span class="o">...</span><span class="p">])</span>  <span class="c1"># Fast</span>
+
+<span class="c1"># Matrix is computed only when requested</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>  <span class="c1"># Computed here</span>
+
+<span class="c1"># Subsequent calls may use cached result (where appropriate)</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Many multilayer operations (e.g., matrix construction) are computationally expensive. Lazy evaluation:</p>
+<ul class="simple">
+<li><p>Improves performance for common operations</p></li>
+<li><p>Reduces memory usage</p></li>
+<li><p>Allows working with large networks when full matrices aren’t needed</p></li>
+</ul>
+</section>
+<section id="graceful-degradation">
+<h3>Graceful Degradation<a class="headerlink" href="#graceful-degradation" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Optional features should fail gracefully, not crash the entire application.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If Infomap is not installed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">communities</span> <span class="o">=</span> <span class="n">infomap_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Infomap not available. Using Louvain instead.&quot;</span><span class="p">)</span>
+    <span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_partition</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Not all users need all features. By degrading gracefully, py3plex:</p>
+<ul class="simple">
+<li><p>Allows users to install only what they need</p></li>
+<li><p>Reduces dependency bloat</p></li>
+<li><p>Provides helpful error messages</p></li>
+<li><p>Suggests alternatives when dependencies are missing</p></li>
+</ul>
+</section>
+<section id="explicit-over-implicit">
+<h3>Explicit Over Implicit<a class="headerlink" href="#explicit-over-implicit" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Make behavior explicit and predictable, avoiding surprising defaults.</p>
+<p><strong>Good examples:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Explicit parameter names</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.txt&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span>     <span class="c1"># Explicit format</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>             <span class="c1"># Explicit directionality</span>
+<span class="p">)</span>
+
+<span class="c1"># Explicit layer specification</span>
+<span class="n">neighbors</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s1">&#39;friends&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Explicit code is:</p>
+<ul class="simple">
+<li><p>Easier to understand and debug</p></li>
+<li><p>Less prone to errors</p></li>
+<li><p>Self-documenting</p></li>
+<li><p>More maintainable</p></li>
+</ul>
+</section>
+</section>
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<section id="sparse-representations">
+<h3>Sparse Representations<a class="headerlink" href="#sparse-representations" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Use sparse data structures for large networks.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sparse matrix by default (efficient for large networks)</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Dense only for small networks or specific algorithms</span>
+<span class="n">supra_adj_dense</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Real-world networks are typically sparse (few edges relative to potential edges). Sparse representations:</p>
+<ul class="simple">
+<li><p>Reduce memory usage by orders of magnitude</p></li>
+<li><p>Enable analysis of networks with millions of nodes</p></li>
+<li><p>Maintain computational efficiency</p></li>
+</ul>
+</section>
+<section id="efficient-data-structures">
+<h3>Efficient Data Structures<a class="headerlink" href="#efficient-data-structures" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Choose appropriate data structures for common operations.</p>
+<p><strong>Examples:</strong></p>
+<ul class="simple">
+<li><p>NetworkX graphs for topology (edge lookups, traversals)</p></li>
+<li><p>Dictionaries for layer mappings (O(1) lookups)</p></li>
+<li><p>Sparse matrices for linear algebra</p></li>
+<li><p>Sets for membership testing</p></li>
+</ul>
+<p><strong>Rationale:</strong> The right data structure makes operations fast and memory-efficient.</p>
+</section>
+<section id="algorithmic-defaults">
+<h3>Algorithmic Defaults<a class="headerlink" href="#algorithmic-defaults" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Provide sensible default parameters based on empirical research.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default parameters work well for most cases</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>     <span class="c1"># Standard resolution</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>     <span class="c1"># Balanced inter-layer coupling</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># Reproducibility</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Good defaults:</p>
+<ul class="simple">
+<li><p>Make the library easy to use for beginners</p></li>
+<li><p>Reduce parameter tuning overhead</p></li>
+<li><p>Are based on published research and empirical validation</p></li>
+</ul>
+</section>
+</section>
+<section id="extensibility">
+<h2>Extensibility<a class="headerlink" href="#extensibility" title="Link to this heading"></a></h2>
+<section id="plugin-friendly-architecture">
+<h3>Plugin-Friendly Architecture<a class="headerlink" href="#plugin-friendly-architecture" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Make it easy to add custom functionality.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Easy to add custom algorithms</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_centrality</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom centrality measure.&quot;&quot;&quot;</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span>
+    <span class="c1"># Implement your algorithm</span>
+    <span class="k">return</span> <span class="n">centrality_scores</span>
+
+<span class="c1"># Easy to add custom visualizations</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_plot</span><span class="p">(</span><span class="n">ml_network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom visualization.&quot;&quot;&quot;</span>
+    <span class="c1"># Use py3plex drawing machinery</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">drawing_machinery</span> <span class="k">as</span> <span class="n">dm</span>
+    <span class="c1"># Implement your plot</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Research needs evolve. Extensibility ensures py3plex can grow with new methods without requiring core library changes.</p>
+</section>
+<section id="clear-interfaces">
+<h3>Clear Interfaces<a class="headerlink" href="#clear-interfaces" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Define clear, stable APIs for modules.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All statistics follow same interface</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+<span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">)</span>
+
+<span class="c1"># Consistent parameter names and return types</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Clear interfaces make py3plex:</p>
+<ul class="simple">
+<li><p>Easier to learn (patterns repeat)</p></li>
+<li><p>More predictable</p></li>
+<li><p>More maintainable</p></li>
+<li><p>Easier to extend</p></li>
+</ul>
+</section>
+</section>
+<section id="documentation-and-testing">
+<h2>Documentation and Testing<a class="headerlink" href="#documentation-and-testing" title="Link to this heading"></a></h2>
+<section id="comprehensive-documentation">
+<h3>Comprehensive Documentation<a class="headerlink" href="#comprehensive-documentation" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Every feature should be documented with examples.</p>
+<p><strong>In practice:</strong></p>
+<ul class="simple">
+<li><p>Detailed docstrings for all public functions</p></li>
+<li><p>Code examples in documentation</p></li>
+<li><p>Real-world use cases</p></li>
+<li><p>API reference with parameter descriptions</p></li>
+</ul>
+<p><strong>Rationale:</strong> Good documentation:</p>
+<ul class="simple">
+<li><p>Reduces barrier to entry</p></li>
+<li><p>Serves as a reference for experienced users</p></li>
+<li><p>Helps maintainers understand code</p></li>
+<li><p>Acts as specification</p></li>
+</ul>
+</section>
+<section id="extensive-testing">
+<h3>Extensive Testing<a class="headerlink" href="#extensive-testing" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Test all core functionality and edge cases.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Comprehensive test suite</span>
+make<span class="w"> </span><span class="nb">test</span><span class="w">          </span><span class="c1"># Unit tests</span>
+make<span class="w"> </span>benchmark<span class="w">     </span><span class="c1"># Performance tests</span>
+make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1"># Property-based tests</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Tests ensure:</p>
+<ul class="simple">
+<li><p>Code works as intended</p></li>
+<li><p>Changes don’t break existing functionality</p></li>
+<li><p>Edge cases are handled correctly</p></li>
+<li><p>Performance regressions are caught</p></li>
+</ul>
+</section>
+</section>
+<section id="interoperability">
+<h2>Interoperability<a class="headerlink" href="#interoperability" title="Link to this heading"></a></h2>
+<section id="standard-formats">
+<h3>Standard Formats<a class="headerlink" href="#standard-formats" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Support widely-used data formats.</p>
+<p><strong>Formats supported:</strong></p>
+<ul class="simple">
+<li><p>EdgeList (simple, human-readable)</p></li>
+<li><p>GraphML (XML-based, preserves attributes)</p></li>
+<li><p>GML (Graph Modeling Language)</p></li>
+<li><p>Pickle (NetworkX native)</p></li>
+<li><p>JSON/Arrow/Parquet (modern, efficient)</p></li>
+</ul>
+<p><strong>Rationale:</strong> Standard formats enable:</p>
+<ul class="simple">
+<li><p>Data sharing between tools</p></li>
+<li><p>Integration with other software</p></li>
+<li><p>Long-term data preservation</p></li>
+</ul>
+</section>
+<section id="cross-platform-compatibility">
+<h3>Cross-Platform Compatibility<a class="headerlink" href="#cross-platform-compatibility" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Work consistently across operating systems.</p>
+<p><strong>Tested on:</strong></p>
+<ul class="simple">
+<li><p>Linux (Ubuntu 20.04, 22.04)</p></li>
+<li><p>macOS (11, 12, 13)</p></li>
+<li><p>Windows (Server 2019, 2022)</p></li>
+</ul>
+<p><strong>Rationale:</strong> Users work on different platforms. Cross-platform support ensures py3plex works everywhere.</p>
+</section>
+</section>
+<section id="research-oriented-design">
+<h2>Research-Oriented Design<a class="headerlink" href="#research-oriented-design" title="Link to this heading"></a></h2>
+<section id="citation-and-attribution">
+<h3>Citation and Attribution<a class="headerlink" href="#citation-and-attribution" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Make it easy to cite algorithms and give proper attribution.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Algorithms include citations in docstrings</span>
+<span class="n">help</span><span class="p">(</span><span class="n">louvain_multilayer</span><span class="p">)</span>
+<span class="c1"># Docstring includes:</span>
+<span class="c1"># References:</span>
+<span class="c1">#   Mucha et al. (2010). &quot;Community structure in time-dependent...&quot;</span>
+</pre></div>
+</div>
+<p><strong>See:</strong> <a class="reference internal" href="../reference/citation_and_acknowledgements.html"><span class="doc">Citation and References</span></a></p>
+<p><strong>Rationale:</strong> Proper attribution:</p>
+<ul class="simple">
+<li><p>Gives credit to algorithm developers</p></li>
+<li><p>Helps users find original papers</p></li>
+<li><p>Supports reproducibility</p></li>
+</ul>
+</section>
+<section id="reproducibility">
+<h3>Reproducibility<a class="headerlink" href="#reproducibility" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Support reproducible research.</p>
+<p><strong>In practice:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Random seed parameters for reproducibility</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># Reproducible results</span>
+<span class="p">)</span>
+
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># Reproducible walks</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Rationale:</strong> Reproducibility is fundamental to science. Seed parameters ensure:</p>
+<ul class="simple">
+<li><p>Results can be verified</p></li>
+<li><p>Comparisons are fair</p></li>
+<li><p>Bugs can be diagnosed</p></li>
+</ul>
+</section>
+<section id="validation-and-benchmarking">
+<h3>Validation and Benchmarking<a class="headerlink" href="#validation-and-benchmarking" title="Link to this heading"></a></h3>
+<p><strong>Principle:</strong> Validate algorithms against published results.</p>
+<p><strong>In practice:</strong></p>
+<ul class="simple">
+<li><p>Benchmark suite comparing to reference implementations</p></li>
+<li><p>Validation against known network properties</p></li>
+<li><p>Performance metrics for large networks</p></li>
+</ul>
+<p><strong>Rationale:</strong> Validation ensures:</p>
+<ul class="simple">
+<li><p>Implementations are correct</p></li>
+<li><p>Performance is acceptable</p></li>
+<li><p>Results match published literature</p></li>
+</ul>
+</section>
+</section>
+<section id="practical-implications">
+<h2>Practical Implications<a class="headerlink" href="#practical-implications" title="Link to this heading"></a></h2>
+<section id="for-users">
+<h3>For Users<a class="headerlink" href="#for-users" title="Link to this heading"></a></h3>
+<p>These design principles mean you can:</p>
+<ol class="arabic simple">
+<li><p><strong>Start quickly</strong> with minimal setup</p></li>
+<li><p><strong>Use NetworkX knowledge</strong> and tools directly</p></li>
+<li><p><strong>Choose your workflow</strong> with multiple approaches</p></li>
+<li><p><strong>Work efficiently</strong> with large networks</p></li>
+<li><p><strong>Extend easily</strong> with custom algorithms</p></li>
+<li><p><strong>Trust results</strong> through validation and testing</p></li>
+</ol>
+</section>
+<section id="for-contributors">
+<h3>For Contributors<a class="headerlink" href="#for-contributors" title="Link to this heading"></a></h3>
+<p>When contributing to py3plex, follow these principles:</p>
+<ol class="arabic simple">
+<li><p><strong>Maintain NetworkX compatibility</strong> in new features</p></li>
+<li><p><strong>Document thoroughly</strong> with examples</p></li>
+<li><p><strong>Test extensively</strong> including edge cases</p></li>
+<li><p><strong>Provide sensible defaults</strong> based on research</p></li>
+<li><p><strong>Fail gracefully</strong> with helpful error messages</p></li>
+<li><p><strong>Follow existing patterns</strong> for consistency</p></li>
+</ol>
+<p>See <a class="reference internal" href="../dev/contributing.html"><span class="doc">Contributing to py3plex</span></a> for detailed guidelines.</p>
+</section>
+</section>
+<section id="comparison-with-other-libraries">
+<h2>Comparison with Other Libraries<a class="headerlink" href="#comparison-with-other-libraries" title="Link to this heading"></a></h2>
+<section id="py3plex-vs-pure-networkx">
+<h3>py3plex vs. Pure NetworkX<a class="headerlink" href="#py3plex-vs-pure-networkx" title="Link to this heading"></a></h3>
+<p><strong>NetworkX:</strong></p>
+<ul class="simple">
+<li><p>Excellent for single-layer networks</p></li>
+<li><p>Lacks native multilayer support</p></li>
+<li><p>General-purpose graph library</p></li>
+</ul>
+<p><strong>py3plex:</strong></p>
+<ul class="simple">
+<li><p>Native multilayer data structures</p></li>
+<li><p>Layer-aware algorithms</p></li>
+<li><p>Specialized multilayer visualizations</p></li>
+<li><p>Built on NetworkX (inherits all features)</p></li>
+</ul>
+</section>
+<section id="py3plex-vs-other-multilayer-tools">
+<h3>py3plex vs. Other Multilayer Tools<a class="headerlink" href="#py3plex-vs-other-multilayer-tools" title="Link to this heading"></a></h3>
+<p><strong>Other tools (e.g., muxViz, pymnet):</strong></p>
+<ul class="simple">
+<li><p>Often specialized or platform-specific</p></li>
+<li><p>May have steep learning curves</p></li>
+<li><p>Limited algorithm libraries</p></li>
+</ul>
+<p><strong>py3plex:</strong></p>
+<ul class="simple">
+<li><p>Pure Python (easy installation)</p></li>
+<li><p>Comprehensive algorithm library</p></li>
+<li><p>NetworkX integration</p></li>
+<li><p>Active development</p></li>
+<li><p>Research-backed</p></li>
+</ul>
+</section>
+</section>
+<section id="related-documentation">
+<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> - Conceptual introduction to multilayer networks</p></li>
+<li><p><a class="reference internal" href="py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> - Internal representation details</p></li>
+<li><p><a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> - Overview of available algorithms</p></li>
+<li><p><a class="reference internal" href="../dev/development_guide.html"><span class="doc">Development Guide</span></a> - Contributing to py3plex</p></li>
+<li><p><a class="reference internal" href="../dev/code_architecture.html"><span class="doc">Architecture and Design</span></a> - Internal architecture details</p></li>
+</ul>
+<p><strong>Academic References:</strong></p>
+<ul class="simple">
+<li><p>Škrlj et al. (2019). “Py3plex toolkit for visualization and analysis of multilayer networks.” <em>Applied Network Science</em> 4(1): 94.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="py3plex_core_model.html" class="btn btn-neutral float-left" title="py3plex Core Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="algorithm_landscape.html" class="btn btn-neutral float-right" title="Algorithm Landscape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

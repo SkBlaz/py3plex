@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Algorithm Roadmap" href="../reference/algorithm_reference.html" />
+    <link rel="prev" title="Contributing to py3plex" href="../dev/contributing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started-examples">Getting Started Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visualization-examples">Visualization Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#community-detection-examples">Community Detection Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#network-statistics-examples">Network Statistics Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-o-and-data-format-examples">I/O and Data Format Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#random-walks-and-embeddings">Random Walks and Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#network-decomposition">Network Decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#network-manipulation">Network Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#algorithms-and-analysis">Algorithms and Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#networkx-integration">NetworkX Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#benchmarking">Benchmarking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gui-and-api">GUI and API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#real-world-datasets">Real-World Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-template">Example Template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributing-examples">Contributing Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-documentation">Related Documentation</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<p>This page provides a curated list of example scripts demonstrating py3plex features. All examples are available in the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">examples/ directory</a> of the repository.</p>
+<section id="getting-started-examples">
+<h2>Getting Started Examples<a class="headerlink" href="#getting-started-examples" title="Link to this heading"></a></h2>
+<p><strong>Basic Network Creation</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_load_network.py</span></code> - Loading networks from files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_create_network.py</span></code> - Creating networks from scratch</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_basic_stats.py</span></code> - Computing basic statistics</p></li>
+</ul>
+<p><strong>Quick Tutorials</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tutorial_10min.py</span></code> - Executable version of the 10-minute tutorial</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_quick_start.py</span></code> - Quick start examples</p></li>
+</ul>
+</section>
+<section id="visualization-examples">
+<h2>Visualization Examples<a class="headerlink" href="#visualization-examples" title="Link to this heading"></a></h2>
+<p><strong>Basic Visualization</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_visualization.py</span></code> - Basic multilayer plots</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_simple_viz.py</span></code> - Simple visualization examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_hairball.py</span></code> - Hairball plots</p></li>
+</ul>
+<p><strong>Advanced Visualization</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_custom_layouts.py</span></code> - Custom layout algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_diagonal_plot.py</span></code> - Diagonal projection for multilayer networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_interactive_plots.py</span></code> - Interactive visualizations with Plotly</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_layer_visualization.py</span></code> - Layer-by-layer visualization</p></li>
+</ul>
+<p><strong>Community Visualization</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_community_viz.py</span></code> - Visualizing detected communities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_colored_networks.py</span></code> - Custom node/edge coloring</p></li>
+</ul>
+</section>
+<section id="community-detection-examples">
+<h2>Community Detection Examples<a class="headerlink" href="#community-detection-examples" title="Link to this heading"></a></h2>
+<p><strong>Single-Layer Community Detection</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_community_detection.py</span></code> - Louvain and Infomap</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_louvain.py</span></code> - Louvain algorithm examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_label_propagation.py</span></code> - Semi-supervised community detection</p></li>
+</ul>
+<p><strong>Multilayer Community Detection</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_communities.py</span></code> - Multilayer Louvain</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_modularity.py</span></code> - Modularity optimization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_overlapping_communities.py</span></code> - Overlapping community detection</p></li>
+</ul>
+</section>
+<section id="network-statistics-examples">
+<h2>Network Statistics Examples<a class="headerlink" href="#network-statistics-examples" title="Link to this heading"></a></h2>
+<p><strong>Basic Statistics</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_statistics.py</span></code> - Multilayer-specific statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_layer_comparison.py</span></code> - Comparing layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_node_metrics.py</span></code> - Node-level metrics</p></li>
+</ul>
+<p><strong>Centrality Measures</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_centrality.py</span></code> - Degree, betweenness, PageRank</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_centrality.py</span></code> - Multilayer centrality measures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_versatility.py</span></code> - Versatility centrality</p></li>
+</ul>
+<p><strong>Network Comparison</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_network_comparison.py</span></code> - Comparing multiple networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_statistical_tests.py</span></code> - Statistical comparison</p></li>
+</ul>
+</section>
+<section id="i-o-and-data-format-examples">
+<h2>I/O and Data Format Examples<a class="headerlink" href="#i-o-and-data-format-examples" title="Link to this heading"></a></h2>
+<p><strong>Loading Networks</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_IO.py</span></code> - Various input formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_edgelist_loading.py</span></code> - Edge list formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_graphml.py</span></code> - GraphML format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_csv_loading.py</span></code> - CSV with sidecars</p></li>
+</ul>
+<p><strong>Modern I/O (Arrow/Parquet)</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_arrow_io.py</span></code> - Apache Arrow format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_parquet.py</span></code> - Parquet format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_schema_graph.py</span></code> - Schema-based I/O</p></li>
+</ul>
+<p><strong>Format Conversion</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_format_conversion.py</span></code> - Converting between formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_export.py</span></code> - Exporting networks</p></li>
+</ul>
+</section>
+<section id="random-walks-and-embeddings">
+<h2>Random Walks and Embeddings<a class="headerlink" href="#random-walks-and-embeddings" title="Link to this heading"></a></h2>
+<p><strong>Random Walks</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_random_walks.py</span></code> - Basic and Node2Vec walks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_walkers.py</span></code> - Different walk strategies</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_metapath_walks.py</span></code> - Meta-path based walks</p></li>
+</ul>
+<p><strong>Node Embeddings</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_n2v_embedding.py</span></code> - Node2Vec embeddings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_deepwalk.py</span></code> - DeepWalk embeddings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_embeddings.py</span></code> - Various embedding methods</p></li>
+</ul>
+<p><strong>Embedding Applications</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_link_prediction.py</span></code> - Link prediction with embeddings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_node_classification.py</span></code> - Node classification</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_clustering_embeddings.py</span></code> - Clustering with embeddings</p></li>
+</ul>
+</section>
+<section id="network-decomposition">
+<h2>Network Decomposition<a class="headerlink" href="#network-decomposition" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_network_decomposition.py</span></code> - Meta-path feature extraction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_feature_extraction.py</span></code> - Network feature engineering</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_tensor_decomposition.py</span></code> - Tensor decomposition methods</p></li>
+</ul>
+</section>
+<section id="network-manipulation">
+<h2>Network Manipulation<a class="headerlink" href="#network-manipulation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_manipulation.py</span></code> - Network operations (add, remove, filter)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_subnetworks.py</span></code> - Extracting subnetworks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_layer_operations.py</span></code> - Layer-specific operations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_aggregation.py</span></code> - Aggregating layers</p></li>
+</ul>
+</section>
+<section id="algorithms-and-analysis">
+<h2>Algorithms and Analysis<a class="headerlink" href="#algorithms-and-analysis" title="Link to this heading"></a></h2>
+<p><strong>Network Dynamics</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_spreading.py</span></code> - Network traversal and spreading processes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_sir_epidemic.py</span></code> - SIR epidemic simulation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_diffusion.py</span></code> - Diffusion processes</p></li>
+</ul>
+<p><strong>Specialized Algorithms</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_ricci_curvature.py</span></code> - Ricci curvature computation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_motifs.py</span></code> - Network motif discovery</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_path_analysis.py</span></code> - Path-based analysis</p></li>
+</ul>
+<p><strong>Machine Learning</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_ml_features.py</span></code> - Feature extraction for ML</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_graph_kernels.py</span></code> - Graph kernel methods</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_supervised_learning.py</span></code> - Supervised learning on networks</p></li>
+</ul>
+</section>
+<section id="networkx-integration">
+<h2>NetworkX Integration<a class="headerlink" href="#networkx-integration" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_networkx_wrapper.py</span></code> - Using NetworkX functions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_networkx_interop.py</span></code> - NetworkX interoperability</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_convert_networkx.py</span></code> - Converting to/from NetworkX</p></li>
+</ul>
+</section>
+<section id="benchmarking">
+<h2>Benchmarking<a class="headerlink" href="#benchmarking" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_benchmarking.py</span></code> - Performance benchmarking</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_scalability.py</span></code> - Scalability testing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_memory_profiling.py</span></code> - Memory usage analysis</p></li>
+</ul>
+</section>
+<section id="gui-and-api">
+<h2>GUI and API<a class="headerlink" href="#gui-and-api" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_api_usage.py</span></code> - Using the REST API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_gui_integration.py</span></code> - GUI integration examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_batch_processing.py</span></code> - Batch processing with CLI</p></li>
+</ul>
+</section>
+<section id="real-world-datasets">
+<h2>Real-World Datasets<a class="headerlink" href="#real-world-datasets" title="Link to this heading"></a></h2>
+<p><strong>Biological Networks</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_protein_interaction.py</span></code> - Protein-protein interaction networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_gene_regulation.py</span></code> - Gene regulatory networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_metabolic_networks.py</span></code> - Metabolic pathways</p></li>
+</ul>
+<p><strong>Social Networks</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_social_multiplex.py</span></code> - Multiplex social networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_citation_network.py</span></code> - Citation networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_collaboration.py</span></code> - Collaboration networks</p></li>
+</ul>
+<p><strong>Transportation</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multimodal_transport.py</span></code> - Multi-modal transportation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_flight_network.py</span></code> - Airline networks</p></li>
+</ul>
+</section>
+<section id="running-examples">
+<h2>Running Examples<a class="headerlink" href="#running-examples" title="Link to this heading"></a></h2>
+<p>All examples can be run directly with Python:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic usage</span>
+python<span class="w"> </span>examples/example_multilayer_visualization.py
+
+<span class="c1"># With custom data</span>
+python<span class="w"> </span>examples/example_load_network.py<span class="w"> </span>path/to/your/network.edgelist
+
+<span class="c1"># From repository root</span>
+<span class="nb">cd</span><span class="w"> </span>py3plex
+python<span class="w"> </span>examples/basic/example_load_network.py
+</pre></div>
+</div>
+<p>Many examples accept command-line arguments:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/example_community_detection.py<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--input<span class="w"> </span>data.graphml
+</pre></div>
+</div>
+</section>
+<section id="example-template">
+<h2>Example Template<a class="headerlink" href="#example-template" title="Link to this heading"></a></h2>
+<p>Use this template for your own scripts:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example: Your Feature</span>
+<span class="sd">=====================</span>
+
+<span class="sd">Description of what this example demonstrates.</span>
+
+<span class="sd">Usage:</span>
+<span class="sd">    python example_your_feature.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Load or create network</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Your analysis</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+    <span class="c1"># Visualization</span>
+    <span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="contributing-examples">
+<h2>Contributing Examples<a class="headerlink" href="#contributing-examples" title="Link to this heading"></a></h2>
+<p>To contribute an example:</p>
+<ol class="arabic simple">
+<li><p>Create a well-documented script in <code class="docutils literal notranslate"><span class="pre">examples/</span></code></p></li>
+<li><p>Use the template above</p></li>
+<li><p>Test that it runs without errors</p></li>
+<li><p>Add it to this index with a brief description</p></li>
+<li><p>Submit a pull request</p></li>
+</ol>
+<p>See <a class="reference internal" href="../dev/contributing.html"><span class="doc">Contributing to py3plex</span></a> for detailed guidelines.</p>
+</section>
+<section id="related-documentation">
+<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a> - Quick start guide</p></li>
+<li><p><a class="reference internal" href="../getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial: Getting Started with py3plex</span></a> - 10-minute tutorial</p></li>
+<li><p><a class="reference internal" href="../user_guide/networks.html"><span class="doc">Working with Networks</span></a> - Working with networks</p></li>
+<li><p><a class="reference internal" href="../user_guide/visualization.html"><span class="doc">Visualization Guide</span></a> - Visualization guide</p></li>
+</ul>
+<p><strong>Repository:</strong></p>
+<ul class="simple">
+<li><p>Examples directory: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">https://github.com/SkBlaz/py3plex/tree/master/examples</a></p></li>
+<li><p>Submit examples: <a class="reference external" href="https://github.com/SkBlaz/py3plex/pulls">https://github.com/SkBlaz/py3plex/pulls</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../dev/contributing.html" class="btn btn-neutral float-left" title="Contributing to py3plex" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/algorithm_reference.html" class="btn btn-neutral float-right" title="Algorithm Roadmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

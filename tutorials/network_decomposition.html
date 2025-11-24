@@ -1,0 +1,602 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Decomposition Tutorial &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Network Decomposition Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/network_decomposition.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="network-decomposition-tutorial">
+<h1>Network Decomposition Tutorial<a class="headerlink" href="#network-decomposition-tutorial" title="Link to this heading"></a></h1>
+<p>This tutorial demonstrates network decomposition techniques for heterogeneous and multilayer networks using py3plex.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Network decomposition transforms complex heterogeneous networks into structured feature representations that can be used for:</p>
+<ul class="simple">
+<li><p>Node classification</p></li>
+<li><p>Link prediction</p></li>
+<li><p>Network comparison</p></li>
+<li><p>Feature extraction for machine learning</p></li>
+</ul>
+<p>py3plex’s HINMINE module provides methods for decomposing heterogeneous information networks (HINs) based on:</p>
+<ul class="simple">
+<li><p><strong>Meta-paths</strong> - Typed paths connecting node pairs</p></li>
+<li><p><strong>Cycles</strong> - Closed walks of specific types</p></li>
+<li><p><strong>Structural patterns</strong> - Subgraph patterns and motifs</p></li>
+</ul>
+</section>
+<section id="what-is-network-decomposition">
+<h2>What is Network Decomposition?<a class="headerlink" href="#what-is-network-decomposition" title="Link to this heading"></a></h2>
+<section id="heterogeneous-information-networks">
+<h3>Heterogeneous Information Networks<a class="headerlink" href="#heterogeneous-information-networks" title="Link to this heading"></a></h3>
+<p>A <strong>heterogeneous information network (HIN)</strong> contains multiple node types and edge types.</p>
+<p>Example - Academic Network:</p>
+<ul class="simple">
+<li><p><strong>Node types:</strong> Authors, Papers, Venues</p></li>
+<li><p><strong>Edge types:</strong> Author-Paper (writes), Paper-Venue (published_in), Paper-Paper (cites)</p></li>
+</ul>
+</section>
+<section id="meta-paths">
+<h3>Meta-paths<a class="headerlink" href="#meta-paths" title="Link to this heading"></a></h3>
+<p>A <strong>meta-path</strong> is a sequence of node and edge types defining a composite relation.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Author → Paper → Author (co-authorship)</p></li>
+<li><p>Author → Paper → Venue → Paper → Author (same venue)</p></li>
+<li><p>Paper → Paper → Paper (citation path of length 2)</p></li>
+</ul>
+</section>
+</section>
+<section id="hinmine-decomposition">
+<h2>HINMINE Decomposition<a class="headerlink" href="#hinmine-decomposition" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core.HINMINE</span><span class="w"> </span><span class="kn">import</span> <span class="n">decomposition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Load heterogeneous network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;academic_network.graphml&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Perform decomposition</span>
+<span class="n">decomposer</span> <span class="o">=</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">HINMINE</span><span class="p">()</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">&#39;author&#39;</span><span class="p">,</span>
+    <span class="n">max_path_length</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">)</span>
+
+<span class="c1"># Features is a matrix: (num_nodes, num_meta_paths)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Feature matrix shape: </span><span class="si">{</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">&#39;author&#39;</span><span class="p">,</span>     <span class="c1"># Node type to extract features for</span>
+    <span class="n">max_path_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>              <span class="c1"># Maximum meta-path length</span>
+    <span class="n">include_cycles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>            <span class="c1"># Include closed walks</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>                  <span class="c1"># Normalize features</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="meta-path-extraction">
+<h2>Meta-Path Extraction<a class="headerlink" href="#meta-path-extraction" title="Link to this heading"></a></h2>
+<section id="enumerate-meta-paths">
+<h3>Enumerate Meta-Paths<a class="headerlink" href="#enumerate-meta-paths" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all meta-paths up to length 3</span>
+<span class="n">meta_paths</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">enumerate_meta_paths</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">node_types</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;venue&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">meta_paths</span><span class="p">)</span><span class="si">}</span><span class="s2"> meta-paths&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">mp</span> <span class="ow">in</span> <span class="n">meta_paths</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mp</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">author</span><span class="o">-</span><span class="n">paper</span><span class="o">-</span><span class="n">author</span>
+<span class="n">author</span><span class="o">-</span><span class="n">paper</span><span class="o">-</span><span class="n">venue</span><span class="o">-</span><span class="n">paper</span><span class="o">-</span><span class="n">author</span>
+<span class="n">paper</span><span class="o">-</span><span class="n">paper</span>
+<span class="n">paper</span><span class="o">-</span><span class="n">author</span><span class="o">-</span><span class="n">paper</span>
+<span class="n">venue</span><span class="o">-</span><span class="n">paper</span><span class="o">-</span><span class="n">venue</span>
+</pre></div>
+</div>
+</section>
+<section id="compute-meta-path-instances">
+<h3>Compute Meta-Path Instances<a class="headerlink" href="#compute-meta-path-instances" title="Link to this heading"></a></h3>
+<p>Count instances of specific meta-paths:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a meta-path</span>
+<span class="n">meta_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">]</span>
+
+<span class="c1"># Count instances for each node</span>
+<span class="n">instances</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">compute_meta_path_instances</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">meta_path</span><span class="p">,</span>
+    <span class="n">source_nodes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;author1&#39;</span><span class="p">,</span> <span class="s1">&#39;author2&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">instances</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> instances&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cycle-enumeration">
+<h2>Cycle Enumeration<a class="headerlink" href="#cycle-enumeration" title="Link to this heading"></a></h2>
+<section id="extract-cycles">
+<h3>Extract Cycles<a class="headerlink" href="#extract-cycles" title="Link to this heading"></a></h3>
+<p>Find closed walks (cycles) in the network:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enumerate all cycles up to length 4</span>
+<span class="n">cycles</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">enumerate_cycles</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">starting_node_type</span><span class="o">=</span><span class="s1">&#39;author&#39;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cycles</span><span class="p">)</span><span class="si">}</span><span class="s2"> cycle types&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="common-cycles">
+<h3>Common Cycles<a class="headerlink" href="#common-cycles" title="Link to this heading"></a></h3>
+<p>Examples of meaningful cycles in academic networks:</p>
+<ul class="simple">
+<li><p><strong>Triangle:</strong> Author → Paper → Venue → Paper → Author → Paper</p></li>
+<li><p><strong>Square:</strong> Paper → Cites → Paper → Cites → Paper → Cites → Paper</p></li>
+<li><p><strong>Collaboration cycle:</strong> Author → Paper → Author → Paper → Author</p></li>
+</ul>
+</section>
+</section>
+<section id="feature-matrix-construction">
+<h2>Feature Matrix Construction<a class="headerlink" href="#feature-matrix-construction" title="Link to this heading"></a></h2>
+<section id="build-classification-features">
+<h3>Build Classification Features<a class="headerlink" href="#build-classification-features" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build feature matrix for author classification</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">build_feature_matrix</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">target_nodes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;author1&#39;</span><span class="p">,</span> <span class="s1">&#39;author2&#39;</span><span class="p">,</span> <span class="s1">&#39;author3&#39;</span><span class="p">],</span>
+    <span class="n">meta_paths</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">],</span>           <span class="c1"># Co-authorship</span>
+        <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;venue&#39;</span><span class="p">],</span>            <span class="c1"># Publishing venues</span>
+        <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">],</span>            <span class="c1"># Citation patterns</span>
+    <span class="p">],</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Features shape: (3, 3) for 3 nodes, 3 meta-paths</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="normalization-options">
+<h3>Normalization Options<a class="headerlink" href="#normalization-options" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># L1 normalization (sum to 1)</span>
+<span class="n">features_l1</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span><span class="p">)</span>
+
+<span class="c1"># L2 normalization (unit length)</span>
+<span class="n">features_l2</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">)</span>
+
+<span class="c1"># Min-max scaling (0-1 range)</span>
+<span class="n">features_minmax</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;minmax&#39;</span><span class="p">)</span>
+
+<span class="c1"># Z-score standardization (mean 0, std 1)</span>
+<span class="n">features_zscore</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;zscore&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="node-classification-example">
+<h2>Node Classification Example<a class="headerlink" href="#node-classification-example" title="Link to this heading"></a></h2>
+<section id="complete-workflow">
+<h3>Complete Workflow<a class="headerlink" href="#complete-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+
+<span class="c1"># 1. Load network with node labels</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;labeled_network.graphml&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. Extract features via decomposition</span>
+<span class="n">decomposer</span> <span class="o">=</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">HINMINE</span><span class="p">()</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">&#39;author&#39;</span><span class="p">,</span>
+    <span class="n">max_path_length</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. Get labels</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">labels</span>  <span class="c1"># Assuming labels are stored in network</span>
+
+<span class="c1"># 4. Train-test split</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># 5. Train classifier</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># 6. Evaluate</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1-score: </span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="feature-importance">
+<h3>Feature Importance<a class="headerlink" href="#feature-importance" title="Link to this heading"></a></h3>
+<p>Analyze which meta-paths are most informative:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Get feature importances from trained model</span>
+<span class="n">importances</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">feature_importances_</span>
+<span class="n">meta_path_names</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">get_meta_path_names</span><span class="p">()</span>
+
+<span class="c1"># Plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">importances</span><span class="p">)),</span> <span class="n">importances</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">importances</span><span class="p">)),</span> <span class="n">meta_path_names</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Feature Importance&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Meta-Path Importance for Classification&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="link-prediction-example">
+<h2>Link Prediction Example<a class="headerlink" href="#link-prediction-example" title="Link to this heading"></a></h2>
+<section id="predict-missing-edges">
+<h3>Predict Missing Edges<a class="headerlink" href="#predict-missing-edges" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="c1"># 1. Sample node pairs (positive and negative examples)</span>
+<span class="n">positive_pairs</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Actual edges</span>
+<span class="n">negative_pairs</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Non-edges (sampled)</span>
+
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="n">positive_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+<span class="c1"># Sample negative examples</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">negative_pairs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">positive_pairs</span><span class="p">):</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">negative_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+<span class="c1"># 2. Extract features for node pairs</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pair_features</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">node_to_idx</span><span class="p">):</span>
+    <span class="n">idx_u</span> <span class="o">=</span> <span class="n">node_to_idx</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+    <span class="n">idx_v</span> <span class="o">=</span> <span class="n">node_to_idx</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+    <span class="c1"># Concatenate, multiply, or subtract features</span>
+    <span class="k">return</span> <span class="n">features</span><span class="p">[</span><span class="n">idx_u</span><span class="p">]</span> <span class="o">*</span> <span class="n">features</span><span class="p">[</span><span class="n">idx_v</span><span class="p">]</span>
+
+<span class="c1"># Build dataset</span>
+<span class="n">X_pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">pair_features</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">node_to_idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">positive_pairs</span><span class="p">]</span>
+<span class="n">X_neg</span> <span class="o">=</span> <span class="p">[</span><span class="n">pair_features</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">node_to_idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">negative_pairs</span><span class="p">]</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">X_pos</span> <span class="o">+</span> <span class="n">X_neg</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_pos</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_neg</span><span class="p">)</span>
+
+<span class="c1"># 3. Train-test split and classify</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># 4. Evaluate</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Link prediction accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-decomposition">
+<h2>Advanced Decomposition<a class="headerlink" href="#advanced-decomposition" title="Link to this heading"></a></h2>
+<section id="custom-meta-paths">
+<h3>Custom Meta-Paths<a class="headerlink" href="#custom-meta-paths" title="Link to this heading"></a></h3>
+<p>Define domain-specific meta-paths:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Academic domain</span>
+<span class="n">academic_meta_paths</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">],</span>                    <span class="c1"># Co-authorship</span>
+    <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;venue&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">],</span>  <span class="c1"># Same venue</span>
+    <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">],</span>           <span class="c1"># Citation-based</span>
+    <span class="p">[</span><span class="s1">&#39;venue&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;venue&#39;</span><span class="p">],</span>   <span class="c1"># Venue similarity</span>
+<span class="p">]</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">build_feature_matrix</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">target_nodes</span><span class="o">=</span><span class="n">author_nodes</span><span class="p">,</span>
+    <span class="n">meta_paths</span><span class="o">=</span><span class="n">academic_meta_paths</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="weighted-meta-paths">
+<h3>Weighted Meta-Paths<a class="headerlink" href="#weighted-meta-paths" title="Link to this heading"></a></h3>
+<p>Assign importance weights to different meta-paths:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define meta-paths with weights</span>
+<span class="n">meta_path_weights</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;author-paper-author&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>           <span class="c1"># High importance</span>
+    <span class="s1">&#39;author-paper-venue&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>            <span class="c1"># Normal importance</span>
+    <span class="s1">&#39;author-paper-paper-author&#39;</span><span class="p">:</span> <span class="mf">0.5</span>      <span class="c1"># Lower importance</span>
+<span class="p">}</span>
+
+<span class="c1"># Apply weights to features</span>
+<span class="n">weighted_features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">apply_weights</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">meta_path_weights</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="temporal-decomposition">
+<h3>Temporal Decomposition<a class="headerlink" href="#temporal-decomposition" title="Link to this heading"></a></h3>
+<p>For temporal networks with timestamps:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Decompose network at different time slices</span>
+<span class="n">time_slices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="mi">2021</span><span class="p">]</span>
+
+<span class="n">temporal_features</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">time_slices</span><span class="p">:</span>
+    <span class="c1"># Filter network to specific time period</span>
+    <span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">filter_by_time</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+
+    <span class="c1"># Decompose</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">subnetwork</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">)</span>
+    <span class="n">temporal_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+<span class="c1"># Stack temporal features</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="n">full_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">temporal_features</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-optimization">
+<h2>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h2>
+<section id="caching-results">
+<h3>Caching Results<a class="headerlink" href="#caching-results" title="Link to this heading"></a></h3>
+<p>HINMINE automatically caches decomposition results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First run: computes and caches</span>
+<span class="n">features1</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">)</span>
+
+<span class="c1"># Second run: loads from cache (much faster)</span>
+<span class="n">features2</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Cache is stored in <code class="docutils literal notranslate"><span class="pre">.{md5_hash}</span></code> files based on network content.</p>
+</section>
+<section id="parallel-processing">
+<h3>Parallel Processing<a class="headerlink" href="#parallel-processing" title="Link to this heading"></a></h3>
+<p>For large networks, process meta-paths in parallel:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+
+<span class="c1"># Compute meta-path instances in parallel</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)(</span>
+    <span class="n">delayed</span><span class="p">(</span><span class="n">decomposer</span><span class="o">.</span><span class="n">compute_meta_path_instances</span><span class="p">)(</span>
+        <span class="n">network</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">target_nodes</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">mp</span> <span class="ow">in</span> <span class="n">meta_paths</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sparse-representations">
+<h3>Sparse Representations<a class="headerlink" href="#sparse-representations" title="Link to this heading"></a></h3>
+<p>Use sparse matrices for large feature spaces:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csr_matrix</span>
+
+<span class="c1"># Convert to sparse format</span>
+<span class="n">sparse_features</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+<span class="c1"># Use with scikit-learn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearSVC</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">LinearSVC</span><span class="p">()</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sparse_features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="meta-path-selection">
+<h3>Meta-Path Selection<a class="headerlink" href="#meta-path-selection" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Start simple</strong> - Begin with short meta-paths (length 2-3)</p></li>
+<li><p><strong>Domain knowledge</strong> - Use meaningful paths for your domain</p></li>
+<li><p><strong>Feature importance</strong> - Analyze which paths are most informative</p></li>
+<li><p><strong>Avoid redundancy</strong> - Remove highly correlated meta-paths</p></li>
+</ol>
+</section>
+<section id="normalization">
+<h3>Normalization<a class="headerlink" href="#normalization" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>L1 normalization</strong> - Good for interpretability (sum to 1)</p></li>
+<li><p><strong>L2 normalization</strong> - Good for distance-based methods</p></li>
+<li><p><strong>Min-max scaling</strong> - Good for neural networks</p></li>
+<li><p><strong>Z-score</strong> - Good for algorithms sensitive to scale</p></li>
+</ul>
+</section>
+<section id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Link to this heading"></a></h3>
+<p>Always validate decomposition quality:</p>
+<ol class="arabic simple">
+<li><p><strong>Feature coverage</strong> - Check that features capture relevant patterns</p></li>
+<li><p><strong>Downstream performance</strong> - Evaluate on actual task (classification, prediction)</p></li>
+<li><p><strong>Interpretability</strong> - Verify features are meaningful</p></li>
+<li><p><strong>Computational cost</strong> - Balance accuracy vs. efficiency</p></li>
+</ol>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p><strong>HINMINE:</strong></p>
+<p>Kralj, J., Robnik-Šikonja, M., &amp; Lavrač, N. (2018). HINMINE: heterogeneous information network mining with information retrieval heuristics. <em>Journal of Intelligent Information Systems</em>, 50(1), 29-61.</p>
+<p><strong>Meta-paths:</strong></p>
+<p>Sun, Y., Han, J., Yan, X., Yu, P. S., &amp; Wu, T. (2011). PathSim: Meta path-based top-k similarity search in heterogeneous information networks. <em>VLDB</em>, 4(11), 992-1003.</p>
+<p><strong>HIN Classification:</strong></p>
+<p>Shi, C., Li, Y., Zhang, J., Sun, Y., &amp; Philip, S. Y. (2016). A survey of heterogeneous information network analysis. <em>IEEE TKDE</em>, 29(1), 17-37.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Community detection tutorial</p></li>
+<li><p><a class="reference internal" href="multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality measures</p></li>
+<li><p><a class="reference internal" href="../algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> - Algorithm selection</p></li>
+<li><p>Examples in <code class="docutils literal notranslate"><span class="pre">examples/advanced/example_decomposition_and_classification.py</span></code></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

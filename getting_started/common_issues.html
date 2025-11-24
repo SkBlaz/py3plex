@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Common Issues and Troubleshooting &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multilayer Networks 101" href="../concepts/multilayer_networks_101.html" />
+    <link rel="prev" title="Installation and Setup" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Common Issues and Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-issues">Installation Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#no-module-named-numpy">“No module named ‘numpy’”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compilation-errors-on-windows">Compilation Errors on Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#permission-denied-on-linux-macos">“Permission denied” on Linux/macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#old-version-installed">Old Version Installed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-loading-issues">Data Loading Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#file-not-found-errors">File Not Found Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#empty-or-malformed-networks">Empty or Malformed Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#visualization-issues">Visualization Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#visualization-not-showing">Visualization Not Showing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-display-found-error">“No Display Found” Error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#blurry-or-low-quality-plots">Blurry or Low-Quality Plots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#missing-dependencies">Missing Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#no-module-named-plotly">“No module named ‘plotly’”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-module-named-infomap">“No module named ‘infomap’”</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-issues">Performance Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#very-slow-loading">Very Slow Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#out-of-memory-errors">Out of Memory Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#algorithm-issues">Algorithm Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#community-detection-returns-trivial-results">Community Detection Returns Trivial Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#random-walk-or-embedding-errors">Random Walk or Embedding Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-issues">Docker Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#docker-build-fails">Docker Build Fails</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cannot-access-files-in-docker">Cannot Access Files in Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-pages">Related Pages</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Common Issues and Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/getting_started/common_issues.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="common-issues-and-troubleshooting">
+<h1>Common Issues and Troubleshooting<a class="headerlink" href="#common-issues-and-troubleshooting" title="Link to this heading"></a></h1>
+<p>This guide helps you troubleshoot common problems when getting started with py3plex.</p>
+<section id="installation-issues">
+<h2>Installation Issues<a class="headerlink" href="#installation-issues" title="Link to this heading"></a></h2>
+<section id="no-module-named-numpy">
+<h3>“No module named ‘numpy’”<a class="headerlink" href="#no-module-named-numpy" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Import error when trying to use py3plex.</p>
+<p><strong>Solution:</strong> Install numpy first:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+<section id="compilation-errors-on-windows">
+<h3>Compilation Errors on Windows<a class="headerlink" href="#compilation-errors-on-windows" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> C++ compilation errors during installation on Windows.</p>
+<p><strong>Solution:</strong> Install Visual C++ Build Tools:</p>
+<ol class="arabic simple">
+<li><p>Download from: <a class="reference external" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">https://visualstudio.microsoft.com/visual-cpp-build-tools/</a></p></li>
+<li><p>Install “Desktop development with C++”</p></li>
+<li><p>Retry installation</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+<section id="permission-denied-on-linux-macos">
+<h3>“Permission denied” on Linux/macOS<a class="headerlink" href="#permission-denied-on-linux-macos" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Permission errors during pip install.</p>
+<p><strong>Solution 1:</strong> Use pip install with –user flag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> Use a virtual environment (recommended):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>py3plex-env
+<span class="nb">source</span><span class="w"> </span>py3plex-env/bin/activate<span class="w">  </span><span class="c1"># On Windows: py3plex-env\Scripts\activate</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+<section id="old-version-installed">
+<h3>Old Version Installed<a class="headerlink" href="#old-version-installed" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Changes not reflecting or documentation mentions newer features.</p>
+<p><strong>Solution:</strong> Upgrade to the latest version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+</section>
+<section id="data-loading-issues">
+<h2>Data Loading Issues<a class="headerlink" href="#data-loading-issues" title="Link to this heading"></a></h2>
+<section id="file-not-found-errors">
+<h3>File Not Found Errors<a class="headerlink" href="#file-not-found-errors" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> <code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code> when loading networks.</p>
+<p><strong>Solution 1:</strong> Use absolute paths:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">network_path</span> <span class="o">=</span> <span class="s2">&quot;/absolute/path/to/data.edgelist&quot;</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="n">network_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> Ensure you’re running from the correct directory:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># Check current directory</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current directory:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+
+<span class="c1"># List files</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Files:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Solution 3:</strong> Use paths relative to script location:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;network.edgelist&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="empty-or-malformed-networks">
+<h3>Empty or Malformed Networks<a class="headerlink" href="#empty-or-malformed-networks" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Network loads but has no nodes or edges.</p>
+<p><strong>Solution:</strong> Check file format matches input_type:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For simple edge lists (source target)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># For multilayer edge lists (source target layer)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Always verify after loading</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="visualization-issues">
+<h2>Visualization Issues<a class="headerlink" href="#visualization-issues" title="Link to this heading"></a></h2>
+<section id="visualization-not-showing">
+<h3>Visualization Not Showing<a class="headerlink" href="#visualization-not-showing" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> No window appears when calling visualization functions.</p>
+<p><strong>Solution 1:</strong> For Jupyter notebooks, add at the top:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> For scripts, explicitly show the plot:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Your visualization code</span>
+<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Explicitly show</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Solution 3:</strong> Save to file instead of displaying:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="no-display-found-error">
+<h3>“No Display Found” Error<a class="headerlink" href="#no-display-found-error" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Error on headless servers or SSH sessions without X11.</p>
+<p><strong>Solution:</strong> Use Agg backend for matplotlib:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Now visualization will save to file instead of displaying</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;output.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="blurry-or-low-quality-plots">
+<h3>Blurry or Low-Quality Plots<a class="headerlink" href="#blurry-or-low-quality-plots" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Plots look pixelated or blurry.</p>
+<p><strong>Solution:</strong> Increase DPI when saving:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="missing-dependencies">
+<h2>Missing Dependencies<a class="headerlink" href="#missing-dependencies" title="Link to this heading"></a></h2>
+<section id="no-module-named-plotly">
+<h3>“No module named ‘plotly’”<a class="headerlink" href="#no-module-named-plotly" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Interactive visualization features not working.</p>
+<p><strong>Solution:</strong> Install visualization extras:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="no-module-named-infomap">
+<h3>“No module named ‘infomap’”<a class="headerlink" href="#no-module-named-infomap" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Infomap community detection not working.</p>
+<p><strong>Solution:</strong> Install Infomap support:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+</pre></div>
+</div>
+<p>Or use alternative community detection methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-issues">
+<h2>Performance Issues<a class="headerlink" href="#performance-issues" title="Link to this heading"></a></h2>
+<section id="very-slow-loading">
+<h3>Very Slow Loading<a class="headerlink" href="#very-slow-loading" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Loading large networks takes too long.</p>
+<p><strong>Solution 1:</strong> Use Arrow/Parquet format for large networks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Arrow support</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>arrow<span class="o">]</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+
+<span class="c1"># Save in efficient format</span>
+<span class="n">write</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s2">&quot;network.arrow&quot;</span><span class="p">)</span>
+
+<span class="c1"># Load much faster</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;network.arrow&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Solution 2:</strong> Process in chunks or use subnetworks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract a single layer for testing</span>
+<span class="n">layer_1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;layer1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+
+<span class="c1"># Work with the smaller network</span>
+<span class="n">layer_1</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="out-of-memory-errors">
+<h3>Out of Memory Errors<a class="headerlink" href="#out-of-memory-errors" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Python crashes or raises MemoryError with large networks.</p>
+<p><strong>Solution:</strong> See <a class="reference internal" href="../deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> for:</p>
+<ul class="simple">
+<li><p>Memory-efficient loading strategies</p></li>
+<li><p>Batch processing techniques</p></li>
+<li><p>Sparse matrix representations</p></li>
+<li><p>Subnetwork extraction</p></li>
+</ul>
+</section>
+</section>
+<section id="algorithm-issues">
+<h2>Algorithm Issues<a class="headerlink" href="#algorithm-issues" title="Link to this heading"></a></h2>
+<section id="community-detection-returns-trivial-results">
+<h3>Community Detection Returns Trivial Results<a class="headerlink" href="#community-detection-returns-trivial-results" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Each node in its own community or all nodes in one community.</p>
+<p><strong>Solution:</strong> Adjust algorithm parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">louvain_multilayer</span>
+<span class="p">)</span>
+
+<span class="c1"># Try different resolution parameters</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>    <span class="c1"># Lower = fewer, larger communities</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>    <span class="c1"># Higher = more layer consistency</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="random-walk-or-embedding-errors">
+<h3>Random Walk or Embedding Errors<a class="headerlink" href="#random-walk-or-embedding-errors" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Random walk or Node2Vec functions fail.</p>
+<p><strong>Solution:</strong> Ensure network is connected:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Check connectivity</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Network is not connected&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get largest component</span>
+    <span class="n">largest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()</span>
+    <span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+
+    <span class="c1"># Create subgraph</span>
+    <span class="n">subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">largest</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="docker-issues">
+<h2>Docker Issues<a class="headerlink" href="#docker-issues" title="Link to this heading"></a></h2>
+<section id="docker-build-fails">
+<h3>Docker Build Fails<a class="headerlink" href="#docker-build-fails" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Docker build fails or takes very long.</p>
+<p><strong>Solution:</strong> Clear Docker cache and rebuild:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"> </span>-a
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="cannot-access-files-in-docker">
+<h3>Cannot Access Files in Docker<a class="headerlink" href="#cannot-access-files-in-docker" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Docker container can’t see your data files.</p>
+<p><strong>Solution:</strong> Mount volumes correctly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mount current directory</span>
+docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>/data/network.edgelist
+
+<span class="c1"># On Windows (PowerShell)</span>
+docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>/data/network.edgelist
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../deployment/cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation.</p>
+</section>
+</section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
+<p>If you encounter an issue not covered here:</p>
+<ol class="arabic simple">
+<li><p><strong>Search GitHub Issues:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p></li>
+<li><p><strong>Check Documentation:</strong> <a class="reference external" href="https://skblaz.github.io/py3plex/">https://skblaz.github.io/py3plex/</a></p></li>
+<li><p><strong>Browse Examples:</strong> <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">https://github.com/SkBlaz/py3plex/tree/master/examples</a></p></li>
+</ol>
+<p>When reporting issues, include:
+* Python version (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--version</span></code>)
+* py3plex version (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">show</span> <span class="pre">py3plex</span></code>)
+* Operating system
+* Full error traceback
+* Minimal code to reproduce the problem</p>
+</section>
+<section id="related-pages">
+<h2>Related Pages<a class="headerlink" href="#related-pages" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="installation.html"><span class="doc">Installation and Setup</span></a> - Complete installation guide</p></li>
+<li><p><a class="reference internal" href="quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a> - Quick introduction</p></li>
+<li><p><a class="reference internal" href="tutorial_10min.html"><span class="doc">10-Minute Tutorial: Getting Started with py3plex</span></a> - Comprehensive tutorial</p></li>
+<li><p><a class="reference internal" href="../deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> - Performance optimization</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../concepts/multilayer_networks_101.html" class="btn btn-neutral float-right" title="Multilayer Networks 101" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

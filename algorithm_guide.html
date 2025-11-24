@@ -1,0 +1,810 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithm Selection Guide &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Algorithm Selection Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/algorithm_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="algorithm-selection-guide">
+<h1>Algorithm Selection Guide<a class="headerlink" href="#algorithm-selection-guide" title="Link to this heading"></a></h1>
+<p>This guide helps you choose the right algorithms for your multilayer network analysis tasks.</p>
+<section id="community-detection">
+<h2>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h2>
+<p>Choose based on your network characteristics and requirements:</p>
+<section id="louvain-algorithm">
+<h3>Louvain Algorithm<a class="headerlink" href="#louvain-algorithm" title="Link to this heading"></a></h3>
+<p>Best for:</p>
+<ul class="simple">
+<li><p>Large networks (10,000+ nodes)</p></li>
+<li><p>Fast approximate results</p></li>
+<li><p>Non-overlapping communities</p></li>
+<li><p>Modularity optimization</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n \log n)\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is the number of nodes</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Pros:</strong></p>
+<ul class="simple">
+<li><p>Very fast on large networks</p></li>
+<li><p>Well-established and widely used</p></li>
+<li><p>BSD license (commercial-friendly)</p></li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul class="simple">
+<li><p>Non-deterministic (random initialization)</p></li>
+<li><p>Cannot find overlapping communities</p></li>
+<li><p>Resolution limit issues</p></li>
+</ul>
+</section>
+<section id="infomap-algorithm">
+<h3>Infomap Algorithm<a class="headerlink" href="#infomap-algorithm" title="Link to this heading"></a></h3>
+<p>Best for:</p>
+<ul class="simple">
+<li><p>Flow-based community structure</p></li>
+<li><p>Overlapping communities</p></li>
+<li><p>Hierarchical community detection</p></li>
+<li><p>Information-theoretic optimization</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m \log n)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges, <span class="math notranslate nohighlight">\(n\)</span> is nodes</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_wrapper</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/infomap&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Pros:</strong></p>
+<ul class="simple">
+<li><p>Can detect overlapping communities</p></li>
+<li><p>Flow-based approach (natural for many applications)</p></li>
+<li><p>Hierarchical structure</p></li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul class="simple">
+<li><p>Requires external binary or AGPLv3 code</p></li>
+<li><p>Slower than Louvain</p></li>
+<li><p>AGPLv3 license (viral copyleft)</p></li>
+</ul>
+</section>
+<section id="label-propagation">
+<h3>Label Propagation<a class="headerlink" href="#label-propagation" title="Link to this heading"></a></h3>
+<p>Best for:</p>
+<ul class="simple">
+<li><p>Semi-supervised community detection</p></li>
+<li><p>Known seed communities</p></li>
+<li><p>Very large sparse networks</p></li>
+<li><p>Linear-time approximate results</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> linear in number of edges</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">label_propagation</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">seed_labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;node1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;node2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Pros:</strong></p>
+<ul class="simple">
+<li><p>Very fast (linear time)</p></li>
+<li><p>Can incorporate prior knowledge</p></li>
+<li><p>MIT license</p></li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul class="simple">
+<li><p>Non-deterministic</p></li>
+<li><p>Sensitive to initialization</p></li>
+<li><p>May not converge</p></li>
+</ul>
+</section>
+<section id="multilayer-modularity">
+<h3>Multilayer Modularity<a class="headerlink" href="#multilayer-modularity" title="Link to this heading"></a></h3>
+<p>Best for:</p>
+<ul class="simple">
+<li><p>True multilayer community detection</p></li>
+<li><p>Cross-layer community structure</p></li>
+<li><p>Layer coupling analysis</p></li>
+<li><p>Research applications</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n^2)\)</span> for supra-adjacency construction + Louvain complexity</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_modularity</span> <span class="k">as</span> <span class="n">mlm</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">mlm</span><span class="o">.</span><span class="n">multilayer_louvain</span><span class="p">(</span><span class="n">supra_adj</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Pros:</strong></p>
+<ul class="simple">
+<li><p>Accounts for multilayer structure</p></li>
+<li><p>Implements Mucha et al. (2010) algorithm</p></li>
+<li><p>Configurable inter-layer coupling</p></li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul class="simple">
+<li><p>More computationally expensive</p></li>
+<li><p>Requires careful parameter tuning</p></li>
+<li><p>May not scale to very large networks</p></li>
+</ul>
+</section>
+</section>
+<section id="centrality-measures">
+<h2>Centrality Measures<a class="headerlink" href="#centrality-measures" title="Link to this heading"></a></h2>
+<section id="degree-centrality">
+<h3>Degree Centrality<a class="headerlink" href="#degree-centrality" title="Link to this heading"></a></h3>
+<p>Best for:</p>
+<ul class="simple">
+<li><p>Quick importance ranking</p></li>
+<li><p>Local connectivity measure</p></li>
+<li><p>Well-connected node identification</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n + m)\)</span></p>
+<p><strong>Variants:</strong></p>
+<ul class="simple">
+<li><p>Layer-specific degree</p></li>
+<li><p>Supra-adjacency degree</p></li>
+<li><p>Overlapping degree (sum across layers)</p></li>
+</ul>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultilayerCentrality</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">overlapping_degree_centrality</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="betweenness-centrality">
+<h3>Betweenness Centrality<a class="headerlink" href="#betweenness-centrality" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Bridge node identification</p></li>
+<li><p>Information flow bottlenecks</p></li>
+<li><p>Critical path analysis</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(nm)\)</span> for unweighted, <span class="math notranslate nohighlight">\(O(nm + n^2 \log n)\)</span> for weighted</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_betweenness_centrality</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Warning:</strong> Computationally expensive for large networks (&gt;1000 nodes)</p>
+</section>
+<section id="closeness-centrality">
+<h3>Closeness Centrality<a class="headerlink" href="#closeness-centrality" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Broadcasting efficiency</p></li>
+<li><p>Average distance to other nodes</p></li>
+<li><p>Central position in network</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(nm)\)</span></p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">closeness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_closeness_centrality</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="eigenvector-centrality">
+<h3>Eigenvector Centrality<a class="headerlink" href="#eigenvector-centrality" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Influence measure (connections to important nodes)</p></li>
+<li><p>Recursive importance</p></li>
+<li><p>Prestige ranking</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> per iteration, usually converges quickly</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eigenvector</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multiplex_eigenvector_centrality</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="pagerank">
+<h3>PageRank<a class="headerlink" href="#pagerank" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Directed networks</p></li>
+<li><p>Web-like structures</p></li>
+<li><p>Random walk centrality</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> per iteration</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pagerank</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">pagerank_centrality</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="versatility-centrality">
+<h3>Versatility Centrality<a class="headerlink" href="#versatility-centrality" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Multilayer-specific importance</p></li>
+<li><p>Cross-layer influence</p></li>
+<li><p>Multi-context analysis</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m \times L)\)</span> where <span class="math notranslate nohighlight">\(L\)</span> is number of layers</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="new-multiplex-network-metrics">
+<h2>New Multiplex Network Metrics<a class="headerlink" href="#new-multiplex-network-metrics" title="Link to this heading"></a></h2>
+<p>The following metrics extend standard network analysis to multiplex networks, accounting for inter-layer couplings and layer-specific structures.</p>
+<section id="multiplex-betweenness-centrality">
+<h3>Multiplex Betweenness Centrality<a class="headerlink" href="#multiplex-betweenness-centrality" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Identifying bridge nodes across layers</p></li>
+<li><p>Finding bottlenecks in multiplex information flow</p></li>
+<li><p>Analyzing paths that traverse inter-layer couplings</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(nm)\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is node-layer pairs, <span class="math notranslate nohighlight">\(m\)</span> is total edges</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multiplex_betweenness_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">betweenness</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Reference:</strong> De Domenico et al. (2015), “Structural reducibility of multilayer networks”</p>
+</section>
+<section id="multiplex-closeness-centrality">
+<h3>Multiplex Closeness Centrality<a class="headerlink" href="#multiplex-closeness-centrality" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Finding nodes that can quickly reach all other node-layers</p></li>
+<li><p>Broadcasting efficiency across layers</p></li>
+<li><p>Central position analysis in multiplex networks</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(nm)\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is node-layer pairs</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">closeness</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multiplex_closeness_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">central_nodes</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">closeness</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Reference:</strong> De Domenico et al. (2015), “Structural reducibility of multilayer networks”</p>
+</section>
+<section id="community-participation-metrics">
+<h3>Community Participation Metrics<a class="headerlink" href="#community-participation-metrics" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Measuring node diversity across communities</p></li>
+<li><p>Identifying nodes that bridge different communities</p></li>
+<li><p>Analyzing cross-community connections</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(k)\)</span> where <span class="math notranslate nohighlight">\(k\)</span> is node degree</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Participation coefficient (Pᵢ = 1 - Σₛ(kᵢₛ/kᵢ)²)</span>
+<span class="n">pc</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">)</span>
+
+<span class="c1"># Participation entropy (Hᵢ = -Σₛ(kᵢₛ/kᵢ)log(kᵢₛ/kᵢ))</span>
+<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Reference:</strong> Guimerà &amp; Amaral (2005), “Functional cartography of complex metabolic networks”</p>
+</section>
+<section id="layer-redundancy-analysis">
+<h3>Layer Redundancy Analysis<a class="headerlink" href="#layer-redundancy-analysis" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Measuring edge overlap between layers</p></li>
+<li><p>Identifying redundant vs. unique connections</p></li>
+<li><p>Understanding layer complementarity</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Redundancy coefficient (Rᵅᵝ = |Eᵅ ∩ Eᵝ|/|Eᵅ|)</span>
+<span class="n">redundancy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_redundancy_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">)</span>
+
+<span class="c1"># Count unique and redundant edges</span>
+<span class="n">unique</span><span class="p">,</span> <span class="n">redundant</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">unique_redundant_edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Reference:</strong> Nicosia &amp; Latora (2015), “Measuring and modeling correlations in multiplex networks”</p>
+</section>
+<section id="multiplex-rich-club-coefficient">
+<h3>Multiplex Rich-Club Coefficient<a class="headerlink" href="#multiplex-rich-club-coefficient" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Analyzing whether high-degree nodes connect preferentially</p></li>
+<li><p>Network core structure identification</p></li>
+<li><p>Hierarchy analysis in multiplex networks</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rich_club</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multiplex_rich_club_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Reference:</strong> Extended from Alstott et al. (2014) to multiplex networks</p>
+</section>
+<section id="robustness-and-percolation-analysis">
+<h3>Robustness and Percolation Analysis<a class="headerlink" href="#robustness-and-percolation-analysis" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Network resilience assessment</p></li>
+<li><p>Critical layer identification</p></li>
+<li><p>Cascade failure analysis</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(n \times t)\)</span> where <span class="math notranslate nohighlight">\(t\)</span> is number of trials</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Estimate percolation threshold</span>
+<span class="n">threshold</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">percolation_threshold</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">removal_strategy</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span>  <span class="c1"># or &#39;random&#39;, &#39;betweenness&#39;</span>
+    <span class="n">trials</span><span class="o">=</span><span class="mi">20</span>
+<span class="p">)</span>
+
+<span class="c1"># Simulate layer removal</span>
+<span class="n">resilience</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">targeted_layer_removal</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="s1">&#39;social&#39;</span><span class="p">,</span>
+    <span class="n">return_resilience</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Reference:</strong> Buldyrev et al. (2010), “Catastrophic cascade of failures in interdependent networks”</p>
+</section>
+<section id="direct-modularity-computation">
+<h3>Direct Modularity Computation<a class="headerlink" href="#direct-modularity-computation" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Evaluating community partition quality</p></li>
+<li><p>Comparing different community structures</p></li>
+<li><p>Direct modularity calculation without detection</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute multislice modularity score</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">compute_modularity_score</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">communities</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># resolution parameter</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span>   <span class="c1"># inter-layer coupling</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Reference:</strong> Mucha et al. (2010), Science 328, 876-878</p>
+</section>
+<section id="complete-example">
+<h3>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h3>
+<p>See <code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_new_multiplex_metrics.py</span></code> for a comprehensive demonstration of all new metrics.</p>
+</section>
+</section>
+<section id="network-statistics">
+<h2>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading"></a></h2>
+<section id="basic-statistics">
+<h3>Basic Statistics<a class="headerlink" href="#basic-statistics" title="Link to this heading"></a></h3>
+<p><strong>Fast operations</strong> (suitable for large networks):</p>
+<ul class="simple">
+<li><p>Node count: <span class="math notranslate nohighlight">\(O(n)\)</span></p></li>
+<li><p>Edge count: <span class="math notranslate nohighlight">\(O(m)\)</span></p></li>
+<li><p>Degree distribution: <span class="math notranslate nohighlight">\(O(n + m)\)</span></p></li>
+<li><p>Density: <span class="math notranslate nohighlight">\(O(1)\)</span> if counts are known</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="multilayer-statistics">
+<h3>Multilayer Statistics<a class="headerlink" href="#multilayer-statistics" title="Link to this heading"></a></h3>
+<p><strong>Layer density</strong> - <span class="math notranslate nohighlight">\(O(m_\alpha)\)</span> per layer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Inter-layer correlation</strong> - <span class="math notranslate nohighlight">\(O(n)\)</span>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Edge overlap</strong> - <span class="math notranslate nohighlight">\(O(m)\)</span>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Versatility centrality</strong> - <span class="math notranslate nohighlight">\(O(m \times L)\)</span>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;betweenness&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="path-based-measures">
+<h3>Path-based Measures<a class="headerlink" href="#path-based-measures" title="Link to this heading"></a></h3>
+<p><strong>Warning:</strong> These are computationally expensive for large networks</p>
+<ul class="simple">
+<li><p><strong>Diameter</strong> - <span class="math notranslate nohighlight">\(O(nm)\)</span> or <span class="math notranslate nohighlight">\(O(n^2 \log n)\)</span></p></li>
+<li><p><strong>Average shortest path</strong> - <span class="math notranslate nohighlight">\(O(nm)\)</span> or <span class="math notranslate nohighlight">\(O(n^2 \log n)\)</span></p></li>
+<li><p><strong>Betweenness centrality</strong> - <span class="math notranslate nohighlight">\(O(nm)\)</span> or <span class="math notranslate nohighlight">\(O(nm + n^2 \log n)\)</span></p></li>
+</ul>
+<p><strong>Recommendation:</strong> Limit to networks with &lt;5,000 nodes for interactive analysis</p>
+</section>
+</section>
+<section id="node-embeddings">
+<h2>Node Embeddings<a class="headerlink" href="#node-embeddings" title="Link to this heading"></a></h2>
+<section id="node2vec">
+<h3>Node2Vec<a class="headerlink" href="#node2vec" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Feature learning for downstream tasks</p></li>
+<li><p>Link prediction</p></li>
+<li><p>Node classification</p></li>
+<li><p>Similarity computation</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(r \times l \times |V|)\)</span> where <span class="math notranslate nohighlight">\(r\)</span> is walks per node, <span class="math notranslate nohighlight">\(l\)</span> is walk length</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dimensions</span></code>: Embedding dimensions (default: 128)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">walk_length</span></code>: Length of random walks (default: 80)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_walks</span></code>: Number of walks per node (default: 10)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code>: Return parameter (default: 1.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code>: In-out parameter (default: 1.0)</p></li>
+</ul>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">node2vec_embedding</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameter tuning:</strong></p>
+<ul class="simple">
+<li><p>Low <code class="docutils literal notranslate"><span class="pre">p</span></code> (&lt;1): Encourages backtracking (local exploration)</p></li>
+<li><p>High <code class="docutils literal notranslate"><span class="pre">p</span></code> (&gt;1): Discourages backtracking</p></li>
+<li><p>Low <code class="docutils literal notranslate"><span class="pre">q</span></code> (&lt;1): Encourages outward exploration (BFS-like)</p></li>
+<li><p>High <code class="docutils literal notranslate"><span class="pre">q</span></code> (&gt;1): Encourages staying local (DFS-like)</p></li>
+</ul>
+</section>
+<section id="deepwalk">
+<h3>DeepWalk<a class="headerlink" href="#deepwalk" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Same as Node2Vec but simpler (uniform random walks)</p></li>
+<li><p>Faster than Node2Vec</p></li>
+</ul>
+<p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(r \times l \times |V|)\)</span></p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># DeepWalk is Node2Vec with p=1, q=1</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h2>
+<section id="diagonal-projection-plot">
+<h3>Diagonal Projection Plot<a class="headerlink" href="#diagonal-projection-plot" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Large multilayer networks (&gt;1000 nodes)</p></li>
+<li><p>Clear layer separation</p></li>
+<li><p>Publication-ready figures</p></li>
+</ul>
+<p><strong>Scalability:</strong> Handles 10,000+ nodes</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout_style</span><span class="o">=</span><span class="s1">&#39;diagonal&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="force-directed-layout">
+<h3>Force-Directed Layout<a class="headerlink" href="#force-directed-layout" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Small to medium networks (&lt;1000 nodes)</p></li>
+<li><p>Interactive exploration</p></li>
+<li><p>Natural-looking layouts</p></li>
+</ul>
+<p><strong>Scalability:</strong> Practical up to ~5,000 nodes</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
+<span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="matrix-visualization">
+<h3>Matrix Visualization<a class="headerlink" href="#matrix-visualization" title="Link to this heading"></a></h3>
+<p><strong>Best for:</strong></p>
+<ul class="simple">
+<li><p>Pattern recognition</p></li>
+<li><p>Very large networks</p></li>
+<li><p>Quantitative analysis</p></li>
+</ul>
+<p><strong>Scalability:</strong> Handles 100,000+ nodes (limited by memory)</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="s1">&#39;toarray&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">adj</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-guidelines">
+<h2>Performance Guidelines<a class="headerlink" href="#performance-guidelines" title="Link to this heading"></a></h2>
+<section id="network-size-categories">
+<h3>Network Size Categories<a class="headerlink" href="#network-size-categories" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Small</strong> (&lt; 1,000 nodes):</dt><dd><ul class="simple">
+<li><p>All algorithms are fast</p></li>
+<li><p>Can use expensive path-based measures</p></li>
+<li><p>Interactive visualization works well</p></li>
+</ul>
+</dd>
+<dt><strong>Medium</strong> (1,000 - 10,000 nodes):</dt><dd><ul class="simple">
+<li><p>Use Louvain over Infomap</p></li>
+<li><p>Avoid full betweenness centrality</p></li>
+<li><p>Use diagonal projection for visualization</p></li>
+</ul>
+</dd>
+<dt><strong>Large</strong> (10,000 - 100,000 nodes):</dt><dd><ul class="simple">
+<li><p>Use degree-based measures</p></li>
+<li><p>Louvain or label propagation only</p></li>
+<li><p>Matrix visualizations or sampling</p></li>
+</ul>
+</dd>
+<dt><strong>Very Large</strong> (&gt; 100,000 nodes):</dt><dd><ul class="simple">
+<li><p>Degree, PageRank only</p></li>
+<li><p>Label propagation for communities</p></li>
+<li><p>Sparse matrix operations essential</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="memory-considerations">
+<h3>Memory Considerations<a class="headerlink" href="#memory-considerations" title="Link to this heading"></a></h3>
+<p><strong>Supra-adjacency matrix:</strong></p>
+<ul class="simple">
+<li><p>Sparse representation: <span class="math notranslate nohighlight">\(O(m)\)</span> memory</p></li>
+<li><p>Dense representation: <span class="math notranslate nohighlight">\(O(n^2)\)</span> memory (avoid for large networks)</p></li>
+</ul>
+<p><strong>Always use sparse matrices for networks with &gt;1,000 nodes</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure sparse representation</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="algorithm-comparison-table">
+<h2>Algorithm Comparison Table<a class="headerlink" href="#algorithm-comparison-table" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Algorithm</p></th>
+<th class="head"><p>Complexity</p></th>
+<th class="head"><p>Scalability</p></th>
+<th class="head"><p>License</p></th>
+<th class="head"><p>Best Use Case</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Louvain</p></td>
+<td><p>O(n log n)</p></td>
+<td><p>Large</p></td>
+<td><p>BSD</p></td>
+<td><p>Fast community detection</p></td>
+</tr>
+<tr class="row-odd"><td><p>Infomap</p></td>
+<td><p>O(m log n)</p></td>
+<td><p>Medium</p></td>
+<td><p>AGPLv3</p></td>
+<td><p>Flow-based communities</p></td>
+</tr>
+<tr class="row-even"><td><p>Label Prop</p></td>
+<td><p>O(m)</p></td>
+<td><p>Very Large</p></td>
+<td><p>MIT</p></td>
+<td><p>Semi-supervised, very fast</p></td>
+</tr>
+<tr class="row-odd"><td><p>Degree Centrality</p></td>
+<td><p>O(n+m)</p></td>
+<td><p>Very Large</p></td>
+<td><p>MIT</p></td>
+<td><p>Quick importance</p></td>
+</tr>
+<tr class="row-even"><td><p>Betweenness</p></td>
+<td><p>O(nm)</p></td>
+<td><p>Small</p></td>
+<td><p>MIT</p></td>
+<td><p>Critical paths</p></td>
+</tr>
+<tr class="row-odd"><td><p>PageRank</p></td>
+<td><p>O(m) per iter</p></td>
+<td><p>Large</p></td>
+<td><p>MIT</p></td>
+<td><p>Directed networks</p></td>
+</tr>
+<tr class="row-even"><td><p>Node2Vec</p></td>
+<td><p>O(r×l×n)</p></td>
+<td><p>Medium</p></td>
+<td><p>MIT</p></td>
+<td><p>Feature learning</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="citation-guidelines">
+<h2>Citation Guidelines<a class="headerlink" href="#citation-guidelines" title="Link to this heading"></a></h2>
+<p>When using specific algorithms in publications, cite the original papers:</p>
+<dl class="simple">
+<dt><strong>Louvain:</strong></dt><dd><p>Blondel, V. D., et al. (2008). Fast unfolding of communities in large networks. <em>Journal of Statistical Mechanics</em>.</p>
+</dd>
+<dt><strong>Infomap:</strong></dt><dd><p>Rosvall, M., &amp; Bergstrom, C. T. (2008). Maps of random walks on complex networks reveal community structure. <em>PNAS</em>, 105(4), 1118-1123.</p>
+</dd>
+<dt><strong>Node2Vec:</strong></dt><dd><p>Grover, A., &amp; Leskovec, J. (2016). node2vec: Scalable feature learning for networks. <em>KDD</em>, 855-864.</p>
+</dd>
+<dt><strong>Multilayer Modularity:</strong></dt><dd><p>Mucha, P. J., et al. (2010). Community structure in time-dependent, multiscale, and multiplex networks. <em>Science</em>, 328(5980), 876-878.</p>
+</dd>
+</dl>
+<p>For complete references with DOIs, please refer to the algorithm citations provided in the individual algorithm documentation or the published paper.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="tutorials/community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Community detection tutorial</p></li>
+<li><p><a class="reference internal" href="tutorials/multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality measures tutorial</p></li>
+<li><p><a class="reference internal" href="deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> - Performance optimization guide</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

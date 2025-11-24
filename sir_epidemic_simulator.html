@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIR Epidemic Simulator on Multiplex Graphs &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=ae6b746b"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/doctools.js?v=7ba34365"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">SIR Epidemic Simulator on Multiplex Graphs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sir_epidemic_simulator.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sir-epidemic-simulator-on-multiplex-graphs">
+<h1>SIR Epidemic Simulator on Multiplex Graphs<a class="headerlink" href="#sir-epidemic-simulator-on-multiplex-graphs" title="Link to this heading"></a></h1>
+<p>This module provides efficient, reproducible SIR (Susceptible-Infected-Recovered) epidemic simulators for multiplex networks (same node set, multiple edge layers).</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Discrete-time simulation</strong>: Step-based updates with configurable time step</p></li>
+<li><p><strong>Continuous-time simulation</strong>: Gillespie algorithm for exact event-driven dynamics</p></li>
+<li><p><strong>Multiplex support</strong>: Multiple interaction layers with per-layer transmission rates</p></li>
+<li><p><strong>Flexible parameterization</strong>: Per-layer transmission rates, per-node recovery rates, layer weights</p></li>
+<li><p><strong>Exogenous importations</strong>: Optional external infection sources</p></li>
+<li><p><strong>Rich outputs</strong>: Incidence curves, event logs, per-layer attribution</p></li>
+<li><p><strong>Sparse linear algebra</strong>: Efficient handling of large networks</p></li>
+<li><p><strong>Reproducible</strong>: Seeded random number generation</p></li>
+</ul>
+</section>
+<section id="model-definition">
+<h2>Model Definition<a class="headerlink" href="#model-definition" title="Link to this heading"></a></h2>
+<section id="states">
+<h3>States<a class="headerlink" href="#states" title="Link to this heading"></a></h3>
+<p>Each node has a single health state shared across all layers:</p>
+<ul class="simple">
+<li><p><strong>S (0)</strong>: Susceptible</p></li>
+<li><p><strong>I (1)</strong>: Infected</p></li>
+<li><p><strong>R (2)</strong>: Recovered</p></li>
+</ul>
+</section>
+<section id="transmission">
+<h3>Transmission<a class="headerlink" href="#transmission" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Infections occur along layer-specific edges with rate/probability β[α]</p></li>
+<li><p>Edge weights can represent contact multiplicity or strength</p></li>
+<li><p>Hazards from all layers combine:</p>
+<ul>
+<li><p><strong>Continuous-time (Gillespie)</strong>: Additive combination</p></li>
+<li><p><strong>Discrete-time</strong>: Independent-trial complement (1 - ∏ exp(-λ_α dt))</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="recovery">
+<h3>Recovery<a class="headerlink" href="#recovery" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Infected nodes recover at rate γ (scalar or per-node)</p></li>
+<li><p>Recovery is independent of network structure</p></li>
+</ul>
+</section>
+<section id="optional-features">
+<h3>Optional Features<a class="headerlink" href="#optional-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Layer weights</strong>: Scale transmission rates by layer importance</p></li>
+<li><p><strong>Time-varying parameters</strong>: β(α, t) and γ(i, t) as callables</p></li>
+<li><p><strong>Exogenous infections</strong>: Poisson import rate η(t)</p></li>
+</ul>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>The SIR multiplex module is part of py3plex. Ensure you have the required dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy
+</pre></div>
+</div>
+<p>Or install py3plex with all dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="discrete-time-simulation">
+<h3>Discrete-Time Simulation<a class="headerlink" href="#discrete-time-simulation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.sir_multiplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_sir_multiplex_discrete</span>
+
+<span class="c1"># Create a simple ring network</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">N</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">edges</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)),</span> <span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+
+<span class="c1"># Run simulation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">simulate_sir_multiplex_discrete</span><span class="p">(</span>
+    <span class="n">A_layers</span><span class="o">=</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>          <span class="c1"># Transmission rate</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>         <span class="c1"># Recovery rate</span>
+    <span class="n">dt</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>            <span class="c1"># Time step</span>
+    <span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>         <span class="c1"># Number of steps</span>
+    <span class="n">rng_seed</span><span class="o">=</span><span class="mi">42</span>        <span class="c1"># For reproducibility</span>
+<span class="p">)</span>
+
+<span class="c1"># Access results</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Peak prevalence: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2"> at time </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">argmax</span><span class="p">()]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final attack rate: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">N</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="continuous-time-gillespie-simulation">
+<h3>Continuous-Time (Gillespie) Simulation<a class="headerlink" href="#continuous-time-gillespie-simulation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.sir_multiplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_sir_multiplex_gillespie</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">simulate_sir_multiplex_gillespie</span><span class="p">(</span>
+    <span class="n">A_layers</span><span class="o">=</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">t_max</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>       <span class="c1"># Maximum time</span>
+    <span class="n">rng_seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">return_event_log</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Get detailed event log</span>
+<span class="p">)</span>
+
+<span class="c1"># Examine events</span>
+<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">events</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">event_type</span><span class="si">}</span><span class="s2"> at node </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="multiplex-network-example">
+<h3>Multiplex Network Example<a class="headerlink" href="#multiplex-network-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create two-layer network: physical contact + online interaction</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="c1"># Layer 1: Physical proximity (localized)</span>
+<span class="n">edges_physical</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">N</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">edges_physical</span><span class="p">)</span>
+<span class="n">A_physical</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges_physical</span><span class="p">)),</span> <span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+
+<span class="c1"># Layer 2: Online network (more random)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">edges_online</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">edges_online</span><span class="p">)</span> <span class="k">if</span> <span class="n">edges_online</span> <span class="k">else</span> <span class="p">([],</span> <span class="p">[])</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges_online</span><span class="p">))</span> <span class="k">if</span> <span class="n">edges_online</span> <span class="k">else</span> <span class="p">[]</span>
+<span class="n">A_online</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+
+<span class="c1"># Simulate with different transmission rates per layer</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">simulate_sir_multiplex_discrete</span><span class="p">(</span>
+    <span class="n">A_layers</span><span class="o">=</span><span class="p">[</span><span class="n">A_physical</span><span class="p">,</span> <span class="n">A_online</span><span class="p">],</span>
+    <span class="n">beta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]),</span>  <span class="c1"># Higher transmission in physical layer</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+    <span class="n">layer_weights</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]),</span>  <span class="c1"># Weight online layer less</span>
+    <span class="n">dt</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">steps</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">rng_seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+    <span class="n">return_layer_incidence</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Track which layer caused infections</span>
+<span class="p">)</span>
+
+<span class="c1"># Analyze layer contributions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.sir_multiplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">summarize</span>
+<span class="n">summary</span> <span class="o">=</span> <span class="n">summarize</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer contributions: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;layer_contributions&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="simulate-sir-multiplex-discrete">
+<h3>simulate_sir_multiplex_discrete<a class="headerlink" href="#simulate-sir-multiplex-discrete" title="Link to this heading"></a></h3>
+<p>Discrete-time SIR simulation with synchronous updates.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">A_layers</span></code> (list[csr_matrix]): List of L sparse adjacency matrices (N×N)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beta</span></code> (float | ndarray): Transmission rate (scalar or length L array)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code> (float | ndarray): Recovery rate (scalar or length N array)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_weights</span></code> (ndarray, optional): Layer importance weights (length L)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dt</span></code> (float): Time step size (default: 1.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">steps</span></code> (int): Number of simulation steps (default: 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">initial_state</span></code> (ndarray, optional): Initial state array with values {0,1,2}</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">initial_infected</span></code> (ndarray, optional): Boolean mask for initially infected nodes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">import_rate</span></code> (float | callable): Exogenous infection rate (default: 0.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rng_seed</span></code> (int): Random seed (default: 0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return_event_log</span></code> (bool): Return event log (default: False)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return_layer_incidence</span></code> (bool): Return per-layer infections (default: False)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">EpidemicResult</span></code> object</p>
+</section>
+<section id="simulate-sir-multiplex-gillespie">
+<h3>simulate_sir_multiplex_gillespie<a class="headerlink" href="#simulate-sir-multiplex-gillespie" title="Link to this heading"></a></h3>
+<p>Continuous-time SIR simulation using Gillespie algorithm.</p>
+<p><strong>Parameters:</strong> Same as discrete, except:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">t_max</span></code> (float): Maximum simulation time instead of <code class="docutils literal notranslate"><span class="pre">dt</span></code> and <code class="docutils literal notranslate"><span class="pre">steps</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return_event_log</span></code> (bool): Default is True</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">EpidemicResult</span></code> object</p>
+</section>
+<section id="epidemicresult">
+<h3>EpidemicResult<a class="headerlink" href="#epidemicresult" title="Link to this heading"></a></h3>
+<p>Dataclass containing simulation results:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">times</span></code> (ndarray): Time points</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">S</span></code>, <code class="docutils literal notranslate"><span class="pre">I</span></code>, <code class="docutils literal notranslate"><span class="pre">R</span></code> (ndarray): Counts of each state over time</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">states</span></code> (ndarray, optional): Full state history (discrete only)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">incidence_by_layer</span></code> (ndarray, optional): Infections per layer over time</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">events</span></code> (list, optional): Event log with tuples (time, type, node, layer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meta</span></code> (dict): Simulation metadata</p></li>
+</ul>
+</section>
+<section id="basic-reproduction-number">
+<h3>basic_reproduction_number<a class="headerlink" href="#basic-reproduction-number" title="Link to this heading"></a></h3>
+<p>Compute approximate R₀ using spectral radius.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">R0</span> <span class="o">=</span> <span class="n">basic_reproduction_number</span><span class="p">(</span><span class="n">A_layers</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">layer_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For homogeneous networks with uniform recovery rate γ:</p>
+<div class="math notranslate nohighlight">
+\[R_0 \approx \rho\left(\sum_\alpha \frac{\beta_\alpha w_\alpha}{\gamma} A^{(\alpha)}\right)\]</div>
+</section>
+<section id="summarize">
+<h3>summarize<a class="headerlink" href="#summarize" title="Link to this heading"></a></h3>
+<p>Extract summary statistics from simulation results.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">summarize</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Returns dictionary with:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">peak_prevalence</span></code>: Maximum infected count</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">peak_time</span></code>: Time of peak</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attack_rate</span></code>: Final proportion recovered</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time_to_extinction</span></code>: When infections reached zero</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_infections</span></code>: Total recovered at end</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layer_contributions</span></code>: Proportion of infections per layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">duration</span></code>: Total simulation time</p></li>
+</ul>
+</section>
+</section>
+<section id="update-rules">
+<h2>Update Rules<a class="headerlink" href="#update-rules" title="Link to this heading"></a></h2>
+<section id="discrete-time">
+<h3>Discrete-Time<a class="headerlink" href="#discrete-time" title="Link to this heading"></a></h3>
+<p>For each time step t → t + dt:</p>
+<ol class="arabic">
+<li><p><strong>Infection probability</strong> for susceptible node i:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\lambda_{i,\alpha}(t) = \beta_\alpha w_\alpha \sum_j A^{(\alpha)}_{ji} \mathbb{1}\{X_j = I\}\\p_i(t) = 1 - \prod_\alpha \exp(-\lambda_{i,\alpha}(t) \, dt)\end{aligned}\end{align} \]</div>
+</li>
+<li><p><strong>Recovery probability</strong> for infected node i:</p>
+<div class="math notranslate nohighlight">
+\[p_{\text{rec}}(i) = 1 - \exp(-\gamma_i \, dt)\]</div>
+</li>
+<li><p><strong>Synchronous update</strong>: Compute all probabilities from state at t, then apply changes</p></li>
+</ol>
+</section>
+<section id="continuous-time-gillespie">
+<h3>Continuous-Time (Gillespie)<a class="headerlink" href="#continuous-time-gillespie" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Compute total event rate:</p>
+<div class="math notranslate nohighlight">
+\[\Lambda = \sum_{i \in S} \sum_\alpha \lambda_{i,\alpha} + \sum_{i \in I} \gamma_i + \eta|S|\]</div>
+</li>
+<li><p>Sample time to next event: <span class="math notranslate nohighlight">\(\Delta t \sim \text{Exp}(\Lambda)\)</span></p></li>
+<li><p>Select event type proportionally to rates</p></li>
+<li><p>Update state and incrementally adjust affected rates</p></li>
+<li><p>Record event and repeat until <span class="math notranslate nohighlight">\(t &gt; t_{\text{max}}\)</span> or no infected remain</p></li>
+</ol>
+</section>
+</section>
+<section id="units-and-conventions">
+<h2>Units and Conventions<a class="headerlink" href="#units-and-conventions" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Time</strong>: Arbitrary units (days, hours, etc.). Ensure β, γ, dt/t_max are in same units.</p></li>
+<li><p><strong>Rates</strong>: Events per time unit. β = 0.5 per day means average 0.5 transmissions per infected-susceptible contact per day.</p></li>
+<li><p><strong>Probabilities</strong>: For discrete-time, computed as 1 - exp(-rate × dt)</p></li>
+<li><p><strong>Edge weights</strong>: Scale transmission. Weight 2.0 doubles effective contact rate.</p></li>
+</ul>
+</section>
+<section id="performance-tips">
+<h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use sparse matrices (CSR format) for all adjacency matrices</p></li>
+<li><p>For large networks (N &gt; 10⁴), use smaller time steps or t_max</p></li>
+<li><p>Disable event logs for very long simulations to save memory</p></li>
+<li><p>Vectorized operations are used internally for efficiency</p></li>
+</ul>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>See <code class="docutils literal notranslate"><span class="pre">examples/advanced/example_sir_multiplex.py</span></code> for additional examples including:</p>
+<ul class="simple">
+<li><p>Comparison of discrete vs continuous time</p></li>
+<li><p>Effect of network structure on epidemic spread</p></li>
+<li><p>Multi-layer network analysis</p></li>
+<li><p>Parameter sensitivity studies</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Gillespie, D. T. (1977). Exact stochastic simulation of coupled chemical reactions. <em>Journal of Physical Chemistry</em>, 81(25), 2340-2361.</p></li>
+<li><p>Keeling, M. J., &amp; Rohani, P. (2008). <em>Modeling infectious diseases in humans and animals</em>. Princeton University Press.</p></li>
+<li><p>De Domenico, M., et al. (2013). Mathematical formulation of multilayer networks. <em>Physical Review X</em>, 3(4), 041022.</p></li>
+</ul>
+</section>
+<section id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Link to this heading"></a></h2>
+<p>If you use this simulator in your research, please cite py3plex:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@software</span><span class="p">{</span><span class="nl">py3plex</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Škrlj, Blaž}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Py3plex: A library for analysis and visualization of heterogeneous networks}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">url</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{https://github.com/SkBlaz/py3plex}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2023}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

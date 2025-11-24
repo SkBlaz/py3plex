@@ -1,0 +1,895 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Working with Networks &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Network Statistics" href="statistics.html" />
+    <link rel="prev" title="Algorithm Landscape" href="../concepts/algorithm_landscape.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Working with Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-networks-from-scratch">Creating Networks from Scratch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#method-1-add-edges-directly">Method 1: Add Edges Directly</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#method-2-add-nodes-and-edges-separately">Method 2: Add Nodes and Edges Separately</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#method-3-define-layers-first">Method 3: Define Layers First</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#method-4-build-from-networkx-graphs">Method 4: Build from NetworkX Graphs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-networks-from-files">Loading Networks from Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#from-simple-edge-lists">From Simple Edge Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-multilayer-edge-lists">From Multilayer Edge Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-graphml">From GraphML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-gml">From GML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-networkx-pickle">From NetworkX Pickle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-networkx-graphs">From NetworkX Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modern-i-o-with-arrow-parquet">Modern I/O with Arrow/Parquet</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-operations">Network Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#querying-network-elements">Querying Network Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extracting-subnetworks">Extracting Subnetworks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iterating-over-network-elements">Iterating Over Network Elements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modifying-networks">Modifying Networks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-elements">Adding Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removing-elements">Removing Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modifying-attributes">Modifying Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-properties">Network Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-statistics">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#network-type">Network Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connectivity">Connectivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#matrix-representations">Matrix Representations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#networkx-integration">NetworkX Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#direct-access">Direct Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#networkx-wrappers">NetworkX Wrappers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#converting-to-networkx">Converting to NetworkX</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#file-organization">File Organization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#always-verify-after-loading">Always Verify After Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-appropriate-data-structures">Use Appropriate Data Structures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-patterns">Common Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pattern-1-load-analyze-visualize">Pattern 1: Load, Analyze, Visualize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pattern-2-create-from-multiple-sources">Pattern 2: Create from Multiple Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pattern-3-layer-by-layer-analysis">Pattern 3: Layer-by-Layer Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Working with Networks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/networks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="working-with-networks">
+<h1>Working with Networks<a class="headerlink" href="#working-with-networks" title="Link to this heading"></a></h1>
+<p>This guide covers everything you need to know about creating, loading, and manipulating multilayer networks in py3plex.</p>
+<section id="creating-networks-from-scratch">
+<h2>Creating Networks from Scratch<a class="headerlink" href="#creating-networks-from-scratch" title="Link to this heading"></a></h2>
+<section id="method-1-add-edges-directly">
+<h3>Method 1: Add Edges Directly<a class="headerlink" href="#method-1-add-edges-directly" title="Link to this heading"></a></h3>
+<p>The simplest way to create a network is to add edges directly. Nodes are created automatically.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create empty network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Add edges in list format</span>
+<span class="c1"># Format: [source_node, source_layer, target_node, target_layer, weight]</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 6
+Number of edges: 4
+Number of unique nodes (as node-layer tuples): 6
+Number of unique node IDs (across all layers): 4
+Nodes per layer:
+  Layer &#39;friends&#39;: 3 nodes
+  Layer &#39;colleagues&#39;: 3 nodes
+</pre></div>
+</div>
+</section>
+<section id="method-2-add-nodes-and-edges-separately">
+<h3>Method 2: Add Nodes and Edges Separately<a class="headerlink" href="#method-2-add-nodes-and-edges-separately" title="Link to this heading"></a></h3>
+<p>For more control, add nodes explicitly before adding edges:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Add nodes explicitly (as node-layer tuples)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="c1"># Add edges between existing nodes</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="method-3-define-layers-first">
+<h3>Method 3: Define Layers First<a class="headerlink" href="#method-3-define-layers-first" title="Link to this heading"></a></h3>
+<p>You can define layers explicitly before adding content:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Define layers</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;friends&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;family&#39;</span><span class="p">)</span>
+
+<span class="c1"># Check layers</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Layers:&quot;</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+
+<span class="c1"># Add edges (nodes created automatically)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layers: [&#39;friends&#39;, &#39;colleagues&#39;, &#39;family&#39;]
+</pre></div>
+</div>
+</section>
+<section id="method-4-build-from-networkx-graphs">
+<h3>Method 4: Build from NetworkX Graphs<a class="headerlink" href="#method-4-build-from-networkx-graphs" title="Link to this heading"></a></h3>
+<p>Start with existing NetworkX graphs for each layer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create layer graphs</span>
+<span class="n">friends</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">friends</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">)])</span>
+
+<span class="n">colleagues</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">colleagues</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Dave&#39;</span><span class="p">)])</span>
+
+<span class="c1"># Combine into multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Add edges from each graph with layer label</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">friends</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">colleagues</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="loading-networks-from-files">
+<h2>Loading Networks from Files<a class="headerlink" href="#loading-networks-from-files" title="Link to this heading"></a></h2>
+<p>py3plex supports multiple file formats for loading networks. See <a class="reference internal" href="io_and_formats.html"><span class="doc">I/O and Serialization</span></a> for complete I/O documentation.</p>
+<section id="from-simple-edge-lists">
+<h3>From Simple Edge Lists<a class="headerlink" href="#from-simple-edge-lists" title="Link to this heading"></a></h3>
+<p><strong>Format:</strong> Simple <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">target</span></code> pairs (one per line)</p>
+<p><strong>File example (data.edgelist):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Alice Bob
+Bob Carol
+Carol Dave
+</pre></div>
+</div>
+<p><strong>Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 4
+Number of edges: 3
+Number of unique nodes (as node-layer tuples): 4
+Number of unique node IDs (across all layers): 4
+Nodes per layer:
+  Layer &#39;null&#39;: 4 nodes
+</pre></div>
+</div>
+<p><strong>Note:</strong> Simple edge lists create a single layer named <code class="docutils literal notranslate"><span class="pre">'null'</span></code> by default.</p>
+</section>
+<section id="from-multilayer-edge-lists">
+<h3>From Multilayer Edge Lists<a class="headerlink" href="#from-multilayer-edge-lists" title="Link to this heading"></a></h3>
+<p><strong>Format:</strong> <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">target</span> <span class="pre">layer</span></code> (space or tab-separated)</p>
+<p><strong>File example (data.multiedgelist):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Alice Bob friends
+Bob Carol friends
+Alice Bob colleagues
+Bob Dave colleagues
+</pre></div>
+</div>
+<p><strong>Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 6
+Number of edges: 4
+Number of unique nodes (as node-layer tuples): 6
+Number of unique node IDs (across all layers): 4
+Nodes per layer:
+  Layer &#39;friends&#39;: 3 nodes
+  Layer &#39;colleagues&#39;: 3 nodes
+</pre></div>
+</div>
+</section>
+<section id="from-graphml">
+<h3>From GraphML<a class="headerlink" href="#from-graphml" title="Link to this heading"></a></h3>
+<p>GraphML is an XML-based format that preserves node and edge attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.graphml&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="from-gml">
+<h3>From GML<a class="headerlink" href="#from-gml" title="Link to this heading"></a></h3>
+<p>Graph Modeling Language is another standard format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.gml&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gml&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="from-networkx-pickle">
+<h3>From NetworkX Pickle<a class="headerlink" href="#from-networkx-pickle" title="Link to this heading"></a></h3>
+<p>NetworkX’s native pickle format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.gpickle&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;gpickle&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="from-networkx-graphs">
+<h3>From NetworkX Graphs<a class="headerlink" href="#from-networkx-graphs" title="Link to this heading"></a></h3>
+<p>Load directly from a NetworkX graph object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create or load a NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Convert to py3plex</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network_from_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+<span class="c1"># Result is a single-layer network</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="modern-i-o-with-arrow-parquet">
+<h3>Modern I/O with Arrow/Parquet<a class="headerlink" href="#modern-i-o-with-arrow-parquet" title="Link to this heading"></a></h3>
+<p>For high-performance I/O, use the modern schema-based API. See <a class="reference internal" href="io_and_formats.html"><span class="doc">I/O and Serialization</span></a> for details.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+
+<span class="c1"># Read (auto-detects format from extension)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>  <span class="c1"># or .parquet, .json</span>
+
+<span class="c1"># Write</span>
+<span class="n">write</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;output.arrow&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="network-operations">
+<h2>Network Operations<a class="headerlink" href="#network-operations" title="Link to this heading"></a></h2>
+<section id="querying-network-elements">
+<h3>Querying Network Elements<a class="headerlink" href="#querying-network-elements" title="Link to this heading"></a></h3>
+<p><strong>Get all nodes:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Without attributes</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nodes:&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">nodes</span><span class="p">)[:</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="c1"># With attributes</span>
+<span class="n">nodes_with_data</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">nodes_with_data</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node: </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">, Attributes: </span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Get nodes in a specific layer:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filter by layer</span>
+<span class="n">friends_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">&#39;friends&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Friends layer nodes:&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">friends_nodes</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Get all edges:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Without attributes</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Edges:&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">edges</span><span class="p">)[:</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="c1"># With attributes</span>
+<span class="n">edges_with_data</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">edges_with_data</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge: </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">, Attributes: </span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Get neighbors:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get neighbors of a node in a specific layer</span>
+<span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s1">&#39;friends&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alice&#39;s friends: </span><span class="si">{</span><span class="n">neighbors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Get layers:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="extracting-subnetworks">
+<h3>Extracting Subnetworks<a class="headerlink" href="#extracting-subnetworks" title="Link to this heading"></a></h3>
+<p><strong>Extract a single layer:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all nodes and edges in one layer</span>
+<span class="n">friends_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="n">friends_subnet</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Extract multiple layers:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Combine multiple layers</span>
+<span class="n">social_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Extract specific nodes (all layers):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all appearances of specific nodes</span>
+<span class="n">alice_bob_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_names&quot;</span><span class="p">)</span>
+<span class="n">alice_bob_subnet</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Extract specific node-layer pairs:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get specific node-layer combinations</span>
+<span class="n">specific_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)],</span>
+    <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span>
+<span class="p">)</span>
+<span class="n">specific_subnet</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="iterating-over-network-elements">
+<h3>Iterating Over Network Elements<a class="headerlink" href="#iterating-over-network-elements" title="Link to this heading"></a></h3>
+<p><strong>Iterate over nodes:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple iteration</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>  <span class="c1"># Prints (node_id, layer_id) tuples</span>
+
+<span class="c1"># With attributes</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Iterate over edges:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple iteration</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># With attributes</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: weight=</span><span class="si">{</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Iterate over layers:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer_name</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+    <span class="n">num_edges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="n">num_edges</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="modifying-networks">
+<h2>Modifying Networks<a class="headerlink" href="#modifying-networks" title="Link to this heading"></a></h2>
+<section id="adding-elements">
+<h3>Adding Elements<a class="headerlink" href="#adding-elements" title="Link to this heading"></a></h3>
+<p><strong>Add new nodes:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add single node</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([(</span><span class="s1">&#39;Eve&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)])</span>
+
+<span class="c1"># Add multiple nodes</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;Eve&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Frank&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>Add new edges:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add single edge</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Eve&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add multiple edges</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Eve&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Frank&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Frank&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Add new layer:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;family&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="removing-elements">
+<h3>Removing Elements<a class="headerlink" href="#removing-elements" title="Link to this heading"></a></h3>
+<p>To remove nodes or edges, work with the underlying NetworkX graph:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Remove node (removes all edges)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">remove_node</span><span class="p">((</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">))</span>
+
+<span class="c1"># Remove edge</span>
+<span class="n">G</span><span class="o">.</span><span class="n">remove_edge</span><span class="p">((</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">))</span>
+
+<span class="c1"># Remove multiple nodes</span>
+<span class="n">G</span><span class="o">.</span><span class="n">remove_nodes_from</span><span class="p">([(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">)])</span>
+</pre></div>
+</div>
+</section>
+<section id="modifying-attributes">
+<h3>Modifying Attributes<a class="headerlink" href="#modifying-attributes" title="Link to this heading"></a></h3>
+<p><strong>Node attributes:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Set node attribute</span>
+<span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;role&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span>
+
+<span class="c1"># Get node attribute</span>
+<span class="n">age</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alice&#39;s age: </span><span class="si">{</span><span class="n">age</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Edge attributes:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set edge attribute</span>
+<span class="n">G</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">G</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;close&#39;</span>
+
+<span class="c1"># Get edge attribute</span>
+<span class="n">weight</span> <span class="o">=</span> <span class="n">G</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge weight: </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="network-properties">
+<h2>Network Properties<a class="headerlink" href="#network-properties" title="Link to this heading"></a></h2>
+<section id="basic-statistics">
+<h3>Basic Statistics<a class="headerlink" href="#basic-statistics" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get comprehensive stats</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># Output shows:</span>
+<span class="c1"># - Total nodes</span>
+<span class="c1"># - Total edges</span>
+<span class="c1"># - Unique node-layer pairs</span>
+<span class="c1"># - Unique node IDs</span>
+<span class="c1"># - Nodes per layer</span>
+</pre></div>
+</div>
+<p><strong>Manual counting:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Count elements manually</span>
+<span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+<span class="n">num_edges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
+<span class="n">num_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2">, Edges: </span><span class="si">{</span><span class="n">num_edges</span><span class="si">}</span><span class="s2">, Layers: </span><span class="si">{</span><span class="n">num_layers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="network-type">
+<h3>Network Type<a class="headerlink" href="#network-type" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if directed</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+<span class="n">is_directed</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">is_directed</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directed: </span><span class="si">{</span><span class="n">is_directed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check if multigraph</span>
+<span class="n">is_multi</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">is_multigraph</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multigraph: </span><span class="si">{</span><span class="n">is_multi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="connectivity">
+<h3>Connectivity<a class="headerlink" href="#connectivity" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># For undirected networks</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">G</span><span class="o">.</span><span class="n">is_directed</span><span class="p">():</span>
+    <span class="n">is_connected</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">num_components</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">number_connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connected: </span><span class="si">{</span><span class="n">is_connected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of components: </span><span class="si">{</span><span class="n">num_components</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># For directed networks</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">is_weakly_connected</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_weakly_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">is_strongly_connected</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_strongly_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weakly connected: </span><span class="si">{</span><span class="n">is_weakly_connected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Strongly connected: </span><span class="si">{</span><span class="n">is_strongly_connected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="matrix-representations">
+<h3>Matrix Representations<a class="headerlink" href="#matrix-representations" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get supra-adjacency matrix</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Supra-adjacency shape: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># For small networks, get dense version</span>
+<span class="k">if</span> <span class="n">num_nodes</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+    <span class="n">supra_adj_dense</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../concepts/py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> for details on supra-adjacency matrices.</p>
+</section>
+</section>
+<section id="networkx-integration">
+<h2>NetworkX Integration<a class="headerlink" href="#networkx-integration" title="Link to this heading"></a></h2>
+<section id="direct-access">
+<h3>Direct Access<a class="headerlink" href="#direct-access" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">core_network</span></code> attribute gives you direct access to the NetworkX graph:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Get NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Use any NetworkX function</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">clustering</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average clustering: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">G</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="networkx-wrappers">
+<h3>NetworkX Wrappers<a class="headerlink" href="#networkx-wrappers" title="Link to this heading"></a></h3>
+<p>py3plex provides convenience wrappers for common NetworkX functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract a layer first</span>
+<span class="n">friends_layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+
+<span class="c1"># Apply NetworkX algorithms via wrapper</span>
+<span class="n">degree_centrality</span> <span class="o">=</span> <span class="n">friends_layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">friends_layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+<span class="n">pagerank</span> <span class="o">=</span> <span class="n">friends_layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+
+<span class="c1"># Results are dictionaries</span>
+<span class="n">top_degree</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">degree_centrality</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 5 by degree:&quot;</span><span class="p">,</span> <span class="n">top_degree</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="converting-to-networkx">
+<h3>Converting to NetworkX<a class="headerlink" href="#converting-to-networkx" title="Link to this heading"></a></h3>
+<p>Since py3plex networks ARE NetworkX graphs, conversion is trivial:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export to standard NetworkX formats</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Save as GraphML</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;output.graphml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save as GML</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_gml</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;output.gml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save as pickle</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_gpickle</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;output.gpickle&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="io_and_formats.html"><span class="doc">I/O and Serialization</span></a> for more export options.</p>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="file-organization">
+<h3>File Organization<a class="headerlink" href="#file-organization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use absolute paths or path relative to script</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># Get directory of current script</span>
+<span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="n">network_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s2">&quot;network.edgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Load</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="n">network_path</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="always-verify-after-loading">
+<h3>Always Verify After Loading<a class="headerlink" href="#always-verify-after-loading" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># ALWAYS check stats</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># Verify it matches expectations</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Expected 3 layers&quot;</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Network is empty!&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="use-appropriate-data-structures">
+<h3>Use Appropriate Data Structures<a class="headerlink" href="#use-appropriate-data-structures" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For large networks, use sparse matrices</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Good</span>
+
+<span class="c1"># Avoid dense matrices for large networks</span>
+<span class="c1"># supra_adj = network.get_supra_adjacency_matrix(sparse=False)  # Bad for n &gt; 1000</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="common-patterns">
+<h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h2>
+<section id="pattern-1-load-analyze-visualize">
+<h3>Pattern 1: Load, Analyze, Visualize<a class="headerlink" href="#pattern-1-load-analyze-visualize" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+
+<span class="c1"># Load</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Analyze</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># Visualize</span>
+<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="pattern-2-create-from-multiple-sources">
+<h3>Pattern 2: Create from Multiple Sources<a class="headerlink" href="#pattern-2-create-from-multiple-sources" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Combine data from multiple files</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Load friends from file</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">friends_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;friends.csv&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">friends_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+                     <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># Load colleagues from database (pseudocode)</span>
+<span class="c1"># colleagues = query_database(&quot;SELECT * FROM colleagues&quot;)</span>
+<span class="c1"># for source, target in colleagues:</span>
+<span class="c1">#     network.add_edges([[source, &#39;colleagues&#39;, target, &#39;colleagues&#39;, 1]],</span>
+<span class="c1">#                      input_type=&quot;list&quot;)</span>
+</pre></div>
+</div>
+</section>
+<section id="pattern-3-layer-by-layer-analysis">
+<h3>Pattern 3: Layer-by-Layer Analysis<a class="headerlink" href="#pattern-3-layer-by-layer-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Analyze each layer separately</span>
+<span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Layer: </span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2"> ===&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract layer</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer_name</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Compute metrics</span>
+    <span class="n">layer_subnet</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+    <span class="c1"># Optional: visualize</span>
+    <span class="c1"># draw_multilayer_default([layer_subnet], display=True)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="statistics.html"><span class="doc">Network Statistics</span></a> - Computing network metrics</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Finding communities</p></li>
+<li><p><a class="reference internal" href="io_and_formats.html"><span class="doc">I/O and Serialization</span></a> - Complete I/O documentation</p></li>
+<li><p><a class="reference internal" href="visualization.html"><span class="doc">Visualization Guide</span></a> - Visualization techniques</p></li>
+<li><p><a class="reference internal" href="../concepts/py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> - Understanding the internal representation</p></li>
+</ul>
+<p><strong>Related Examples:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_functionality.py</span></code> - Core operations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_IO.py</span></code> - Loading and saving</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_manipulation.py</span></code> - Network manipulation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_networkx_wrapper.py</span></code> - NetworkX integration</p></li>
+</ul>
+<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">https://github.com/SkBlaz/py3plex/tree/master/examples</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../concepts/algorithm_landscape.html" class="btn btn-neutral float-left" title="Algorithm Landscape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="statistics.html" class="btn btn-neutral float-right" title="Network Statistics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

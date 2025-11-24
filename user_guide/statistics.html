@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Statistics &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Community Detection Tutorial" href="community_detection.html" />
+    <link rel="prev" title="Working with Networks" href="networks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Network Statistics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-network-statistics">Basic Network Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quick-stats">Quick Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manual-counting">Manual Counting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#layer-specific-statistics">Layer-Specific Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#layer-density">Layer Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layer-similarity">Layer Similarity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edge-overlap">Edge Overlap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inter-layer-degree-correlation">Inter-Layer Degree Correlation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#node-level-statistics">Node-Level Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#node-activity">Node Activity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#versatility-centrality">Versatility Centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#participation-coefficient">Participation Coefficient</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-level-statistics">Network-Level Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#entropy-of-multiplexity">Entropy of Multiplexity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#algebraic-connectivity">Algebraic Connectivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-clustering-coefficient">Multilayer Clustering Coefficient</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-networkx-statistics">Using NetworkX Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-networkx-metrics">Basic NetworkX Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#degree-distribution">Degree Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#path-based-statistics">Path-Based Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#statistical-comparison">Statistical Comparison</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#comparing-networks">Comparing Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layer-by-layer-analysis">Layer-by-Layer Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exporting-statistics">Exporting Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#save-to-csv">Save to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#save-to-json">Save to JSON</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Network Statistics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/statistics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="network-statistics">
+<h1>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading"></a></h1>
+<p>This guide covers the statistical measures available in py3plex for analyzing multilayer networks.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>py3plex provides three levels of network statistics:</p>
+<ol class="arabic simple">
+<li><p><strong>Global Statistics</strong> - Whole network properties (density, clustering, etc.)</p></li>
+<li><p><strong>Layer-Specific Statistics</strong> - Per-layer measures and comparisons</p></li>
+<li><p><strong>Node-Level Statistics</strong> - Node activity and participation across layers</p></li>
+</ol>
+<p>For centrality measures (degree, betweenness, PageRank, etc.), see <a class="reference internal" href="../concepts/algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a>.</p>
+</section>
+<section id="basic-network-statistics">
+<h2>Basic Network Statistics<a class="headerlink" href="#basic-network-statistics" title="Link to this heading"></a></h2>
+<section id="quick-stats">
+<h3>Quick Stats<a class="headerlink" href="#quick-stats" title="Link to this heading"></a></h3>
+<p>The fastest way to get basic information:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Display comprehensive stats</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 184
+Number of edges: 1691
+Number of unique nodes (as node-layer tuples): 184
+Number of unique node IDs (across all layers): 46
+Nodes per layer:
+  Layer &#39;1&#39;: 46 nodes
+  Layer &#39;2&#39;: 46 nodes
+  Layer &#39;3&#39;: 46 nodes
+  Layer &#39;4&#39;: 46 nodes
+</pre></div>
+</div>
+</section>
+<section id="manual-counting">
+<h3>Manual Counting<a class="headerlink" href="#manual-counting" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Count elements</span>
+<span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+<span class="n">num_edges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
+<span class="n">num_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+
+<span class="c1"># Unique node IDs (across all layers)</span>
+<span class="n">unique_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="n">unique_nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<span class="n">num_unique_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_nodes</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes (node-layer pairs): </span><span class="si">{</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edges: </span><span class="si">{</span><span class="n">num_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="n">num_layers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique node IDs: </span><span class="si">{</span><span class="n">num_unique_nodes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="layer-specific-statistics">
+<h2>Layer-Specific Statistics<a class="headerlink" href="#layer-specific-statistics" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">multilayer_statistics</span></code> module provides comprehensive statistics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+</pre></div>
+</div>
+<section id="layer-density">
+<h3>Layer Density<a class="headerlink" href="#layer-density" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Fraction of possible edges that exist in a layer.</p>
+<p><strong>Formula:</strong> <span class="math notranslate nohighlight">\(density = \\frac{2m}{n(n-1)}\)</span> for undirected graphs</p>
+<p><strong>Use case:</strong> Measure how connected a layer is.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Density of individual layers</span>
+<span class="n">density_layer1</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">density_layer2</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer 1 density: </span><span class="si">{</span><span class="n">density_layer1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer 2 density: </span><span class="si">{</span><span class="n">density_layer2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>0.0 = No edges (empty layer)</p></li>
+<li><p>1.0 = Complete graph (all possible edges exist)</p></li>
+<li><p>Typical real-world networks: 0.001 - 0.1</p></li>
+</ul>
+</section>
+<section id="layer-similarity">
+<h3>Layer Similarity<a class="headerlink" href="#layer-similarity" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> How similar two layers are in structure.</p>
+<p><strong>Methods:</strong> Jaccard index, Pearson correlation, cosine similarity</p>
+<p><strong>Use case:</strong> Identify redundant or complementary layers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Jaccard similarity (based on edges)</span>
+<span class="n">jaccard</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Pearson correlation</span>
+<span class="n">pearson</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;pearson&#39;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Jaccard similarity: </span><span class="si">{</span><span class="n">jaccard</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pearson correlation: </span><span class="si">{</span><span class="n">pearson</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>1.0 = Identical layers</p></li>
+<li><p>0.0 = Completely different</p></li>
+<li><p>Negative values (Pearson) = Anti-correlated</p></li>
+</ul>
+</section>
+<section id="edge-overlap">
+<h3>Edge Overlap<a class="headerlink" href="#edge-overlap" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Fraction of edges that appear in both layers.</p>
+<p><strong>Use case:</strong> Measure redundancy between layers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge overlap: </span><span class="si">{</span><span class="n">overlap</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>1.0 = All edges in common</p></li>
+<li><p>0.0 = No edges in common</p></li>
+</ul>
+</section>
+<section id="inter-layer-degree-correlation">
+<h3>Inter-Layer Degree Correlation<a class="headerlink" href="#inter-layer-degree-correlation" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Correlation between node degrees in different layers.</p>
+<p><strong>Use case:</strong> Determine if “hubs” in one layer are hubs in another.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Degree correlation: </span><span class="si">{</span><span class="n">correlation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>1.0 = Perfect positive correlation (hubs in layer1 are hubs in layer2)</p></li>
+<li><p>0.0 = No correlation</p></li>
+<li><p>-1.0 = Perfect negative correlation</p></li>
+</ul>
+</section>
+</section>
+<section id="node-level-statistics">
+<h2>Node-Level Statistics<a class="headerlink" href="#node-level-statistics" title="Link to this heading"></a></h2>
+<section id="node-activity">
+<h3>Node Activity<a class="headerlink" href="#node-activity" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Fraction of layers in which a node appears.</p>
+<p><strong>Use case:</strong> Identify nodes that participate in multiple contexts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activity for a single node</span>
+<span class="n">activity_alice</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Alice&#39;s activity: </span><span class="si">{</span><span class="n">activity_alice</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compute for all nodes</span>
+<span class="n">all_activities</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">unique_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">unique_nodes</span><span class="p">:</span>
+    <span class="n">all_activities</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+
+<span class="c1"># Top 5 most active nodes</span>
+<span class="n">top_active</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_activities</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Most active nodes:&quot;</span><span class="p">,</span> <span class="n">top_active</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>1.0 = Node appears in all layers</p></li>
+<li><p>0.5 = Node appears in half of layers</p></li>
+<li><p>Close to 0.0 = Node appears in few layers</p></li>
+</ul>
+</section>
+<section id="versatility-centrality">
+<h3>Versatility Centrality<a class="headerlink" href="#versatility-centrality" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Node importance considering activity across layers.</p>
+<p><strong>Use case:</strong> Find nodes that are important across multiple layers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Versatility based on degree</span>
+<span class="n">versatility_degree</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Versatility based on betweenness</span>
+<span class="n">versatility_betweenness</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;betweenness&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Top versatile nodes</span>
+<span class="n">top_versatile</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+    <span class="n">versatility_degree</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 versatile nodes:&quot;</span><span class="p">,</span> <span class="n">top_versatile</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>Higher values = More important across multiple layers</p></li>
+<li><p>Combines centrality within layers with cross-layer participation</p></li>
+</ul>
+</section>
+<section id="participation-coefficient">
+<h3>Participation Coefficient<a class="headerlink" href="#participation-coefficient" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Measures how evenly a node’s connections are distributed across layers.</p>
+<p><strong>Use case:</strong> Identify nodes that bridge different layers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">louvain_multilayer</span>
+<span class="p">)</span>
+
+<span class="c1"># Detect communities first</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Compute participation coefficient</span>
+<span class="n">participation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">partition</span><span class="p">)</span>
+
+<span class="c1"># Top bridging nodes</span>
+<span class="n">top_bridging</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+    <span class="n">participation</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top bridging nodes:&quot;</span><span class="p">,</span> <span class="n">top_bridging</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>1.0 = Connections evenly distributed across layers</p></li>
+<li><p>0.0 = All connections in one layer</p></li>
+</ul>
+</section>
+</section>
+<section id="network-level-statistics">
+<h2>Network-Level Statistics<a class="headerlink" href="#network-level-statistics" title="Link to this heading"></a></h2>
+<section id="entropy-of-multiplexity">
+<h3>Entropy of Multiplexity<a class="headerlink" href="#entropy-of-multiplexity" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Measures layer diversity (how evenly nodes/edges are distributed across layers).</p>
+<p><strong>Use case:</strong> Quantify structural diversity of the multilayer network.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">entropy_of_multiplexity</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entropy of multiplexity: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>0.0 = All activity in one layer (no diversity)</p></li>
+<li><p>Higher values = More evenly distributed across layers</p></li>
+<li><p>Maximum = log₂(number of layers)</p></li>
+</ul>
+</section>
+<section id="algebraic-connectivity">
+<h3>Algebraic Connectivity<a class="headerlink" href="#algebraic-connectivity" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Second smallest eigenvalue of the Laplacian matrix.</p>
+<p><strong>Use case:</strong> Measure network robustness (higher = more robust).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algebraic_conn</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">algebraic_connectivity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Algebraic connectivity: </span><span class="si">{</span><span class="n">algebraic_conn</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>0.0 = Disconnected network</p></li>
+<li><p>Higher values = Better connectivity and robustness</p></li>
+</ul>
+</section>
+<section id="multilayer-clustering-coefficient">
+<h3>Multilayer Clustering Coefficient<a class="headerlink" href="#multilayer-clustering-coefficient" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Extension of clustering coefficient to multilayer networks.</p>
+<p><strong>Use case:</strong> Measure local cohesion across layers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">clustering</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multilayer_clustering_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multilayer clustering: </span><span class="si">{</span><span class="n">clustering</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>1.0 = Every node’s neighbors form a clique</p></li>
+<li><p>0.0 = No clustering (tree-like structure)</p></li>
+</ul>
+</section>
+</section>
+<section id="using-networkx-statistics">
+<h2>Using NetworkX Statistics<a class="headerlink" href="#using-networkx-statistics" title="Link to this heading"></a></h2>
+<p>Since py3plex networks are NetworkX graphs, you can use any NetworkX statistic:</p>
+<section id="basic-networkx-metrics">
+<h3>Basic NetworkX Metrics<a class="headerlink" href="#basic-networkx-metrics" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Clustering coefficient</span>
+<span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average clustering: </span><span class="si">{</span><span class="n">clustering</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Transitivity</span>
+<span class="n">transitivity</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">transitivity</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transitivity: </span><span class="si">{</span><span class="n">transitivity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Density</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="degree-distribution">
+<h3>Degree Distribution<a class="headerlink" href="#degree-distribution" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Get degree sequence</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">()]</span>
+
+<span class="c1"># Degree distribution</span>
+<span class="n">degree_dist</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Degree distribution:&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">degree_dist</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span>
+
+<span class="c1"># Average degree</span>
+<span class="n">avg_degree</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average degree: </span><span class="si">{</span><span class="n">avg_degree</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="path-based-statistics">
+<h3>Path-Based Statistics<a class="headerlink" href="#path-based-statistics" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Check if connected first</span>
+<span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()):</span>
+    <span class="c1"># Average shortest path length</span>
+    <span class="n">avg_path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_shortest_path_length</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average shortest path: </span><span class="si">{</span><span class="n">avg_path</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Diameter</span>
+    <span class="n">diameter</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Diameter: </span><span class="si">{</span><span class="n">diameter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Network is not connected&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Largest component</span>
+    <span class="n">largest_cc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+    <span class="n">largest_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">largest_cc</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Largest component: </span><span class="si">{</span><span class="n">largest_size</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="statistical-comparison">
+<h2>Statistical Comparison<a class="headerlink" href="#statistical-comparison" title="Link to this heading"></a></h2>
+<section id="comparing-networks">
+<h3>Comparing Networks<a class="headerlink" href="#comparing-networks" title="Link to this heading"></a></h3>
+<p>Compare two multilayer networks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+
+<span class="c1"># Load two networks</span>
+<span class="n">network1</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data1.multiedgelist&quot;</span><span class="p">)</span>
+<span class="n">network2</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data2.multiedgelist&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compare basic stats</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Network 1:&quot;</span><span class="p">)</span>
+<span class="n">network1</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Network 2:&quot;</span><span class="p">)</span>
+<span class="n">network2</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># Compare layer densities (if same layers)</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network1</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network2</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+        <span class="n">density1</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network1</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="n">density2</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network2</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">density1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">density2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-by-layer-analysis">
+<h3>Layer-by-Layer Analysis<a class="headerlink" href="#layer-by-layer-analysis" title="Link to this heading"></a></h3>
+<p>Systematic comparison of all layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+
+<span class="c1"># Collect stats for each layer</span>
+<span class="n">layer_stats</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="c1"># Extract layer</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">G_layer</span> <span class="o">=</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">core_network</span>
+
+    <span class="c1"># Compute stats</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+        <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">G_layer</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span>
+        <span class="s1">&#39;edges&#39;</span><span class="p">:</span> <span class="n">G_layer</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">(),</span>
+        <span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span>
+        <span class="s1">&#39;clustering&#39;</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">G_layer</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">layer_stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+
+<span class="c1"># Display as table</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">layer_stats</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>layer  nodes  edges  density  clustering
+    1     46    143   0.1384      0.4521
+    2     46    139   0.1346      0.4123
+    3     46    136   0.1317      0.3892
+    4     46    134   0.1298      0.3756
+</pre></div>
+</div>
+</section>
+</section>
+<section id="exporting-statistics">
+<h2>Exporting Statistics<a class="headerlink" href="#exporting-statistics" title="Link to this heading"></a></h2>
+<section id="save-to-csv">
+<h3>Save to CSV<a class="headerlink" href="#save-to-csv" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Collect node statistics</span>
+<span class="n">node_stats</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">unique_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">unique_nodes</span><span class="p">:</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+        <span class="s1">&#39;activity&#39;</span><span class="p">:</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">),</span>
+        <span class="c1"># Add more stats as needed</span>
+    <span class="p">}</span>
+    <span class="n">node_stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+
+<span class="c1"># Save</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">node_stats</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;node_statistics.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="save-to-json">
+<h3>Save to JSON<a class="headerlink" href="#save-to-json" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="c1"># Collect statistics</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;num_nodes&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())),</span>
+    <span class="s1">&#39;num_edges&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">())),</span>
+    <span class="s1">&#39;num_layers&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()),</span>
+    <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="c1"># Layer stats</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;layers&#39;</span><span class="p">][</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)),</span>
+        <span class="c1"># Add more stats</span>
+    <span class="p">}</span>
+
+<span class="c1"># Save</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;network_stats.json&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Always check basic stats first</strong></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>  <span class="c1"># Before doing any analysis</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>Extract layers for layer-specific analysis</strong></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layer1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;layer1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="c1"># Now apply NetworkX functions</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Cache expensive computations</strong></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute once</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+
+<span class="c1"># Reuse</span>
+<span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">versatility</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Handle edge cases</strong></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for empty layers</span>
+<span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;layer1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Layer is empty, skipping...&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-example">
+<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Basic Statistics ===&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Layer Statistics ===&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: density = </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Node Activity ===&quot;</span><span class="p">)</span>
+<span class="n">unique_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
+<span class="n">activities</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">unique_nodes</span><span class="p">}</span>
+<span class="n">top_active</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">activities</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">activity</span> <span class="ow">in</span> <span class="n">top_active</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">activity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Layer Similarity ===&quot;</span><span class="p">)</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span>
+        <span class="n">network</span><span class="p">,</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Global Metrics ===&quot;</span><span class="p">)</span>
+<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">entropy_of_multiplexity</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entropy of multiplexity: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Finding communities</p></li>
+<li><p><a class="reference internal" href="networks.html"><span class="doc">Working with Networks</span></a> - Creating and loading networks</p></li>
+<li><p><a class="reference internal" href="visualization.html"><span class="doc">Visualization Guide</span></a> - Visualizing statistics</p></li>
+<li><p><a class="reference internal" href="../concepts/algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> - Overview of all algorithms</p></li>
+<li><p><a class="reference internal" href="../reference/algorithm_reference.html"><span class="doc">Algorithm Roadmap</span></a> - Complete API reference</p></li>
+</ul>
+<p><strong>Related Examples:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_statistics.py</span></code> - Statistical analysis examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_layer_comparison.py</span></code> - Comparing layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_node_metrics.py</span></code> - Node-level metrics</p></li>
+</ul>
+<p>Repository: <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">https://github.com/SkBlaz/py3plex/tree/master/examples</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="networks.html" class="btn btn-neutral float-left" title="Working with Networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="community_detection.html" class="btn btn-neutral float-right" title="Community Detection Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

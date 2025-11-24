@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command-Line Interface (CLI) Tutorial &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Command-Line Interface (CLI) Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/deployment/cli_usage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="command-line-interface-cli-tutorial">
+<h1>Command-Line Interface (CLI) Tutorial<a class="headerlink" href="#command-line-interface-cli-tutorial" title="Link to this heading"></a></h1>
+<p>Py3plex includes a comprehensive command-line interface that provides access to all main algorithms and functionality directly from the terminal. This is useful for quick analysis, scripting, and automation workflows.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>The CLI tool is automatically available after installing py3plex:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+</pre></div>
+</div>
+<p>After installation, verify the CLI is available:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>--help
+</pre></div>
+</div>
+<p><strong>Alternative: Using Docker</strong></p>
+<p>If you prefer Docker, the CLI is also available via the Docker container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the Docker image</span>
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
+
+<span class="c1"># Run CLI commands</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>--help
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--output<span class="w"> </span>/data/network.edgelist
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation.</p>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p><strong>New to py3plex?</strong> Start with these essential commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run an interactive demo with example graph</span>
+py3plex<span class="w"> </span>quickstart
+
+<span class="c1"># Verify installation</span>
+py3plex<span class="w"> </span>selftest
+
+<span class="c1"># Check version</span>
+py3plex<span class="w"> </span>--version
+
+<span class="c1"># Get help</span>
+py3plex<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">quickstart</span></code> command creates a small demo multilayer network, computes statistics, generates a visualization, and shows you next steps. It’s the fastest way to see py3plex in action!</p>
+</section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
+<p>The CLI includes built-in documentation for all commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Main help with all commands</span>
+py3plex<span class="w"> </span>--help
+
+<span class="c1"># Help for specific command</span>
+py3plex<span class="w"> </span>create<span class="w"> </span>--help
+py3plex<span class="w"> </span>community<span class="w"> </span>--help
+py3plex<span class="w"> </span>centrality<span class="w"> </span>--help
+</pre></div>
+</div>
+</section>
+<section id="available-commands">
+<h2>Available Commands<a class="headerlink" href="#available-commands" title="Link to this heading"></a></h2>
+<p>The py3plex CLI provides these main commands:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">quickstart</span></code> - Interactive demo with example graph (recommended for new users)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">selftest</span></code> - Verify installation and core functionality</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check</span></code> - Lint and validate graph data files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create</span></code> - Create new multilayer networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load</span></code> - Load and inspect networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">community</span></code> - Detect communities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">centrality</span></code> - Compute centrality measures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stats</span></code> - Compute multilayer network statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">visualize</span></code> - Create network visualizations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">aggregate</span></code> - Aggregate multilayer networks into single layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">convert</span></code> - Convert between network formats</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">help</span></code> - Show detailed help information</p></li>
+</ul>
+<section id="quick-reference">
+<h3>Quick Reference<a class="headerlink" href="#quick-reference" title="Link to this heading"></a></h3>
+<p><strong>Essential flags:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--version</span></code> - Display py3plex version</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--help</span></code> - Display help for any command</p></li>
+</ul>
+<p><strong>Common workflows:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Quick demo</span>
+py3plex<span class="w"> </span>quickstart
+
+<span class="c1"># Validate → Load → Analyze</span>
+py3plex<span class="w"> </span>check<span class="w"> </span>data.csv
+py3plex<span class="w"> </span>load<span class="w"> </span>data.csv<span class="w"> </span>--stats
+
+<span class="c1"># Create → Analyze → Visualize</span>
+py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--output<span class="w"> </span>net.graphml
+py3plex<span class="w"> </span>load<span class="w"> </span>net.graphml<span class="w"> </span>--stats
+py3plex<span class="w"> </span>visualize<span class="w"> </span>net.graphml<span class="w"> </span>--output<span class="w"> </span>viz.png
+
+<span class="c1"># Community detection workflow</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>net.graphml<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--output<span class="w"> </span>communities.json
+</pre></div>
+</div>
+</section>
+</section>
+<section id="validating-data-files">
+<h2>Validating Data Files<a class="headerlink" href="#validating-data-files" title="Link to this heading"></a></h2>
+<p>Before loading network data, you can validate file format and data integrity using the <code class="docutils literal notranslate"><span class="pre">check</span></code> command. This helps catch common issues early and provides actionable suggestions for fixing problems.</p>
+<section id="basic-validation">
+<h3>Basic Validation<a class="headerlink" href="#basic-validation" title="Link to this heading"></a></h3>
+<p>Validate a graph data file (auto-detects format):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>check<span class="w"> </span>network.csv
+</pre></div>
+</div>
+<p><strong>Output for valid file:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Checking file: network.csv
+✓ No issues found!
+</pre></div>
+</div>
+<p><strong>Output for file with issues:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Checking file: network.csv
+
+Found 5 issue(s):
+
+[INFO] No layer columns found - this appears to be a single-layer network
+[ERROR] Line 3: Empty destination node
+  → Suggestion: Provide a valid destination node ID
+[WARNING] Line 4: Negative weight: -1.5
+  → Suggestion: Negative weights may not be supported by all algorithms
+[WARNING] Line 5: Self-loop detected: Dave -&gt; Dave
+  → Suggestion: Self-loops may not be supported by all algorithms
+[WARNING] Line 6: Duplicate edge: Alice -&gt; Bob
+  → Suggestion: Remove duplicate edges or consolidate with edge weights
+
+Linting results:
+  Errors: 1
+  Warnings: 3
+  Info: 1
+
+✗ Validation failed with errors
+</pre></div>
+</div>
+</section>
+<section id="supported-file-formats">
+<h3>Supported File Formats<a class="headerlink" href="#supported-file-formats" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">check</span></code> command automatically detects and validates these formats:</p>
+<ul class="simple">
+<li><p><strong>CSV</strong> - Comma-separated values with headers (e.g., <code class="docutils literal notranslate"><span class="pre">network.csv</span></code>)</p></li>
+<li><p><strong>Edgelist</strong> - Space-separated node pairs (e.g., <code class="docutils literal notranslate"><span class="pre">network.edgelist</span></code>)</p></li>
+<li><p><strong>Multiedgelist</strong> - Space-separated with layer information (e.g., <code class="docutils literal notranslate"><span class="pre">network.txt</span></code>)</p></li>
+</ul>
+</section>
+<section id="strict-mode">
+<h3>Strict Mode<a class="headerlink" href="#strict-mode" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--strict</span></code> to treat warnings as errors (useful for CI/CD pipelines):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>check<span class="w"> </span>network.csv<span class="w"> </span>--strict
+</pre></div>
+</div>
+<p>With strict mode enabled, the command exits with error code 1 if any warnings are found, making it suitable for automated validation in scripts.</p>
+</section>
+<section id="validation-checks">
+<h3>Validation Checks<a class="headerlink" href="#validation-checks" title="Link to this heading"></a></h3>
+<p>The linter performs these checks:</p>
+<p><strong>Errors (cause validation failure):</strong></p>
+<ul class="simple">
+<li><p>Missing or empty node IDs</p></li>
+<li><p>Invalid weight values (non-numeric)</p></li>
+<li><p>Missing required columns (for CSV files)</p></li>
+<li><p>Malformed file structure</p></li>
+</ul>
+<p><strong>Warnings (reported but don’t fail validation):</strong></p>
+<ul class="simple">
+<li><p>Negative weights</p></li>
+<li><p>Self-loops</p></li>
+<li><p>Duplicate edges</p></li>
+</ul>
+<p><strong>Info (informational messages):</strong></p>
+<ul class="simple">
+<li><p>Single-layer network detected (when no layer columns found)</p></li>
+<li><p>Format detection results</p></li>
+</ul>
+</section>
+<section id="example-workflows">
+<h3>Example Workflows<a class="headerlink" href="#example-workflows" title="Link to this heading"></a></h3>
+<p><strong>Validate before loading:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Validate the file</span>
+py3plex<span class="w"> </span>check<span class="w"> </span>my_network.csv
+
+<span class="c1"># Step 2: If valid, load and analyze</span>
+py3plex<span class="w"> </span>load<span class="w"> </span>my_network.csv<span class="w"> </span>--stats
+</pre></div>
+</div>
+<p><strong>CI/CD integration:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your CI script - fail if any issues found</span>
+py3plex<span class="w"> </span>check<span class="w"> </span>network.csv<span class="w"> </span>--strict<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+
+<span class="c1"># Proceed with analysis if validation passed</span>
+py3plex<span class="w"> </span>load<span class="w"> </span>network.csv<span class="w"> </span>--stats
+</pre></div>
+</div>
+<p><strong>Batch validation:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Validate multiple files</span>
+<span class="k">for</span><span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>data/*.csv<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Checking </span><span class="nv">$file</span><span class="s2">...&quot;</span>
+<span class="w">    </span>py3plex<span class="w"> </span>check<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$file</span><span class="s2">&quot;</span>
+<span class="k">done</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="creating-networks">
+<h2>Creating Networks<a class="headerlink" href="#creating-networks" title="Link to this heading"></a></h2>
+<section id="create-random-networks">
+<h3>Create Random Networks<a class="headerlink" href="#create-random-networks" title="Link to this heading"></a></h3>
+<p>Create a simple multilayer network with random edges:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>--output<span class="w"> </span>network.graphml<span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span>
+</pre></div>
+</div>
+<p>This creates a network with 100 nodes per layer and 3 layers, saving it to <code class="docutils literal notranslate"><span class="pre">network.graphml</span></code>.</p>
+</section>
+<section id="network-generation-models">
+<h3>Network Generation Models<a class="headerlink" href="#network-generation-models" title="Link to this heading"></a></h3>
+<p><strong>Erdős-Rényi Random Graphs:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--type<span class="w"> </span>er<span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.15<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>er_network.graphml<span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span>
+</pre></div>
+</div>
+<p><strong>Barabási-Albert Preferential Attachment:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>--type<span class="w"> </span>ba<span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.05<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>ba_network.graphml<span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span>
+</pre></div>
+</div>
+<p><strong>Watts-Strogatz Small-World:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--type<span class="w"> </span>ws<span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.2<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>ws_network.graphml<span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span>
+</pre></div>
+</div>
+</section>
+<section id="output-formats">
+<h3>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading"></a></h3>
+<p>The CLI supports multiple output formats (automatically detected from file extension):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.graphml</span></code> - GraphML format (XML-based, recommended)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.gexf</span></code> - GEXF format (XML-based, for Gephi)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.gpickle</span></code> - Python pickle format (binary, fastest)</p></li>
+</ul>
+</section>
+</section>
+<section id="loading-and-inspecting-networks">
+<h2>Loading and Inspecting Networks<a class="headerlink" href="#loading-and-inspecting-networks" title="Link to this heading"></a></h2>
+<section id="basic-network-information">
+<h3>Basic Network Information<a class="headerlink" href="#basic-network-information" title="Link to this heading"></a></h3>
+<p>Display basic network statistics:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>load<span class="w"> </span>network.graphml<span class="w"> </span>--info
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Network Information:
+  Nodes: 300
+  Edges: 450
+  Layers: 3 (layer1, layer2, layer3)
+  Directed: False
+</pre></div>
+</div>
+</section>
+<section id="detailed-statistics">
+<h3>Detailed Statistics<a class="headerlink" href="#detailed-statistics" title="Link to this heading"></a></h3>
+<p>Get comprehensive statistics including layer densities and clustering:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>load<span class="w"> </span>network.graphml<span class="w"> </span>--stats
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Network Information:
+  Nodes: 300
+  Edges: 450
+  Layers: 3 (layer1, layer2, layer3)
+  Directed: False
+
+Basic Statistics:
+  Layer Densities:
+    layer1: 0.0303
+    layer2: 0.0298
+    layer3: 0.0305
+  Avg Clustering: 0.0421
+  Avg Degree: 3.00
+  Max Degree: 12
+</pre></div>
+</div>
+</section>
+<section id="save-to-json">
+<h3>Save to JSON<a class="headerlink" href="#save-to-json" title="Link to this heading"></a></h3>
+<p>Export network information to JSON for further processing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>load<span class="w"> </span>network.graphml<span class="w"> </span>--info<span class="w"> </span>--output<span class="w"> </span>network_info.json
+</pre></div>
+</div>
+</section>
+</section>
+<section id="community-detection">
+<h2>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h2>
+<section id="louvain-algorithm">
+<h3>Louvain Algorithm<a class="headerlink" href="#louvain-algorithm" title="Link to this heading"></a></h3>
+<p>Detect communities using the Louvain modularity optimization algorithm:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--output<span class="w"> </span>communities.json
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Loading network from network.graphml...
+Detecting communities using louvain...
+Found 8 communities
+Community sizes: min=15, max=52, avg=37.5
+Communities saved to communities.json
+</pre></div>
+</div>
+</section>
+<section id="with-custom-resolution">
+<h3>With Custom Resolution<a class="headerlink" href="#with-custom-resolution" title="Link to this heading"></a></h3>
+<p>Adjust the resolution parameter to find more or fewer communities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Higher resolution = more communities</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--resolution<span class="w"> </span><span class="m">1</span>.5
+
+<span class="c1"># Lower resolution = fewer communities</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--resolution<span class="w"> </span><span class="m">0</span>.5
+</pre></div>
+</div>
+</section>
+<section id="label-propagation">
+<h3>Label Propagation<a class="headerlink" href="#label-propagation" title="Link to this heading"></a></h3>
+<p>Use label propagation for fast community detection:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>label_prop<span class="w"> </span>--output<span class="w"> </span>communities.json
+</pre></div>
+</div>
+</section>
+<section id="infomap-optional">
+<h3>Infomap (Optional)<a class="headerlink" href="#infomap-optional" title="Link to this heading"></a></h3>
+<p>If Infomap is installed, use it for overlapping community detection:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>infomap<span class="w"> </span>--output<span class="w"> </span>communities.json
+</pre></div>
+</div>
+</section>
+</section>
+<section id="centrality-measures">
+<h2>Centrality Measures<a class="headerlink" href="#centrality-measures" title="Link to this heading"></a></h2>
+<section id="degree-centrality">
+<h3>Degree Centrality<a class="headerlink" href="#degree-centrality" title="Link to this heading"></a></h3>
+<p>Compute degree centrality and show top nodes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>degree<span class="w"> </span>--top<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Loading network from network.graphml...
+Computing degree centrality...
+
+Top 10 nodes by degree centrality:
+  node42---layer1: 12.000000
+  node18---layer2: 11.000000
+  node77---layer1: 10.000000
+  ...
+</pre></div>
+</div>
+</section>
+<section id="save-results">
+<h3>Save Results<a class="headerlink" href="#save-results" title="Link to this heading"></a></h3>
+<p>Export centrality scores to JSON:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>degree<span class="w"> </span>--output<span class="w"> </span>centrality.json
+</pre></div>
+</div>
+</section>
+<section id="all-centrality-measures">
+<h3>All Centrality Measures<a class="headerlink" href="#all-centrality-measures" title="Link to this heading"></a></h3>
+<p><strong>Betweenness Centrality:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>betweenness<span class="w"> </span>--top<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+<p><strong>Closeness Centrality:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>closeness<span class="w"> </span>--top<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+<p><strong>Eigenvector Centrality:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>eigenvector<span class="w"> </span>--top<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+<p><strong>PageRank:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>pagerank<span class="w"> </span>--top<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="multilayer-network-statistics">
+<h2>Multilayer Network Statistics<a class="headerlink" href="#multilayer-network-statistics" title="Link to this heading"></a></h2>
+<section id="comprehensive-statistics">
+<h3>Comprehensive Statistics<a class="headerlink" href="#comprehensive-statistics" title="Link to this heading"></a></h3>
+<p>Compute all available multilayer statistics:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>stats<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span>--output<span class="w"> </span>stats.json
+</pre></div>
+</div>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Layer densities for each layer</p></li>
+<li><p>Clustering coefficient</p></li>
+<li><p>Node activity samples</p></li>
+<li><p>Versatility centrality (top nodes)</p></li>
+<li><p>Edge overlap between layers</p></li>
+</ul>
+</section>
+<section id="specific-statistics">
+<h3>Specific Statistics<a class="headerlink" href="#specific-statistics" title="Link to this heading"></a></h3>
+<p><strong>Layer Density:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>stats<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>layer_density
+</pre></div>
+</div>
+<p><strong>Clustering Coefficient:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>stats<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>clustering
+</pre></div>
+</div>
+<p><strong>Node Activity:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>stats<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>node_activity
+</pre></div>
+</div>
+<p><strong>Versatility Centrality:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>stats<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>versatility
+</pre></div>
+</div>
+<p><strong>Edge Overlap:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>stats<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>edge_overlap
+</pre></div>
+</div>
+</section>
+</section>
+<section id="network-visualization">
+<h2>Network Visualization<a class="headerlink" href="#network-visualization" title="Link to this heading"></a></h2>
+<section id="multilayer-layout">
+<h3>Multilayer Layout<a class="headerlink" href="#multilayer-layout" title="Link to this heading"></a></h3>
+<p>Create a visualization using the specialized multilayer layout:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<span class="w"> </span>--layout<span class="w"> </span>multilayer<span class="w"> </span>--output<span class="w"> </span>network.png
+</pre></div>
+</div>
+</section>
+<section id="standard-layouts">
+<h3>Standard Layouts<a class="headerlink" href="#standard-layouts" title="Link to this heading"></a></h3>
+<p>Use NetworkX layouts for different visual styles:</p>
+<p><strong>Spring Layout (Force-Directed):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<span class="w"> </span>--layout<span class="w"> </span>spring<span class="w"> </span>--output<span class="w"> </span>network_spring.png
+</pre></div>
+</div>
+<p><strong>Circular Layout:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<span class="w"> </span>--layout<span class="w"> </span>circular<span class="w"> </span>--output<span class="w"> </span>network_circular.png
+</pre></div>
+</div>
+<p><strong>Kamada-Kawai Layout:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<span class="w"> </span>--layout<span class="w"> </span>kamada_kawai<span class="w"> </span>--output<span class="w"> </span>network_kk.png
+</pre></div>
+</div>
+</section>
+<section id="custom-figure-size">
+<h3>Custom Figure Size<a class="headerlink" href="#custom-figure-size" title="Link to this heading"></a></h3>
+<p>Adjust the output image dimensions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<span class="w"> </span>--layout<span class="w"> </span>spring<span class="w"> </span>--width<span class="w"> </span><span class="m">15</span><span class="w"> </span>--height<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>large_viz.png
+</pre></div>
+</div>
+</section>
+</section>
+<section id="network-aggregation">
+<h2>Network Aggregation<a class="headerlink" href="#network-aggregation" title="Link to this heading"></a></h2>
+<p>Aggregate multiple layers into a single layer using different methods:</p>
+<section id="sum-aggregation">
+<h3>Sum Aggregation<a class="headerlink" href="#sum-aggregation" title="Link to this heading"></a></h3>
+<p>Sum edge weights across layers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>aggregate<span class="w"> </span>network.graphml<span class="w"> </span>--method<span class="w"> </span>sum<span class="w"> </span>--output<span class="w"> </span>aggregated.graphml
+</pre></div>
+</div>
+</section>
+<section id="mean-aggregation">
+<h3>Mean Aggregation<a class="headerlink" href="#mean-aggregation" title="Link to this heading"></a></h3>
+<p>Average edge weights across layers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>aggregate<span class="w"> </span>network.graphml<span class="w"> </span>--method<span class="w"> </span>mean<span class="w"> </span>--output<span class="w"> </span>aggregated_mean.graphml
+</pre></div>
+</div>
+</section>
+<section id="other-aggregation-methods">
+<h3>Other Aggregation Methods<a class="headerlink" href="#other-aggregation-methods" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span></code> - Take maximum edge weight across layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min</span></code> - Take minimum edge weight across layers</p></li>
+</ul>
+</section>
+</section>
+<section id="format-conversion">
+<h2>Format Conversion<a class="headerlink" href="#format-conversion" title="Link to this heading"></a></h2>
+<section id="convert-between-formats">
+<h3>Convert Between Formats<a class="headerlink" href="#convert-between-formats" title="Link to this heading"></a></h3>
+<p>Convert networks between different file formats:</p>
+<p><strong>To GEXF (for Gephi):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>convert<span class="w"> </span>network.graphml<span class="w"> </span>--output<span class="w"> </span>network.gexf
+</pre></div>
+</div>
+<p><strong>To JSON:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>convert<span class="w"> </span>network.graphml<span class="w"> </span>--output<span class="w"> </span>network.json
+</pre></div>
+</div>
+<p><strong>To gpickle (Python binary):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>convert<span class="w"> </span>network.graphml<span class="w"> </span>--output<span class="w"> </span>network.gpickle
+</pre></div>
+</div>
+</section>
+</section>
+<section id="complete-workflow-examples">
+<h2>Complete Workflow Examples<a class="headerlink" href="#complete-workflow-examples" title="Link to this heading"></a></h2>
+<section id="example-1-create-analyze-and-visualize">
+<h3>Example 1: Create, Analyze, and Visualize<a class="headerlink" href="#example-1-create-analyze-and-visualize" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Create a Barabási-Albert network</span>
+py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>--type<span class="w"> </span>ba<span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.05<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>ba_network.graphml<span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span>
+
+<span class="c1"># Step 2: Detect communities</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>ba_network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>communities.json
+
+<span class="c1"># Step 3: Compute centrality</span>
+py3plex<span class="w"> </span>centrality<span class="w"> </span>ba_network.graphml<span class="w"> </span>--measure<span class="w"> </span>pagerank<span class="w"> </span>--top<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>central_nodes.json
+
+<span class="c1"># Step 4: Visualize</span>
+py3plex<span class="w"> </span>visualize<span class="w"> </span>ba_network.graphml<span class="w"> </span>--layout<span class="w"> </span>spring<span class="w"> </span>--width<span class="w"> </span><span class="m">15</span><span class="w"> </span>--height<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>ba_visualization.png
+</pre></div>
+</div>
+</section>
+<section id="example-2-load-analyze-statistics-and-export">
+<h3>Example 2: Load, Analyze Statistics, and Export<a class="headerlink" href="#example-2-load-analyze-statistics-and-export" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Load and inspect</span>
+py3plex<span class="w"> </span>load<span class="w"> </span>existing_network.graphml<span class="w"> </span>--stats
+
+<span class="c1"># Step 2: Compute comprehensive statistics</span>
+py3plex<span class="w"> </span>stats<span class="w"> </span>existing_network.graphml<span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span>--output<span class="w"> </span>stats.json
+
+<span class="c1"># Step 3: Convert to GEXF for Gephi</span>
+py3plex<span class="w"> </span>convert<span class="w"> </span>existing_network.graphml<span class="w"> </span>--output<span class="w"> </span>for_gephi.gexf
+</pre></div>
+</div>
+</section>
+<section id="example-3-multiple-analysis-pipeline">
+<h3>Example 3: Multiple Analysis Pipeline<a class="headerlink" href="#example-3-multiple-analysis-pipeline" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create network</span>
+py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--type<span class="w"> </span>er<span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.15<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>network.graphml<span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span>
+
+<span class="c1"># Run all centrality measures</span>
+py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>degree<span class="w"> </span>--output<span class="w"> </span>degree.json
+py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>betweenness<span class="w"> </span>--output<span class="w"> </span>betweenness.json
+py3plex<span class="w"> </span>centrality<span class="w"> </span>network.graphml<span class="w"> </span>--measure<span class="w"> </span>pagerank<span class="w"> </span>--output<span class="w"> </span>pagerank.json
+
+<span class="c1"># Detect communities with different algorithms</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--output<span class="w"> </span>louvain.json
+py3plex<span class="w"> </span>community<span class="w"> </span>network.graphml<span class="w"> </span>--algorithm<span class="w"> </span>label_prop<span class="w"> </span>--output<span class="w"> </span>label_prop.json
+
+<span class="c1"># Create multiple visualizations</span>
+py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<span class="w"> </span>--layout<span class="w"> </span>multilayer<span class="w"> </span>--output<span class="w"> </span>viz_ml.png
+py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<span class="w"> </span>--layout<span class="w"> </span>spring<span class="w"> </span>--output<span class="w"> </span>viz_spring.png
+py3plex<span class="w"> </span>visualize<span class="w"> </span>network.graphml<span class="w"> </span>--layout<span class="w"> </span>circular<span class="w"> </span>--output<span class="w"> </span>viz_circular.png
+</pre></div>
+</div>
+</section>
+<section id="example-4-validate-external-data-before-analysis">
+<h3>Example 4: Validate External Data Before Analysis<a class="headerlink" href="#example-4-validate-external-data-before-analysis" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Validate the data file</span>
+py3plex<span class="w"> </span>check<span class="w"> </span>external_data.csv
+
+<span class="c1"># Step 2: If validation passes, load the network</span>
+py3plex<span class="w"> </span>load<span class="w"> </span>external_data.csv<span class="w"> </span>--info
+
+<span class="c1"># Step 3: Run analysis</span>
+py3plex<span class="w"> </span>stats<span class="w"> </span>external_data.csv<span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span>--output<span class="w"> </span>stats.json
+
+<span class="c1"># Step 4: Detect communities</span>
+py3plex<span class="w"> </span>community<span class="w"> </span>external_data.csv<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--output<span class="w"> </span>communities.json
+
+<span class="c1"># Step 5: Create visualization</span>
+py3plex<span class="w"> </span>visualize<span class="w"> </span>external_data.csv<span class="w"> </span>--layout<span class="w"> </span>spring<span class="w"> </span>--output<span class="w"> </span>network_viz.png
+</pre></div>
+</div>
+</section>
+</section>
+<section id="tips-and-best-practices">
+<h2>Tips and Best Practices<a class="headerlink" href="#tips-and-best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Validate Data Files First</strong>: Always run <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">check</span></code> on external data files before analysis to catch format issues early.</p></li>
+<li><p><strong>Use Seeds for Reproducibility</strong>: Always use <code class="docutils literal notranslate"><span class="pre">--seed</span></code> when creating networks for reproducible results.</p></li>
+<li><p><strong>JSON Output for Scripting</strong>: Use <code class="docutils literal notranslate"><span class="pre">--output</span></code> to save results as JSON for post-processing with other tools.</p></li>
+<li><p><strong>Check Help for Each Command</strong>: Each command has detailed help with examples:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py3plex<span class="w"> </span>&lt;command&gt;<span class="w"> </span>--help
+</pre></div>
+</div>
+</li>
+</ol>
+<ol class="arabic simple" start="4">
+<li><p><strong>Format Auto-Detection</strong>: The CLI automatically detects file formats from extensions, so use appropriate extensions (.graphml, .gexf, .json, .gpickle).</p></li>
+<li><p><strong>Large Networks</strong>: For large networks (&gt;1000 nodes), prefer:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">spring</span></code> or <code class="docutils literal notranslate"><span class="pre">circular</span></code> layouts for visualization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">louvain</span></code> for community detection (faster than infomap)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">degree</span></code> centrality for quick analysis</p></li>
+</ul>
+</li>
+<li><p><strong>Batch Processing</strong>: Combine CLI commands with shell scripts for batch processing multiple networks.</p></li>
+</ol>
+</section>
+<section id="common-issues-and-solutions">
+<h2>Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Link to this heading"></a></h2>
+<p><strong>Issue: “Infomap not available”</strong></p>
+<p>Solution: Infomap requires separate installation. Use <code class="docutils literal notranslate"><span class="pre">louvain</span></code> or <code class="docutils literal notranslate"><span class="pre">label_prop</span></code> instead.</p>
+<p><strong>Issue: “Eigenvector centrality failed”</strong></p>
+<p>Solution: Some networks don’t converge for eigenvector centrality. The CLI automatically falls back to degree centrality.</p>
+<p><strong>Issue: Visualization too slow</strong></p>
+<p>Solution: Use simpler layouts (<code class="docutils literal notranslate"><span class="pre">circular</span></code>) or reduce figure size (<code class="docutils literal notranslate"><span class="pre">--width</span> <span class="pre">8</span> <span class="pre">--height</span> <span class="pre">6</span></code>).</p>
+<p><strong>Issue: Memory errors with large networks</strong></p>
+<p>Solution: Use aggregation to reduce network size before visualization, or compute statistics without visualization.</p>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a> - Python API quickstart</p></li>
+<li><p><a class="reference internal" href="../getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial: Getting Started with py3plex</span></a> - 10-minute Python tutorial</p></li>
+<li><p><span class="xref std std-doc">./community_detection</span> - Community detection algorithms in detail</p></li>
+<li><p><span class="xref std std-doc">./multilayer_centrality</span> - Centrality measures for multilayer networks</p></li>
+<li><p><a class="reference internal" href="../index.html"><span class="doc">Py3plex Documentation</span></a> - Main documentation index</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

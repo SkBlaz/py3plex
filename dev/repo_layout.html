@@ -1,0 +1,542 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Repository Layout &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing to py3plex" href="contributing.html" />
+    <link rel="prev" title="Architecture and Design" href="code_architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Repository Layout</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#main-package-py3plex">Main Package (py3plex/)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-docfiles">Documentation (docfiles/)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples-examples">Examples (examples/)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tests-tests">Tests (tests/)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gui-gui">GUI (gui/)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datasets-datasets">Datasets (datasets/)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#benchmarks-benchmarks">Benchmarks (benchmarks/)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ci-cd-github">CI/CD (.github/)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-files">Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-the-repository">Working with the Repository</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#initial-setup">Initial Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development-workflow">Development Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#finding-things">Finding Things</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#where-is">“Where is…?”</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#file-naming-conventions">File Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#important-files">Important Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-contributors">For Contributors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#for-users">For Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#for-ci-cd">For CI/CD</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#directory-conventions">Directory Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#package-distribution">Package Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-documentation">Related Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Repository Layout</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/dev/repo_layout.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="repository-layout">
+<h1>Repository Layout<a class="headerlink" href="#repository-layout" title="Link to this heading"></a></h1>
+<p>This document explains the structure of the py3plex repository and what each directory contains.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>py3plex/
+├── py3plex/              # Main package source code
+├── docs/                 # Built documentation (HTML)
+├── docfiles/             # Documentation source (RST files)
+├── examples/             # Example scripts
+├── tests/                # Test suite
+├── gui/                  # Web interface
+├── datasets/             # Sample datasets
+├── benchmarks/           # Performance benchmarks
+├── fuzzing/              # Fuzz testing
+├── .github/              # GitHub Actions CI/CD
+├── pyproject.toml        # Package configuration
+├── Makefile              # Development commands
+└── README.md             # Project README
+</pre></div>
+</div>
+</section>
+<section id="main-package-py3plex">
+<h2>Main Package (py3plex/)<a class="headerlink" href="#main-package-py3plex" title="Link to this heading"></a></h2>
+<p>Source code for the py3plex library:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>py3plex/
+├── __init__.py           # Package initialization
+├── core/                 # Core data structures
+│   ├── multinet.py       # multi_layer_network class
+│   ├── parsers.py        # File I/O
+│   └── converters.py     # Format conversion
+├── algorithms/           # Network algorithms
+│   ├── community_detection/
+│   ├── statistics/
+│   ├── multilayer_algorithms/
+│   └── general/
+├── visualization/        # Plotting and rendering
+│   ├── multilayer.py
+│   ├── drawing_machinery.py
+│   └── layout_algorithms.py
+├── wrappers/             # High-level interfaces
+└── io/                   # Modern I/O system
+</pre></div>
+</div>
+<p><strong>Key modules:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">core/multinet.py</span></code> - Main <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">algorithms/</span></code> - All analysis algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">visualization/</span></code> - All visualization code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">io/</span></code> - Modern schema-based I/O</p></li>
+</ul>
+</section>
+<section id="documentation-docfiles">
+<h2>Documentation (docfiles/)<a class="headerlink" href="#documentation-docfiles" title="Link to this heading"></a></h2>
+<p>Sphinx documentation source files:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>docfiles/
+├── index.rst             # Main documentation index
+├── conf.py               # Sphinx configuration
+├── Makefile              # Build commands
+├── getting_started/      # Beginner guides
+├── concepts/             # Conceptual explanations
+├── user_guide/           # How-to guides
+├── deployment/           # Deployment guides
+├── gui/                  # GUI documentation
+├── dev/                  # Developer docs
+├── examples/             # Example index
+└── reference/            # API reference
+</pre></div>
+</div>
+<p><strong>Building documentation:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docfiles
+make<span class="w"> </span>html<span class="w">  </span><span class="c1"># Output in _build/html/</span>
+</pre></div>
+</div>
+</section>
+<section id="examples-examples">
+<h2>Examples (examples/)<a class="headerlink" href="#examples-examples" title="Link to this heading"></a></h2>
+<p>Executable example scripts demonstrating various features:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>examples/
+├── basic/                    # Basic usage
+│   ├── example_load_network.py
+│   ├── example_basic_stats.py
+│   └── example_simple_viz.py
+├── visualization/            # Visualization examples
+│   ├── example_multilayer_viz.py
+│   ├── example_custom_layouts.py
+│   └── example_interactive_plots.py
+├── analysis/                 # Analysis examples
+│   ├── example_community_detection.py
+│   ├── example_centrality.py
+│   └── example_statistics.py
+├── advanced/                 # Advanced topics
+│   ├── example_node2vec.py
+│   ├── example_random_walks.py
+│   └── example_embeddings.py
+└── io/                       # I/O examples
+    ├── example_arrow_io.py
+    └── example_format_conversion.py
+</pre></div>
+</div>
+<p><strong>Running examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/basic/example_load_network.py
+</pre></div>
+</div>
+</section>
+<section id="tests-tests">
+<h2>Tests (tests/)<a class="headerlink" href="#tests-tests" title="Link to this heading"></a></h2>
+<p>Test suite using pytest:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>tests/
+├── test_core.py              # Core functionality
+├── test_algorithms.py        # Algorithm tests
+├── test_visualization.py     # Visualization tests
+├── test_io.py                # I/O tests
+├── test_performance_core.py  # Performance benchmarks
+├── test_fuzzing_properties.py# Property-based tests
+└── conftest.py               # Pytest configuration
+</pre></div>
+</div>
+<p><strong>Running tests:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nb">test</span><span class="w">          </span><span class="c1"># Run all tests</span>
+make<span class="w"> </span>test-fast<span class="w">     </span><span class="c1"># Skip slow tests</span>
+make<span class="w"> </span>coverage<span class="w">      </span><span class="c1"># With coverage report</span>
+</pre></div>
+</div>
+</section>
+<section id="gui-gui">
+<h2>GUI (gui/)<a class="headerlink" href="#gui-gui" title="Link to this heading"></a></h2>
+<p>Web interface for py3plex:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>gui/
+├── app.py                # Flask application
+├── routes/               # API endpoints
+├── templates/            # HTML templates
+├── static/               # CSS, JS, images
+├── config.py             # Configuration
+└── Dockerfile            # Docker container
+</pre></div>
+</div>
+<p><strong>Running GUI:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>gui/app.py
+</pre></div>
+</div>
+</section>
+<section id="datasets-datasets">
+<h2>Datasets (datasets/)<a class="headerlink" href="#datasets-datasets" title="Link to this heading"></a></h2>
+<p>Sample networks for testing and examples:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>datasets/
+├── test.edgelist         # Simple test network
+├── multiedgelist.txt     # Multilayer test
+├── karate_club/          # Karate club network
+└── bio_networks/         # Biological networks
+</pre></div>
+</div>
+</section>
+<section id="benchmarks-benchmarks">
+<h2>Benchmarks (benchmarks/)<a class="headerlink" href="#benchmarks-benchmarks" title="Link to this heading"></a></h2>
+<p>Performance benchmarking suite:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>benchmarks/
+├── bench_core.py         # Core operations
+├── bench_algorithms.py   # Algorithm performance
+├── bench_io.py           # I/O performance
+└── bench_aggregation.py  # Aggregation benchmarks
+</pre></div>
+</div>
+<p><strong>Running benchmarks:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>benchmark
+</pre></div>
+</div>
+</section>
+<section id="ci-cd-github">
+<h2>CI/CD (.github/)<a class="headerlink" href="#ci-cd-github" title="Link to this heading"></a></h2>
+<p>GitHub Actions workflows:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>.github/
+├── workflows/
+│   ├── tests.yml         # Test CI
+│   ├── code-quality.yml  # Linting/formatting
+│   ├── docs.yml          # Documentation build
+│   └── release.yml       # Release automation
+└── dependabot.yml        # Dependency updates
+</pre></div>
+</div>
+</section>
+<section id="configuration-files">
+<h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading"></a></h2>
+<p>Root-level configuration:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> - Package metadata, dependencies, build config</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Makefile</span></code> - Development commands (make test, make docs, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code> - Project overview and quick start</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> - Git ignore rules</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> - MIT license</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code> - Citation information</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MANIFEST.in</span></code> - Package manifest for distribution</p></li>
+</ul>
+</section>
+<section id="working-with-the-repository">
+<h2>Working with the Repository<a class="headerlink" href="#working-with-the-repository" title="Link to this heading"></a></h2>
+<section id="initial-setup">
+<h3>Initial Setup<a class="headerlink" href="#initial-setup" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+
+<span class="c1"># Create virtual environment</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
+
+<span class="c1"># Install in development mode</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="development-workflow">
+<h3>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Make changes to code</span>
+
+<span class="c1"># 2. Format code</span>
+make<span class="w"> </span>format
+
+<span class="c1"># 3. Run linters</span>
+make<span class="w"> </span>lint
+
+<span class="c1"># 4. Run tests</span>
+make<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># 5. Build documentation</span>
+make<span class="w"> </span>docs
+
+<span class="c1"># 6. Commit changes</span>
+git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Description&quot;</span>
+git<span class="w"> </span>push
+</pre></div>
+</div>
+</section>
+</section>
+<section id="finding-things">
+<h2>Finding Things<a class="headerlink" href="#finding-things" title="Link to this heading"></a></h2>
+<section id="where-is">
+<h3>“Where is…?”<a class="headerlink" href="#where-is" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Core network class?</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">py3plex/core/multinet.py</span></code> → <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class</p>
+</dd>
+<dt><strong>Community detection algorithms?</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">py3plex/algorithms/community_detection/</span></code></p>
+</dd>
+<dt><strong>Visualization code?</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">py3plex/visualization/</span></code></p>
+</dd>
+<dt><strong>I/O functions?</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">py3plex/io/</span></code> (modern) or <code class="docutils literal notranslate"><span class="pre">py3plex/core/parsers.py</span></code> (legacy)</p>
+</dd>
+<dt><strong>Tests for feature X?</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">tests/test_*.py</span></code> - grep for the feature name</p>
+</dd>
+<dt><strong>Example using feature X?</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">examples/</span></code> - check the relevant subdirectory</p>
+</dd>
+<dt><strong>Documentation source?</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">docfiles/</span></code> - RST files organized by topic</p>
+</dd>
+<dt><strong>Built documentation?</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">docs/</span></code> - HTML files (generated from docfiles/)</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="file-naming-conventions">
+<h2>File Naming Conventions<a class="headerlink" href="#file-naming-conventions" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Source files:</strong> <code class="docutils literal notranslate"><span class="pre">snake_case.py</span></code></p></li>
+<li><p><strong>Test files:</strong> <code class="docutils literal notranslate"><span class="pre">test_&lt;module&gt;.py</span></code></p></li>
+<li><p><strong>Example files:</strong> <code class="docutils literal notranslate"><span class="pre">example_&lt;feature&gt;.py</span></code></p></li>
+<li><p><strong>Documentation:</strong> <code class="docutils literal notranslate"><span class="pre">&lt;topic&gt;.rst</span></code></p></li>
+<li><p><strong>Configuration:</strong> Various (<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>, etc.)</p></li>
+</ul>
+</section>
+<section id="important-files">
+<h2>Important Files<a class="headerlink" href="#important-files" title="Link to this heading"></a></h2>
+<section id="for-contributors">
+<h3>For Contributors<a class="headerlink" href="#for-contributors" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CONTRIBUTING.md</span></code> - Contribution guidelines (if exists)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docfiles/dev/contributing.rst</span></code> - Contribution documentation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Makefile</span></code> - Available development commands</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> - Package dependencies</p></li>
+</ul>
+</section>
+<section id="for-users">
+<h3>For Users<a class="headerlink" href="#for-users" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code> - Quick start guide</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docfiles/index.rst</span></code> - Documentation entry point</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/</span></code> - Working code examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> - MIT license</p></li>
+</ul>
+</section>
+<section id="for-ci-cd">
+<h3>For CI/CD<a class="headerlink" href="#for-ci-cd" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.github/workflows/*.yml</span></code> - CI pipelines</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Makefile</span></code> - Automated commands</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> - Build configuration</p></li>
+</ul>
+</section>
+</section>
+<section id="directory-conventions">
+<h2>Directory Conventions<a class="headerlink" href="#directory-conventions" title="Link to this heading"></a></h2>
+<p><strong>Source code directories:</strong></p>
+<ul class="simple">
+<li><p>No spaces in names</p></li>
+<li><p>Lowercase with underscores</p></li>
+<li><p>Descriptive names (<code class="docutils literal notranslate"><span class="pre">community_detection</span></code>, not <code class="docutils literal notranslate"><span class="pre">cd</span></code>)</p></li>
+</ul>
+<p><strong>Test directories:</strong></p>
+<ul class="simple">
+<li><p>Mirror source structure</p></li>
+<li><p>One test file per source file when possible</p></li>
+</ul>
+<p><strong>Documentation directories:</strong></p>
+<ul class="simple">
+<li><p>Organize by user journey/topic</p></li>
+<li><p>Clear, descriptive names</p></li>
+</ul>
+</section>
+<section id="package-distribution">
+<h2>Package Distribution<a class="headerlink" href="#package-distribution" title="Link to this heading"></a></h2>
+<p>When building packages, these files are included:</p>
+<p><strong>Included:</strong></p>
+<ul class="simple">
+<li><p>All <code class="docutils literal notranslate"><span class="pre">.py</span></code> files in <code class="docutils literal notranslate"><span class="pre">py3plex/</span></code></p></li>
+<li><p>LICENSE</p></li>
+<li><p>README.md</p></li>
+<li><p>Required configuration files</p></li>
+</ul>
+<p><strong>Excluded (via .gitignore):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">__pycache__/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.pytest_cache/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*.pyc</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build/</span></code>, <code class="docutils literal notranslate"><span class="pre">dist/</span></code>, <code class="docutils literal notranslate"><span class="pre">*.egg-info/</span></code></p></li>
+<li><p>Virtual environments</p></li>
+<li><p>IDE-specific files</p></li>
+</ul>
+<p>See <code class="docutils literal notranslate"><span class="pre">MANIFEST.in</span></code> for complete inclusion/exclusion rules.</p>
+</section>
+<section id="related-documentation">
+<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="development_guide.html"><span class="doc">Development Guide</span></a> - Development setup and workflow</p></li>
+<li><p><a class="reference internal" href="contributing.html"><span class="doc">Contributing to py3plex</span></a> - How to contribute</p></li>
+<li><p><a class="reference internal" href="code_architecture.html"><span class="doc">Architecture and Design</span></a> - Internal architecture</p></li>
+<li><p><a class="reference internal" href="../getting_started/installation.html"><span class="doc">Installation and Setup</span></a> - Installation guide</p></li>
+</ul>
+<p><strong>External Resources:</strong></p>
+<ul class="simple">
+<li><p>Repository: <a class="reference external" href="https://github.com/SkBlaz/py3plex">https://github.com/SkBlaz/py3plex</a></p></li>
+<li><p>Issues: <a class="reference external" href="https://github.com/SkBlaz/py3plex/issues">https://github.com/SkBlaz/py3plex/issues</a></p></li>
+<li><p>Pull Requests: <a class="reference external" href="https://github.com/SkBlaz/py3plex/pulls">https://github.com/SkBlaz/py3plex/pulls</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="code_architecture.html" class="btn btn-neutral float-left" title="Architecture and Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing to py3plex" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
