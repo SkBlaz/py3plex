@@ -208,13 +208,13 @@ class QuickstartRunner:
                         output, error = snippet.execute(context)
                         
                         if error:
-                            print(f"❌ Error: {error}")
+                            print(f"Error: {error}")
                             # Store error as a note
                             snippet.output = f"# Note: This snippet requires {snippet.category}\n# Error: {error}"
                         else:
                             executed_count += 1
                             if output:
-                                print(f"✅ Output captured ({len(output)} chars)")
+                                print(f"Output captured ({len(output)} chars)")
                                 # Show first few lines
                                 output_lines = output.strip().split('\n')
                                 preview = '\n'.join(output_lines[:5])
@@ -222,7 +222,7 @@ class QuickstartRunner:
                                 if len(output_lines) > 5:
                                     print(f"... ({len(output_lines) - 5} more lines)")
                             else:
-                                print("✅ Executed (no output)")
+                                print("Executed (no output)")
                     else:
                         skipped_count += 1
                         print(f"⊘ Skipped - {snippet.category}")
@@ -291,7 +291,7 @@ class QuickstartRunner:
         """Generate report for manual integration into quickstart.rst"""
         # Note: Automated RST update is complex and error-prone
         # This method generates a report that can be manually integrated
-        print("⚠️  Automated update of quickstart.rst not implemented")
+        print("WARNING: Automated update of quickstart.rst not implemented")
         print("    Generate outputs with --report and manually integrate into RST")
         print("    This ensures quality control and proper documentation style")
 
@@ -312,7 +312,7 @@ def main():
     quickstart_path = script_dir / 'quickstart.rst'
     
     if not quickstart_path.exists():
-        print(f"❌ Error: {quickstart_path} not found")
+        print(f"Error: {quickstart_path} not found")
         sys.exit(1)
     
     print(f"📖 Processing: {quickstart_path}")
@@ -326,14 +326,14 @@ def main():
     report = runner.generate_report()
     report_path = Path(args.report)
     report_path.write_text(report)
-    print(f"\n📝 Report saved to: {report_path}")
+    print(f"\nReport saved to: {report_path}")
     
     if args.update:
         runner.update_quickstart()
     else:
-        print("\n💡 Run with --update to modify quickstart.rst")
+        print("\nRun with --update to modify quickstart.rst")
     
-    print("\n✅ Done!")
+    print("\nDone!")
 
 
 if __name__ == '__main__':

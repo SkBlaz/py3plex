@@ -288,10 +288,10 @@ output_file = "/tmp/quickstart_outputs.txt"
 with open(output_file, 'w') as f:
     f.write('\n'.join(outputs))
 
-print(f"✅ Generated outputs for all 21 snippets")
-print(f"📄 Output saved to: {output_file}")
-print(f"\n📝 Next steps:")
+print(f"Generated outputs for all 21 snippets")
+print(f"Output saved to: {output_file}")
+print(f"\nNext steps:")
 print(f"   1. Review {output_file}")
 print(f"   2. Manually integrate outputs into quickstart.rst")
 print(f"   3. Ensure 100% coverage of all code blocks")
-print(f"\n💡 All snippets now have Expected Output sections!")
+print(f"\nAll snippets now have Expected Output sections!")

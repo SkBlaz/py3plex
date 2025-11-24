@@ -72,7 +72,7 @@ Apply differential geometry to networks:
 
 ## Performance Notes
 
-⚠️ **Note**: Many examples in this category:
+**NOTE:** Many examples in this category:
 - May require significant computation time
 - Might need external datasets
 - Can be memory-intensive

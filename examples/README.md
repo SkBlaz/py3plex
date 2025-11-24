@@ -2,7 +2,7 @@
 
 This directory contains 80+ example scripts demonstrating various features of py3plex. Examples are organized by topic to provide an intuitive learning path.
 
-## 🚀 Quick Start
+## Quick Start
 
 **New to py3plex?** Start here:
 
@@ -18,14 +18,14 @@ python examples/getting_started/example_random_generator.py
 
 Examples are organized into intuitive categories based on what you want to accomplish:
 
-### [🎓 Getting Started](getting_started/)
+### [Getting Started](getting_started/)
 **New to py3plex? Start here!**
 - 10-minute tutorial covering essentials
 - Creating and manipulating networks
 - Basic NetworkX integration
 - **7 examples** - All fast and beginner-friendly
 
-### [💾 I/O and Data](io_and_data/)
+### [I/O and Data](io_and_data/)
 **Load, save, and manage network data**
 - Load from multiple formats (edgelist, GML, GraphML, etc.)
 - Save networks in various formats
@@ -33,7 +33,7 @@ Examples are organized into intuitive categories based on what you want to accom
 - Performance optimization (caching, lazy evaluation)
 - **8 examples** - Essential for data workflows
 
-### [📊 Network Analysis](network_analysis/)
+### [Network Analysis](network_analysis/)
 **Analyze network properties and compute metrics**
 - Network statistics and metrics
 - Centrality measures (degree, betweenness, eigenvector, etc.)
@@ -41,7 +41,7 @@ Examples are organized into intuitive categories based on what you want to accom
 - Statistical reports and comparisons
 - **16 examples** - Comprehensive analysis toolkit
 
-### [👥 Communities](communities/)
+### [Communities](communities/)
 **Detect and analyze community structure**
 - Louvain, Leiden, Infomap algorithms
 - Label propagation
@@ -49,7 +49,7 @@ Examples are organized into intuitive categories based on what you want to accom
 - Multiplex community detection
 - **6 examples** - State-of-the-art methods
 
-### [🎨 Visualization](visualization/)
+### [Visualization](visualization/)
 **Create beautiful network visualizations**
 - Multiple layout styles (diagonal, hairball, radial, etc.)
 - Interactive visualizations with Plotly
@@ -57,7 +57,7 @@ Examples are organized into intuitive categories based on what you want to accom
 - Animations and dynamic views
 - **17 examples** - Rich visualization toolkit
 
-### [🔬 Advanced](advanced/)
+### [Advanced](advanced/)
 **Specialized techniques for power users**
 - Network embeddings (Node2Vec)
 - Dynamics and spreading processes
@@ -66,7 +66,7 @@ Examples are organized into intuitive categories based on what you want to accom
 - Geometric analysis (Ricci curvature)
 - **29 examples** - Advanced algorithms
 
-### [⚙️ Workflows](workflows/)
+### [Workflows](workflows/)
 **Complete pipelines and extensibility**
 - Config-driven analysis workflows
 - Plugin system for custom algorithms
@@ -82,7 +82,7 @@ Run any example directly with Python:
 python examples/network_analysis/example_multilayer_statistics.py
 ```
 
-## ⚡ Example Types
+## Example Types
 
 Examples are marked with runtime characteristics:
 
@@ -91,7 +91,7 @@ Examples are marked with runtime characteristics:
 - **SKIP_CI: external_deps** - Requires external dataset files
 - **SKIP_CI: interactive** - Requires user interaction or displays GUI
 
-## 🎯 Learning Paths
+## Learning Paths
 
 Different learning paths based on your goals:
 
@@ -113,7 +113,7 @@ Different learning paths based on your goals:
 3. Study [Workflows](workflows/) - automation and plugins
 4. Use [Visualization](visualization/) - creating outputs
 
-## 🧪 Testing Examples
+## Testing Examples
 
 The examples CI workflow runs all fast standalone examples to ensure they work correctly.
 
@@ -122,13 +122,13 @@ Test examples locally as CI does:
 python .github/scripts/run_examples.py --fast-only --timeout 30
 ```
 
-## 📚 Additional Resources
+## Additional Resources
 
 - **API Documentation**: https://skblaz.github.io/py3plex/
 - **Plugin Guide**: [PLUGIN_GUIDE.md](../PLUGIN_GUIDE.md)
 - **CLI Tutorial**: Run `py3plex quickstart` for interactive demo
 
-## ✍️ Contributing Examples
+## Contributing Examples
 
 When creating a new example:
 
@@ -147,10 +147,10 @@ When creating a new example:
    ```
 5. **Add README updates** if creating new workflows
 
-## 🗂️ Example Organization
+## Example Organization
 
 Examples are organized by **user goals** rather than technical features:
-- ✅ Topic-based: "I want to detect communities"
-- ❌ Feature-based: "centrality_and_statistics"
+- GOOD: Topic-based: "I want to detect communities"
+- BAD: Feature-based: "centrality_and_statistics"
 
 This makes it easier for users to find relevant examples for their specific use case.

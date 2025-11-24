@@ -106,13 +106,13 @@ Ensure these ports are available:
 
 ## Features
 
-- ✅ **Interactive Web Interface** - React-based UI with real-time updates
-- ✅ **Network Visualization** - Layer-centric views with configurable layouts
-- ✅ **Advanced Analysis** - Centrality metrics, community detection, and more
-- ✅ **Multiple Formats** - Support for edgelist, GML, NetworkX pickle files
-- ✅ **Async Processing** - Background job execution with progress tracking
-- ✅ **Workspace Management** - Save and restore complete analysis sessions
-- ✅ **Hot Reload** - Code changes automatically reflected (dev mode)
+- **Interactive Web Interface** - React-based UI with real-time updates
+- **Network Visualization** - Layer-centric views with configurable layouts
+- **Advanced Analysis** - Centrality metrics, community detection, and more
+- **Multiple Formats** - Support for edgelist, GML, NetworkX pickle files
+- **Async Processing** - Background job execution with progress tracking
+- **Workspace Management** - Save and restore complete analysis sessions
+- **Hot Reload** - Code changes automatically reflected (dev mode)
 
 ## Development
 

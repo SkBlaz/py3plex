@@ -400,7 +400,7 @@ def test_arrow_unicode_support():
     graph = MultiLayerGraph()
     graph.add_layer(Layer(id="社交", attributes={"名前": "ソーシャル"}))
     graph.add_node(
-        Node(id="alice", attributes={"city": "東京", "emoji": "🎉", "text": "Hello 世界"})
+        Node(id="alice", attributes={"city": "東京", "symbol": "★", "text": "Hello 世界"})
     )
     graph.add_node(Node(id="bob", attributes={"city": "Москва", "text": "Привет"}))
 
@@ -414,5 +414,5 @@ def test_arrow_unicode_support():
         # Verify Unicode preservation
         assert "社交" in loaded_graph.layers
         assert loaded_graph.layers["社交"].attributes["名前"] == "ソーシャル"
-        assert loaded_graph.nodes["alice"].attributes["emoji"] == "🎉"
+        assert loaded_graph.nodes["alice"].attributes["symbol"] == "★"
         assert loaded_graph.nodes["bob"].attributes["text"] == "Привет"
