@@ -472,5 +472,356 @@ def test_compute_blocks_size_consistency(num_nodes, num_layers, seed):
             f"Block size {actual_size} should match index count {expected_size}"
 
 
+# ============================================================================
+# Property Tests: Entanglement Metrics
+# ============================================================================
+
+# Import compute_entanglement if available
+try:
+    from py3plex.algorithms.multilayer_algorithms.entanglement import (
+        compute_entanglement,
+        compute_entanglement_analysis,
+    )
+    COMPUTE_ENTANGLEMENT_AVAILABLE = True
+except ImportError:
+    COMPUTE_ENTANGLEMENT_AVAILABLE = False
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not COMPUTE_ENTANGLEMENT_AVAILABLE, reason="compute_entanglement not available")
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    num_nodes=st.integers(min_value=3, max_value=8),
+    num_layers=st.integers(min_value=2, max_value=4),
+    seed=st.integers(min_value=0, max_value=10000)
+)
+def test_entanglement_intensity_bounds(num_nodes, num_layers, seed):
+    """Property: Entanglement intensity is bounded in [0, 1] when normalized."""
+    # Create a multiplex network
+    net = multinet.multi_layer_network()
+
+    # Add nodes and edges
+    for layer_idx in range(num_layers):
+        layer_name = f"layer_{layer_idx}"
+        for node_idx in range(num_nodes):
+            node_name = f"node_{node_idx}"
+            net.add_nodes({
+                "source": node_name,
+                "type": layer_name
+            })
+
+        # Add edges to ensure non-empty layers
+        for i in range(min(3, num_nodes - 1)):
+            net.add_edges({
+                "source": f"node_{i}",
+                "target": f"node_{i+1}",
+                "source_type": layer_name,
+                "target_type": layer_name,
+                "weight": 1.0
+            })
+
+    assume(len(list(net.get_edges())) > 0)
+
+    # Build occurrence matrix and compute entanglement
+    c_matrix, layers = build_occurrence_matrix(net)
+    indices, blocks = compute_blocks(c_matrix)
+
+    for block in blocks:
+        metrics, gamma = compute_entanglement(block)
+        intensity = metrics[0]
+
+        # Intensity should be in [0, 1] for normalized values
+        assert 0.0 <= intensity <= 1.5, \
+            f"Entanglement intensity {intensity} outside reasonable bounds"
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not COMPUTE_ENTANGLEMENT_AVAILABLE, reason="compute_entanglement not available")
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    num_nodes=st.integers(min_value=3, max_value=8),
+    num_layers=st.integers(min_value=2, max_value=4),
+    seed=st.integers(min_value=0, max_value=10000)
+)
+def test_entanglement_homogeneity_bounds(num_nodes, num_layers, seed):
+    """Property: Entanglement homogeneity is bounded in [0, 1]."""
+    # Create a multiplex network
+    net = multinet.multi_layer_network()
+
+    # Add nodes and edges
+    for layer_idx in range(num_layers):
+        layer_name = f"layer_{layer_idx}"
+        for node_idx in range(num_nodes):
+            node_name = f"node_{node_idx}"
+            net.add_nodes({
+                "source": node_name,
+                "type": layer_name
+            })
+
+        # Add edges
+        for i in range(min(3, num_nodes - 1)):
+            net.add_edges({
+                "source": f"node_{i}",
+                "target": f"node_{i+1}",
+                "source_type": layer_name,
+                "target_type": layer_name,
+                "weight": 1.0
+            })
+
+    assume(len(list(net.get_edges())) > 0)
+
+    # Build occurrence matrix and compute entanglement
+    c_matrix, layers = build_occurrence_matrix(net)
+    indices, blocks = compute_blocks(c_matrix)
+
+    for block in blocks:
+        metrics, gamma = compute_entanglement(block)
+        homogeneity = metrics[1]
+        normalized_homogeneity = metrics[2]
+
+        # Homogeneity should be in [0, 1]
+        assert 0.0 <= homogeneity <= 1.0, \
+            f"Entanglement homogeneity {homogeneity} outside bounds [0, 1]"
+        assert 0.0 <= normalized_homogeneity <= 1.0, \
+            f"Normalized homogeneity {normalized_homogeneity} outside bounds [0, 1]"
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not COMPUTE_ENTANGLEMENT_AVAILABLE, reason="compute_entanglement not available")
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    num_nodes=st.integers(min_value=3, max_value=8),
+    num_layers=st.integers(min_value=2, max_value=4),
+    seed=st.integers(min_value=0, max_value=10000)
+)
+def test_entanglement_gamma_nonnegative(num_nodes, num_layers, seed):
+    """Property: Layer gamma values are non-negative."""
+    # Create a multiplex network
+    net = multinet.multi_layer_network()
+
+    # Add nodes and edges
+    for layer_idx in range(num_layers):
+        layer_name = f"layer_{layer_idx}"
+        for node_idx in range(num_nodes):
+            node_name = f"node_{node_idx}"
+            net.add_nodes({
+                "source": node_name,
+                "type": layer_name
+            })
+
+        # Add edges
+        for i in range(min(3, num_nodes - 1)):
+            net.add_edges({
+                "source": f"node_{i}",
+                "target": f"node_{i+1}",
+                "source_type": layer_name,
+                "target_type": layer_name,
+                "weight": 1.0
+            })
+
+    assume(len(list(net.get_edges())) > 0)
+
+    # Build occurrence matrix and compute entanglement
+    c_matrix, layers = build_occurrence_matrix(net)
+    indices, blocks = compute_blocks(c_matrix)
+
+    for block in blocks:
+        metrics, gamma = compute_entanglement(block)
+
+        # All gamma values should be non-negative (they are absolute values)
+        for g in gamma:
+            assert g >= 0, f"Negative gamma value: {g}"
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not COMPUTE_ENTANGLEMENT_AVAILABLE, reason="compute_entanglement not available")
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    num_nodes=st.integers(min_value=3, max_value=8),
+    num_layers=st.integers(min_value=2, max_value=4),
+    seed=st.integers(min_value=0, max_value=10000)
+)
+def test_entanglement_gamma_length_matches_block(num_nodes, num_layers, seed):
+    """Property: Gamma vector length matches block size."""
+    # Create a multiplex network
+    net = multinet.multi_layer_network()
+
+    # Add nodes and edges
+    for layer_idx in range(num_layers):
+        layer_name = f"layer_{layer_idx}"
+        for node_idx in range(num_nodes):
+            node_name = f"node_{node_idx}"
+            net.add_nodes({
+                "source": node_name,
+                "type": layer_name
+            })
+
+        # Add edges
+        for i in range(min(3, num_nodes - 1)):
+            net.add_edges({
+                "source": f"node_{i}",
+                "target": f"node_{i+1}",
+                "source_type": layer_name,
+                "target_type": layer_name,
+                "weight": 1.0
+            })
+
+    assume(len(list(net.get_edges())) > 0)
+
+    # Build occurrence matrix and compute entanglement
+    c_matrix, layers = build_occurrence_matrix(net)
+    indices, blocks = compute_blocks(c_matrix)
+
+    for block in blocks:
+        metrics, gamma = compute_entanglement(block)
+
+        # Gamma length should match block size
+        assert len(gamma) == block.shape[0], \
+            f"Gamma length {len(gamma)} != block size {block.shape[0]}"
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not COMPUTE_ENTANGLEMENT_AVAILABLE, reason="compute_entanglement not available")
+@settings(deadline=None, max_examples=15, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    num_nodes=st.integers(min_value=3, max_value=8),
+    num_layers=st.integers(min_value=2, max_value=4),
+    seed=st.integers(min_value=0, max_value=10000)
+)
+def test_entanglement_metrics_finite(num_nodes, num_layers, seed):
+    """Property: All entanglement metrics are finite (no NaN or Inf)."""
+    # Create a multiplex network
+    net = multinet.multi_layer_network()
+
+    # Add nodes and edges
+    for layer_idx in range(num_layers):
+        layer_name = f"layer_{layer_idx}"
+        for node_idx in range(num_nodes):
+            node_name = f"node_{node_idx}"
+            net.add_nodes({
+                "source": node_name,
+                "type": layer_name
+            })
+
+        # Add edges
+        for i in range(min(3, num_nodes - 1)):
+            net.add_edges({
+                "source": f"node_{i}",
+                "target": f"node_{i+1}",
+                "source_type": layer_name,
+                "target_type": layer_name,
+                "weight": 1.0
+            })
+
+    assume(len(list(net.get_edges())) > 0)
+
+    # Build occurrence matrix and compute entanglement
+    c_matrix, layers = build_occurrence_matrix(net)
+    indices, blocks = compute_blocks(c_matrix)
+
+    for block in blocks:
+        metrics, gamma = compute_entanglement(block)
+
+        # All metrics should be finite
+        for m in metrics:
+            assert np.isfinite(m), f"Non-finite metric value: {m}"
+        for g in gamma:
+            assert np.isfinite(g), f"Non-finite gamma value: {g}"
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not COMPUTE_ENTANGLEMENT_AVAILABLE, reason="compute_entanglement_analysis not available")
+@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    num_nodes=st.integers(min_value=3, max_value=8),
+    num_layers=st.integers(min_value=2, max_value=4),
+    seed=st.integers(min_value=0, max_value=10000)
+)
+def test_compute_entanglement_analysis_returns_list(num_nodes, num_layers, seed):
+    """Property: compute_entanglement_analysis returns a list of dicts."""
+    # Create a multiplex network
+    net = multinet.multi_layer_network()
+
+    # Add nodes and edges
+    for layer_idx in range(num_layers):
+        layer_name = f"layer_{layer_idx}"
+        for node_idx in range(num_nodes):
+            node_name = f"node_{node_idx}"
+            net.add_nodes({
+                "source": node_name,
+                "type": layer_name
+            })
+
+        # Add edges
+        for i in range(min(3, num_nodes - 1)):
+            net.add_edges({
+                "source": f"node_{i}",
+                "target": f"node_{i+1}",
+                "source_type": layer_name,
+                "target_type": layer_name,
+                "weight": 1.0
+            })
+
+    assume(len(list(net.get_edges())) > 0)
+
+    analysis = compute_entanglement_analysis(net)
+
+    # Should return a list
+    assert isinstance(analysis, list), "Analysis should be a list"
+
+    # Each element should be a dict with expected keys
+    for block_analysis in analysis:
+        assert isinstance(block_analysis, dict), "Each block analysis should be a dict"
+        assert "Entanglement intensity" in block_analysis
+        assert "Layer entanglement" in block_analysis
+        assert "Entanglement homogeneity" in block_analysis
+        assert "Normalized homogeneity" in block_analysis
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not COMPUTE_ENTANGLEMENT_AVAILABLE, reason="compute_entanglement_analysis not available")
+@settings(deadline=None, max_examples=10, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(
+    num_nodes=st.integers(min_value=3, max_value=8),
+    num_layers=st.integers(min_value=2, max_value=4),
+    seed=st.integers(min_value=0, max_value=10000)
+)
+def test_compute_entanglement_analysis_deterministic(num_nodes, num_layers, seed):
+    """Property: compute_entanglement_analysis is deterministic."""
+    # Create a multiplex network
+    net = multinet.multi_layer_network()
+
+    # Add nodes and edges
+    for layer_idx in range(num_layers):
+        layer_name = f"layer_{layer_idx}"
+        for node_idx in range(num_nodes):
+            node_name = f"node_{node_idx}"
+            net.add_nodes({
+                "source": node_name,
+                "type": layer_name
+            })
+
+        # Add edges
+        for i in range(min(3, num_nodes - 1)):
+            net.add_edges({
+                "source": f"node_{i}",
+                "target": f"node_{i+1}",
+                "source_type": layer_name,
+                "target_type": layer_name,
+                "weight": 1.0
+            })
+
+    assume(len(list(net.get_edges())) > 0)
+
+    analysis1 = compute_entanglement_analysis(net)
+    analysis2 = compute_entanglement_analysis(net)
+
+    # Should produce identical results
+    assert len(analysis1) == len(analysis2)
+    for a1, a2 in zip(analysis1, analysis2):
+        assert np.isclose(a1["Entanglement intensity"], a2["Entanglement intensity"])
+        assert np.isclose(a1["Entanglement homogeneity"], a2["Entanglement homogeneity"])
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v', '-m', 'property'])
