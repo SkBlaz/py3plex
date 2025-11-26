@@ -139,21 +139,21 @@ The supra-adjacency matrix is a block matrix representation that encodes the ent
 Mathematical Definition
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-For a multilayer network with :math:`L` layers, the supra-adjacency matrix :math:`\\mathbf{S}` is:
+For a multilayer network with :math:`L` layers, the supra-adjacency matrix :math:`\mathbf{S}` is:
 
 .. math::
 
-    \\mathbf{S} = \\begin{bmatrix}
-    A_1 & C_{12} & \\cdots & C_{1L} \\\\
-    C_{21} & A_2 & \\cdots & C_{2L} \\\\
-    \\vdots & \\vdots & \\ddots & \\vdots \\\\
-    C_{L1} & C_{L2} & \\cdots & A_L
-    \\end{bmatrix}
+    \mathbf{S} = \begin{bmatrix}
+    A_1 & C_{12} & \cdots & C_{1L} \\
+    C_{21} & A_2 & \cdots & C_{2L} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    C_{L1} & C_{L2} & \cdots & A_L
+    \end{bmatrix}
 
 Where:
 
-* :math:`A_\\alpha` is the adjacency matrix of layer :math:`\\alpha` (intra-layer connections)
-* :math:`C_{\\alpha\\beta}` is the coupling matrix between layers :math:`\\alpha` and :math:`\\beta` (inter-layer connections)
+* :math:`A_\alpha` is the adjacency matrix of layer :math:`\alpha` (intra-layer connections)
+* :math:`C_{\alpha\beta}` is the coupling matrix between layers :math:`\alpha` and :math:`\beta` (inter-layer connections)
 
 Construction
 ~~~~~~~~~~~~

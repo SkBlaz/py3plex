@@ -312,10 +312,10 @@ The Halu et al. (2013) framework provides **four variants** of cross-layer influ
 
 **Coupling Functions:**
 
-* **Neutral**: :math:`F^\\ell_i = 1` (no coupling)
-* **Additive**: :math:`F^\\ell_i = 1 + c \\sum_{\\ell' \\neq \\ell} r^{\\ell'}_i`
-* **Multiplicative**: :math:`F^\\ell_i = \\prod_{\\ell' \\neq \\ell} (r^{\\ell'}_i + \\epsilon)^c`
-* **Combined**: :math:`F^\\ell_i = (1 + c_1 \\sum_{\\ell' \\neq \\ell} r^{\\ell'}_i) \\times \\prod_{\\ell' \\neq \\ell} (r^{\\ell'}_i + \\epsilon)^{c_2}`
+* **Neutral**: :math:`F^\ell_i = 1` (no coupling)
+* **Additive**: :math:`F^\ell_i = 1 + c \sum_{\ell' \neq \ell} r^{\ell'}_i`
+* **Multiplicative**: :math:`F^\ell_i = \prod_{\ell' \neq \ell} (r^{\ell'}_i + \epsilon)^c`
+* **Combined**: :math:`F^\ell_i = (1 + c_1 \sum_{\ell' \neq \ell} r^{\ell'}_i) \times \prod_{\ell' \neq \ell} (r^{\ell'}_i + \epsilon)^{c_2}`
 
 **Key Parameters:**
 
