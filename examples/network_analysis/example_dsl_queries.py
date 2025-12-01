@@ -65,12 +65,12 @@ edges = [
     {'source': 'Bob', 'target': 'David', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Charlie', 'target': 'David', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'David', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
-    
+
     # Work layer connections
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work', 'weight': 1.0},
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work', 'weight': 1.0},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work', 'weight': 1.0},
-    
+
     # Transport layer connections
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'transport', 'target_type': 'transport', 'weight': 1.0},
     {'source': 'Bob', 'target': 'David', 'source_type': 'transport', 'target_type': 'transport', 'weight': 1.0},
@@ -161,7 +161,7 @@ print(f"   {high_degree_nodes}")
 
 print("\nc) Compute centrality for layer:")
 centrality = compute_centrality_for_layer(network, 'transport', 'degree_centrality')
-print(f"   Degree centrality for 'transport' layer:")
+print("   Degree centrality for 'transport' layer:")
 for node, value in sorted(centrality.items(), key=lambda x: x[1], reverse=True):
     print(f"     {node}: {value:.4f}")
 

@@ -46,7 +46,7 @@ edges = [
     {'source': 'G', 'target': 'H', 'source_type': 'bus', 'target_type': 'bus', 'weight': 1.0},
     {'source': 'H', 'target': 'I', 'source_type': 'bus', 'target_type': 'bus', 'weight': 1.0},
     {'source': 'I', 'target': 'J', 'source_type': 'bus', 'target_type': 'bus', 'weight': 1.0},
-    
+
     # Metro network (fewer connections, major hubs)
     {'source': 'A', 'target': 'D', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
     {'source': 'D', 'target': 'F', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
@@ -54,7 +54,7 @@ edges = [
     {'source': 'H', 'target': 'J', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
     {'source': 'B', 'target': 'E', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
     {'source': 'E', 'target': 'I', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
-    
+
     # Train network (long-distance, sparse)
     {'source': 'A', 'target': 'E', 'source_type': 'train', 'target_type': 'train', 'weight': 1.0},
     {'source': 'E', 'target': 'H', 'source_type': 'train', 'target_type': 'train', 'weight': 1.0},
@@ -93,19 +93,19 @@ layer_centralities = {}
 for layer in layers:
     print(f"\nAnalyzing {layer.upper()} layer...")
     result = execute_query(
-        network, 
+        network,
         f'SELECT nodes WHERE layer="{layer}" COMPUTE betweenness_centrality'
     )
     layer_centralities[layer] = result['computed']['betweenness_centrality']
-    
+
     # Show top 3 nodes
     sorted_nodes = sorted(
         layer_centralities[layer].items(),
         key=lambda x: x[1],
         reverse=True
     )[:3]
-    
-    print(f"Top 3 by betweenness centrality:")
+
+    print("Top 3 by betweenness centrality:")
     for node, centrality in sorted_nodes:
         print(f"  {node}: {centrality:.4f}")
 
@@ -188,14 +188,14 @@ station_scores = {}
 for station in stations:
     total_degree = 0
     present_in_layers = 0
-    
+
     for layer in layers:
         node = (station, layer)
         if node in list(network.get_nodes()):
             degree = network.core_network.degree(node)
             total_degree += degree
             present_in_layers += 1
-    
+
     if present_in_layers == len(layers):  # Present in all layers
         station_scores[station] = total_degree
 
