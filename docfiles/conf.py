@@ -120,6 +120,8 @@ htmlhelp_basename = 'py3plexdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
+# Use LuaLaTeX engine for better Unicode support in PDF generation
+# This avoids hyperref/bookmark errors with non-ASCII characters
 latex_engine = 'lualatex'
 
 latex_elements = {
