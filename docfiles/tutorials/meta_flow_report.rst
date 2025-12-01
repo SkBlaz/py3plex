@@ -1,5 +1,5 @@
 Meta Flow Report - Comprehensive Network Analysis
-================================================
+==================================================
 
 The **Meta Flow Report** provides a unified interface for conducting multiple multilayer network analyses at once. Instead of running centrality measures, community detection, and statistics separately, you can now perform comprehensive analysis with a single function call.
 
