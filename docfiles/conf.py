@@ -120,9 +120,8 @@ htmlhelp_basename = 'py3plexdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
-# Use LuaLaTeX engine for better Unicode support in PDF generation
-# This avoids hyperref/bookmark errors with non-ASCII characters
-latex_engine = 'lualatex'
+# Use pdflatex engine for maximum compatibility
+latex_engine = 'pdflatex'
 
 latex_elements = {
     # The paper size - A4 is more professional and book-like
@@ -131,10 +130,90 @@ latex_elements = {
     # Larger font size for better readability
     'pointsize': '11pt',
 
+    # Disable fncychap since it causes issues
+    'fncychap': '',
+
     # Additional stuff for the LaTeX preamble for professional styling
     'preamble': r'''
-% Professional book-like styling improvements
-\usepackage{fontspec}           % LuaLaTeX font handling
+% UTF-8 support for pdflatex
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newunicodechar}
+\usepackage{textcomp}
+\usepackage{amssymb}
+
+% Define Unicode characters that are used in the documentation
+\newunicodechar{✗}{\texttimes}
+\newunicodechar{✓}{\checkmark}
+\newunicodechar{→}{$\rightarrow$}
+\newunicodechar{←}{$\leftarrow$}
+\newunicodechar{↓}{$\downarrow$}
+\newunicodechar{↑}{$\uparrow$}
+\newunicodechar{•}{\textbullet}
+\newunicodechar{─}{-}
+\newunicodechar{│}{|}
+\newunicodechar{┌}{+}
+\newunicodechar{└}{+}
+\newunicodechar{├}{+}
+\newunicodechar{┐}{+}
+\newunicodechar{┘}{+}
+\newunicodechar{┤}{+}
+\newunicodechar{┬}{+}
+\newunicodechar{┴}{+}
+\newunicodechar{┼}{+}
+\newunicodechar{▶}{>}
+\newunicodechar{◀}{<}
+\newunicodechar{▼}{v}
+\newunicodechar{▲}{\^{}}
+\newunicodechar{►}{>}
+\newunicodechar{◄}{<}
+\newunicodechar{⚠}{\textasteriskcentered}
+\newunicodechar{📦}{[pkg]}
+\newunicodechar{🔧}{[tool]}
+\newunicodechar{📄}{[doc]}
+\newunicodechar{📚}{[lib]}
+\newunicodechar{❌}{[X]}
+\newunicodechar{✅}{[OK]}
+\newunicodechar{ℹ}{[i]}
+\newunicodechar{⏎}{[ret]}
+\newunicodechar{…}{...}
+\newunicodechar{≥}{$\geq$}
+\newunicodechar{≤}{$\leq$}
+\newunicodechar{≠}{$\neq$}
+\newunicodechar{±}{$\pm$}
+\newunicodechar{×}{$\times$}
+\newunicodechar{÷}{$\div$}
+\newunicodechar{∞}{$\infty$}
+% Greek letters
+\newunicodechar{α}{$\alpha$}
+\newunicodechar{β}{$\beta$}
+\newunicodechar{γ}{$\gamma$}
+\newunicodechar{δ}{$\delta$}
+\newunicodechar{ε}{$\varepsilon$}
+\newunicodechar{ζ}{$\zeta$}
+\newunicodechar{η}{$\eta$}
+\newunicodechar{θ}{$\theta$}
+\newunicodechar{ι}{$\iota$}
+\newunicodechar{κ}{$\kappa$}
+\newunicodechar{λ}{$\lambda$}
+\newunicodechar{μ}{$\mu$}
+\newunicodechar{ν}{$\nu$}
+\newunicodechar{ξ}{$\xi$}
+\newunicodechar{π}{$\pi$}
+\newunicodechar{ρ}{$\rho$}
+\newunicodechar{σ}{$\sigma$}
+\newunicodechar{τ}{$\tau$}
+\newunicodechar{υ}{$\upsilon$}
+\newunicodechar{φ}{$\phi$}
+\newunicodechar{χ}{$\chi$}
+\newunicodechar{ψ}{$\psi$}
+\newunicodechar{ω}{$\omega$}
+\newunicodechar{Σ}{$\Sigma$}
+\newunicodechar{Δ}{$\Delta$}
+\newunicodechar{Ω}{$\Omega$}
+\newunicodechar{Π}{$\Pi$}
+\newunicodechar{Λ}{$\Lambda$}
+\newunicodechar{Γ}{$\Gamma$}
 
 % Improved paragraph spacing
 \setlength{\parskip}{0.5em}
@@ -149,6 +228,9 @@ latex_elements = {
 
     # Disable blank pages between chapters (more concise)
     'extraclassoptions': 'openany',
+
+    # Disable PDF bookmarks to avoid Unicode issues
+    'hyperref': r'\hypersetup{bookmarks=false}',
 }
 
 # Additional LaTeX configuration for hyperref (links)
@@ -164,9 +246,10 @@ latex_docclass = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
+# Using ASCII-safe author name to avoid LaTeX encoding issues
 latex_documents = [
     (master_doc, 'py3plex.tex', 'Py3plex: Multilayer Network Analysis in Python',
-     'Blaž Škrlj', 'manual'),
+     'Blaz Skrlj', 'manual'),
 ]
 
 # Logo for the title page - ensure logo.png exists in the docfiles directory

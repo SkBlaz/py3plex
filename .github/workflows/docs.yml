@@ -60,8 +60,8 @@ jobs:
         # Build PDF using latexpdf builder
         sphinx-build -b latex . _build/latex --keep-going
         cd _build/latex
-        # Use latexmk with lualatex for native Unicode support
-        latexmk -lualatex -interaction=nonstopmode -f py3plex.tex || true
+        # Use latexmk with pdflatex for maximum compatibility
+        latexmk -pdf -interaction=nonstopmode -f py3plex.tex || true
         # Check if PDF was actually generated
         if [ -f "py3plex.pdf" ] && [ -s "py3plex.pdf" ]; then
           PDF_SIZE=$(wc -c < py3plex.pdf)
