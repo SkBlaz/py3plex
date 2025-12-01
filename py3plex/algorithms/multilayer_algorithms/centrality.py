@@ -601,7 +601,10 @@ class MultilayerCentrality:
         where d((i,α), (j,β)) is the shortest path distance in the supra-graph.
 
         Args:
-            normalized: Whether to normalize by (n-1).
+            normalized: This parameter is kept for API compatibility but has no effect.
+                       Standard closeness is always normalized by (n-1) per the
+                       NetworkX implementation. Harmonic closeness returns unnormalized
+                       sums of reciprocal distances by definition.
             wf_improved: If True, use Wasserman-Faust improved closeness scaling
                         for disconnected graphs. Default is True. This affects
                         the magnitude and ordering of scores in graphs with
@@ -634,6 +637,12 @@ class MultilayerCentrality:
             or variant='auto' to get mathematically consistent closeness values.
             The harmonic variant naturally handles unreachable nodes by summing
             1/d for finite distances only (infinite distances contribute 0).
+
+            Weight Interpretation: Edge weights from the supra-adjacency matrix
+            are interpreted as connection strengths (larger weight = stronger
+            connection). They are converted to distances via 1/weight for
+            shortest path computation. If your edge weights already represent
+            distances, use them directly without this function's weight inversion.
 
         Examples:
             >>> # For connected networks, standard closeness works well
@@ -1102,17 +1111,24 @@ class MultilayerCentrality:
         information flow through the network. It uses the inverse of a modified
         Laplacian matrix.
 
-        For each physical node u:
-            I(u) = 1 / mean_{a in U} [G[a,a] - (2/(N*L)) * sum_b G[a,b] + (1/(N*L)^2)*sum_{b,c}G[b,c]]
-
-        where G is the inverse of B = L + (1/(N*L)) * 1*1^T
-
         Returns:
             dict: {(node, layer): information_centrality}
 
         Note:
-            This implementation uses NetworkX's information_centrality for computation.
+            This implementation returns values for each node-layer pair in the
+            supra-graph, not aggregated physical node values. To obtain physical
+            node-level information centrality, use the aggregate_to_node_level()
+            method on the returned dictionary.
+
+            The implementation uses NetworkX's information_centrality for computation.
             Falls back to harmonic closeness if information centrality computation fails.
+
+            Information centrality is defined only for undirected graphs. For directed
+            networks, the graph is symmetrized with a warning.
+
+        References:
+            - Stephenson, K., & Zelen, M. (1989). Rethinking centrality: Methods and
+              examples. Social Networks, 11(1), 1-37.
         """
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
@@ -1167,16 +1183,29 @@ class MultilayerCentrality:
 
     def communicability_betweenness_centrality(self, normalized=True):
         """
-        Compute communicability betweenness centrality (Estrada-style).
+        Compute communicability betweenness centrality on the supra-graph.
 
         This measure quantifies how much a node contributes to the communicability
         between other pairs of nodes. It uses the matrix exponential to account
         for all walks between nodes.
 
+        Args:
+            normalized: If True (default), normalize scores by dividing by the
+                       maximum value (min-max scaling to [0, 1] range). Note that
+                       this is simple rescaling, not the theoretical Estrada-Hatano
+                       normalization from the original literature.
+
         Returns:
             dict: {(node, layer): communicability_betweenness}
 
         Note:
+            This implementation uses NetworkX's communicability_betweenness_centrality,
+            which operates on unweighted graphs. Edge weights from the supra-adjacency
+            matrix are used only to determine edge existence (weight > 0), not for
+            weighted communicability computation. For truly weighted communicability
+            analysis, a custom implementation using the weighted matrix exponential
+            would be required.
+
             This is computationally expensive as it requires computing the matrix
             exponential multiple times. For large networks, this may take significant time.
         """
@@ -1254,6 +1283,17 @@ class MultilayerCentrality:
         Note:
             Accessibility is measured as the effective number of h-step destinations,
             using the entropy of the random walk distribution.
+
+            Dangling Node Handling: For nodes with no outgoing edges (dangling nodes),
+            this implementation uses uniform teleportation to all nodes. This differs
+            from the original Travencolo-Costa definition which does not include
+            teleportation. The teleportation ensures a well-defined random walk
+            distribution but may affect accessibility values for nodes near dangling
+            nodes compared to implementations that handle dangling nodes differently.
+
+        References:
+            - Travencolo, B. A. N., & Costa, L. D. F. (2008). Accessibility in complex
+              networks. Physics Letters A, 373(1), 89-95.
         """
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
@@ -1316,6 +1356,14 @@ class MultilayerCentrality:
         Note:
             This measure naturally handles disconnected components as unreachable
             nodes contribute 0 (instead of infinity) to the sum.
+
+            Weight Interpretation: Edge weights from the supra-adjacency matrix
+            are interpreted as connection strengths (larger weight = stronger
+            connection = shorter distance). They are converted to distances via
+            1/weight for shortest path computation. If your edge weights already
+            represent distances, do not use this function directly—you would need
+            to invert them first or use the distance values directly in a custom
+            computation.
         """
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
@@ -1566,8 +1614,9 @@ class MultilayerCentrality:
         """
         Compute percolation centrality using bond percolation Monte Carlo simulation.
 
-        Percolation centrality measures the importance of a node based on its
-        role in maintaining network connectivity under random edge failures.
+        This implementation measures the average relative component size that a node
+        belongs to across multiple bond percolation realizations, providing an estimate
+        of a node's importance for network connectivity under random edge failures.
 
         Args:
             edge_activation_prob: Probability that an edge is active (default: 0.5)
@@ -1577,8 +1626,21 @@ class MultilayerCentrality:
             dict: {(node, layer): percolation_centrality}
 
         Note:
-            Higher values indicate nodes that belong to larger connected components
-            across different percolation realizations.
+            This is a component-size-based percolation measure, not the path-based
+            percolation betweenness from the original Piraveenan et al. literature,
+            which requires recomputing betweenness on each percolated realization.
+            The original percolation centrality is computationally expensive (O(n³)
+            per trial), so this implementation provides a more efficient alternative
+            that captures related connectivity information.
+
+            Values are normalized to [0, 1] range where higher values indicate nodes
+            that tend to belong to larger connected components across percolation
+            realizations.
+
+        References:
+            - Piraveenan, M., Prokopenko, M., & Hossain, L. (2013). Percolation
+              centrality: Quantifying graph-theoretic impact of nodes during
+              percolation in networks. PloS one, 8(1), e53095.
         """
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
@@ -1633,11 +1695,12 @@ class MultilayerCentrality:
         Compute spreading (epidemic) centrality using SIR model.
 
         Spreading centrality measures how influential a node is in spreading
-        information or disease through the network.
+        information or disease through the network, based on Monte Carlo
+        simulations of discrete-time SIR dynamics.
 
         Args:
-            beta: Infection rate (default: 0.2)
-            mu: Recovery rate (default: 0.1)
+            beta: Infection rate per edge per time step (default: 0.2)
+            mu: Recovery rate per time step (default: 0.1)
             trials: Number of simulation trials per node (default: 50)
             steps: Maximum simulation steps (default: 100)
 
@@ -1645,8 +1708,20 @@ class MultilayerCentrality:
             dict: {(node, layer): spreading_centrality}
 
         Note:
-            This measures the average outbreak size when seeding from each node.
-            Requires discrete-time SIR simulation on the supra-graph.
+            This measures the average outbreak size (fraction of nodes ever infected)
+            when seeding the epidemic from each node. Values are normalized by the
+            total number of nodes, producing scores in the range [1/n, 1] where n is
+            the number of supra-graph nodes.
+
+            This is an empirical simulation-based measure, not normalized by
+            theoretical epidemic threshold or branching factor as in some literature
+            definitions. The normalization allows comparison of relative spreading
+            power within the network but may not be directly comparable across
+            networks of different sizes or structures.
+
+        References:
+            - Kitsak, M., et al. (2010). Identification of influential spreaders
+              in complex networks. Nature physics, 6(11), 888-893.
         """
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
@@ -1846,10 +1921,10 @@ class MultilayerCentrality:
 
     def flow_betweenness_centrality(self, samples=100):
         """
-        Compute flow betweenness based on maximum flow.
+        Compute flow betweenness based on maximum flow sampling.
 
         Flow betweenness measures how much flow passes through a node when
-        maximizing flow between random source-target pairs.
+        maximizing flow between randomly sampled source-target pairs.
 
         Args:
             samples: Number of source-target pairs to sample (default: 100)
@@ -1858,8 +1933,18 @@ class MultilayerCentrality:
             dict: {(node, layer): flow_betweenness}
 
         Note:
-            This uses NetworkX's maximum flow algorithms. For large networks,
-            this can be computationally expensive.
+            This is a sampling-based approximation of flow betweenness. The
+            implementation samples random pairs of supra-graph nodes and computes
+            the maximum flow through each intermediate node.
+
+            Unlike classical Freeman flow betweenness which uses a normalization
+            factor based on the number of nodes, this implementation returns the
+            average flow per sampled pair without additional normalization. For
+            multilayer networks, the number of supra-graph nodes (N * L for N
+            physical nodes and L layers) affects the raw values.
+
+            For large networks, this sampling approach is more computationally
+            feasible than computing exact flow betweenness for all pairs.
         """
         supra_matrix = self._get_supra_adjacency_matrix()
         node_layer_mapping, reverse_mapping = self._get_node_layer_mapping()
@@ -1936,20 +2021,28 @@ class MultilayerCentrality:
 
     # ==================== LP-AGGREGATED CENTRALITY ====================
 
-    def lp_aggregated_centrality(self, layer_centralities, p=2, weights=None):
+    def lp_aggregated_centrality(self, layer_centralities, p=2, weights=None,
+                                   exclude_missing=True):
         """
         Compute Lp-aggregated per-layer centrality.
 
         Aggregates per-layer centrality values using Lp norm.
 
-        C_i = (sum_{ℓ=1..L} w_ℓ * |c^ℓ[i]|^p)^{1/p}  for p < ∞
-        C_i = max_{ℓ} (w_ℓ * |c^ℓ[i]|)                for p = ∞
+        C_i = (sum_{ℓ in L_i} w_ℓ * |c^ℓ[i]|^p)^{1/p}  for p < ∞
+        C_i = max_{ℓ in L_i} (w_ℓ * |c^ℓ[i]|)          for p = ∞
+
+        where L_i is the set of layers where node i exists.
 
         Args:
             layer_centralities: dict of {layer: {node: centrality}} or
                                {(node, layer): centrality}
             p: Lp norm parameter (default: 2). Use float('inf') for L-infinity norm.
             weights: dict of {layer: weight}. If None, uniform weights are used.
+            exclude_missing: If True (default), only aggregate over layers where
+                           the node exists (has a centrality value). If False,
+                           treat nodes absent from a layer as having zero centrality,
+                           which may bias scores for nodes with sparse layer
+                           participation.
 
         Returns:
             dict: {node: aggregated_centrality}
@@ -1957,6 +2050,13 @@ class MultilayerCentrality:
         Note:
             This is a framework for aggregating any per-layer centrality measure.
             Input can be degree, PageRank, eigenvector, etc.
+
+            Sparse Layer Participation: When exclude_missing=True (default), nodes
+            that only appear in a subset of layers are aggregated only over those
+            layers where they exist. This prevents bias against nodes with sparse
+            layer participation. When exclude_missing=False, missing layers contribute
+            zero to the aggregation, which may penalize nodes that don't appear in
+            all layers.
         """
         # Ensure layer matrices are computed to get layer and node info
         self._get_layer_matrices()
@@ -1990,18 +2090,21 @@ class MultilayerCentrality:
         if weights is None:
             weights = {layer: 1.0 / len(layers) for layer in layers}
 
-        # Normalize weights to sum to 1
-        weight_sum = sum(weights.values())
-        if weight_sum > 0:
-            weights = {k: v / weight_sum for k, v in weights.items()}
-
         results = {}
+
+        # Helper function to get layers where node exists
+        def get_node_layers(node):
+            if exclude_missing:
+                return [layer for layer in layers
+                       if node in layer_centralities[layer]]
+            else:
+                return layers
 
         if p == float("inf"):
             # L-infinity norm: maximum
             for node in all_nodes:
                 max_val = 0.0
-                for layer in layers:
+                for layer in get_node_layers(node):
                     val = layer_centralities[layer].get(node, 0)
                     weighted_val = weights.get(layer, 0) * abs(val)
                     max_val = max(max_val, weighted_val)
@@ -2009,11 +2112,18 @@ class MultilayerCentrality:
         else:
             # Lp norm
             for node in all_nodes:
+                node_layers = get_node_layers(node)
+                if not node_layers:
+                    results[node] = 0.0
+                    continue
+
                 lp_sum = 0.0
-                for layer in layers:
+                for layer in node_layers:
                     val = layer_centralities[layer].get(node, 0)
-                    weighted_val = weights.get(layer, 0) * abs(val)
+                    layer_weight = weights.get(layer, 0)
+                    weighted_val = layer_weight * abs(val)
                     lp_sum += weighted_val**p
+
                 results[node] = lp_sum ** (1.0 / p)
 
         return results
