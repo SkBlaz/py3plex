@@ -46,7 +46,7 @@ edges = [
     {'source': 'G', 'target': 'H', 'source_type': 'bus', 'target_type': 'bus', 'weight': 1.0},
     {'source': 'H', 'target': 'I', 'source_type': 'bus', 'target_type': 'bus', 'weight': 1.0},
     {'source': 'I', 'target': 'J', 'source_type': 'bus', 'target_type': 'bus', 'weight': 1.0},
-    
+
     # Metro network (fewer connections, major hubs)
     {'source': 'A', 'target': 'D', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
     {'source': 'D', 'target': 'F', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
@@ -54,7 +54,7 @@ edges = [
     {'source': 'H', 'target': 'J', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
     {'source': 'B', 'target': 'E', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
     {'source': 'E', 'target': 'I', 'source_type': 'metro', 'target_type': 'metro', 'weight': 1.0},
-    
+
     # Train network (long-distance, sparse)
     {'source': 'A', 'target': 'E', 'source_type': 'train', 'target_type': 'train', 'weight': 1.0},
     {'source': 'E', 'target': 'H', 'source_type': 'train', 'target_type': 'train', 'weight': 1.0},
@@ -93,19 +93,19 @@ layer_centralities = {}
 for layer in layers:
     print(f"\nAnalyzing {layer.upper()} layer...")
     result = execute_query(
-        network, 
+        network,
         f'SELECT nodes WHERE layer="{layer}" COMPUTE betweenness_centrality'
     )
     layer_centralities[layer] = result['computed']['betweenness_centrality']
-    
+
     # Show top 3 nodes
     sorted_nodes = sorted(
         layer_centralities[layer].items(),
         key=lambda x: x[1],
         reverse=True
     )[:3]
-    
-    print(f"Top 3 by betweenness centrality:")
+
+    print("Top 3 by betweenness centrality:")
     for node, centrality in sorted_nodes:
         print(f"  {node}: {centrality:.4f}")
 
@@ -188,14 +188,14 @@ station_scores = {}
 for station in stations:
     total_degree = 0
     present_in_layers = 0
-    
+
     for layer in layers:
         node = (station, layer)
         if node in list(network.get_nodes()):
             degree = network.core_network.degree(node)
             total_degree += degree
             present_in_layers += 1
-    
+
     if present_in_layers == len(layers):  # Present in all layers
         station_scores[station] = total_degree
 
@@ -204,6 +204,29 @@ sorted_stations = sorted(station_scores.items(), key=lambda x: x[1], reverse=Tru
 print("\nTop stations by total degree across all layers:")
 for station, score in sorted_stations[:5]:
     print(f"  Station {station}: total degree = {score}")
+
+# Example 9: Using NOT operator to exclude layers
+print("\n" + "=" * 80)
+print("[9] Example 9: Find stations NOT in bus layer")
+print("-" * 80)
+print("Query: SELECT nodes WHERE NOT layer=\"bus\" AND degree > 1")
+print()
+
+result = execute_query(network, 'SELECT nodes WHERE NOT layer="bus" AND degree > 1')
+print(format_result(result, limit=15))
+
+# Example 10: Complex conditional query with multiple conditions
+print("\n" + "=" * 80)
+print("[10] Example 10: Complex query - metro or train with high degree")
+print("-" * 80)
+print("Query: SELECT nodes WHERE layer=\"metro\" OR layer=\"train\" COMPUTE degree_centrality")
+print()
+
+result = execute_query(
+    network,
+    'SELECT nodes WHERE layer="metro" OR layer="train" COMPUTE degree_centrality'
+)
+print(format_result(result, limit=15))
 
 # Summary
 print("\n" + "=" * 80)
@@ -215,4 +238,6 @@ print("  ✓ Cross-layer centrality comparison")
 print("  ✓ Multi-measure node analysis")
 print("  ✓ Network connectivity patterns")
 print("  ✓ Comprehensive station importance ranking")
+print("  ✓ Using NOT operator for layer exclusion")
+print("  ✓ Complex conditional queries with OR")
 print("\nThe DSL enables complex multilayer network analysis with simple queries!")

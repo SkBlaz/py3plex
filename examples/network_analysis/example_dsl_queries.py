@@ -65,12 +65,12 @@ edges = [
     {'source': 'Bob', 'target': 'David', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'Charlie', 'target': 'David', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
     {'source': 'David', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
-    
+
     # Work layer connections
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work', 'weight': 1.0},
     {'source': 'Alice', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work', 'weight': 1.0},
     {'source': 'Bob', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work', 'weight': 1.0},
-    
+
     # Transport layer connections
     {'source': 'Alice', 'target': 'Bob', 'source_type': 'transport', 'target_type': 'transport', 'weight': 1.0},
     {'source': 'Bob', 'target': 'David', 'source_type': 'transport', 'target_type': 'transport', 'weight': 1.0},
@@ -161,7 +161,7 @@ print(f"   {high_degree_nodes}")
 
 print("\nc) Compute centrality for layer:")
 centrality = compute_centrality_for_layer(network, 'transport', 'degree_centrality')
-print(f"   Degree centrality for 'transport' layer:")
+print("   Degree centrality for 'transport' layer:")
 for node, value in sorted(centrality.items(), key=lambda x: x[1], reverse=True):
     print(f"     {node}: {value:.4f}")
 
@@ -195,6 +195,46 @@ print()
 result = execute_query(network, 'SELECT nodes COMPUTE degree')
 print(format_result(result, limit=15))
 
+# Example 11: Using NOT operator
+print("\n" + "=" * 80)
+print("[12] Example 11: Using NOT operator to exclude a layer")
+print("-" * 80)
+print("Query: SELECT nodes WHERE NOT layer=\"social\"")
+print()
+
+result = execute_query(network, 'SELECT nodes WHERE NOT layer="social"')
+print(format_result(result, limit=15))
+
+# Example 12: Filtering by centrality measures
+print("\n" + "=" * 80)
+print("[13] Example 12: Filter nodes by betweenness centrality")
+print("-" * 80)
+print("Query: SELECT nodes WHERE betweenness >= 0 COMPUTE betweenness_centrality")
+print()
+
+result = execute_query(network, 'SELECT nodes WHERE betweenness >= 0 COMPUTE betweenness_centrality')
+print(format_result(result, limit=10))
+
+# Example 13: Clustering coefficient
+print("\n" + "=" * 80)
+print("[14] Example 13: Compute clustering coefficient for nodes")
+print("-" * 80)
+print("Query: SELECT nodes WHERE layer=\"social\" COMPUTE clustering")
+print()
+
+result = execute_query(network, 'SELECT nodes WHERE layer="social" COMPUTE clustering')
+print(format_result(result, limit=10))
+
+# Example 14: PageRank computation
+print("\n" + "=" * 80)
+print("[15] Example 14: Compute PageRank for all nodes")
+print("-" * 80)
+print("Query: SELECT nodes COMPUTE pagerank")
+print()
+
+result = execute_query(network, 'SELECT nodes COMPUTE pagerank')
+print(format_result(result, limit=10))
+
 # Summary
 print("\n" + "=" * 80)
 print("DSL QUERY EXAMPLES COMPLETE")
@@ -204,6 +244,7 @@ print("  SELECT nodes|edges [WHERE conditions] [COMPUTE measures]")
 print("\nWHERE conditions:")
 print("  - layer = \"value\"")
 print("  - degree >/</>=/<=/=/!= value")
+print("  - betweenness/closeness/eigenvector >= value")
 print("  - Logical: AND, OR, NOT")
 print("\nCOMPUTE measures:")
 print("  - degree, degree_centrality")
