@@ -107,11 +107,6 @@ Community Detection
 Statistics
 ~~~~~~~~~~
 
-.. automodule:: py3plex.algorithms.statistics.statistics
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 .. automodule:: py3plex.algorithms.statistics.multilayer_statistics
    :members:
    :undoc-members:
@@ -234,11 +229,6 @@ Visualization
 Wrappers
 --------
 
-.. automodule:: py3plex.wrappers.node2vec_embedding
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 .. automodule:: py3plex.wrappers.benchmark_nodes
    :members:
    :undoc-members:
@@ -246,11 +236,6 @@ Wrappers
 
 I/O Operations
 --------------
-
-.. automodule:: py3plex.io.input_output
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 For the complete auto-generated API documentation, see the AUTOGEN_results directory after building the docs.
 Aggregation and Network Operations
@@ -338,28 +323,10 @@ Embedding Visualization
    :undoc-members:
    :show-inheritance:
 
-Network Generation and Benchmarking
------------------------------------
-
-.. automodule:: py3plex.algorithms.general.network_generation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Additional Statistics and Analysis
 ----------------------------------
 
 .. automodule:: py3plex.algorithms.statistics.bayesiantests
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.statistics.information_theory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.statistics.distribution
    :members:
    :undoc-members:
    :show-inheritance:
@@ -373,11 +340,6 @@ Community Detection Advanced
    :show-inheritance:
 
 .. automodule:: py3plex.algorithms.community_detection.community_ranking
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.community_detection.label_propagation_multilayer
    :members:
    :undoc-members:
    :show-inheritance:
@@ -403,19 +365,6 @@ Embeddings and Wrappers
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.wrappers.train_word2vec_embedding
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Network Motifs and Patterns
----------------------------
-
-.. automodule:: py3plex.algorithms.network_patterns.motif_detection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 HINMINE Data Structures
 -----------------------
 
@@ -436,24 +385,6 @@ Validation Utilities
 --------------------
 
 .. automodule:: py3plex.validation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Network Comparison and Testing
-------------------------------
-
-.. automodule:: py3plex.algorithms.general.network_comparison
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.general.distances
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.general.network_slicer
    :members:
    :undoc-members:
    :show-inheritance:
@@ -507,31 +438,12 @@ Hedwig Core Components
    :undoc-members:
    :show-inheritance:
 
-Time Series and Temporal Analysis
----------------------------------
-
-.. automodule:: py3plex.algorithms.temporal.time_series_analysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Advanced Visualization
 ----------------------
-
-.. automodule:: py3plex.visualization.hairballs
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 .. automodule:: py3plex.visualization.sankey
    :members:
    :undoc-members:
    :show-inheritance:
 
-Link Prediction
----------------
 
-.. automodule:: py3plex.algorithms.link_prediction.link_prediction
-   :members:
-   :undoc-members:
-   :show-inheritance:
