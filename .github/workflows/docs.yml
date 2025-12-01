@@ -42,7 +42,7 @@ jobs:
     - name: Install LaTeX for PDF generation
       run: |
         sudo apt-get update
-        sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended latexmk
+        sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-luatex latexmk
       timeout-minutes: 5
     
     - name: Build Sphinx documentation
@@ -60,9 +60,8 @@ jobs:
         # Build PDF using latexpdf builder
         sphinx-build -b latex . _build/latex --keep-going
         cd _build/latex
-        # Use latexmk with force flag to complete PDF generation despite minor errors
-        # (e.g., Unicode characters that LaTeX can't render but doesn't prevent PDF creation)
-        latexmk -pdf -interaction=nonstopmode -f py3plex.tex || true
+        # Use latexmk with lualatex for native Unicode support
+        latexmk -lualatex -interaction=nonstopmode -f py3plex.tex || true
         # Check if PDF was actually generated
         if [ -f "py3plex.pdf" ] && [ -s "py3plex.pdf" ]; then
           PDF_SIZE=$(wc -c < py3plex.pdf)

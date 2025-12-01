@@ -120,6 +120,10 @@ htmlhelp_basename = 'py3plexdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
+# Use LuaLaTeX engine for better Unicode support in PDF generation
+# This avoids hyperref/bookmark errors with non-ASCII characters
+latex_engine = 'lualatex'
+
 latex_elements = {
     # The paper size - A4 is more professional and book-like
     'papersize': 'a4paper',
@@ -130,7 +134,7 @@ latex_elements = {
     # Additional stuff for the LaTeX preamble for professional styling
     'preamble': r'''
 % Professional book-like styling improvements
-\usepackage{lmodern}            % Latin Modern fonts for better rendering
+\usepackage{fontspec}           % LuaLaTeX font handling
 
 % Improved paragraph spacing
 \setlength{\parskip}{0.5em}
