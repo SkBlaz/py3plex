@@ -205,6 +205,29 @@ print("\nTop stations by total degree across all layers:")
 for station, score in sorted_stations[:5]:
     print(f"  Station {station}: total degree = {score}")
 
+# Example 9: Using NOT operator to exclude layers
+print("\n" + "=" * 80)
+print("[10] Example 9: Find stations NOT in bus layer")
+print("-" * 80)
+print("Query: SELECT nodes WHERE NOT layer=\"bus\" AND degree > 1")
+print()
+
+result = execute_query(network, 'SELECT nodes WHERE NOT layer="bus" AND degree > 1')
+print(format_result(result, limit=15))
+
+# Example 10: Complex conditional query with multiple conditions
+print("\n" + "=" * 80)
+print("[11] Example 10: Complex query - metro or train with high degree")
+print("-" * 80)
+print("Query: SELECT nodes WHERE layer=\"metro\" OR layer=\"train\" COMPUTE degree_centrality")
+print()
+
+result = execute_query(
+    network,
+    'SELECT nodes WHERE layer="metro" OR layer="train" COMPUTE degree_centrality'
+)
+print(format_result(result, limit=15))
+
 # Summary
 print("\n" + "=" * 80)
 print("ADVANCED DSL ANALYSIS COMPLETE")
@@ -215,4 +238,6 @@ print("  ✓ Cross-layer centrality comparison")
 print("  ✓ Multi-measure node analysis")
 print("  ✓ Network connectivity patterns")
 print("  ✓ Comprehensive station importance ranking")
+print("  ✓ Using NOT operator for layer exclusion")
+print("  ✓ Complex conditional queries with OR")
 print("\nThe DSL enables complex multilayer network analysis with simple queries!")
