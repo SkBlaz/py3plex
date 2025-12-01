@@ -169,6 +169,8 @@ latex_elements = {
     'figure_align': 'H',
 
     # Disable blank pages between chapters (more concise)
+    # 'openany' - don't require chapters to start on odd pages
+    # 'oneside' - use same margins and headers for all pages (simpler layout for digital reading)
     'extraclassoptions': 'openany,oneside',
 
     # Use default table of contents styling
