@@ -207,7 +207,7 @@ for station, score in sorted_stations[:5]:
 
 # Example 9: Using NOT operator to exclude layers
 print("\n" + "=" * 80)
-print("[10] Example 9: Find stations NOT in bus layer")
+print("[9] Example 9: Find stations NOT in bus layer")
 print("-" * 80)
 print("Query: SELECT nodes WHERE NOT layer=\"bus\" AND degree > 1")
 print()
@@ -217,7 +217,7 @@ print(format_result(result, limit=15))
 
 # Example 10: Complex conditional query with multiple conditions
 print("\n" + "=" * 80)
-print("[11] Example 10: Complex query - metro or train with high degree")
+print("[10] Example 10: Complex query - metro or train with high degree")
 print("-" * 80)
 print("Query: SELECT nodes WHERE layer=\"metro\" OR layer=\"train\" COMPUTE degree_centrality")
 print()
