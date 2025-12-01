@@ -24,7 +24,8 @@ The multilayer modularity :math:`Q` is defined as:
 
    Q_{\text{multilayer}} = \frac{1}{2\mu} \sum_{i,j}\sum_{\alpha,\beta} \Big[ \big(A^{[\alpha]}_{ij} - \gamma^{[\alpha]}P^{[\alpha]}_{ij}\big)\,\delta_{\alpha\beta} + \delta_{ij}\,\omega_{\alpha\beta}\Big]\,\delta\big(g_{i,\alpha},\,g_{j,\beta}\big)
 
-where:
+Where:
+
 * :math:`A^{[\alpha]}_{ij}` is the adjacency matrix of layer :math:`\alpha`
 * :math:`P^{[\alpha]}_{ij}` is the expected weight under a null model (e.g., :math:`k_i^\alpha k_j^\alpha / 2m_\alpha`)
 * :math:`\gamma^{[\alpha]}` is the resolution parameter for layer :math:`\alpha`
@@ -36,6 +37,7 @@ Supra-Adjacency Matrix Representation
 
 
 A multilayer network can be represented as a supra-adjacency matrix of size :math:`NL \times NL` (for :math:`N` nodes and :math:`L` layers), where:
+
 * Diagonal blocks contain the intra-layer adjacency matrices :math:`A^{[\alpha]}`
 * Off-diagonal blocks encode inter-layer connections (e.g., :math:`\omega I` for identity coupling)
 

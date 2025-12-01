@@ -521,7 +521,9 @@ Calculate betweenness centrality matrix for all node-layer pairs.
 - ``weight`` (str): Edge weight attribute (default: None)
 
 **Returns:**
+
 - ``tuple``: (surface, (nodes, layers))
+
   - ``surface`` (np.ndarray): 2D array of shape (num_nodes, num_layers)
   - ``nodes`` (list): Node labels
   - ``layers`` (list): Layer labels
@@ -535,7 +537,9 @@ Calculate Pearson correlations of node degrees between all layer pairs.
 - ``network`` (multi_layer_network): The multilayer network
 
 **Returns:**
+
 - ``tuple``: (corr_matrix, layers)
+
   - ``corr_matrix`` (np.ndarray): Symmetric correlation matrix
   - ``layers`` (list): Layer labels
 

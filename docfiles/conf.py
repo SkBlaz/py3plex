@@ -128,12 +128,15 @@ latex_elements = {
     'pointsize': '11pt',
 
     # Additional stuff for the LaTeX preamble for professional styling
+    # Note: Do NOT load geometry here - Sphinx loads it automatically
+    # Loading it again causes "Option clash for package geometry" error
     'preamble': r'''
 % Professional book-like styling improvements
 \usepackage{lmodern}            % Latin Modern fonts for better rendering
 
-% Better spacing and margins for book-like appearance
-\usepackage[top=1in, bottom=1.2in, left=1.25in, right=1.25in]{geometry}
+% Required packages for proper rendering
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 % Improved paragraph spacing
 \setlength{\parskip}{0.5em}
@@ -156,17 +159,9 @@ latex_elements = {
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
 
-% Code block improvements for better readability
-\fvset{fontsize=\small, baselinestretch=1.0}
-
 % Better list spacing
 \usepackage{enumitem}
 \setlist{itemsep=0.25em, parsep=0em, topsep=0.5em}
-
-% Professional captions
-\usepackage[font=small,labelfont=bf,tableposition=top]{caption}
-\captionsetup[figure]{skip=10pt}
-\captionsetup[table]{skip=10pt}
 ''',
 
     # Latex figure (float) alignment
@@ -174,7 +169,9 @@ latex_elements = {
     'figure_align': 'H',
 
     # Disable blank pages between chapters (more concise)
-    'extraclassoptions': 'openany',
+    # 'openany' - don't require chapters to start on odd pages
+    # 'oneside' - use same margins and headers for all pages (simpler layout for digital reading)
+    'extraclassoptions': 'openany,oneside',
 
     # Use default table of contents styling
     # 'tableofcontents': '',
