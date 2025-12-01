@@ -132,52 +132,19 @@ latex_elements = {
 % Professional book-like styling improvements
 \usepackage{lmodern}            % Latin Modern fonts for better rendering
 
-% Better spacing and margins for book-like appearance
-\usepackage[top=1in, bottom=1.2in, left=1.25in, right=1.25in]{geometry}
-
 % Improved paragraph spacing
 \setlength{\parskip}{0.5em}
 \setlength{\parindent}{0pt}
 
 % Improved table of contents depth
 \setcounter{tocdepth}{2}        % Show subsections in TOC
-
-% Better colors for links
-\definecolor{InnerLinkColor}{rgb}{0.0,0.3,0.6}
-\definecolor{OuterLinkColor}{rgb}{0.0,0.3,0.6}
-
-% Professional headers and footers
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[LE,RO]{\thepage}
-\fancyhead[LO]{\nouppercase{\rightmark}}
-\fancyhead[RE]{\nouppercase{\leftmark}}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0pt}
-
-% Code block improvements for better readability
-\fvset{fontsize=\small, baselinestretch=1.0}
-
-% Better list spacing
-\usepackage{enumitem}
-\setlist{itemsep=0.25em, parsep=0em, topsep=0.5em}
-
-% Professional captions
-\usepackage[font=small,labelfont=bf,tableposition=top]{caption}
-\captionsetup[figure]{skip=10pt}
-\captionsetup[table]{skip=10pt}
 ''',
 
-    # Latex figure (float) alignment
-    # 'H' forces exact placement (requires float package), may cause spacing issues with large figures
-    'figure_align': 'H',
+    # Latex figure (float) alignment - use 'htbp' for flexible placement
+    'figure_align': 'htbp',
 
     # Disable blank pages between chapters (more concise)
     'extraclassoptions': 'openany',
-
-    # Use default table of contents styling
-    # 'tableofcontents': '',
 }
 
 # Additional LaTeX configuration for hyperref (links)
