@@ -143,8 +143,8 @@ latex_elements = {
 \usepackage{amssymb}
 
 % Define Unicode characters that are used in the documentation
-\newunicodechar{✗}{\texttimes}
-\newunicodechar{✓}{\checkmark}
+\newunicodechar{✗}{$\times$}
+\newunicodechar{✓}{$\checkmark$}
 \newunicodechar{→}{$\rightarrow$}
 \newunicodechar{←}{$\leftarrow$}
 \newunicodechar{↓}{$\downarrow$}
@@ -167,7 +167,7 @@ latex_elements = {
 \newunicodechar{▲}{\^{}}
 \newunicodechar{►}{>}
 \newunicodechar{◄}{<}
-\newunicodechar{⚠}{\textasteriskcentered}
+\newunicodechar{⚠}{\textbf{!}}
 \newunicodechar{📦}{[pkg]}
 \newunicodechar{🔧}{[tool]}
 \newunicodechar{📄}{[doc]}
