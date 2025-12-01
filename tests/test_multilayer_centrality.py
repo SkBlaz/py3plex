@@ -322,6 +322,32 @@ class TestMultilayerCentrality(unittest.TestCase):
         # All values should be non-negative
         for centrality in centralities.values():
             self.assertGreaterEqual(centrality, 0)
+
+    def test_multilayer_closeness_harmonic_variant(self):
+        """Test multilayer closeness centrality with harmonic variant."""
+        calc = MultilayerCentrality(self.simple_network)
+        centralities = calc.multilayer_closeness_centrality(variant='harmonic')
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('A', 'L2'), centralities)
+        
+        # All values should be non-negative
+        for centrality in centralities.values():
+            self.assertGreaterEqual(centrality, 0)
+
+    def test_multilayer_closeness_auto_variant(self):
+        """Test multilayer closeness centrality with auto variant."""
+        calc = MultilayerCentrality(self.simple_network)
+        centralities = calc.multilayer_closeness_centrality(variant='auto')
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('A', 'L2'), centralities)
+        
+        # All values should be non-negative
+        for centrality in centralities.values():
+            self.assertGreaterEqual(centrality, 0)
         
     def test_multilayer_betweenness_centrality(self):
         """Test multilayer betweenness centrality."""
@@ -562,6 +588,128 @@ class TestCentralityConsistency(unittest.TestCase):
         
         total = sum(centralities.values())
         self.assertAlmostEqual(total, 1.0, places=3)
+
+
+class TestDisconnectedNetworkCloseness(unittest.TestCase):
+    """Test cases for closeness centrality on disconnected multilayer networks."""
+    
+    def setUp(self):
+        """Set up disconnected test networks."""
+        if not DEPENDENCIES_AVAILABLE:
+            self.skipTest("Dependencies not available for disconnected network tests")
+            
+        # Create a disconnected multilayer network (two components in different layers)
+        self.disconnected_network = multinet.multi_layer_network(directed=False)
+        
+        # Component 1 in L1: A-B-C triangle
+        self.disconnected_network.add_edges([
+            ['A', 'L1', 'B', 'L1', 1],
+            ['B', 'L1', 'C', 'L1', 1],
+            ['C', 'L1', 'A', 'L1', 1]
+        ], input_type='list')
+        
+        # Component 2 in L2: D-E edge (no connection to L1)
+        self.disconnected_network.add_edges([
+            ['D', 'L2', 'E', 'L2', 1]
+        ], input_type='list')
+        
+    def test_standard_closeness_on_disconnected(self):
+        """Test standard closeness centrality on disconnected network."""
+        calc = MultilayerCentrality(self.disconnected_network)
+        centralities = calc.multilayer_closeness_centrality(variant='standard')
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('D', 'L2'), centralities)
+        
+        # All values should be non-negative
+        for centrality in centralities.values():
+            self.assertGreaterEqual(centrality, 0)
+        
+    def test_harmonic_closeness_on_disconnected(self):
+        """Test harmonic closeness centrality on disconnected network."""
+        calc = MultilayerCentrality(self.disconnected_network)
+        centralities = calc.multilayer_closeness_centrality(variant='harmonic')
+        
+        # Should return node-layer centralities
+        self.assertIn(('A', 'L1'), centralities)
+        self.assertIn(('D', 'L2'), centralities)
+        
+        # All values should be non-negative
+        for centrality in centralities.values():
+            self.assertGreaterEqual(centrality, 0)
+        
+        # Nodes in L1 triangle should have higher harmonic closeness than L2 edge
+        # (more reachable nodes at shorter distances)
+        l1_avg = np.mean([centralities[('A', 'L1')], 
+                         centralities[('B', 'L1')], 
+                         centralities[('C', 'L1')]])
+        l2_avg = np.mean([centralities[('D', 'L2')], 
+                         centralities[('E', 'L2')]])
+        self.assertGreater(l1_avg, l2_avg)
+        
+    def test_auto_closeness_selects_harmonic_for_disconnected(self):
+        """Test that auto variant selects harmonic for disconnected network."""
+        calc = MultilayerCentrality(self.disconnected_network)
+        
+        # Get closeness with auto variant
+        auto_centralities = calc.multilayer_closeness_centrality(variant='auto')
+        
+        # Get closeness with explicit harmonic variant
+        harmonic_centralities = calc.multilayer_closeness_centrality(variant='harmonic')
+        
+        # For a disconnected network, auto should choose harmonic
+        for node_layer in auto_centralities:
+            self.assertAlmostEqual(
+                auto_centralities[node_layer], 
+                harmonic_centralities[node_layer],
+                places=6,
+                msg=f"Auto and harmonic should match for {node_layer}"
+            )
+    
+    def test_harmonic_closeness_handles_unreachable_nodes(self):
+        """Test that harmonic closeness properly handles unreachable nodes."""
+        calc = MultilayerCentrality(self.disconnected_network)
+        centralities = calc.multilayer_closeness_centrality(variant='harmonic')
+        
+        # No node should have infinite or NaN closeness
+        for node_layer, value in centralities.items():
+            self.assertFalse(np.isnan(value), f"NaN closeness for {node_layer}")
+            self.assertFalse(np.isinf(value), f"Infinite closeness for {node_layer}")
+        
+        # All nodes should have positive closeness (at least 1 reachable neighbor)
+        for node_layer, value in centralities.items():
+            self.assertGreater(value, 0, f"Zero closeness for {node_layer}")
+    
+    def test_compute_all_centralities_with_harmonic_variant(self):
+        """Test compute_all_centralities with harmonic closeness variant."""
+        results = compute_all_centralities(
+            self.disconnected_network,
+            include_path_based=True,
+            closeness_variant='harmonic'
+        )
+        
+        # Should contain closeness
+        self.assertIn('closeness', results)
+        
+        # Closeness values should be non-negative
+        for value in results['closeness'].values():
+            self.assertGreaterEqual(value, 0)
+    
+    def test_compute_all_centralities_with_auto_variant(self):
+        """Test compute_all_centralities with auto closeness variant."""
+        results = compute_all_centralities(
+            self.disconnected_network,
+            include_path_based=True,
+            closeness_variant='auto'
+        )
+        
+        # Should contain closeness
+        self.assertIn('closeness', results)
+        
+        # Closeness values should be non-negative
+        for value in results['closeness'].values():
+            self.assertGreaterEqual(value, 0)
 
 
 class TestExtendedCentralityMetrics(unittest.TestCase):
