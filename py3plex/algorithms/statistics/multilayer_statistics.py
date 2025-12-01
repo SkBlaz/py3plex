@@ -1253,7 +1253,8 @@ def multiplex_betweenness_centrality(
 
 
 def multiplex_closeness_centrality(
-    network: Any, normalized: bool = True, weight: Optional[str] = None
+    network: Any, normalized: bool = True, weight: Optional[str] = None,
+    variant: str = "standard"
 ) -> Dict[Tuple[Any, Any], float]:
     """
     Calculate multiplex closeness centrality.
@@ -1262,7 +1263,9 @@ def multiplex_closeness_centrality(
     can traverse inter-layer edges. This captures how quickly a node-layer
     can reach all other node-layers in the multiplex network.
 
-    Formula: Cᵢᵅ = (N*L - 1) / Σⱼᵝ≠ᵢᵅ d(iα, jβ)
+    Standard closeness formula: Cᵢᵅ = (N*L - 1) / Σⱼᵝ≠ᵢᵅ d(iα, jβ)
+
+    Harmonic closeness formula: HCᵢᵅ = Σⱼᵝ≠ᵢᵅ 1/d(iα, jβ)
 
     where d(iα, jβ) is the shortest path distance from node i in layer α
     to node j in layer β, and N*L is the total number of node-layer pairs.
@@ -1271,6 +1274,14 @@ def multiplex_closeness_centrality(
         network: py3plex multi_layer_network object
         normalized: Whether to normalize by network size
         weight: Edge weight attribute name (None for unweighted)
+        variant: Closeness variant to use. Options:
+                - 'standard': Classic closeness (reciprocal of sum of distances).
+                  Can produce biased values for nodes in disconnected components.
+                - 'harmonic': Harmonic closeness (sum of reciprocal distances).
+                  Recommended for disconnected multilayer networks.
+                - 'auto': Automatically selects 'harmonic' if the network has
+                  multiple connected components, otherwise uses 'standard'.
+                Default is 'standard' for backward compatibility.
 
     Returns:
         Dictionary mapping (node, layer) tuples to closeness centrality values
@@ -1279,13 +1290,37 @@ def multiplex_closeness_centrality(
         >>> closeness = multiplex_closeness_centrality(network)
         >>> central_nodes = {k: v for k, v in closeness.items() if v > 0.5}
 
+        >>> # For disconnected networks, use harmonic variant
+        >>> closeness = multiplex_closeness_centrality(network, variant='harmonic')
+
     Reference:
         De Domenico et al. (2015), "Structural reducibility of multilayer networks"
+        Boldi, P., & Vigna, S. (2014). Axioms for Centrality. Internet Math.
     """
     G = network.core_network
+    
+    # Handle 'auto' variant: check if graph is disconnected
+    if variant == "auto":
+        if G is None or len(G) == 0:
+            is_connected = True
+        elif G.is_directed():
+            is_connected = nx.is_weakly_connected(G)
+        else:
+            is_connected = nx.is_connected(G)
+        
+        if not is_connected:
+            variant = "harmonic"
+        else:
+            variant = "standard"
+    
     # Use distance (inverse weight) if weights are provided
     distance = weight if weight else None
-    closeness = nx.closeness_centrality(G, distance=distance)
+    
+    if variant == "harmonic":
+        closeness = nx.harmonic_centrality(G, distance=distance)
+    else:
+        closeness = nx.closeness_centrality(G, distance=distance)
+    
     return closeness
 
 

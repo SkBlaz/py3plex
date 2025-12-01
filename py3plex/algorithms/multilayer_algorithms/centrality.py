@@ -586,12 +586,17 @@ class MultilayerCentrality:
 
     # ==================== PATH-BASED MEASURES ====================
 
-    def multilayer_closeness_centrality(self, normalized=True, wf_improved=True):
+    def multilayer_closeness_centrality(self, normalized=True, wf_improved=True, variant="standard"):
         """
         Compute closeness centrality on the supra-graph.
 
         For each node-layer pair (i,α), computes:
-        C_c(i,α) = (n-1) / Σ_{(j,β)} d((i,α), (j,β))
+
+        Standard closeness:
+            C_c(i,α) = (n-1) / Σ_{(j,β)} d((i,α), (j,β))
+
+        Harmonic closeness (recommended for disconnected networks):
+            HC(i,α) = Σ_{(j,β)≠(i,α)} 1/d((i,α), (j,β))
 
         where d((i,α), (j,β)) is the shortest path distance in the supra-graph.
 
@@ -601,7 +606,20 @@ class MultilayerCentrality:
                         for disconnected graphs. Default is True. This affects
                         the magnitude and ordering of scores in graphs with
                         multiple components (e.g., low interlayer coupling).
-                        See NetworkX documentation for details.
+                        See NetworkX documentation for details. Only used when
+                        variant='standard'.
+            variant: Closeness variant to use. Options:
+                    - 'standard': Classic closeness (reciprocal of sum of distances).
+                      For disconnected graphs, uses Wasserman-Faust scaling if
+                      wf_improved=True. Can produce biased values for nodes in
+                      small or disconnected components.
+                    - 'harmonic': Harmonic closeness (sum of reciprocal distances).
+                      Mathematically well-defined for disconnected networks:
+                      unreachable nodes contribute 0 instead of infinity.
+                      Recommended for disconnected multilayer networks.
+                    - 'auto': Automatically selects 'harmonic' if the supra-graph
+                      has multiple connected components, otherwise uses 'standard'.
+                    Default is 'standard' for backward compatibility.
 
         Returns:
             dict: {(node, layer): closeness_centrality}
@@ -611,10 +629,26 @@ class MultilayerCentrality:
             the supra-graph representation. For large networks, this can be
             computationally expensive.
 
-            The wf_improved parameter controls how closeness is computed for
-            nodes that cannot reach all other nodes. When True (default),
-            uses the Wasserman-Faust formula that considers reachable nodes
-            only, making scores comparable across disconnected components.
+            For disconnected multilayer graphs (e.g., layers with no inter-layer
+            coupling, or networks with isolated components), use variant='harmonic'
+            or variant='auto' to get mathematically consistent closeness values.
+            The harmonic variant naturally handles unreachable nodes by summing
+            1/d for finite distances only (infinite distances contribute 0).
+
+        Examples:
+            >>> # For connected networks, standard closeness works well
+            >>> closeness = calc.multilayer_closeness_centrality(variant='standard')
+
+            >>> # For potentially disconnected networks, use harmonic
+            >>> closeness = calc.multilayer_closeness_centrality(variant='harmonic')
+
+            >>> # Let the algorithm decide based on connectivity
+            >>> closeness = calc.multilayer_closeness_centrality(variant='auto')
+
+        References:
+            - Wasserman, S., & Faust, K. (1994). Social Network Analysis.
+            - Boldi, P., & Vigna, S. (2014). Axioms for Centrality. Internet Math.
+            - De Domenico, M., et al. (2015). Structural reducibility of multilayer networks.
         """
         # Convert supra-adjacency matrix to NetworkX graph
         supra_matrix = self._get_supra_adjacency_matrix()
@@ -643,18 +677,46 @@ class MultilayerCentrality:
                     )
                     G.add_edge(i, j, weight=edge_length)
 
-        # Compute closeness centrality
-        try:
-            nx_closeness = nx.closeness_centrality(G, distance="weight", wf_improved=wf_improved)
-        except (nx.NetworkXError, KeyError, ZeroDivisionError):
-            # Fallback: use unweighted distances
+        # Handle 'auto' variant: check if graph is disconnected
+        if variant == "auto":
+            if self.network.directed:
+                is_connected = nx.is_weakly_connected(G) if G.number_of_nodes() > 0 else True
+            else:
+                is_connected = nx.is_connected(G) if G.number_of_nodes() > 0 else True
+
+            if not is_connected:
+                variant = "harmonic"
+            else:
+                variant = "standard"
+
+        # Compute closeness centrality based on variant
+        if variant == "harmonic":
+            # Use harmonic centrality for disconnected-graph-aware computation
             try:
-                nx_closeness = nx.closeness_centrality(G, wf_improved=wf_improved)
-            except (nx.NetworkXError, ZeroDivisionError):
-                # If graph is disconnected, compute for each component
+                nx_closeness = nx.harmonic_centrality(G, distance="weight")
+            except (nx.NetworkXError, KeyError, AttributeError):
+                # Fallback: compute manually
                 nx_closeness = {}
-                for node in G.nodes():
-                    nx_closeness[node] = 0.0
+                for source in G.nodes():
+                    try:
+                        lengths = nx.single_source_dijkstra_path_length(G, source, weight="weight")
+                        harmonic = sum(1.0 / d for target, d in lengths.items() if d > 0)
+                        nx_closeness[source] = harmonic
+                    except (nx.NetworkXError, ZeroDivisionError):
+                        nx_closeness[source] = 0.0
+        else:
+            # Use standard closeness centrality
+            try:
+                nx_closeness = nx.closeness_centrality(G, distance="weight", wf_improved=wf_improved)
+            except (nx.NetworkXError, KeyError, ZeroDivisionError):
+                # Fallback: use unweighted distances
+                try:
+                    nx_closeness = nx.closeness_centrality(G, wf_improved=wf_improved)
+                except (nx.NetworkXError, ZeroDivisionError):
+                    # If graph is disconnected, compute for each component
+                    nx_closeness = {}
+                    for node in G.nodes():
+                        nx_closeness[node] = 0.0
 
         # Map back to node-layer pairs
         results = {}
@@ -2003,7 +2065,8 @@ class MultilayerCentrality:
 
 
 def compute_all_centralities(network, include_path_based=False, include_advanced=False,
-                           include_extended=False, preset=None, wf_improved=True):
+                           include_extended=False, preset=None, wf_improved=True,
+                           closeness_variant="standard"):
     """
     Compute all available centrality measures for a multilayer network.
 
@@ -2023,7 +2086,16 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
                 - 'all': Includes all measures (path-based, advanced, and extended)
                 - None: Use individual flags (default)
         wf_improved: If True, use Wasserman-Faust improved scaling for closeness
-                    centrality in disconnected graphs. Default: True
+                    centrality in disconnected graphs. Default: True. Only used when
+                    closeness_variant='standard'.
+        closeness_variant: Variant of closeness centrality to use. Options:
+                          - 'standard': Classic closeness (reciprocal of sum of distances).
+                            Uses Wasserman-Faust scaling if wf_improved=True.
+                          - 'harmonic': Harmonic closeness (sum of reciprocal distances).
+                            Recommended for disconnected multilayer networks.
+                          - 'auto': Automatically selects 'harmonic' if the network has
+                            disconnected components, otherwise uses 'standard'.
+                          Default: 'standard' for backward compatibility.
 
     Returns:
         dict: Dictionary containing all computed centrality measures with keys:
@@ -2045,6 +2117,10 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
         Path-based, advanced, and extended measures are computationally expensive for large
         networks. Use flags or presets to control which measures are computed.
 
+        For disconnected multilayer graphs (e.g., networks without inter-layer coupling,
+        or with isolated components), use closeness_variant='harmonic' or 'auto' to
+        get mathematically consistent closeness values.
+
     Examples:
         >>> # Compute only basic measures (fast)
         >>> results = compute_all_centralities(network)
@@ -2060,6 +2136,13 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
         ...     network,
         ...     include_path_based=True,
         ...     include_extended=True
+        ... )
+
+        >>> # For disconnected multilayer networks, use harmonic closeness
+        >>> results = compute_all_centralities(
+        ...     network,
+        ...     include_path_based=True,
+        ...     closeness_variant='harmonic'
         ... )
     """
     # Handle preset parameter
@@ -2112,7 +2195,9 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
 
     # Path-based measures (optional due to computational cost)
     if include_path_based:
-        results["closeness"] = calc.multilayer_closeness_centrality(wf_improved=wf_improved)
+        results["closeness"] = calc.multilayer_closeness_centrality(
+            wf_improved=wf_improved, variant=closeness_variant
+        )
         results["betweenness"] = calc.multilayer_betweenness_centrality()
 
     # Advanced measures (optional due to computational cost)
