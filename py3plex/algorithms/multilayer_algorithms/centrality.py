@@ -2092,13 +2092,19 @@ class MultilayerCentrality:
 
         results = {}
 
+        # Helper function to get layers where node exists
+        def get_node_layers(node):
+            if exclude_missing:
+                return [layer for layer in layers
+                       if node in layer_centralities[layer]]
+            else:
+                return layers
+
         if p == float("inf"):
             # L-infinity norm: maximum
             for node in all_nodes:
                 max_val = 0.0
-                for layer in layers:
-                    if exclude_missing and node not in layer_centralities[layer]:
-                        continue
+                for layer in get_node_layers(node):
                     val = layer_centralities[layer].get(node, 0)
                     weighted_val = weights.get(layer, 0) * abs(val)
                     max_val = max(max_val, weighted_val)
@@ -2106,30 +2112,19 @@ class MultilayerCentrality:
         else:
             # Lp norm
             for node in all_nodes:
+                node_layers = get_node_layers(node)
+                if not node_layers:
+                    results[node] = 0.0
+                    continue
+
                 lp_sum = 0.0
-                participating_weight = 0.0
-                for layer in layers:
-                    if exclude_missing and node not in layer_centralities[layer]:
-                        continue
+                for layer in node_layers:
                     val = layer_centralities[layer].get(node, 0)
                     layer_weight = weights.get(layer, 0)
                     weighted_val = layer_weight * abs(val)
                     lp_sum += weighted_val**p
-                    participating_weight += layer_weight
 
-                # Renormalize weights for nodes with sparse participation
-                if exclude_missing and participating_weight > 0:
-                    # Scale by the ratio of total weight to participating weight
-                    # This ensures fair comparison between nodes in different numbers of layers
-                    total_weight = sum(weights.values())
-                    if total_weight > 0 and participating_weight < total_weight:
-                        # Apply correction factor to make aggregation fair
-                        scale_factor = (participating_weight / total_weight) ** (1.0 / p)
-                        results[node] = lp_sum ** (1.0 / p) * (1.0 / scale_factor)
-                    else:
-                        results[node] = lp_sum ** (1.0 / p)
-                else:
-                    results[node] = lp_sum ** (1.0 / p)
+                results[node] = lp_sum ** (1.0 / p)
 
         return results
 
