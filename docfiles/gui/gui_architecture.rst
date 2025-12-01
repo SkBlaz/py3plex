@@ -217,7 +217,7 @@ Visual Component Reference
 
 The architecture components are realized in the following user interface pages:
 
-.. image:: ../example_images/gui_load_data.png
+.. image:: ../../example_images/gui_load_data.png
    :width: 600px
    :alt: Load Data Page
    :align: center
@@ -226,7 +226,7 @@ The architecture components are realized in the following user interface pages:
 
 |
 
-.. image:: ../example_images/gui_analyze.png
+.. image:: ../../example_images/gui_analyze.png
    :width: 600px
    :alt: Analysis Page
    :align: center
@@ -235,7 +235,7 @@ The architecture components are realized in the following user interface pages:
 
 |
 
-.. image:: ../example_images/gui_flower_dashboard.png
+.. image:: ../../example_images/gui_flower_dashboard.png
    :width: 600px
    :alt: Flower Dashboard
    :align: center
