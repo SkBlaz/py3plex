@@ -578,9 +578,11 @@ Compare network structure across different layers::
     
     # Add nodes to multiple layers
     people = ['Alice', 'Bob', 'Charlie', 'David']
+    nodes = []
     for person in people:
         for layer in ['social', 'work', 'transport']:
-            network.add_nodes([{'source': person, 'type': layer}])
+            nodes.append({'source': person, 'type': layer})
+    network.add_nodes(nodes)
     
     # Add edges in different layers
     network.add_edges([
@@ -633,10 +635,10 @@ Compare network structure across different layers::
 .. code-block:: text
 
     Layer Comparison:
-    Layer        Nodes    Avg Centrality   Max Centrality  
+    Layer        Nodes    Avg Centrality   Max Centrality
     -------------------------------------------------------
-    social       4        0.1667           0.5000          
-    work         4        0.0833           0.3333          
+    social       4        0.1667           0.5000
+    work         4        0.0833           0.3333
     transport    4        0.0000           0.0000
 
 Example Files
