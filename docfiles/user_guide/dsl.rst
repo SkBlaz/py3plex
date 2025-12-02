@@ -78,6 +78,25 @@ Here's a complete working example to get you started::
     for node, centrality in result['computed']['betweenness_centrality'].items():
         print(f"{node}: {centrality:.4f}")
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Found 3 nodes in social layer
+    [('Alice', 'social'), ('Bob', 'social'), ('Charlie', 'social')]
+    
+    Query: SELECT nodes WHERE degree > 1
+    Target: nodes
+    Count: 2
+    
+    Nodes (showing 2 of 2):
+      ('Alice', 'social')
+      ('Bob', 'social')
+    
+    ('Alice', 'social'): 0.0000
+    ('Bob', 'social'): 1.0000
+    ('Charlie', 'social'): 0.0000
+
 Query Components
 ----------------
 
@@ -239,6 +258,15 @@ Example::
             for node, value in values.items():
                 print(f"  {node}: {value}")
 
+**Example Output:**
+
+.. code-block:: text
+
+    Found 3 nodes
+    ('Alice', 'social')
+    ('Bob', 'social')
+    ('Charlie', 'social')
+
 Formatting Results
 ~~~~~~~~~~~~~~~~~~
 
@@ -372,7 +400,7 @@ Common syntax errors:
 Complete Working Examples
 -------------------------
 
-This section provides complete, runnable examples demonstrating various DSL features.
+This section provides complete, runnable examples demonstrating various DSL features with expected outputs.
 
 Example 1: Basic Network Querying
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -408,6 +436,22 @@ Create a simple social network and query it::
     # Find high-degree nodes
     result = execute_query(network, 'SELECT nodes WHERE degree > 1')
     print(f"High-degree nodes: {result['count']}")
+
+**Expected Output:**
+
+.. code-block:: text
+
+    Query: SELECT nodes WHERE layer="social"
+    Target: nodes
+    Count: 4
+    
+    Nodes (showing 4 of 4):
+      ('Alice', 'social')
+      ('Bob', 'social')
+      ('Charlie', 'social')
+      ('David', 'social')
+    
+    High-degree nodes: 3
 
 Example 2: Multilayer Network Analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -450,6 +494,17 @@ Analyze a network with multiple layers::
         avg_degree = sum(degrees.values()) / len(degrees) if degrees else 0
         print(f"  Average degree: {avg_degree:.2f}")
 
+**Expected Output:**
+
+.. code-block:: text
+
+    social layer: 3 nodes
+      Average degree: 1.33
+    work layer: 3 nodes
+      Average degree: 0.67
+    family layer: 3 nodes
+      Average degree: 0.67
+
 Example 3: Hub Identification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -458,9 +513,25 @@ Find and rank important nodes using multiple centrality measures::
     from py3plex.core import multinet
     from py3plex.dsl import execute_query
     
-    # Create network (assuming network is already created)
+    # Create network
     network = multinet.multi_layer_network(directed=False)
-    # ... add nodes and edges ...
+    
+    # Add nodes
+    network.add_nodes([
+        {'source': 'Alice', 'type': 'social'},
+        {'source': 'Bob', 'type': 'social'},
+        {'source': 'Charlie', 'type': 'social'},
+        {'source': 'David', 'type': 'social'},
+        {'source': 'Eve', 'type': 'social'},
+    ])
+    
+    # Add edges creating a star network centered on Bob
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social'},
+    ])
     
     # Find high-degree nodes in social layer
     result = execute_query(
@@ -485,6 +556,15 @@ Find and rank important nodes using multiple centrality measures::
         for node, centrality in sorted_nodes[:5]:
             print(f"  {node}: {centrality:.4f}")
 
+**Expected Output:**
+
+.. code-block:: text
+
+    Found 1 hub nodes
+    
+    Top nodes by betweenness centrality:
+      ('Bob', 'social'): 1.0000
+
 Example 4: Layer Comparison Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -493,9 +573,30 @@ Compare network structure across different layers::
     from py3plex.core import multinet
     from py3plex.dsl import execute_query
     
-    # Assuming multilayer network is created
+    # Create multilayer network
     network = multinet.multi_layer_network(directed=False)
-    # ... add nodes and edges ...
+    
+    # Add nodes to multiple layers
+    people = ['Alice', 'Bob', 'Charlie', 'David']
+    nodes = []
+    for person in people:
+        for layer in ['social', 'work', 'transport']:
+            nodes.append({'source': person, 'type': layer})
+    network.add_nodes(nodes)
+    
+    # Add edges in different layers
+    network.add_edges([
+        # Social (well connected)
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Charlie', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+        # Work (moderately connected)
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
+        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'work', 'target_type': 'work'},
+        # Transport (sparsely connected)
+        {'source': 'Alice', 'target': 'David', 'source_type': 'transport', 'target_type': 'transport'},
+    ])
     
     layers = ['social', 'work', 'transport']
     layer_stats = {}
@@ -528,6 +629,17 @@ Compare network structure across different layers::
     print("-" * 55)
     for layer, stats in layer_stats.items():
         print(f"{layer:<12} {stats['nodes']:<8} {stats['avg_centrality']:<16.4f} {stats['max_centrality']:<16.4f}")
+
+**Expected Output:**
+
+.. code-block:: text
+
+    Layer Comparison:
+    Layer        Nodes    Avg Centrality   Max Centrality
+    -------------------------------------------------------
+    social       4        0.1667           0.5000
+    work         4        0.0833           0.3333
+    transport    4        0.0000           0.0000
 
 Example Files
 ~~~~~~~~~~~~~
