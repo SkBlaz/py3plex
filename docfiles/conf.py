@@ -138,16 +138,16 @@ latex_elements = {
 \usepackage{amsmath}
 \usepackage{amssymb}
 
-% Improved paragraph spacing
-\setlength{\parskip}{0.5em}
+% Improved paragraph spacing for book-like flow
+\setlength{\parskip}{0.6em}
 \setlength{\parindent}{0pt}
 
 % Improved table of contents depth
 \setcounter{tocdepth}{2}        % Show subsections in TOC
 
-% Better colors for links
-\definecolor{InnerLinkColor}{rgb}{0.0,0.3,0.6}
-\definecolor{OuterLinkColor}{rgb}{0.0,0.3,0.6}
+% Better colors for links - more subtle for professional appearance
+\definecolor{InnerLinkColor}{rgb}{0.1,0.2,0.5}
+\definecolor{OuterLinkColor}{rgb}{0.1,0.2,0.5}
 
 % Professional headers and footers
 \usepackage{fancyhdr}
@@ -159,9 +159,25 @@ latex_elements = {
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
 
-% Better list spacing
+% Better list spacing for readability
 \usepackage{enumitem}
-\setlist{itemsep=0.25em, parsep=0em, topsep=0.5em}
+\setlist{itemsep=0.3em, parsep=0.1em, topsep=0.5em}
+
+% Improved chapter and section spacing for book-like flow
+\usepackage{titlesec}
+\titlespacing*{\chapter}{0pt}{20pt}{20pt}
+\titlespacing*{\section}{0pt}{12pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{6pt}
+
+% Add some breathing room around horizontal rules (used as section separators)
+\let\oldrule\rule
+\renewcommand{\rule}[2]{\vspace{0.5em}\oldrule{#1}{#2}\vspace{0.5em}}
+
+% Improve quote/epigraph styling for transitional paragraphs
+\usepackage{framed}
+\renewenvironment{quote}
+  {\begin{framed}\itshape}
+  {\end{framed}}
 ''',
 
     # Latex figure (float) alignment
