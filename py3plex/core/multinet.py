@@ -502,6 +502,248 @@ class multi_layer_network:
             # Fallback for unusual cases
             return f"<multi_layer_network: type={self.network_type}, directed={self.directed}>"
 
+    def __len__(self) -> int:
+        """Return the number of nodes in the network.
+
+        This enables using len() on network objects for quick size checks.
+
+        Returns:
+            int: Number of nodes in the network, or 0 if empty
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> len(net)
+            0
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> len(net)
+            1
+        """
+        if self.core_network is None:
+            return 0
+        return self.core_network.number_of_nodes()
+
+    def __bool__(self) -> bool:
+        """Return True if the network has nodes.
+
+        This enables using network objects in boolean contexts.
+
+        Returns:
+            bool: True if network has at least one node, False otherwise
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> bool(net)
+            False
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> bool(net)
+            True
+            >>> if net:
+            ...     print("Network has nodes")
+            Network has nodes
+        """
+        return len(self) > 0
+
+    def __contains__(self, item: Any) -> bool:
+        """Check if a node or edge exists in the network.
+
+        Supports checking for:
+        - Node tuples: (node_id, layer)
+        - Edge tuples: ((source_node, source_layer), (target_node, target_layer))
+
+        Args:
+            item: Node tuple or edge tuple to check
+
+        Returns:
+            bool: True if item exists in network
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> ('A', 'layer1') in net
+            True
+            >>> ('B', 'layer1') in net
+            False
+        """
+        if self.core_network is None:
+            return False
+
+        # Check if it's an edge (tuple of two tuples)
+        if (isinstance(item, tuple) and len(item) == 2 and
+            isinstance(item[0], tuple) and isinstance(item[1], tuple)):
+            return self.core_network.has_edge(item[0], item[1])
+
+        # Otherwise treat as a node
+        return self.core_network.has_node(item)
+
+    def __iter__(self):
+        """Iterate over nodes in the network.
+
+        Yields:
+            Node tuples (node_id, layer)
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> for node in net:
+            ...     print(node)
+            ('A', 'layer1')
+        """
+        if self.core_network is None:
+            return iter([])
+        return iter(self.core_network.nodes())
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Property Accessors for Common Attributes
+    # ─────────────────────────────────────────────────────────────────────────
+
+    @property
+    def node_count(self) -> int:
+        """Number of nodes in the network.
+
+        Returns:
+            int: Total count of nodes (node-layer pairs)
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> net.node_count
+            1
+        """
+        return len(self)
+
+    @property
+    def edge_count(self) -> int:
+        """Number of edges in the network.
+
+        Returns:
+            int: Total count of edges
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_edges([{'source': 'A', 'target': 'B',
+            ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
+            >>> net.edge_count
+            1
+        """
+        if self.core_network is None:
+            return 0
+        return self.core_network.number_of_edges()
+
+    @property
+    def layer_count(self) -> int:
+        """Number of unique layers in the network.
+
+        Returns:
+            int: Count of distinct layers
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([
+            ...     {'source': 'A', 'type': 'layer1'},
+            ...     {'source': 'B', 'type': 'layer2'}
+            ... ])
+            >>> net.layer_count
+            2
+        """
+        if self.core_network is None:
+            return 0
+        try:
+            return len({n[1] for n in self.core_network.nodes()
+                       if isinstance(n, tuple) and len(n) >= 2})
+        except (TypeError, IndexError):
+            return 0
+
+    @property
+    def layers(self) -> List[Any]:
+        """List of unique layer identifiers in the network.
+
+        Returns:
+            list: Sorted list of layer identifiers
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([
+            ...     {'source': 'A', 'type': 'social'},
+            ...     {'source': 'B', 'type': 'work'}
+            ... ])
+            >>> net.layers
+            ['social', 'work']
+        """
+        if self.core_network is None:
+            return []
+        try:
+            unique_layers = {n[1] for n in self.core_network.nodes()
+                            if isinstance(n, tuple) and len(n) >= 2}
+            return sorted(unique_layers)
+        except (TypeError, IndexError):
+            return []
+
+    @property
+    def is_empty(self) -> bool:
+        """Check if the network is empty (has no nodes).
+
+        Returns:
+            bool: True if network has no nodes
+
+        Examples:
+            >>> net = multi_layer_network()
+            >>> net.is_empty
+            True
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> net.is_empty
+            False
+        """
+        return len(self) == 0
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Convenience Factory Methods
+    # ─────────────────────────────────────────────────────────────────────────
+
+    @classmethod
+    def from_edges(
+        cls,
+        edges: List[Union[Dict, List]],
+        network_type: str = "multilayer",
+        directed: bool = False,
+        input_type: str = "dict",
+    ) -> "multi_layer_network":
+        """Create a multilayer network directly from a list of edges.
+
+        This is a convenience factory method that creates a network and populates
+        it with edges in a single call, supporting method chaining patterns.
+
+        Args:
+            edges: List of edges in dict or list format
+            network_type: Type of network ('multilayer' or 'multiplex')
+            directed: Whether the network is directed
+            input_type: Format of edge data ('dict' or 'list')
+
+        Returns:
+            multi_layer_network: New network instance with edges added
+
+        Examples:
+            >>> # Create from dict format
+            >>> net = multi_layer_network.from_edges([
+            ...     {'source': 'A', 'target': 'B',
+            ...      'source_type': 'layer1', 'target_type': 'layer1'},
+            ...     {'source': 'B', 'target': 'C',
+            ...      'source_type': 'layer1', 'target_type': 'layer1'}
+            ... ])
+            >>> len(net)
+            3
+
+            >>> # Create from list format
+            >>> net = multi_layer_network.from_edges([
+            ...     ['A', 'layer1', 'B', 'layer1', 1],
+            ...     ['B', 'layer1', 'C', 'layer1', 1]
+            ... ], input_type='list')
+            >>> net.edge_count
+            2
+        """
+        net = cls(network_type=network_type, directed=directed, verbose=False)
+        net.add_edges(edges, input_type=input_type)
+        return net
+
     # ═════════════════════════════════════════════════════════════════════════
     # I/O Operations - Loading and Saving Networks
     # ═════════════════════════════════════════════════════════════════════════
@@ -1630,7 +1872,7 @@ class multi_layer_network:
         self,
         edge_dict_list: Union[List[Dict], List[List], Tuple],
         input_type: str = "dict",
-    ) -> None:
+    ) -> "multi_layer_network":
         """Add edges to the multilayer network.
 
         This method supports multiple input formats for specifying edges between nodes
@@ -1639,6 +1881,9 @@ class multi_layer_network:
         Args:
             edge_dict_list: Edge data in one of the supported formats (see below)
             input_type: Format of edge data ('dict', 'list', or 'px_edge')
+
+        Returns:
+            self: Returns self for method chaining
 
         Supported Formats:
             **Dict format (recommended):**
@@ -1668,6 +1913,16 @@ class multi_layer_network:
             ...     'source_type': 'protein',
             ...     'target_type': 'protein'
             ... }])
+            <multi_layer_network: type=multilayer, directed=True, nodes=2, edges=1, layers=1>
+
+            >>> # Method chaining
+            >>> net = multi_layer_network()
+            >>> net.add_edges([
+            ...     {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}
+            ... ]).add_edges([
+            ...     {'source': 'B', 'target': 'C', 'source_type': 'layer1', 'target_type': 'layer1'}
+            ... ])
+            <multi_layer_network: type=multilayer, directed=True, nodes=3, edges=2, layers=1>
 
             >>> # Add inter-layer edge with weight
             >>> net.add_edges([{
@@ -1678,6 +1933,7 @@ class multi_layer_network:
             ...     'weight': 0.95,
             ...     'type': 'expression'
             ... }])
+            <multi_layer_network: type=multilayer, directed=True, nodes=5, edges=3, layers=3>
 
             >>> # Add multiple edges at once
             >>> edges = [
@@ -1685,6 +1941,7 @@ class multi_layer_network:
             ...     {'source': 'B', 'target': 'C', 'source_type': 'layer1', 'target_type': 'layer1'}
             ... ]
             >>> net.add_edges(edges)
+            <multi_layer_network: type=multilayer, directed=True, nodes=5, edges=5, layers=3>
 
         Raises:
             Exception: If input_type is not one of 'dict', 'list', or 'px_edge'
@@ -1721,6 +1978,8 @@ class multi_layer_network:
                 f"Example dict format: {{'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}}"
             )
 
+        return self
+
     def remove_edges(
         self, edge_dict_list: Union[List[Dict], List[List]], input_type: str = "list"
     ) -> None:
@@ -1747,7 +2006,7 @@ class multi_layer_network:
 
     def add_nodes(
         self, node_dict_list: Union[List[Dict], Dict], input_type: str = "dict"
-    ) -> None:
+    ) -> "multi_layer_network":
         """Add nodes to the multilayer network.
 
         Nodes in a multilayer network are identified by both their ID and the layer
@@ -1756,6 +2015,9 @@ class multi_layer_network:
         Args:
             node_dict_list: Node data as a dict or list of dicts (see format below)
             input_type: Format of node data (currently only 'dict' is supported)
+
+        Returns:
+            self: Returns self for method chaining
 
         Dict Format:
             ```python
@@ -1772,6 +2034,12 @@ class multi_layer_network:
             >>> # Add single node
             >>> net = multi_layer_network()
             >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            <multi_layer_network: type=multilayer, directed=True, nodes=1, edges=0, layers=1>
+
+            >>> # Method chaining
+            >>> net = multi_layer_network()
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}]).add_nodes([{'source': 'B', 'type': 'layer1'}])
+            <multi_layer_network: type=multilayer, directed=True, nodes=2, edges=0, layers=1>
 
             >>> # Add multiple nodes to the same layer
             >>> nodes = [
@@ -1780,6 +2048,7 @@ class multi_layer_network:
             ...     {'source': 'C', 'type': 'protein'}
             ... ]
             >>> net.add_nodes(nodes)
+            <multi_layer_network: type=multilayer, directed=True, nodes=5, edges=0, layers=2>
 
             >>> # Add nodes with attributes
             >>> net.add_nodes([{
@@ -1789,6 +2058,7 @@ class multi_layer_network:
             ...     'label': 'BRCA1',
             ...     'chromosome': '17'
             ... }])
+            <multi_layer_network: type=multilayer, directed=True, nodes=6, edges=0, layers=3>
 
             >>> # Add nodes to multiple layers
             >>> multi_layer_nodes = [
@@ -1797,6 +2067,7 @@ class multi_layer_network:
             ...     {'source': 'entity2', 'type': 'layer1'}
             ... ]
             >>> net.add_nodes(multi_layer_nodes)
+            <multi_layer_network: type=multilayer, directed=True, nodes=9, edges=0, layers=5>
 
         Notes:
             - The same node ID can exist in multiple layers
@@ -1809,6 +2080,8 @@ class multi_layer_network:
 
         if input_type == "dict":
             self._generic_node_dict_manipulator(node_dict_list, "add_node")
+
+        return self
 
     def remove_nodes(self, node_dict_list, input_type="dict"):
         """

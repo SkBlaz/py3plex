@@ -157,6 +157,34 @@ Query with DSL (SQL-like syntax):
     
 See :doc:`user_guide/dsl` for comprehensive DSL documentation.
 
+Pythonic interface - use networks naturally:
+
+.. code-block:: python
+
+    from py3plex.core.multinet import multi_layer_network
+    
+    # Create from edges directly with factory method
+    network = multi_layer_network.from_edges([
+        {'source': 'A', 'target': 'B', 'source_type': 'l1', 'target_type': 'l1'},
+        {'source': 'B', 'target': 'C', 'source_type': 'l1', 'target_type': 'l1'}
+    ])
+    
+    # Use len(), bool, and 'in' naturally
+    if network:  # True if network has nodes
+        print(f"{len(network)} nodes across {network.layer_count} layers")
+    
+    if ('A', 'l1') in network:  # Check membership
+        print("Node A exists in layer l1")
+    
+    # Iterate directly
+    for node in network:
+        print(node)
+    
+    # Method chaining
+    network.add_nodes([{'source': 'D', 'type': 'l1'}]).add_edges([...])
+
+See :doc:`user_guide/networks` for complete Pythonic interface documentation.
+
 Why py3plex?
 ============
 
