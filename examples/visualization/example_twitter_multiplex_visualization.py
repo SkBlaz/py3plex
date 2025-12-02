@@ -12,7 +12,12 @@ with open(get_dataset_path("twitterlayers.txt")) as twl:
         idx, lname = line.split()
         layer_map[idx] = lname
 
-## Loade the network first!
+## Load the network first!
+# Using network_type="multiplex" because:
+# - This is a Twitter network where the same users appear across multiple layers
+# - Each layer represents a different interaction type (retweet, mention, reply, etc.)
+# - Automatic coupling edges connect the same user across all layers
+# For networks with different node types per layer, use network_type="multilayer"
 multilayer_network = multinet.multi_layer_network(network_type = "multiplex").load_network(get_dataset_path("test13.edges"), directed=False, input_type="multiplex_edges")
 
 ## Let's customize it a bit.

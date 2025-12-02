@@ -369,10 +369,27 @@ class multi_layer_network:
     visualizing multilayer networks where nodes can exist in multiple layers
     and edges can connect nodes within or across layers.
 
-    Supported Network Types:
-        - **multilayer**: General multilayer networks with arbitrary layer structure
-        - **multiplex**: Special case where all layers share the same nodes, with
-          automatic coupling edges between corresponding nodes across layers
+    Supported Network Types (network_type parameter):
+        - **multilayer** (default): General multilayer networks with arbitrary
+          layer structure. Each layer can have a different set of nodes.
+          Suitable for heterogeneous networks (e.g., authors-papers-venues)
+          or networks where nodes naturally appear in only some layers.
+
+        - **multiplex**: Special case where all layers share the same node set
+          but with different edge types. After loading a network, automatic
+          coupling edges are created between each node and its counterparts
+          in other layers. Suitable for social networks with multiple
+          relationship types (e.g., friend, colleague, family layers).
+
+    Choosing the Right Network Type:
+        ===============  ==================  ==================
+        Criterion        multilayer          multiplex
+        ===============  ==================  ==================
+        Node sets        Different per layer Same across layers
+        Coupling edges   Manual (explicit)   Automatic
+        Use case         Heterogeneous nets  Same entities, many
+                         (author-paper)      relationship types
+        ===============  ==================  ==================
 
     Key Features:
         - Dict-based API for adding nodes and edges (see add_nodes() and add_edges())
@@ -395,7 +412,7 @@ class multi_layer_network:
         - See examples/ directory for usage patterns and best practices
 
     Examples:
-        >>> # Create a basic multilayer network
+        >>> # Create a general multilayer network (different node sets per layer)
         >>> net = multi_layer_network(network_type='multilayer', directed=False)
         >>>
         >>> # Add nodes to different layers
@@ -415,6 +432,10 @@ class multi_layer_network:
         >>>
         >>> print(net)  # Shows network statistics
         <multi_layer_network: type=multilayer, directed=False, nodes=3, edges=2, layers=2>
+
+        >>> # Create a multiplex network (same nodes across relationship layers)
+        >>> # Note: coupling edges are auto-added after load_network()
+        >>> multiplex_net = multi_layer_network(network_type='multiplex')
     """
 
     def __init__(
@@ -430,11 +451,47 @@ class multi_layer_network:
 
         Args:
             verbose: Enable verbose logging output
-            network_type: Type of network ('multilayer', 'multiplex', etc.)
+            network_type: Type of network. Must be one of:
+
+                - ``'multilayer'`` (default): General multilayer network where each layer
+                  can have a different set of nodes. Edges can connect any nodes within
+                  or across layers. Use this when layers represent different node types
+                  (heterogeneous networks) or when nodes don't need to be present in all
+                  layers.
+
+                - ``'multiplex'``: Special case where all layers share the same node set.
+                  After loading, automatic coupling edges are created between each node
+                  and its counterparts in other layers. Use this when the same entities
+                  (e.g., people, cities) are connected via multiple relationship types
+                  (e.g., friendship, professional ties).
+
             directed: Whether the network is directed
             dummy_layer: Name for dummy/placeholder layer
             label_delimiter: Delimiter used to separate layer names in node labels
-            coupling_weight: Default weight for inter-layer edges in multiplex networks
+            coupling_weight: Default weight for inter-layer coupling edges in multiplex
+                networks. Only applies when network_type='multiplex'.
+
+        Raises:
+            ValueError: If network_type is not 'multilayer' or 'multiplex' (raised
+                during get_edges() or other operations that depend on network_type).
+
+        Examples:
+            >>> # General multilayer network (different node sets per layer)
+            >>> net = multi_layer_network(network_type='multilayer')
+            >>> net.add_edges([
+            ...     {'source': 'author1', 'target': 'paper1',
+            ...      'source_type': 'authors', 'target_type': 'papers'}
+            ... ])
+            <multi_layer_network: type=multilayer, directed=True, nodes=2, edges=1, layers=2>
+
+            >>> # Multiplex network (same nodes, different relationship types)
+            >>> net = multi_layer_network(network_type='multiplex')
+            >>> # After loading, coupling edges are auto-generated between layers
+
+        See Also:
+            - :doc:`/concepts/multilayer_networks_101` for conceptual background
+            - :meth:`load_network` for loading from files with network_type behavior
+            - :meth:`get_edges` for how network_type affects edge iteration
 
         """
         # initialize the class
@@ -776,18 +833,48 @@ class multi_layer_network:
         input_type: str = "gml",
         label_delimiter: str = "---",
     ) -> "multi_layer_network":
-        """Main network loader
+        """Load a network from file.
 
-        This method loads and prepares a given network.
+        This method loads and prepares a given network. The behavior depends on
+        the ``network_type`` set during initialization:
+
+        - **multilayer**: Network is loaded as-is. No automatic edges are added.
+        - **multiplex**: After loading, coupling edges are automatically created
+          between each node and its counterparts in other layers. These edges
+          have type='coupling' and can be filtered via get_edges().
 
         Args:
             input_file: Path to the network file to load
             directed: Whether the network is directed
-            input_type: Format of the input file ('gml', 'graphml', 'edgelist', 'gpickle', etc.)
+            input_type: Format of the input file. Supported values:
+                - 'gml': Graph Modeling Language format
+                - 'graphml': GraphML XML format
+                - 'edgelist': Simple edge list (source target [weight])
+                - 'multiedgelist': Multilayer edge list (node1 layer1 node2 layer2 weight)
+                - 'multiplex_edges': Multiplex format (layer node1 node2 weight)
+                - 'multiplex_folder': Folder with layer files
+                - 'gpickle': Python pickle format
+                - 'nx': NetworkX graph object
+                - 'sparse': Sparse matrix format
             label_delimiter: Delimiter used to separate layer names in node labels
 
         Returns:
-             Self for method chaining. Populates self.core_network, self.labels, and self.activity
+            Self for method chaining. Populates self.core_network, self.labels,
+            and self.activity.
+
+        Note:
+            For multiplex networks, use input_type='multiplex_edges' or
+            'multiplex_folder' with network_type='multiplex' to get automatic
+            coupling edges.
+
+        Examples:
+            >>> # Load multilayer network (no automatic coupling)
+            >>> net = multi_layer_network(network_type='multilayer')
+            >>> net.load_network('data.gml', input_type='gml')  # doctest: +SKIP
+
+            >>> # Load multiplex network (automatic coupling edges)
+            >>> net = multi_layer_network(network_type='multiplex')
+            >>> net.load_network('data.edges', input_type='multiplex_edges')  # doctest: +SKIP
 
         """
         # crosshair: analysis_kind=asserts
@@ -835,7 +922,27 @@ class multi_layer_network:
         return self
 
     def _couple_all_edges(self):
+        """Create coupling edges between same nodes across all layers (multiplex only).
 
+        This method is automatically called when loading a multiplex network
+        (network_type='multiplex'). It creates bidirectional coupling edges
+        connecting each node to its counterparts in all other layers.
+
+        For example, if node 'A' exists in layers 'L1' and 'L2', coupling edges
+        are created: ('A', 'L1') <-> ('A', 'L2').
+
+        Coupling edges have:
+            - type='coupling' (used to filter them in get_edges())
+            - weight=self.coupling_weight (default 1)
+
+        Note:
+            This is an internal method called by load_network() when
+            network_type='multiplex'. Users typically don't call this directly.
+
+        See Also:
+            - :meth:`__init__` for setting coupling_weight
+            - :meth:`get_edges` for filtering coupling edges (multiplex_edges param)
+        """
         unique_layers = {n[1] for n in self.core_network.nodes()}
         unique_nodes = {n[0] for n in self.core_network.nodes()}
 
@@ -1273,17 +1380,42 @@ class multi_layer_network:
         return net
 
     def get_edges(self, data: bool = False, multiplex_edges: bool = False) -> Any:
-        """A method for obtaining a network's edges
+        """Iterate over edges in the network.
+
+        This method behaves differently based on the network_type:
+
+        - **multilayer**: Returns all edges without filtering.
+        - **multiplex**: By default, filters out coupling edges (auto-generated
+          inter-layer edges connecting each node to itself in other layers).
+          Set multiplex_edges=True to include coupling edges.
 
         Args:
             data: If True, return edge data along with edge tuples
-            multiplex_edges: If True, include coupling edges in multiplex networks
+            multiplex_edges: If True, include coupling edges in multiplex networks.
+                Only relevant when network_type='multiplex'. Coupling edges are
+                automatically added to connect each node to its counterparts
+                in other layers.
 
         Yields:
-            Edge tuples, optionally with data
+            Edge tuples, optionally with data. For multiplex networks with
+            multiplex_edges=False, coupling edges are excluded.
 
         Raises:
-            Exception: If network type is not specified
+            ValueError: If network_type is not 'multilayer' or 'multiplex'.
+
+        Examples:
+            >>> net = multi_layer_network(network_type='multilayer')
+            >>> net.add_edges([
+            ...     {'source': 'A', 'target': 'B',
+            ...      'source_type': 'layer1', 'target_type': 'layer1'}
+            ... ])
+            <multi_layer_network: type=multilayer, directed=True, nodes=2, edges=1, layers=1>
+            >>> list(net.get_edges())
+            [(('A', 'layer1'), ('B', 'layer1'))]
+
+        See Also:
+            - :meth:`__init__` for the difference between multilayer and multiplex
+            - :meth:`_couple_all_edges` for how coupling edges are created
         """
         if self.network_type == "multilayer":
             for edge in self.core_network.edges(data=data):
@@ -1302,6 +1434,8 @@ class multi_layer_network:
             raise ValueError(
                 f"Invalid network_type: '{self.network_type}'. "
                 f"Expected 'multilayer' or 'multiplex'. "
+                f"Use 'multilayer' for heterogeneous networks (different node sets per layer) "
+                f"or 'multiplex' for same-node-set networks with automatic coupling. "
                 f"Set network_type during initialization: "
                 f"multi_layer_network(network_type='multilayer')"
             )
