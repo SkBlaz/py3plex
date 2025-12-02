@@ -11,6 +11,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Dark mode body background */
+.dark body {
+  background-color: #111827;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -37,11 +42,46 @@ code {
   animation: fade-in 0.3s ease-out;
 }
 
+/* Slide-in animation for toasts */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
 /* Focus states for accessibility */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
+}
+
+/* Dark mode focus states */
+.dark button:focus-visible,
+.dark a:focus-visible,
+.dark input:focus-visible {
+  outline-color: #60a5fa;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition-property: background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Disable transitions on page load */
+.preload * {
+  transition: none !important;
 }
 

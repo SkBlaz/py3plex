@@ -250,10 +250,10 @@ export default function Analyze() {
   if (!graphId) {
     return (
       <div className="px-4 py-6">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-          <AlertCircle className="h-6 w-6 text-yellow-600 mb-2" />
-          <h3 className="text-lg font-medium text-yellow-900">No Graph Loaded</h3>
-          <p className="text-sm text-yellow-800 mt-1">
+        <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+          <AlertCircle className="h-6 w-6 text-yellow-600 dark:text-yellow-400 mb-2" />
+          <h3 className="text-lg font-medium text-yellow-900 dark:text-yellow-100">No Graph Loaded</h3>
+          <p className="text-sm text-yellow-800 dark:text-yellow-200 mt-1">
             Please upload a network file first in the Load Data page.
           </p>
           <a
@@ -269,18 +269,18 @@ export default function Analyze() {
 
   return (
     <div className="px-4 py-6">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Analyze Network</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Analyze Network</h1>
 
       {/* Notification Banner */}
       {notification && (
-        <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center justify-between animate-fade-in">
+        <div className="mb-6 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg p-4 flex items-center justify-between animate-fade-in">
           <div className="flex items-center">
-            <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-            <p className="text-sm text-green-800">{notification}</p>
+            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mr-2" />
+            <p className="text-sm text-green-800 dark:text-green-200">{notification}</p>
           </div>
           <button
             onClick={() => setNotification(null)}
-            className="text-green-600 hover:text-green-800"
+            className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
           >
             ✕
           </button>
@@ -289,14 +289,14 @@ export default function Analyze() {
 
       <div className="grid grid-cols-3 gap-6 mb-6">
         {/* Layout */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <div className="flex items-start justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900">Layout</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Layout</h2>
             <Tooltip content="Computes node positions using force-directed algorithms for visualization">
-              <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
+              <HelpCircle className="h-4 w-4 text-gray-400 dark:text-gray-500 cursor-help" />
             </Tooltip>
           </div>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
             Compute graph layout using force-directed algorithms
           </p>
           <Tooltip content="Run spring layout (Ctrl+L)">
@@ -311,14 +311,14 @@ export default function Analyze() {
         </div>
 
         {/* Centrality */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <div className="flex items-start justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900">Centrality</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Centrality</h2>
             <Tooltip content="Identifies important nodes based on degree and betweenness metrics">
-              <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
+              <HelpCircle className="h-4 w-4 text-gray-400 dark:text-gray-500 cursor-help" />
             </Tooltip>
           </div>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
             Compute node centrality metrics (degree, betweenness)
           </p>
           <Tooltip content="Run centrality analysis (Ctrl+Shift+C)">
@@ -333,14 +333,14 @@ export default function Analyze() {
         </div>
 
         {/* Community Detection */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <div className="flex items-start justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900">Communities</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Communities</h2>
             <Tooltip content="Finds groups of densely connected nodes using the Louvain algorithm">
-              <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
+              <HelpCircle className="h-4 w-4 text-gray-400 dark:text-gray-500 cursor-help" />
             </Tooltip>
           </div>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
             Detect communities using Louvain algorithm
           </p>
           <Tooltip content="Run community detection (Ctrl+D)">
@@ -356,24 +356,24 @@ export default function Analyze() {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start">
-          <AlertCircle className="h-5 w-5 text-red-600 mr-2 mt-0.5" />
+        <div className="mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start">
+          <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mr-2 mt-0.5" />
           <div>
-            <h3 className="text-sm font-medium text-red-800">Error</h3>
-            <p className="text-sm text-red-700 mt-1">{error}</p>
+            <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Error</h3>
+            <p className="text-sm text-red-700 dark:text-red-300 mt-1">{error}</p>
           </div>
         </div>
       )}
 
       {/* Job Center */}
-      <div className="bg-white shadow rounded-lg p-6">
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Job Center</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Job Center</h2>
           {jobs.some(j => j.status === 'completed' || j.status === 'failed') && (
             <Tooltip content="Clear completed and failed jobs (Shift+Delete)">
               <button
                 onClick={clearCompletedJobs}
-                className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center transition-colors"
+                className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center transition-colors"
               >
                 <Trash2 className="h-4 w-4 mr-1" />
                 Clear Done
@@ -384,8 +384,8 @@ export default function Analyze() {
 
         {jobs.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-sm text-gray-500 mb-2">No jobs yet. Start an analysis above.</p>
-            <p className="text-xs text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">No jobs yet. Start an analysis above.</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
               💡 Tip: Use keyboard shortcuts to quickly start jobs
             </p>
           </div>
@@ -394,22 +394,22 @@ export default function Analyze() {
             {jobs.map((job) => (
               <div
                 key={job.id}
-                className="border border-gray-200 rounded-lg p-4 flex items-center justify-between"
+                className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex items-center justify-between"
               >
                 <div className="flex items-center space-x-3">
                   {getStatusIcon(job.status)}
                   <div>
-                    <p className="font-medium text-gray-900">{job.type}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{job.type}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {job.phase || job.status}
                       {job.progress > 0 && ` (${job.progress}%)`}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-400 font-mono">{job.id}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 font-mono">{job.id}</p>
                   {job.status === 'completed' && job.result && (
-                    <p className="text-sm text-green-600 mt-1">✓ Complete</p>
+                    <p className="text-sm text-green-600 dark:text-green-400 mt-1">✓ Complete</p>
                   )}
                 </div>
               </div>
@@ -418,14 +418,14 @@ export default function Analyze() {
         )}
       </div>
 
-      <div className="mt-6 text-sm text-gray-500">
+      <div className="mt-6 text-sm text-gray-500 dark:text-gray-400">
         <p>
           Jobs run asynchronously using Celery workers. Monitor detailed progress at{' '}
           <a
             href="/flower"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
           >
             Flower dashboard
           </a>

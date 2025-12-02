@@ -87,11 +87,11 @@ export default function ResultsTable({
 
   const getSortIcon = (columnKey: string) => {
     if (sortColumn !== columnKey) {
-      return <ArrowUpDown className="h-4 w-4 ml-1 inline text-gray-400" />;
+      return <ArrowUpDown className="h-4 w-4 ml-1 inline text-gray-400 dark:text-gray-500" />;
     }
     return sortDirection === 'asc' 
-      ? <ArrowUp className="h-4 w-4 ml-1 inline text-blue-600" />
-      : <ArrowDown className="h-4 w-4 ml-1 inline text-blue-600" />;
+      ? <ArrowUp className="h-4 w-4 ml-1 inline text-blue-600 dark:text-blue-400" />
+      : <ArrowDown className="h-4 w-4 ml-1 inline text-blue-600 dark:text-blue-400" />;
   };
 
   return (
@@ -103,7 +103,7 @@ export default function ResultsTable({
           onSearch={setSearchQuery}
         />
         {searchQuery && (
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
             Found {sortedData.length} result{sortedData.length !== 1 ? 's' : ''}
           </p>
         )}
@@ -111,19 +111,19 @@ export default function ResultsTable({
 
       {/* Table */}
       {sortedData.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
           {searchQuery ? `No results match "${searchQuery}"` : emptyMessage}
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
                 {columns.map(col => (
                   <th
                     key={col.key}
-                    className={`px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
-                      col.sortable !== false ? 'cursor-pointer hover:bg-gray-100' : ''
+                    className={`px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${
+                      col.sortable !== false ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600' : ''
                     }`}
                     onClick={() => col.sortable !== false && handleSort(col.key)}
                   >
@@ -133,11 +133,11 @@ export default function ResultsTable({
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {sortedData.map((row, idx) => (
-                <tr key={idx} className="hover:bg-gray-50">
+                <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                   {columns.map(col => (
-                    <td key={col.key} className="px-4 py-3 text-sm text-gray-900">
+                    <td key={col.key} className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
                       {col.render ? col.render(row[col.key], row) : row[col.key]}
                     </td>
                   ))}
