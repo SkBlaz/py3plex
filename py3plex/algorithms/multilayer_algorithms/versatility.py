@@ -272,13 +272,14 @@ def versatility(
         - De Domenico et al. (2013) Physical Review X 3, 041022
         - De Domenico et al. (2015) Nature Communications 6, 6868
     """
-    # Validate inputs before assertions (assertions are for debugging, not validation)
+    # Validate inputs (raise proper exceptions for user-facing errors)
     if not A_layers:
         raise ValueError("At least one layer is required")
 
     # crosshair: analysis_kind=asserts
-    # Preconditions (for static analysis tools like CrossHair)
-    assert len(A_layers) > 0, "At least one layer is required"
+    # Preconditions for static analysis tools like CrossHair
+    # Note: These assertions are redundant at runtime after the above check,
+    # but are kept for formal verification tools that analyze assertions
     assert isinstance(interlayer, (int, float, dict, np.ndarray)), \
         "interlayer must be scalar, dict, or array"
     if isinstance(interlayer, (int, float)):
