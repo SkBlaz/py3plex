@@ -168,16 +168,6 @@ latex_elements = {
 \titlespacing*{\chapter}{0pt}{20pt}{20pt}
 \titlespacing*{\section}{0pt}{12pt}{8pt}
 \titlespacing*{\subsection}{0pt}{10pt}{6pt}
-
-% Add some breathing room around horizontal rules (used as section separators)
-\let\oldrule\rule
-\renewcommand{\rule}[2]{\vspace{0.5em}\oldrule{#1}{#2}\vspace{0.5em}}
-
-% Improve quote/epigraph styling for transitional paragraphs
-\usepackage{framed}
-\renewenvironment{quote}
-  {\begin{framed}\itshape}
-  {\end{framed}}
 ''',
 
     # Latex figure (float) alignment
