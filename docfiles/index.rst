@@ -1,6 +1,8 @@
 Py3plex Documentation
 **********************************
 
+*"Complexity is the enemy of execution."* — Tony Robbins
+
 .. image:: ../example_images/py3plex_showcase.png
    :alt: Py3plex Visualization Showcase
    :align: center
@@ -14,6 +16,15 @@ Py3plex Documentation
    :alt: Code Quality
 
 py3plex enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.
+
+Welcome to py3plex
+==================
+
+The world is connected. Social relationships span platforms and contexts. Transportation networks combine trains, buses, and flights. Biological systems involve protein interactions, gene regulation, and metabolic pathways. Yet most network analysis tools treat connections as if they were all the same.
+
+**py3plex is different.** It's built from the ground up for networks where the *type* of connection matters—where a friendship is different from a professional contact, where an experimental protein interaction is different from a computationally predicted one, where a subway connection is different from a bus route.
+
+This documentation will take you from zero to competent multilayer network analyst. Whether you're a researcher looking to apply network science to your domain, a data scientist exploring graph-based features for machine learning, or an engineer building tools that leverage network structure, you'll find what you need here.
 
 Overview
 ========
@@ -32,6 +43,23 @@ py3plex is a lightweight Python library designed specifically for analyzing and 
 Real-world systems are rarely simple: a social network involves friendships *and* professional relationships; a transportation system includes buses *and* trains *and* flights; a biological system has protein-protein interactions *and* gene regulation *and* metabolic pathways. When you model these systems as multilayer networks rather than flattening them into a single graph, you preserve information that matters for analysis—and py3plex makes this kind of analysis practical.
 
 **Target Users:** Researchers in network science, computational biology, complex systems, social network analysis, infrastructure/transportation modeling, and applied ML on graphs.
+
+Real-World Impact
+-----------------
+
+Multilayer network analysis isn't just an academic exercise. Here are some ways it has been used in practice:
+
+* **Drug discovery:** Researchers model protein interactions, genetic associations, and drug-target relationships as a multilayer network. Proteins that are central across multiple evidence layers are prioritized as drug targets.
+
+* **Pandemic modeling:** Epidemiologists model human contact networks with layers for household, workplace, and community interactions. Each layer has different transmission dynamics, enabling more accurate predictions.
+
+* **Infrastructure resilience:** Urban planners model transportation systems with layers for different modes (subway, bus, bike-share). Analyzing inter-layer dependencies reveals vulnerabilities—what happens when a major subway hub fails?
+
+* **Social media analysis:** Researchers studying influence model users across platforms (Twitter, Instagram, YouTube). Cross-platform influencers behave differently from single-platform celebrities.
+
+* **Recommendation systems:** E-commerce platforms model user-item-category relationships as heterogeneous networks. Meta-path-based features improve recommendation quality.
+
+py3plex provides the tools to conduct these kinds of analyses—from simple exploration to publication-ready workflows.
 
 What Can I Do in the First Hour, First Day, and First Week?
 -----------------------------------------------------------
@@ -369,6 +397,7 @@ Whether you're new to py3plex or multilayer network analysis, this section provi
    :maxdepth: 2
    :caption: Getting Started
 
+   getting_started/part_intro
    getting_started/quickstart_5min
    getting_started/tutorial_10min
    getting_started/installation
@@ -385,6 +414,7 @@ Before diving deeper into py3plex's capabilities, it's essential to understand t
    :maxdepth: 2
    :caption: Concepts & Architecture
 
+   concepts/part_intro
    concepts/multilayer_networks_101
    concepts/py3plex_core_model
    concepts/design_principles
@@ -401,6 +431,7 @@ With the fundamentals in place, this section provides comprehensive how-to guide
    :maxdepth: 2
    :caption: User Guide
 
+   user_guide/part_intro
    user_guide/networks
    user_guide/statistics
    user_guide/community_detection
@@ -423,6 +454,7 @@ Moving from development to production requires careful consideration of deployme
    :maxdepth: 2
    :caption: Environments & Deployment
 
+   deployment/part_intro
    deployment/cli_and_docker
    deployment/performance_scalability
 
@@ -437,6 +469,7 @@ For users who prefer a graphical interface, py3plex provides a web-based GUI for
    :maxdepth: 2
    :caption: Py3plex GUI
 
+   gui/part_intro
    gui/gui_user_guide
    gui/gui_deployment
    gui/gui_api_reference
@@ -454,6 +487,7 @@ If you're interested in contributing to py3plex or understanding its internal ar
    :maxdepth: 2
    :caption: Developer & Contributor Docs
 
+   dev/part_intro
    dev/development_guide
    dev/code_architecture
    dev/repo_layout
@@ -470,6 +504,7 @@ Learning by example is often the most effective approach. This section provides 
    :maxdepth: 1
    :caption: Examples
 
+   examples/part_intro
    examples/index
 
 ----
@@ -483,6 +518,7 @@ This final section provides comprehensive reference materials including the comp
    :maxdepth: 2
    :caption: Reference & Citation
 
+   reference/part_intro
    reference/algorithm_reference
    reference/api_index
    reference/citation_and_acknowledgements
