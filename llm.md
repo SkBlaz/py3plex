@@ -751,7 +751,7 @@ net.add_edges([
 df = (
     nodes(net, layers=["ppi"])
     .filter(lambda n: n["degree"] > 1)
-    .mutate(normalized_degree=lambda n: n["degree"] / 4)
+    .mutate(normalized_degree=lambda n: n["degree"] / 4)  # Normalize by total node count
     .arrange("degree", reverse=True)
     .head(3)
     .to_pandas()
@@ -1062,7 +1062,7 @@ net = multinet.multi_layer_network()
 # Execute query directly on network
 result = net.execute_query('SELECT nodes WHERE layer="social" AND degree > 2')
 
-# With MATCH syntax
+# With MATCH syntax (Cypher-like pattern matching, also supported by DSL)
 result = net.execute_query('MATCH (a:layer1)-[r]->(b:layer1) RETURN a, b')
 ```
 
