@@ -1073,5 +1073,60 @@ class TestBackwardCompatibility:
         assert isinstance(centrality, dict)
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# First-Class Method Tests
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestFirstClassMethod:
+    """Test execute_query as a first-class method on multi_layer_network."""
+
+    def test_execute_query_method_exists(self, sample_network):
+        """Test that execute_query method exists on the network object."""
+        assert hasattr(sample_network, 'execute_query')
+        assert callable(sample_network.execute_query)
+
+    def test_execute_query_method_select(self, sample_network):
+        """Test execute_query method with SELECT query."""
+        result = sample_network.execute_query('SELECT nodes WHERE layer="layer1"')
+        
+        assert result['target'] == 'nodes'
+        assert result['count'] > 0
+        
+        # All returned nodes should be from layer1
+        for node in result['nodes']:
+            assert node[1] == 'layer1'
+
+    def test_execute_query_method_match(self, sample_network):
+        """Test execute_query method with MATCH query."""
+        result = sample_network.execute_query('MATCH (n:layer1) RETURN n')
+        
+        assert result['type'] == 'match'
+        assert 'bindings' in result
+        assert result['count'] > 0
+
+    def test_execute_query_method_with_layer_clause(self, sample_network):
+        """Test execute_query method with IN LAYER clause."""
+        result = sample_network.execute_query("SELECT * FROM nodes IN LAYER 'layer1'")
+        
+        assert 'layers' in result
+        assert result['layers'] == ['layer1']
+        assert result['count'] > 0
+
+    def test_execute_query_method_equivalent_to_function(self, sample_network):
+        """Test that method and function produce equivalent results."""
+        query = 'SELECT nodes WHERE layer="layer1"'
+        
+        # Using method
+        result_method = sample_network.execute_query(query)
+        
+        # Using function
+        result_function = execute_query(sample_network, query)
+        
+        # Results should be equivalent
+        assert result_method['count'] == result_function['count']
+        assert set(result_method['nodes']) == set(result_function['nodes'])
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

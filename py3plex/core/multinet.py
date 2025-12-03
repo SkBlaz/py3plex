@@ -3328,6 +3328,59 @@ class multi_layer_network:
             **kwargs
         )
 
+    # ═════════════════════════════════════════════════════════════════════════
+    # DSL Query Methods
+    # ═════════════════════════════════════════════════════════════════════════
+
+    def execute_query(self, query: str) -> Dict[str, Any]:
+        """Execute a DSL query on this multilayer network.
+
+        This is a convenience method that provides first-class access to the
+        py3plex DSL (Domain-Specific Language) for querying multilayer networks.
+        
+        Supports both SELECT and MATCH queries:
+        
+        SELECT queries:
+            net.execute_query('SELECT nodes WHERE layer="transport"')
+            net.execute_query('SELECT * FROM nodes IN LAYER "ppi" WHERE degree > 10')
+        
+        MATCH queries (Cypher-like):
+            net.execute_query('MATCH (g:Gene)-[r]->(t:Gene) RETURN g, t')
+            net.execute_query('MATCH (a)-[e]->(b) IN LAYER "ppi" WHERE a.degree > 5 RETURN a, b')
+
+        Args:
+            query: DSL query string
+
+        Returns:
+            Dictionary containing query results:
+                - For SELECT queries: 'nodes' or 'edges' list, 'count', optional 'computed'
+                - For MATCH queries: 'bindings' list, 'count', 'type'
+
+        Raises:
+            DSLSyntaxError: If query syntax is invalid
+            DSLExecutionError: If query cannot be executed
+
+        Examples:
+            >>> net = multi_layer_network(directed=False)
+            >>> net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+            >>> net.add_edges([{'source': 'A', 'target': 'B',
+            ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
+            >>> result = net.execute_query('SELECT nodes WHERE layer="layer1"')
+            >>> result['count'] >= 0
+            True
+            
+            >>> # Using MATCH syntax
+            >>> result = net.execute_query('MATCH (a:layer1)-[r]->(b:layer1) RETURN a, b')
+            >>> 'bindings' in result
+            True
+
+        See Also:
+            - :func:`py3plex.dsl.execute_query` for standalone function
+            - :func:`py3plex.dsl.format_result` for formatting results
+        """
+        from py3plex.dsl import execute_query as dsl_execute_query
+        return dsl_execute_query(self, query)
+
     def from_homogeneous_hypergraph(self, H):
         """
         Decode a homogeneous graph created by to_homogeneous_hypergraph.
