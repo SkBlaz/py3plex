@@ -146,10 +146,10 @@ export default function Export() {
   if (!graphId) {
     return (
       <div className="px-4 py-6">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-          <AlertCircle className="h-6 w-6 text-yellow-600 mb-2" />
-          <h3 className="text-lg font-medium text-yellow-900">No Graph Loaded</h3>
-          <p className="text-sm text-yellow-800 mt-1">
+        <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+          <AlertCircle className="h-6 w-6 text-yellow-600 dark:text-yellow-400 mb-2" />
+          <h3 className="text-lg font-medium text-yellow-900 dark:text-yellow-100">No Graph Loaded</h3>
+          <p className="text-sm text-yellow-800 dark:text-yellow-200 mt-1">
             Please upload a network file first in the Load Data page.
           </p>
           <a
@@ -166,33 +166,33 @@ export default function Export() {
   return (
     <div className="px-4 py-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Export & Download</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Export & Download</h1>
         <Tooltip content="Download analysis results and save workspace for later">
-          <HelpCircle className="h-5 w-5 text-gray-400" />
+          <HelpCircle className="h-5 w-5 text-gray-400 dark:text-gray-500" />
         </Tooltip>
       </div>
 
       <div className="grid grid-cols-2 gap-6">
         {/* Export Options */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Export Options</h2>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Export Options</h2>
 
           {downloadError && (
-            <div className="mb-4 bg-red-50 border border-red-200 rounded p-3 flex items-start">
-              <AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700">{downloadError}</p>
+            <div className="mb-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded p-3 flex items-start">
+              <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mr-2 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700 dark:text-red-300">{downloadError}</p>
             </div>
           )}
 
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Download Results</h3>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Download Results</h3>
               <div className="space-y-2">
                 <Tooltip content="Download centrality metrics as CSV (Ctrl+1)">
                   <button 
                     onClick={() => handleDownload('centrality', `centrality-${graphId}.csv`)}
                     disabled={downloading === 'centrality'}
-                    className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <Download className="h-4 w-4 mr-2" />
                     {downloading === 'centrality' ? 'Downloading...' : 'Download Centrality CSV'}
@@ -202,7 +202,7 @@ export default function Export() {
                   <button 
                     onClick={() => handleDownload('community', `community-${graphId}.json`)}
                     disabled={downloading === 'community'}
-                    className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <Download className="h-4 w-4 mr-2" />
                     {downloading === 'community' ? 'Downloading...' : 'Download Community JSON'}
@@ -212,20 +212,20 @@ export default function Export() {
                   <button 
                     onClick={() => handleDownload('positions', `positions-${graphId}.json`)}
                     disabled={downloading === 'positions'}
-                    className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <Download className="h-4 w-4 mr-2" />
                     {downloading === 'positions' ? 'Downloading...' : 'Download Layout Positions'}
                   </button>
                 </Tooltip>
               </div>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 Note: Data must be computed in the Analyze page before downloading
               </p>
             </div>
 
             <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Visualization Export
               </h3>
               <button className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center text-sm">
@@ -237,14 +237,14 @@ export default function Export() {
         </div>
 
         {/* Workspace Save */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Save Workspace</h2>
-          <p className="text-sm text-gray-600 mb-4">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Save Workspace</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
             Package your data, parameters, and view state into a reloadable bundle
           </p>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Workspace Name
             </label>
             <input
@@ -252,7 +252,7 @@ export default function Export() {
               value={workspaceName}
               onChange={(e) => setWorkspaceName(e.target.value)}
               placeholder="my-network-workspace"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
@@ -266,19 +266,19 @@ export default function Export() {
           </button>
 
           {saveError && (
-            <div className="mt-4 bg-red-50 border border-red-200 rounded p-3">
-              <p className="text-sm text-red-700">{saveError}</p>
+            <div className="mt-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded p-3">
+              <p className="text-sm text-red-700 dark:text-red-300">{saveError}</p>
             </div>
           )}
 
           {saveResult && (
-            <div className="mt-4 bg-green-50 border border-green-200 rounded p-3 flex items-start">
-              <CheckCircle className="h-5 w-5 text-green-600 mr-2 flex-shrink-0 mt-0.5" />
+            <div className="mt-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded p-3 flex items-start">
+              <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mr-2 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm text-green-700">
+                <p className="text-sm text-green-700 dark:text-green-300">
                   ✓ Workspace saved as <strong>{saveResult.filename}</strong>
                 </p>
-                <p className="text-xs text-green-600 mt-1">
+                <p className="text-xs text-green-600 dark:text-green-400 mt-1">
                   ID: {saveResult.workspace_id}
                 </p>
               </div>
@@ -288,9 +288,9 @@ export default function Export() {
       </div>
 
       {/* Info */}
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 className="text-sm font-medium text-blue-900 mb-2">About Workspaces</h3>
-        <p className="text-sm text-blue-800">
+      <div className="mt-6 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">About Workspaces</h3>
+        <p className="text-sm text-blue-800 dark:text-blue-200">
           Workspace bundles include your uploaded data, computed results, and UI state.
           Load them later to resume your analysis session without re-uploading or
           re-computing.
