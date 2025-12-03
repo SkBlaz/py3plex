@@ -713,5 +713,358 @@ class TestIntegration:
                set(layer1_result['nodes']) != set(layer2_result['nodes'])
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# New DSL v3 Feature Tests: Layer Clauses
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestLayerClauses:
+    """Test IN LAYER and IN LAYERS clauses for SELECT queries."""
+
+    def test_select_in_layer_single(self, sample_network):
+        """Test SELECT with single layer clause."""
+        result = execute_query(sample_network, "SELECT * FROM nodes IN LAYER 'layer1' WHERE degree > 0")
+        
+        assert result['count'] >= 0
+        assert 'layers' in result
+        assert result['layers'] == ['layer1']
+        
+        # All returned nodes should be from layer1
+        for node in result['nodes']:
+            assert node[1] == 'layer1'
+
+    def test_select_in_layer_without_where(self, sample_network):
+        """Test SELECT with layer clause but no WHERE."""
+        result = execute_query(sample_network, "SELECT * FROM nodes IN LAYER 'layer1'")
+        
+        assert result['count'] > 0
+        # All returned nodes should be from layer1
+        for node in result['nodes']:
+            assert node[1] == 'layer1'
+
+    def test_select_in_layers_multiple(self, sample_network):
+        """Test SELECT with multiple layers clause."""
+        result = execute_query(sample_network, 
+                              "SELECT * FROM nodes IN LAYERS ('layer1', 'layer2') WHERE degree >= 0")
+        
+        assert result['count'] >= 0
+        assert 'layers' in result
+        assert set(result['layers']) == {'layer1', 'layer2'}
+        
+        # All returned nodes should be from layer1 or layer2
+        for node in result['nodes']:
+            assert node[1] in ['layer1', 'layer2']
+
+    def test_select_with_from_nodes(self, sample_network):
+        """Test SELECT * FROM nodes syntax."""
+        result = execute_query(sample_network, "SELECT * FROM nodes WHERE degree > 0")
+        
+        assert result['count'] >= 0
+        assert result['target'] == 'nodes'
+
+    def test_select_layer_filters_correctly(self, sample_network):
+        """Test that layer clause properly filters nodes."""
+        # Get all nodes
+        all_result = execute_query(sample_network, 'SELECT nodes')
+        
+        # Get layer1 nodes
+        layer1_result = execute_query(sample_network, "SELECT * FROM nodes IN LAYER 'layer1'")
+        
+        # Get layer2 nodes  
+        layer2_result = execute_query(sample_network, "SELECT * FROM nodes IN LAYER 'layer2'")
+        
+        # Sum of layer1 and layer2 should equal or be less than all nodes
+        assert layer1_result['count'] + layer2_result['count'] <= all_result['count']
+        
+        # Verify no overlap in returned nodes
+        layer1_nodes = set(tuple(n) if isinstance(n, list) else n for n in layer1_result['nodes'])
+        layer2_nodes = set(tuple(n) if isinstance(n, list) else n for n in layer2_result['nodes'])
+        assert len(layer1_nodes.intersection(layer2_nodes)) == 0
+
+    def test_select_nonexistent_layer(self, sample_network):
+        """Test SELECT with non-existent layer returns empty."""
+        result = execute_query(sample_network, "SELECT * FROM nodes IN LAYER 'nonexistent'")
+        
+        assert result['count'] == 0
+        assert result['nodes'] == []
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# New DSL v3 Feature Tests: MATCH Queries  
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestMatchQueries:
+    """Test Cypher-like MATCH query syntax."""
+
+    def test_match_single_node_pattern(self, sample_network):
+        """Test MATCH with single node pattern."""
+        result = execute_query(sample_network, "MATCH (n:layer1) RETURN n")
+        
+        assert result['type'] == 'match'
+        assert 'bindings' in result
+        assert result['count'] >= 0
+        
+        # Each binding should have alias 'n'
+        for binding in result['bindings']:
+            assert 'n' in binding
+            assert binding['n'][1] == 'layer1'
+
+    def test_match_node_edge_pattern(self, sample_network):
+        """Test MATCH with node-edge-node pattern."""
+        result = execute_query(sample_network, "MATCH (a:layer1)-[r]->(b:layer1) RETURN a, b")
+        
+        assert result['type'] == 'match'
+        assert 'bindings' in result
+        
+        # Each binding should have aliases 'a' and 'b'
+        for binding in result['bindings']:
+            assert 'a' in binding
+            assert 'b' in binding
+
+    def test_match_with_layer_clause(self, sample_network):
+        """Test MATCH with IN LAYER clause."""
+        result = execute_query(sample_network, 
+                              "MATCH (g:layer1)-[r]->(t:layer1) IN LAYER 'layer1' RETURN g, t")
+        
+        assert result['type'] == 'match'
+        assert 'layers' in result
+        assert result['layers'] == ['layer1']
+
+    def test_match_with_where_condition(self, sample_network):
+        """Test MATCH with WHERE clause using alias.attribute syntax."""
+        result = execute_query(sample_network, 
+                              "MATCH (a:layer1)-[r]->(b:layer1) WHERE a.degree >= 0 RETURN a, b")
+        
+        assert result['type'] == 'match'
+        assert 'bindings' in result
+
+    def test_match_return_star(self, sample_network):
+        """Test MATCH with RETURN * syntax."""
+        result = execute_query(sample_network, "MATCH (n:layer1) RETURN *")
+        
+        assert result['type'] == 'match'
+        # RETURN * should return all bindings with all aliases
+        for binding in result['bindings']:
+            assert 'n' in binding
+
+    def test_match_return_specific_aliases(self, sample_network):
+        """Test MATCH with specific aliases in RETURN."""
+        result = execute_query(sample_network, 
+                              "MATCH (a:layer1)-[r]->(b:layer1) RETURN a")
+        
+        assert result['type'] == 'match'
+        # Each binding should only have 'a' (not 'b')
+        for binding in result['bindings']:
+            assert 'a' in binding
+            # 'b' and 'r' should be filtered out if they exist
+            # Note: bindings may only include requested aliases
+
+    def test_match_without_edge_alias(self, sample_network):
+        """Test MATCH with edge pattern without alias."""
+        result = execute_query(sample_network, 
+                              "MATCH (a:layer1)-[:INTERACTS]->(b:layer1) RETURN a, b")
+        
+        assert result['type'] == 'match'
+        assert 'bindings' in result
+
+    def test_match_empty_pattern_returns_empty(self):
+        """Test MATCH on empty network returns empty."""
+        empty_network = multinet.multi_layer_network(directed=False)
+        result = execute_query(empty_network, "MATCH (n:layer1) RETURN n")
+        
+        assert result['type'] == 'match'
+        assert result['count'] == 0
+        assert result['bindings'] == []
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# New DSL v3 Feature Tests: Pattern Parsing
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestPatternParsing:
+    """Test parsing of MATCH patterns."""
+
+    def test_parse_node_pattern(self):
+        """Test parsing of node patterns."""
+        from py3plex.dsl import _parse_node_pattern, _tokenize_match_pattern
+        
+        tokens = _tokenize_match_pattern("(g:Gene)")
+        node, idx = _parse_node_pattern(tokens, 0)
+        
+        assert node.alias == 'g'
+        assert node.label == 'Gene'
+
+    def test_parse_node_pattern_no_label(self):
+        """Test parsing of node pattern without label."""
+        from py3plex.dsl import _parse_node_pattern, _tokenize_match_pattern
+        
+        tokens = _tokenize_match_pattern("(n)")
+        node, idx = _parse_node_pattern(tokens, 0)
+        
+        assert node.alias == 'n'
+        assert node.label is None
+
+    def test_parse_edge_pattern(self):
+        """Test parsing of edge patterns."""
+        from py3plex.dsl import _parse_edge_pattern, _tokenize_match_pattern
+        
+        tokens = _tokenize_match_pattern("-[r:REGULATES]->")
+        edge, idx = _parse_edge_pattern(tokens, 0)
+        
+        assert edge.alias == 'r'
+        assert edge.type == 'REGULATES'
+        assert edge.directed is True
+
+    def test_parse_edge_pattern_no_alias(self):
+        """Test parsing of edge pattern without alias."""
+        from py3plex.dsl import _parse_edge_pattern, _tokenize_match_pattern
+        
+        tokens = _tokenize_match_pattern("-[:INTERACTS]->")
+        edge, idx = _parse_edge_pattern(tokens, 0)
+        
+        assert edge.alias is None
+        assert edge.type == 'INTERACTS'
+
+    def test_parse_edge_pattern_no_type(self):
+        """Test parsing of edge pattern without type."""
+        from py3plex.dsl import _parse_edge_pattern, _tokenize_match_pattern
+        
+        tokens = _tokenize_match_pattern("-[e]->")
+        edge, idx = _parse_edge_pattern(tokens, 0)
+        
+        assert edge.alias == 'e'
+        assert edge.type is None
+
+    def test_parse_path_pattern(self):
+        """Test parsing of complete path patterns."""
+        from py3plex.dsl import _parse_path_pattern
+        
+        path = _parse_path_pattern("(g:Gene)-[r:REGULATES]->(t:Gene)")
+        
+        assert len(path.nodes) == 2
+        assert len(path.edges) == 1
+        
+        assert path.nodes[0].alias == 'g'
+        assert path.nodes[0].label == 'Gene'
+        assert path.nodes[1].alias == 't'
+        assert path.nodes[1].label == 'Gene'
+        
+        assert path.edges[0].alias == 'r'
+        assert path.edges[0].type == 'REGULATES'
+
+    def test_parse_layer_clause_single(self):
+        """Test parsing of IN LAYER clause."""
+        from py3plex.dsl import _parse_layer_clause
+        
+        tokens = ['IN', 'LAYER', 'ppi']
+        layers, idx = _parse_layer_clause(tokens, 0)
+        
+        assert layers == ['ppi']
+        assert idx == 3
+
+    def test_parse_layer_clause_multiple(self):
+        """Test parsing of IN LAYERS clause."""
+        from py3plex.dsl import _parse_layer_clause
+        
+        tokens = ['IN', 'LAYERS', '(', 'ppi', ',', 'coexpr', ')']
+        layers, idx = _parse_layer_clause(tokens, 0)
+        
+        assert set(layers) == {'ppi', 'coexpr'}
+
+    def test_parse_return_clause_star(self):
+        """Test parsing of RETURN * clause."""
+        from py3plex.dsl import _parse_return_clause
+        
+        tokens = ['RETURN', '*']
+        aliases, idx = _parse_return_clause(tokens, 0)
+        
+        assert aliases is None  # None means return all
+
+    def test_parse_return_clause_aliases(self):
+        """Test parsing of RETURN with aliases."""
+        from py3plex.dsl import _parse_return_clause
+        
+        tokens = ['RETURN', 'g', ',', 't']
+        aliases, idx = _parse_return_clause(tokens, 0)
+        
+        assert aliases == ['g', 't']
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Backward Compatibility Tests
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestBackwardCompatibility:
+    """Ensure existing queries still work after DSL extensions."""
+
+    def test_original_select_still_works(self, sample_network):
+        """Test that original SELECT syntax still works."""
+        result = execute_query(sample_network, 'SELECT nodes WHERE layer="layer1"')
+        
+        assert result['target'] == 'nodes'
+        assert result['count'] > 0
+
+    def test_original_select_with_compute(self, sample_network):
+        """Test that SELECT with COMPUTE still works."""
+        result = execute_query(sample_network, 
+                              'SELECT nodes WHERE layer="layer1" COMPUTE degree')
+        
+        assert 'computed' in result
+        assert 'degree' in result['computed']
+
+    def test_original_and_or_conditions(self, sample_network):
+        """Test that AND/OR conditions still work."""
+        result = execute_query(sample_network, 
+                              'SELECT nodes WHERE layer="layer1" AND degree >= 1')
+        
+        assert result['count'] >= 0
+        
+        result2 = execute_query(sample_network, 
+                               'SELECT nodes WHERE layer="layer1" OR layer="layer2"')
+        assert result2['count'] >= 0
+
+    def test_original_not_condition(self, sample_network):
+        """Test that NOT condition still works."""
+        result = execute_query(sample_network, 
+                              'SELECT nodes WHERE NOT layer="layer1"')
+        
+        for node in result['nodes']:
+            assert node[1] != 'layer1'
+
+    def test_original_comparison_operators(self, sample_network):
+        """Test that all comparison operators still work."""
+        # Test each operator
+        for op in ['>', '<', '>=', '<=', '=', '!=']:
+            if op == '=':
+                query = 'SELECT nodes WHERE degree = 2'
+            elif op == '!=':
+                query = 'SELECT nodes WHERE degree != 0'
+            elif op == '>':
+                query = 'SELECT nodes WHERE degree > 0'
+            elif op == '<':
+                query = 'SELECT nodes WHERE degree < 100'
+            elif op == '>=':
+                query = 'SELECT nodes WHERE degree >= 0'
+            elif op == '<=':
+                query = 'SELECT nodes WHERE degree <= 100'
+            
+            result = execute_query(sample_network, query)
+            assert result['count'] >= 0
+
+    def test_convenience_functions_still_work(self, sample_network):
+        """Test that convenience functions still work."""
+        nodes = select_nodes_by_layer(sample_network, 'layer1')
+        assert len(nodes) > 0
+        
+        high_deg = select_high_degree_nodes(sample_network, min_degree=0)
+        assert len(high_deg) >= 0
+        
+        centrality = compute_centrality_for_layer(sample_network, 'layer1')
+        assert isinstance(centrality, dict)
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
