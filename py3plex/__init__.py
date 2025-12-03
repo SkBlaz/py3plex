@@ -9,6 +9,7 @@ Main Classes:
 
 Key Features:
     - **SQL-like DSL for intuitive network queries**
+    - **Dplyr-style chainable graph operations API**
     - Dict-based API for adding nodes and edges
     - NetworkX interoperability
     - Multiple I/O formats (edgelist, GML, GraphML, etc.)
@@ -28,6 +29,18 @@ Quick Start:
     # Use SQL-like DSL for queries
     >>> result = p3.execute_query(net, 'SELECT nodes WHERE layer="layer1"')
     >>> result = p3.execute_query(net, 'SELECT nodes WHERE degree > 1 COMPUTE betweenness_centrality')
+    
+    # Use dplyr-style chainable API
+    >>> import numpy as np
+    >>> from py3plex.graph_ops import nodes
+    >>> df = (
+    ...     nodes(net, layers=["layer1"])
+    ...     .filter(lambda n: n["degree"] > 1)
+    ...     .mutate(normalized_degree=lambda n: n["degree"] / 10)
+    ...     .group_by("layer")
+    ...     .summarise(avg_degree=("degree", np.mean))
+    ...     .to_pandas()
+    ... )
 
 For detailed documentation, see: https://py3plex.readthedocs.io
 """
@@ -59,6 +72,14 @@ from py3plex.dsl import (
     select_nodes_by_layer,
     select_high_degree_nodes,
     compute_centrality_for_layer,
+)
+from py3plex.graph_ops import (
+    nodes,
+    edges,
+    NodeFrame,
+    EdgeFrame,
+    GroupedNodeFrame,
+    GroupedEdgeFrame,
 )
 from py3plex.exceptions import (
     AlgorithmError,
@@ -142,6 +163,13 @@ __all__ = [
     "compute_centrality_for_layer",
     "DSLSyntaxError",
     "DSLExecutionError",
+    # Graph operations (dplyr-style chainable API)
+    "nodes",
+    "edges",
+    "NodeFrame",
+    "EdgeFrame",
+    "GroupedNodeFrame",
+    "GroupedEdgeFrame",
     # Exceptions
     "Py3plexException",
     "NetworkConstructionError",
