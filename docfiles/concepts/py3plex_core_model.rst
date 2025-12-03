@@ -3,6 +3,65 @@ py3plex Core Model
 
 This guide explains how py3plex represents multilayer networks internally and how to work with the core data structures.
 
+Network Types: Multilayer vs Multiplex
+---------------------------------------
+
+py3plex supports two network types that determine how layers and inter-layer connections are handled:
+
+**Multilayer Networks** (``network_type='multilayer'``, default)
+
+General multilayer networks where each layer can have a different set of nodes. No automatic coupling edges are created.
+
+* Use when layers represent different node types (e.g., authors, papers, venues)
+* Use when nodes naturally appear in only some layers
+* Inter-layer edges must be explicitly added
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    
+    # Heterogeneous network: authors and papers are different node types
+    network = multinet.multi_layer_network(network_type='multilayer')
+    network.add_edges([
+        {'source': 'author1', 'target': 'paper1',
+         'source_type': 'authors', 'target_type': 'papers'}
+    ])
+
+**Multiplex Networks** (``network_type='multiplex'``)
+
+Special case where all layers share the same set of nodes but with different relationship types. After loading, coupling edges are automatically created between each node and its counterparts in other layers.
+
+* Use when the same entities (people, cities) are connected via multiple relationship types
+* Coupling edges are auto-generated with ``type='coupling'``
+* Filter coupling edges using ``get_edges(multiplex_edges=False)``
+
+.. code-block:: python
+
+    # Social network: same people, different relationship types
+    network = multinet.multi_layer_network(network_type='multiplex')
+    network.load_network('friends_and_colleagues.edges', input_type='multiplex_edges')
+    
+    # Coupling edges are auto-created between (Alice, friends) <-> (Alice, colleagues)
+    
+    # Get only explicit edges (exclude auto-coupling)
+    explicit_edges = list(network.get_edges(multiplex_edges=False))
+    
+    # Get all edges including coupling
+    all_edges = list(network.get_edges(multiplex_edges=True))
+
+**Comparison Table:**
+
+===============  ==================  ==================
+Feature          multilayer          multiplex
+===============  ==================  ==================
+Node sets        Different per layer Same across layers
+Coupling edges   Manual              Automatic
+Load behavior    As-is               + coupling edges
+get_edges()      All edges           Filters coupling
+Use case         Heterogeneous nets  Same entities, many
+                 (author-paper)      relationship types
+===============  ==================  ==================
+
 The ``multi_layer_network`` Class
 ----------------------------------
 

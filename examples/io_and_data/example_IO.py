@@ -131,6 +131,11 @@ def load_multilayer_examples() -> multinet.multi_layer_network:
         print(f"   [X] Not found: {multiedge_path}")
 
     # Example 6: Multiplex edges format (L N N w)
+    # Note: Using network_type="multiplex" here because:
+    # - All layers share the same set of nodes (same people/entities)
+    # - Different layers represent different relationship types
+    # - Automatic coupling edges are added between node copies across layers
+    # Use network_type="multilayer" when layers have different node sets
     print("\n6. Multiplex edges format (layer node1 node2 weight):")
     multiplex_path = get_dataset_path("test13.edges")
     if os.path.exists(multiplex_path):

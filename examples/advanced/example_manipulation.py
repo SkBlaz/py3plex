@@ -61,6 +61,11 @@ ER_multilayer = random_generators.random_multilayer_ER(300,
 # ER_multilayer.visualize_network(show=True)
 
 # dealing with multiplex networks
+# Note: network_type="multiplex" is used when:
+# - All layers share the same set of nodes
+# - Automatic coupling edges connect node copies across layers
+# - Edges represent different relationship types between the same entities
+# For heterogeneous networks (different node sets), use network_type="multilayer"
 B = multinet.multi_layer_network(network_type="multiplex")
 B.add_edges(
     [[1, 1, 2, 1, 1], [1, 2, 3, 2, 1], [1, 2, 3, 1, 1], [2, 1, 3, 2, 1]],

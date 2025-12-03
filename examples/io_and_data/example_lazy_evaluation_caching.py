@@ -31,6 +31,9 @@ def main():
             return {}
     
     # Create a simple network
+    # Using network_type='multilayer' because this is a general multilayer network
+    # where each layer can have different nodes. For networks where all layers
+    # share the same nodes with different relationship types, use 'multiplex'.
     net = multi_layer_network(network_type='multilayer', directed=False)
     net.add_nodes([
         {'source': 'A', 'type': 'social'},

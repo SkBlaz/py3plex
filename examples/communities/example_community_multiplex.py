@@ -7,6 +7,12 @@ from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.core import multinet
 from py3plex.utils import get_dataset_path
 
+# Using network_type="multiplex" for networks where:
+# - The same nodes (entities) appear across all layers
+# - Different layers represent different relationship types
+# - We want automatic coupling edges between node copies
+# For heterogeneous networks with different node types per layer,
+# use network_type="multilayer" instead
 network = multinet.multi_layer_network(network_type="multiplex").load_network(
     input_file=get_dataset_path("multiplex_example.edgelist"),
     directed=True,
