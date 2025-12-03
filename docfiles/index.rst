@@ -409,6 +409,7 @@ With the fundamentals in place, this section provides comprehensive how-to guide
    user_guide/visualization
    user_guide/dsl
    user_guide/recipes_and_workflows
+   user_guide/case_studies
 
 ----
 
