@@ -9,6 +9,17 @@ The previous chapters showed you *how* to use py3plex. This chapter explains *wh
 
 By the end, you'll have the conceptual foundation to model your own systems as multilayer networks, to choose between multiplex, heterogeneous, and temporal representations, and to understand why flattening everything into a single layer can destroy the very patterns you're trying to find.
 
+A Story of Overlooked Complexity
+--------------------------------
+
+In 2005, a group of researchers studied disease spread in a hospital. They modeled patient-healthcare worker contacts as a single network and simulated how infections might propagate. Their model predicted rapid hospital-wide spread within days.
+
+The actual outbreak took weeks. Why the discrepancy?
+
+The researchers had missed something: not all contacts are equal. Brief hallway encounters, extended bedside care, and administrative meetings create very different transmission opportunities. When they rebuilt their model with these contact types as separate layers—each with appropriate transmission probabilities—predictions matched reality.
+
+This is the core insight of multilayer network analysis: **real-world systems have structure that matters, and flattening it away loses information that affects your conclusions.**
+
 What are Multilayer Networks?
 ------------------------------
 
