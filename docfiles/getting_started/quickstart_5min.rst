@@ -1,9 +1,15 @@
-5-Minute Quickstart
-===================
+Chapter 1: Your First Five Minutes
+===================================
 
-*"The beginning is the most important part of the work."* — Plato
+*In which we create a multilayer network from scratch, visualize it, and discover what makes multilayer analysis different from single-layer approaches.*
 
-Get started with py3plex in just 5 minutes with this minimal example. By the end, you'll have created a multilayer network, computed statistics, and visualized your data.
+----
+
+Every journey into multilayer network analysis begins with a simple question: *What happens when relationships aren't all the same?*
+
+Traditional network analysis treats every connection equally—a friend is a friend, a colleague is a colleague, and the tool you use doesn't care which is which. But real-world systems are messier. The same people might be connected in fundamentally different ways: as friends *and* as colleagues, as family members *and* as business partners, as collaborators on one project *and* competitors on another.
+
+py3plex exists because these distinctions matter. This quickstart will show you how, in just five minutes.
 
 The Scenario
 ------------
@@ -151,31 +157,31 @@ See :doc:`../user_guide/dsl` for comprehensive DSL documentation.
 What You Learned
 ----------------
 
-In this 5-minute quickstart, you've learned the key mental model for py3plex:
+Let's pause and take stock. In five minutes, you've learned the core mental model that distinguishes py3plex from traditional network tools:
 
-1. **Node-layer pairs:** In a multilayer network, a node like "Bob" isn't just a single entity—it's represented as ``('Bob', 'friends')`` and ``('Bob', 'colleagues')`` separately. This allows the same person to have different attributes and connections in different contexts.
+1. **Node-layer pairs are fundamental.** In a multilayer network, a node like "Bob" isn't just a single entity—it's represented as ``('Bob', 'friends')`` and ``('Bob', 'colleagues')`` separately. This allows the same person to have different attributes and connections in different contexts. This representation isn't a limitation; it's what makes multilayer analysis possible.
 
-2. **Layers as contexts:** Each layer represents a different type of relationship or interaction mode. The layer structure is preserved throughout analysis, not flattened away.
+2. **Layers preserve context.** Each layer represents a different type of relationship or interaction mode. Unlike tools that flatten everything into one graph, py3plex keeps layers distinct throughout your analysis. When you compute statistics or detect communities, the layer structure is always available.
 
-3. **py3plex extends NetworkX:** Under the hood, py3plex uses NetworkX graphs. This means you can use any NetworkX algorithm on your multilayer network, while py3plex adds multilayer-specific capabilities on top.
+3. **py3plex extends NetworkX.** Under the hood, py3plex uses NetworkX graphs. This means you can use any NetworkX algorithm on your multilayer network—computing PageRank, finding shortest paths, or any of hundreds of other algorithms—while py3plex adds multilayer-specific capabilities on top.
 
-4. **Multilayer statistics reveal cross-layer patterns:** Metrics like node activity, layer density, and edge overlap help you understand how layers relate to each other—something you can't compute with single-layer tools.
+4. **Multilayer statistics reveal hidden patterns.** Metrics like node activity (who appears in multiple contexts?), layer density (how connected is each context?), and edge overlap (do the same relationships appear in both contexts?) help you understand how layers relate to each other. These insights are invisible to single-layer tools.
 
 What's Next?
 ------------
 
-Congratulations! You've created your first multilayer network. To dive deeper:
+Congratulations! You've created your first multilayer network and taken the first steps toward understanding its structure.
 
-* :doc:`tutorial_10min` - Comprehensive 10-minute tutorial with more features
-* :doc:`../user_guide/dsl` - SQL-like DSL for network queries
-* :doc:`installation` - Complete installation guide with optional dependencies
-* :doc:`common_issues` - Troubleshooting common problems
-* :doc:`../user_guide/networks` - Learn more about creating and loading networks
-* :doc:`../user_guide/visualization` - Advanced visualization techniques
+In :doc:`tutorial_10min`, we'll expand on these foundations with a more comprehensive walkthrough: loading real data from files, computing centrality measures, detecting communities that span layers, generating random walks for embeddings, and creating publication-ready visualizations.
 
-Need Help?
-----------
+**Ready to continue?** Move on to :doc:`tutorial_10min` for the full 10-minute tutorial.
 
-* **Documentation:** https://skblaz.github.io/py3plex/
-* **GitHub Issues:** https://github.com/SkBlaz/py3plex/issues
-* **Examples:** `examples/ directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_
+**Need to install first?** See :doc:`installation` for complete setup instructions including optional dependencies.
+
+**Something not working?** Check :doc:`common_issues` for solutions to common problems.
+
+**Prefer to explore?** Browse the ``examples/`` directory for 50+ working examples covering every major feature.
+
+----
+
+*Next chapter: :doc:`tutorial_10min` — where we build complete analysis pipelines from loading to visualization.*

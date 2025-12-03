@@ -120,67 +120,11 @@ htmlhelp_basename = 'py3plexdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
+# Minimal LaTeX configuration to avoid build issues
+# Complex customizations have been removed for compatibility
 latex_elements = {
-    # The paper size - A4 is more professional and book-like
     'papersize': 'a4paper',
-
-    # Larger font size for better readability
-    'pointsize': '11pt',
-
-    # Disable fncychap to avoid \appendix undefined error
-    # This is needed because fncychap tries to redefine \appendix before it's defined
-    'fncychap': '',
-
-    # Additional stuff for the LaTeX preamble for professional styling
-    # Note: Do NOT load geometry here - Sphinx loads it automatically
-    # Loading it again causes "Option clash for package geometry" error
-    # Note: Avoid titlesec package as it conflicts with Sphinx's document classes
-    'preamble': r'''
-% Professional book-like styling improvements
-\usepackage{lmodern}            % Latin Modern fonts for better rendering
-
-% Required packages for proper rendering
-\usepackage{amsmath}
-\usepackage{amssymb}
-
-% Fix for bookmark issues with unnumbered sections
-% This prevents errors like "Missing \endcsname inserted" in PDF bookmarks
-\usepackage{bookmark}
-\bookmarksetup{numbered}
-
-% Improved paragraph spacing for book-like flow
-\setlength{\parskip}{0.6em}
-\setlength{\parindent}{0pt}
-
-% Improved table of contents depth
-\setcounter{tocdepth}{2}        % Show subsections in TOC
-
-% Better colors for links - more subtle for professional appearance
-\definecolor{InnerLinkColor}{rgb}{0.1,0.2,0.5}
-\definecolor{OuterLinkColor}{rgb}{0.1,0.2,0.5}
-''',
-
-    # Latex figure (float) alignment
-    # 'H' forces exact placement (requires float package), may cause spacing issues with large figures
-    'figure_align': 'H',
-
-    # Disable blank pages between chapters (more concise)
-    # 'openany' - don't require chapters to start on odd pages
-    # 'oneside' - use same margins and headers for all pages (simpler layout for digital reading)
-    'extraclassoptions': 'openany,oneside',
-
-    # Use default table of contents styling
-    # 'tableofcontents': '',
-}
-
-# Additional LaTeX configuration for hyperref (links)
-latex_show_urls = 'footnote'  # Show URLs in footnotes for cleaner appearance
-latex_show_pagerefs = False   # Don't show page references
-
-# Use manual class for book-like appearance
-latex_docclass = {
-    'manual': 'sphinxmanual',
-    'howto': 'sphinxhowto',
+    'pointsize': '10pt',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
