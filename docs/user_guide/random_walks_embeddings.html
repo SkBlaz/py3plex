@@ -45,6 +45,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
@@ -52,6 +53,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
@@ -59,6 +61,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection Tutorial</a></li>
@@ -109,6 +112,29 @@
 <li class="toctree-l3"><a class="reference internal" href="#edge-weight-test">Edge Weight Test</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-embedding-workflow">Complete Embedding Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-prepare-the-network">Step 1: Prepare the Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-generate-random-walks">Step 2: Generate Random Walks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-train-embedding-model">Step 3: Train Embedding Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-extract-and-use-embeddings">Step 4: Extract and Use Embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-5-downstream-tasks">Step 5: Downstream Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-6-save-and-load-embeddings">Step 6: Save and Load Embeddings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parameter-tuning-guide">Parameter Tuning Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#walk-length-guidelines">Walk Length Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#number-of-walks-guidelines">Number of Walks Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#p-and-q-parameter-effects">P and Q Parameter Effects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-failure-modes">Common Failure Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disconnected-graph">Disconnected Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#highly-skewed-degree-distribution">Highly Skewed Degree Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#isolated-nodes">Isolated Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#very-small-graph">Very Small Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-issues-with-large-graphs">Memory Issues with Large Graphs</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
@@ -116,15 +142,20 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case_studies.html">Use Cases &amp; Case Studies</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment: Taking It to Production</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Visual Exploration for Everyone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
@@ -133,6 +164,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs: Building Together</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
@@ -140,10 +172,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples: Learning by Doing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">Reference &amp; Citation: The Complete Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
@@ -666,6 +700,514 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 <span class="c1"># Within 5% tolerance</span>
 <span class="k">for</span> <span class="n">obs</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
     <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obs</span> <span class="o">-</span> <span class="n">exp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="complete-embedding-workflow">
+<h2>Complete Embedding Workflow<a class="headerlink" href="#complete-embedding-workflow" title="Link to this heading"></a></h2>
+<p>This section provides a complete, end-to-end workflow for generating node embeddings from a multilayer network and using them for downstream machine learning tasks.</p>
+<section id="step-1-prepare-the-network">
+<h3>Step 1: Prepare the Network<a class="headerlink" href="#step-1-prepare-the-network" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Set random seed for reproducibility</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Load your multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;your_network.multiedgelist&quot;</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Verify the network</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># Get the core NetworkX graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-generate-random-walks">
+<h3>Step 2: Generate Random Walks<a class="headerlink" href="#step-2-generate-random-walks" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_walks</span>
+
+<span class="c1"># Generate walks with Node2Vec-style biased sampling</span>
+<span class="c1"># Recommended starting parameters</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>       <span class="c1"># 10 walks per node (more = better embeddings, slower)</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>     <span class="c1"># 80 steps per walk (adjust based on graph diameter)</span>
+    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>              <span class="c1"># Return parameter (1.0 = balanced)</span>
+    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>              <span class="c1"># In-out parameter (1.0 = balanced)</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>             <span class="c1"># For reproducibility</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2"> walks&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample walk: </span><span class="si">{</span><span class="n">walks</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>  <span class="c1"># First 10 nodes of first walk</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-train-embedding-model">
+<h3>Step 3: Train Embedding Model<a class="headerlink" href="#step-3-train-embedding-model" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Requires gensim: pip install gensim</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gensim.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Word2Vec</span>
+
+<span class="c1"># Convert walks to strings (Word2Vec expects string tokens)</span>
+<span class="n">walks_str</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">walk</span><span class="p">]</span> <span class="k">for</span> <span class="n">walk</span> <span class="ow">in</span> <span class="n">walks</span><span class="p">]</span>
+
+<span class="c1"># Train the embedding model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">(</span>
+    <span class="n">walks_str</span><span class="p">,</span>
+    <span class="n">vector_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>    <span class="c1"># Embedding dimension (64-256 typical)</span>
+    <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>           <span class="c1"># Context window size</span>
+    <span class="n">min_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>        <span class="c1"># Include nodes that appear at least once</span>
+    <span class="n">sg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>               <span class="c1"># Use skip-gram (1) vs CBOW (0)</span>
+    <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>          <span class="c1"># Parallel training threads</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>           <span class="c1"># Training epochs</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>             <span class="c1"># Reproducibility</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Trained embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding dimension: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">vector_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-extract-and-use-embeddings">
+<h3>Step 4: Extract and Use Embeddings<a class="headerlink" href="#step-4-extract-and-use-embeddings" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Get all node IDs</span>
+<span class="n">node_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">index_to_key</span><span class="p">)</span>
+
+<span class="c1"># Create embedding matrix</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">node_ids</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding matrix shape: </span><span class="si">{</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get embedding for a specific node</span>
+<span class="n">sample_node</span> <span class="o">=</span> <span class="n">node_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">node_embedding</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="n">sample_node</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding for </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">node_embedding</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">... (dim=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">node_embedding</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Find similar nodes</span>
+<span class="n">similar_nodes</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">most_similar</span><span class="p">(</span><span class="n">sample_node</span><span class="p">,</span> <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Most similar to </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">similarity</span> <span class="ow">in</span> <span class="n">similar_nodes</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-5-downstream-tasks">
+<h3>Step 5: Downstream Tasks<a class="headerlink" href="#step-5-downstream-tasks" title="Link to this heading"></a></h3>
+<p><strong>Node Clustering:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Cluster nodes based on embeddings</span>
+<span class="n">n_clusters</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">clusters</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+
+<span class="c1"># Assign clusters to nodes</span>
+<span class="n">node_clusters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">node_ids</span><span class="p">,</span> <span class="n">clusters</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster distribution:&quot;</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="k">for</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Cluster </span><span class="si">{</span><span class="n">cluster</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Node Classification:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">classification_report</span>
+
+<span class="c1"># Assume you have labels for nodes</span>
+<span class="c1"># labels = {node_id: label for node_id, label in your_label_data}</span>
+
+<span class="c1"># For demonstration, create synthetic labels based on layer</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">node_ids</span><span class="p">:</span>
+    <span class="c1"># Extract layer from node-layer tuple string representation</span>
+    <span class="c1"># Adjust this based on your actual node ID format</span>
+    <span class="k">if</span> <span class="s1">&#39;layer1&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">node_id</span><span class="p">):</span>
+        <span class="n">labels</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="s1">&#39;layer2&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">node_id</span><span class="p">):</span>
+        <span class="n">labels</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">labels</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># Prepare data</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">embeddings</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">labels</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">node_ids</span><span class="p">])</span>
+
+<span class="c1"># Train/test split</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Train classifier</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># Evaluate</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Classification accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Link Prediction:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">edge_embedding</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;hadamard&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute edge embedding from node embeddings.&quot;&quot;&quot;</span>
+    <span class="n">emb1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node1</span><span class="p">)]</span>
+    <span class="n">emb2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node2</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;hadamard&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">emb1</span> <span class="o">*</span> <span class="n">emb2</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;average&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">emb1</span> <span class="o">+</span> <span class="n">emb2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;concat&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">emb1</span><span class="p">,</span> <span class="n">emb2</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get existing edges (positive examples)</span>
+<span class="n">existing_edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">())[:</span><span class="mi">100</span><span class="p">]</span>  <span class="c1"># Sample for demo</span>
+
+<span class="c1"># Generate negative examples (non-edges)</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+<span class="n">negative_edges</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">negative_edges</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_edges</span><span class="p">):</span>
+    <span class="n">n1</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">))]</span>
+    <span class="n">n2</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">))]</span>
+    <span class="k">if</span> <span class="n">n1</span> <span class="o">!=</span> <span class="n">n2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">G</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">):</span>
+        <span class="n">negative_edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">))</span>
+
+<span class="c1"># Create training data</span>
+<span class="n">X_edges</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">y_edges</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">existing_edges</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">X_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge_embedding</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">y_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Positive</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># Skip if node not in vocabulary</span>
+
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">negative_edges</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">X_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge_embedding</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">y_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Negative</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="n">X_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X_edges</span><span class="p">)</span>
+<span class="n">y_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_edges</span><span class="p">)</span>
+
+<span class="c1"># Train link prediction model</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X_edges</span><span class="p">,</span> <span class="n">y_edges</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Link prediction accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-6-save-and-load-embeddings">
+<h3>Step 6: Save and Load Embeddings<a class="headerlink" href="#step-6-save-and-load-embeddings" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save embeddings in Word2Vec format</span>
+<span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">save_word2vec_format</span><span class="p">(</span><span class="s2">&quot;node_embeddings.txt&quot;</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Embeddings saved to node_embeddings.txt&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save as NumPy arrays (for sklearn compatibility)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;embedding_matrix.npy&quot;</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;node_ids.npy&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">node_ids</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Embeddings saved as NumPy arrays&quot;</span><span class="p">)</span>
+
+<span class="c1"># Load embeddings later</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gensim.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyedVectors</span>
+<span class="n">loaded_embeddings</span> <span class="o">=</span> <span class="n">KeyedVectors</span><span class="o">.</span><span class="n">load_word2vec_format</span><span class="p">(</span><span class="s2">&quot;node_embeddings.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loaded_embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="parameter-tuning-guide">
+<h2>Parameter Tuning Guide<a class="headerlink" href="#parameter-tuning-guide" title="Link to this heading"></a></h2>
+<section id="walk-length-guidelines">
+<h3>Walk Length Guidelines<a class="headerlink" href="#walk-length-guidelines" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Network Size</p></th>
+<th class="head"><p>walk_length</p></th>
+<th class="head"><p>Reasoning</p></th>
+<th class="head"><p>Trade-off</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Small (&lt;1K nodes)</p></td>
+<td><p>40-80</p></td>
+<td><p>Shorter walks sufficient</p></td>
+<td><p>Speed vs coverage</p></td>
+</tr>
+<tr class="row-odd"><td><p>Medium (1K-10K)</p></td>
+<td><p>80-120</p></td>
+<td><p>Standard choice</p></td>
+<td><p>Balanced</p></td>
+</tr>
+<tr class="row-even"><td><p>Large (&gt;10K)</p></td>
+<td><p>80-100</p></td>
+<td><p>Longer walks costly</p></td>
+<td><p>Memory/time vs quality</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule of thumb:</strong> <code class="docutils literal notranslate"><span class="pre">walk_length</span></code> should be at least 2-3× the network diameter.</p>
+</section>
+<section id="number-of-walks-guidelines">
+<h3>Number of Walks Guidelines<a class="headerlink" href="#number-of-walks-guidelines" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Task</p></th>
+<th class="head"><p>num_walks</p></th>
+<th class="head"><p>Reasoning</p></th>
+<th class="head"><p>Trade-off</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Exploration</p></td>
+<td><p>5-10</p></td>
+<td><p>Quick results</p></td>
+<td><p>Speed vs quality</p></td>
+</tr>
+<tr class="row-odd"><td><p>Standard</p></td>
+<td><p>10-20</p></td>
+<td><p>Good balance</p></td>
+<td><p>Recommended</p></td>
+</tr>
+<tr class="row-even"><td><p>High-quality</p></td>
+<td><p>20-50</p></td>
+<td><p>Better embeddings</p></td>
+<td><p>Time vs quality</p></td>
+</tr>
+<tr class="row-odd"><td><p>Research</p></td>
+<td><p>50-100</p></td>
+<td><p>Maximum quality</p></td>
+<td><p>Very slow</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule of thumb:</strong> More walks = better embeddings, but with diminishing returns after ~20.</p>
+</section>
+<section id="p-and-q-parameter-effects">
+<h3>P and Q Parameter Effects<a class="headerlink" href="#p-and-q-parameter-effects" title="Link to this heading"></a></h3>
+<p>The p and q parameters control the walk’s exploration behavior:</p>
+<p><strong>Return parameter p:</strong></p>
+<ul class="simple">
+<li><p><strong>p &lt; 1:</strong> More likely to backtrack (return to previous node)</p>
+<ul>
+<li><p>Use when: Local structure is important; you want to capture tight clusters</p></li>
+</ul>
+</li>
+<li><p><strong>p = 1:</strong> Balanced (equivalent to basic random walk for backtracking)</p>
+<ul>
+<li><p>Use when: No prior about network structure</p></li>
+</ul>
+</li>
+<li><p><strong>p &gt; 1:</strong> Less likely to backtrack (move forward)</p>
+<ul>
+<li><p>Use when: You want walks to explore broadly</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>In-out parameter q:</strong></p>
+<ul class="simple">
+<li><p><strong>q &lt; 1:</strong> More likely to explore distant nodes (DFS-like)</p>
+<ul>
+<li><p>Use when: You want to capture global structure, find communities</p></li>
+</ul>
+</li>
+<li><p><strong>q = 1:</strong> Balanced exploration</p>
+<ul>
+<li><p>Use when: No prior about network structure</p></li>
+</ul>
+</li>
+<li><p><strong>q &gt; 1:</strong> More likely to stay in local neighborhood (BFS-like)</p>
+<ul>
+<li><p>Use when: You want to capture local structure, homophily</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Common presets:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Local/homophily-focused (similar to BFS)</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span>
+
+<span class="c1"># Global/structural (similar to DFS)</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span>
+
+<span class="c1"># Balanced (DeepWalk-like)</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
+
+<span class="c1"># Strong local focus</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span>
+
+<span class="c1"># Strong exploration</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="common-failure-modes">
+<h2>Common Failure Modes<a class="headerlink" href="#common-failure-modes" title="Link to this heading"></a></h2>
+<section id="disconnected-graph">
+<h3>Disconnected Graph<a class="headerlink" href="#disconnected-graph" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Walk gets stuck or terminates early because node has no neighbors.</p>
+<p><strong>Symptoms:</strong></p>
+<ul class="simple">
+<li><p>Walks shorter than expected</p></li>
+<li><p>Some nodes never appear in walks</p></li>
+<li><p>Embeddings missing for some nodes</p></li>
+</ul>
+<p><strong>Solutions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Check connectivity</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Graph is disconnected!&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Option 1: Use largest connected component</span>
+    <span class="n">largest_cc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+    <span class="n">G_connected</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">largest_cc</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Option 2: Add small random edges to connect components</span>
+    <span class="c1"># (use with caution - changes graph structure)</span>
+</pre></div>
+</div>
+</section>
+<section id="highly-skewed-degree-distribution">
+<h3>Highly Skewed Degree Distribution<a class="headerlink" href="#highly-skewed-degree-distribution" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> High-degree hub nodes dominate walks; low-degree nodes underrepresented.</p>
+<p><strong>Symptoms:</strong></p>
+<ul class="simple">
+<li><p>Most walks pass through the same few nodes</p></li>
+<li><p>Embeddings for peripheral nodes are poor quality</p></li>
+<li><p>Similarity to hub nodes is overestimated</p></li>
+</ul>
+<p><strong>Solutions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Option 1: Use more walks per node</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Option 2: Add node-specific walks for low-degree nodes</span>
+<span class="n">low_degree_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">extra_walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">start_nodes</span><span class="o">=</span><span class="n">low_degree_nodes</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+<span class="n">walks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extra_walks</span><span class="p">)</span>
+
+<span class="c1"># Option 3: Use weighted walks that downweight high-degree nodes</span>
+<span class="c1"># (requires custom implementation)</span>
+</pre></div>
+</div>
+</section>
+<section id="isolated-nodes">
+<h3>Isolated Nodes<a class="headerlink" href="#isolated-nodes" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Nodes with degree 0 cannot be walked from.</p>
+<p><strong>Symptoms:</strong></p>
+<ul class="simple">
+<li><p>KeyError when looking up embeddings</p></li>
+<li><p>Missing nodes in similarity queries</p></li>
+</ul>
+<p><strong>Solutions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remove isolated nodes before generating walks</span>
+<span class="n">isolated</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">isolates</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+<span class="n">G_filtered</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">G_filtered</span><span class="o">.</span><span class="n">remove_nodes_from</span><span class="p">(</span><span class="n">isolated</span><span class="p">)</span>
+
+<span class="c1"># Generate walks on filtered graph</span>
+<span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">G_filtered</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Handle isolated nodes separately (e.g., assign zero embedding)</span>
+</pre></div>
+</div>
+</section>
+<section id="very-small-graph">
+<h3>Very Small Graph<a class="headerlink" href="#very-small-graph" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> With few nodes, walks become repetitive quickly.</p>
+<p><strong>Symptoms:</strong></p>
+<ul class="simple">
+<li><p>Walks cycle through the same nodes repeatedly</p></li>
+<li><p>All nodes have similar embeddings</p></li>
+<li><p>Poor discriminative power</p></li>
+</ul>
+<p><strong>Solutions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use shorter walks for small graphs</span>
+<span class="k">if</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+    <span class="n">walk_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Use fewer walks (avoid redundancy)</span>
+<span class="n">num_walks</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">())</span>
+
+<span class="c1"># Consider direct matrix-based methods for very small graphs</span>
+<span class="c1"># (spectral embeddings, Laplacian eigenvectors)</span>
+</pre></div>
+</div>
+</section>
+<section id="memory-issues-with-large-graphs">
+<h3>Memory Issues with Large Graphs<a class="headerlink" href="#memory-issues-with-large-graphs" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Storing all walks in memory causes OOM errors.</p>
+<p><strong>Symptoms:</strong></p>
+<ul class="simple">
+<li><p>MemoryError during walk generation</p></li>
+<li><p>System becomes unresponsive</p></li>
+</ul>
+<p><strong>Solutions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Option 1: Generate walks in batches</span>
+<span class="n">all_walks</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
+    <span class="n">batch_nodes</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="p">]</span>
+    <span class="n">batch_walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span>
+        <span class="n">G</span><span class="p">,</span>
+        <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+        <span class="n">start_nodes</span><span class="o">=</span><span class="n">batch_nodes</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="o">+</span><span class="n">i</span>
+    <span class="p">)</span>
+    <span class="n">all_walks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_walks</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+
+<span class="c1"># Option 2: Stream walks directly to Word2Vec</span>
+<span class="c1"># (requires custom iterator implementation)</span>
+
+<span class="c1"># Option 3: Use disk-based storage</span>
+<span class="c1"># Write walks to file, then load for training</span>
 </pre></div>
 </div>
 </section>

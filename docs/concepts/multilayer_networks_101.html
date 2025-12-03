@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="py3plex Core Model" href="py3plex_core_model.html" />
-    <link rel="prev" title="Common Issues and Troubleshooting" href="../getting_started/common_issues.html" /> 
+    <link rel="prev" title="Concepts &amp; Architecture: Understanding the Foundations" href="part_intro.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,6 +45,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
@@ -52,32 +53,45 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Multilayer Networks 101</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#a-story-of-overlooked-complexity">A Story of Overlooked Complexity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-are-multilayer-networks">What are Multilayer Networks?</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#traditional-vs-multilayer">Traditional vs. Multilayer</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#types-of-multilayer-networks">Types of Multilayer Networks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#multiplex-networks">Multiplex Networks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#heterogeneous-networks-hins">Heterogeneous Networks (HINs)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#temporal-networks">Temporal Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#heterogeneous-information-networks-hins">Heterogeneous Information Networks (HINs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#temporal-multilayer-networks">Temporal Multilayer Networks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#interdependent-networks">Interdependent Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#temporal-networks">Temporal Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Interdependent Networks</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#when-to-use-multilayer-networks">When to Use Multilayer Networks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#comparison-with-single-layer-approaches">Comparison with Single-Layer Approaches</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#why-not-just-aggregate">Why Not Just Aggregate?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#why-not-analyze-each-layer-separately">Why Not Analyze Each Layer Separately?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#choosing-a-modeling-approach">Choosing a Modeling Approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-goes-wrong-when-you-flatten">What Goes Wrong When You Flatten</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-flattening-destroys-community-structure">Example: Flattening Destroys Community Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-centrality-becomes-misleading">Example: Centrality Becomes Misleading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-path-analysis-fails">Example: Path Analysis Fails</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#key-concepts">Key Concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#domain-specific-examples">Domain-Specific Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#biological-networks">Biological Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#social-networks">Social Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transportation-and-infrastructure">Transportation and Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#knowledge-graphs">Knowledge Graphs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-pitfalls-when-modeling-multilayer-networks">Common Pitfalls When Modeling Multilayer Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-concepts-summary">Key Concepts Summary</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#intra-layer-edges">Intra-Layer Edges</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#inter-layer-edges">Inter-Layer Edges</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#node-layer-pairs">Node-Layer Pairs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supra-adjacency-matrix">Supra-Adjacency Matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#real-world-applications">Real-World Applications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#further-reading">Further Reading</a></li>
 </ul>
 </li>
@@ -87,21 +101,27 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment: Taking It to Production</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Visual Exploration for Everyone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
@@ -110,6 +130,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs: Building Together</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
@@ -117,10 +138,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples: Learning by Doing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">Reference &amp; Citation: The Complete Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
@@ -152,10 +175,28 @@
              
   <section id="multilayer-networks-101">
 <h1>Multilayer Networks 101<a class="headerlink" href="#multilayer-networks-101" title="Link to this heading"></a></h1>
-<p>This guide explains what multilayer networks are and why they matter for modern network analysis.</p>
+<p><em>“Everything should be made as simple as possible, but not simpler.”</em> — Albert Einstein</p>
+<p>This chapter provides a conceptual foundation for understanding multilayer networks—what they are, why they matter, and when to use them. By the end, you’ll have the intuition needed to model your own systems as multilayer networks and understand why py3plex exists.</p>
+<section id="a-story-of-overlooked-complexity">
+<h2>A Story of Overlooked Complexity<a class="headerlink" href="#a-story-of-overlooked-complexity" title="Link to this heading"></a></h2>
+<p>In 2005, a group of researchers studied disease spread in a hospital. They modeled patient-healthcare worker contacts as a single network and simulated how infections might propagate. Their model predicted rapid hospital-wide spread within days.</p>
+<p>The actual outbreak took weeks. Why the discrepancy?</p>
+<p>The researchers had missed something: not all contacts are equal. Brief hallway encounters, extended bedside care, and administrative meetings create very different transmission opportunities. When they rebuilt their model with these contact types as separate layers—each with appropriate transmission probabilities—predictions matched reality.</p>
+<p>This is the core insight of multilayer network analysis: <strong>real-world systems have structure that matters, and flattening it away loses information that affects your conclusions.</strong></p>
+</section>
 <section id="what-are-multilayer-networks">
 <h2>What are Multilayer Networks?<a class="headerlink" href="#what-are-multilayer-networks" title="Link to this heading"></a></h2>
 <p>A <strong>multilayer network</strong> is a complex network structure that goes beyond traditional single-layer graphs by incorporating multiple types of relationships, node types, or interaction contexts. They model the reality that most real-world systems involve multiple, interconnected types of relationships.</p>
+<p>Consider a simple question: how do you model the social world of a university researcher? They have:</p>
+<ul class="simple">
+<li><p><strong>Coauthors</strong> — people they’ve written papers with</p></li>
+<li><p><strong>Colleagues</strong> — people in their department</p></li>
+<li><p><strong>Students</strong> — people they mentor</p></li>
+<li><p><strong>Conference contacts</strong> — people they’ve met at workshops</p></li>
+<li><p><strong>Twitter followers</strong> — an entirely different mode of interaction</p></li>
+</ul>
+<p>A traditional graph might combine all of these into a single “social network,” but that loses critical information. The coauthor relationship implies deep collaboration; a Twitter follow implies much less. When you flatten everything into one edge type, you can’t distinguish these—and your analysis suffers.</p>
+<p>Multilayer networks preserve this richness. Each relationship type becomes a <strong>layer</strong>, and the same person can appear in multiple layers with different connection patterns in each.</p>
 <section id="traditional-vs-multilayer">
 <h3>Traditional vs. Multilayer<a class="headerlink" href="#traditional-vs-multilayer" title="Link to this heading"></a></h3>
 <p><strong>Traditional (Single-Layer) Networks:</strong></p>
@@ -164,6 +205,7 @@
 <li><p>One type of edge (e.g., only friendship)</p></li>
 <li><p>Homogeneous structure</p></li>
 <li><p>Limited ability to model complex systems</p></li>
+<li><p>What NetworkX and most tools assume by default</p></li>
 </ul>
 <p><strong>Multilayer Networks:</strong></p>
 <ul class="simple">
@@ -172,12 +214,13 @@
 <li><p>Multiple layers of interaction</p></li>
 <li><p>Inter-layer and intra-layer connections</p></li>
 <li><p>Rich, heterogeneous structure</p></li>
+<li><p>What py3plex is designed to handle</p></li>
 </ul>
 </section>
 </section>
 <section id="types-of-multilayer-networks">
 <h2>Types of Multilayer Networks<a class="headerlink" href="#types-of-multilayer-networks" title="Link to this heading"></a></h2>
-<p>py3plex supports several common multilayer network paradigms:</p>
+<p>py3plex supports several common multilayer network paradigms. Understanding which type matches your data is the first modeling decision you’ll make.</p>
 <section id="multiplex-networks">
 <h3>Multiplex Networks<a class="headerlink" href="#multiplex-networks" title="Link to this heading"></a></h3>
 <p><strong>Definition:</strong> Multiple layers with the <strong>same set of nodes</strong> but different types of edges.</p>
@@ -185,22 +228,29 @@
 <ul class="simple">
 <li><p>Node set is identical across layers</p></li>
 <li><p>Each layer represents a different relationship type</p></li>
-<li><p>Inter-layer edges typically connect the same node across layers</p></li>
+<li><p>Inter-layer edges typically connect the same node across layers (identity coupling)</p></li>
 </ul>
-<p><strong>Examples:</strong></p>
-<ul class="simple">
-<li><p><strong>Social networks:</strong> The same people connected via friendship, colleague, and family relationships</p></li>
-<li><p><strong>Transportation:</strong> Cities connected via air, rail, and road networks</p></li>
-<li><p><strong>Communication:</strong> Users interacting via email, phone, and instant messaging</p></li>
-</ul>
-<p><strong>Visual representation:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer 1 (Friends):        Layer 2 (Colleagues):
-A --- B --- C             A --- B
-  \   |                       |
-    \ |                       D
-      D
+<p><strong>Toy Example:</strong></p>
+<p>Consider Alice, Bob, Carol, and Dave. They have two types of relationships: friendship and professional collaboration.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer 1 (Friends):          Layer 2 (Colleagues):
+
+Alice ---- Bob              Alice ---- Bob
+   \       |                          |
+    \      |                          |
+     Carol |                         Dave
+           |
+          Dave (not in L1)
+
+Friends: Alice-Bob, Bob-Carol
+Colleagues: Alice-Bob, Bob-Dave
 </pre></div>
 </div>
+<p>Notice that Alice-Bob is an edge in <em>both</em> layers—they’re both friends and colleagues. Carol only appears in the friends layer; Dave only in colleagues. In a multiplex analysis, we’d observe that:</p>
+<ul class="simple">
+<li><p>Alice and Bob have <strong>high activity</strong> (appear in both layers)</p></li>
+<li><p>Carol and Dave have <strong>low activity</strong> (appear in one layer each)</p></li>
+<li><p>The friends and colleagues layers have <strong>partial overlap</strong> (Alice-Bob edge exists in both)</p></li>
+</ul>
 <p><strong>Code example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
@@ -209,35 +259,152 @@ A --- B --- C             A --- B
 <span class="c1"># Same nodes, different relationship types</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
     <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
     <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Real-world examples:</strong></p>
+<ul class="simple">
+<li><p><strong>Social networks:</strong> The same people connected via friendship, colleague, and family relationships</p></li>
+<li><p><strong>Transportation:</strong> Cities connected via air, rail, and road networks</p></li>
+<li><p><strong>Communication:</strong> Users interacting via email, phone, and instant messaging</p></li>
+</ul>
 </section>
-<section id="heterogeneous-networks-hins">
-<h3>Heterogeneous Networks (HINs)<a class="headerlink" href="#heterogeneous-networks-hins" title="Link to this heading"></a></h3>
+<section id="heterogeneous-information-networks-hins">
+<h3>Heterogeneous Information Networks (HINs)<a class="headerlink" href="#heterogeneous-information-networks-hins" title="Link to this heading"></a></h3>
 <p><strong>Definition:</strong> Networks with <strong>different node types</strong> and type-specific relationships.</p>
 <p><strong>Characteristics:</strong></p>
 <ul class="simple">
 <li><p>Multiple node types (e.g., authors, papers, venues)</p></li>
-<li><p>Edges connect nodes of specific types</p></li>
-<li><p>Meta-paths describe relationship sequences</p></li>
+<li><p>Edges connect nodes of specific types (authors write papers; papers are published in venues)</p></li>
+<li><p>Meta-paths describe relationship sequences (Author → Paper → Venue → Paper → Author)</p></li>
 </ul>
-<p><strong>Examples:</strong></p>
-<ul class="simple">
-<li><p><strong>Academic networks:</strong> Authors write papers published in venues</p></li>
-<li><p><strong>E-commerce:</strong> Users purchase products from sellers</p></li>
-<li><p><strong>Biomedical:</strong> Drugs treat diseases via molecular targets</p></li>
-</ul>
-<p><strong>Visual representation:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Authors       Papers        Venues
-[Alice] ----&gt; [P1] --------&gt; [ICML]
-   |           ^               ^
-   |           |               |
-   +---------&gt; [P2] -----------+
-[Bob]
+<p><strong>Toy Example:</strong></p>
+<p>An academic citation network with three node types:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Authors           Papers            Venues
+
+[Alice] ----writes----&gt; [P1] ----published_in----&gt; [ICML]
+   |                      ^                           ^
+   |                      |                           |
+   +----writes----&gt; [P2] ----published_in-------------+
+[Bob] ----writes----&gt; [P2]
 </pre></div>
 </div>
+<p>Alice wrote papers P1 and P2. Bob co-authored P2. P1 appeared at ICML; P2 also appeared at ICML. This structure lets us answer questions like:</p>
+<ul class="simple">
+<li><p>“Which authors have published at ICML?” (follow Author→Paper→Venue)</p></li>
+<li><p>“Which authors are likely collaborators?” (Author→Paper→Author meta-path)</p></li>
+<li><p>“Which venues publish similar work?” (Venue→Paper→Author→Paper→Venue)</p></li>
+</ul>
+<p><strong>Code example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Different node types on different layers</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;P2&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;P2&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">,</span> <span class="s1">&#39;venues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;P2&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">,</span> <span class="s1">&#39;venues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Real-world examples:</strong></p>
+<ul class="simple">
+<li><p><strong>Academic networks:</strong> Authors write papers published in venues</p></li>
+<li><p><strong>E-commerce:</strong> Users purchase products from sellers in categories</p></li>
+<li><p><strong>Biomedical:</strong> Drugs treat diseases via molecular targets</p></li>
+</ul>
+</section>
+<section id="temporal-multilayer-networks">
+<h3>Temporal Multilayer Networks<a class="headerlink" href="#temporal-multilayer-networks" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Networks that <strong>evolve over time</strong>, with time-sliced layers.</p>
+<p><strong>Characteristics:</strong></p>
+<ul class="simple">
+<li><p>Each layer represents a time period (year, month, day)</p></li>
+<li><p>Nodes may appear/disappear over time</p></li>
+<li><p>Edges show relationships at specific times</p></li>
+<li><p>Inter-layer edges can connect temporal states (same node in adjacent time periods)</p></li>
+</ul>
+<p><strong>Toy Example:</strong></p>
+<p>A friendship network evolving over three years:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Year 2020:           Year 2021:           Year 2022:
+
+A ---- B             A ---- B             A ---- B ---- E
+       |                   |                     |
+       C                   C ---- D               C ---- D
+</pre></div>
+</div>
+<p>In 2020, only A-B and B-C edges exist. By 2021, C-D appears. By 2022, B-E appears and the network has grown. Temporal analysis reveals:</p>
+<ul class="simple">
+<li><p>A-B is a <strong>persistent edge</strong> (exists in all time periods)</p></li>
+<li><p>B-E is a <strong>new edge</strong> (appears in 2022)</p></li>
+<li><p>The network is <strong>growing</strong> over time</p></li>
+</ul>
+<p><strong>Code example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Different time periods as layers</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Real-world examples:</strong></p>
+<ul class="simple">
+<li><p><strong>Communication networks:</strong> Who-contacts-whom over different time periods</p></li>
+<li><p><strong>Social dynamics:</strong> Friendship evolution over years</p></li>
+<li><p><strong>Disease spread:</strong> Contact networks during epidemic progression</p></li>
+</ul>
+</section>
+<section id="interdependent-networks">
+<h3>Interdependent Networks<a class="headerlink" href="#interdependent-networks" title="Link to this heading"></a></h3>
+<p><strong>Definition:</strong> Multiple networks where <strong>nodes in one network depend on nodes in another</strong>.</p>
+<p><strong>Characteristics:</strong></p>
+<ul class="simple">
+<li><p>Networks with distinct functions (power grid, communication network)</p></li>
+<li><p>Dependencies between networks (power station needs communication to operate)</p></li>
+<li><p>Cascading failures possible (communication failure → power failure → more communication failures)</p></li>
+<li><p>Critical for infrastructure modeling</p></li>
+</ul>
+<p><strong>Toy Example:</strong></p>
+<p>A simplified power grid + communication network:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Power Grid:               Communication Network:
+
+[P1] ---- [P2] ---- [P3]       [C1] ---- [C2] ---- [C3]
+  |         |                    |          |
+  |    depends on                |     depends on
+  |         |                    |          |
+  v         v                    v          v
+[C1]      [C2]                 [P1]       [P2]
+</pre></div>
+</div>
+<p>Power station P1 needs communication node C1 to operate (for control signals). Communication node C1 needs power from P1. This creates a dependency loop. If C1 fails:</p>
+<ol class="arabic simple">
+<li><p>P1 loses control signals and may fail</p></li>
+<li><p>C1 loses power anyway (was depending on P1)</p></li>
+<li><p>This can cascade to other dependent nodes</p></li>
+</ol>
+<p><strong>Real-world examples:</strong></p>
+<ul class="simple">
+<li><p><strong>Infrastructure:</strong> Power grid depends on communication network (and vice versa)</p></li>
+<li><p><strong>Supply chain:</strong> Manufacturing depends on logistics network</p></li>
+<li><dl class="simple">
+<dt><strong>Cyber-physical systems:</strong> Software layer depends on hardware layer</dt><dd><p>[Bob]</p>
+</dd>
+</dl>
+</li>
+</ul>
 <p><strong>Code example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
@@ -291,8 +458,8 @@ t=3: A --- B --- C --- E
 </pre></div>
 </div>
 </section>
-<section id="interdependent-networks">
-<h3>Interdependent Networks<a class="headerlink" href="#interdependent-networks" title="Link to this heading"></a></h3>
+<section id="id1">
+<h3>Interdependent Networks<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p><strong>Definition:</strong> Multiple networks where <strong>nodes in one network depend on nodes in another</strong>.</p>
 <p><strong>Characteristics:</strong></p>
 <ul class="simple">
@@ -324,60 +491,213 @@ Depends on            C4      |
 <p>Use multilayer networks when:</p>
 <p><strong>1. Multiple Relationship Types Matter</strong></p>
 <p>If your system has multiple types of connections that interact, a multilayer model is essential.</p>
-<p><em>Example:</em> Studying information diffusion in social networks where both online and offline relationships matter.</p>
+<p><em>Example:</em> Studying information diffusion in social networks where both online and offline relationships matter. Information might spread quickly through Twitter (one layer) but trust is built through face-to-face interactions (another layer). A model that conflates these misses how online virality depends on offline trust networks.</p>
 <p><strong>2. Node Roles Vary by Context</strong></p>
 <p>When nodes play different roles in different contexts or layers.</p>
-<p><em>Example:</em> A person might be central in their work network but peripheral in their hobby network.</p>
+<p><em>Example:</em> A person might be a hub in their work network (many professional connections) but peripheral in their hobby network (few connections to fellow hobbyists). If you aggregate, you see only their overall degree—you miss that their influence is context-specific.</p>
 <p><strong>3. Layer Interactions Are Important</strong></p>
 <p>When understanding how layers interact is crucial to your analysis.</p>
-<p><em>Example:</em> How transportation failures in one mode (air) affect alternatives (rail, road).</p>
+<p><em>Example:</em> How transportation failures in one mode (air travel) affect alternatives (rail, road). During an airport closure, passenger flow shifts to other modes. Modeling this requires inter-layer dependencies, not just separate single-layer analyses.</p>
 <p><strong>4. Temporal Evolution Matters</strong></p>
 <p>When the timing and sequence of relationships are important.</p>
-<p><em>Example:</em> Understanding how community structure evolves over time in a social network.</p>
+<p><em>Example:</em> Understanding how community structure evolves over time in a social network. A friendship that existed in 2020 but not 2021 tells a different story than a friendship that exists in all years. Temporal layers capture this evolution.</p>
 <p><strong>5. System-Level Properties Emerge</strong></p>
 <p>When whole-system properties can’t be understood by analyzing layers independently.</p>
-<p><em>Example:</em> Resilience of infrastructure systems depends on cross-layer dependencies.</p>
+<p><em>Example:</em> Resilience of infrastructure systems depends on cross-layer dependencies. A city’s power grid might be robust in isolation, but if it depends on a fragile communication network, the system as a whole is fragile.</p>
 </section>
-<section id="comparison-with-single-layer-approaches">
-<h2>Comparison with Single-Layer Approaches<a class="headerlink" href="#comparison-with-single-layer-approaches" title="Link to this heading"></a></h2>
-<section id="why-not-just-aggregate">
-<h3>Why Not Just Aggregate?<a class="headerlink" href="#why-not-just-aggregate" title="Link to this heading"></a></h3>
-<p>You might ask: “Why not just combine all layers into one network?”</p>
-<p><strong>Problems with aggregation:</strong></p>
-<ol class="arabic simple">
-<li><p><strong>Loss of Information:</strong> Different relationship types get conflated</p></li>
-<li><p><strong>Misleading Metrics:</strong> Centrality computed on aggregated network can be wrong</p></li>
-<li><p><strong>Hidden Patterns:</strong> Layer-specific patterns are lost</p></li>
-<li><p><strong>Incorrect Analysis:</strong> Communities and pathways depend on layer structure</p></li>
-</ol>
-<p><strong>Example:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># DON&#39;T: Naive aggregation loses information</span>
-<span class="n">all_edges</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">all_edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">friends_edges</span><span class="p">)</span>
-<span class="n">all_edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">colleague_edges</span><span class="p">)</span>
-<span class="n">single_layer</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">all_edges</span><span class="p">)</span>  <span class="c1"># Information about edge types lost!</span>
+<section id="choosing-a-modeling-approach">
+<h2>Choosing a Modeling Approach<a class="headerlink" href="#choosing-a-modeling-approach" title="Link to this heading"></a></h2>
+<p>Before building your multilayer network, ask yourself these questions:</p>
+<p><strong>Decision 1: Are layers truly distinct, or are they attributes?</strong></p>
+<ul class="simple">
+<li><p>If relationships have different <em>types</em> (friendship vs. professional) → Use <strong>layers</strong></p></li>
+<li><p>If relationships vary only in <em>weight</em> or <em>time</em> → Consider edge <strong>attributes</strong> instead</p></li>
+<li><p>Rule of thumb: If you’d naturally analyze them separately, they’re layers</p></li>
+</ul>
+<p><strong>Decision 2: Same nodes across layers, or different nodes?</strong></p>
+<ul class="simple">
+<li><p>Same entities in all layers → <strong>Multiplex</strong> (e.g., same people on different platforms)</p></li>
+<li><p>Different entity types → <strong>Heterogeneous</strong> (e.g., authors, papers, venues)</p></li>
+<li><p>Same entities but some missing → <strong>General multilayer</strong> with identity coupling</p></li>
+</ul>
+<p><strong>Decision 3: How strong is inter-layer coupling?</strong></p>
+<ul class="simple">
+<li><p>Identity coupling only (same node = same node) → Set <code class="docutils literal notranslate"><span class="pre">omega=1.0</span></code> in algorithms</p></li>
+<li><p>Nodes can differ across layers → Lower omega or explicit inter-layer edges</p></li>
+<li><p>No coupling (analyze layers independently) → Consider separate single-layer analyses</p></li>
+</ul>
+<p><strong>Decision 4: Is temporal structure important?</strong></p>
+<ul class="simple">
+<li><p>Yes → Create time-sliced layers (e.g., one layer per month/year)</p></li>
+<li><p>No → Aggregate across time into a single static network per relationship type</p></li>
+</ul>
+</section>
+<section id="what-goes-wrong-when-you-flatten">
+<h2>What Goes Wrong When You Flatten<a class="headerlink" href="#what-goes-wrong-when-you-flatten" title="Link to this heading"></a></h2>
+<p>To truly understand why multilayer networks matter, consider what goes wrong when you ignore layer structure.</p>
+<section id="example-flattening-destroys-community-structure">
+<h3>Example: Flattening Destroys Community Structure<a class="headerlink" href="#example-flattening-destroys-community-structure" title="Link to this heading"></a></h3>
+<p>Consider a simple network with two layers:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer 1 (Work):                 Layer 2 (Hobby):
 
-<span class="c1"># DO: Use multilayer representation</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">friends_edges</span> <span class="o">+</span> <span class="n">colleague_edges</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+A ---- B ---- C                 D ---- E ---- F
+
+(A, B, C are work colleagues)   (D, E, F share a hobby)
 </pre></div>
 </div>
+<p>In the true multilayer view, there are two distinct communities: the work group {A, B, C} and the hobby group {D, E, F}. Now imagine A and D are the same person (they just appear in different contexts):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Flattened Network:
+
+A ---- B ---- C
+|
+E ---- F
+
+(A=D connects the two groups)
+</pre></div>
+</div>
+<p>Community detection on the flattened network might merge these into one community, because A bridges them. But this is misleading—A doesn’t actually connect their work colleagues to their hobby friends. The edge A-E only exists <em>within the hobby context</em>. Flattening created a spurious bridge.</p>
+<p><strong>In py3plex:</strong> By keeping layers separate, multilayer community detection correctly identifies two communities, with A participating in both.</p>
 </section>
-<section id="why-not-analyze-each-layer-separately">
-<h3>Why Not Analyze Each Layer Separately?<a class="headerlink" href="#why-not-analyze-each-layer-separately" title="Link to this heading"></a></h3>
-<p>You might ask: “Why not just analyze each layer independently?”</p>
-<p><strong>Problems with separate analysis:</strong></p>
-<ol class="arabic simple">
-<li><p><strong>Ignores Cross-Layer Effects:</strong> Nodes may be important because of multi-layer presence</p></li>
-<li><p><strong>Misses Inter-Layer Patterns:</strong> Communities often span multiple layers</p></li>
-<li><p><strong>Incomplete View:</strong> Node importance depends on cross-layer activity</p></li>
-<li><p><strong>Lost Synergies:</strong> Complementary information across layers is ignored</p></li>
-</ol>
-<p><strong>Example:</strong> A person who is moderately connected in multiple social contexts may be more influential than someone highly connected in just one context.</p>
+<section id="example-centrality-becomes-misleading">
+<h3>Example: Centrality Becomes Misleading<a class="headerlink" href="#example-centrality-becomes-misleading" title="Link to this heading"></a></h3>
+<p>Consider a researcher who:</p>
+<ul class="simple">
+<li><p>Has 2 coauthors (layer 1: coauthorship)</p></li>
+<li><p>Has 500 Twitter followers (layer 2: social media)</p></li>
+</ul>
+<p>In a flattened network, this researcher has degree 502. In a degree-centrality ranking, they appear highly central. But this is misleading—their academic influence (measured by coauthorship) is minimal. Their “centrality” comes entirely from a different domain (social media).</p>
+<p><strong>In py3plex:</strong> Layer-specific centrality shows 2 in coauthorship, 500 in social media. Versatility centrality accounts for cross-layer participation without conflating different types of connections.</p>
+</section>
+<section id="example-path-analysis-fails">
+<h3>Example: Path Analysis Fails<a class="headerlink" href="#example-path-analysis-fails" title="Link to this heading"></a></h3>
+<p>Consider trying to find how information might flow from Alice to Dave:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer 1 (Email):        Layer 2 (Meeting):
+Alice ---- Bob          Bob ---- Carol
+                        Carol ---- Dave
+</pre></div>
+</div>
+<p>The true path is: Alice → Bob (email) → Bob transitions to meeting context → Carol (meeting) → Dave (meeting).</p>
+<p>In a flattened network, you might see Alice → Bob → Carol → Dave as a single path, but this obscures the crucial fact that the information had to <em>change modalities</em> (from email to meeting). This matters if, say, confidential information can only travel through secure channels.</p>
+<p><strong>In py3plex:</strong> Paths can be analyzed with layer constraints or meta-path patterns that respect modal transitions.</p>
 </section>
 </section>
-<section id="key-concepts">
-<h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
+<section id="domain-specific-examples">
+<h2>Domain-Specific Examples<a class="headerlink" href="#domain-specific-examples" title="Link to this heading"></a></h2>
+<section id="biological-networks">
+<h3>Biological Networks<a class="headerlink" href="#biological-networks" title="Link to this heading"></a></h3>
+<p><strong>Protein-Protein Interaction Networks with Evidence Types</strong></p>
+<p>Proteins interact through various mechanisms, and we learn about these interactions through different experimental methods. Each evidence type has different reliability:</p>
+<ul class="simple">
+<li><p><strong>Experimental evidence</strong> (yeast two-hybrid, co-immunoprecipitation): High confidence</p></li>
+<li><p><strong>Computational prediction</strong> (sequence similarity, domain interactions): Lower confidence</p></li>
+<li><p><strong>Text mining</strong> (extracted from literature): Variable confidence</p></li>
+</ul>
+<p>Modeling this as a multilayer network:</p>
+<ul class="simple">
+<li><p>Layer 1: Experimental interactions</p></li>
+<li><p>Layer 2: Predicted interactions</p></li>
+<li><p>Layer 3: Text-mined interactions</p></li>
+</ul>
+<p><strong>Why multilayer matters:</strong> A protein pair connected in all three layers is much more likely to truly interact than one connected only by text mining. Aggregating would lose this confidence information.</p>
+<p><strong>Gene Regulatory Networks</strong></p>
+<p>Genes regulate each other through multiple mechanisms:</p>
+<ul class="simple">
+<li><p><strong>Transcriptional regulation</strong> (transcription factors binding promoters)</p></li>
+<li><p><strong>Post-transcriptional regulation</strong> (microRNAs targeting mRNAs)</p></li>
+<li><p><strong>Epigenetic regulation</strong> (chromatin modification affecting expression)</p></li>
+</ul>
+<p>Each mechanism operates at different timescales and has different effects. A multilayer model captures this heterogeneity.</p>
+</section>
+<section id="social-networks">
+<h3>Social Networks<a class="headerlink" href="#social-networks" title="Link to this heading"></a></h3>
+<p><strong>Multi-Platform Analysis</strong></p>
+<p>Users interact across platforms with very different characteristics:</p>
+<ul class="simple">
+<li><p><strong>Twitter/X:</strong> Public, broadcast, rapid, shallow interactions</p></li>
+<li><p><strong>Facebook:</strong> Semi-private, friendship-based, richer interactions</p></li>
+<li><p><strong>LinkedIn:</strong> Professional, career-oriented, formal interactions</p></li>
+<li><p><strong>WhatsApp:</strong> Private, group-based, intimate interactions</p></li>
+</ul>
+<p>The same person may be an influencer on Twitter but invisible on LinkedIn. Platform-specific analysis misses cross-platform patterns; aggregation loses context.</p>
+<p><strong>Relationship Type Analysis</strong></p>
+<p>Within a single platform, relationships vary:</p>
+<ul class="simple">
+<li><p><strong>Friends:</strong> Bidirectional, social</p></li>
+<li><p><strong>Followers:</strong> Unidirectional, interest-based</p></li>
+<li><p><strong>Mentions:</strong> Ephemeral, attention-based</p></li>
+<li><p><strong>Retweets:</strong> Content amplification</p></li>
+</ul>
+<p>A multilayer model reveals how influence flows through different channel types.</p>
+</section>
+<section id="transportation-and-infrastructure">
+<h3>Transportation and Infrastructure<a class="headerlink" href="#transportation-and-infrastructure" title="Link to this heading"></a></h3>
+<p><strong>Multi-Modal Transportation</strong></p>
+<p>Urban mobility involves multiple modes:</p>
+<ul class="simple">
+<li><p><strong>Metro/Subway:</strong> High capacity, fixed routes, high speed</p></li>
+<li><p><strong>Bus:</strong> Lower capacity, flexible routes, variable speed</p></li>
+<li><p><strong>Bike-sharing:</strong> Individual, flexible, weather-dependent</p></li>
+<li><p><strong>Walking:</strong> Universal, slow, connects everything</p></li>
+</ul>
+<p>Travelers make multi-modal trips: walk to metro, metro to city center, bike to final destination. Modeling as a multilayer network enables:</p>
+<ul class="simple">
+<li><p>Route optimization across modes</p></li>
+<li><p>Resilience analysis (what happens if metro fails?)</p></li>
+<li><p>Congestion spillover analysis</p></li>
+</ul>
+<p><strong>Infrastructure Dependencies</strong></p>
+<p>Critical infrastructure systems depend on each other:</p>
+<ul class="simple">
+<li><p><strong>Power grid</strong> requires communication for control systems</p></li>
+<li><p><strong>Communication</strong> requires power for equipment</p></li>
+<li><p><strong>Water</strong> requires power for pumps</p></li>
+<li><p><strong>Transportation</strong> requires communication for signals</p></li>
+</ul>
+<p>Failure cascades can propagate across systems. Multilayer analysis is essential for resilience planning.</p>
+</section>
+<section id="knowledge-graphs">
+<h3>Knowledge Graphs<a class="headerlink" href="#knowledge-graphs" title="Link to this heading"></a></h3>
+<p><strong>Academic Knowledge Graphs</strong></p>
+<p>Research involves multiple entity types:</p>
+<ul class="simple">
+<li><p><strong>Authors</strong> who write papers</p></li>
+<li><p><strong>Papers</strong> that cite other papers</p></li>
+<li><p><strong>Venues</strong> (journals, conferences) that publish papers</p></li>
+<li><p><strong>Institutions</strong> that employ authors</p></li>
+<li><p><strong>Topics/Keywords</strong> that describe papers</p></li>
+</ul>
+<p>This forms a heterogeneous information network where meta-paths enable rich queries:</p>
+<ul class="simple">
+<li><p>Author → Paper → Venue → Paper → Author (same-venue co-authorship)</p></li>
+<li><p>Author → Institution → Author (institutional collaboration)</p></li>
+<li><p>Paper → Topic → Paper (topically similar papers)</p></li>
+</ul>
+</section>
+</section>
+<section id="common-pitfalls-when-modeling-multilayer-networks">
+<h2>Common Pitfalls When Modeling Multilayer Networks<a class="headerlink" href="#common-pitfalls-when-modeling-multilayer-networks" title="Link to this heading"></a></h2>
+<p><strong>1. Over-Aggregating</strong></p>
+<p>Combining layers that should remain separate. If relationships have fundamentally different meanings, keep them as separate layers.</p>
+<p><em>Symptom:</em> Your analysis produces results that don’t make sense when you think about the original relationship types.</p>
+<p><strong>2. Under-Aggregating</strong></p>
+<p>Creating too many layers when some could be combined. If two relationship types are essentially the same (e.g., “friend” and “close friend”), consider using edge weights instead of separate layers.</p>
+<p><em>Symptom:</em> Many layers with few edges each; sparse statistics.</p>
+<p><strong>3. Ignoring Inter-Layer Coupling</strong></p>
+<p>Treating layers as completely independent when nodes have natural correspondences. In a multiplex network, “Alice in layer 1” and “Alice in layer 2” are the same person—this should be modeled.</p>
+<p><em>Symptom:</em> Cross-layer patterns invisible; node activity undefined.</p>
+<p><strong>4. Wrong Coupling Strength</strong></p>
+<p>Setting inter-layer coupling too high (forces artificial consistency across layers) or too low (loses cross-layer information).</p>
+<p><em>Symptom:</em> Community detection produces all-same-community or all-different-community results.</p>
+<p><strong>5. Treating Layers as Ordered When They’re Not</strong></p>
+<p>Layers like “Facebook” and “Twitter” have no natural ordering. Layers like “2020, 2021, 2022” do. Using the wrong model loses temporal or modal structure.</p>
+<p><em>Symptom:</em> Temporal analysis fails; nonsensical transitions.</p>
+<p><strong>6. Mismatched Node Identifiers</strong></p>
+<p>The same entity must have the same identifier across layers. “<a class="reference external" href="mailto:alice&#37;&#52;&#48;email&#46;com">alice<span>&#64;</span>email<span>&#46;</span>com</a>” in layer 1 and “Alice Smith” in layer 2 are treated as different nodes unless you map them.</p>
+<p><em>Symptom:</em> Node activity appears low; entities seem layer-specific when they’re not.</p>
+</section>
+<section id="key-concepts-summary">
+<h2>Key Concepts Summary<a class="headerlink" href="#key-concepts-summary" title="Link to this heading"></a></h2>
+<p>This section provides quick reference definitions for the terminology used throughout py3plex.</p>
 <section id="intra-layer-edges">
 <h3>Intra-Layer Edges<a class="headerlink" href="#intra-layer-edges" title="Link to this heading"></a></h3>
 <p>Edges <strong>within</strong> a single layer connecting nodes in that layer.</p>
@@ -386,52 +706,18 @@ Depends on            C4      |
 <section id="inter-layer-edges">
 <h3>Inter-Layer Edges<a class="headerlink" href="#inter-layer-edges" title="Link to this heading"></a></h3>
 <p>Edges <strong>between</strong> layers, typically connecting the same node across layers or different nodes in different layers.</p>
-<p><em>Example:</em> Connecting Alice in the “friends” layer to Alice in the “colleagues” layer.</p>
+<p><em>Example:</em> Connecting Alice in the “friends” layer to Alice in the “colleagues” layer. This is often called an “identity edge” when it connects the same entity.</p>
 </section>
 <section id="node-layer-pairs">
 <h3>Node-Layer Pairs<a class="headerlink" href="#node-layer-pairs" title="Link to this heading"></a></h3>
-<p>In py3plex, nodes are represented as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> tuples.</p>
-<p><em>Example:</em> <code class="docutils literal notranslate"><span class="pre">('Alice',</span> <span class="pre">'friends')</span></code> and <code class="docutils literal notranslate"><span class="pre">('Alice',</span> <span class="pre">'colleagues')</span></code> are different node-layer pairs.</p>
+<p>In py3plex, nodes are represented as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> tuples. This is the fundamental representation.</p>
+<p><em>Example:</em> <code class="docutils literal notranslate"><span class="pre">('Alice',</span> <span class="pre">'friends')</span></code> and <code class="docutils literal notranslate"><span class="pre">('Alice',</span> <span class="pre">'colleagues')</span></code> are different node-layer pairs, even though they represent the same person in different contexts.</p>
 </section>
 <section id="supra-adjacency-matrix">
 <h3>Supra-Adjacency Matrix<a class="headerlink" href="#supra-adjacency-matrix" title="Link to this heading"></a></h3>
-<p>A matrix representation that stacks layer adjacency matrices into a block structure, encoding both intra-layer and inter-layer connections.</p>
-<p>See <a class="reference internal" href="py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> for implementation details.</p>
+<p>A matrix representation that stacks layer adjacency matrices into a block structure, encoding both intra-layer and inter-layer connections. The diagonal blocks represent within-layer edges; off-diagonal blocks represent between-layer edges.</p>
+<p>See <a class="reference internal" href="py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> for implementation details and a numeric example.</p>
 </section>
-</section>
-<section id="real-world-applications">
-<h2>Real-World Applications<a class="headerlink" href="#real-world-applications" title="Link to this heading"></a></h2>
-<p>py3plex has been used for analyzing:</p>
-<p><strong>Biological Networks:</strong></p>
-<ul class="simple">
-<li><p>Protein-protein interactions with multiple evidence types</p></li>
-<li><p>Gene regulatory networks with transcription, translation, and metabolic layers</p></li>
-<li><p>Brain networks with structural and functional connectivity</p></li>
-</ul>
-<p><strong>Social Networks:</strong></p>
-<ul class="simple">
-<li><p>Multi-platform social media analysis (Twitter + Facebook + Instagram)</p></li>
-<li><p>Relationship type analysis (friends, family, colleagues)</p></li>
-<li><p>Online-offline integration studies</p></li>
-</ul>
-<p><strong>Citation Networks:</strong></p>
-<ul class="simple">
-<li><p>Author-paper-venue multilayer structures</p></li>
-<li><p>Knowledge graphs with entities, relationships, and contexts</p></li>
-<li><p>Research collaboration networks</p></li>
-</ul>
-<p><strong>Transportation:</strong></p>
-<ul class="simple">
-<li><p>Multi-modal networks (bus, train, metro, air)</p></li>
-<li><p>Urban mobility analysis</p></li>
-<li><p>Resilience and failure analysis</p></li>
-</ul>
-<p><strong>Infrastructure:</strong></p>
-<ul class="simple">
-<li><p>Critical infrastructure interdependencies</p></li>
-<li><p>Smart city systems</p></li>
-<li><p>Cyber-physical systems</p></li>
-</ul>
 </section>
 <section id="further-reading">
 <h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
@@ -454,7 +740,7 @@ Depends on            C4      |
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../getting_started/common_issues.html" class="btn btn-neutral float-left" title="Common Issues and Troubleshooting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part_intro.html" class="btn btn-neutral float-left" title="Concepts &amp; Architecture: Understanding the Foundations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="py3plex_core_model.html" class="btn btn-neutral float-right" title="py3plex Core Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -1,0 +1,1096 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Use Cases &amp; Case Studies &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Environments &amp; Deployment: Taking It to Production" href="../deployment/part_intro.html" />
+    <link rel="prev" title="Analysis Recipes &amp; Workflows" href="recipes_and_workflows.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">User Guide: From Understanding to Mastery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Use Cases &amp; Case Studies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-case-studies-matter">Why Case Studies Matter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lessons-from-the-field">Lessons from the Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-1-biological-network-analysis">Case Study 1: Biological Network Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#real-world-impact">Real-World Impact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-protein-protein-interaction-network">Multilayer Protein-Protein Interaction Network</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-2-multi-platform-social-network-analysis">Case Study 2: Multi-Platform Social Network Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cross-platform-influence-analysis">Cross-Platform Influence Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-3-multi-modal-transportation-analysis">Case Study 3: Multi-Modal Transportation Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#urban-mobility-and-resilience">Urban Mobility and Resilience</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-4-heterogeneous-academic-network">Case Study 4: Heterogeneous Academic Network</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#research-collaboration-and-impact-analysis">Research Collaboration and Impact Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#adapting-case-studies-to-your-domain">Adapting Case Studies to Your Domain</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-adaptation-process">General Adaptation Process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-loading-templates">Data Loading Templates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion-patterns-across-domains">Conclusion: Patterns Across Domains</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-meta-lesson">The Meta-Lesson</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further Reading</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment: Taking It to Production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Visual Exploration for Everyone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs: Building Together</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples: Learning by Doing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">Reference &amp; Citation: The Complete Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Use Cases &amp; Case Studies</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/case_studies.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="use-cases-case-studies">
+<span id="case-studies"></span><h1>Use Cases &amp; Case Studies<a class="headerlink" href="#use-cases-case-studies" title="Link to this heading"></a></h1>
+<p><em>“In theory there is no difference between theory and practice. In practice there is.”</em> — Yogi Berra</p>
+<p>This chapter provides complete, end-to-end case studies demonstrating py3plex in different research domains. Each case study includes:</p>
+<ol class="arabic simple">
+<li><p><strong>Problem context</strong> — What real-world question are we answering?</p></li>
+<li><p><strong>Data modeling decisions</strong> — How do we represent this problem as a multilayer network?</p></li>
+<li><p><strong>Complete code</strong> — Working examples you can adapt</p></li>
+<li><p><strong>Interpretation</strong> — What do the results mean?</p></li>
+<li><p><strong>Adaptation guide</strong> — How to apply this template to your own data</p></li>
+</ol>
+<section id="why-case-studies-matter">
+<h2>Why Case Studies Matter<a class="headerlink" href="#why-case-studies-matter" title="Link to this heading"></a></h2>
+<p>Reading about algorithms is one thing. Applying them to real problems is another entirely.</p>
+<p>The case studies in this chapter come from real research domains where multilayer network analysis has proven valuable. They’re not toy examples—they represent the kinds of questions that researchers and practitioners actually ask:</p>
+<ul class="simple">
+<li><p>How do we identify proteins that are likely to be functionally important?</p></li>
+<li><p>Which social media influencers are genuinely cross-platform celebrities versus one-hit wonders?</p></li>
+<li><p>What happens to urban mobility when a major transit hub fails?</p></li>
+<li><p>Which academic researchers are likely to collaborate based on their publication patterns?</p></li>
+</ul>
+<p>Each case study walks through the complete analysis workflow, from problem formulation through data modeling, analysis, and interpretation. Pay attention not just to the code, but to the reasoning behind each decision.</p>
+</section>
+<section id="lessons-from-the-field">
+<h2>Lessons from the Field<a class="headerlink" href="#lessons-from-the-field" title="Link to this heading"></a></h2>
+<p>Before diving into specific cases, here are some lessons learned from applying multilayer network analysis to real problems:</p>
+<p><strong>Modeling decisions matter more than algorithm choice.</strong> Whether you use Louvain or Infomap for community detection is less important than whether you’ve correctly identified what should be a layer, what should be a node, and how layers should be coupled. Spend your time on modeling.</p>
+<p><strong>Start simple, add complexity as needed.</strong> It’s tempting to immediately build a network with ten layers, weighted edges, temporal dynamics, and inter-layer dependencies. Resist this urge. Start with the simplest model that might answer your question, and add complexity only when you can demonstrate it improves your analysis.</p>
+<p><strong>Validate with domain knowledge.</strong> Network analysis can reveal surprising patterns—but it can also reveal artifacts of your modeling choices. Always sanity-check results against what domain experts know. If your community detection puts obviously unrelated entities in the same cluster, you have a modeling problem.</p>
+<p><strong>Document your decisions.</strong> When you return to an analysis six months later, you won’t remember why you chose certain parameters. Write down your reasoning. Future-you will thank present-you.</p>
+</section>
+<hr class="docutils" />
+<section id="case-study-1-biological-network-analysis">
+<h2>Case Study 1: Biological Network Analysis<a class="headerlink" href="#case-study-1-biological-network-analysis" title="Link to this heading"></a></h2>
+<p><em>Identifying high-confidence protein interactions and functional modules</em></p>
+<section id="real-world-impact">
+<h3>Real-World Impact<a class="headerlink" href="#real-world-impact" title="Link to this heading"></a></h3>
+<p>Protein-protein interaction (PPI) networks are foundational to understanding cellular function. The proteins in your body don’t work alone—they form complexes, signaling cascades, and metabolic pathways. Knowing which proteins interact helps researchers:</p>
+<ul class="simple">
+<li><p><strong>Understand disease mechanisms:</strong> Many diseases result from disrupted protein interactions</p></li>
+<li><p><strong>Identify drug targets:</strong> Proteins central to disease networks are potential therapeutic targets</p></li>
+<li><p><strong>Predict protein function:</strong> A protein’s interactors suggest its biological role</p></li>
+</ul>
+<p>The challenge? PPI data comes from multiple experimental methods, each with different biases and error rates. High-throughput screens find many interactions quickly but include false positives. Literature curation is accurate but incomplete. How do you combine these sources intelligently?</p>
+<p><strong>This is exactly what multilayer network analysis is for.</strong></p>
+</section>
+<section id="multilayer-protein-protein-interaction-network">
+<h3>Multilayer Protein-Protein Interaction Network<a class="headerlink" href="#multilayer-protein-protein-interaction-network" title="Link to this heading"></a></h3>
+<p><strong>Problem Context:</strong></p>
+<p>You’re a computational biologist studying protein interactions in yeast. You have PPI data from three experimental sources with different reliability levels:</p>
+<ul class="simple">
+<li><p><strong>Yeast two-hybrid (Y2H):</strong> High-throughput but many false positives</p></li>
+<li><p><strong>Affinity purification mass spectrometry (AP-MS):</strong> More reliable but biased toward stable complexes</p></li>
+<li><p><strong>Literature curated:</strong> Highly reliable but incomplete</p></li>
+</ul>
+<p>You want to:</p>
+<ol class="arabic simple">
+<li><p>Find functional modules (groups of proteins that work together)</p></li>
+<li><p>Identify proteins that are central across evidence types (likely real interactions)</p></li>
+<li><p>Discover proteins that bridge different functional modules</p></li>
+</ol>
+<p><strong>Data Modeling Decisions:</strong></p>
+<ul class="simple">
+<li><p><strong>Node type:</strong> Proteins (same set across layers for multiplex analysis)</p></li>
+<li><p><strong>Layers:</strong> One per evidence type (Y2H, AP-MS, Literature)</p></li>
+<li><p><strong>Edges:</strong> Physical protein-protein interactions</p></li>
+<li><p><strong>Network type:</strong> Multiplex (same proteins, different interaction evidence)</p></li>
+</ul>
+<p><strong>Complete Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># === 1. Create the network ===</span>
+<span class="c1"># In practice, you&#39;d load from files; here we create a toy example</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+
+<span class="c1"># Simulated PPI data (protein pairs by evidence type)</span>
+<span class="c1"># Replace with your actual data loading</span>
+<span class="n">ppi_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Y2H&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CLB2&#39;</span><span class="p">,</span> <span class="s1">&#39;SIC1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;MYO2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;TPM1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;MYO2&#39;</span><span class="p">,</span> <span class="s1">&#39;TPM1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CDC6&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC6&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC1&#39;</span><span class="p">),</span>  <span class="c1"># cell cycle proteins</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;APMS&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CKS1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CLB2&#39;</span><span class="p">,</span> <span class="s1">&#39;CKS1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;ABP1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;TPM1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;CDC6&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ORC1&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ORC2&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC3&#39;</span><span class="p">),</span>  <span class="c1"># origin recognition complex</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;Literature&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CKS1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;MYO2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;MYO2&#39;</span><span class="p">,</span> <span class="s1">&#39;TPM1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;CDC6&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC1&#39;</span><span class="p">),</span>  <span class="c1"># well-established interaction</span>
+    <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="c1"># Add edges to network</span>
+<span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">interactions</span> <span class="ow">in</span> <span class="n">ppi_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">protein1</span><span class="p">,</span> <span class="n">protein2</span> <span class="ow">in</span> <span class="n">interactions</span><span class="p">:</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+            <span class="p">[</span><span class="n">protein1</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">protein2</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 2. Basic exploration ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Network Overview ===&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># === 3. Identify high-confidence interactions ===</span>
+<span class="c1"># Interactions that appear in multiple evidence types are more reliable</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Evidence Overlap Analysis ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get edges from each layer</span>
+<span class="n">edges_by_layer</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="c1"># Extract edge pairs (ignoring layer info)</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
+        <span class="c1"># Normalize edge representation (sorted tuple)</span>
+        <span class="n">pair</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]))</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+    <span class="n">edges_by_layer</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">edges</span>
+
+<span class="c1"># Find edges in multiple layers</span>
+<span class="n">all_edges</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">edges</span> <span class="ow">in</span> <span class="n">edges_by_layer</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="n">all_edges</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+
+<span class="n">edge_evidence_counts</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">all_edges</span><span class="p">:</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">layer_edges</span> <span class="ow">in</span> <span class="n">edges_by_layer</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">layer_edges</span><span class="p">)</span>
+    <span class="n">edge_evidence_counts</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;High-confidence interactions (in 3/3 evidence types):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">edge</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">edge_evidence_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> evidence types&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Medium-confidence interactions (in 2/3 evidence types):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">edge</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">edge_evidence_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> evidence types&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 4. Node activity analysis ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Protein Activity Across Evidence Types ===&quot;</span><span class="p">)</span>
+<span class="n">unique_proteins</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="n">unique_proteins</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Extract protein name</span>
+
+<span class="n">protein_activity</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">protein</span> <span class="ow">in</span> <span class="n">unique_proteins</span><span class="p">:</span>
+    <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">protein</span><span class="p">)</span>
+    <span class="n">protein_activity</span><span class="p">[</span><span class="n">protein</span><span class="p">]</span> <span class="o">=</span> <span class="n">activity</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Proteins present in all evidence types (activity = 1.0):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">protein</span><span class="p">,</span> <span class="n">activity</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">protein_activity</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">activity</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">protein</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 5. Community detection (functional modules) ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Functional Module Detection ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># Lower coupling (omega=0.5) because different evidence types</span>
+<span class="c1"># may reveal different aspects of the interactome</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Standard resolution</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>      <span class="c1"># Moderate coupling</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Analyze communities</span>
+<span class="n">num_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> functional modules&quot;</span><span class="p">)</span>
+
+<span class="c1"># Group proteins by community</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">protein</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Extract protein name</span>
+    <span class="k">if</span> <span class="n">comm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">communities</span><span class="p">:</span>
+        <span class="n">communities</span><span class="p">[</span><span class="n">comm</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">communities</span><span class="p">[</span><span class="n">comm</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Functional modules found:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">proteins</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Module </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">proteins</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 6. Versatility analysis (cross-module bridging) ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Bridge Proteins (High Versatility) ===&quot;</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="n">top_versatile</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">versatility</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_versatile</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: versatility = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<p>The analysis reveals several insights:</p>
+<ol class="arabic simple">
+<li><p><strong>High-confidence interactions</strong> (CDC28-CLB2, ACT1-TPM1) appear in all three evidence types, making them likely true interactions suitable for downstream analysis.</p></li>
+<li><p><strong>Functional modules</strong> correspond to known protein complexes:</p>
+<ul class="simple">
+<li><p>Cell cycle regulators (CDC28, CLB2, CLB5, CKS1, SIC1)</p></li>
+<li><p>Actin cytoskeleton (ACT1, MYO2, TPM1, ABP1)</p></li>
+<li><p>DNA replication origin complex (CDC6, ORC1, ORC2, ORC3)</p></li>
+</ul>
+</li>
+<li><p><strong>Bridge proteins</strong> with high versatility may connect different functional modules and could be interesting drug targets or key regulators.</p></li>
+</ol>
+<p><strong>Adapting to Your Data:</strong></p>
+<ol class="arabic simple">
+<li><p>Replace the <code class="docutils literal notranslate"><span class="pre">ppi_data</span></code> dictionary with your actual data loading code</p></li>
+<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">omega</span></code> based on your domain: lower for diverse evidence types, higher if you expect consistency</p></li>
+<li><p>Add Gene Ontology enrichment analysis to validate that communities match known functional annotations</p></li>
+<li><p>Consider edge weights based on evidence quality (e.g., literature = 3.0, APMS = 2.0, Y2H = 1.0)</p></li>
+</ol>
+</section>
+</section>
+<section id="case-study-2-multi-platform-social-network-analysis">
+<h2>Case Study 2: Multi-Platform Social Network Analysis<a class="headerlink" href="#case-study-2-multi-platform-social-network-analysis" title="Link to this heading"></a></h2>
+<section id="cross-platform-influence-analysis">
+<h3>Cross-Platform Influence Analysis<a class="headerlink" href="#cross-platform-influence-analysis" title="Link to this heading"></a></h3>
+<p><strong>Problem Context:</strong></p>
+<p>You’re a social media researcher studying how influencers operate across platforms. You have data from three platforms:</p>
+<ul class="simple">
+<li><p><strong>Twitter/X:</strong> Public follower/following relationships</p></li>
+<li><p><strong>YouTube:</strong> Subscription relationships</p></li>
+<li><p><strong>Instagram:</strong> Follow relationships</p></li>
+</ul>
+<p>You want to:</p>
+<ol class="arabic simple">
+<li><p>Identify influencers who are successful across platforms (vs. platform-specific)</p></li>
+<li><p>Understand how different platforms are related (do the same people follow each other?)</p></li>
+<li><p>Find communities that span platforms</p></li>
+</ol>
+<p><strong>Data Modeling Decisions:</strong></p>
+<ul class="simple">
+<li><p><strong>Node type:</strong> Users (mapped across platforms using verified identities)</p></li>
+<li><p><strong>Layers:</strong> One per platform (Twitter, YouTube, Instagram)</p></li>
+<li><p><strong>Edges:</strong> Follow/subscribe relationships (directed in reality, undirected for this analysis)</p></li>
+<li><p><strong>Network type:</strong> Multiplex (same users, different platforms)</p></li>
+</ul>
+<p><strong>Complete Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># === 1. Create the network ===</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+
+<span class="c1"># Simulated social network data</span>
+<span class="c1"># In practice: load from APIs or datasets with user ID mapping</span>
+<span class="n">social_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Twitter&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_3&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;user_1&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;user_3&#39;</span><span class="p">,</span> <span class="s1">&#39;user_5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_6&#39;</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;YouTube&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_3&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_3&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_6&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_7&#39;</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;Instagram&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_5&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;user_1&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;user_2&#39;</span><span class="p">,</span> <span class="s1">&#39;user_3&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_6&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_8&#39;</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">connections</span> <span class="ow">in</span> <span class="n">social_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">user1</span><span class="p">,</span> <span class="n">user2</span> <span class="ow">in</span> <span class="n">connections</span><span class="p">:</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+            <span class="p">[</span><span class="n">user1</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">user2</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 2. Basic statistics ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Network Overview ===&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># === 3. Cross-platform presence ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Platform Presence ===&quot;</span><span class="p">)</span>
+<span class="n">unique_users</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="n">unique_users</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unique_users</span><span class="p">):</span>
+    <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+    <span class="n">platforms</span> <span class="o">=</span> <span class="n">activity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">activity</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">: present on ALL platforms&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">activity</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">: present on </span><span class="si">{</span><span class="n">platforms</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">/3 platforms&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 4. Platform-specific centrality ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Centrality by Platform ===&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">platform</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">platform</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">core_network</span>
+
+    <span class="c1"># Compute degree centrality</span>
+    <span class="n">degree_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">top_users</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">degree_cent</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2"> - Top 3 by degree:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_users</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 5. Cross-platform influence (versatility) ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Platform Influencers (High Versatility) ===&quot;</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="n">top_versatile</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">versatility</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_versatile</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 6. Layer similarity ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Platform Similarity ===&quot;</span><span class="p">)</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
+        <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+        <span class="c1"># Edge overlap</span>
+        <span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">)</span>
+
+        <span class="c1"># Jaccard similarity</span>
+        <span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">layer1</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">layer2</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Edge overlap: </span><span class="si">{</span><span class="n">overlap</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Jaccard similarity: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 7. Cross-platform community detection ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Platform Communities ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># High coupling because we expect influencers to attract similar audiences</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>      <span class="c1"># High coupling for cross-platform consistency</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="n">num_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> cross-platform communities&quot;</span><span class="p">)</span>
+
+<span class="c1"># Analyze which users are in which community</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">comm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">communities</span><span class="p">:</span>
+        <span class="n">communities</span><span class="p">[</span><span class="n">comm</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">communities</span><span class="p">[</span><span class="n">comm</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Communities (by unique users):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">users</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">influencers</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span> <span class="k">if</span> <span class="s1">&#39;influencer&#39;</span> <span class="ow">in</span> <span class="n">u</span><span class="p">]</span>
+    <span class="n">regular</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span> <span class="k">if</span> <span class="s1">&#39;influencer&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">u</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">influencers</span><span class="p">)</span><span class="si">}</span><span class="s2"> influencers, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">regular</span><span class="p">)</span><span class="si">}</span><span class="s2"> regular users&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Influencers: </span><span class="si">{</span><span class="n">influencers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Sample users: </span><span class="si">{</span><span class="n">regular</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Cross-platform influencers</strong> (influencer_A, influencer_B) have high versatility, indicating they successfully maintain audiences across platforms. Platform-specific influencers (influencer_C) may have niche appeal.</p></li>
+<li><p><strong>Platform similarity</strong> shows how audiences overlap:</p>
+<ul class="simple">
+<li><p>High Twitter-Instagram similarity suggests similar user bases</p></li>
+<li><p>Lower YouTube overlap might indicate different content consumption patterns</p></li>
+</ul>
+</li>
+<li><p><strong>Communities</strong> reveal audience segments:</p>
+<ul class="simple">
+<li><p>Some communities cluster around specific influencers</p></li>
+<li><p>Cross-platform communities suggest genuine fandom that follows across platforms</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Adapting to Your Data:</strong></p>
+<ol class="arabic simple">
+<li><p>Map user identities across platforms (use verified accounts, linked profiles, or username matching)</p></li>
+<li><p>Consider using directed edges for asymmetric follow relationships</p></li>
+<li><p>Add edge weights based on interaction strength (likes, comments, shares)</p></li>
+<li><p>Include temporal layers to track audience evolution over time</p></li>
+</ol>
+</section>
+</section>
+<section id="case-study-3-multi-modal-transportation-analysis">
+<h2>Case Study 3: Multi-Modal Transportation Analysis<a class="headerlink" href="#case-study-3-multi-modal-transportation-analysis" title="Link to this heading"></a></h2>
+<section id="urban-mobility-and-resilience">
+<h3>Urban Mobility and Resilience<a class="headerlink" href="#urban-mobility-and-resilience" title="Link to this heading"></a></h3>
+<p><strong>Problem Context:</strong></p>
+<p>You’re an urban transportation analyst studying a city’s public transit system. You have network data for:</p>
+<ul class="simple">
+<li><p><strong>Metro/Subway:</strong> High-capacity, fixed routes</p></li>
+<li><p><strong>Bus:</strong> Lower capacity, more flexible routes</p></li>
+<li><p><strong>Bike-share:</strong> Individual, first/last mile connections</p></li>
+</ul>
+<p>You want to:</p>
+<ol class="arabic simple">
+<li><p>Identify multimodal hubs (stations serving multiple transport modes)</p></li>
+<li><p>Analyze network resilience (what happens if a metro station closes?)</p></li>
+<li><p>Find communities (“travel basins”) that span transport modes</p></li>
+</ol>
+<p><strong>Data Modeling Decisions:</strong></p>
+<ul class="simple">
+<li><p><strong>Node type:</strong> Stations/stops (with geographic coordinates)</p></li>
+<li><p><strong>Layers:</strong> One per transport mode (Metro, Bus, Bikeshare)</p></li>
+<li><p><strong>Edges:</strong> Direct connections between stops (can walk/transfer)</p></li>
+<li><p><strong>Network type:</strong> Multiplex with geographic coupling (same location = same node)</p></li>
+</ul>
+<p><strong>Complete Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="c1"># === 1. Create the transportation network ===</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+
+<span class="c1"># Simulated city transport data</span>
+<span class="c1"># Stations are named by neighborhood/landmark</span>
+<span class="n">transport_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Metro&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Financial&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Financial&#39;</span><span class="p">,</span> <span class="s1">&#39;Tech_Park&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;University&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;University&#39;</span><span class="p">,</span> <span class="s1">&#39;Hospital&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_North&#39;</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;Bus&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Financial&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Financial&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_East&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;University&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;University&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_South&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_North&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Tech_Park&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_East&#39;</span><span class="p">),</span>  <span class="c1"># Bus connects where metro doesn&#39;t</span>
+        <span class="p">(</span><span class="s1">&#39;Hospital&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_South&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Airport&#39;</span><span class="p">,</span> <span class="s1">&#39;Central&#39;</span><span class="p">),</span>  <span class="c1"># Bus to airport</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;Bikeshare&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Financial&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Financial&#39;</span><span class="p">,</span> <span class="s1">&#39;Tech_Park&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;University&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;University&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_South&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_North&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Tech_Park&#39;</span><span class="p">,</span> <span class="s1">&#39;Coffee_District&#39;</span><span class="p">),</span>  <span class="c1"># Bike-only area</span>
+        <span class="p">(</span><span class="s1">&#39;University&#39;</span><span class="p">,</span> <span class="s1">&#39;Student_Housing&#39;</span><span class="p">),</span>  <span class="c1"># Bike-only connection</span>
+    <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="n">mode</span><span class="p">,</span> <span class="n">connections</span> <span class="ow">in</span> <span class="n">transport_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">stop1</span><span class="p">,</span> <span class="n">stop2</span> <span class="ow">in</span> <span class="n">connections</span><span class="p">:</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+            <span class="p">[</span><span class="n">stop1</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">stop2</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 2. Network overview ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Transportation Network Overview ===&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># === 3. Multimodal hub identification ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Multimodal Hubs ===&quot;</span><span class="p">)</span>
+<span class="n">unique_stations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+    <span class="n">unique_stations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">station_modes</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">unique_stations</span><span class="p">:</span>
+    <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">)</span>
+    <span class="n">num_modes</span> <span class="o">=</span> <span class="n">activity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+    <span class="n">station_modes</span><span class="p">[</span><span class="n">station</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_modes</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stations by number of transport modes:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">station</span><span class="p">,</span> <span class="n">modes</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">station_modes</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">mode_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+        <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">mode</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+        <span class="n">layer_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">layer_nodes</span><span class="p">:</span>
+            <span class="n">mode_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">modes</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">station</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">modes</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> modes (</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mode_names</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 4. Mode-specific analysis ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Transport Mode Characteristics ===&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">mode</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">core_network</span>
+
+    <span class="n">num_stops</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+    <span class="n">num_connections</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="c1"># Find most connected stops</span>
+    <span class="n">degree_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">top_stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">degree_cent</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Stops: </span><span class="si">{</span><span class="n">num_stops</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Connections: </span><span class="si">{</span><span class="n">num_connections</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Network density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Most connected: </span><span class="si">{</span><span class="n">top_stop</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> (degree=</span><span class="si">{</span><span class="n">top_stop</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 5. Resilience analysis: What if Central closes? ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Resilience Analysis: Central Station Failure ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># Current connectivity</span>
+<span class="n">G_full</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+<span class="n">num_components_before</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">number_connected_components</span><span class="p">(</span><span class="n">G_full</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Before failure: </span><span class="si">{</span><span class="n">num_components_before</span><span class="si">}</span><span class="s2"> connected component(s)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Simulate failure by removing Central from all layers</span>
+<span class="n">G_after</span> <span class="o">=</span> <span class="n">G_full</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">central_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G_after</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Central&#39;</span><span class="p">]</span>
+<span class="n">G_after</span><span class="o">.</span><span class="n">remove_nodes_from</span><span class="p">(</span><span class="n">central_nodes</span><span class="p">)</span>
+
+<span class="n">num_components_after</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">number_connected_components</span><span class="p">(</span><span class="n">G_after</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;After removing Central: </span><span class="si">{</span><span class="n">num_components_after</span><span class="si">}</span><span class="s2"> connected component(s)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Which stations become disconnected?</span>
+<span class="k">if</span> <span class="n">num_components_after</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G_after</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Resulting network fragments:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">components</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">comp</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Fragment </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stations</span><span class="p">)</span><span class="si">}</span><span class="s2"> stations): </span><span class="si">{</span><span class="n">stations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 6. Travel basin detection ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Travel Basins (Communities) ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># Moderate coupling: travel patterns may differ by mode</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="n">num_basins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_basins</span><span class="si">}</span><span class="s2"> travel basins&quot;</span><span class="p">)</span>
+
+<span class="c1"># Group stations by basin</span>
+<span class="n">basins</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">basin</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">basin</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">basins</span><span class="p">:</span>
+        <span class="n">basins</span><span class="p">[</span><span class="n">basin</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">basins</span><span class="p">[</span><span class="n">basin</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Travel basins:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">basin_id</span><span class="p">,</span> <span class="n">stations</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">basins</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Basin </span><span class="si">{</span><span class="n">basin_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">stations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Multimodal hubs</strong> (Central, Financial, University) are critical infrastructure points where passengers transfer between modes. These should be prioritized for maintenance and security.</p></li>
+<li><p><strong>Resilience analysis</strong> reveals that Central is a critical node—its failure fragments the network. This suggests the need for redundant connections or alternative routes.</p></li>
+<li><p><strong>Travel basins</strong> correspond to geographic areas where people typically travel:</p>
+<ul class="simple">
+<li><p>Downtown basin: Central, Financial, Shopping_Mall</p></li>
+<li><p>University/Hospital basin: University, Hospital, Student_Housing</p></li>
+<li><p>Residential basins: various residential areas with their nearest transit</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Adapting to Your Data:</strong></p>
+<ol class="arabic simple">
+<li><p>Include geographic distance as edge weight (travel time between stops)</p></li>
+<li><p>Add passenger flow data to weight edges by usage</p></li>
+<li><p>Include temporal layers (peak hours, off-peak, weekend)</p></li>
+<li><p>Add inter-layer edges representing walking transfers between nearby stations</p></li>
+</ol>
+</section>
+</section>
+<section id="case-study-4-heterogeneous-academic-network">
+<h2>Case Study 4: Heterogeneous Academic Network<a class="headerlink" href="#case-study-4-heterogeneous-academic-network" title="Link to this heading"></a></h2>
+<section id="research-collaboration-and-impact-analysis">
+<h3>Research Collaboration and Impact Analysis<a class="headerlink" href="#research-collaboration-and-impact-analysis" title="Link to this heading"></a></h3>
+<p><strong>Problem Context:</strong></p>
+<p>You’re analyzing academic research patterns using data from publications. Your network includes:</p>
+<ul class="simple">
+<li><p><strong>Authors:</strong> Researchers who write papers</p></li>
+<li><p><strong>Papers:</strong> Research publications</p></li>
+<li><p><strong>Venues:</strong> Conferences and journals where papers appear</p></li>
+<li><p><strong>Institutions:</strong> Organizations where authors work</p></li>
+</ul>
+<p>You want to:</p>
+<ol class="arabic simple">
+<li><p>Find influential authors (not just by citation count)</p></li>
+<li><p>Identify research communities that span institutions</p></li>
+<li><p>Discover emerging collaboration patterns</p></li>
+</ol>
+<p><strong>Data Modeling Decisions:</strong></p>
+<ul class="simple">
+<li><p><strong>Node types:</strong> Authors, Papers, Venues, Institutions (heterogeneous)</p></li>
+<li><p><strong>Edge types:</strong>
+* Author → Paper (authorship)
+* Paper → Venue (publication)
+* Author → Institution (affiliation)</p></li>
+<li><p><strong>Network type:</strong> Heterogeneous Information Network (HIN)</p></li>
+</ul>
+<p><strong>Complete Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
+
+<span class="c1"># === 1. Create the academic network ===</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="c1"># Academic publication data</span>
+<span class="c1"># In practice: load from DBLP, Semantic Scholar, or similar</span>
+
+<span class="c1"># Authors write papers</span>
+<span class="n">authorship_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Smith&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Smith&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_2&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Jones&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Jones&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_3&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Chen&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Chen&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Kim&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_3&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Kim&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Garcia&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Lee&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_5&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Smith&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_6&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Lee&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_6&#39;</span><span class="p">),</span>  <span class="c1"># Cross-institution collab</span>
+<span class="p">]</span>
+
+<span class="c1"># Papers published in venues</span>
+<span class="n">publication_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;Paper_1&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Paper_2&#39;</span><span class="p">,</span> <span class="s1">&#39;NeurIPS&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Paper_3&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Paper_4&#39;</span><span class="p">,</span> <span class="s1">&#39;NeurIPS&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Paper_5&#39;</span><span class="p">,</span> <span class="s1">&#39;AAAI&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Paper_6&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># Authors affiliated with institutions</span>
+<span class="n">affiliation_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Smith&#39;</span><span class="p">,</span> <span class="s1">&#39;MIT&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Jones&#39;</span><span class="p">,</span> <span class="s1">&#39;MIT&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Chen&#39;</span><span class="p">,</span> <span class="s1">&#39;Stanford&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Kim&#39;</span><span class="p">,</span> <span class="s1">&#39;Stanford&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Dr_Garcia&#39;</span><span class="p">,</span> <span class="s1">&#39;Berkeley&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Lee&#39;</span><span class="p">,</span> <span class="s1">&#39;Berkeley&#39;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># Add to network with explicit layer/type information</span>
+<span class="k">for</span> <span class="n">author</span><span class="p">,</span> <span class="n">paper</span> <span class="ow">in</span> <span class="n">authorship_data</span><span class="p">:</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">[</span><span class="n">author</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">paper</span><span class="p">,</span> <span class="n">venue</span> <span class="ow">in</span> <span class="n">publication_data</span><span class="p">:</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">[</span><span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="n">venue</span><span class="p">,</span> <span class="s1">&#39;venues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">author</span><span class="p">,</span> <span class="n">institution</span> <span class="ow">in</span> <span class="n">affiliation_data</span><span class="p">:</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">[</span><span class="n">author</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="n">institution</span><span class="p">,</span> <span class="s1">&#39;institutions&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 2. Network overview ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Academic Network Overview ===&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+
+<span class="c1"># === 3. Meta-path based analysis ===</span>
+<span class="c1"># Meta-path: Author → Paper → Venue → Paper → Author</span>
+<span class="c1"># This finds authors who publish in the same venues</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Meta-Path Analysis: Authors Publishing in Same Venues ===&quot;</span><span class="p">)</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Find which authors publish where</span>
+<span class="n">author_venues</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">author</span><span class="p">,</span> <span class="n">paper</span> <span class="ow">in</span> <span class="n">authorship_data</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">venue</span> <span class="ow">in</span> <span class="n">publication_data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">paper</span> <span class="o">==</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">author_venues</span><span class="p">[</span><span class="n">author</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">venue</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Authors by venue:&quot;</span><span class="p">)</span>
+<span class="n">venue_authors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">author</span><span class="p">,</span> <span class="n">venues</span> <span class="ow">in</span> <span class="n">author_venues</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">venue</span> <span class="ow">in</span> <span class="n">venues</span><span class="p">:</span>
+        <span class="n">venue_authors</span><span class="p">[</span><span class="n">venue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">venue</span><span class="p">,</span> <span class="n">authors</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">venue_authors</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">venue</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">authors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Find co-venue patterns (authors who could collaborate based on venue)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Potential collaborators (same venues):&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">venue</span><span class="p">,</span> <span class="n">authors</span> <span class="ow">in</span> <span class="n">venue_authors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">authors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">authors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2"> (both publish at </span><span class="si">{</span><span class="n">venue</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 4. Cross-institution collaboration analysis ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Institution Collaborations ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># Find author affiliations</span>
+<span class="n">author_institution</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">affiliation_data</span><span class="p">)</span>
+
+<span class="c1"># Find collaborations (authors on same paper)</span>
+<span class="n">collaborations</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+<span class="n">paper_authors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">author</span><span class="p">,</span> <span class="n">paper</span> <span class="ow">in</span> <span class="n">authorship_data</span><span class="p">:</span>
+    <span class="n">paper_authors</span><span class="p">[</span><span class="n">paper</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
+
+<span class="n">cross_institution_collabs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">paper</span><span class="p">,</span> <span class="n">authors</span> <span class="ow">in</span> <span class="n">paper_authors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)):</span>
+                <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">authors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">authors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">inst1</span> <span class="o">=</span> <span class="n">author_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
+                <span class="n">inst2</span> <span class="o">=</span> <span class="n">author_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">inst1</span> <span class="o">!=</span> <span class="n">inst2</span><span class="p">:</span>
+                    <span class="n">cross_institution_collabs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">paper</span><span class="p">,</span> <span class="n">inst1</span><span class="p">,</span> <span class="n">inst2</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cross-institution collaborations:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">paper</span><span class="p">,</span> <span class="n">inst1</span><span class="p">,</span> <span class="n">inst2</span> <span class="ow">in</span> <span class="n">cross_institution_collabs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">a1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">inst1</span><span class="si">}</span><span class="s2">) -- </span><span class="si">{</span><span class="n">a2</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">inst2</span><span class="si">}</span><span class="s2">) on </span><span class="si">{</span><span class="n">paper</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 5. Author influence metrics ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Author Influence ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># Count papers per author</span>
+<span class="n">author_paper_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">authorship_data</span><span class="p">)</span>
+
+<span class="c1"># Count unique venues per author</span>
+<span class="n">author_venue_count</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">author_venues</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+<span class="c1"># Count co-authors</span>
+<span class="n">author_coauthors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">paper</span><span class="p">,</span> <span class="n">authors</span> <span class="ow">in</span> <span class="n">paper_authors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">coauthor</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">author</span> <span class="o">!=</span> <span class="n">coauthor</span><span class="p">:</span>
+                <span class="n">author_coauthors</span><span class="p">[</span><span class="n">author</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">coauthor</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Author metrics:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Author&#39;</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Papers&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Venues&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Coauthors&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">45</span><span class="p">)</span>
+
+<span class="n">all_authors</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">authorship_data</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_authors</span><span class="p">):</span>
+    <span class="n">papers</span> <span class="o">=</span> <span class="n">author_paper_count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">venues</span> <span class="o">=</span> <span class="n">author_venue_count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">coauthors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">author_coauthors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">author</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">papers</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">venues</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">coauthors</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># === 6. Institution collaboration network ===</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Institution Collaboration Network ===&quot;</span><span class="p">)</span>
+
+<span class="c1"># Build institution-level collaboration graph</span>
+<span class="n">inst_collabs</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">paper</span><span class="p">,</span> <span class="n">inst1</span><span class="p">,</span> <span class="n">inst2</span> <span class="ow">in</span> <span class="n">cross_institution_collabs</span><span class="p">:</span>
+    <span class="n">pair</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">inst1</span><span class="p">,</span> <span class="n">inst2</span><span class="p">]))</span>
+    <span class="n">inst_collabs</span><span class="p">[</span><span class="n">pair</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Institution pairs by collaboration count:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pair</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">inst_collabs</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> joint papers&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Meta-path analysis</strong> reveals implicit relationships—authors who publish at the same venues but haven’t collaborated yet are potential future collaborators.</p></li>
+<li><p><strong>Cross-institution collaborations</strong> highlight knowledge transfer patterns. The Smith-Lee collaboration bridges MIT and Berkeley.</p></li>
+<li><p><strong>Author influence</strong> considers multiple factors beyond raw paper count:</p>
+<ul class="simple">
+<li><p>Venue diversity (publishing at multiple top venues)</p></li>
+<li><p>Collaboration breadth (working with many different people)</p></li>
+<li><p>Cross-institution reach</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Adapting to Your Data:</strong></p>
+<ol class="arabic simple">
+<li><p>Load from academic databases (DBLP XML, Semantic Scholar API)</p></li>
+<li><p>Add citation edges between papers for impact analysis</p></li>
+<li><p>Include temporal information for trend analysis</p></li>
+<li><p>Weight edges by author position (first author, corresponding author)</p></li>
+</ol>
+</section>
+</section>
+<section id="adapting-case-studies-to-your-domain">
+<h2>Adapting Case Studies to Your Domain<a class="headerlink" href="#adapting-case-studies-to-your-domain" title="Link to this heading"></a></h2>
+<section id="general-adaptation-process">
+<h3>General Adaptation Process<a class="headerlink" href="#general-adaptation-process" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Identify your entities</strong> → These become node types or layers</p></li>
+<li><p><strong>Identify your relationships</strong> → These become edges</p></li>
+<li><p><strong>Decide multiplex vs. heterogeneous:</strong></p>
+<ul class="simple">
+<li><p>Same entities, different relationship types → Multiplex</p></li>
+<li><p>Different entity types → Heterogeneous</p></li>
+</ul>
+</li>
+<li><p><strong>Map identifiers</strong> → Ensure same entity has same ID across layers</p></li>
+<li><p><strong>Choose appropriate metrics</strong> based on your research questions</p></li>
+<li><p><strong>Validate with domain knowledge</strong> → Do results match expectations?</p></li>
+</ol>
+</section>
+<section id="data-loading-templates">
+<h3>Data Loading Templates<a class="headerlink" href="#data-loading-templates" title="Link to this heading"></a></h3>
+<p><strong>From CSV with explicit layers:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;your_data.csv&#39;</span><span class="p">)</span>
+<span class="c1"># Expected columns: source, target, layer, weight</span>
+
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>From multiple files (one per layer):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layer_files</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;layer1&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1_edges.csv&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;layer2&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2_edges.csv&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;layer3&#39;</span><span class="p">:</span> <span class="s1">&#39;layer3_edges.csv&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">filepath</span> <span class="ow">in</span> <span class="n">layer_files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+            <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">layer_name</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>From database:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;network.db&#39;</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT source, target, layer, weight FROM edges&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">():</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+        <span class="p">[</span><span class="n">source</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">weight</span><span class="p">]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="conclusion-patterns-across-domains">
+<h2>Conclusion: Patterns Across Domains<a class="headerlink" href="#conclusion-patterns-across-domains" title="Link to this heading"></a></h2>
+<p>Looking across these case studies, several patterns emerge:</p>
+<p><strong>Multilayer structure reveals what single-layer analysis misses.</strong> In the PPI network, interactions confirmed by multiple evidence types are more reliable—information you lose if you flatten into a single network. In the social network, cross-platform influencers are fundamentally different from single-platform celebrities. In transportation, failure cascades depend on inter-modal connections.</p>
+<p><strong>The coupling parameter matters.</strong> Lower coupling (omega &lt; 1) finds layer-specific communities; higher coupling (omega &gt; 1) finds cross-layer communities. The right choice depends on your question. If you expect the same underlying structure across layers, use higher coupling. If layers represent truly different phenomena, use lower coupling.</p>
+<p><strong>Validation requires domain expertise.</strong> Network analysis can find structure, but whether that structure is meaningful requires interpretation. Do the detected communities correspond to known functional categories? Do the identified hubs match known influential entities? Ground your analysis in domain knowledge.</p>
+<p><strong>Start simple.</strong> Each case study could be made more complex—weighted edges, temporal dynamics, more layers, heterogeneous node types. But starting simple lets you understand what’s happening and catch errors before the analysis becomes opaque.</p>
+<section id="the-meta-lesson">
+<h3>The Meta-Lesson<a class="headerlink" href="#the-meta-lesson" title="Link to this heading"></a></h3>
+<p>These case studies demonstrate a workflow pattern:</p>
+<ol class="arabic simple">
+<li><p><strong>Formulate your question</strong> in terms of network structure</p></li>
+<li><p><strong>Model your data</strong> as nodes, edges, and layers</p></li>
+<li><p><strong>Apply appropriate algorithms</strong> based on your question</p></li>
+<li><p><strong>Interpret results</strong> using domain knowledge</p></li>
+<li><p><strong>Iterate</strong> as you learn what works</p></li>
+</ol>
+<p>This pattern applies regardless of domain. The specific proteins, users, or stations change; the analytical approach remains similar.</p>
+</section>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="recipes_and_workflows.html"><span class="doc">Analysis Recipes &amp; Workflows</span></a> — More ready-to-use recipes</p></li>
+<li><p><a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> — Conceptual foundations</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection Tutorial</span></a> — Detailed community detection guide</p></li>
+<li><p><a class="reference internal" href="statistics.html"><span class="doc">Network Statistics</span></a> — Complete statistics reference</p></li>
+<li><p><a class="reference internal" href="../concepts/algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> — Algorithm selection guide</p></li>
+</ul>
+<p><strong>Academic References:</strong></p>
+<ul class="simple">
+<li><p>Kivelä et al. (2014). “Multilayer networks.” <em>Journal of Complex Networks</em>.</p></li>
+<li><p>De Domenico et al. (2015). “Ranking in interconnected multilayer networks.” <em>Nature Communications</em>.</p></li>
+<li><p>Battiston et al. (2017). “The physics of higher-order interactions in complex systems.” <em>Nature Physics</em>.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="recipes_and_workflows.html" class="btn btn-neutral float-left" title="Analysis Recipes &amp; Workflows" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../deployment/part_intro.html" class="btn btn-neutral float-right" title="Environments &amp; Deployment: Taking It to Production" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

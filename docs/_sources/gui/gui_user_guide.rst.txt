@@ -15,7 +15,7 @@ Visual Overview
 
 The Py3plex GUI provides an intuitive web interface for multilayer network analysis. Below are screenshots of the main interface pages:
 
-.. image:: ../example_images/gui_load_data.png
+.. image:: ../../example_images/gui_load_data.png
    :width: 800px
    :alt: Load Data Page
    :align: center
@@ -116,7 +116,7 @@ Data Loading
 Visualization
 -------------
 
-.. image:: ../example_images/gui_visualize.png
+.. image:: ../../example_images/gui_visualize.png
    :width: 800px
    :alt: Visualization Page
    :align: center
@@ -135,7 +135,7 @@ Visualization
 Analysis (Async via Celery)
 ---------------------------
 
-.. image:: ../example_images/gui_analyze.png
+.. image:: ../../example_images/gui_analyze.png
    :width: 800px
    :alt: Analysis Page
    :align: center
@@ -155,7 +155,7 @@ Analysis (Async via Celery)
 Export
 ------
 
-.. image:: ../example_images/gui_export.png
+.. image:: ../../example_images/gui_export.png
    :width: 800px
    :alt: Export Page
    :align: center
@@ -190,7 +190,7 @@ Job Monitoring
 
 The GUI includes Flower dashboard for real-time monitoring of background jobs:
 
-.. image:: ../example_images/gui_flower_dashboard.png
+.. image:: ../../example_images/gui_flower_dashboard.png
    :width: 800px
    :alt: Flower Dashboard
    :align: center

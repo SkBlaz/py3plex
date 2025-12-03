@@ -82,7 +82,7 @@ Layer Density
 
 **Definition:** Fraction of possible edges that exist in a layer.
 
-**Formula:** :math:`density = \\frac{2m}{n(n-1)}` for undirected graphs
+**Formula:** :math:`density = \frac{2m}{n(n-1)}` for undirected graphs
 
 **Use case:** Measure how connected a layer is.
 

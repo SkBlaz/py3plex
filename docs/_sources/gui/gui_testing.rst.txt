@@ -9,7 +9,7 @@ Visual Interface Preview
 
 The Py3plex GUI consists of several key pages that work together for network analysis:
 
-.. image:: ../example_images/gui_load_data.png
+.. image:: ../../example_images/gui_load_data.png
    :width: 600px
    :alt: Load Data Interface
    :align: center
@@ -18,7 +18,7 @@ The Py3plex GUI consists of several key pages that work together for network ana
 
 |
 
-.. image:: ../example_images/gui_visualize.png
+.. image:: ../../example_images/gui_visualize.png
    :width: 600px
    :alt: Visualization Interface
    :align: center
@@ -27,7 +27,7 @@ The Py3plex GUI consists of several key pages that work together for network ana
 
 |
 
-.. image:: ../example_images/gui_analyze.png
+.. image:: ../../example_images/gui_analyze.png
    :width: 600px
    :alt: Analysis Interface
    :align: center
@@ -162,7 +162,7 @@ Open browser to ``http://localhost:5555``
 
 **Expected**: Celery Flower dashboard loads showing workers.
 
-.. image:: ../example_images/gui_flower_dashboard.png
+.. image:: ../../example_images/gui_flower_dashboard.png
    :width: 700px
    :alt: Flower Dashboard
    :align: center

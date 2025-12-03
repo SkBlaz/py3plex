@@ -46,6 +46,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
@@ -53,8 +54,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multilayer_networks_101.html">Multilayer Networks 101</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">py3plex Core Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#network-types-multilayer-vs-multiplex">Network Types: Multilayer vs Multiplex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-multi-layer-network-class">The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> Class</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-structure">Basic Structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#key-components">Key Components</a></li>
@@ -67,8 +70,22 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#supra-adjacency-matrix">Supra-Adjacency Matrix</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#mathematical-definition">Mathematical Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#numeric-example">Numeric Example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#construction">Construction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-implications">Memory Implications</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#visualization">Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-py3plex-uses-networkx-under-the-hood">How py3plex Uses NetworkX Under the Hood</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-role-of-multigraph-multidigraph">The Role of MultiGraph/MultiDiGraph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#attribute-propagation">Attribute Propagation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-networkx-functions-directly">Using NetworkX Functions Directly</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#design-trade-offs">Design Trade-offs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#node-layer-pairs-vs-alternative-representations">Node-Layer Pairs vs. Alternative Representations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#consequences-for-algorithm-implementation">Consequences for Algorithm Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#consequences-for-i-o">Consequences for I/O</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#network-construction">Network Construction</a><ul>
@@ -108,21 +125,27 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment: Taking It to Production</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Visual Exploration for Everyone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
@@ -131,6 +154,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs: Building Together</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
@@ -138,10 +162,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples: Learning by Doing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">Reference &amp; Citation: The Complete Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
@@ -174,6 +200,48 @@
   <section id="py3plex-core-model">
 <h1>py3plex Core Model<a class="headerlink" href="#py3plex-core-model" title="Link to this heading"></a></h1>
 <p>This guide explains how py3plex represents multilayer networks internally and how to work with the core data structures.</p>
+<section id="network-types-multilayer-vs-multiplex">
+<h2>Network Types: Multilayer vs Multiplex<a class="headerlink" href="#network-types-multilayer-vs-multiplex" title="Link to this heading"></a></h2>
+<p>py3plex supports two network types that determine how layers and inter-layer connections are handled:</p>
+<p><strong>Multilayer Networks</strong> (<code class="docutils literal notranslate"><span class="pre">network_type='multilayer'</span></code>, default)</p>
+<p>General multilayer networks where each layer can have a different set of nodes. No automatic coupling edges are created.</p>
+<ul class="simple">
+<li><p>Use when layers represent different node types (e.g., authors, papers, venues)</p></li>
+<li><p>Use when nodes naturally appear in only some layers</p></li>
+<li><p>Inter-layer edges must be explicitly added</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Heterogeneous network: authors and papers are different node types</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;author1&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;paper1&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;papers&#39;</span><span class="p">}</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>Multiplex Networks</strong> (<code class="docutils literal notranslate"><span class="pre">network_type='multiplex'</span></code>)</p>
+<p>Special case where all layers share the same set of nodes but with different relationship types. After loading, coupling edges are automatically created between each node and its counterparts in other layers.</p>
+<ul class="simple">
+<li><p>Use when the same entities (people, cities) are connected via multiple relationship types</p></li>
+<li><p>Coupling edges are auto-generated with <code class="docutils literal notranslate"><span class="pre">type='coupling'</span></code></p></li>
+<li><p>Filter coupling edges using <code class="docutils literal notranslate"><span class="pre">get_edges(multiplex_edges=False)</span></code></p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Social network: same people, different relationship types</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s1">&#39;friends_and_colleagues.edges&#39;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;multiplex_edges&#39;</span><span class="p">)</span>
+
+<span class="c1"># Coupling edges are auto-created between (Alice, friends) &lt;-&gt; (Alice, colleagues)</span>
+
+<span class="c1"># Get only explicit edges (exclude auto-coupling)</span>
+<span class="n">explicit_edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">multiplex_edges</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="c1"># Get all edges including coupling</span>
+<span class="n">all_edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">multiplex_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Comparison Table:</strong></p>
+</section>
 <section id="the-multi-layer-network-class">
 <h2>The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> Class<a class="headerlink" href="#the-multi-layer-network-class" title="Link to this heading"></a></h2>
 <p>The central data structure in py3plex is the <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class, which provides a high-level API for working with multilayer networks while maintaining full compatibility with NetworkX.</p>
@@ -285,18 +353,71 @@
 <p>The supra-adjacency matrix is a block matrix representation that encodes the entire multilayer network structure.</p>
 <section id="mathematical-definition">
 <h3>Mathematical Definition<a class="headerlink" href="#mathematical-definition" title="Link to this heading"></a></h3>
-<p>For a multilayer network with <span class="math notranslate nohighlight">\(L\)</span> layers, the supra-adjacency matrix <span class="math notranslate nohighlight">\(\\mathbf{S}\)</span> is:</p>
+<p>For a multilayer network with <span class="math notranslate nohighlight">\(L\)</span> layers, the supra-adjacency matrix <span class="math notranslate nohighlight">\(\mathbf{S}\)</span> is:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\\mathbf{S} = \\begin{bmatrix}
-A_1 &amp; C_{12} &amp; \\cdots &amp; C_{1L} \\\\
-C_{21} &amp; A_2 &amp; \\cdots &amp; C_{2L} \\\\
-\\vdots &amp; \\vdots &amp; \\ddots &amp; \\vdots \\\\
-C_{L1} &amp; C_{L2} &amp; \\cdots &amp; A_L
-\\end{bmatrix}\end{split}\]</div>
+\[\begin{split}\mathbf{S} = \begin{bmatrix}
+A_1 &amp; C_{12} &amp; \cdots &amp; C_{1L} \\
+C_{21} &amp; A_2 &amp; \cdots &amp; C_{2L} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
+\end{bmatrix}\end{split}\]</div>
 <p>Where:</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(A_\\alpha\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\\alpha\)</span> (intra-layer connections)</p></li>
-<li><p><span class="math notranslate nohighlight">\(C_{\\alpha\\beta}\)</span> is the coupling matrix between layers <span class="math notranslate nohighlight">\(\\alpha\)</span> and <span class="math notranslate nohighlight">\(\\beta\)</span> (inter-layer connections)</p></li>
+<li><p><span class="math notranslate nohighlight">\(A_\alpha\)</span> is the adjacency matrix of layer <span class="math notranslate nohighlight">\(\alpha\)</span> (intra-layer connections)</p></li>
+<li><p><span class="math notranslate nohighlight">\(C_{\alpha\beta}\)</span> is the coupling matrix between layers <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> (inter-layer connections)</p></li>
+</ul>
+</section>
+<section id="numeric-example">
+<h3>Numeric Example<a class="headerlink" href="#numeric-example" title="Link to this heading"></a></h3>
+<p>Consider a simple multiplex network with 3 nodes (A, B, C) and 2 layers. In layer 1, A-B are connected. In layer 2, B-C are connected. The nodes are the same across layers (multiplex structure).</p>
+<p><strong>Network structure:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer 1:        Layer 2:
+A --- B   C     A   B --- C
+</pre></div>
+</div>
+<p><strong>Node ordering:</strong> We order nodes as (A,L1), (B,L1), (C,L1), (A,L2), (B,L2), (C,L2).</p>
+<p><strong>Intra-layer blocks:</strong></p>
+<p>Layer 1 adjacency matrix (A₁):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>     A   B   C
+A [  0   1   0 ]
+B [  1   0   0 ]
+C [  0   0   0 ]
+</pre></div>
+</div>
+<p>Layer 2 adjacency matrix (A₂):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>     A   B   C
+A [  0   0   0 ]
+B [  0   0   1 ]
+C [  0   1   0 ]
+</pre></div>
+</div>
+<p><strong>Inter-layer coupling blocks (C₁₂ and C₂₁):</strong></p>
+<p>In a multiplex network, we typically add identity coupling—each node connects to itself across layers:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C₁₂ = C₂₁ᵀ =
+     A   B   C
+A [  1   0   0 ]
+B [  0   1   0 ]
+C [  0   0   1 ]
+</pre></div>
+</div>
+<p><strong>Full supra-adjacency matrix (6×6):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>          Layer 1        |     Layer 2
+       A    B    C       |  A    B    C
+L1  A [ 0    1    0      |  1    0    0 ]
+    B [ 1    0    0      |  0    1    0 ]
+    C [ 0    0    0      |  0    0    1 ]
+   ---|------------------+---------------
+L2  A [ 1    0    0      |  0    0    0 ]
+    B [ 0    1    0      |  0    0    1 ]
+    C [ 0    0    1      |  0    1    0 ]
+</pre></div>
+</div>
+<p>The diagonal 3×3 blocks are the within-layer adjacencies (A₁ and A₂). The off-diagonal 3×3 blocks are the coupling matrices (C₁₂ and C₂₁).</p>
+<p><strong>What this enables:</strong></p>
+<ul class="simple">
+<li><p><strong>Multilayer shortest paths:</strong> A path from (A,L1) to (C,L2) must go through B: (A,L1)→(B,L1)→(B,L2)→(C,L2)</p></li>
+<li><p><strong>Spectral methods:</strong> Eigenvalues of S capture multilayer structure</p></li>
+<li><p><strong>Matrix operations:</strong> All linear algebra works on the full system</p></li>
 </ul>
 </section>
 <section id="construction">
@@ -318,6 +439,16 @@ C_{L1} &amp; C_{L2} &amp; \\cdots &amp; A_L
 </pre></div>
 </div>
 </section>
+<section id="memory-implications">
+<h3>Memory Implications<a class="headerlink" href="#memory-implications" title="Link to this heading"></a></h3>
+<p>The supra-adjacency matrix has size (N×L)² where N is nodes per layer and L is layers:</p>
+<ul class="simple">
+<li><p><strong>Small network (100 nodes, 3 layers):</strong> 300×300 = 90,000 entries → ~720 KB dense</p></li>
+<li><p><strong>Medium network (1,000 nodes, 5 layers):</strong> 5,000×5,000 = 25 million entries → ~200 MB dense</p></li>
+<li><p><strong>Large network (10,000 nodes, 10 layers):</strong> 100,000×100,000 = 10 billion entries → impossible dense</p></li>
+</ul>
+<p><strong>Always use sparse=True</strong> for networks with more than ~1,000 total node-layer pairs. Sparse matrices only store non-zero entries, reducing memory from O(N²L²) to O(edges + coupling).</p>
+</section>
 <section id="visualization">
 <h3>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h3>
 <p>Visualize the supra-adjacency matrix structure:</p>
@@ -338,6 +469,159 @@ C_{L1} &amp; C_{L2} &amp; \\cdots &amp; A_L
 <li><p>Diagonal blocks: intra-layer connections</p></li>
 <li><p>Off-diagonal blocks: inter-layer connections</p></li>
 </ul>
+</section>
+</section>
+<section id="how-py3plex-uses-networkx-under-the-hood">
+<h2>How py3plex Uses NetworkX Under the Hood<a class="headerlink" href="#how-py3plex-uses-networkx-under-the-hood" title="Link to this heading"></a></h2>
+<p>py3plex is built on top of NetworkX, using it as the storage and algorithm backend. Understanding this architecture helps you leverage the full NetworkX ecosystem.</p>
+<section id="the-role-of-multigraph-multidigraph">
+<h3>The Role of MultiGraph/MultiDiGraph<a class="headerlink" href="#the-role-of-multigraph-multidigraph" title="Link to this heading"></a></h3>
+<p>Internally, py3plex stores all nodes and edges in a single NetworkX <code class="docutils literal notranslate"><span class="pre">MultiGraph</span></code> (for undirected) or <code class="docutils literal notranslate"><span class="pre">MultiDiGraph</span></code> (for directed networks). The multilayer structure is encoded through the node representation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># What you write in py3plex:</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+
+<span class="c1"># What&#39;s actually stored in NetworkX:</span>
+<span class="c1"># Nodes: (&#39;Alice&#39;, &#39;friends&#39;), (&#39;Bob&#39;, &#39;friends&#39;),</span>
+<span class="c1">#        (&#39;Alice&#39;, &#39;colleagues&#39;), (&#39;Bob&#39;, &#39;colleagues&#39;)</span>
+<span class="c1"># Edges: ((&#39;Alice&#39;, &#39;friends&#39;), (&#39;Bob&#39;, &#39;friends&#39;)),</span>
+<span class="c1">#        ((&#39;Alice&#39;, &#39;colleagues&#39;), (&#39;Bob&#39;, &#39;colleagues&#39;))</span>
+</pre></div>
+</div>
+<p>This means:</p>
+<ol class="arabic simple">
+<li><p><strong>All NetworkX algorithms work directly</strong> on the underlying graph</p></li>
+<li><p><strong>Node-layer tuples are just nodes</strong> to NetworkX—it doesn’t “know” about layers</p></li>
+<li><p><strong>Attributes are stored as NetworkX attributes</strong> and persist across operations</p></li>
+</ol>
+</section>
+<section id="attribute-propagation">
+<h3>Attribute Propagation<a class="headerlink" href="#attribute-propagation" title="Link to this heading"></a></h3>
+<p>When you add nodes or edges with attributes, they’re stored in the NetworkX graph:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Node attributes</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;role&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span>
+
+<span class="c1"># Edge attributes</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;close&#39;</span>
+</pre></div>
+</div>
+<p>Attributes are preserved when you:</p>
+<ul class="simple">
+<li><p>Extract subnetworks (filtered nodes keep their attributes)</p></li>
+<li><p>Iterate over nodes/edges with <code class="docutils literal notranslate"><span class="pre">data=True</span></code></p></li>
+<li><p>Save and load networks (in formats that support attributes)</p></li>
+</ul>
+</section>
+<section id="using-networkx-functions-directly">
+<h3>Using NetworkX Functions Directly<a class="headerlink" href="#using-networkx-functions-directly" title="Link to this heading"></a></h3>
+<p>Because <code class="docutils literal notranslate"><span class="pre">network.core_network</span></code> is a standard NetworkX graph, you can use any NetworkX function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
+
+<span class="c1"># Standard NetworkX algorithms</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">pagerank</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">pagerank</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()))</span>
+
+<span class="c1"># Shortest paths (work across layers if inter-layer edges exist)</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">))</span>
+
+<span class="c1"># Community detection (treats node-layer pairs as nodes)</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">louvain_communities</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Caveat:</strong> NetworkX doesn’t know about layer semantics. It treats (‘Alice’, ‘friends’) and (‘Alice’, ‘colleagues’) as unrelated nodes. py3plex’s multilayer algorithms add the layer-aware logic.</p>
+</section>
+</section>
+<section id="design-trade-offs">
+<h2>Design Trade-offs<a class="headerlink" href="#design-trade-offs" title="Link to this heading"></a></h2>
+<section id="node-layer-pairs-vs-alternative-representations">
+<h3>Node-Layer Pairs vs. Alternative Representations<a class="headerlink" href="#node-layer-pairs-vs-alternative-representations" title="Link to this heading"></a></h3>
+<p>py3plex’s node-layer pair representation is one of several possible designs. Here’s why it was chosen:</p>
+<p><strong>Alternative 1: Separate graphs per layer</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instead of py3plex:</span>
+<span class="n">layer1</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">layer2</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">layer1</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">)</span>
+<span class="n">layer2</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Pros:</em></p>
+<ul class="simple">
+<li><p>Simple, familiar</p></li>
+<li><p>Easy layer-specific analysis</p></li>
+</ul>
+<p><em>Cons:</em></p>
+<ul class="simple">
+<li><p>No representation of inter-layer edges</p></li>
+<li><p>Manual bookkeeping for cross-layer operations</p></li>
+<li><p>Can’t compute multilayer paths or centrality directly</p></li>
+</ul>
+<p><strong>Alternative 2: Single graph with edge type attributes</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instead of py3plex:</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiGraph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;friends&#39;</span><span class="p">)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Pros:</em></p>
+<ul class="simple">
+<li><p>Single graph structure</p></li>
+<li><p>Edges carry type information</p></li>
+</ul>
+<p><em>Cons:</em></p>
+<ul class="simple">
+<li><p>Nodes can’t have layer-specific attributes</p></li>
+<li><p>Same node in different contexts is the same node (can’t have Alice be central in one layer and peripheral in another)</p></li>
+<li><p>Inter-layer edges to the same node are impossible</p></li>
+</ul>
+<p><strong>py3plex approach: Node-layer pairs</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py3plex representation:</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Pros:</em></p>
+<ul class="simple">
+<li><p>Preserves both intra-layer and inter-layer structure</p></li>
+<li><p>Allows layer-specific node attributes</p></li>
+<li><p>Compatible with NetworkX algorithms</p></li>
+<li><p>Enables proper multilayer-specific operations</p></li>
+<li><p>Supports identity coupling and cross-layer edges</p></li>
+</ul>
+<p><em>Cons:</em></p>
+<ul class="simple">
+<li><p>Node names are tuples (less intuitive for simple cases)</p></li>
+<li><p>Memory usage is multiplied by number of layers</p></li>
+<li><p>NetworkX algorithms treat node-layer pairs as independent nodes (need py3plex wrappers for multilayer semantics)</p></li>
+</ul>
+<p><strong>py3plex’s choice:</strong> The node-layer pair approach was chosen because it correctly models multilayer semantics while maintaining NetworkX compatibility. The downsides (tuple names, memory) are acceptable trade-offs for the flexibility and correctness gained.</p>
+</section>
+<section id="consequences-for-algorithm-implementation">
+<h3>Consequences for Algorithm Implementation<a class="headerlink" href="#consequences-for-algorithm-implementation" title="Link to this heading"></a></h3>
+<p>The node-layer pair design has implications:</p>
+<ol class="arabic simple">
+<li><p><strong>Layer extraction is subsetting:</strong> To get layer 1, you filter nodes where the layer component equals “layer1”</p></li>
+<li><p><strong>Identity coupling is explicit:</strong> Cross-layer edges between the same entity must be added explicitly (or automatically in multiplex mode)</p></li>
+<li><p><strong>Supra-matrix is derivable:</strong> The supra-adjacency matrix can be computed from the graph structure</p></li>
+<li><p><strong>NetworkX algorithms work but need interpretation:</strong> Betweenness on the full graph treats cross-layer edges as normal edges</p></li>
+</ol>
+</section>
+<section id="consequences-for-i-o">
+<h3>Consequences for I/O<a class="headerlink" href="#consequences-for-i-o" title="Link to this heading"></a></h3>
+<p>The node-layer pair representation affects serialization:</p>
+<ol class="arabic simple">
+<li><p><strong>Standard formats work:</strong> GraphML, GML can store tuple nodes</p></li>
+<li><p><strong>Human-readable formats need mapping:</strong> Edgelists typically use separate columns for node and layer</p></li>
+<li><p><strong>Arrow/Parquet are efficient:</strong> Modern columnar formats handle the structure naturally</p></li>
+</ol>
 </section>
 </section>
 <section id="network-construction">

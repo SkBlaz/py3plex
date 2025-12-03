@@ -46,6 +46,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
@@ -53,6 +54,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
@@ -60,6 +62,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Community Detection Tutorial</a><ul>
@@ -104,6 +107,24 @@
 <li class="toctree-l3"><a class="reference internal" href="#community-size-distribution">Community Size Distribution</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-single-layer-vs-multilayer-community-detection">Understanding Single-Layer vs. Multilayer Community Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-layer-community-detection">Single-Layer Community Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-community-detection">Multilayer Community Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#overlapping-vs-non-overlapping-communities">Overlapping vs. Non-Overlapping Communities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flow-based-vs-modularity-based-views">Flow-Based vs. Modularity-Based Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parameter-tuning-cookbook">Parameter Tuning Cookbook</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tuning-resolution-gamma">Tuning Resolution (Gamma)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tuning-inter-layer-coupling-omega">Tuning Inter-Layer Coupling (Omega)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#diagnosing-bad-partitions">Diagnosing Bad Partitions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mini-case-studies">Mini Case Studies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#case-study-1-biological-network-communities">Case Study 1: Biological Network Communities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#case-study-2-transportation-network-communities">Case Study 2: Transportation Network Communities</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#comparing-algorithms">Comparing Algorithms</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#run-multiple-algorithms">Run Multiple Algorithms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#normalized-mutual-information">Normalized Mutual Information</a></li>
@@ -113,6 +134,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#algorithm-selection">Algorithm Selection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#parameter-guidelines">Parameter Guidelines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#validation">Validation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#common-failure-modes">Common Failure Modes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
@@ -122,15 +144,20 @@
 <li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case_studies.html">Use Cases &amp; Case Studies</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment: Taking It to Production</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Visual Exploration for Everyone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
@@ -139,6 +166,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs: Building Together</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
@@ -146,10 +174,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples: Learning by Doing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">Reference &amp; Citation: The Complete Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
@@ -489,6 +519,179 @@
 </div>
 </section>
 </section>
+<section id="understanding-single-layer-vs-multilayer-community-detection">
+<h2>Understanding Single-Layer vs. Multilayer Community Detection<a class="headerlink" href="#understanding-single-layer-vs-multilayer-community-detection" title="Link to this heading"></a></h2>
+<p>Before diving into algorithm specifics, it’s important to understand the conceptual differences between approaches.</p>
+<section id="single-layer-community-detection">
+<h3>Single-Layer Community Detection<a class="headerlink" href="#single-layer-community-detection" title="Link to this heading"></a></h3>
+<p>Traditional community detection finds groups in a single graph. Applied to a multilayer network, you have two options:</p>
+<ol class="arabic simple">
+<li><p><strong>Flatten and detect:</strong> Aggregate all layers into one graph, then find communities. This loses layer information.</p></li>
+<li><p><strong>Detect per layer:</strong> Find communities independently in each layer. This ignores cross-layer structure.</p></li>
+</ol>
+<p>Neither captures the full multilayer picture.</p>
+</section>
+<section id="multilayer-community-detection">
+<h3>Multilayer Community Detection<a class="headerlink" href="#multilayer-community-detection" title="Link to this heading"></a></h3>
+<p>Multilayer algorithms find communities that are consistent across layers while respecting layer-specific structure. They ask: “Which nodes cluster together across multiple contexts?”</p>
+<p><strong>Key insight:</strong> A node that is moderately connected in many layers may be more “community-central” than a node highly connected in just one layer.</p>
+</section>
+<section id="overlapping-vs-non-overlapping-communities">
+<h3>Overlapping vs. Non-Overlapping Communities<a class="headerlink" href="#overlapping-vs-non-overlapping-communities" title="Link to this heading"></a></h3>
+<p><strong>Non-overlapping:</strong> Each node belongs to exactly one community. Algorithms like Louvain and Leiden produce non-overlapping partitions.</p>
+<p><strong>Overlapping:</strong> Nodes can belong to multiple communities. Algorithms like NoRC and clique percolation find overlapping structure.</p>
+<p><em>When to use overlapping:</em> When nodes naturally belong to multiple groups (e.g., a person in both a work community and a hobby community).</p>
+</section>
+<section id="flow-based-vs-modularity-based-views">
+<h3>Flow-Based vs. Modularity-Based Views<a class="headerlink" href="#flow-based-vs-modularity-based-views" title="Link to this heading"></a></h3>
+<p><strong>Modularity-based (Louvain, Leiden):</strong> Optimize a quality function that compares edge density within communities to expected density. Fast, widely used, but has resolution limit issues.</p>
+<p><strong>Flow-based (Infomap):</strong> Model random walks on the network and find community structure that minimizes description length of those walks. Theoretically grounded, finds hierarchical structure, but slower.</p>
+<p><em>When to use which:</em></p>
+<ul class="simple">
+<li><p>Use <strong>modularity-based</strong> for speed and when you don’t need hierarchical structure</p></li>
+<li><p>Use <strong>flow-based</strong> when you care about information flow or want to find nested communities</p></li>
+</ul>
+</section>
+</section>
+<section id="parameter-tuning-cookbook">
+<h2>Parameter Tuning Cookbook<a class="headerlink" href="#parameter-tuning-cookbook" title="Link to this heading"></a></h2>
+<section id="tuning-resolution-gamma">
+<h3>Tuning Resolution (Gamma)<a class="headerlink" href="#tuning-resolution-gamma" title="Link to this heading"></a></h3>
+<p>The resolution parameter γ controls community size:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">louvain_multilayer</span>
+<span class="p">)</span>
+
+<span class="c1"># Experiment with different resolution values</span>
+<span class="k">for</span> <span class="n">gamma</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]:</span>
+    <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">num_comms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gamma=</span><span class="si">{</span><span class="n">gamma</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">num_comms</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation guide:</strong></p>
+<ul class="simple">
+<li><p><strong>Very few communities (2-5) when you expect more:</strong> γ is too low → increase γ</p></li>
+<li><p><strong>Many singleton communities:</strong> γ is too high → decrease γ</p></li>
+<li><p><strong>One giant community + many tiny ones:</strong> Resolution limit problem → try γ &gt; 1 or use Leiden</p></li>
+</ul>
+<p><strong>Recommended starting procedure:</strong></p>
+<ol class="arabic simple">
+<li><p>Start with γ=1.0 (standard modularity)</p></li>
+<li><p>Look at community size distribution</p></li>
+<li><p>If too coarse, try γ=1.5, 2.0</p></li>
+<li><p>If too fine, try γ=0.5, 0.25</p></li>
+</ol>
+</section>
+<section id="tuning-inter-layer-coupling-omega">
+<h3>Tuning Inter-Layer Coupling (Omega)<a class="headerlink" href="#tuning-inter-layer-coupling-omega" title="Link to this heading"></a></h3>
+<p>The coupling parameter ω controls how much layers influence each other:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Experiment with different coupling values</span>
+<span class="k">for</span> <span class="n">omega</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]:</span>
+    <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="n">omega</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">num_comms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+    <span class="c1"># Check cross-layer consistency</span>
+    <span class="c1"># (how often does the same node get same community across layers?)</span>
+    <span class="c1"># ... (compute consistency metric)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;omega=</span><span class="si">{</span><span class="n">omega</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">num_comms</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Interpretation guide:</strong></p>
+<ul class="simple">
+<li><p><strong>ω = 0:</strong> Layers are independent (equivalent to detecting per-layer, then combining)</p></li>
+<li><p><strong>ω = 1:</strong> Balanced coupling (default, usually good)</p></li>
+<li><p><strong>ω &gt; 1:</strong> Strong coupling (forces cross-layer consistency)</p></li>
+<li><p><strong>ω → ∞:</strong> All layers must have identical community structure</p></li>
+</ul>
+<p><strong>Domain-specific guidance:</strong></p>
+<ul class="simple">
+<li><p><strong>Multiplex social networks:</strong> Start with ω=1.0 (people are the same across platforms)</p></li>
+<li><p><strong>Temporal networks:</strong> ω=0.5 to 1.0 (communities can evolve but not too fast)</p></li>
+<li><p><strong>Heterogeneous networks:</strong> ω=0.1 to 0.5 (different node types may have different community structure)</p></li>
+</ul>
+</section>
+<section id="diagnosing-bad-partitions">
+<h3>Diagnosing Bad Partitions<a class="headerlink" href="#diagnosing-bad-partitions" title="Link to this heading"></a></h3>
+<p><strong>Problem: All nodes in one community</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All nodes in single community - try increasing gamma&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Causes:</em> Network is too dense, γ too low, or network genuinely has no community structure.</p>
+<p><strong>Problem: Each node is its own community</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">partition</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All singletons - try decreasing gamma or increasing omega&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Causes:</em> Network is too sparse, γ too high, ω too low.</p>
+<p><strong>Problem: Communities don’t match domain expectations</strong></p>
+<p><em>Actions:</em></p>
+<ol class="arabic simple">
+<li><p>Visualize communities and examine specific nodes</p></li>
+<li><p>Check if high-degree nodes are correctly assigned</p></li>
+<li><p>Verify that known groups (e.g., departments) are recovered</p></li>
+<li><p>Consider using ground-truth labels for NMI comparison</p></li>
+</ol>
+</section>
+</section>
+<section id="mini-case-studies">
+<h2>Mini Case Studies<a class="headerlink" href="#mini-case-studies" title="Link to this heading"></a></h2>
+<section id="case-study-1-biological-network-communities">
+<h3>Case Study 1: Biological Network Communities<a class="headerlink" href="#case-study-1-biological-network-communities" title="Link to this heading"></a></h3>
+<p><strong>Scenario:</strong> A protein-protein interaction network with 3 layers representing different experimental evidence types (yeast two-hybrid, co-immunoprecipitation, affinity purification).</p>
+<p><strong>Goal:</strong> Find functional modules (groups of proteins with shared biological function).</p>
+<p><strong>Approach:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">louvain_multilayer</span>
+<span class="p">)</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;ppi_multilayer.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Use moderate coupling - different evidence types should</span>
+<span class="c1"># contribute to same modules, but we don&#39;t require perfect consistency</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>     <span class="c1"># Standard resolution</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>     <span class="c1"># Moderate coupling</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Validate: Do communities correspond to GO biological process terms?</span>
+<span class="c1"># Compare community assignments to known functional annotations</span>
+</pre></div>
+</div>
+<p><strong>Expected outcome:</strong> Communities should correspond to functional modules like “cell cycle,” “DNA repair,” “metabolic pathways.” Proteins appearing in multiple layers with high connectivity should be community hubs.</p>
+</section>
+<section id="case-study-2-transportation-network-communities">
+<h3>Case Study 2: Transportation Network Communities<a class="headerlink" href="#case-study-2-transportation-network-communities" title="Link to this heading"></a></h3>
+<p><strong>Scenario:</strong> A multi-modal transportation network with layers for metro, bus, and bike-share in a city.</p>
+<p><strong>Goal:</strong> Find “travel basins”—regions where people travel together within a mode and switch between modes at hubs.</p>
+<p><strong>Approach:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;transport_network.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Higher coupling - the same station serves multiple modes</span>
+<span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
+    <span class="n">network</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>     <span class="c1"># Slightly higher to find smaller regions</span>
+    <span class="n">omega</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>     <span class="c1"># Strong coupling at multimodal hubs</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Validate: Do communities correspond to geographic regions?</span>
+<span class="c1"># Are major transfer stations correctly identified as community boundaries?</span>
+</pre></div>
+</div>
+<p><strong>Expected outcome:</strong> Communities should correspond to neighborhoods or districts. Multimodal hubs (stations serving metro + bus + bike) should appear at community boundaries or as bridges between communities.</p>
+</section>
+</section>
 <section id="comparing-algorithms">
 <h2>Comparing Algorithms<a class="headerlink" href="#comparing-algorithms" title="Link to this heading"></a></h2>
 <section id="run-multiple-algorithms">
@@ -601,7 +804,17 @@
 <li><p><strong>Modularity</strong> - Check modularity score (&gt;0.3 is good)</p></li>
 <li><p><strong>Size distribution</strong> - Check for giant communities or singletons</p></li>
 <li><p><strong>Domain knowledge</strong> - Do communities make sense for your application?</p></li>
+<li><p><strong>Ground truth comparison</strong> - If you have labels, compute NMI or Adjusted Rand Index</p></li>
 </ol>
+</section>
+<section id="common-failure-modes">
+<h3>Common Failure Modes<a class="headerlink" href="#common-failure-modes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Trivial partitions:</strong> All-in-one or all-singletons → tune γ and ω</p></li>
+<li><p><strong>Unstable results:</strong> Different runs give very different partitions → use <code class="docutils literal notranslate"><span class="pre">random_state</span></code> and run multiple times</p></li>
+<li><p><strong>Over-fragmentation:</strong> Too many small communities → decrease γ or try Leiden</p></li>
+<li><p><strong>Resolution limit:</strong> Can’t find small communities in large networks → increase γ or use hierarchical methods</p></li>
+</ul>
 </section>
 </section>
 <section id="references">
@@ -612,14 +825,15 @@
 <p>Rosvall, M., &amp; Bergstrom, C. T. (2008). Maps of random walks on complex networks reveal community structure. <em>PNAS</em>, 105(4), 1118-1123.</p>
 <p><strong>Multilayer Modularity:</strong></p>
 <p>Mucha, P. J., et al. (2010). Community structure in time-dependent, multiscale, and multiplex networks. <em>Science</em>, 328(5980), 876-878.</p>
-<p>See <a class="reference internal" href="../citation.html"><span class="doc">Citation and References</span></a> for complete citations with DOIs.</p>
+<p>See <a class="reference internal" href="../reference/citation_and_acknowledgements.html"><span class="doc">Citation and References</span></a> for complete citations with DOIs.</p>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><span class="xref std std-doc">./multilayer_centrality</span> - Centrality measures tutorial</p></li>
-<li><p><span class="xref std std-doc">./multilayer_modularity</span> - Multilayer modularity details</p></li>
-<li><p><a class="reference internal" href="../algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> - Algorithm selection guide</p></li>
+<li><p><a class="reference internal" href="../tutorials/multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality measures tutorial</p></li>
+<li><p><a class="reference internal" href="../tutorials/multilayer_modularity.html"><span class="doc">Multilayer Modularity and Community Detection</span></a> - Multilayer modularity details</p></li>
+<li><p><a class="reference internal" href="../concepts/algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> - Algorithm selection guide</p></li>
+<li><p><a class="reference internal" href="random_walks_embeddings.html"><span class="doc">Random Walk Algorithms</span></a> - Using walks for embeddings</p></li>
 <li><p>Examples in <code class="docutils literal notranslate"><span class="pre">examples/communities/example_community_detection.py</span></code></p></li>
 </ul>
 </section>

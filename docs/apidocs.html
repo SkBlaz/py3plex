@@ -43,6 +43,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
@@ -50,6 +51,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
@@ -57,21 +59,27 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/part_intro.html">Environments &amp; Deployment: Taking It to Production</a></li>
 <li class="toctree-l1"><a class="reference internal" href="deployment/cli_and_docker.html">Docker Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="gui/part_intro.html">GUI: Visual Exploration for Everyone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gui/gui_user_guide.html">Py3plex GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gui/gui_deployment.html">GUI Deployment Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gui/gui_api_reference.html">GUI API Reference</a></li>
@@ -80,6 +88,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/part_intro.html">Developer &amp; Contributor Docs: Building Together</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/development_guide.html">Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/code_architecture.html">Architecture and Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/repo_layout.html">Repository Layout</a></li>
@@ -87,10 +96,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/part_intro.html">Examples: Learning by Doing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/part_intro.html">Reference &amp; Citation: The Complete Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/algorithm_reference.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/citation_and_acknowledgements.html">Citation and References</a></li>
@@ -150,12 +161,19 @@
 visualizing multilayer networks where nodes can exist in multiple layers
 and edges can connect nodes within or across layers.</p>
 <dl class="simple">
-<dt>Supported Network Types:</dt><dd><ul class="simple">
-<li><p><strong>multilayer</strong>: General multilayer networks with arbitrary layer structure</p></li>
-<li><p><strong>multiplex</strong>: Special case where all layers share the same nodes, with
-automatic coupling edges between corresponding nodes across layers</p></li>
+<dt>Supported Network Types (network_type parameter):</dt><dd><ul class="simple">
+<li><p><strong>multilayer</strong> (default): General multilayer networks with arbitrary
+layer structure. Each layer can have a different set of nodes.
+Suitable for heterogeneous networks (e.g., authors-papers-venues)
+or networks where nodes naturally appear in only some layers.</p></li>
+<li><p><strong>multiplex</strong>: Special case where all layers share the same node set
+but with different edge types. After loading a network, automatic
+coupling edges are created between each node and its counterparts
+in other layers. Suitable for social networks with multiple
+relationship types (e.g., friend, colleague, family layers).</p></li>
 </ul>
 </dd>
+<dt>Choosing the Right Network Type:</dt><dd></dd>
 <dt>Key Features:</dt><dd><ul class="simple">
 <li><p>Dict-based API for adding nodes and edges (see add_nodes() and add_edges())</p></li>
 <li><p>NetworkX interoperability via to_networkx() and from_networkx()</p></li>
@@ -179,7 +197,7 @@ more than two nodes). For hypergraph-like structures, consider:
 <li><p>See examples/ directory for usage patterns and best practices</p></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a basic multilayer network</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a general multilayer network (different node sets per layer)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add nodes to different layers</span>
@@ -201,6 +219,11 @@ more than two nodes). For hypergraph-like structures, consider:
 <span class="go">&lt;multi_layer_network: type=multilayer, directed=False, nodes=3, edges=2, layers=2&gt;</span>
 </pre></div>
 </div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a multiplex network (same nodes across relationship layers)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Note: coupling edges are auto-added after load_network()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multiplex_net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.add_dummy_layers">
 <span class="sig-name descname"><span class="pre">add_dummy_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.add_dummy_layers" title="Link to this definition"></a></dt>
@@ -209,7 +232,7 @@ more than two nodes). For hypergraph-like structures, consider:
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.add_edges">
-<span class="sig-name descname"><span class="pre">add_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_dict_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dict'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.add_edges" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_dict_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dict'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="reference/api_index.html#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.add_edges" title="Link to this definition"></a></dt>
 <dd><p>Add edges to the multilayer network.</p>
 <p>This method supports multiple input formats for specifying edges between nodes
 in different layers. The most common format is dict-based.</p>
@@ -219,6 +242,12 @@ in different layers. The most common format is dict-based.</p>
 <li><p><strong>edge_dict_list</strong> – Edge data in one of the supported formats (see below)</p></li>
 <li><p><strong>input_type</strong> – Format of edge data (‘dict’, ‘list’, or ‘px_edge’)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns self for method chaining</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>self</p>
 </dd>
 </dl>
 <dl>
@@ -248,6 +277,17 @@ in different layers. The most common format is dict-based.</p>
 <span class="gp">... </span>    <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;protein&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;protein&#39;</span>
 <span class="gp">... </span><span class="p">}])</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=2, edges=1, layers=1&gt;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Method chaining</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=3, edges=2, layers=1&gt;</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add inter-layer edge with weight</span>
@@ -259,6 +299,7 @@ in different layers. The most common format is dict-based.</p>
 <span class="gp">... </span>    <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;expression&#39;</span>
 <span class="gp">... </span><span class="p">}])</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=5, edges=3, layers=3&gt;</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add multiple edges at once</span>
@@ -267,6 +308,7 @@ in different layers. The most common format is dict-based.</p>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}</span>
 <span class="gp">... </span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=5, edges=5, layers=3&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -284,7 +326,7 @@ in different layers. The most common format is dict-based.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.add_nodes">
-<span class="sig-name descname"><span class="pre">add_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_dict_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dict'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.add_nodes" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_dict_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dict'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="reference/api_index.html#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.add_nodes" title="Link to this definition"></a></dt>
 <dd><p>Add nodes to the multilayer network.</p>
 <p>Nodes in a multilayer network are identified by both their ID and the layer
 they belong to. This method adds nodes using a dict-based format.</p>
@@ -294,6 +336,12 @@ they belong to. This method adds nodes using a dict-based format.</p>
 <li><p><strong>node_dict_list</strong> – Node data as a dict or list of dicts (see format below)</p></li>
 <li><p><strong>input_type</strong> – Format of node data (currently only ‘dict’ is supported)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns self for method chaining</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>self</p>
 </dd>
 </dl>
 <dl>
@@ -312,6 +360,13 @@ they belong to. This method adds nodes using a dict-based format.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add single node</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=1, edges=0, layers=1&gt;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Method chaining</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=2, edges=0, layers=1&gt;</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add multiple nodes to the same layer</span>
@@ -321,6 +376,7 @@ they belong to. This method adds nodes using a dict-based format.</p>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;protein&#39;</span><span class="p">}</span>
 <span class="gp">... </span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=5, edges=0, layers=2&gt;</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add nodes with attributes</span>
@@ -331,6 +387,7 @@ they belong to. This method adds nodes using a dict-based format.</p>
 <span class="gp">... </span>    <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;BRCA1&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;chromosome&#39;</span><span class="p">:</span> <span class="s1">&#39;17&#39;</span>
 <span class="gp">... </span><span class="p">}])</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=6, edges=0, layers=3&gt;</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add nodes to multiple layers</span>
@@ -340,6 +397,7 @@ they belong to. This method adds nodes using a dict-based format.</p>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;entity2&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}</span>
 <span class="gp">... </span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">multi_layer_nodes</span><span class="p">)</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=9, edges=0, layers=5&gt;</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
@@ -506,6 +564,28 @@ applied:
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.edge_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edge_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.edge_count" title="Link to this definition"></a></dt>
+<dd><p>Number of edges in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total count of edges</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">edge_count</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.edges_from_temporal_table">
 <span class="sig-name descname"><span class="pre">edges_from_temporal_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.edges_from_temporal_table" title="Link to this definition"></a></dt>
@@ -557,6 +637,67 @@ where weight is always 1</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.execute_query">
+<span class="sig-name descname"><span class="pre">execute_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.execute_query" title="Link to this definition"></a></dt>
+<dd><p>Execute a DSL query on this multilayer network.</p>
+<p>This is a convenience method that provides first-class access to the
+py3plex DSL (Domain-Specific Language) for querying multilayer networks.</p>
+<p>Supports both SELECT and MATCH queries:</p>
+<dl class="simple">
+<dt>SELECT queries:</dt><dd><p>net.execute_query(‘SELECT nodes WHERE layer=”transport”’)
+net.execute_query(‘SELECT * FROM nodes IN LAYER “ppi” WHERE degree &gt; 10’)</p>
+</dd>
+<dt>MATCH queries (Cypher-like):</dt><dd><p>net.execute_query(‘MATCH (g:Gene)-[r]-&gt;(t:Gene) RETURN g, t’)
+net.execute_query(‘MATCH (a)-[e]-&gt;(b) IN LAYER “ppi” WHERE a.degree &gt; 5 RETURN a, b’)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query</strong> – DSL query string</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>For SELECT queries: ‘nodes’ or ‘edges’ list, ‘count’, optional ‘computed’</p></li>
+<li><p>For MATCH queries: ‘bindings’ list, ‘count’, ‘type’</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing query results</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="reference/api_index.html#py3plex.dsl.DSLSyntaxError" title="py3plex.dsl.DSLSyntaxError"><strong>DSLSyntaxError</strong></a> – If query syntax is invalid</p></li>
+<li><p><a class="reference internal" href="reference/api_index.html#py3plex.dsl.DSLExecutionError" title="py3plex.dsl.DSLExecutionError"><strong>DSLExecutionError</strong></a> – If query cannot be executed</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="s1">&#39;SELECT nodes WHERE layer=&quot;layer1&quot;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Using MATCH syntax</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="s1">&#39;MATCH (a:layer1)-[r]-&gt;(b:layer1) RETURN a, b&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;bindings&#39;</span> <span class="ow">in</span> <span class="n">result</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="reference/api_index.html#py3plex.dsl.execute_query" title="py3plex.dsl.execute_query"><code class="xref py py-func docutils literal notranslate"><span class="pre">py3plex.dsl.execute_query()</span></code></a> for standalone function</p></li>
+<li><p><a class="reference internal" href="reference/api_index.html#py3plex.dsl.format_result" title="py3plex.dsl.format_result"><code class="xref py py-func docutils literal notranslate"><span class="pre">py3plex.dsl.format_result()</span></code></a> for formatting results</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.fill_tmp_with_edges">
 <span class="sig-name descname"><span class="pre">fill_tmp_with_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.fill_tmp_with_edges" title="Link to this definition"></a></dt>
 <dd><p>Fill temporary layer graphs with edges from a DataFrame.</p>
@@ -601,6 +742,51 @@ analysis where edge sets change over time.</p>
 <p class="admonition-title">See also</p>
 <p>remove_layer_edges: Creates empty layer graphs
 edges_from_temporal_table: Convert DataFrame to edge list</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.from_edges">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'multilayer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dict'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="reference/api_index.html#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.from_edges" title="Link to this definition"></a></dt>
+<dd><p>Create a multilayer network directly from a list of edges.</p>
+<p>This is a convenience factory method that creates a network and populates
+it with edges in a single call, supporting method chaining patterns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edges</strong> – List of edges in dict or list format</p></li>
+<li><p><strong>network_type</strong> – Type of network (‘multilayer’ or ‘multiplex’)</p></li>
+<li><p><strong>directed</strong> – Whether the network is directed</p></li>
+<li><p><strong>input_type</strong> – Format of edge data (‘dict’ or ‘list’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New network instance with edges added</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="reference/api_index.html#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network">multi_layer_network</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create from dict format</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="o">.</span><span class="n">from_edges</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create from list format</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="o">.</span><span class="n">from_edges</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">edge_count</span>
+<span class="go">2</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -700,21 +886,50 @@ For multilayer networks, nodes should be tuples of (node_id, layer).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.get_edges">
 <span class="sig-name descname"><span class="pre">get_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplex_edges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.get_edges" title="Link to this definition"></a></dt>
-<dd><p>A method for obtaining a network’s edges</p>
+<dd><p>Iterate over edges in the network.</p>
+<p>This method behaves differently based on the network_type:</p>
+<ul class="simple">
+<li><p><strong>multilayer</strong>: Returns all edges without filtering.</p></li>
+<li><p><strong>multiplex</strong>: By default, filters out coupling edges (auto-generated
+inter-layer edges connecting each node to itself in other layers).
+Set multiplex_edges=True to include coupling edges.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – If True, return edge data along with edge tuples</p></li>
-<li><p><strong>multiplex_edges</strong> – If True, include coupling edges in multiplex networks</p></li>
+<li><p><strong>multiplex_edges</strong> – If True, include coupling edges in multiplex networks.
+Only relevant when network_type=’multiplex’. Coupling edges are
+automatically added to connect each node to its counterparts
+in other layers.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p>Edge tuples, optionally with data</p>
+<dd class="field-even"><p>Edge tuples, optionally with data. For multiplex networks with
+multiplex_edges=False, coupling edges are excluded.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Exception</strong> – If network type is not specified</p>
+<dd class="field-odd"><p><strong>ValueError</strong> – If network_type is not ‘multilayer’ or ‘multiplex’.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="go">&lt;multi_layer_network: type=multilayer, directed=True, nodes=2, edges=1, layers=1&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">get_edges</span><span class="p">())</span>
+<span class="go">[((&#39;A&#39;, &#39;layer1&#39;), (&#39;B&#39;, &#39;layer1&#39;))]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code> for the difference between multilayer and multiplex</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_couple_all_edges()</span></code> for how coupling edges are created</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -819,6 +1034,77 @@ significant memory (N*L)^2 * 8 bytes for float64.</p>
 <dd><p>invert the nodes to edges. Get the “edge graph”. Each node is here an edge.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.is_empty">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_empty</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.is_empty" title="Link to this definition"></a></dt>
+<dd><p>Check if the network is empty (has no nodes).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if network has no nodes</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">is_empty</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">is_empty</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.layer_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">layer_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.layer_count" title="Link to this definition"></a></dt>
+<dd><p>Number of unique layers in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Count of distinct layers</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">layer_count</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.layers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">layers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.layers" title="Link to this definition"></a></dt>
+<dd><p>List of unique layer identifiers in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sorted list of layer identifiers</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">layers</span>
+<span class="go">[&#39;social&#39;, &#39;work&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.load_embedding">
 <span class="sig-name descname"><span class="pre">load_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_embedding" title="Link to this definition"></a></dt>
@@ -842,21 +1128,55 @@ significant memory (N*L)^2 * 8 bytes for float64.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.load_network">
 <span class="sig-name descname"><span class="pre">load_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'---'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="reference/api_index.html#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_network" title="Link to this definition"></a></dt>
-<dd><p>Main network loader</p>
-<p>This method loads and prepares a given network.</p>
+<dd><p>Load a network from file.</p>
+<p>This method loads and prepares a given network. The behavior depends on
+the <code class="docutils literal notranslate"><span class="pre">network_type</span></code> set during initialization:</p>
+<ul class="simple">
+<li><p><strong>multilayer</strong>: Network is loaded as-is. No automatic edges are added.</p></li>
+<li><p><strong>multiplex</strong>: After loading, coupling edges are automatically created
+between each node and its counterparts in other layers. These edges
+have type=’coupling’ and can be filtered via get_edges().</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_file</strong> – Path to the network file to load</p></li>
 <li><p><strong>directed</strong> – Whether the network is directed</p></li>
-<li><p><strong>input_type</strong> – Format of the input file (‘gml’, ‘graphml’, ‘edgelist’, ‘gpickle’, etc.)</p></li>
+<li><p><strong>input_type</strong> – Format of the input file. Supported values:
+- ‘gml’: Graph Modeling Language format
+- ‘graphml’: GraphML XML format
+- ‘edgelist’: Simple edge list (source target [weight])
+- ‘multiedgelist’: Multilayer edge list (node1 layer1 node2 layer2 weight)
+- ‘multiplex_edges’: Multiplex format (layer node1 node2 weight)
+- ‘multiplex_folder’: Folder with layer files
+- ‘gpickle’: Python pickle format
+- ‘nx’: NetworkX graph object
+- ‘sparse’: Sparse matrix format</p></li>
 <li><p><strong>label_delimiter</strong> – Delimiter used to separate layer names in node labels</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Self for method chaining. Populates self.core_network, self.labels, and self.activity</p>
+<dd class="field-even"><p>Self for method chaining. Populates self.core_network, self.labels,
+and self.activity.</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For multiplex networks, use input_type=’multiplex_edges’ or
+‘multiplex_folder’ with network_type=’multiplex’ to get automatic
+coupling edges.</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load multilayer network (no automatic coupling)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s1">&#39;data.gml&#39;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;gml&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load multiplex network (automatic coupling edges)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s1">&#39;data.edges&#39;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;multiplex_edges&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -928,6 +1248,27 @@ centralities = network.monoplex_nx_wrapper(“betweenness_centrality”,</p>
 <blockquote>
 <div><p>kwargs={“weight”: “weight”, “normalized”: True})</p>
 </div></blockquote>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.node_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.node_count" title="Link to this definition"></a></dt>
+<dd><p>Number of nodes in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total count of nodes (node-layer pairs)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">node_count</span>
+<span class="go">1</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -4632,12 +4973,13 @@ definition to multiplex networks where paths can cross layers.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.statistics.multilayer_statistics.multiplex_closeness_centrality">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.statistics.multilayer_statistics.</span></span><span class="sig-name descname"><span class="pre">multiplex_closeness_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.algorithms.statistics.multilayer_statistics.multiplex_closeness_centrality" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.statistics.multilayer_statistics.</span></span><span class="sig-name descname"><span class="pre">multiplex_closeness_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'standard'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.algorithms.statistics.multilayer_statistics.multiplex_closeness_centrality" title="Link to this definition"></a></dt>
 <dd><p>Calculate multiplex closeness centrality.</p>
 <p>Computes closeness centrality on the supra-graph, where shortest paths
 can traverse inter-layer edges. This captures how quickly a node-layer
 can reach all other node-layers in the multiplex network.</p>
-<p>Formula: Cᵢᵅ = (N*L - 1) / Σⱼᵝ≠ᵢᵅ d(iα, jβ)</p>
+<p>Standard closeness formula: Cᵢᵅ = (N*L - 1) / Σⱼᵝ≠ᵢᵅ d(iα, jβ)</p>
+<p>Harmonic closeness formula: HCᵢᵅ = Σⱼᵝ≠ᵢᵅ 1/d(iα, jβ)</p>
 <p>where d(iα, jβ) is the shortest path distance from node i in layer α
 to node j in layer β, and N*L is the total number of node-layer pairs.</p>
 <dl class="field-list simple">
@@ -4646,6 +4988,19 @@ to node j in layer β, and N*L is the total number of node-layer pairs.</p>
 <li><p><strong>network</strong> – py3plex multi_layer_network object</p></li>
 <li><p><strong>normalized</strong> – Whether to normalize by network size</p></li>
 <li><p><strong>weight</strong> – Edge weight attribute name (None for unweighted)</p></li>
+<li><p><strong>variant</strong> – <p>Closeness variant to use. Options:
+- ‘standard’: Classic closeness (reciprocal of sum of distances).</p>
+<blockquote>
+<div><p>Can produce biased values for nodes in disconnected components.</p>
+</div></blockquote>
+<ul>
+<li><p>’harmonic’: Harmonic closeness (sum of reciprocal distances).
+Recommended for disconnected multilayer networks.</p></li>
+<li><p>’auto’: Automatically selects ‘harmonic’ if the network has
+multiple connected components, otherwise uses ‘standard’.</p></li>
+</ul>
+<p>Default is ‘standard’ for backward compatibility.</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -4657,8 +5012,13 @@ to node j in layer β, and N*L is the total number of node-layer pairs.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">central_nodes</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">closeness</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">}</span>
 </pre></div>
 </div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># For disconnected networks, use harmonic variant</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">closeness</span> <span class="o">=</span> <span class="n">multiplex_closeness_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">&#39;harmonic&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="simple">
-<dt>Reference:</dt><dd><p>De Domenico et al. (2015), “Structural reducibility of multilayer networks”</p>
+<dt>Reference:</dt><dd><p>De Domenico et al. (2015), “Structural reducibility of multilayer networks”
+Boldi, P., &amp; Vigna, S. (2014). Axioms for Centrality. Internet Math.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5095,7 +5455,18 @@ using entropy of the probability distribution.</p>
 <p class="admonition-title">Note</p>
 <p>Accessibility is measured as the effective number of h-step destinations,
 using the entropy of the random walk distribution.</p>
+<p>Dangling Node Handling: For nodes with no outgoing edges (dangling nodes),
+this implementation uses uniform teleportation to all nodes. This differs
+from the original Travencolo-Costa definition which does not include
+teleportation. The teleportation ensures a well-defined random walk
+distribution but may affect accessibility values for nodes near dangling
+nodes compared to implementations that handle dangling nodes differently.</p>
 </div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Travencolo, B. A. N., &amp; Costa, L. D. F. (2008). Accessibility in complex
+networks. Physics Letters A, 373(1), 89-95.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -5169,20 +5540,32 @@ not just immediate neighbors but also nodes at distance ℓ.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.communicability_betweenness_centrality">
 <span class="sig-name descname"><span class="pre">communicability_betweenness_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normalized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.communicability_betweenness_centrality" title="Link to this definition"></a></dt>
-<dd><p>Compute communicability betweenness centrality (Estrada-style).</p>
+<dd><p>Compute communicability betweenness centrality on the supra-graph.</p>
 <p>This measure quantifies how much a node contributes to the communicability
 between other pairs of nodes. It uses the matrix exponential to account
 for all walks between nodes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>{(node, layer): communicability_betweenness}</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>normalized</strong> – If True (default), normalize scores by dividing by the
+maximum value (min-max scaling to [0, 1] range). Note that
+this is simple rescaling, not the theoretical Estrada-Hatano
+normalization from the original literature.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>{(node, layer): communicability_betweenness}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<p>This implementation uses NetworkX’s communicability_betweenness_centrality,
+which operates on unweighted graphs. Edge weights from the supra-adjacency
+matrix are used only to determine edge existence (weight &gt; 0), not for
+weighted communicability computation. For truly weighted communicability
+analysis, a custom implementation using the weighted matrix exponential
+would be required.</p>
 <p>This is computationally expensive as it requires computing the matrix
 exponential multiple times. For large networks, this may take significant time.</p>
 </div>
@@ -5241,9 +5624,9 @@ through each edge.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.flow_betweenness_centrality">
 <span class="sig-name descname"><span class="pre">flow_betweenness_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.flow_betweenness_centrality" title="Link to this definition"></a></dt>
-<dd><p>Compute flow betweenness based on maximum flow.</p>
+<dd><p>Compute flow betweenness based on maximum flow sampling.</p>
 <p>Flow betweenness measures how much flow passes through a node when
-maximizing flow between random source-target pairs.</p>
+maximizing flow between randomly sampled source-target pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>samples</strong> – Number of source-target pairs to sample (default: 100)</p>
@@ -5257,8 +5640,16 @@ maximizing flow between random source-target pairs.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This uses NetworkX’s maximum flow algorithms. For large networks,
-this can be computationally expensive.</p>
+<p>This is a sampling-based approximation of flow betweenness. The
+implementation samples random pairs of supra-graph nodes and computes
+the maximum flow through each intermediate node.</p>
+<p>Unlike classical Freeman flow betweenness which uses a normalization
+factor based on the number of nodes, this implementation returns the
+average flow per sampled pair without additional normalization. For
+multilayer networks, the number of supra-graph nodes (N * L for N
+physical nodes and L layers) affects the raw values.</p>
+<p>For large networks, this sampling approach is more computationally
+feasible than computing exact flow betweenness for all pairs.</p>
 </div>
 </dd></dl>
 
@@ -5281,6 +5672,13 @@ by summing the reciprocals of distances instead of taking reciprocal of sum.</p>
 <p class="admonition-title">Note</p>
 <p>This measure naturally handles disconnected components as unreachable
 nodes contribute 0 (instead of infinity) to the sum.</p>
+<p>Weight Interpretation: Edge weights from the supra-adjacency matrix
+are interpreted as connection strengths (larger weight = stronger
+connection = shorter distance). They are converted to distances via
+1/weight for shortest path computation. If your edge weights already
+represent distances, do not use this function directly—you would need
+to invert them first or use the distance values directly in a custom
+computation.</p>
 </div>
 </dd></dl>
 
@@ -5317,11 +5715,6 @@ For directed networks, computes separate hub and authority scores.</p>
 <p>Information centrality measures the importance of a node based on the
 information flow through the network. It uses the inverse of a modified
 Laplacian matrix.</p>
-<dl class="simple">
-<dt>For each physical node u:</dt><dd><p>I(u) = 1 / mean_{a in U} [G[a,a] - (2/(N*L)) * sum_b G[a,b] + (1/(N*L)^2)*sum_{b,c}G[b,c]]</p>
-</dd>
-</dl>
-<p>where G is the inverse of B = L + (1/(N*L)) * 1*1^T</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>{(node, layer): information_centrality}</p>
@@ -5332,9 +5725,20 @@ Laplacian matrix.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This implementation uses NetworkX’s information_centrality for computation.
+<p>This implementation returns values for each node-layer pair in the
+supra-graph, not aggregated physical node values. To obtain physical
+node-level information centrality, use the aggregate_to_node_level()
+method on the returned dictionary.</p>
+<p>The implementation uses NetworkX’s information_centrality for computation.
 Falls back to harmonic closeness if information centrality computation fails.</p>
+<p>Information centrality is defined only for undirected graphs. For directed
+networks, the graph is symmetrized with a warning.</p>
 </div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Stephenson, K., &amp; Zelen, M. (1989). Rethinking centrality: Methods and
+examples. Social Networks, 11(1), 1-37.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -5438,11 +5842,12 @@ tolerance of the network.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.lp_aggregated_centrality">
-<span class="sig-name descname"><span class="pre">lp_aggregated_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_centralities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.lp_aggregated_centrality" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">lp_aggregated_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_centralities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.lp_aggregated_centrality" title="Link to this definition"></a></dt>
 <dd><p>Compute Lp-aggregated per-layer centrality.</p>
 <p>Aggregates per-layer centrality values using Lp norm.</p>
-<p>C_i = (sum_{ℓ=1..L} w_ℓ * <a href="#id31"><span class="problematic" id="id32">|c^ℓ[i]|^p)^{1/p}  for p &lt; ∞
-C_i = max_{ℓ} (w_ℓ * |c^ℓ[i]|</span></a>)                for p = ∞</p>
+<p>C_i = (sum_{ℓ in L_i} w_ℓ * <a href="#id31"><span class="problematic" id="id32">|c^ℓ[i]|^p)^{1/p}  for p &lt; ∞
+C_i = max_{ℓ in L_i} (w_ℓ * |c^ℓ[i]|</span></a>)          for p = ∞</p>
+<p>where L_i is the set of layers where node i exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -5450,6 +5855,11 @@ C_i = max_{ℓ} (w_ℓ * |c^ℓ[i]|</span></a>)                for p = ∞</p>
 {(node, layer): centrality}</p></li>
 <li><p><strong>p</strong> – Lp norm parameter (default: 2). Use float(‘inf’) for L-infinity norm.</p></li>
 <li><p><strong>weights</strong> – dict of {layer: weight}. If None, uniform weights are used.</p></li>
+<li><p><strong>exclude_missing</strong> – If True (default), only aggregate over layers where
+the node exists (has a centrality value). If False,
+treat nodes absent from a layer as having zero centrality,
+which may bias scores for nodes with sparse layer
+participation.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -5463,6 +5873,12 @@ C_i = max_{ℓ} (w_ℓ * |c^ℓ[i]|</span></a>)                for p = ∞</p>
 <p class="admonition-title">Note</p>
 <p>This is a framework for aggregating any per-layer centrality measure.
 Input can be degree, PageRank, eigenvector, etc.</p>
+<p>Sparse Layer Participation: When exclude_missing=True (default), nodes
+that only appear in a subset of layers are aggregated only over those
+layers where they exist. This prevents bias against nodes with sparse
+layer participation. When exclude_missing=False, missing layers contribute
+zero to the aggregation, which may penalize nodes that don’t appear in
+all layers.</p>
 </div>
 </dd></dl>
 
@@ -5499,20 +5915,46 @@ cause undefined behavior.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.multilayer_closeness_centrality">
-<span class="sig-name descname"><span class="pre">multilayer_closeness_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normalized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_improved</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.multilayer_closeness_centrality" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">multilayer_closeness_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normalized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_improved</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'standard'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.multilayer_closeness_centrality" title="Link to this definition"></a></dt>
 <dd><p>Compute closeness centrality on the supra-graph.</p>
-<p>For each node-layer pair (i,α), computes:
-C_c(i,α) = (n-1) / Σ_{(j,β)} d((i,α), (j,β))</p>
+<p>For each node-layer pair (i,α), computes:</p>
+<dl class="simple">
+<dt>Standard closeness:</dt><dd><p>C_c(i,α) = (n-1) / Σ_{(j,β)} d((i,α), (j,β))</p>
+</dd>
+<dt>Harmonic closeness (recommended for disconnected networks):</dt><dd><p>HC(i,α) = Σ_{(j,β)≠(i,α)} 1/d((i,α), (j,β))</p>
+</dd>
+</dl>
 <p>where d((i,α), (j,β)) is the shortest path distance in the supra-graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>normalized</strong> – Whether to normalize by (n-1).</p></li>
+<li><p><strong>normalized</strong> – This parameter is kept for API compatibility but has no effect.
+Standard closeness is always normalized by (n-1) per the
+NetworkX implementation. Harmonic closeness returns unnormalized
+sums of reciprocal distances by definition.</p></li>
 <li><p><strong>wf_improved</strong> – If True, use Wasserman-Faust improved closeness scaling
 for disconnected graphs. Default is True. This affects
 the magnitude and ordering of scores in graphs with
 multiple components (e.g., low interlayer coupling).
-See NetworkX documentation for details.</p></li>
+See NetworkX documentation for details. Only used when
+variant=’standard’.</p></li>
+<li><p><strong>variant</strong> – <p>Closeness variant to use. Options:
+- ‘standard’: Classic closeness (reciprocal of sum of distances).</p>
+<blockquote>
+<div><p>For disconnected graphs, uses Wasserman-Faust scaling if
+wf_improved=True. Can produce biased values for nodes in
+small or disconnected components.</p>
+</div></blockquote>
+<ul>
+<li><p>’harmonic’: Harmonic closeness (sum of reciprocal distances).
+Mathematically well-defined for disconnected networks:
+unreachable nodes contribute 0 instead of infinity.
+Recommended for disconnected multilayer networks.</p></li>
+<li><p>’auto’: Automatically selects ‘harmonic’ if the supra-graph
+has multiple connected components, otherwise uses ‘standard’.</p></li>
+</ul>
+<p>Default is ‘standard’ for backward compatibility.</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -5527,11 +5969,36 @@ See NetworkX documentation for details.</p></li>
 <p>This implementation uses NetworkX’s shortest path algorithms on
 the supra-graph representation. For large networks, this can be
 computationally expensive.</p>
-<p>The wf_improved parameter controls how closeness is computed for
-nodes that cannot reach all other nodes. When True (default),
-uses the Wasserman-Faust formula that considers reachable nodes
-only, making scores comparable across disconnected components.</p>
+<p>For disconnected multilayer graphs (e.g., layers with no inter-layer
+coupling, or networks with isolated components), use variant=’harmonic’
+or variant=’auto’ to get mathematically consistent closeness values.
+The harmonic variant naturally handles unreachable nodes by summing
+1/d for finite distances only (infinite distances contribute 0).</p>
+<p>Weight Interpretation: Edge weights from the supra-adjacency matrix
+are interpreted as connection strengths (larger weight = stronger
+connection). They are converted to distances via 1/weight for
+shortest path computation. If your edge weights already represent
+distances, use them directly without this function’s weight inversion.</p>
 </div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># For connected networks, standard closeness works well</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">closeness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_closeness_centrality</span><span class="p">(</span><span class="n">variant</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># For potentially disconnected networks, use harmonic</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">closeness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_closeness_centrality</span><span class="p">(</span><span class="n">variant</span><span class="o">=</span><span class="s1">&#39;harmonic&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Let the algorithm decide based on connectivity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">closeness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_closeness_centrality</span><span class="p">(</span><span class="n">variant</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Wasserman, S., &amp; Faust, K. (1994). Social Network Analysis.</p></li>
+<li><p>Boldi, P., &amp; Vigna, S. (2014). Axioms for Centrality. Internet Math.</p></li>
+<li><p>De Domenico, M., et al. (2015). Structural reducibility of multilayer networks.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -5684,8 +6151,9 @@ P_i = 1 - Σ_α (k^[α]_i / k^{over}_i)^2</p>
 <dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.percolation_centrality">
 <span class="sig-name descname"><span class="pre">percolation_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_activation_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.percolation_centrality" title="Link to this definition"></a></dt>
 <dd><p>Compute percolation centrality using bond percolation Monte Carlo simulation.</p>
-<p>Percolation centrality measures the importance of a node based on its
-role in maintaining network connectivity under random edge failures.</p>
+<p>This implementation measures the average relative component size that a node
+belongs to across multiple bond percolation realizations, providing an estimate
+of a node’s importance for network connectivity under random edge failures.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -5702,9 +6170,22 @@ role in maintaining network connectivity under random edge failures.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Higher values indicate nodes that belong to larger connected components
-across different percolation realizations.</p>
+<p>This is a component-size-based percolation measure, not the path-based
+percolation betweenness from the original Piraveenan et al. literature,
+which requires recomputing betweenness on each percolated realization.
+The original percolation centrality is computationally expensive (O(n³)
+per trial), so this implementation provides a more efficient alternative
+that captures related connectivity information.</p>
+<p>Values are normalized to [0, 1] range where higher values indicate nodes
+that tend to belong to larger connected components across percolation
+realizations.</p>
 </div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Piraveenan, M., Prokopenko, M., &amp; Hossain, L. (2013). Percolation
+centrality: Quantifying graph-theoretic impact of nodes during
+percolation in networks. PloS one, 8(1), e53095.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -5712,12 +6193,13 @@ across different percolation realizations.</p>
 <span class="sig-name descname"><span class="pre">spreading_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.spreading_centrality" title="Link to this definition"></a></dt>
 <dd><p>Compute spreading (epidemic) centrality using SIR model.</p>
 <p>Spreading centrality measures how influential a node is in spreading
-information or disease through the network.</p>
+information or disease through the network, based on Monte Carlo
+simulations of discrete-time SIR dynamics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>beta</strong> – Infection rate (default: 0.2)</p></li>
-<li><p><strong>mu</strong> – Recovery rate (default: 0.1)</p></li>
+<li><p><strong>beta</strong> – Infection rate per edge per time step (default: 0.2)</p></li>
+<li><p><strong>mu</strong> – Recovery rate per time step (default: 0.1)</p></li>
 <li><p><strong>trials</strong> – Number of simulation trials per node (default: 50)</p></li>
 <li><p><strong>steps</strong> – Maximum simulation steps (default: 100)</p></li>
 </ul>
@@ -5731,9 +6213,21 @@ information or disease through the network.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This measures the average outbreak size when seeding from each node.
-Requires discrete-time SIR simulation on the supra-graph.</p>
+<p>This measures the average outbreak size (fraction of nodes ever infected)
+when seeding the epidemic from each node. Values are normalized by the
+total number of nodes, producing scores in the range [1/n, 1] where n is
+the number of supra-graph nodes.</p>
+<p>This is an empirical simulation-based measure, not normalized by
+theoretical epidemic threshold or branching factor as in some literature
+definitions. The normalization allows comparison of relative spreading
+power within the network but may not be directly comparable across
+networks of different sizes or structures.</p>
 </div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Kitsak, M., et al. (2010). Identification of influential spreaders
+in complex networks. Nature physics, 6(11), 888-893.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -5834,7 +6328,7 @@ for matrices smaller than 10000 elements.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.multilayer_algorithms.centrality.compute_all_centralities">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.multilayer_algorithms.centrality.</span></span><span class="sig-name descname"><span class="pre">compute_all_centralities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_path_based</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_advanced</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_extended</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_improved</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.compute_all_centralities" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.multilayer_algorithms.centrality.</span></span><span class="sig-name descname"><span class="pre">compute_all_centralities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_path_based</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_advanced</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_extended</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_improved</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closeness_variant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'standard'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.compute_all_centralities" title="Link to this definition"></a></dt>
 <dd><p>Compute all available centrality measures for a multilayer network.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -5854,7 +6348,21 @@ harmonic, bridging, local efficiency). Default: False</p></li>
 - ‘all’: Includes all measures (path-based, advanced, and extended)
 - None: Use individual flags (default)</p></li>
 <li><p><strong>wf_improved</strong> – If True, use Wasserman-Faust improved scaling for closeness
-centrality in disconnected graphs. Default: True</p></li>
+centrality in disconnected graphs. Default: True. Only used when
+closeness_variant=’standard’.</p></li>
+<li><p><strong>closeness_variant</strong> – <p>Variant of closeness centrality to use. Options:
+- ‘standard’: Classic closeness (reciprocal of sum of distances).</p>
+<blockquote>
+<div><p>Uses Wasserman-Faust scaling if wf_improved=True.</p>
+</div></blockquote>
+<ul>
+<li><p>’harmonic’: Harmonic closeness (sum of reciprocal distances).
+Recommended for disconnected multilayer networks.</p></li>
+<li><p>’auto’: Automatically selects ‘harmonic’ if the network has
+disconnected components, otherwise uses ‘standard’.</p></li>
+</ul>
+<p>Default: ‘standard’ for backward compatibility.</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -5886,6 +6394,9 @@ centrality in disconnected graphs. Default: True</p></li>
 <p class="admonition-title">Note</p>
 <p>Path-based, advanced, and extended measures are computationally expensive for large
 networks. Use flags or presets to control which measures are computed.</p>
+<p>For disconnected multilayer graphs (e.g., networks without inter-layer coupling,
+or with isolated components), use closeness_variant=’harmonic’ or ‘auto’ to
+get mathematically consistent closeness values.</p>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute only basic measures (fast)</span>
@@ -5905,6 +6416,14 @@ networks. Use flags or presets to control which measures are computed.</p>
 <span class="gp">... </span>    <span class="n">network</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">include_extended</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># For disconnected multilayer networks, use harmonic closeness</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">compute_all_centralities</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">network</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">include_path_based</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">closeness_variant</span><span class="o">=</span><span class="s1">&#39;harmonic&#39;</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>

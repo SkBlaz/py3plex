@@ -583,6 +583,251 @@ Matrix Representations
 
 See :doc:`../concepts/py3plex_core_model` for details on supra-adjacency matrices.
 
+Pythonic Interface
+------------------
+
+py3plex networks support Python's standard protocols, making them feel natural to use.
+
+Using len(), bool, and in
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    
+    # Create a network
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1.0],
+        ['Bob', 'friends', 'Carol', 'friends', 1.0]
+    ], input_type="list")
+    
+    # Get number of nodes with len()
+    print(f"Number of nodes: {len(network)}")  # Output: 3
+    
+    # Use in boolean context
+    if network:
+        print("Network has nodes")
+    
+    # Check if empty
+    empty_net = multinet.multi_layer_network()
+    if not empty_net:
+        print("Network is empty")
+    
+    # Check node membership with 'in'
+    if ('Alice', 'friends') in network:
+        print("Alice exists in friends layer")
+    
+    # Check edge membership
+    if (('Alice', 'friends'), ('Bob', 'friends')) in network:
+        print("Edge between Alice and Bob exists")
+
+**Output:**
+
+.. code-block:: text
+
+    Number of nodes: 3
+    Network has nodes
+    Network is empty
+    Alice exists in friends layer
+    Edge between Alice and Bob exists
+
+Property Accessors
+~~~~~~~~~~~~~~~~~~
+
+Access common network metrics directly as properties:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        ['A', 'layer1', 'B', 'layer1', 1],
+        ['B', 'layer2', 'C', 'layer2', 1]
+    ], input_type="list")
+    
+    # Property accessors - cleaner than method calls
+    print(f"Nodes: {network.node_count}")       # 4
+    print(f"Edges: {network.edge_count}")       # 2
+    print(f"Layers: {network.layer_count}")     # 2
+    print(f"Layer names: {network.layers}")     # ['layer1', 'layer2']
+    print(f"Is empty: {network.is_empty}")      # False
+
+**Output:**
+
+.. code-block:: text
+
+    Nodes: 4
+    Edges: 2
+    Layers: 2
+    Layer names: ['layer1', 'layer2']
+    Is empty: False
+
+Iterating Directly
+~~~~~~~~~~~~~~~~~~
+
+Iterate over nodes directly using ``for ... in``:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        ['A', 'layer1', 'B', 'layer1', 1]
+    ], input_type="list")
+    
+    # Iterate directly over nodes
+    for node in network:
+        print(node)
+
+**Output:**
+
+.. code-block:: text
+
+    ('A', 'layer1')
+    ('B', 'layer1')
+
+Method Chaining
+~~~~~~~~~~~~~~~
+
+Build networks fluently with method chaining:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    
+    # Chain add_nodes and add_edges calls
+    network = (multinet.multi_layer_network()
+        .add_nodes([{'source': 'A', 'type': 'layer1'}])
+        .add_nodes([{'source': 'B', 'type': 'layer1'}])
+        .add_edges([{
+            'source': 'A', 'target': 'B',
+            'source_type': 'layer1', 'target_type': 'layer1'
+        }]))
+    
+    print(f"Created network with {len(network)} nodes and {network.edge_count} edge")
+
+**Output:**
+
+.. code-block:: text
+
+    Created network with 2 nodes and 1 edge
+
+Factory Methods
+~~~~~~~~~~~~~~~
+
+Create networks in one line using factory methods:
+
+.. code-block:: python
+
+    from py3plex.core.multinet import multi_layer_network
+    
+    # Create from edges directly
+    network = multi_layer_network.from_edges([
+        {'source': 'A', 'target': 'B', 'source_type': 'l1', 'target_type': 'l1'},
+        {'source': 'B', 'target': 'C', 'source_type': 'l1', 'target_type': 'l1'},
+        {'source': 'A', 'target': 'C', 'source_type': 'l2', 'target_type': 'l2'}
+    ])
+    
+    print(f"Network: {network.node_count} nodes, {network.layer_count} layers")
+    
+    # Create from list format
+    network2 = multi_layer_network.from_edges([
+        ['X', 'layer1', 'Y', 'layer1', 1],
+        ['Y', 'layer1', 'Z', 'layer1', 1]
+    ], input_type='list', directed=False)
+
+**Output:**
+
+.. code-block:: text
+
+    Network: 4 nodes, 2 layers
+
+Create from NetworkX
+~~~~~~~~~~~~~~~~~~~~
+
+Convert existing NetworkX graphs:
+
+.. code-block:: python
+
+    import networkx as nx
+    from py3plex.core.multinet import multi_layer_network
+    
+    # Create a NetworkX graph with multilayer nodes
+    G = nx.Graph()
+    G.add_edge(('A', 'layer1'), ('B', 'layer1'))
+    G.add_edge(('B', 'layer1'), ('C', 'layer1'))
+    
+    # Convert to py3plex
+    network = multi_layer_network.from_networkx(G)
+    print(f"Converted: {len(network)} nodes")
+
+**Output:**
+
+.. code-block:: text
+
+    Converted: 3 nodes
+
+Complete Example
+~~~~~~~~~~~~~~~~
+
+Here's a complete example combining all the Pythonic features:
+
+.. code-block:: python
+
+    from py3plex.core.multinet import multi_layer_network
+    
+    # Create network using factory method
+    network = multi_layer_network.from_edges([
+        {'source': 'Alice', 'target': 'Bob', 
+         'source_type': 'friends', 'target_type': 'friends'},
+        {'source': 'Bob', 'target': 'Carol',
+         'source_type': 'friends', 'target_type': 'friends'},
+        {'source': 'Alice', 'target': 'Bob',
+         'source_type': 'work', 'target_type': 'work'}
+    ])
+    
+    # Check network state
+    if network:
+        print(f"Network has {len(network)} nodes across {network.layer_count} layers")
+        print(f"Layers: {network.layers}")
+    
+    # Check membership
+    if ('Alice', 'friends') in network:
+        print("Alice is in the friends layer")
+    
+    # Iterate over nodes
+    print("\nAll nodes:")
+    for node in network:
+        print(f"  {node}")
+    
+    # Add more data with chaining
+    network.add_edges([{
+        'source': 'Carol', 'target': 'Dave',
+        'source_type': 'friends', 'target_type': 'friends'
+    }]).add_nodes([{'source': 'Eve', 'type': 'work'}])
+    
+    print(f"\nAfter additions: {network.node_count} nodes, {network.edge_count} edges")
+
+**Output:**
+
+.. code-block:: text
+
+    Network has 4 nodes across 2 layers
+    Layers: ['friends', 'work']
+    Alice is in the friends layer
+    
+    All nodes:
+      ('Alice', 'friends')
+      ('Bob', 'friends')
+      ('Carol', 'friends')
+      ('Alice', 'work')
+      ('Bob', 'work')
+    
+    After additions: 6 nodes, 4 edges
+
 NetworkX Integration
 --------------------
 
