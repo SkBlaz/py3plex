@@ -130,6 +130,7 @@ latex_elements = {
     # Additional stuff for the LaTeX preamble for professional styling
     # Note: Do NOT load geometry here - Sphinx loads it automatically
     # Loading it again causes "Option clash for package geometry" error
+    # Note: Avoid titlesec package as it conflicts with Sphinx's document classes
     'preamble': r'''
 % Professional book-like styling improvements
 \usepackage{lmodern}            % Latin Modern fonts for better rendering
@@ -148,26 +149,6 @@ latex_elements = {
 % Better colors for links - more subtle for professional appearance
 \definecolor{InnerLinkColor}{rgb}{0.1,0.2,0.5}
 \definecolor{OuterLinkColor}{rgb}{0.1,0.2,0.5}
-
-% Professional headers and footers
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[LE,RO]{\thepage}
-\fancyhead[LO]{\nouppercase{\rightmark}}
-\fancyhead[RE]{\nouppercase{\leftmark}}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0pt}
-
-% Better list spacing for readability
-\usepackage{enumitem}
-\setlist{itemsep=0.3em, parsep=0.1em, topsep=0.5em}
-
-% Improved chapter and section spacing for book-like flow
-\usepackage{titlesec}
-\titlespacing*{\chapter}{0pt}{20pt}{20pt}
-\titlespacing*{\section}{0pt}{12pt}{8pt}
-\titlespacing*{\subsection}{0pt}{10pt}{6pt}
 ''',
 
     # Latex figure (float) alignment
