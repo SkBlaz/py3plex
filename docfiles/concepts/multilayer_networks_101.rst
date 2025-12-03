@@ -65,15 +65,14 @@ Consider Alice, Bob, Carol, and Dave. They have two types of relationships: frie
     Layer 1 (Friends):          Layer 2 (Colleagues):
     
     Alice ---- Bob              Alice ---- Bob
-       \       |                       |
-        \      |                       Dave
-         Carol D
-               a
-               v
-               e
+       \       |                          |
+        \      |                          |
+         Carol |                         Dave
+               |
+              Dave (not in L1)
     
-    (Alice and Bob are friends; Bob and Carol are friends)
-    (Alice and Bob are colleagues; Bob and Dave are colleagues)
+    Friends: Alice-Bob, Bob-Carol
+    Colleagues: Alice-Bob, Bob-Dave
 
 Notice that Alice-Bob is an edge in *both* layers—they're both friends and colleagues. Carol only appears in the friends layer; Dave only in colleagues. In a multiplex analysis, we'd observe that:
 
