@@ -178,6 +178,12 @@ class TestNodeFrameFilterExpr:
         # Should raise ValueError for disallowed construct
         assert len(result) == 0 or isinstance(result, NodeFrame)
 
+    def test_filter_expr_power(self, sample_network):
+        """Test power operator in expression filtering."""
+        result = nodes(sample_network).filter_expr("degree ** 2 > 1")
+        for item in result:
+            assert item["degree"] ** 2 > 1
+
 
 class TestNodeFrameSelect:
     """Test NodeFrame.select() method."""

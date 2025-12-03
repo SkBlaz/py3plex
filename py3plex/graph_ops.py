@@ -251,6 +251,7 @@ def _safe_eval_expr(expr: str, context: dict[str, Any]) -> bool:
         ast.Div,
         ast.Mod,
         ast.FloorDiv,
+        ast.Pow,
     )
 
     for node in ast.walk(tree):
