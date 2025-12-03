@@ -62,16 +62,15 @@ Special case where all layers share the same set of nodes but with different rel
 
 **Comparison Table:**
 
-===============  ==================  ==================
-Feature          multilayer          multiplex
-===============  ==================  ==================
-Node sets        Different per layer Same across layers
-Coupling edges   Manual              Automatic
-Load behavior    As-is               + coupling edges
-get_edges()      All edges           Filters coupling
-Use case         Heterogeneous nets  Same entities, many
-                 (author-paper)      relationship types
-===============  ==================  ==================
+===============  ===================  ===================
+Feature          multilayer           multiplex
+===============  ===================  ===================
+Node sets        Different per layer  Same across layers
+Coupling edges   Manual               Automatic
+Load behavior    As-is                + coupling edges
+get_edges()      All edges            Filters coupling
+Use case         Heterogeneous nets   Same entities
+===============  ===================  ===================
 
 The ``multi_layer_network`` Class
 ----------------------------------

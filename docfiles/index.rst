@@ -366,8 +366,6 @@ This documentation is organized as a comprehensive guide that takes you from beg
 Documentation Contents
 ======================
 
-----
-
 Part I: Getting Started
 -----------------------
 
