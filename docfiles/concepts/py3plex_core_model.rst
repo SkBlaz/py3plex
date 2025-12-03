@@ -214,6 +214,74 @@ Where:
 * :math:`A_\alpha` is the adjacency matrix of layer :math:`\alpha` (intra-layer connections)
 * :math:`C_{\alpha\beta}` is the coupling matrix between layers :math:`\alpha` and :math:`\beta` (inter-layer connections)
 
+Numeric Example
+~~~~~~~~~~~~~~~
+
+Consider a simple multiplex network with 3 nodes (A, B, C) and 2 layers. In layer 1, A-B are connected. In layer 2, B-C are connected. The nodes are the same across layers (multiplex structure).
+
+**Network structure:**
+
+.. code-block:: text
+
+    Layer 1:        Layer 2:
+    A --- B   C     A   B --- C
+
+**Node ordering:** We order nodes as (A,L1), (B,L1), (C,L1), (A,L2), (B,L2), (C,L2).
+
+**Intra-layer blocks:**
+
+Layer 1 adjacency matrix (A₁):
+
+.. code-block:: text
+
+         A   B   C
+    A [  0   1   0 ]
+    B [  1   0   0 ]
+    C [  0   0   0 ]
+
+Layer 2 adjacency matrix (A₂):
+
+.. code-block:: text
+
+         A   B   C
+    A [  0   0   0 ]
+    B [  0   0   1 ]
+    C [  0   1   0 ]
+
+**Inter-layer coupling blocks (C₁₂ and C₂₁):**
+
+In a multiplex network, we typically add identity coupling—each node connects to itself across layers:
+
+.. code-block:: text
+
+    C₁₂ = C₂₁ᵀ = 
+         A   B   C
+    A [  1   0   0 ]
+    B [  0   1   0 ]
+    C [  0   0   1 ]
+
+**Full supra-adjacency matrix (6×6):**
+
+.. code-block:: text
+
+              Layer 1        |     Layer 2
+           A    B    C       |  A    B    C
+    L1  A [ 0    1    0      |  1    0    0 ]
+        B [ 1    0    0      |  0    1    0 ]
+        C [ 0    0    0      |  0    0    1 ]
+       ---|------------------+---------------
+    L2  A [ 1    0    0      |  0    0    0 ]
+        B [ 0    1    0      |  0    0    1 ]
+        C [ 0    0    1      |  0    1    0 ]
+
+The diagonal 3×3 blocks are the within-layer adjacencies (A₁ and A₂). The off-diagonal 3×3 blocks are the coupling matrices (C₁₂ and C₂₁).
+
+**What this enables:**
+
+* **Multilayer shortest paths:** A path from (A,L1) to (C,L2) must go through B: (A,L1)→(B,L1)→(B,L2)→(C,L2)
+* **Spectral methods:** Eigenvalues of S capture multilayer structure
+* **Matrix operations:** All linear algebra works on the full system
+
 Construction
 ~~~~~~~~~~~~
 
@@ -233,6 +301,17 @@ Construction
     # Shape: (total_nodes, total_nodes)
     # where total_nodes = sum of nodes across all layers
     print(f"Shape: {supra_adj.shape}")
+
+Memory Implications
+~~~~~~~~~~~~~~~~~~~
+
+The supra-adjacency matrix has size (N×L)² where N is nodes per layer and L is layers:
+
+* **Small network (100 nodes, 3 layers):** 300×300 = 90,000 entries → ~720 KB dense
+* **Medium network (1,000 nodes, 5 layers):** 5,000×5,000 = 25 million entries → ~200 MB dense
+* **Large network (10,000 nodes, 10 layers):** 100,000×100,000 = 10 billion entries → impossible dense
+
+**Always use sparse=True** for networks with more than ~1,000 total node-layer pairs. Sparse matrices only store non-zero entries, reducing memory from O(N²L²) to O(edges + coupling).
 
 Visualization
 ~~~~~~~~~~~~~
@@ -256,6 +335,175 @@ The visualization shows the block structure with:
 
 * Diagonal blocks: intra-layer connections
 * Off-diagonal blocks: inter-layer connections
+
+How py3plex Uses NetworkX Under the Hood
+----------------------------------------
+
+py3plex is built on top of NetworkX, using it as the storage and algorithm backend. Understanding this architecture helps you leverage the full NetworkX ecosystem.
+
+The Role of MultiGraph/MultiDiGraph
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Internally, py3plex stores all nodes and edges in a single NetworkX ``MultiGraph`` (for undirected) or ``MultiDiGraph`` (for directed networks). The multilayer structure is encoded through the node representation:
+
+.. code-block:: python
+
+    # What you write in py3plex:
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1],
+        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
+    ], input_type="list")
+    
+    # What's actually stored in NetworkX:
+    # Nodes: ('Alice', 'friends'), ('Bob', 'friends'), 
+    #        ('Alice', 'colleagues'), ('Bob', 'colleagues')
+    # Edges: (('Alice', 'friends'), ('Bob', 'friends')),
+    #        (('Alice', 'colleagues'), ('Bob', 'colleagues'))
+
+This means:
+
+1. **All NetworkX algorithms work directly** on the underlying graph
+2. **Node-layer tuples are just nodes** to NetworkX—it doesn't "know" about layers
+3. **Attributes are stored as NetworkX attributes** and persist across operations
+
+Attribute Propagation
+~~~~~~~~~~~~~~~~~~~~~
+
+When you add nodes or edges with attributes, they're stored in the NetworkX graph:
+
+.. code-block:: python
+
+    # Node attributes
+    network.core_network.nodes[('Alice', 'friends')]['age'] = 30
+    network.core_network.nodes[('Alice', 'friends')]['role'] = 'admin'
+    
+    # Edge attributes
+    network.core_network[('Alice', 'friends')][('Bob', 'friends')]['weight'] = 0.8
+    network.core_network[('Alice', 'friends')][('Bob', 'friends')]['type'] = 'close'
+
+Attributes are preserved when you:
+
+* Extract subnetworks (filtered nodes keep their attributes)
+* Iterate over nodes/edges with ``data=True``
+* Save and load networks (in formats that support attributes)
+
+Using NetworkX Functions Directly
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Because ``network.core_network`` is a standard NetworkX graph, you can use any NetworkX function:
+
+.. code-block:: python
+
+    import networkx as nx
+    
+    G = network.core_network
+    
+    # Standard NetworkX algorithms
+    betweenness = nx.betweenness_centrality(G)
+    pagerank = nx.pagerank(G)
+    components = list(nx.connected_components(G.to_undirected()))
+    
+    # Shortest paths (work across layers if inter-layer edges exist)
+    path = nx.shortest_path(G, ('Alice', 'friends'), ('Bob', 'colleagues'))
+    
+    # Community detection (treats node-layer pairs as nodes)
+    communities = nx.community.louvain_communities(G)
+
+**Caveat:** NetworkX doesn't know about layer semantics. It treats ('Alice', 'friends') and ('Alice', 'colleagues') as unrelated nodes. py3plex's multilayer algorithms add the layer-aware logic.
+
+Design Trade-offs
+-----------------
+
+Node-Layer Pairs vs. Alternative Representations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+py3plex's node-layer pair representation is one of several possible designs. Here's why it was chosen:
+
+**Alternative 1: Separate graphs per layer**
+
+.. code-block:: python
+
+    # Instead of py3plex:
+    layer1 = nx.Graph()
+    layer2 = nx.Graph()
+    layer1.add_edge('Alice', 'Bob')
+    layer2.add_edge('Alice', 'Bob')
+
+*Pros:*
+
+* Simple, familiar
+* Easy layer-specific analysis
+
+*Cons:*
+
+* No representation of inter-layer edges
+* Manual bookkeeping for cross-layer operations
+* Can't compute multilayer paths or centrality directly
+
+**Alternative 2: Single graph with edge type attributes**
+
+.. code-block:: python
+
+    # Instead of py3plex:
+    G = nx.MultiGraph()
+    G.add_edge('Alice', 'Bob', type='friends')
+    G.add_edge('Alice', 'Bob', type='colleagues')
+
+*Pros:*
+
+* Single graph structure
+* Edges carry type information
+
+*Cons:*
+
+* Nodes can't have layer-specific attributes
+* Same node in different contexts is the same node (can't have Alice be central in one layer and peripheral in another)
+* Inter-layer edges to the same node are impossible
+
+**py3plex approach: Node-layer pairs**
+
+.. code-block:: python
+
+    # py3plex representation:
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1],
+        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
+    ], input_type="list")
+
+*Pros:*
+
+* Preserves both intra-layer and inter-layer structure
+* Allows layer-specific node attributes
+* Compatible with NetworkX algorithms
+* Enables proper multilayer-specific operations
+* Supports identity coupling and cross-layer edges
+
+*Cons:*
+
+* Node names are tuples (less intuitive for simple cases)
+* Memory usage is multiplied by number of layers
+* NetworkX algorithms treat node-layer pairs as independent nodes (need py3plex wrappers for multilayer semantics)
+
+**py3plex's choice:** The node-layer pair approach was chosen because it correctly models multilayer semantics while maintaining NetworkX compatibility. The downsides (tuple names, memory) are acceptable trade-offs for the flexibility and correctness gained.
+
+Consequences for Algorithm Implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The node-layer pair design has implications:
+
+1. **Layer extraction is subsetting:** To get layer 1, you filter nodes where the layer component equals "layer1"
+2. **Identity coupling is explicit:** Cross-layer edges between the same entity must be added explicitly (or automatically in multiplex mode)
+3. **Supra-matrix is derivable:** The supra-adjacency matrix can be computed from the graph structure
+4. **NetworkX algorithms work but need interpretation:** Betweenness on the full graph treats cross-layer edges as normal edges
+
+Consequences for I/O
+~~~~~~~~~~~~~~~~~~~~
+
+The node-layer pair representation affects serialization:
+
+1. **Standard formats work:** GraphML, GML can store tuple nodes
+2. **Human-readable formats need mapping:** Edgelists typically use separate columns for node and layer
+3. **Arrow/Parquet are efficient:** Modern columnar formats handle the structure naturally
 
 Network Construction
 --------------------
