@@ -699,3 +699,148 @@ The `execute_query` function returns a dictionary with the following structure:
 - **DSL Examples:** `examples/network_analysis/example_dsl_queries.py`
 - **Advanced Examples:** `examples/network_analysis/example_dsl_advanced.py`
 - **Tests:** `tests/test_dsl.py`
+- **Datasets Module:** `py3plex/datasets/`
+- **Datasets Tests:** `tests/test_datasets.py`
+- **Datasets Example:** `examples/getting_started/example_datasets.py`
+
+---
+
+## Built-in Datasets
+
+py3plex provides built-in datasets similar to scikit-learn, making it easy to get started without external data files.
+
+### Available Functions
+
+```python
+from py3plex.datasets import (
+    # Loaders for bundled datasets
+    load_aarhus_cs,           # Aarhus CS social network (61 nodes, 5 layers)
+    load_synthetic_multilayer, # Synthetic multilayer network (50 nodes, 3 layers)
+    
+    # Synthetic generators
+    make_random_multilayer,    # Random multilayer Erdős-Rényi network
+    make_random_multiplex,     # Random multiplex Erdős-Rényi network
+    make_clique_multiplex,     # Multiplex with clique structure
+    make_social_network,       # Synthetic social network (friendship/work/family)
+    
+    # Utilities
+    list_datasets,             # List all available datasets
+    get_data_dir,              # Get path to bundled data directory
+)
+
+# Or import from top-level
+import py3plex as p3
+net = p3.load_aarhus_cs()
+```
+
+### Loading Built-in Datasets
+
+```python
+import py3plex as p3
+
+# List available datasets
+for name, description in p3.list_datasets():
+    print(f"{name}: {description}")
+```
+
+**Output:**
+```
+aarhus_cs: Social network of Aarhus CS department (61 nodes, 5 layers)
+synthetic_multilayer: Synthetic multilayer network (50 nodes, 3 layers)
+```
+
+### Aarhus CS Social Network
+
+The Aarhus CS dataset represents relationships among employees in a Computer Science department with 5 layers (lunch, facebook, coauthor, leisure, work).
+
+```python
+import py3plex as p3
+
+# Load the Aarhus CS social network
+network = p3.load_aarhus_cs()
+print(f"Nodes: {len(list(network.get_nodes()))}")
+print(f"Edges: {len(list(network.get_edges()))}")
+
+# Get layers
+layers = network.get_layers()
+layer_names = layers[0] if isinstance(layers, tuple) else layers
+print(f"Layers: {layer_names}")  # ['lunch', 'facebook', 'coauthor', 'leisure', 'work']
+
+# Use with DSL
+result = p3.execute_query(network, 'SELECT nodes WHERE degree > 10')
+print(f"High-degree nodes: {result['count']}")
+```
+
+### Generating Synthetic Networks
+
+```python
+import py3plex as p3
+
+# Random multilayer network
+net = p3.make_random_multilayer(
+    n_nodes=50,       # Number of nodes
+    n_layers=3,       # Number of layers
+    p=0.1,            # Edge probability
+    random_state=42   # For reproducibility
+)
+
+# Random multiplex network (same nodes in all layers)
+net = p3.make_random_multiplex(
+    n_nodes=30,
+    n_layers=4,
+    p=0.15,
+    random_state=42
+)
+
+# Clique multiplex (good for community detection testing)
+net = p3.make_clique_multiplex(
+    n_nodes=20,
+    n_layers=2,
+    clique_size=5,
+    n_cliques=3,
+    random_state=42
+)
+
+# Social network with realistic structure
+net = p3.make_social_network(
+    n_people=30,
+    random_state=42
+)
+# Creates layers: friendship (dense), work (clustered), family (small cliques)
+```
+
+### Complete Example with Datasets
+
+```python
+import py3plex as p3
+
+# Load a dataset
+network = p3.load_aarhus_cs()
+
+# Analyze it
+network.basic_stats()
+
+# Query with DSL
+result = p3.execute_query(
+    network, 
+    'SELECT nodes WHERE layer="lunch" COMPUTE betweenness_centrality'
+)
+print(p3.format_result(result))
+
+# Or generate a synthetic network for testing
+test_net = p3.make_random_multilayer(n_nodes=100, n_layers=5, p=0.05)
+test_net.basic_stats()
+```
+
+### Dataset Reference
+
+| Function | Description | Parameters |
+|----------|-------------|------------|
+| `load_aarhus_cs()` | Load Aarhus CS social network | `directed=False` |
+| `load_synthetic_multilayer()` | Load synthetic multilayer | `directed=False` |
+| `make_random_multilayer()` | Generate random multilayer ER | `n_nodes`, `n_layers`, `p`, `directed`, `random_state` |
+| `make_random_multiplex()` | Generate random multiplex ER | `n_nodes`, `n_layers`, `p`, `directed`, `random_state` |
+| `make_clique_multiplex()` | Generate clique multiplex | `n_nodes`, `n_layers`, `clique_size`, `n_cliques`, `random_state` |
+| `make_social_network()` | Generate social network | `n_people`, `random_state` |
+| `list_datasets()` | List available datasets | None |
+| `get_data_dir()` | Get bundled data path | None |

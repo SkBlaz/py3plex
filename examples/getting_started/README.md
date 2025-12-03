@@ -6,13 +6,17 @@ This directory contains introductory examples to help you get started with py3pl
 
 **New to py3plex?** Start here:
 1. **`tutorial_10min.py`** - Complete 10-minute tutorial covering essential features
-2. **`example_random_generator.py`** - Generate your first multilayer network
-3. **`example_multilayer_functionality.py`** - Explore core multilayer operations
+2. **`example_datasets.py`** - Load built-in datasets (like scikit-learn)
+3. **`example_random_generator.py`** - Generate your first multilayer network
+4. **`example_multilayer_functionality.py`** - Explore core multilayer operations
 
 ## Examples in This Category
 
 ### Tutorials
 - **`tutorial_10min.py`** - 10-minute tutorial covering network creation, analysis, and visualization
+
+### Using Built-in Datasets
+- **`example_datasets.py`** - Load bundled datasets and generate synthetic networks (similar to scikit-learn's datasets module)
 
 ### Creating Networks
 - **`example_random_generator.py`** - Generate random multilayer Erdős-Rényi networks

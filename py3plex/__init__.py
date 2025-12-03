@@ -10,6 +10,7 @@ Main Classes:
 Key Features:
     - **SQL-like DSL for intuitive network queries**
     - **Dplyr-style chainable graph operations API**
+    - **Built-in datasets** (similar to scikit-learn)
     - Dict-based API for adding nodes and edges
     - NetworkX interoperability
     - Multiple I/O formats (edgelist, GML, GraphML, etc.)
@@ -25,6 +26,10 @@ Quick Start:
     >>> net.add_edges([{'source': 'A', 'target': 'B',
     ...                 'source_type': 'layer1', 'target_type': 'layer1'}])
     >>> print(net)
+    
+    # Load built-in datasets
+    >>> net = p3.load_aarhus_cs()  # Social network dataset
+    >>> net = p3.make_random_multilayer(n_nodes=50, n_layers=3)  # Synthetic
     
     # Use SQL-like DSL for queries
     >>> result = p3.execute_query(net, 'SELECT nodes WHERE layer="layer1"')
@@ -136,6 +141,18 @@ from py3plex.pipeline import (
 # Config-driven workflows
 from py3plex.workflows import WorkflowConfig, WorkflowRunner, run_workflow
 
+# Built-in datasets (similar to scikit-learn)
+from py3plex.datasets import (
+    get_data_dir,
+    list_datasets,
+    load_aarhus_cs,
+    load_synthetic_multilayer,
+    make_clique_multiplex,
+    make_random_multilayer,
+    make_random_multiplex,
+    make_social_network,
+)
+
 __all__ = [
     # Version info
     "__version__",
@@ -217,4 +234,13 @@ __all__ = [
     "WorkflowConfig",
     "WorkflowRunner",
     "run_workflow",
+    # Built-in datasets
+    "load_aarhus_cs",
+    "load_synthetic_multilayer",
+    "make_random_multilayer",
+    "make_random_multiplex",
+    "make_clique_multiplex",
+    "make_social_network",
+    "list_datasets",
+    "get_data_dir",
 ]
