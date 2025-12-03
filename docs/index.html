@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Py3plex Documentation &mdash; py3plex 0.95a documentation</title>
+  <title>Py3plex: A Practical Guide to Multilayer Network Analysis &mdash; py3plex 0.95a documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -46,17 +46,17 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">Chapter 1: Your First Five Minutes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">Chapter 2: The Complete Workflow in Ten Minutes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Chapter 5: Design Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -64,10 +64,10 @@
 <li class="toctree-l1"><a class="reference internal" href="user_guide/part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
@@ -123,7 +123,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Py3plex Documentation</li>
+      <li class="breadcrumb-item active">Py3plex: A Practical Guide to Multilayer Network Analysis</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -133,14 +133,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="py3plex-documentation">
-<h1>Py3plex Documentation<a class="headerlink" href="#py3plex-documentation" title="Link to this heading"></a></h1>
+  <section id="py3plex-a-practical-guide-to-multilayer-network-analysis">
+<h1>Py3plex: A Practical Guide to Multilayer Network Analysis<a class="headerlink" href="#py3plex-a-practical-guide-to-multilayer-network-analysis" title="Link to this heading"></a></h1>
 <p><em>“Complexity is the enemy of execution.”</em> — Tony Robbins</p>
 <img alt="Py3plex Visualization Showcase" class="align-center" src="_images/py3plex_showcase.png" />
 <a class="reference external image-reference" href="https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml"><img alt="Tests" src="https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg" />
 </a>
 <a class="reference external image-reference" href="https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml"><img alt="Code Quality" src="https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg" />
 </a>
+<hr class="docutils" />
+<p><em>A practical, hands-on guide to analyzing and visualizing multilayer networks in Python.</em></p>
+<hr class="docutils" />
+<p>Welcome to py3plex. This documentation is organized as a progressive learning journey—from your first five-minute example through conceptual foundations to advanced production workflows. Whether you’re a researcher exploring social network dynamics, a bioinformatician analyzing protein interactions across multiple evidence types, or a data scientist building features for machine learning, this guide will show you how to work effectively with multilayer network structures.</p>
 <p>py3plex enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.</p>
 <section id="welcome-to-py3plex">
 <h2>Welcome to py3plex<a class="headerlink" href="#welcome-to-py3plex" title="Link to this heading"></a></h2>
@@ -179,13 +183,13 @@
 <h3>What Can I Do in the First Hour, First Day, and First Week?<a class="headerlink" href="#what-can-i-do-in-the-first-hour-first-day-and-first-week" title="Link to this heading"></a></h3>
 <p><strong>First Hour:</strong></p>
 <ul class="simple">
-<li><p>Install py3plex and create your first multilayer network (see <a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a>)</p></li>
+<li><p>Install py3plex and create your first multilayer network (see <a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">Chapter 1: Your First Five Minutes</span></a>)</p></li>
 <li><p>Load a dataset, compute basic statistics, and visualize your network with one of the built-in layouts</p></li>
 <li><p>Query your network with the SQL-like DSL (<code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">nodes</span> <span class="pre">WHERE</span> <span class="pre">layer=&quot;friends&quot;</span> <span class="pre">AND</span> <span class="pre">degree</span> <span class="pre">&gt;</span> <span class="pre">5</span></code>)</p></li>
 </ul>
 <p><strong>First Day:</strong></p>
 <ul class="simple">
-<li><p>Work through the 10-minute tutorial for a complete workflow (see <a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial: Getting Started with py3plex</span></a>)</p></li>
+<li><p>Work through the 10-minute tutorial for a complete workflow (see <a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">Chapter 2: The Complete Workflow in Ten Minutes</span></a>)</p></li>
 <li><p>Compute multilayer statistics: layer density, node activity, edge overlap between layers</p></li>
 <li><p>Detect communities using multilayer Louvain and visualize them with community colors</p></li>
 <li><p>Generate random walks and create basic node embeddings for ML tasks</p></li>
@@ -450,8 +454,8 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <section id="what-s-in-this-documentation">
 <h2>What’s in this Documentation?<a class="headerlink" href="#what-s-in-this-documentation" title="Link to this heading"></a></h2>
 <p>This documentation is organized as a comprehensive guide that takes you from beginner to advanced user. It’s structured in eight parts that you can read sequentially like a book, or jump to specific sections based on your needs:</p>
-<p><strong>Part I - Getting Started:</strong> New to py3plex? Begin with the 5-minute quickstart (<a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a>) for a hands-on introduction, then continue to the 10-minute tutorial (<a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">10-Minute Tutorial: Getting Started with py3plex</span></a>) for a comprehensive walkthrough.</p>
-<p><strong>Part II - Concepts &amp; Architecture:</strong> Want to understand the theory? Check out <a class="reference internal" href="concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> for foundational concepts and <a class="reference internal" href="concepts/py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> for py3plex’s design philosophy.</p>
+<p><strong>Part I - Getting Started:</strong> New to py3plex? Begin with the 5-minute quickstart (<a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">Chapter 1: Your First Five Minutes</span></a>) for a hands-on introduction, then continue to the 10-minute tutorial (<a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">Chapter 2: The Complete Workflow in Ten Minutes</span></a>) for a comprehensive walkthrough.</p>
+<p><strong>Part II - Concepts &amp; Architecture:</strong> Want to understand the theory? Check out <a class="reference internal" href="concepts/multilayer_networks_101.html"><span class="doc">Chapter 3: Multilayer Networks 101</span></a> for foundational concepts and <a class="reference internal" href="concepts/py3plex_core_model.html"><span class="doc">Chapter 4: The py3plex Core Model</span></a> for py3plex’s design philosophy.</p>
 <p><strong>Part III - User Guide:</strong> Ready to dive deep? The user guide chapters cover every major feature from network creation to visualization, each building on the previous.</p>
 <p><strong>Part IV - Deployment:</strong> Moving to production? See the <a class="reference internal" href="deployment/cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> and <a class="reference internal" href="deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> guides for deployment strategies.</p>
 <p><strong>Part V - GUI:</strong> Prefer a visual interface? The GUI section covers the web-based interface for interactive network exploration.</p>
@@ -461,9 +465,9 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="documentation-contents">
 <h2>Documentation Contents<a class="headerlink" href="#documentation-contents" title="Link to this heading"></a></h2>
-<hr class="docutils" />
 <section id="part-i-getting-started">
 <h3>Part I: Getting Started<a class="headerlink" href="#part-i-getting-started" title="Link to this heading"></a></h3>
+<p><em>Chapters 1–2: From zero to productive in 15 minutes.</em></p>
 <p>Whether you’re new to py3plex or multilayer network analysis, this section provides everything you need to get up and running quickly. We begin with a 5-minute quickstart that demonstrates the core concepts through hands-on examples, then expand into a comprehensive 10-minute tutorial covering the most common workflows. The installation guide ensures you have all dependencies configured correctly, while the troubleshooting section addresses common issues you might encounter.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
@@ -475,7 +479,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="getting_started/part_intro.html#let-s-begin">Let’s Begin</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">5-Minute Quickstart</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">Chapter 1: Your First Five Minutes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#the-scenario">The Scenario</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#hello-world-your-first-multilayer-network">Hello World: Your First Multilayer Network</a></li>
@@ -484,15 +488,13 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#query-with-dsl-sql-like">Query with DSL (SQL-like)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#what-you-learned">What You Learned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#what-s-next">What’s Next?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#need-help">Need Help?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">Chapter 2: The Complete Workflow in Ten Minutes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#the-scenario-a-multi-platform-social-network">The Scenario: A Multi-Platform Social Network</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#what-you-will-learn">What You Will Learn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#creating-your-first-multilayer-network-2-minutes">1. Creating Your First Multilayer Network (2 minutes)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#loading-networks-from-files-1-minute">2. Loading Networks from Files (1 minute)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#part-1-building-and-loading-networks">Part 1: Building and Loading Networks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#exploring-network-structure-2-minutes">3. Exploring Network Structure (2 minutes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#computing-network-metrics-2-minutes">4. Computing Network Metrics (2 minutes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#multilayer-network-statistics-2-minutes">5. Multilayer Network Statistics (2 minutes)</a></li>
@@ -504,6 +506,8 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#next-steps">Next Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#common-issues">Common Issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#tips-for-success">Tips for Success</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a><ul>
@@ -537,6 +541,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <hr class="docutils" />
 <section id="part-ii-concepts-architecture">
 <h3>Part II: Concepts &amp; Architecture<a class="headerlink" href="#part-ii-concepts-architecture" title="Link to this heading"></a></h3>
+<p><em>Chapters 3–6: Understanding the theory and design.</em></p>
 <p>Before diving deeper into py3plex’s capabilities, it’s essential to understand the theoretical foundations of multilayer networks. This section introduces the core concepts that distinguish multilayer networks from traditional graph structures, explains py3plex’s internal data model and design philosophy, and provides an overview of the algorithmic landscape available for multilayer network analysis. Understanding these foundations will help you make better decisions when designing your analysis workflows.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
@@ -549,7 +554,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="concepts/part_intro.html#moving-forward">Moving Forward</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Multilayer Networks 101</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#a-story-of-overlooked-complexity">A Story of Overlooked Complexity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#what-are-multilayer-networks">What are Multilayer Networks?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#types-of-multilayer-networks">Types of Multilayer Networks</a></li>
@@ -559,10 +564,11 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#domain-specific-examples">Domain-Specific Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#common-pitfalls-when-modeling-multilayer-networks">Common Pitfalls When Modeling Multilayer Networks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#key-concepts-summary">Key Concepts Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#further-reading">Further Reading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/multilayer_networks_101.html#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">py3plex Core Model</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#network-types-multilayer-vs-multiplex">Network Types: Multilayer vs Multiplex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#the-multi-layer-network-class">The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> Class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#internal-representation">Internal Representation</a></li>
@@ -575,10 +581,11 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#performance-considerations">Performance Considerations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#design-principles">Design Principles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#comparison-with-other-representations">Comparison with Other Representations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/py3plex_core_model.html#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Design Principles</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/design_principles.html">Chapter 5: Design Principles</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#core-philosophy">Core Philosophy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#implementation-principles">Implementation Principles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#performance-considerations">Performance Considerations</a></li>
@@ -588,7 +595,8 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#research-oriented-design">Research-Oriented Design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#practical-implications">Practical Implications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#comparison-with-other-libraries">Comparison with Other Libraries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#related-documentation">Related Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/design_principles.html#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/algorithm_landscape.html">Algorithm Landscape</a><ul>
@@ -610,6 +618,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <hr class="docutils" />
 <section id="part-iii-user-guide">
 <h3>Part III: User Guide<a class="headerlink" href="#part-iii-user-guide" title="Link to this heading"></a></h3>
+<p><em>Chapters 7–16: Mastering every feature.</em></p>
 <p>With the fundamentals in place, this section provides comprehensive how-to guides for every major feature of py3plex. You’ll learn how to create and manipulate multilayer networks, compute network statistics and centrality measures, detect communities across layers, perform random walks for embeddings, handle various input/output formats, create publication-ready visualizations, use the SQL-like DSL for intuitive queries, use the dplyr-style chainable API for data transformations, and combine these techniques into complete analysis workflows. Each chapter builds on the previous ones, creating a progressive learning path.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -637,7 +646,6 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#basic-network-statistics">Basic Network Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#layer-specific-statistics">Layer-Specific Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#node-level-statistics">Node-Level Statistics</a></li>
@@ -647,10 +655,11 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#exporting-statistics">Exporting Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#best-practices">Best Practices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#complete-example">Complete Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/statistics.html#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection Tutorial</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#supported-algorithms">Supported Algorithms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#louvain-algorithm">Louvain Algorithm</a></li>
@@ -664,8 +673,9 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#mini-case-studies">Mini Case Studies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#comparing-algorithms">Comparing Algorithms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#what-you-learned">What You Learned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#references">References</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a><ul>
@@ -700,7 +710,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="user_guide/io_and_formats.html#see-also">See Also</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization Guide</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#quick-start">Quick Start</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#preset-visualization-modes">Preset Visualization Modes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#layout-options">Layout Options</a></li>
@@ -711,7 +721,8 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#performance-tips">Performance Tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#advanced-visualization-modes">Advanced Visualization Modes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/visualization.html#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a><ul>

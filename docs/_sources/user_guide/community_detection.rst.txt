@@ -1,22 +1,32 @@
-Community Detection Tutorial
-=============================
+Community Detection
+===================
 
-This tutorial demonstrates **community detection algorithms** for **multilayer networks** using py3plex.
+*Finding groups that span multiple layers of interaction.*
+
+----
+
+Networks are rarely homogeneous. People cluster into social groups. Proteins form functional modules. Cities organize into regional hubs. **Community detection** finds these natural groupings—but in multilayer networks, the question is more subtle: *do communities exist within layers, across layers, or both?*
+
+This chapter shows you how to detect communities in multilayer networks, how to tune algorithm parameters for your specific domain, and how to interpret results that may differ from single-layer community detection.
 
 Overview
 --------
 
 Community detection identifies **groups of nodes** that are more **densely connected** to each other than to the rest of the network. For **multilayer networks**, communities can **span multiple layers**, accounting for both **intra-layer** and **inter-layer** structure.
 
+**Key insight:** A person who is moderately connected across multiple social platforms (layers) may be more central to a cross-platform community than someone who is highly connected on just one platform. Multilayer community detection captures this.
+
 Supported Algorithms
 --------------------
 
 py3plex provides **several community detection algorithms**:
 
-* **Louvain** - **Fast modularity optimization** (recommended for most use cases)
-* **Infomap** - **Flow-based** community detection (requires external binary)
-* **Label Propagation** - **Semi-supervised** approach with known seed communities
-* **Multilayer Modularity** - **True multilayer** community detection (Mucha et al. 2010)
+* **Louvain** — **Fast modularity optimization** (recommended for most use cases)
+* **Infomap** — **Flow-based** community detection (requires external binary)
+* **Label Propagation** — **Semi-supervised** approach with known seed communities
+* **Multilayer Modularity** — **True multilayer** community detection (Mucha et al. 2010)
+
+----
 
 Louvain Algorithm
 -----------------
@@ -627,11 +637,11 @@ Validation
 
 Always validate community detection results:
 
-1. **Visual inspection** - Plot and examine communities
-2. **Modularity** - Check modularity score (>0.3 is good)
-3. **Size distribution** - Check for giant communities or singletons
-4. **Domain knowledge** - Do communities make sense for your application?
-5. **Ground truth comparison** - If you have labels, compute NMI or Adjusted Rand Index
+1. **Visual inspection** — Plot and examine communities
+2. **Modularity** — Check modularity score (>0.3 is good)
+3. **Size distribution** — Check for giant communities or singletons
+4. **Domain knowledge** — Do communities make sense for your application?
+5. **Ground truth comparison** — If you have labels, compute NMI or Adjusted Rand Index
 
 Common Failure Modes
 ~~~~~~~~~~~~~~~~~~~~~
@@ -640,6 +650,36 @@ Common Failure Modes
 * **Unstable results:** Different runs give very different partitions → use ``random_state`` and run multiple times
 * **Over-fragmentation:** Too many small communities → decrease γ or try Leiden
 * **Resolution limit:** Can't find small communities in large networks → increase γ or use hierarchical methods
+
+What You Learned
+----------------
+
+This chapter covered community detection in multilayer networks:
+
+**Algorithms:**
+
+- **Louvain** — Fast, O(n log n), BSD license, good for most use cases
+- **Infomap** — Flow-based, finds hierarchical structure, AGPLv3 license
+- **Label Propagation** — Very fast, linear in edges, supports semi-supervised detection
+- **Multilayer Modularity** — True multilayer detection with inter-layer coupling
+
+**Parameter tuning:**
+
+- **Resolution γ** — Higher = more, smaller communities; lower = fewer, larger
+- **Coupling ω** — Higher = cross-layer consistency; lower = layer-specific structure
+- Start with γ=1.0, ω=1.0 and adjust based on results
+
+**Interpretation:**
+
+- Trivial partitions (all-in-one or all-singletons) indicate parameter tuning needed
+- High modularity (>0.3) suggests good community structure
+- Validate with visualization, domain knowledge, and ground truth if available
+
+**Conceptual differences:**
+
+- Single-layer detection treats node-layer pairs independently
+- Multilayer detection finds communities consistent across layers
+- Overlapping vs. non-overlapping communities serve different use cases
 
 References
 ----------
@@ -658,11 +698,14 @@ Mucha, P. J., et al. (2010). Community structure in time-dependent, multiscale, 
 
 See :doc:`../reference/citation_and_acknowledgements` for complete citations with DOIs.
 
-Next Steps
-----------
+What's Next?
+------------
 
-* :doc:`../tutorials/multilayer_centrality` - Centrality measures tutorial
-* :doc:`../tutorials/multilayer_modularity` - Multilayer modularity details
-* :doc:`../concepts/algorithm_landscape` - Algorithm selection guide
-* :doc:`random_walks_embeddings` - Using walks for embeddings
-* Examples in ``examples/communities/example_community_detection.py``
+* :doc:`random_walks_embeddings` — Generate embeddings for ML tasks
+* :doc:`visualization` — Visualize communities with color-coding
+* :doc:`../concepts/algorithm_landscape` — Overview of all algorithms
+
+**Related Examples:**
+
+* ``examples/communities/example_community_detection.py`` — Complete workflow
+* ``examples/communities/example_multilayer_louvain.py`` — Parameter tuning

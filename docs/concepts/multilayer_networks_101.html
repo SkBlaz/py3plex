@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multilayer Networks 101 &mdash; py3plex 0.95a documentation</title>
+  <title>Chapter 3: Multilayer Networks 101 &mdash; py3plex 0.95a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="py3plex Core Model" href="py3plex_core_model.html" />
+    <link rel="next" title="Chapter 4: The py3plex Core Model" href="py3plex_core_model.html" />
     <link rel="prev" title="Concepts &amp; Architecture: Understanding the Foundations" href="part_intro.html" /> 
 </head>
 
@@ -46,15 +46,15 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">Chapter 1: Your First Five Minutes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">Chapter 2: The Complete Workflow in Ten Minutes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Multilayer Networks 101</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 3: Multilayer Networks 101</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#a-story-of-overlooked-complexity">A Story of Overlooked Complexity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-are-multilayer-networks">What are Multilayer Networks?</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#traditional-vs-multilayer">Traditional vs. Multilayer</a></li>
@@ -92,11 +92,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#supra-adjacency-matrix">Supra-Adjacency Matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further Reading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="py3plex_core_model.html">py3plex Core Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_principles.html">Chapter 5: Design Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_landscape.html">Algorithm Landscape</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -104,10 +105,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
@@ -163,7 +164,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Multilayer Networks 101</li>
+      <li class="breadcrumb-item active">Chapter 3: Multilayer Networks 101</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/concepts/multilayer_networks_101.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -173,10 +174,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="multilayer-networks-101">
-<h1>Multilayer Networks 101<a class="headerlink" href="#multilayer-networks-101" title="Link to this heading"></a></h1>
-<p><em>“Everything should be made as simple as possible, but not simpler.”</em> — Albert Einstein</p>
-<p>This chapter provides a conceptual foundation for understanding multilayer networks—what they are, why they matter, and when to use them. By the end, you’ll have the intuition needed to model your own systems as multilayer networks and understand why py3plex exists.</p>
+  <section id="chapter-3-multilayer-networks-101">
+<h1>Chapter 3: Multilayer Networks 101<a class="headerlink" href="#chapter-3-multilayer-networks-101" title="Link to this heading"></a></h1>
+<p><em>In which we learn what multilayer networks are, why they capture reality better than single-layer graphs, and how to think about layers, nodes, and edges in this richer framework.</em></p>
+<hr class="docutils" />
+<p>The previous chapters showed you <em>how</em> to use py3plex. This chapter explains <em>why</em> multilayer networks matter—and when you should (or shouldn’t) use them.</p>
+<p>By the end, you’ll have the conceptual foundation to model your own systems as multilayer networks, to choose between multiplex, heterogeneous, and temporal representations, and to understand why flattening everything into a single layer can destroy the very patterns you’re trying to find.</p>
 <section id="a-story-of-overlooked-complexity">
 <h2>A Story of Overlooked Complexity<a class="headerlink" href="#a-story-of-overlooked-complexity" title="Link to this heading"></a></h2>
 <p>In 2005, a group of researchers studied disease spread in a hospital. They modeled patient-healthcare worker contacts as a single network and simulated how infections might propagate. Their model predicted rapid hospital-wide spread within days.</p>
@@ -716,16 +719,40 @@ Alice ---- Bob          Bob ---- Carol
 <section id="supra-adjacency-matrix">
 <h3>Supra-Adjacency Matrix<a class="headerlink" href="#supra-adjacency-matrix" title="Link to this heading"></a></h3>
 <p>A matrix representation that stacks layer adjacency matrices into a block structure, encoding both intra-layer and inter-layer connections. The diagonal blocks represent within-layer edges; off-diagonal blocks represent between-layer edges.</p>
-<p>See <a class="reference internal" href="py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> for implementation details and a numeric example.</p>
+<p>See <a class="reference internal" href="py3plex_core_model.html"><span class="doc">Chapter 4: The py3plex Core Model</span></a> for implementation details and a numeric example.</p>
 </section>
 </section>
-<section id="further-reading">
-<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<section id="what-you-learned">
+<h2>What You Learned<a class="headerlink" href="#what-you-learned" title="Link to this heading"></a></h2>
+<p>This chapter covered the conceptual foundations of multilayer network analysis:</p>
+<p><strong>Concepts:</strong></p>
 <ul class="simple">
-<li><p><a class="reference internal" href="py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> - How py3plex represents multilayer networks internally</p></li>
-<li><p><a class="reference internal" href="design_principles.html"><span class="doc">Design Principles</span></a> - Design philosophy and API principles</p></li>
-<li><p><a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> - Overview of multilayer algorithms</p></li>
-<li><p><a class="reference internal" href="../user_guide/networks.html"><span class="doc">Working with Networks</span></a> - Creating and loading multilayer networks in code</p></li>
+<li><p>Why multilayer networks preserve information that single-layer graphs destroy</p></li>
+<li><p>The difference between multiplex, heterogeneous, temporal, and interdependent networks</p></li>
+<li><p>When to use multilayer modeling and when single-layer is sufficient</p></li>
+<li><p>What goes wrong when you flatten layers: spurious bridges, misleading centrality, broken paths</p></li>
+</ul>
+<p><strong>Terminology:</strong></p>
+<ul class="simple">
+<li><p>Intra-layer edges (within layers) vs. inter-layer edges (between layers)</p></li>
+<li><p>Node-layer pairs as the fundamental unit of representation</p></li>
+<li><p>The supra-adjacency matrix and its block structure</p></li>
+</ul>
+<p><strong>Decision framework:</strong></p>
+<ul class="simple">
+<li><p>Are your layers truly distinct, or are they attributes?</p></li>
+<li><p>Same nodes across layers (multiplex) or different nodes (heterogeneous)?</p></li>
+<li><p>How strong should inter-layer coupling be?</p></li>
+<li><p>Is temporal structure important?</p></li>
+</ul>
+</section>
+<section id="what-s-next">
+<h2>What’s Next?<a class="headerlink" href="#what-s-next" title="Link to this heading"></a></h2>
+<p>Now that you understand <em>what</em> multilayer networks are, the next chapter explains <em>how</em> py3plex represents them internally.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="py3plex_core_model.html"><span class="doc">Chapter 4: The py3plex Core Model</span></a> — The internal data structures and design decisions</p></li>
+<li><p><a class="reference internal" href="design_principles.html"><span class="doc">Chapter 5: Design Principles</span></a> — Why py3plex was built the way it was</p></li>
+<li><p><a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> — Overview of available algorithms</p></li>
 </ul>
 <p><strong>Academic References:</strong></p>
 <ul class="simple">
@@ -733,6 +760,8 @@ Alice ---- Bob          Bob ---- Carol
 <li><p>Boccaletti et al. (2014). “The structure and dynamics of multilayer networks.” <em>Physics Reports</em> 544(1): 1-122.</p></li>
 <li><p>De Domenico et al. (2013). “Mathematical formulation of multilayer networks.” <em>Physical Review X</em> 3(4): 041022.</p></li>
 </ul>
+<hr class="docutils" />
+<p><em>Next chapter: :doc:`py3plex_core_model` — understanding py3plex’s internal representation.</em></p>
 </section>
 </section>
 
@@ -741,7 +770,7 @@ Alice ---- Bob          Bob ---- Carol
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="part_intro.html" class="btn btn-neutral float-left" title="Concepts &amp; Architecture: Understanding the Foundations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="py3plex_core_model.html" class="btn btn-neutral float-right" title="py3plex Core Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="py3plex_core_model.html" class="btn btn-neutral float-right" title="Chapter 4: The py3plex Core Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

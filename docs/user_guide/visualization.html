@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualization Guide &mdash; py3plex 0.95a documentation</title>
+  <title>Visualization &mdash; py3plex 0.95a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -46,17 +46,17 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">Chapter 1: Your First Five Minutes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">Chapter 2: The Complete Workflow in Ten Minutes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Chapter 5: Design Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -64,10 +64,10 @@
 <li class="toctree-l1"><a class="reference internal" href="part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Visualization Guide</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Visualization</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-multilayer-visualization">Basic Multilayer Visualization</a></li>
 </ul>
@@ -135,7 +135,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#choosing-the-right-visualization">Choosing the Right Visualization</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dsl.html">SQL-like DSL for Multilayer Networks</a></li>
@@ -193,7 +194,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Visualization Guide</li>
+      <li class="breadcrumb-item active">Visualization</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/user_guide/visualization.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -203,12 +204,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="visualization-guide">
-<h1>Visualization Guide<a class="headerlink" href="#visualization-guide" title="Link to this heading"></a></h1>
+  <section id="visualization">
+<h1>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h1>
+<p><em>From hairball to insight: making multilayer networks visible.</em></p>
+<hr class="docutils" />
 <a class="reference internal image-reference" href="../_images/py3plex_showcase.png"><img alt="Py3plex Visualization Showcase" class="align-center" src="../_images/py3plex_showcase.png" style="width: 100%;" />
 </a>
-<p>This guide covers multilayer network visualization in Py3plex, including preset modes,
-customization options, and best practices for different network scales.</p>
+<p>A network you can’t see is a network you can’t understand. Visualization transforms abstract adjacency structures into spatial patterns that human perception can process—clusters become visible groups, hubs become prominent nodes, and cross-layer connections become the bridges they conceptually are.</p>
+<p>This chapter shows you how to create visualizations that reveal structure rather than obscure it. We’ll cover:</p>
+<ul class="simple">
+<li><p><strong>Quick plots</strong> for exploration and debugging</p></li>
+<li><p><strong>Preset modes</strong> optimized for different network scales</p></li>
+<li><p><strong>Layout algorithms</strong> that reveal different structural properties</p></li>
+<li><p><strong>Interactive visualizations</strong> for presentations and exploration</p></li>
+<li><p><strong>Publication-ready figures</strong> with proper formatting</p></li>
+</ul>
 <nav class="contents local" id="table-of-contents">
 <p class="topic-title">Table of Contents</p>
 <ul class="simple">
@@ -289,9 +299,11 @@ customization options, and best practices for different network scales.</p>
 <li><p><a class="reference internal" href="#choosing-the-right-visualization" id="id48">Choosing the Right Visualization</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#next-steps" id="id49">Next Steps</a></p></li>
+<li><p><a class="reference internal" href="#what-you-learned" id="id49">What You Learned</a></p></li>
+<li><p><a class="reference internal" href="#what-s-next" id="id50">What’s Next?</a></p></li>
 </ul>
 </nav>
+<hr class="docutils" />
 <section id="quick-start">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">Quick Start</a><a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <section id="basic-multilayer-visualization">
@@ -1511,13 +1523,50 @@ Sankey class, as it’s better suited for multilayer network inter-layer connect
 </ul>
 </section>
 </section>
-<section id="next-steps">
-<h2><a class="toc-backref" href="#id49" role="doc-backlink">Next Steps</a><a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<section id="what-you-learned">
+<h2><a class="toc-backref" href="#id49" role="doc-backlink">What You Learned</a><a class="headerlink" href="#what-you-learned" title="Link to this heading"></a></h2>
+<p>This chapter covered visualization techniques for multilayer networks:</p>
+<p><strong>Basic visualization:</strong></p>
 <ul class="simple">
-<li><p><a class="reference internal" href="networks.html"><span class="doc">Working with Networks</span></a> - Network operations</p></li>
-<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection Tutorial</span></a> - Detect communities for coloring</p></li>
-<li><p><a class="reference internal" href="io_and_formats.html"><span class="doc">I/O and Serialization</span></a> - Load data from various formats</p></li>
-<li><p><a class="reference internal" href="../deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> - Optimize for large networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">draw_multilayer_default()</span></code> for quick plots</p></li>
+<li><p>Preset modes (minimal, balanced, dense) for different network scales</p></li>
+<li><p>Layout options (circular, rectangular)</p></li>
+</ul>
+<p><strong>Customization:</strong></p>
+<ul class="simple">
+<li><p>Node sizes, colors, and labels</p></li>
+<li><p>Edge transparency and width</p></li>
+<li><p>Layer-specific styling</p></li>
+<li><p>Community color-coding</p></li>
+</ul>
+<p><strong>Advanced modes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">small_multiples</span></code> — side-by-side layer comparison</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edge_colored_projection</span></code> — aggregated view with layer colors</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">supra_adjacency_heatmap</span></code> — matrix representation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">radial_layers</span></code> — concentric circles for ordered layers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ego_multilayer</span></code> — node-centric neighborhood view</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flow</span></code> and <code class="docutils literal notranslate"><span class="pre">sankey</span></code> — inter-layer flow visualization</p></li>
+</ul>
+<p><strong>Interactive visualization:</strong></p>
+<ul class="simple">
+<li><p>Plotly-based interactive plots with hover, zoom, pan</p></li>
+<li><p>HTML export for sharing</p></li>
+<li><p>Jupyter notebook integration</p></li>
+</ul>
+<p><strong>Best practices:</strong></p>
+<ul class="simple">
+<li><p>Match visualization mode to network size and analysis goal</p></li>
+<li><p>Use sparse representations for performance</p></li>
+<li><p>Export as PDF/SVG for publication-quality figures</p></li>
+</ul>
+</section>
+<section id="what-s-next">
+<h2><a class="toc-backref" href="#id50" role="doc-backlink">What’s Next?</a><a class="headerlink" href="#what-s-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="io_and_formats.html"><span class="doc">I/O and Serialization</span></a> — Load and save networks in various formats</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection</span></a> — Detect communities for color-coding</p></li>
+<li><p><a class="reference internal" href="../deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> — Optimize for large networks</p></li>
 </ul>
 <p>For more examples, see the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/main/examples">visualization examples</a>
 in the GitHub repository.</p>

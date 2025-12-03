@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Design Principles &mdash; py3plex 0.95a documentation</title>
+  <title>Chapter 5: Design Principles &mdash; py3plex 0.95a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Algorithm Landscape" href="algorithm_landscape.html" />
-    <link rel="prev" title="py3plex Core Model" href="py3plex_core_model.html" /> 
+    <link rel="prev" title="Chapter 4: The py3plex Core Model" href="py3plex_core_model.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,17 +46,17 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">Chapter 1: Your First Five Minutes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">Chapter 2: The Complete Workflow in Ten Minutes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="multilayer_networks_101.html">Multilayer Networks 101</a></li>
-<li class="toctree-l1"><a class="reference internal" href="py3plex_core_model.html">py3plex Core Model</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Design Principles</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 5: Design Principles</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#core-philosophy">Core Philosophy</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#simple-off-the-shelf-functionality">Simple, Off-the-Shelf Functionality</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#networkx-compatibility">NetworkX Compatibility</a></li>
@@ -107,7 +107,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex-vs-other-multilayer-tools">py3plex vs. Other Multilayer Tools</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#related-documentation">Related Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_landscape.html">Algorithm Landscape</a></li>
@@ -117,10 +118,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
@@ -176,7 +177,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Design Principles</li>
+      <li class="breadcrumb-item active">Chapter 5: Design Principles</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/concepts/design_principles.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -186,9 +187,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="design-principles">
-<h1>Design Principles<a class="headerlink" href="#design-principles" title="Link to this heading"></a></h1>
-<p>py3plex is built on a foundation of key design principles that guide its development and usage. Understanding these principles helps you use the library effectively and extend it for your needs.</p>
+  <section id="chapter-5-design-principles">
+<h1>Chapter 5: Design Principles<a class="headerlink" href="#chapter-5-design-principles" title="Link to this heading"></a></h1>
+<p><em>In which we explore the philosophy behind py3plex’s API, understand why certain design choices were made, and learn how these principles make the library easier to use and extend.</em></p>
+<hr class="docutils" />
+<p>Every library makes choices. Why is the API shaped this way? Why does this function return that data structure? Why do you import from here and not there?</p>
+<p>This chapter explains the design principles behind py3plex. Understanding them will help you:</p>
+<ul class="simple">
+<li><p><strong>Use the library more effectively</strong> — work <em>with</em> the design, not against it</p></li>
+<li><p><strong>Debug unexpected behavior</strong> — understand why things work the way they do</p></li>
+<li><p><strong>Extend the library</strong> — add your own algorithms that fit naturally</p></li>
+</ul>
 <section id="core-philosophy">
 <h2>Core Philosophy<a class="headerlink" href="#core-philosophy" title="Link to this heading"></a></h2>
 <section id="simple-off-the-shelf-functionality">
@@ -643,19 +652,47 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
 </ul>
 </section>
 </section>
-<section id="related-documentation">
-<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
+<section id="what-you-learned">
+<h2>What You Learned<a class="headerlink" href="#what-you-learned" title="Link to this heading"></a></h2>
+<p>This chapter covered the design philosophy behind py3plex:</p>
+<p><strong>Core principles:</strong></p>
 <ul class="simple">
-<li><p><a class="reference internal" href="multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> - Conceptual introduction to multilayer networks</p></li>
-<li><p><a class="reference internal" href="py3plex_core_model.html"><span class="doc">py3plex Core Model</span></a> - Internal representation details</p></li>
-<li><p><a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> - Overview of available algorithms</p></li>
-<li><p><a class="reference internal" href="../dev/development_guide.html"><span class="doc">Development Guide</span></a> - Contributing to py3plex</p></li>
-<li><p><a class="reference internal" href="../dev/code_architecture.html"><span class="doc">Architecture and Design</span></a> - Internal architecture details</p></li>
+<li><p><strong>Simple, off-the-shelf functionality</strong> — work out of the box with minimal configuration</p></li>
+<li><p><strong>NetworkX compatibility</strong> — leverage the entire NetworkX ecosystem</p></li>
+<li><p><strong>Modular architecture</strong> — import only what you need</p></li>
+</ul>
+<p><strong>Implementation principles:</strong></p>
+<ul class="simple">
+<li><p><strong>Flexibility</strong> — multiple ways to accomplish tasks</p></li>
+<li><p><strong>Lazy evaluation</strong> — expensive operations computed on demand</p></li>
+<li><p><strong>Graceful degradation</strong> — optional features fail with helpful messages</p></li>
+<li><p><strong>Explicit over implicit</strong> — clear, predictable behavior</p></li>
+</ul>
+<p><strong>Performance principles:</strong></p>
+<ul class="simple">
+<li><p><strong>Sparse representations</strong> — efficient for large networks</p></li>
+<li><p><strong>Sensible defaults</strong> — good starting parameters based on research</p></li>
+</ul>
+<p><strong>Quality principles:</strong></p>
+<ul class="simple">
+<li><p><strong>Comprehensive documentation</strong> — every feature has examples</p></li>
+<li><p><strong>Extensive testing</strong> — validated against published results</p></li>
+<li><p><strong>Reproducibility</strong> — seed parameters for deterministic results</p></li>
+</ul>
+</section>
+<section id="what-s-next">
+<h2>What’s Next?<a class="headerlink" href="#what-s-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> — Overview of available algorithms</p></li>
+<li><p><a class="reference internal" href="../user_guide/networks.html"><span class="doc">Working with Networks</span></a> — Practical guide to network operations</p></li>
+<li><p><a class="reference internal" href="../dev/development_guide.html"><span class="doc">Development Guide</span></a> — Contributing to py3plex</p></li>
 </ul>
 <p><strong>Academic References:</strong></p>
 <ul class="simple">
 <li><p>Škrlj et al. (2019). “Py3plex toolkit for visualization and analysis of multilayer networks.” <em>Applied Network Science</em> 4(1): 94.</p></li>
 </ul>
+<hr class="docutils" />
+<p><em>Next chapter: :doc:`algorithm_landscape` — a tour of py3plex’s algorithmic capabilities.</em></p>
 </section>
 </section>
 
@@ -663,7 +700,7 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="py3plex_core_model.html" class="btn btn-neutral float-left" title="py3plex Core Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="py3plex_core_model.html" class="btn btn-neutral float-left" title="Chapter 4: The py3plex Core Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="algorithm_landscape.html" class="btn btn-neutral float-right" title="Algorithm Landscape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

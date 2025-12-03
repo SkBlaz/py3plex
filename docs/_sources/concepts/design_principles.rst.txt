@@ -1,7 +1,17 @@
-Design Principles
-=================
+Chapter 5: Design Principles
+=============================
 
-py3plex is built on a foundation of key design principles that guide its development and usage. Understanding these principles helps you use the library effectively and extend it for your needs.
+*In which we explore the philosophy behind py3plex's API, understand why certain design choices were made, and learn how these principles make the library easier to use and extend.*
+
+----
+
+Every library makes choices. Why is the API shaped this way? Why does this function return that data structure? Why do you import from here and not there?
+
+This chapter explains the design principles behind py3plex. Understanding them will help you:
+
+- **Use the library more effectively** — work *with* the design, not against it
+- **Debug unexpected behavior** — understand why things work the way they do
+- **Extend the library** — add your own algorithms that fit naturally
 
 Core Philosophy
 ---------------
@@ -513,15 +523,46 @@ py3plex vs. Other Multilayer Tools
 * Active development
 * Research-backed
 
-Related Documentation
----------------------
+What You Learned
+----------------
 
-* :doc:`multilayer_networks_101` - Conceptual introduction to multilayer networks
-* :doc:`py3plex_core_model` - Internal representation details
-* :doc:`algorithm_landscape` - Overview of available algorithms
-* :doc:`../dev/development_guide` - Contributing to py3plex
-* :doc:`../dev/code_architecture` - Internal architecture details
+This chapter covered the design philosophy behind py3plex:
+
+**Core principles:**
+
+- **Simple, off-the-shelf functionality** — work out of the box with minimal configuration
+- **NetworkX compatibility** — leverage the entire NetworkX ecosystem
+- **Modular architecture** — import only what you need
+
+**Implementation principles:**
+
+- **Flexibility** — multiple ways to accomplish tasks
+- **Lazy evaluation** — expensive operations computed on demand
+- **Graceful degradation** — optional features fail with helpful messages
+- **Explicit over implicit** — clear, predictable behavior
+
+**Performance principles:**
+
+- **Sparse representations** — efficient for large networks
+- **Sensible defaults** — good starting parameters based on research
+
+**Quality principles:**
+
+- **Comprehensive documentation** — every feature has examples
+- **Extensive testing** — validated against published results
+- **Reproducibility** — seed parameters for deterministic results
+
+What's Next?
+------------
+
+* :doc:`algorithm_landscape` — Overview of available algorithms
+* :doc:`../user_guide/networks` — Practical guide to network operations
+* :doc:`../dev/development_guide` — Contributing to py3plex
 
 **Academic References:**
 
 * Škrlj et al. (2019). "Py3plex toolkit for visualization and analysis of multilayer networks." *Applied Network Science* 4(1): 94.
+
+----
+
+*Next chapter: :doc:`algorithm_landscape` — a tour of py3plex's algorithmic capabilities.*

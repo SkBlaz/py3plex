@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Community Detection Tutorial &mdash; py3plex 0.95a documentation</title>
+  <title>Community Detection &mdash; py3plex 0.95a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -47,17 +47,17 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial: Getting Started with py3plex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">Chapter 1: Your First Five Minutes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">Chapter 2: The Complete Workflow in Ten Minutes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Chapter 5: Design Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -65,7 +65,7 @@
 <li class="toctree-l1"><a class="reference internal" href="part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Community Detection Tutorial</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Community Detection</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#supported-algorithms">Supported Algorithms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#louvain-algorithm">Louvain Algorithm</a><ul>
@@ -137,13 +137,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#common-failure-modes">Common Failure Modes</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-learned">What You Learned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dsl.html">SQL-like DSL for Multilayer Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
@@ -199,7 +200,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Community Detection Tutorial</li>
+      <li class="breadcrumb-item active">Community Detection</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/user_guide/community_detection.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -209,23 +210,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="community-detection-tutorial">
-<h1>Community Detection Tutorial<a class="headerlink" href="#community-detection-tutorial" title="Link to this heading"></a></h1>
-<p>This tutorial demonstrates <strong>community detection algorithms</strong> for <strong>multilayer networks</strong> using py3plex.</p>
+  <section id="community-detection">
+<h1>Community Detection<a class="headerlink" href="#community-detection" title="Link to this heading"></a></h1>
+<p><em>Finding groups that span multiple layers of interaction.</em></p>
+<hr class="docutils" />
+<p>Networks are rarely homogeneous. People cluster into social groups. Proteins form functional modules. Cities organize into regional hubs. <strong>Community detection</strong> finds these natural groupings—but in multilayer networks, the question is more subtle: <em>do communities exist within layers, across layers, or both?</em></p>
+<p>This chapter shows you how to detect communities in multilayer networks, how to tune algorithm parameters for your specific domain, and how to interpret results that may differ from single-layer community detection.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>Community detection identifies <strong>groups of nodes</strong> that are more <strong>densely connected</strong> to each other than to the rest of the network. For <strong>multilayer networks</strong>, communities can <strong>span multiple layers</strong>, accounting for both <strong>intra-layer</strong> and <strong>inter-layer</strong> structure.</p>
+<p><strong>Key insight:</strong> A person who is moderately connected across multiple social platforms (layers) may be more central to a cross-platform community than someone who is highly connected on just one platform. Multilayer community detection captures this.</p>
 </section>
 <section id="supported-algorithms">
 <h2>Supported Algorithms<a class="headerlink" href="#supported-algorithms" title="Link to this heading"></a></h2>
 <p>py3plex provides <strong>several community detection algorithms</strong>:</p>
 <ul class="simple">
-<li><p><strong>Louvain</strong> - <strong>Fast modularity optimization</strong> (recommended for most use cases)</p></li>
-<li><p><strong>Infomap</strong> - <strong>Flow-based</strong> community detection (requires external binary)</p></li>
-<li><p><strong>Label Propagation</strong> - <strong>Semi-supervised</strong> approach with known seed communities</p></li>
-<li><p><strong>Multilayer Modularity</strong> - <strong>True multilayer</strong> community detection (Mucha et al. 2010)</p></li>
+<li><p><strong>Louvain</strong> — <strong>Fast modularity optimization</strong> (recommended for most use cases)</p></li>
+<li><p><strong>Infomap</strong> — <strong>Flow-based</strong> community detection (requires external binary)</p></li>
+<li><p><strong>Label Propagation</strong> — <strong>Semi-supervised</strong> approach with known seed communities</p></li>
+<li><p><strong>Multilayer Modularity</strong> — <strong>True multilayer</strong> community detection (Mucha et al. 2010)</p></li>
 </ul>
 </section>
+<hr class="docutils" />
 <section id="louvain-algorithm">
 <h2>Louvain Algorithm<a class="headerlink" href="#louvain-algorithm" title="Link to this heading"></a></h2>
 <section id="basic-usage">
@@ -800,11 +806,11 @@
 <h3>Validation<a class="headerlink" href="#validation" title="Link to this heading"></a></h3>
 <p>Always validate community detection results:</p>
 <ol class="arabic simple">
-<li><p><strong>Visual inspection</strong> - Plot and examine communities</p></li>
-<li><p><strong>Modularity</strong> - Check modularity score (&gt;0.3 is good)</p></li>
-<li><p><strong>Size distribution</strong> - Check for giant communities or singletons</p></li>
-<li><p><strong>Domain knowledge</strong> - Do communities make sense for your application?</p></li>
-<li><p><strong>Ground truth comparison</strong> - If you have labels, compute NMI or Adjusted Rand Index</p></li>
+<li><p><strong>Visual inspection</strong> — Plot and examine communities</p></li>
+<li><p><strong>Modularity</strong> — Check modularity score (&gt;0.3 is good)</p></li>
+<li><p><strong>Size distribution</strong> — Check for giant communities or singletons</p></li>
+<li><p><strong>Domain knowledge</strong> — Do communities make sense for your application?</p></li>
+<li><p><strong>Ground truth comparison</strong> — If you have labels, compute NMI or Adjusted Rand Index</p></li>
 </ol>
 </section>
 <section id="common-failure-modes">
@@ -817,6 +823,35 @@
 </ul>
 </section>
 </section>
+<section id="what-you-learned">
+<h2>What You Learned<a class="headerlink" href="#what-you-learned" title="Link to this heading"></a></h2>
+<p>This chapter covered community detection in multilayer networks:</p>
+<p><strong>Algorithms:</strong></p>
+<ul class="simple">
+<li><p><strong>Louvain</strong> — Fast, O(n log n), BSD license, good for most use cases</p></li>
+<li><p><strong>Infomap</strong> — Flow-based, finds hierarchical structure, AGPLv3 license</p></li>
+<li><p><strong>Label Propagation</strong> — Very fast, linear in edges, supports semi-supervised detection</p></li>
+<li><p><strong>Multilayer Modularity</strong> — True multilayer detection with inter-layer coupling</p></li>
+</ul>
+<p><strong>Parameter tuning:</strong></p>
+<ul class="simple">
+<li><p><strong>Resolution γ</strong> — Higher = more, smaller communities; lower = fewer, larger</p></li>
+<li><p><strong>Coupling ω</strong> — Higher = cross-layer consistency; lower = layer-specific structure</p></li>
+<li><p>Start with γ=1.0, ω=1.0 and adjust based on results</p></li>
+</ul>
+<p><strong>Interpretation:</strong></p>
+<ul class="simple">
+<li><p>Trivial partitions (all-in-one or all-singletons) indicate parameter tuning needed</p></li>
+<li><p>High modularity (&gt;0.3) suggests good community structure</p></li>
+<li><p>Validate with visualization, domain knowledge, and ground truth if available</p></li>
+</ul>
+<p><strong>Conceptual differences:</strong></p>
+<ul class="simple">
+<li><p>Single-layer detection treats node-layer pairs independently</p></li>
+<li><p>Multilayer detection finds communities consistent across layers</p></li>
+<li><p>Overlapping vs. non-overlapping communities serve different use cases</p></li>
+</ul>
+</section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <p><strong>Louvain:</strong></p>
@@ -827,14 +862,17 @@
 <p>Mucha, P. J., et al. (2010). Community structure in time-dependent, multiscale, and multiplex networks. <em>Science</em>, 328(5980), 876-878.</p>
 <p>See <a class="reference internal" href="../reference/citation_and_acknowledgements.html"><span class="doc">Citation and References</span></a> for complete citations with DOIs.</p>
 </section>
-<section id="next-steps">
-<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<section id="what-s-next">
+<h2>What’s Next?<a class="headerlink" href="#what-s-next" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="../tutorials/multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Centrality measures tutorial</p></li>
-<li><p><a class="reference internal" href="../tutorials/multilayer_modularity.html"><span class="doc">Multilayer Modularity and Community Detection</span></a> - Multilayer modularity details</p></li>
-<li><p><a class="reference internal" href="../concepts/algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> - Algorithm selection guide</p></li>
-<li><p><a class="reference internal" href="random_walks_embeddings.html"><span class="doc">Random Walk Algorithms</span></a> - Using walks for embeddings</p></li>
-<li><p>Examples in <code class="docutils literal notranslate"><span class="pre">examples/communities/example_community_detection.py</span></code></p></li>
+<li><p><a class="reference internal" href="random_walks_embeddings.html"><span class="doc">Random Walk Algorithms</span></a> — Generate embeddings for ML tasks</p></li>
+<li><p><a class="reference internal" href="visualization.html"><span class="doc">Visualization</span></a> — Visualize communities with color-coding</p></li>
+<li><p><a class="reference internal" href="../concepts/algorithm_landscape.html"><span class="doc">Algorithm Landscape</span></a> — Overview of all algorithms</p></li>
+</ul>
+<p><strong>Related Examples:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/communities/example_community_detection.py</span></code> — Complete workflow</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/communities/example_multilayer_louvain.py</span></code> — Parameter tuning</p></li>
 </ul>
 </section>
 </section>

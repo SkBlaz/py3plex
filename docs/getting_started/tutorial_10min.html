@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10-Minute Tutorial: Getting Started with py3plex &mdash; py3plex 0.95a documentation</title>
+  <title>Chapter 2: The Complete Workflow in Ten Minutes &mdash; py3plex 0.95a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Installation and Setup" href="installation.html" />
-    <link rel="prev" title="5-Minute Quickstart" href="quickstart_5min.html" /> 
+    <link rel="prev" title="Chapter 1: Your First Five Minutes" href="quickstart_5min.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,13 +46,16 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="part_intro.html">Getting Started: Your Journey Begins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart_5min.html">5-Minute Quickstart</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">10-Minute Tutorial: Getting Started with py3plex</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_5min.html">Chapter 1: Your First Five Minutes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 2: The Complete Workflow in Ten Minutes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-scenario-a-multi-platform-social-network">The Scenario: A Multi-Platform Social Network</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-you-will-learn">What You Will Learn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-your-first-multilayer-network-2-minutes">1. Creating Your First Multilayer Network (2 minutes)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#loading-networks-from-files-1-minute">2. Loading Networks from Files (1 minute)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#part-1-building-and-loading-networks">Part 1: Building and Loading Networks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-networks-from-scratch">1.1 Creating Networks from Scratch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loading-networks-from-files">1.2 Loading Networks from Files</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#exploring-network-structure-2-minutes">3. Exploring Network Structure (2 minutes)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#iterate-through-nodes-and-edges">Iterate Through Nodes and Edges</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#extract-subnetworks">Extract Subnetworks</a></li>
@@ -87,6 +90,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#tips-for-success">Tips for Success</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-learned">What You Learned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-next">What’s Next?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
@@ -95,9 +100,9 @@
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">py3plex Core Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Chapter 5: Design Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -105,10 +110,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide: From Understanding to Mastery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
@@ -164,7 +169,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">10-Minute Tutorial: Getting Started with py3plex</li>
+      <li class="breadcrumb-item active">Chapter 2: The Complete Workflow in Ten Minutes</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/getting_started/tutorial_10min.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -174,9 +179,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="minute-tutorial-getting-started-with-py3plex">
-<h1>10-Minute Tutorial: Getting Started with py3plex<a class="headerlink" href="#minute-tutorial-getting-started-with-py3plex" title="Link to this heading"></a></h1>
-<p>This tutorial provides a comprehensive introduction to py3plex, covering the most common tasks for working with multilayer networks.</p>
+  <section id="chapter-2-the-complete-workflow-in-ten-minutes">
+<h1>Chapter 2: The Complete Workflow in Ten Minutes<a class="headerlink" href="#chapter-2-the-complete-workflow-in-ten-minutes" title="Link to this heading"></a></h1>
+<p><em>In which we build a complete multilayer network analysis pipeline—from loading data through community detection to visualization—and learn to interpret results for research.</em></p>
+<hr class="docutils" />
+<p>In the previous chapter, you created a tiny multilayer network by hand and saw the basic building blocks. Now we’ll tackle something more realistic: a complete analysis workflow that you could actually use in research.</p>
+<p>By the end of this chapter, you’ll have a template for any multilayer network analysis project. Whether you’re studying social networks, biological interactions, or transportation systems, the workflow stays the same: load → explore → analyze → visualize → interpret.</p>
 <section id="the-scenario-a-multi-platform-social-network">
 <h2>The Scenario: A Multi-Platform Social Network<a class="headerlink" href="#the-scenario-a-multi-platform-social-network" title="Link to this heading"></a></h2>
 <p>Imagine you’re a data scientist at a research institute studying how people interact across different online platforms. You’ve been given a dataset of users interacting on two social platforms over time: a messaging app (layer 1) and a professional network (layer 2). Some users are active on both platforms, others on only one. Your goals are:</p>
@@ -192,12 +200,12 @@
 <h2>What You Will Learn<a class="headerlink" href="#what-you-will-learn" title="Link to this heading"></a></h2>
 <p>In 10 minutes, you will learn how to:</p>
 <ol class="arabic simple">
-<li><p>Create and load multilayer networks</p></li>
-<li><p>Perform basic network analysis</p></li>
+<li><p>Create and load multilayer networks from various sources</p></li>
+<li><p>Navigate network structure with iteration and extraction</p></li>
 <li><p>Compute multilayer statistics (and interpret what they mean)</p></li>
-<li><p>Detect communities across layers</p></li>
-<li><p>Perform random walks for embeddings</p></li>
-<li><p>Visualize networks</p></li>
+<li><p>Detect communities that span multiple layers</p></li>
+<li><p>Perform random walks for generating node embeddings</p></li>
+<li><p>Create visualizations for exploration and publication</p></li>
 <li><p>Narrate your findings for a research paper</p></li>
 </ol>
 </section>
@@ -208,10 +216,14 @@
 </pre></div>
 </div>
 </section>
-<section id="creating-your-first-multilayer-network-2-minutes">
-<h2>1. Creating Your First Multilayer Network (2 minutes)<a class="headerlink" href="#creating-your-first-multilayer-network-2-minutes" title="Link to this heading"></a></h2>
-<p><strong>Goal:</strong> Build a multilayer network from scratch to understand the data model.</p>
-<p>Start by creating a simple multilayer network:</p>
+<hr class="docutils" />
+<section id="part-1-building-and-loading-networks">
+<h2>Part 1: Building and Loading Networks<a class="headerlink" href="#part-1-building-and-loading-networks" title="Link to this heading"></a></h2>
+<p><em>Time estimate: 3 minutes</em></p>
+<section id="creating-networks-from-scratch">
+<h3>1.1 Creating Networks from Scratch<a class="headerlink" href="#creating-networks-from-scratch" title="Link to this heading"></a></h3>
+<p><strong>Goal:</strong> Build a multilayer network programmatically to understand the data model.</p>
+<p>Let’s start by creating a small network by hand. This helps you understand exactly what’s happening before we load larger data from files.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a new multilayer network</span>
@@ -242,8 +254,8 @@ Nodes per layer:
 </div>
 <p><strong>What to notice:</strong> We have 4 unique people (A, B, C, D) but 5 node-layer pairs because A and B appear in both layers. C only appears in layer1; D only in layer2. Node B is the most “active” (appears in both layers) and is connected in both contexts—this makes B a potential bridge between the two platforms.</p>
 </section>
-<section id="loading-networks-from-files-1-minute">
-<h2>2. Loading Networks from Files (1 minute)<a class="headerlink" href="#loading-networks-from-files-1-minute" title="Link to this heading"></a></h2>
+<section id="loading-networks-from-files">
+<h3>1.2 Loading Networks from Files<a class="headerlink" href="#loading-networks-from-files" title="Link to this heading"></a></h3>
 <p><strong>Goal:</strong> Load real data from a file and verify it loaded correctly.</p>
 <p>py3plex supports multiple input formats. Here is how to load from an edge list:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
@@ -277,6 +289,7 @@ Nodes per layer:
 <li><p><code class="docutils literal notranslate"><span class="pre">gpickle</span></code> - NetworkX pickle format</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gml</span></code>, <code class="docutils literal notranslate"><span class="pre">graphml</span></code> - standard graph formats</p></li>
 </ul>
+</section>
 </section>
 <section id="exploring-network-structure-2-minutes">
 <h2>3. Exploring Network Structure (2 minutes)<a class="headerlink" href="#exploring-network-structure-2-minutes" title="Link to this heading"></a></h2>
@@ -807,7 +820,7 @@ Complete analysis saved to complete_analysis.png
 <li><p><strong>Multilayer Centrality</strong>: See examples in <code class="docutils literal notranslate"><span class="pre">examples/network_analysis/</span></code></p></li>
 <li><p><strong>More Examples</strong>: Check the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory for 80+ examples organized by topic</p></li>
 <li><p><strong>Full Documentation</strong>: Visit <a class="reference external" href="https://skblaz.github.io/py3plex/">https://skblaz.github.io/py3plex/</a></p></li>
-<li><p><strong>Community Detection Tuning</strong>: See <a class="reference internal" href="../user_guide/community_detection.html"><span class="doc">Community Detection Tutorial</span></a> for parameter guidance</p></li>
+<li><p><strong>Community Detection Tuning</strong>: See <a class="reference internal" href="../user_guide/community_detection.html"><span class="doc">Community Detection</span></a> for parameter guidance</p></li>
 <li><p><strong>Case Studies</strong>: See <a class="reference internal" href="../user_guide/recipes_and_workflows.html"><span class="doc">Analysis Recipes &amp; Workflows</span></a> for domain-specific examples</p></li>
 </ul>
 </section>
@@ -847,14 +860,54 @@ pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com
 </section>
 <section id="tips-for-success">
 <h2>Tips for Success<a class="headerlink" href="#tips-for-success" title="Link to this heading"></a></h2>
+<p>Before moving on, here are five practices that will save you time:</p>
 <ol class="arabic simple">
-<li><p><strong>Start Simple</strong>: Begin with small test networks before scaling to large datasets</p></li>
-<li><p><strong>Check Stats</strong>: Always run <code class="docutils literal notranslate"><span class="pre">basic_stats()</span></code> after loading to verify your network</p></li>
-<li><p><strong>Use Subnetworks</strong>: Extract layers or subsets for faster prototyping</p></li>
-<li><p><strong>Seed Your Random</strong>: Use <code class="docutils literal notranslate"><span class="pre">seed</span></code> parameters in algorithms for reproducible results</p></li>
-<li><p><strong>Visualize Early</strong>: Quick plots help catch data loading issues early</p></li>
+<li><p><strong>Start Simple.</strong> Begin with small test networks before scaling to large datasets. A 100-node network will run in seconds; a 100,000-node network will require careful optimization.</p></li>
+<li><p><strong>Check Stats.</strong> Always run <code class="docutils literal notranslate"><span class="pre">basic_stats()</span></code> after loading to verify your network. Many mysterious bugs stem from data loading issues that would have been obvious from a quick stats check.</p></li>
+<li><p><strong>Use Subnetworks.</strong> Extract layers or subsets for faster prototyping. Develop your analysis pipeline on a single layer, then scale to the full multilayer network.</p></li>
+<li><p><strong>Seed Your Random.</strong> Use <code class="docutils literal notranslate"><span class="pre">seed</span></code> or <code class="docutils literal notranslate"><span class="pre">random_state</span></code> parameters in algorithms for reproducible results. This is essential for research and debugging.</p></li>
+<li><p><strong>Visualize Early.</strong> Quick plots help catch data loading issues early. If your visualization looks wrong, the underlying data probably is too.</p></li>
 </ol>
-<p>Happy network analysis!</p>
+</section>
+<section id="what-you-learned">
+<h2>What You Learned<a class="headerlink" href="#what-you-learned" title="Link to this heading"></a></h2>
+<p>This chapter walked through a complete multilayer network analysis workflow:</p>
+<p><strong>Data handling:</strong></p>
+<ul class="simple">
+<li><p>Creating networks from scratch with <code class="docutils literal notranslate"><span class="pre">add_edges()</span></code></p></li>
+<li><p>Loading from files with <code class="docutils literal notranslate"><span class="pre">load_network()</span></code> and various input types</p></li>
+<li><p>Navigating structure with <code class="docutils literal notranslate"><span class="pre">get_nodes()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_edges()</span></code>, and <code class="docutils literal notranslate"><span class="pre">get_neighbors()</span></code></p></li>
+<li><p>Extracting subnetworks by layer, node, or node-layer pair</p></li>
+</ul>
+<p><strong>Analysis:</strong></p>
+<ul class="simple">
+<li><p>Computing layer-specific centrality with <code class="docutils literal notranslate"><span class="pre">monoplex_nx_wrapper()</span></code></p></li>
+<li><p>Computing multilayer centrality with <code class="docutils literal notranslate"><span class="pre">MultilayerCentrality</span></code></p></li>
+<li><p>Measuring layer density, node activity, and edge overlap</p></li>
+<li><p>Detecting communities with <code class="docutils literal notranslate"><span class="pre">louvain_multilayer()</span></code></p></li>
+<li><p>Generating random walks for embeddings</p></li>
+</ul>
+<p><strong>Presentation:</strong></p>
+<ul class="simple">
+<li><p>Creating visualizations with <code class="docutils literal notranslate"><span class="pre">hairball_plot()</span></code></p></li>
+<li><p>Color-coding by community membership</p></li>
+<li><p>Narrating findings for research papers</p></li>
+</ul>
+</section>
+<section id="what-s-next">
+<h2>What’s Next?<a class="headerlink" href="#what-s-next" title="Link to this heading"></a></h2>
+<p>You now have the foundation for multilayer network analysis. The rest of this book expands on each of these topics:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Chapter 3: Multilayer Networks 101</span></a> — Understand the theory behind multilayer networks</p></li>
+<li><p><a class="reference internal" href="../concepts/py3plex_core_model.html"><span class="doc">Chapter 4: The py3plex Core Model</span></a> — Learn how py3plex represents networks internally</p></li>
+<li><p><a class="reference internal" href="../user_guide/statistics.html"><span class="doc">Network Statistics</span></a> — Comprehensive guide to all available statistics</p></li>
+<li><p><a class="reference internal" href="../user_guide/community_detection.html"><span class="doc">Community Detection</span></a> — Tuning community detection parameters</p></li>
+<li><p><a class="reference internal" href="../user_guide/visualization.html"><span class="doc">Visualization</span></a> — Advanced visualization techniques</p></li>
+</ul>
+<p><strong>Ready to understand the theory?</strong> Continue to <a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Chapter 3: Multilayer Networks 101</span></a>.</p>
+<p><strong>Want to jump into coding?</strong> Browse the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory for 50+ working examples.</p>
+<hr class="docutils" />
+<p><em>Next chapter: :doc:`../concepts/multilayer_networks_101` — the conceptual foundations of multilayer networks.</em></p>
 </section>
 </section>
 
@@ -862,7 +915,7 @@ pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="quickstart_5min.html" class="btn btn-neutral float-left" title="5-Minute Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quickstart_5min.html" class="btn btn-neutral float-left" title="Chapter 1: Your First Five Minutes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="installation.html" class="btn btn-neutral float-right" title="Installation and Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

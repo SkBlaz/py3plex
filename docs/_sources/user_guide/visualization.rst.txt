@@ -1,17 +1,30 @@
-Visualization Guide
-===================
+Visualization
+=============
+
+*From hairball to insight: making multilayer networks visible.*
+
+----
 
 .. image:: ../../example_images/py3plex_showcase.png
    :alt: Py3plex Visualization Showcase
    :align: center
    :width: 100%
 
-This guide covers multilayer network visualization in Py3plex, including preset modes,
-customization options, and best practices for different network scales.
+A network you can't see is a network you can't understand. Visualization transforms abstract adjacency structures into spatial patterns that human perception can process—clusters become visible groups, hubs become prominent nodes, and cross-layer connections become the bridges they conceptually are.
+
+This chapter shows you how to create visualizations that reveal structure rather than obscure it. We'll cover:
+
+- **Quick plots** for exploration and debugging
+- **Preset modes** optimized for different network scales
+- **Layout algorithms** that reveal different structural properties
+- **Interactive visualizations** for presentations and exploration
+- **Publication-ready figures** with proper formatting
 
 .. contents:: Table of Contents
    :local:
    :depth: 2
+
+----
 
 Quick Start
 -----------
@@ -1345,13 +1358,51 @@ Use this guide to select the appropriate visualization mode:
 - Use ``small_multiples`` when detail matters
 - Use ``radial_layers`` for visually striking displays
 
-Next Steps
-----------
+What You Learned
+----------------
 
-- :doc:`networks` - Network operations
-- :doc:`community_detection` - Detect communities for coloring
-- :doc:`io_and_formats` - Load data from various formats
-- :doc:`../deployment/performance_scalability` - Optimize for large networks
+This chapter covered visualization techniques for multilayer networks:
+
+**Basic visualization:**
+
+- ``draw_multilayer_default()`` for quick plots
+- Preset modes (minimal, balanced, dense) for different network scales
+- Layout options (circular, rectangular)
+
+**Customization:**
+
+- Node sizes, colors, and labels
+- Edge transparency and width
+- Layer-specific styling
+- Community color-coding
+
+**Advanced modes:**
+
+- ``small_multiples`` — side-by-side layer comparison
+- ``edge_colored_projection`` — aggregated view with layer colors
+- ``supra_adjacency_heatmap`` — matrix representation
+- ``radial_layers`` — concentric circles for ordered layers
+- ``ego_multilayer`` — node-centric neighborhood view
+- ``flow`` and ``sankey`` — inter-layer flow visualization
+
+**Interactive visualization:**
+
+- Plotly-based interactive plots with hover, zoom, pan
+- HTML export for sharing
+- Jupyter notebook integration
+
+**Best practices:**
+
+- Match visualization mode to network size and analysis goal
+- Use sparse representations for performance
+- Export as PDF/SVG for publication-quality figures
+
+What's Next?
+------------
+
+- :doc:`io_and_formats` — Load and save networks in various formats
+- :doc:`community_detection` — Detect communities for color-coding
+- :doc:`../deployment/performance_scalability` — Optimize for large networks
 
 For more examples, see the `visualization examples <https://github.com/SkBlaz/py3plex/tree/main/examples>`_ 
 in the GitHub repository.

@@ -1,7 +1,13 @@
-10-Minute Tutorial: Getting Started with py3plex
+Chapter 2: The Complete Workflow in Ten Minutes
 ================================================
 
-This tutorial provides a comprehensive introduction to py3plex, covering the most common tasks for working with multilayer networks.
+*In which we build a complete multilayer network analysis pipeline—from loading data through community detection to visualization—and learn to interpret results for research.*
+
+----
+
+In the previous chapter, you created a tiny multilayer network by hand and saw the basic building blocks. Now we'll tackle something more realistic: a complete analysis workflow that you could actually use in research.
+
+By the end of this chapter, you'll have a template for any multilayer network analysis project. Whether you're studying social networks, biological interactions, or transportation systems, the workflow stays the same: load → explore → analyze → visualize → interpret.
 
 The Scenario: A Multi-Platform Social Network
 ----------------------------------------------
@@ -20,12 +26,12 @@ What You Will Learn
 
 In 10 minutes, you will learn how to:
 
-1. Create and load multilayer networks
-2. Perform basic network analysis
+1. Create and load multilayer networks from various sources
+2. Navigate network structure with iteration and extraction
 3. Compute multilayer statistics (and interpret what they mean)
-4. Detect communities across layers
-5. Perform random walks for embeddings
-6. Visualize networks
+4. Detect communities that span multiple layers
+5. Perform random walks for generating node embeddings
+6. Create visualizations for exploration and publication
 7. Narrate your findings for a research paper
 
 Prerequisites
@@ -37,12 +43,19 @@ Make sure py3plex is installed:
 
     pip install git+https://github.com/SkBlaz/py3plex.git
 
-1. Creating Your First Multilayer Network (2 minutes)
-------------------------------------------------------
+----
 
-**Goal:** Build a multilayer network from scratch to understand the data model.
+Part 1: Building and Loading Networks
+-------------------------------------
 
-Start by creating a simple multilayer network:
+*Time estimate: 3 minutes*
+
+1.1 Creating Networks from Scratch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Goal:** Build a multilayer network programmatically to understand the data model.
+
+Let's start by creating a small network by hand. This helps you understand exactly what's happening before we load larger data from files.
 
 .. code-block:: python
 
@@ -77,8 +90,8 @@ Start by creating a simple multilayer network:
 
 **What to notice:** We have 4 unique people (A, B, C, D) but 5 node-layer pairs because A and B appear in both layers. C only appears in layer1; D only in layer2. Node B is the most "active" (appears in both layers) and is connected in both contexts—this makes B a potential bridge between the two platforms.
 
-2. Loading Networks from Files (1 minute)
-------------------------------------------
+1.2 Loading Networks from Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Goal:** Load real data from a file and verify it loaded correctly.
 
@@ -756,11 +769,60 @@ Some features require optional dependencies:
 Tips for Success
 ----------------
 
-1. **Start Simple**: Begin with small test networks before scaling to large datasets
-2. **Check Stats**: Always run ``basic_stats()`` after loading to verify your network
-3. **Use Subnetworks**: Extract layers or subsets for faster prototyping
-4. **Seed Your Random**: Use ``seed`` parameters in algorithms for reproducible results
-5. **Visualize Early**: Quick plots help catch data loading issues early
+Before moving on, here are five practices that will save you time:
 
-Happy network analysis!
+1. **Start Simple.** Begin with small test networks before scaling to large datasets. A 100-node network will run in seconds; a 100,000-node network will require careful optimization.
+
+2. **Check Stats.** Always run ``basic_stats()`` after loading to verify your network. Many mysterious bugs stem from data loading issues that would have been obvious from a quick stats check.
+
+3. **Use Subnetworks.** Extract layers or subsets for faster prototyping. Develop your analysis pipeline on a single layer, then scale to the full multilayer network.
+
+4. **Seed Your Random.** Use ``seed`` or ``random_state`` parameters in algorithms for reproducible results. This is essential for research and debugging.
+
+5. **Visualize Early.** Quick plots help catch data loading issues early. If your visualization looks wrong, the underlying data probably is too.
+
+What You Learned
+----------------
+
+This chapter walked through a complete multilayer network analysis workflow:
+
+**Data handling:**
+
+- Creating networks from scratch with ``add_edges()``
+- Loading from files with ``load_network()`` and various input types
+- Navigating structure with ``get_nodes()``, ``get_edges()``, and ``get_neighbors()``
+- Extracting subnetworks by layer, node, or node-layer pair
+
+**Analysis:**
+
+- Computing layer-specific centrality with ``monoplex_nx_wrapper()``
+- Computing multilayer centrality with ``MultilayerCentrality``
+- Measuring layer density, node activity, and edge overlap
+- Detecting communities with ``louvain_multilayer()``
+- Generating random walks for embeddings
+
+**Presentation:**
+
+- Creating visualizations with ``hairball_plot()``
+- Color-coding by community membership
+- Narrating findings for research papers
+
+What's Next?
+------------
+
+You now have the foundation for multilayer network analysis. The rest of this book expands on each of these topics:
+
+- :doc:`../concepts/multilayer_networks_101` — Understand the theory behind multilayer networks
+- :doc:`../concepts/py3plex_core_model` — Learn how py3plex represents networks internally
+- :doc:`../user_guide/statistics` — Comprehensive guide to all available statistics
+- :doc:`../user_guide/community_detection` — Tuning community detection parameters
+- :doc:`../user_guide/visualization` — Advanced visualization techniques
+
+**Ready to understand the theory?** Continue to :doc:`../concepts/multilayer_networks_101`.
+
+**Want to jump into coding?** Browse the ``examples/`` directory for 50+ working examples.
+
+----
+
+*Next chapter: :doc:`../concepts/multilayer_networks_101` — the conceptual foundations of multilayer networks.*
 
