@@ -48,7 +48,7 @@ The Erdős-Rényi (ER) model is the simplest random graph model. Each possible e
 
 **Expected Behavior:**
 
-With these parameters, you'll get a moderately sparse multilayer network. The expected number of edges per layer is approximately ``n(n-1) × p / 2 ≈ 200 × 199 × 0.09 / 2 ≈ 1,791`` edges for undirected networks (double for directed). The actual number varies due to random sampling.
+With these parameters, you'll get a moderately sparse multilayer network. For **directed** networks (as in this example), the expected number of edges per layer is approximately ``n(n-1) × p ≈ 200 × 199 × 0.09 ≈ 3,582`` edges. For undirected networks, divide by 2 (approximately 1,791 edges). The actual number varies due to random sampling.
 
 Interpreting Generated Networks
 -------------------------------

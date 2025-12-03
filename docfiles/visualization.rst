@@ -73,7 +73,7 @@ For exploratory analysis and sharing with non-technical audiences, interactive v
     
     # Compute node sizes based on degree (larger nodes = more connections)
     degrees = dict(G.degree())
-    max_degree = max(degrees.values()) if degrees.values() else 1
+    max_degree = max(degrees.values()) if degrees else 1
     node_sizes = [10 + 40 * (degrees[node] / max_degree) for node in G.nodes()]
     
     # Create color mapping for nodes
