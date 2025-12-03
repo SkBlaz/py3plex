@@ -532,6 +532,515 @@ Visit frequency matches edge weight ratios:
     for obs, exp in zip(ratios, expected):
         assert abs(obs - exp) < 0.05
 
+Complete Embedding Workflow
+---------------------------
+
+This section provides a complete, end-to-end workflow for generating node embeddings from a multilayer network and using them for downstream machine learning tasks.
+
+Step 1: Prepare the Network
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    import numpy as np
+    
+    # Set random seed for reproducibility
+    np.random.seed(42)
+    
+    # Load your multilayer network
+    network = multinet.multi_layer_network().load_network(
+        "your_network.multiedgelist",
+        input_type="multiedgelist",
+        directed=False
+    )
+    
+    # Verify the network
+    network.basic_stats()
+    
+    # Get the core NetworkX graph
+    G = network.core_network
+
+Step 2: Generate Random Walks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.algorithms.general.walkers import generate_walks
+    
+    # Generate walks with Node2Vec-style biased sampling
+    # Recommended starting parameters
+    walks = generate_walks(
+        G,
+        num_walks=10,       # 10 walks per node (more = better embeddings, slower)
+        walk_length=80,     # 80 steps per walk (adjust based on graph diameter)
+        p=1.0,              # Return parameter (1.0 = balanced)
+        q=1.0,              # In-out parameter (1.0 = balanced)
+        seed=42             # For reproducibility
+    )
+    
+    print(f"Generated {len(walks)} walks")
+    print(f"Sample walk: {walks[0][:10]}...")  # First 10 nodes of first walk
+
+Step 3: Train Embedding Model
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    # Requires gensim: pip install gensim
+    from gensim.models import Word2Vec
+    
+    # Convert walks to strings (Word2Vec expects string tokens)
+    walks_str = [[str(node) for node in walk] for walk in walks]
+    
+    # Train the embedding model
+    model = Word2Vec(
+        walks_str,
+        vector_size=128,    # Embedding dimension (64-256 typical)
+        window=5,           # Context window size
+        min_count=1,        # Include nodes that appear at least once
+        sg=1,               # Use skip-gram (1) vs CBOW (0)
+        workers=4,          # Parallel training threads
+        epochs=5,           # Training epochs
+        seed=42             # Reproducibility
+    )
+    
+    print(f"Trained embeddings for {len(model.wv)} nodes")
+    print(f"Embedding dimension: {model.wv.vector_size}")
+
+Step 4: Extract and Use Embeddings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    import numpy as np
+    
+    # Get all node IDs
+    node_ids = list(model.wv.index_to_key)
+    
+    # Create embedding matrix
+    embeddings = np.array([model.wv[node_id] for node_id in node_ids])
+    print(f"Embedding matrix shape: {embeddings.shape}")
+    
+    # Get embedding for a specific node
+    sample_node = node_ids[0]
+    node_embedding = model.wv[sample_node]
+    print(f"Embedding for {sample_node}: {node_embedding[:5]}... (dim={len(node_embedding)})")
+    
+    # Find similar nodes
+    similar_nodes = model.wv.most_similar(sample_node, topn=5)
+    print(f"\nMost similar to {sample_node}:")
+    for node, similarity in similar_nodes:
+        print(f"  {node}: {similarity:.4f}")
+
+Step 5: Downstream Tasks
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Node Clustering:**
+
+.. code-block:: python
+
+    from sklearn.cluster import KMeans
+    import numpy as np
+    
+    # Cluster nodes based on embeddings
+    n_clusters = 5
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+    clusters = kmeans.fit_predict(embeddings)
+    
+    # Assign clusters to nodes
+    node_clusters = dict(zip(node_ids, clusters))
+    
+    print("Cluster distribution:")
+    from collections import Counter
+    for cluster, count in sorted(Counter(clusters).items()):
+        print(f"  Cluster {cluster}: {count} nodes")
+
+**Node Classification:**
+
+.. code-block:: python
+
+    from sklearn.model_selection import train_test_split
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.metrics import accuracy_score, classification_report
+    
+    # Assume you have labels for nodes
+    # labels = {node_id: label for node_id, label in your_label_data}
+    
+    # For demonstration, create synthetic labels based on layer
+    labels = {}
+    for node_id in node_ids:
+        # Extract layer from node-layer tuple string representation
+        # Adjust this based on your actual node ID format
+        if 'layer1' in str(node_id):
+            labels[node_id] = 0
+        elif 'layer2' in str(node_id):
+            labels[node_id] = 1
+        else:
+            labels[node_id] = 2
+    
+    # Prepare data
+    X = embeddings
+    y = np.array([labels[node_id] for node_id in node_ids])
+    
+    # Train/test split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    
+    # Train classifier
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf.fit(X_train, y_train)
+    
+    # Evaluate
+    y_pred = clf.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Classification accuracy: {accuracy:.4f}")
+
+**Link Prediction:**
+
+.. code-block:: python
+
+    from sklearn.linear_model import LogisticRegression
+    import numpy as np
+    
+    def edge_embedding(node1, node2, method='hadamard'):
+        """Compute edge embedding from node embeddings."""
+        emb1 = model.wv[str(node1)]
+        emb2 = model.wv[str(node2)]
+        
+        if method == 'hadamard':
+            return emb1 * emb2
+        elif method == 'average':
+            return (emb1 + emb2) / 2
+        elif method == 'concat':
+            return np.concatenate([emb1, emb2])
+        else:
+            raise ValueError(f"Unknown method: {method}")
+    
+    # Get existing edges (positive examples)
+    existing_edges = list(G.edges())[:100]  # Sample for demo
+    
+    # Generate negative examples (non-edges)
+    nodes = list(G.nodes())
+    negative_edges = []
+    while len(negative_edges) < len(existing_edges):
+        n1 = nodes[np.random.randint(len(nodes))]
+        n2 = nodes[np.random.randint(len(nodes))]
+        if n1 != n2 and not G.has_edge(n1, n2):
+            negative_edges.append((n1, n2))
+    
+    # Create training data
+    X_edges = []
+    y_edges = []
+    
+    for edge in existing_edges:
+        try:
+            X_edges.append(edge_embedding(edge[0], edge[1]))
+            y_edges.append(1)  # Positive
+        except KeyError:
+            pass  # Skip if node not in vocabulary
+    
+    for edge in negative_edges:
+        try:
+            X_edges.append(edge_embedding(edge[0], edge[1]))
+            y_edges.append(0)  # Negative
+        except KeyError:
+            pass
+    
+    X_edges = np.array(X_edges)
+    y_edges = np.array(y_edges)
+    
+    # Train link prediction model
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_edges, y_edges, test_size=0.2, random_state=42
+    )
+    
+    clf = LogisticRegression(random_state=42)
+    clf.fit(X_train, y_train)
+    
+    accuracy = clf.score(X_test, y_test)
+    print(f"Link prediction accuracy: {accuracy:.4f}")
+
+Step 6: Save and Load Embeddings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    # Save embeddings in Word2Vec format
+    model.wv.save_word2vec_format("node_embeddings.txt", binary=False)
+    print("Embeddings saved to node_embeddings.txt")
+    
+    # Save as NumPy arrays (for sklearn compatibility)
+    np.save("embedding_matrix.npy", embeddings)
+    np.save("node_ids.npy", np.array(node_ids))
+    print("Embeddings saved as NumPy arrays")
+    
+    # Load embeddings later
+    from gensim.models import KeyedVectors
+    loaded_embeddings = KeyedVectors.load_word2vec_format("node_embeddings.txt")
+    print(f"Loaded embeddings for {len(loaded_embeddings)} nodes")
+
+Parameter Tuning Guide
+----------------------
+
+Walk Length Guidelines
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 30 30
+
+   * - Network Size
+     - walk_length
+     - Reasoning
+     - Trade-off
+   * - Small (<1K nodes)
+     - 40-80
+     - Shorter walks sufficient
+     - Speed vs coverage
+   * - Medium (1K-10K)
+     - 80-120
+     - Standard choice
+     - Balanced
+   * - Large (>10K)
+     - 80-100
+     - Longer walks costly
+     - Memory/time vs quality
+
+**Rule of thumb:** ``walk_length`` should be at least 2-3× the network diameter.
+
+Number of Walks Guidelines
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 30 30
+
+   * - Task
+     - num_walks
+     - Reasoning
+     - Trade-off
+   * - Exploration
+     - 5-10
+     - Quick results
+     - Speed vs quality
+   * - Standard
+     - 10-20
+     - Good balance
+     - Recommended
+   * - High-quality
+     - 20-50
+     - Better embeddings
+     - Time vs quality
+   * - Research
+     - 50-100
+     - Maximum quality
+     - Very slow
+
+**Rule of thumb:** More walks = better embeddings, but with diminishing returns after ~20.
+
+P and Q Parameter Effects
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The p and q parameters control the walk's exploration behavior:
+
+**Return parameter p:**
+
+* **p < 1:** More likely to backtrack (return to previous node)
+  
+  * Use when: Local structure is important; you want to capture tight clusters
+
+* **p = 1:** Balanced (equivalent to basic random walk for backtracking)
+  
+  * Use when: No prior about network structure
+
+* **p > 1:** Less likely to backtrack (move forward)
+  
+  * Use when: You want walks to explore broadly
+
+**In-out parameter q:**
+
+* **q < 1:** More likely to explore distant nodes (DFS-like)
+  
+  * Use when: You want to capture global structure, find communities
+
+* **q = 1:** Balanced exploration
+  
+  * Use when: No prior about network structure
+
+* **q > 1:** More likely to stay in local neighborhood (BFS-like)
+  
+  * Use when: You want to capture local structure, homophily
+
+**Common presets:**
+
+.. code-block:: python
+
+    # Local/homophily-focused (similar to BFS)
+    p, q = 1.0, 2.0
+    
+    # Global/structural (similar to DFS)
+    p, q = 1.0, 0.5
+    
+    # Balanced (DeepWalk-like)
+    p, q = 1.0, 1.0
+    
+    # Strong local focus
+    p, q = 0.5, 2.0
+    
+    # Strong exploration
+    p, q = 2.0, 0.5
+
+Common Failure Modes
+--------------------
+
+Disconnected Graph
+~~~~~~~~~~~~~~~~~~~
+
+**Problem:** Walk gets stuck or terminates early because node has no neighbors.
+
+**Symptoms:**
+
+* Walks shorter than expected
+* Some nodes never appear in walks
+* Embeddings missing for some nodes
+
+**Solutions:**
+
+.. code-block:: python
+
+    import networkx as nx
+    
+    # Check connectivity
+    if not nx.is_connected(G.to_undirected()):
+        print("Graph is disconnected!")
+        
+        # Option 1: Use largest connected component
+        largest_cc = max(nx.connected_components(G.to_undirected()), key=len)
+        G_connected = G.subgraph(largest_cc).copy()
+        
+        # Option 2: Add small random edges to connect components
+        # (use with caution - changes graph structure)
+
+Highly Skewed Degree Distribution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Problem:** High-degree hub nodes dominate walks; low-degree nodes underrepresented.
+
+**Symptoms:**
+
+* Most walks pass through the same few nodes
+* Embeddings for peripheral nodes are poor quality
+* Similarity to hub nodes is overestimated
+
+**Solutions:**
+
+.. code-block:: python
+
+    # Option 1: Use more walks per node
+    walks = generate_walks(G, num_walks=30, walk_length=80, seed=42)
+    
+    # Option 2: Add node-specific walks for low-degree nodes
+    low_degree_nodes = [n for n in G.nodes() if G.degree(n) < 5]
+    extra_walks = generate_walks(
+        G, 
+        num_walks=20,
+        walk_length=80,
+        start_nodes=low_degree_nodes,
+        seed=42
+    )
+    walks.extend(extra_walks)
+    
+    # Option 3: Use weighted walks that downweight high-degree nodes
+    # (requires custom implementation)
+
+Isolated Nodes
+~~~~~~~~~~~~~~~
+
+**Problem:** Nodes with degree 0 cannot be walked from.
+
+**Symptoms:**
+
+* KeyError when looking up embeddings
+* Missing nodes in similarity queries
+
+**Solutions:**
+
+.. code-block:: python
+
+    # Remove isolated nodes before generating walks
+    isolated = list(nx.isolates(G))
+    G_filtered = G.copy()
+    G_filtered.remove_nodes_from(isolated)
+    
+    # Generate walks on filtered graph
+    walks = generate_walks(G_filtered, num_walks=10, walk_length=80, seed=42)
+    
+    # Handle isolated nodes separately (e.g., assign zero embedding)
+
+Very Small Graph
+~~~~~~~~~~~~~~~~~
+
+**Problem:** With few nodes, walks become repetitive quickly.
+
+**Symptoms:**
+
+* Walks cycle through the same nodes repeatedly
+* All nodes have similar embeddings
+* Poor discriminative power
+
+**Solutions:**
+
+.. code-block:: python
+
+    # Use shorter walks for small graphs
+    if G.number_of_nodes() < 100:
+        walk_length = min(40, G.number_of_nodes() * 2)
+    
+    # Use fewer walks (avoid redundancy)
+    num_walks = min(10, G.number_of_nodes())
+    
+    # Consider direct matrix-based methods for very small graphs
+    # (spectral embeddings, Laplacian eigenvectors)
+
+Memory Issues with Large Graphs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Problem:** Storing all walks in memory causes OOM errors.
+
+**Symptoms:**
+
+* MemoryError during walk generation
+* System becomes unresponsive
+
+**Solutions:**
+
+.. code-block:: python
+
+    # Option 1: Generate walks in batches
+    all_walks = []
+    nodes = list(G.nodes())
+    batch_size = 1000
+    
+    for i in range(0, len(nodes), batch_size):
+        batch_nodes = nodes[i:i+batch_size]
+        batch_walks = generate_walks(
+            G,
+            num_walks=10,
+            walk_length=80,
+            start_nodes=batch_nodes,
+            seed=42+i
+        )
+        all_walks.extend(batch_walks)
+        print(f"Processed {i+batch_size}/{len(nodes)} nodes")
+    
+    # Option 2: Stream walks directly to Word2Vec
+    # (requires custom iterator implementation)
+    
+    # Option 3: Use disk-based storage
+    # Write walks to file, then load for training
+
 References
 ----------
 
