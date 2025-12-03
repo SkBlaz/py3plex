@@ -18,7 +18,7 @@ def get_data_dir() -> str:
     Returns
     -------
     str
-        Absolute path to the py3plex/_data directory.
+        Absolute path to the py3plex/datasets/_data directory.
 
     Examples
     --------

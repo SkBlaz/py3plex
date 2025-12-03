@@ -145,7 +145,10 @@ def make_random_multiplex(
         G = nx.MultiGraph()
 
     for layer_idx in range(n_layers):
-        layer_seed = random_state + layer_idx if random_state is not None else None
+        # Use multiplication to ensure good seed separation between layers
+        layer_seed = (
+            random_state * 1000 + layer_idx if random_state is not None else None
+        )
         network = nx.fast_gnp_random_graph(n_nodes, p, seed=layer_seed, directed=directed)
         for edge in network.edges():
             G.add_edge(
