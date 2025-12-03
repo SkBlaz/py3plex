@@ -1245,11 +1245,12 @@ class TestFlagshipExampleIntegration:
         assert all(node[1] == 'social' for node in social_nodes)
         
         # Test select_high_degree_nodes
+        # Function uses > (exclusive), so min_degree=1 means degree > 1
         high_deg = select_high_degree_nodes(multilayer_network, min_degree=1)
         assert len(high_deg) >= 0
         for node in high_deg:
             degree = multilayer_network.core_network.degree(node)
-            assert degree > 1  # min_degree is exclusive
+            assert degree > 1  # Function is exclusive: nodes with degree > min_degree
         
         # Test compute_centrality_for_layer
         centrality = compute_centrality_for_layer(multilayer_network, 'work', 'degree_centrality')
@@ -1302,7 +1303,9 @@ class TestFlagshipExampleIntegration:
             assert node[1] != 'social'
         
         # Should have nodes from work and family layers
-        assert result['count'] == 10  # 5 work + 5 family
+        # Network has 5 people, each in work and family layers = 5 + 5 = 10 nodes
+        expected_count = 10
+        assert result['count'] == expected_count
 
 
 if __name__ == '__main__':
