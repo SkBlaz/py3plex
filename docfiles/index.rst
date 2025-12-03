@@ -395,7 +395,7 @@ Before diving deeper into py3plex's capabilities, it's essential to understand t
 Part III: User Guide
 --------------------
 
-With the fundamentals in place, this section provides comprehensive how-to guides for every major feature of py3plex. You'll learn how to create and manipulate multilayer networks, compute network statistics and centrality measures, detect communities across layers, perform random walks for embeddings, handle various input/output formats, create publication-ready visualizations, use the SQL-like DSL for intuitive queries, and combine these techniques into complete analysis workflows. Each chapter builds on the previous ones, creating a progressive learning path.
+With the fundamentals in place, this section provides comprehensive how-to guides for every major feature of py3plex. You'll learn how to create and manipulate multilayer networks, compute network statistics and centrality measures, detect communities across layers, perform random walks for embeddings, handle various input/output formats, create publication-ready visualizations, use the SQL-like DSL for intuitive queries, use the dplyr-style chainable API for data transformations, and combine these techniques into complete analysis workflows. Each chapter builds on the previous ones, creating a progressive learning path.
 
 .. toctree::
    :maxdepth: 2
@@ -408,6 +408,7 @@ With the fundamentals in place, this section provides comprehensive how-to guide
    user_guide/io_and_formats
    user_guide/visualization
    user_guide/dsl
+   user_guide/graph_ops
    user_guide/recipes_and_workflows
    user_guide/case_studies
 
