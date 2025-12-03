@@ -1,7 +1,9 @@
 5-Minute Quickstart
 ===================
 
-Get started with py3plex in just 5 minutes with this minimal example.
+*"The beginning is the most important part of the work."* — Plato
+
+Get started with py3plex in just 5 minutes with this minimal example. By the end, you'll have created a multilayer network, computed statistics, and visualized your data.
 
 The Scenario
 ------------
@@ -12,7 +14,13 @@ Imagine you have data about a small group of people and their relationships acro
 * Who appears in both contexts (and might bridge personal and professional networks)?
 * Are the friendship and colleague networks similarly structured?
 
-This is a classic multilayer network analysis scenario. Let's solve it with py3plex.
+This scenario appears everywhere in the real world:
+
+* A researcher studying work-life balance might ask: do people who mix their friend and colleague networks experience different outcomes?
+* A consultant analyzing company culture might investigate: are "bridge" employees who connect different social circles more central to information flow?
+* A social scientist might explore: does social support from friends vs. colleagues serve different psychological functions?
+
+These questions require understanding the *multilayer* structure of relationships—not just who knows whom, but *how* they know each other. Let's solve this with py3plex.
 
 Installation
 ------------

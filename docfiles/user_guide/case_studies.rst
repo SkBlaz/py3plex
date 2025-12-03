@@ -3,6 +3,8 @@
 Use Cases & Case Studies
 ========================
 
+*"In theory there is no difference between theory and practice. In practice there is."* — Yogi Berra
+
 This chapter provides complete, end-to-end case studies demonstrating py3plex in different research domains. Each case study includes:
 
 1. **Problem context** — What real-world question are we answering?
@@ -11,12 +13,56 @@ This chapter provides complete, end-to-end case studies demonstrating py3plex in
 4. **Interpretation** — What do the results mean?
 5. **Adaptation guide** — How to apply this template to your own data
 
+Why Case Studies Matter
+-----------------------
+
+Reading about algorithms is one thing. Applying them to real problems is another entirely.
+
+The case studies in this chapter come from real research domains where multilayer network analysis has proven valuable. They're not toy examples—they represent the kinds of questions that researchers and practitioners actually ask:
+
+* How do we identify proteins that are likely to be functionally important?
+* Which social media influencers are genuinely cross-platform celebrities versus one-hit wonders?
+* What happens to urban mobility when a major transit hub fails?
+* Which academic researchers are likely to collaborate based on their publication patterns?
+
+Each case study walks through the complete analysis workflow, from problem formulation through data modeling, analysis, and interpretation. Pay attention not just to the code, but to the reasoning behind each decision.
+
+Lessons from the Field
+----------------------
+
+Before diving into specific cases, here are some lessons learned from applying multilayer network analysis to real problems:
+
+**Modeling decisions matter more than algorithm choice.** Whether you use Louvain or Infomap for community detection is less important than whether you've correctly identified what should be a layer, what should be a node, and how layers should be coupled. Spend your time on modeling.
+
+**Start simple, add complexity as needed.** It's tempting to immediately build a network with ten layers, weighted edges, temporal dynamics, and inter-layer dependencies. Resist this urge. Start with the simplest model that might answer your question, and add complexity only when you can demonstrate it improves your analysis.
+
+**Validate with domain knowledge.** Network analysis can reveal surprising patterns—but it can also reveal artifacts of your modeling choices. Always sanity-check results against what domain experts know. If your community detection puts obviously unrelated entities in the same cluster, you have a modeling problem.
+
+**Document your decisions.** When you return to an analysis six months later, you won't remember why you chose certain parameters. Write down your reasoning. Future-you will thank present-you.
+
 .. contents:: Case Studies
    :local:
    :depth: 2
 
+----
+
 Case Study 1: Biological Network Analysis
 ------------------------------------------
+
+*Identifying high-confidence protein interactions and functional modules*
+
+Real-World Impact
+~~~~~~~~~~~~~~~~~
+
+Protein-protein interaction (PPI) networks are foundational to understanding cellular function. The proteins in your body don't work alone—they form complexes, signaling cascades, and metabolic pathways. Knowing which proteins interact helps researchers:
+
+* **Understand disease mechanisms:** Many diseases result from disrupted protein interactions
+* **Identify drug targets:** Proteins central to disease networks are potential therapeutic targets
+* **Predict protein function:** A protein's interactors suggest its biological role
+
+The challenge? PPI data comes from multiple experimental methods, each with different biases and error rates. High-throughput screens find many interactions quickly but include false positives. Literature curation is accurate but incomplete. How do you combine these sources intelligently?
+
+**This is exactly what multilayer network analysis is for.**
 
 Multilayer Protein-Protein Interaction Network
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -849,6 +895,32 @@ Data Loading Templates
         ], input_type="list")
     
     conn.close()
+
+Conclusion: Patterns Across Domains
+-----------------------------------
+
+Looking across these case studies, several patterns emerge:
+
+**Multilayer structure reveals what single-layer analysis misses.** In the PPI network, interactions confirmed by multiple evidence types are more reliable—information you lose if you flatten into a single network. In the social network, cross-platform influencers are fundamentally different from single-platform celebrities. In transportation, failure cascades depend on inter-modal connections.
+
+**The coupling parameter matters.** Lower coupling (omega < 1) finds layer-specific communities; higher coupling (omega > 1) finds cross-layer communities. The right choice depends on your question. If you expect the same underlying structure across layers, use higher coupling. If layers represent truly different phenomena, use lower coupling.
+
+**Validation requires domain expertise.** Network analysis can find structure, but whether that structure is meaningful requires interpretation. Do the detected communities correspond to known functional categories? Do the identified hubs match known influential entities? Ground your analysis in domain knowledge.
+
+**Start simple.** Each case study could be made more complex—weighted edges, temporal dynamics, more layers, heterogeneous node types. But starting simple lets you understand what's happening and catch errors before the analysis becomes opaque.
+
+The Meta-Lesson
+~~~~~~~~~~~~~~~
+
+These case studies demonstrate a workflow pattern:
+
+1. **Formulate your question** in terms of network structure
+2. **Model your data** as nodes, edges, and layers
+3. **Apply appropriate algorithms** based on your question
+4. **Interpret results** using domain knowledge
+5. **Iterate** as you learn what works
+
+This pattern applies regardless of domain. The specific proteins, users, or stations change; the analytical approach remains similar.
 
 Further Reading
 ---------------

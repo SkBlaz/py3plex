@@ -143,6 +143,11 @@ latex_elements = {
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+% Fix for bookmark issues with unnumbered sections
+% This prevents errors like "Missing \endcsname inserted" in PDF bookmarks
+\usepackage{bookmark}
+\bookmarksetup{numbered}
+
 % Improved paragraph spacing for book-like flow
 \setlength{\parskip}{0.6em}
 \setlength{\parindent}{0pt}
