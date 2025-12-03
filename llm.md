@@ -7,9 +7,19 @@
 py3plex is a Python library for analyzing and visualizing multilayer and multiplex networks. It provides:
 - Native support for multilayer network structures
 - SQL-like DSL for intuitive network queries
+- Dplyr-style chainable graph operations API (filter, select, mutate, arrange, group_by, summarise)
+- Sklearn-style pipeline API for composable workflows
+- Fluent method chaining for network construction
+- Pythonic interface (__len__, __iter__, __contains__, properties)
 - Visualization capabilities for complex networks
 - Community detection and centrality measures
 - Integration with NetworkX
+
+**Key Ergonomics Features:**
+- **DSL Queries:** `net.execute_query('SELECT nodes WHERE degree > 5')`
+- **Dplyr Pipes:** `nodes(net).filter(lambda n: n["degree"] > 5).mutate(...).to_pandas()`
+- **Method Chaining:** `net.add_nodes([...]).add_edges([...])`
+- **Pipelines:** `Pipeline([("load", LoadStep(...)), ("stats", ComputeStats())])`
 
 **Repository:** https://github.com/SkBlaz/py3plex  
 **Documentation:** https://skblaz.github.io/py3plex/
@@ -692,155 +702,379 @@ The `execute_query` function returns a dictionary with the following structure:
 
 ---
 
-## File Locations
+## Dplyr-Style Chainable Graph Operations API
 
-- **DSL Module:** `py3plex/dsl.py`
-- **DSL Documentation:** `docfiles/user_guide/dsl.rst`
-- **DSL Examples:** `examples/network_analysis/example_dsl_queries.py`
-- **Advanced Examples:** `examples/network_analysis/example_dsl_advanced.py`
-- **Tests:** `tests/test_dsl.py`
-- **Datasets Module:** `py3plex/datasets/`
-- **Datasets Tests:** `tests/test_datasets.py`
-- **Datasets Example:** `examples/getting_started/example_datasets.py`
+py3plex provides a dplyr-inspired API for fluent, method-chaining operations on nodes and edges. This allows functional-style data manipulation similar to R's dplyr or Python's pandas.
 
----
-
-## Built-in Datasets
-
-py3plex provides built-in datasets similar to scikit-learn, making it easy to get started without external data files.
-
-### Available Functions
+### Core Components
 
 ```python
-from py3plex.datasets import (
-    # Loaders for bundled datasets
-    load_aarhus_cs,           # Aarhus CS social network (61 nodes, 5 layers)
-    load_synthetic_multilayer, # Synthetic multilayer network (50 nodes, 3 layers)
-    
-    # Synthetic generators
-    make_random_multilayer,    # Random multilayer Erdős-Rényi network
-    make_random_multiplex,     # Random multiplex Erdős-Rényi network
-    make_clique_multiplex,     # Multiplex with clique structure
-    make_social_network,       # Synthetic social network (friendship/work/family)
-    
-    # Utilities
-    list_datasets,             # List all available datasets
-    get_data_dir,              # Get path to bundled data directory
+from py3plex.graph_ops import (
+    nodes,           # Create NodeFrame from network
+    edges,           # Create EdgeFrame from network
+    NodeFrame,       # Chainable view over nodes
+    EdgeFrame,       # Chainable view over edges
+    GroupedNodeFrame,  # For group_by + summarise
+    GroupedEdgeFrame,  # For group_by + summarise on edges
 )
-
-# Or import from top-level
-import py3plex as p3
-net = p3.load_aarhus_cs()
 ```
 
-### Loading Built-in Datasets
+### Supported Verbs (dplyr Mapping)
+
+| dplyr          | py3plex              | Description                          |
+|----------------|----------------------|--------------------------------------|
+| `filter()`     | `.filter(pred)`      | Keep rows matching predicate         |
+| `select()`     | `.select(*cols)`     | Keep only specified columns          |
+| `mutate()`     | `.mutate(**funcs)`   | Add/modify columns                   |
+| `arrange()`    | `.arrange(key)`      | Sort by column or function           |
+| `head()`       | `.head(n)`           | Keep first n rows                    |
+| `group_by()`   | `.group_by(*cols)`   | Group for aggregation                |
+| `summarise()`  | `.summarise(**aggs)` | Compute group summaries              |
+
+### Example 1: Basic Node Operations
 
 ```python
-import py3plex as p3
+from py3plex.core import multinet
+from py3plex.graph_ops import nodes
+import numpy as np
 
-# List available datasets
-for name, description in p3.list_datasets():
-    print(f"{name}: {description}")
+# Create network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'ppi', 'target_type': 'ppi'},
+    {'source': 'B', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
+    {'source': 'A', 'target': 'C', 'source_type': 'ppi', 'target_type': 'ppi'},
+    {'source': 'C', 'target': 'D', 'source_type': 'ppi', 'target_type': 'ppi'},
+])
+
+# Chainable operations
+df = (
+    nodes(net, layers=["ppi"])
+    .filter(lambda n: n["degree"] > 1)
+    .mutate(normalized_degree=lambda n: n["degree"] / 4)  # Normalize by total node count
+    .arrange("degree", reverse=True)
+    .head(3)
+    .to_pandas()
+)
+
+print(df)
 ```
 
 **Output:**
 ```
-aarhus_cs: Social network of Aarhus CS department (61 nodes, 5 layers)
-synthetic_multilayer: Synthetic multilayer network (50 nodes, 3 layers)
+   id layer  degree  normalized_degree
+0   C   ppi       3               0.75
+1   A   ppi       2               0.50
+2   B   ppi       2               0.50
 ```
 
-### Aarhus CS Social Network
+---
 
-The Aarhus CS dataset represents relationships among employees in a Computer Science department with 5 layers (lunch, facebook, coauthor, leisure, work).
+### Example 2: Group By and Summarise
 
 ```python
-import py3plex as p3
+from py3plex.graph_ops import nodes
+import numpy as np
 
-# Load the Aarhus CS social network
-network = p3.load_aarhus_cs()
-print(f"Nodes: {len(list(network.get_nodes()))}")
-print(f"Edges: {len(list(network.get_edges()))}")
+# Create multi-layer network
+net = multinet.multi_layer_network(directed=False)
+net.add_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social'},
+    {'source': 'A', 'target': 'B', 'source_type': 'work', 'target_type': 'work'},
+    {'source': 'B', 'target': 'C', 'source_type': 'work', 'target_type': 'work'},
+    {'source': 'C', 'target': 'D', 'source_type': 'work', 'target_type': 'work'},
+])
 
-# Get layers
-layers = network.get_layers()
-layer_names = layers[0] if isinstance(layers, tuple) else layers
-print(f"Layers: {layer_names}")  # ['lunch', 'facebook', 'coauthor', 'leisure', 'work']
+# Group by layer and compute statistics
+df = (
+    nodes(net)
+    .group_by("layer")
+    .summarise(
+        avg_degree=("degree", np.mean),
+        max_degree=("degree", max),
+        n_nodes=("id", len),
+    )
+    .to_pandas()
+)
 
-# Use with DSL
-result = p3.execute_query(network, 'SELECT nodes WHERE degree > 10')
-print(f"High-degree nodes: {result['count']}")
+print(df)
 ```
 
-### Generating Synthetic Networks
+**Output:**
+```
+    layer  avg_degree  max_degree  n_nodes
+0  social    1.333333           2        3
+1    work    1.500000           3        4
+```
+
+---
+
+### Example 3: Edge Operations
 
 ```python
-import py3plex as p3
+from py3plex.graph_ops import edges
 
-# Random multilayer network
-net = p3.make_random_multilayer(
-    n_nodes=50,       # Number of nodes
-    n_layers=3,       # Number of layers
-    p=0.1,            # Edge probability
-    random_state=42   # For reproducibility
+# Filter and analyze edges
+df_edges = (
+    edges(net, layers=["work"])
+    .filter(lambda e: e.get("weight", 1) >= 1)
+    .select("source", "target", "source_layer")
+    .head(10)
+    .to_pandas()
 )
 
-# Random multiplex network (same nodes in all layers)
-net = p3.make_random_multiplex(
-    n_nodes=30,
-    n_layers=4,
-    p=0.15,
-    random_state=42
-)
-
-# Clique multiplex (good for community detection testing)
-net = p3.make_clique_multiplex(
-    n_nodes=20,
-    n_layers=2,
-    clique_size=5,
-    n_cliques=3,
-    random_state=42
-)
-
-# Social network with realistic structure
-net = p3.make_social_network(
-    n_people=30,
-    random_state=42
-)
-# Creates layers: friendship (dense), work (clustered), family (small cliques)
+print(df_edges)
 ```
 
-### Complete Example with Datasets
+**Output:**
+```
+  source target source_layer
+0      A      B         work
+1      B      C         work
+2      C      D         work
+```
+
+---
+
+### Example 4: Filter with Expression Strings
 
 ```python
-import py3plex as p3
-
-# Load a dataset
-network = p3.load_aarhus_cs()
-
-# Analyze it
-network.basic_stats()
-
-# Query with DSL
-result = p3.execute_query(
-    network, 
-    'SELECT nodes WHERE layer="lunch" COMPUTE betweenness_centrality'
+# Use filter_expr for simple string-based filtering
+df = (
+    nodes(net)
+    .filter_expr("degree > 1 and layer == 'work'")
+    .to_pandas()
 )
-print(p3.format_result(result))
-
-# Or generate a synthetic network for testing
-test_net = p3.make_random_multilayer(n_nodes=100, n_layers=5, p=0.05)
-test_net.basic_stats()
 ```
 
-### Dataset Reference
+---
 
-| Function | Description | Parameters |
-|----------|-------------|------------|
-| `load_aarhus_cs()` | Load Aarhus CS social network | `directed=False` |
-| `load_synthetic_multilayer()` | Load synthetic multilayer | `directed=False` |
-| `make_random_multilayer()` | Generate random multilayer ER | `n_nodes`, `n_layers`, `p`, `directed`, `random_state` |
-| `make_random_multiplex()` | Generate random multiplex ER | `n_nodes`, `n_layers`, `p`, `directed`, `random_state` |
-| `make_clique_multiplex()` | Generate clique multiplex | `n_nodes`, `n_layers`, `clique_size`, `n_cliques`, `random_state` |
-| `make_social_network()` | Generate social network | `n_people`, `random_state` |
-| `list_datasets()` | List available datasets | None |
-| `get_data_dir()` | Get bundled data path | None |
+### Example 5: Extract Subgraph from Selection
+
+```python
+# Create a subgraph containing only high-degree nodes
+subgraph = (
+    nodes(net)
+    .filter(lambda n: n["degree"] > 2)
+    .to_subgraph()
+)
+
+print(f"Subgraph has {subgraph.node_count} nodes and {subgraph.edge_count} edges")
+```
+
+---
+
+## Method Chaining for Network Construction
+
+py3plex supports fluent method chaining for network construction:
+
+```python
+from py3plex.core import multinet
+
+# Fluent network construction
+net = (
+    multinet.multi_layer_network(directed=False)
+    .add_nodes([
+        {'source': 'A', 'type': 'layer1'},
+        {'source': 'B', 'type': 'layer1'},
+        {'source': 'C', 'type': 'layer2'},
+    ])
+    .add_edges([
+        {'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'},
+        {'source': 'B', 'target': 'C', 'source_type': 'layer1', 'target_type': 'layer2'},
+    ])
+    .add_nodes([
+        {'source': 'D', 'type': 'layer2'},
+    ])
+    .add_edges([
+        {'source': 'C', 'target': 'D', 'source_type': 'layer2', 'target_type': 'layer2'},
+    ])
+)
+
+print(net)
+# <multi_layer_network: type=multilayer, directed=False, nodes=4, edges=3, layers=2>
+```
+
+---
+
+## Pythonic Interface Features
+
+py3plex's `multi_layer_network` class implements Python's special methods for intuitive usage:
+
+### Dunder Methods
+
+```python
+net = multinet.multi_layer_network()
+net.add_nodes([{'source': 'A', 'type': 'layer1'}])
+
+# __len__: Get node count
+len(net)  # Returns 1
+
+# __bool__: Check if network is non-empty
+if net:
+    print("Network has nodes")
+
+# __contains__: Check for node existence
+('A', 'layer1') in net  # Returns True
+('B', 'layer1') in net  # Returns False
+
+# __iter__: Iterate over nodes
+for node in net:
+    print(node)  # Prints ('A', 'layer1')
+```
+
+### Property Accessors
+
+```python
+net.node_count   # Number of nodes
+net.edge_count   # Number of edges
+net.layer_count  # Number of unique layers
+net.layers       # Sorted list of layer names
+net.is_empty     # True if no nodes
+```
+
+### Factory Methods
+
+```python
+# Create from edges directly
+net = multinet.multi_layer_network.from_edges([
+    {'source': 'A', 'target': 'B', 'source_type': 'l1', 'target_type': 'l1'}
+])
+
+# Create from NetworkX graph
+import networkx as nx
+G = nx.Graph()
+G.add_edge(('A', 'layer1'), ('B', 'layer1'))
+net = multinet.multi_layer_network.from_networkx(G)
+```
+
+---
+
+## Sklearn-Style Pipeline API
+
+py3plex provides a scikit-learn style pipeline for composable network analysis workflows:
+
+### Core Components
+
+```python
+from py3plex.pipeline import (
+    Pipeline,        # Main pipeline class
+    PipelineStep,    # Base class for custom steps
+    LoadStep,        # Load network from file/generator
+    AggregateLayers, # Aggregate across layers
+    LeidenMultilayer,# Community detection
+    LouvainCommunity,# Louvain community detection
+    ComputeStats,    # Compute network statistics
+    FilterNodes,     # Filter by degree/list
+    SaveNetwork,     # Save to file
+)
+```
+
+### Pipeline Example
+
+```python
+from py3plex.pipeline import Pipeline, LoadStep, ComputeStats, FilterNodes
+
+# Define analysis pipeline
+pipe = Pipeline([
+    ("load", LoadStep(generator='random_er', num_nodes=100, num_layers=3, edge_prob=0.1)),
+    ("filter", FilterNodes(min_degree=2)),
+    ("stats", ComputeStats(include_layer_stats=True)),
+])
+
+# Execute pipeline
+result = pipe.run()
+print(result)
+```
+
+**Output:**
+```
+{'nodes': 87, 'edges': 312, 'density': 0.083, 'layers': 3, 
+ 'layer_densities': {'layer_0': 0.092, 'layer_1': 0.078, 'layer_2': 0.081}}
+```
+
+### Custom Pipeline Steps
+
+```python
+from py3plex.pipeline import PipelineStep
+
+class ComputeCentrality(PipelineStep):
+    def __init__(self, measure='betweenness'):
+        self.measure = measure
+    
+    def transform(self, network):
+        import networkx as nx
+        if self.measure == 'betweenness':
+            centrality = nx.betweenness_centrality(network.core_network)
+        return {'network': network, 'centrality': centrality}
+
+# Use in pipeline
+pipe = Pipeline([
+    ("load", LoadStep(path="network.graphml")),
+    ("centrality", ComputeCentrality(measure='betweenness')),
+])
+```
+
+---
+
+## Config-Driven Workflows
+
+For reproducible research, py3plex supports YAML-based workflow configuration:
+
+```python
+from py3plex.workflows import WorkflowConfig, run_workflow
+
+# Define workflow in YAML
+config_yaml = """
+name: my_analysis
+steps:
+  - name: load
+    type: load
+    params:
+      path: network.graphml
+      input_type: graphml
+  - name: community
+    type: community
+    params:
+      algorithm: louvain
+  - name: stats
+    type: stats
+output:
+  format: json
+  path: results.json
+"""
+
+# Run workflow
+result = run_workflow(config_yaml)
+```
+
+---
+
+## First-Class DSL Method on Network
+
+The DSL can be accessed directly as a method on the network object:
+
+```python
+net = multinet.multi_layer_network()
+# ... add nodes and edges ...
+
+# Execute query directly on network
+result = net.execute_query('SELECT nodes WHERE layer="social" AND degree > 2')
+
+# With MATCH syntax (Cypher-like pattern matching, also supported by DSL)
+result = net.execute_query('MATCH (a:layer1)-[r]->(b:layer1) RETURN a, b')
+```
+
+---
+
+## File Locations
+
+- **DSL Module:** `py3plex/dsl.py`
+- **Graph Ops Module:** `py3plex/graph_ops.py`
+- **Pipeline Module:** `py3plex/pipeline.py`
+- **Workflows Module:** `py3plex/workflows.py`
+- **DSL Documentation:** `docfiles/user_guide/dsl.rst`
+- **DSL Examples:** `examples/network_analysis/example_dsl_queries.py`
+- **Advanced Examples:** `examples/network_analysis/example_dsl_advanced.py`
+- **Tests:** `tests/test_dsl.py`, `tests/test_graph_ops.py`, `tests/test_pipeline.py`, `tests/test_ergonomics.py`
