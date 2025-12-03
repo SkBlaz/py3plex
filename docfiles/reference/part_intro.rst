@@ -1,7 +1,7 @@
 Reference & Citation: The Complete Guide
 =========================================
 
-*"Science progresses one funeral at a time."* — Max Planck (paraphrased)
+*"Science progresses one funeral at a time."* — Attributed to Max Planck
 
 The Value of Reference Material
 -------------------------------

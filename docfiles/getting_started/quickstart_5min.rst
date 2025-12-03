@@ -1,7 +1,7 @@
 5-Minute Quickstart
 ===================
 
-*"The best way to learn is to do."* — Paul Halmos
+*"The beginning is the most important part of the work."* — Plato
 
 Get started with py3plex in just 5 minutes with this minimal example. By the end, you'll have created a multilayer network, computed statistics, and visualized your data.
 
