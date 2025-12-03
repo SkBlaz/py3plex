@@ -1,7 +1,19 @@
 10-Minute Tutorial: Getting Started with py3plex
 ================================================
 
-This tutorial provides a quick introduction to py3plex, covering the most common tasks for working with multilayer networks.
+This tutorial provides a comprehensive introduction to py3plex, covering the most common tasks for working with multilayer networks.
+
+The Scenario: A Multi-Platform Social Network
+----------------------------------------------
+
+Imagine you're a data scientist at a research institute studying how people interact across different online platforms. You've been given a dataset of users interacting on two social platforms over time: a messaging app (layer 1) and a professional network (layer 2). Some users are active on both platforms, others on only one. Your goals are:
+
+1. **Understand the structure** of each platform's network
+2. **Identify who is central** in each context—and who bridges both
+3. **Find communities** that span platforms
+4. **Generate features** for a downstream classification task
+
+This scenario captures the essence of multilayer network analysis: you have multiple "views" of the same entities (users), and you want to understand both the individual views and how they relate. Let's work through this with py3plex.
 
 What You Will Learn
 -------------------
@@ -10,10 +22,11 @@ In 10 minutes, you will learn how to:
 
 1. Create and load multilayer networks
 2. Perform basic network analysis
-3. Compute multilayer statistics
-4. Detect communities
+3. Compute multilayer statistics (and interpret what they mean)
+4. Detect communities across layers
 5. Perform random walks for embeddings
 6. Visualize networks
+7. Narrate your findings for a research paper
 
 Prerequisites
 -------------
@@ -27,7 +40,9 @@ Make sure py3plex is installed:
 1. Creating Your First Multilayer Network (2 minutes)
 ------------------------------------------------------
 
-Start by creating a simple multilayer network from scratch:
+**Goal:** Build a multilayer network from scratch to understand the data model.
+
+Start by creating a simple multilayer network:
 
 .. code-block:: python
 
@@ -60,8 +75,12 @@ Start by creating a simple multilayer network from scratch:
       Layer 'layer1': 3 nodes
       Layer 'layer2': 3 nodes
 
+**What to notice:** We have 4 unique people (A, B, C, D) but 5 node-layer pairs because A and B appear in both layers. C only appears in layer1; D only in layer2. Node B is the most "active" (appears in both layers) and is connected in both contexts—this makes B a potential bridge between the two platforms.
+
 2. Loading Networks from Files (1 minute)
 ------------------------------------------
+
+**Goal:** Load real data from a file and verify it loaded correctly.
 
 py3plex supports multiple input formats. Here is how to load from an edge list:
 
@@ -101,6 +120,8 @@ py3plex supports multiple input formats. Here is how to load from an edge list:
 
 3. Exploring Network Structure (2 minutes)
 -------------------------------------------
+
+**Goal:** Navigate the network to understand its components and extract relevant parts.
 
 Iterate Through Nodes and Edges
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,6 +163,8 @@ Iterate Through Nodes and Edges
 
     Neighbors of 1 in layer 1: [('2', '1'), ('3', '1')]
 
+**What to notice:** Nodes are tuples like ``('1', '1')`` meaning "node 1 in layer 1". The ``type`` attribute records the layer. Edges between layers (like ``('2', '1')`` to ``('6', '2')``) are **inter-layer edges**—these represent relationships that cross contexts, such as a professional connection forming between users who met on a personal platform.
+
 Extract Subnetworks
 ~~~~~~~~~~~~~~~~~~~
 
@@ -170,8 +193,12 @@ Extract Subnetworks
     Node subset: 2 node-layer pairs
     Specific pairs: [('2', '1'), ('1', '1')]
 
+**When to use each:** Use ``subset_by="layers"`` when you want to analyze one platform independently. Use ``subset_by="node_names"`` to trace a specific user across all their platforms. Use ``subset_by="node_layer_names"`` for precise control over exactly which node-layer pairs to include.
+
 4. Computing Network Metrics (2 minutes)
 -----------------------------------------
+
+**Goal:** Measure node importance and understand who is central in each layer.
 
 Basic Centrality Measures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -241,8 +268,12 @@ For multilayer-specific centrality measures:
       ('6', '2'): 0.0000
       ('5', '2'): 0.0000
 
+**Interpreting centrality:** Node 1 has the highest multilayer degree (2.0), meaning it's the most connected when we sum across layers. The betweenness values tell us node 1 in layer 1 lies on 66.7% of shortest paths—it's a broker connecting others. Nodes with high centrality in *multiple* measures are often the most important to study further.
+
 5. Multilayer Network Statistics (2 minutes)
 ---------------------------------------------
+
+**Goal:** Understand layer structure and how layers relate to each other.
 
 py3plex provides many specialized statistics for analyzing multilayer networks. Here are the most commonly used:
 
@@ -271,6 +302,14 @@ Basic Layer Statistics
     Layer 2 density: 0.000
     Layer diversity (entropy): 0.000 bits
 
+**Interpreting density:**
+
+* **High density (> 0.3):** The layer is tightly connected. In social terms, "everyone knows everyone."
+* **Low density (< 0.1):** Sparse connections, typical of large real-world networks.
+* **Density = 0:** No edges in this layer (check your data loading!).
+
+**Interpreting entropy:** Low entropy means activity is concentrated in few layers; high entropy means it's spread evenly across many layers.
+
 Node-Level Statistics
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -285,6 +324,8 @@ Node-Level Statistics
 .. code-block:: text
 
     Node activity for node 1: 0.500
+
+**Interpreting activity:** Node 1 appears in 50% of layers (1 out of 2). In our multi-platform scenario, this user is active on one platform. A user with activity 1.0 would be a "super-connector" present everywhere—often these are the most interesting nodes for understanding cross-platform dynamics.
 
 Network-Level Statistics
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -305,6 +346,12 @@ Network-Level Statistics
 
     Edge overlap between layers: 0.000
     Jaccard similarity between layers: 0.000
+
+**Interpreting overlap and similarity:**
+
+* **High overlap (> 0.5):** The same relationships exist in both layers—maybe the layers are redundant.
+* **Low overlap (< 0.1):** Layers capture different relationships—this is where multilayer analysis adds value.
+* **Jaccard = 0:** No common edges. The layers are completely complementary.
 
 **Available statistics:**
 
@@ -553,6 +600,8 @@ For more advanced visualizations with community colors:
 Complete Example: Putting It All Together
 ------------------------------------------
 
+**Goal:** Run a complete analysis pipeline and produce results ready for a research paper.
+
 Here's a complete workflow:
 
 .. code-block:: python
@@ -634,6 +683,25 @@ Here's a complete workflow:
 
 **Note:** In this example, the high number of communities (equal to the number of nodes) indicates that the network structure or parameters may need adjustment for meaningful community detection. In practice, adjust ``gamma`` (resolution) and ``omega`` (inter-layer coupling) parameters to achieve desired community granularity.
 
+Narrating Results for a Research Paper
+--------------------------------------
+
+Once you've run your analysis, how do you present these findings in a research paper? Here's how you might narrate the results from the example above:
+
+**Example Methods Section:**
+
+    We analyzed a multiplex network of 46 users across 4 interaction layers using py3plex (Škrlj et al., 2019). Each layer represents a distinct mode of interaction, with all users present in all layers (a fully multiplex structure with 184 node-layer pairs and 1,691 edges total). We computed layer density to assess connectivity patterns and applied multilayer Louvain community detection (Mucha et al., 2010) with resolution parameter γ=1.0 and inter-layer coupling ω=1.0.
+
+**Example Results Section:**
+
+    The network exhibited moderate density with a uniform structure across layers, suggesting consistent interaction patterns across contexts. Degree centrality analysis revealed several hub nodes (e.g., nodes 15, 7, and 27 with centrality 0.244 in layer 1) that maintain high connectivity. Community detection initially yielded 46 communities—one per unique user—indicating that with default parameters, the algorithm treats each user's cross-layer presence as a distinct module. This suggests either (a) weak inter-user community structure, or (b) the need to reduce the resolution parameter γ to detect larger community groupings.
+
+**Example Discussion Point:**
+
+    The finding that each user forms their own "community" across layers is methodologically informative: it indicates that this network has strong vertical cohesion (each user is well-connected to themselves across layers via coupling edges) but weaker horizontal cohesion (users form few cross-layer communities with other users). This pattern is characteristic of multiplex networks where identity coupling dominates over community structure.
+
+This kind of narrative connects your technical analysis to domain interpretations that reviewers and readers can understand.
+
 Next Steps
 ----------
 
@@ -643,6 +711,8 @@ Now that you've completed this tutorial, explore more advanced features:
 - **Multilayer Centrality**: See examples in ``examples/network_analysis/``
 - **More Examples**: Check the ``examples/`` directory for 80+ examples organized by topic
 - **Full Documentation**: Visit https://skblaz.github.io/py3plex/
+- **Community Detection Tuning**: See :doc:`../user_guide/community_detection` for parameter guidance
+- **Case Studies**: See :doc:`../user_guide/recipes_and_workflows` for domain-specific examples
 
 Common Issues
 -------------

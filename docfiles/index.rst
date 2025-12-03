@@ -18,26 +18,141 @@ py3plex enables scalable analysis and visualization of multilayer and multiplex 
 Overview
 ========
 
-py3plex is a lightweight Python library designed specifically for analyzing and visualizing heterogeneous and multilayer networks. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:
+What is py3plex Actually For?
+-----------------------------
 
-* Multiple node types
-* Multiple edge types
-* Multiple layers of interaction
-* Temporal dynamics
-* Heterogeneous attributes
+py3plex is a lightweight Python library designed specifically for analyzing and visualizing **heterogeneous and multilayer networks**—network structures where relationships are richer and more complex than simple graphs. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:
 
-**Target Users:** Researchers in network science, computational biology, complex systems, social network analysis, and applied network modeling.
+* **Multiple node types** (e.g., authors, papers, venues in an academic network)
+* **Multiple edge types** (e.g., friendship, mentorship, collaboration)
+* **Multiple layers of interaction** (e.g., different social platforms, modes of transportation)
+* **Temporal dynamics** (e.g., evolving relationships over time)
+* **Heterogeneous attributes** (e.g., edge weights varying by relationship type)
+
+Real-world systems are rarely simple: a social network involves friendships *and* professional relationships; a transportation system includes buses *and* trains *and* flights; a biological system has protein-protein interactions *and* gene regulation *and* metabolic pathways. When you model these systems as multilayer networks rather than flattening them into a single graph, you preserve information that matters for analysis—and py3plex makes this kind of analysis practical.
+
+**Target Users:** Researchers in network science, computational biology, complex systems, social network analysis, infrastructure/transportation modeling, and applied ML on graphs.
+
+What Can I Do in the First Hour, First Day, and First Week?
+-----------------------------------------------------------
+
+**First Hour:**
+
+* Install py3plex and create your first multilayer network (see :doc:`getting_started/quickstart_5min`)
+* Load a dataset, compute basic statistics, and visualize your network with one of the built-in layouts
+* Query your network with the SQL-like DSL (``SELECT nodes WHERE layer="friends" AND degree > 5``)
+
+**First Day:**
+
+* Work through the 10-minute tutorial for a complete workflow (see :doc:`getting_started/tutorial_10min`)
+* Compute multilayer statistics: layer density, node activity, edge overlap between layers
+* Detect communities using multilayer Louvain and visualize them with community colors
+* Generate random walks and create basic node embeddings for ML tasks
+
+**First Week:**
+
+* Understand the core model: node-layer pairs, supra-adjacency matrices, and how py3plex extends NetworkX
+* Implement complete analysis pipelines: load → compute statistics → detect communities → visualize → export
+* Tune algorithm parameters (resolution, inter-layer coupling) for your specific domain
+* Build production-ready workflows with Arrow/Parquet I/O for scalability
+
+When Should I Use py3plex Instead of Just NetworkX?
+---------------------------------------------------
+
+NetworkX is excellent for single-layer, homogeneous networks. Use py3plex when:
+
+1. **Your data has natural layers.** If you're tempted to add a ``layer`` attribute to NetworkX edges or to maintain multiple separate graphs, py3plex gives you a principled representation and layer-aware algorithms.
+
+2. **You need multilayer-specific metrics.** Statistics like node activity (how many layers a node participates in), edge overlap (how many edges appear in multiple layers), or versatility centrality (node importance across layers) require multilayer-aware implementations.
+
+3. **You want consistent cross-layer analysis.** Multilayer community detection finds groups that are consistent across layers. Multilayer centrality identifies nodes that are important in their context, not just locally.
+
+4. **You need specialized visualization.** Diagonal projection and layered layouts show multilayer structure clearly. Hairball plots with layer-colored nodes reveal cross-layer patterns.
+
+5. **You want a SQL-like query interface.** The py3plex DSL lets you query and filter networks intuitively (``SELECT edges WHERE source_layer="l1" AND weight > 0.5``).
+
+If your network is genuinely a single layer with one node type and one edge type, plain NetworkX is sufficient. py3plex adds value when that simplifying assumption doesn't hold.
 
 **Key Features:**
 
 * Native support for multiplex and multilayer network structures
 * **SQL-like DSL** for intuitive network queries and analysis
 * Diagonal projection visualization for large multilayer networks
-* Comprehensive multilayer centrality measures
-* Community detection across network layers
-* Network decomposition and feature extraction
-* Semantic enrichment with external knowledge bases
+* Comprehensive multilayer centrality measures (17+ statistics)
+* Community detection across network layers (Louvain, Infomap, multilayer modularity)
+* Network decomposition and feature extraction for ML
+* Random walk and node embedding algorithms (Node2Vec, DeepWalk)
+* High-performance I/O with Arrow/Parquet for large-scale analysis
 * Integration with NetworkX, igraph, and other graph libraries
+
+Typical Workflows
+-----------------
+
+py3plex supports three main workflow patterns:
+
+**1. Exploratory Multilayer Network Analysis (Medium-sized Datasets)**
+
+For networks with a few thousand nodes across 2–10 layers, this is the most common workflow:
+
+* **Load:** Read your multilayer edgelist, GraphML, or CSV
+* **Explore:** Run ``basic_stats()``, examine layer densities, node activity distributions
+* **Analyze:** Compute multilayer statistics, detect communities, compute centralities
+* **Visualize:** Create hairball plots with community colors, diagonal projections
+* **Iterate:** Refine layer selection, tune parameters, re-analyze
+
+*Best for:* Social network analysis, biological networks (PPI, gene regulation), citation networks
+
+**2. Feature Extraction + Embeddings for ML Tasks**
+
+When your goal is to use network structure as features for machine learning:
+
+* **Load:** Import your network
+* **Generate walks:** Use ``generate_walks()`` with Node2Vec-style biased sampling
+* **Train embeddings:** Feed walks to Word2Vec or use py3plex's embedding wrappers
+* **Export features:** Create node-level feature vectors for classification or link prediction
+* **Integrate:** Use embeddings in scikit-learn pipelines or deep learning models
+
+*Best for:* Node classification, link prediction, graph-level classification, similarity search
+
+**3. Large-Scale Multilayer Analysis (Performance Constraints)**
+
+For networks with 100k+ nodes or when running many experiments:
+
+* **Use Arrow/Parquet I/O:** 2–3x faster read/write than JSON, better compression
+* **Work layer-by-layer:** Extract single layers for independent analysis when possible
+* **Use sparse matrices:** Always use ``sparse=True`` for supra-adjacency matrices
+* **Sample for exploration:** Use subnetworks and random sampling for initial exploration
+* **Batch processing:** Use CLI/Docker for reproducible, scriptable analysis
+
+*Best for:* Large social graphs, infrastructure networks, repeated experiments, production pipelines
+
+Design at a Glance
+------------------
+
+py3plex is organized into four main components:
+
+**Core (``py3plex.core``):**
+
+The ``multi_layer_network`` class wraps NetworkX MultiGraph/MultiDiGraph with layer-aware semantics. Nodes are represented as ``(node_id, layer_id)`` tuples, enabling the same entity to appear in multiple layers. This representation is compatible with all NetworkX algorithms while providing multilayer-specific operations.
+
+**Algorithms (``py3plex.algorithms``):**
+
+* **Statistics:** Layer density, node activity, edge overlap, versatility centrality, and more
+* **Community detection:** Louvain, Infomap, multilayer modularity (Mucha et al. 2010)
+* **Centrality:** Multilayer degree, betweenness, closeness, PageRank
+* **Random walks:** Basic walks, Node2Vec-style biased walks, layer-constrained walks
+
+**Visualization (``py3plex.visualization``):**
+
+* **Hairball plots:** Force-directed layouts with layer coloring
+* **Diagonal projection:** 3D-like representation showing layer structure
+* **Community visualization:** Nodes colored by detected community
+
+**I/O (``py3plex.io``):**
+
+* **Traditional formats:** Edgelist, multiedgelist, GraphML, GML, pickle
+* **Modern formats:** Apache Arrow, Parquet for high-performance serialization
+* **Schema-based API:** ``read()`` and ``write()`` with automatic format detection
 
 Installation
 ============
