@@ -25,6 +25,13 @@ from py3plex.dsl import (
     _evaluate_condition,
     _evaluate_conditions,
     _compute_measure,
+    # New DSL v3 parsing functions
+    _parse_node_pattern,
+    _parse_edge_pattern,
+    _parse_path_pattern,
+    _parse_layer_clause,
+    _parse_return_clause,
+    _tokenize_match_pattern,
 )
 
 

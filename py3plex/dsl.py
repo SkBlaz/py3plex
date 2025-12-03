@@ -158,13 +158,15 @@ def _tokenize_query(query: str) -> List[str]:
     for i, s in enumerate(strings):
         placeholder = f"__STRING_{i}__"
         placeholders[placeholder] = s.strip('"\'')
-        query = query.replace(s, placeholder, 1)
+        # Use indexed replacement to handle duplicate strings correctly
+        idx = query.find(s)
+        if idx != -1:
+            query = query[:idx] + placeholder + query[idx + len(s):]
     
     # Define token patterns - order matters (longer patterns first)
     patterns = [
         r'\]->',  # Edge end with arrow (must come before -> and ]-)
-        r'->\s*',  # Arrow (edge direction) - must come before > 
-        r'->',  # Arrow without whitespace
+        r'->\s*',  # Arrow (edge direction) - must come before >
         r'>=|<=|!=|>|<|=',  # Comparison operators
         r'-\[',  # Start of edge pattern
         r'\]-',  # End of edge pattern (without arrow)
@@ -327,7 +329,8 @@ def _parse_condition(tokens: List[str], start_idx: int,
     
     # Convert value to appropriate type
     try:
-        if '.' in str(value) and not any(c.isalpha() for c in str(value)):
+        value_str = str(value)
+        if '.' in value_str and not any(c.isalpha() for c in value_str):
             value = float(value)
         else:
             try:
@@ -575,7 +578,7 @@ def _parse_return_clause(tokens: List[str], start_idx: int) -> Tuple[Optional[Li
     aliases = []
     while idx < len(tokens):
         token = tokens[idx]
-        if token.upper() in ('WHERE', 'IN', ';') or token == ';':
+        if token.upper() in ('WHERE', 'IN', ';'):
             break
         if token == ',':
             idx += 1
