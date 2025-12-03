@@ -1,5 +1,5 @@
-Py3plex Documentation
-**********************************
+Py3plex: A Practical Guide to Multilayer Network Analysis
+***********************************************************
 
 .. image:: ../example_images/py3plex_showcase.png
    :alt: Py3plex Visualization Showcase
@@ -12,6 +12,14 @@ Py3plex Documentation
 .. image:: https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg
    :target: https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml
    :alt: Code Quality
+
+----
+
+*A practical, hands-on guide to analyzing and visualizing multilayer networks in Python.*
+
+----
+
+Welcome to py3plex. This documentation is organized as a progressive learning journey—from your first five-minute example through conceptual foundations to advanced production workflows. Whether you're a researcher exploring social network dynamics, a bioinformatician analyzing protein interactions across multiple evidence types, or a data scientist building features for machine learning, this guide will show you how to work effectively with multilayer network structures.
 
 py3plex enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.
 
@@ -363,6 +371,8 @@ Documentation Contents
 Part I: Getting Started
 -----------------------
 
+*Chapters 1–2: From zero to productive in 15 minutes.*
+
 Whether you're new to py3plex or multilayer network analysis, this section provides everything you need to get up and running quickly. We begin with a 5-minute quickstart that demonstrates the core concepts through hands-on examples, then expand into a comprehensive 10-minute tutorial covering the most common workflows. The installation guide ensures you have all dependencies configured correctly, while the troubleshooting section addresses common issues you might encounter.
 
 .. toctree::
@@ -379,6 +389,8 @@ Whether you're new to py3plex or multilayer network analysis, this section provi
 Part II: Concepts & Architecture
 --------------------------------
 
+*Chapters 3–6: Understanding the theory and design.*
+
 Before diving deeper into py3plex's capabilities, it's essential to understand the theoretical foundations of multilayer networks. This section introduces the core concepts that distinguish multilayer networks from traditional graph structures, explains py3plex's internal data model and design philosophy, and provides an overview of the algorithmic landscape available for multilayer network analysis. Understanding these foundations will help you make better decisions when designing your analysis workflows.
 
 .. toctree::
@@ -394,6 +406,8 @@ Before diving deeper into py3plex's capabilities, it's essential to understand t
 
 Part III: User Guide
 --------------------
+
+*Chapters 7–16: Mastering every feature.*
 
 With the fundamentals in place, this section provides comprehensive how-to guides for every major feature of py3plex. You'll learn how to create and manipulate multilayer networks, compute network statistics and centrality measures, detect communities across layers, perform random walks for embeddings, handle various input/output formats, create publication-ready visualizations, use the SQL-like DSL for intuitive queries, use the dplyr-style chainable API for data transformations, and combine these techniques into complete analysis workflows. Each chapter builds on the previous ones, creating a progressive learning path.
 

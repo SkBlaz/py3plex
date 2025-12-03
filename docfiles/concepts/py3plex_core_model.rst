@@ -1,7 +1,18 @@
-py3plex Core Model
-==================
+Chapter 4: The py3plex Core Model
+==================================
 
-This guide explains how py3plex represents multilayer networks internally and how to work with the core data structures.
+*In which we look under the hood at how py3plex represents multilayer networks, understand the node-layer pair representation, and learn to work with the supra-adjacency matrix.*
+
+----
+
+In the previous chapter, you learned *what* multilayer networks are conceptually. Now we'll see *how* py3plex represents them in code—and why these design choices matter for your analysis.
+
+Understanding the internal representation will help you:
+
+- Debug unexpected behavior (why does my network have twice as many nodes as I expected?)
+- Integrate with NetworkX (how do I use existing algorithms on my multilayer network?)
+- Scale to large networks (when should I use sparse matrices? how much memory will this take?)
+- Extend py3plex (how do I add my own algorithms?)
 
 Network Types: Multilayer vs Multiplex
 ---------------------------------------
@@ -844,17 +855,49 @@ Alternative representations exist, but py3plex's node-layer pair approach offers
 * Compatible with NetworkX algorithms
 * Efficient for multilayer-specific operations
 
-Next Steps
-----------
+What You Learned
+----------------
 
-* :doc:`../user_guide/networks` - Creating and manipulating networks in practice
-* :doc:`../user_guide/statistics` - Computing multilayer network statistics
-* :doc:`design_principles` - High-level design philosophy
-* :doc:`algorithm_landscape` - Overview of available algorithms
-* :doc:`../user_guide/io_and_formats` - Complete I/O documentation
-* :doc:`../reference/api_index` - Full API reference
+This chapter covered the internal architecture of py3plex:
+
+**Core concepts:**
+
+- The ``multi_layer_network`` class as the central data structure
+- Node-layer pairs ``(node_id, layer_id)`` as the fundamental representation
+- The difference between ``network_type='multilayer'`` and ``network_type='multiplex'``
+
+**Data structures:**
+
+- The underlying NetworkX MultiGraph/MultiDiGraph
+- Layer mappings and layer extraction
+- The supra-adjacency matrix and its block structure
+
+**Design trade-offs:**
+
+- Why node-layer pairs were chosen over alternatives
+- Memory implications of the representation
+- When to use sparse vs. dense matrices
+
+**NetworkX integration:**
+
+- Accessing the core graph with ``network.core_network``
+- Using any NetworkX algorithm directly
+- The ``monoplex_nx_wrapper()`` convenience method
+
+What's Next?
+------------
+
+* :doc:`design_principles` — The philosophy behind py3plex's API design
+* :doc:`algorithm_landscape` — Overview of available algorithms
+* :doc:`../user_guide/networks` — Practical guide to network operations
+* :doc:`../user_guide/statistics` — Computing multilayer statistics
+* :doc:`../user_guide/io_and_formats` — Complete I/O documentation
 
 **Academic References:**
 
 * De Domenico et al. (2013). "Mathematical formulation of multilayer networks." *Physical Review X* 3(4): 041022.
 * Kivelä et al. (2014). "Multilayer networks." *Journal of Complex Networks* 2(3): 203-271.
+
+----
+
+*Next chapter: :doc:`design_principles` — understanding py3plex's design philosophy.*

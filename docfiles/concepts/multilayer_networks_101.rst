@@ -1,7 +1,13 @@
-Multilayer Networks 101
-=======================
+Chapter 3: Multilayer Networks 101
+===================================
 
-This chapter provides a conceptual foundation for understanding multilayer networks—what they are, why they matter, and when to use them. By the end, you'll have the intuition needed to model your own systems as multilayer networks and understand why py3plex exists.
+*In which we learn what multilayer networks are, why they capture reality better than single-layer graphs, and how to think about layers, nodes, and edges in this richer framework.*
+
+----
+
+The previous chapters showed you *how* to use py3plex. This chapter explains *why* multilayer networks matter—and when you should (or shouldn't) use them.
+
+By the end, you'll have the conceptual foundation to model your own systems as multilayer networks, to choose between multiplex, heterogeneous, and temporal representations, and to understand why flattening everything into a single layer can destroy the very patterns you're trying to find.
 
 What are Multilayer Networks?
 ------------------------------
@@ -641,16 +647,46 @@ A matrix representation that stacks layer adjacency matrices into a block struct
 
 See :doc:`py3plex_core_model` for implementation details and a numeric example.
 
-Further Reading
----------------
+What You Learned
+----------------
 
-* :doc:`py3plex_core_model` - How py3plex represents multilayer networks internally
-* :doc:`design_principles` - Design philosophy and API principles
-* :doc:`algorithm_landscape` - Overview of multilayer algorithms
-* :doc:`../user_guide/networks` - Creating and loading multilayer networks in code
+This chapter covered the conceptual foundations of multilayer network analysis:
+
+**Concepts:**
+
+- Why multilayer networks preserve information that single-layer graphs destroy
+- The difference between multiplex, heterogeneous, temporal, and interdependent networks
+- When to use multilayer modeling and when single-layer is sufficient
+- What goes wrong when you flatten layers: spurious bridges, misleading centrality, broken paths
+
+**Terminology:**
+
+- Intra-layer edges (within layers) vs. inter-layer edges (between layers)
+- Node-layer pairs as the fundamental unit of representation
+- The supra-adjacency matrix and its block structure
+
+**Decision framework:**
+
+- Are your layers truly distinct, or are they attributes?
+- Same nodes across layers (multiplex) or different nodes (heterogeneous)?
+- How strong should inter-layer coupling be?
+- Is temporal structure important?
+
+What's Next?
+------------
+
+Now that you understand *what* multilayer networks are, the next chapter explains *how* py3plex represents them internally.
+
+- :doc:`py3plex_core_model` — The internal data structures and design decisions
+- :doc:`design_principles` — Why py3plex was built the way it was
+- :doc:`algorithm_landscape` — Overview of available algorithms
 
 **Academic References:**
 
 * Kivelä et al. (2014). "Multilayer networks." *Journal of Complex Networks* 2(3): 203-271.
 * Boccaletti et al. (2014). "The structure and dynamics of multilayer networks." *Physics Reports* 544(1): 1-122.
 * De Domenico et al. (2013). "Mathematical formulation of multilayer networks." *Physical Review X* 3(4): 041022.
+
+----
+
+*Next chapter: :doc:`py3plex_core_model` — understanding py3plex's internal representation.*
