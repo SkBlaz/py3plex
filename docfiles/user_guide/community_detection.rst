@@ -322,6 +322,210 @@ Community Size Distribution
     plt.title('Community Size Distribution')
     plt.show()
 
+Understanding Single-Layer vs. Multilayer Community Detection
+--------------------------------------------------------------
+
+Before diving into algorithm specifics, it's important to understand the conceptual differences between approaches.
+
+Single-Layer Community Detection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Traditional community detection finds groups in a single graph. Applied to a multilayer network, you have two options:
+
+1. **Flatten and detect:** Aggregate all layers into one graph, then find communities. This loses layer information.
+
+2. **Detect per layer:** Find communities independently in each layer. This ignores cross-layer structure.
+
+Neither captures the full multilayer picture.
+
+Multilayer Community Detection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Multilayer algorithms find communities that are consistent across layers while respecting layer-specific structure. They ask: "Which nodes cluster together across multiple contexts?"
+
+**Key insight:** A node that is moderately connected in many layers may be more "community-central" than a node highly connected in just one layer.
+
+Overlapping vs. Non-Overlapping Communities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Non-overlapping:** Each node belongs to exactly one community. Algorithms like Louvain and Leiden produce non-overlapping partitions.
+
+**Overlapping:** Nodes can belong to multiple communities. Algorithms like NoRC and clique percolation find overlapping structure.
+
+*When to use overlapping:* When nodes naturally belong to multiple groups (e.g., a person in both a work community and a hobby community).
+
+Flow-Based vs. Modularity-Based Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Modularity-based (Louvain, Leiden):** Optimize a quality function that compares edge density within communities to expected density. Fast, widely used, but has resolution limit issues.
+
+**Flow-based (Infomap):** Model random walks on the network and find community structure that minimizes description length of those walks. Theoretically grounded, finds hierarchical structure, but slower.
+
+*When to use which:*
+
+* Use **modularity-based** for speed and when you don't need hierarchical structure
+* Use **flow-based** when you care about information flow or want to find nested communities
+
+Parameter Tuning Cookbook
+--------------------------
+
+Tuning Resolution (Gamma)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The resolution parameter γ controls community size:
+
+.. code-block:: python
+
+    from py3plex.algorithms.community_detection.multilayer_modularity import (
+        louvain_multilayer
+    )
+    
+    # Experiment with different resolution values
+    for gamma in [0.5, 1.0, 1.5, 2.0]:
+        partition = louvain_multilayer(network, gamma=gamma, omega=1.0, random_state=42)
+        num_comms = len(set(partition.values()))
+        print(f"gamma={gamma}: {num_comms} communities")
+
+**Interpretation guide:**
+
+* **Very few communities (2-5) when you expect more:** γ is too low → increase γ
+* **Many singleton communities:** γ is too high → decrease γ  
+* **One giant community + many tiny ones:** Resolution limit problem → try γ > 1 or use Leiden
+
+**Recommended starting procedure:**
+
+1. Start with γ=1.0 (standard modularity)
+2. Look at community size distribution
+3. If too coarse, try γ=1.5, 2.0
+4. If too fine, try γ=0.5, 0.25
+
+Tuning Inter-Layer Coupling (Omega)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The coupling parameter ω controls how much layers influence each other:
+
+.. code-block:: python
+
+    # Experiment with different coupling values
+    for omega in [0.1, 0.5, 1.0, 2.0, 5.0]:
+        partition = louvain_multilayer(network, gamma=1.0, omega=omega, random_state=42)
+        num_comms = len(set(partition.values()))
+        
+        # Check cross-layer consistency
+        # (how often does the same node get same community across layers?)
+        # ... (compute consistency metric)
+        print(f"omega={omega}: {num_comms} communities")
+
+**Interpretation guide:**
+
+* **ω = 0:** Layers are independent (equivalent to detecting per-layer, then combining)
+* **ω = 1:** Balanced coupling (default, usually good)
+* **ω > 1:** Strong coupling (forces cross-layer consistency)
+* **ω → ∞:** All layers must have identical community structure
+
+**Domain-specific guidance:**
+
+* **Multiplex social networks:** Start with ω=1.0 (people are the same across platforms)
+* **Temporal networks:** ω=0.5 to 1.0 (communities can evolve but not too fast)
+* **Heterogeneous networks:** ω=0.1 to 0.5 (different node types may have different community structure)
+
+Diagnosing Bad Partitions
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Problem: All nodes in one community**
+
+.. code-block:: python
+
+    if len(set(partition.values())) == 1:
+        print("All nodes in single community - try increasing gamma")
+
+*Causes:* Network is too dense, γ too low, or network genuinely has no community structure.
+
+**Problem: Each node is its own community**
+
+.. code-block:: python
+
+    if len(set(partition.values())) == len(partition):
+        print("All singletons - try decreasing gamma or increasing omega")
+
+*Causes:* Network is too sparse, γ too high, ω too low.
+
+**Problem: Communities don't match domain expectations**
+
+*Actions:*
+
+1. Visualize communities and examine specific nodes
+2. Check if high-degree nodes are correctly assigned
+3. Verify that known groups (e.g., departments) are recovered
+4. Consider using ground-truth labels for NMI comparison
+
+Mini Case Studies
+-----------------
+
+Case Study 1: Biological Network Communities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Scenario:** A protein-protein interaction network with 3 layers representing different experimental evidence types (yeast two-hybrid, co-immunoprecipitation, affinity purification).
+
+**Goal:** Find functional modules (groups of proteins with shared biological function).
+
+**Approach:**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.community_detection.multilayer_modularity import (
+        louvain_multilayer
+    )
+    
+    # Load network
+    network = multinet.multi_layer_network().load_network(
+        "ppi_multilayer.txt", input_type="multiedgelist", directed=False
+    )
+    
+    # Use moderate coupling - different evidence types should 
+    # contribute to same modules, but we don't require perfect consistency
+    partition = louvain_multilayer(
+        network, 
+        gamma=1.0,     # Standard resolution
+        omega=0.5,     # Moderate coupling
+        random_state=42
+    )
+    
+    # Validate: Do communities correspond to GO biological process terms?
+    # Compare community assignments to known functional annotations
+
+**Expected outcome:** Communities should correspond to functional modules like "cell cycle," "DNA repair," "metabolic pathways." Proteins appearing in multiple layers with high connectivity should be community hubs.
+
+Case Study 2: Transportation Network Communities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Scenario:** A multi-modal transportation network with layers for metro, bus, and bike-share in a city.
+
+**Goal:** Find "travel basins"—regions where people travel together within a mode and switch between modes at hubs.
+
+**Approach:**
+
+.. code-block:: python
+
+    # Load network
+    network = multinet.multi_layer_network().load_network(
+        "transport_network.txt", input_type="multiedgelist", directed=False
+    )
+    
+    # Higher coupling - the same station serves multiple modes
+    partition = louvain_multilayer(
+        network,
+        gamma=1.2,     # Slightly higher to find smaller regions
+        omega=1.5,     # Strong coupling at multimodal hubs
+        random_state=42
+    )
+    
+    # Validate: Do communities correspond to geographic regions?
+    # Are major transfer stations correctly identified as community boundaries?
+
+**Expected outcome:** Communities should correspond to neighborhoods or districts. Multimodal hubs (stations serving metro + bus + bike) should appear at community boundaries or as bridges between communities.
+
 Comparing Algorithms
 --------------------
 
@@ -427,6 +631,15 @@ Always validate community detection results:
 2. **Modularity** - Check modularity score (>0.3 is good)
 3. **Size distribution** - Check for giant communities or singletons
 4. **Domain knowledge** - Do communities make sense for your application?
+5. **Ground truth comparison** - If you have labels, compute NMI or Adjusted Rand Index
+
+Common Failure Modes
+~~~~~~~~~~~~~~~~~~~~~
+
+* **Trivial partitions:** All-in-one or all-singletons → tune γ and ω
+* **Unstable results:** Different runs give very different partitions → use ``random_state`` and run multiple times
+* **Over-fragmentation:** Too many small communities → decrease γ or try Leiden
+* **Resolution limit:** Can't find small communities in large networks → increase γ or use hierarchical methods
 
 References
 ----------
@@ -443,12 +656,13 @@ Rosvall, M., & Bergstrom, C. T. (2008). Maps of random walks on complex networks
 
 Mucha, P. J., et al. (2010). Community structure in time-dependent, multiscale, and multiplex networks. *Science*, 328(5980), 876-878.
 
-See :doc:`../citation` for complete citations with DOIs.
+See :doc:`../reference/citation_and_acknowledgements` for complete citations with DOIs.
 
 Next Steps
 ----------
 
-* :doc:`./multilayer_centrality` - Centrality measures tutorial
-* :doc:`./multilayer_modularity` - Multilayer modularity details
-* :doc:`../algorithm_guide` - Algorithm selection guide
+* :doc:`../tutorials/multilayer_centrality` - Centrality measures tutorial
+* :doc:`../tutorials/multilayer_modularity` - Multilayer modularity details
+* :doc:`../concepts/algorithm_landscape` - Algorithm selection guide
+* :doc:`random_walks_embeddings` - Using walks for embeddings
 * Examples in ``examples/communities/example_community_detection.py``

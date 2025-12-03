@@ -3,6 +3,17 @@
 
 Get started with py3plex in just 5 minutes with this minimal example.
 
+The Scenario
+------------
+
+Imagine you have data about a small group of people and their relationships across two contexts: **friends** (personal relationships) and **colleagues** (professional relationships). You want to understand:
+
+* Who is well-connected in each context?
+* Who appears in both contexts (and might bridge personal and professional networks)?
+* Are the friendship and colleague networks similarly structured?
+
+This is a classic multilayer network analysis scenario. Let's solve it with py3plex.
+
 Installation
 ------------
 
@@ -50,6 +61,10 @@ Create a simple multilayer network with just a few lines of code:
       Layer 'friends': 3 nodes
       Layer 'colleagues': 3 nodes
 
+**What just happened?** We created a multilayer network with 2 layers. Notice that ``basic_stats()`` reports both **6 nodes** (counting each person in each layer separately) and **4 unique node IDs** (counting each person once regardless of how many layers they appear in). This distinction is fundamental: Alice appears in both layers, but Alice-in-friends and Alice-in-colleagues are different **node-layer pairs**.
+
+**Sanity check:** The "Nodes per layer" section confirms that each layer has 3 nodes. If you see layers with 0 or 1 nodes, you likely have a data loading issue. If the unique node count seems wrong, check your layer naming for consistency.
+
 Visualize Your Network
 ----------------------
 
@@ -63,6 +78,8 @@ Create a simple visualization:
     draw_multilayer_default([network], display=True)
 
 This creates a visual plot showing your multilayer network with nodes colored by layer.
+
+**What you should see:** Nodes from the "friends" layer will be one color, nodes from the "colleagues" layer another. Edges connect nodes within and across layers. This immediate visual feedback helps you verify that your data was loaded correctly—if layers are missing or edges seem wrong, you'll often spot it in the visualization before you spot it in statistics.
 
 Basic Analysis
 --------------
@@ -92,7 +109,11 @@ Compute some basic network statistics:
     Colleagues layer density: 0.667
     Bob's activity: 1.000
 
-Bob appears in both layers (100% activity) and both layers are well-connected.
+**Interpreting the results:**
+
+* **Density 0.667** means 2 out of 3 possible edges exist in each layer (with 3 nodes, a complete graph has 3 edges; we have 2). This is a fairly dense small network—real-world networks are typically much sparser (density < 0.1).
+
+* **Bob's activity 1.000** means Bob appears in 100% of layers (both of them). He's a "bridge" person who connects both contexts. Compare this to Carol (activity 0.5, only in friends) or Dave (activity 0.5, only in colleagues). High-activity nodes are often interesting for understanding cross-layer dynamics.
 
 Query with DSL (SQL-like)
 --------------------------
@@ -114,8 +135,23 @@ Use SQL-like queries for intuitive network analysis:
     # Compute centrality
     result = execute_query(network, 
         'SELECT nodes WHERE layer="friends" COMPUTE betweenness_centrality')
+
+**What this gives you:** The DSL is particularly useful when you're exploring data interactively. Instead of chaining Python method calls, you can express queries in a readable, declarative style. The ``COMPUTE`` clause adds computed metrics to the result, making it easy to filter and analyze in one step.
     
 See :doc:`../user_guide/dsl` for comprehensive DSL documentation.
+
+What You Learned
+----------------
+
+In this 5-minute quickstart, you've learned the key mental model for py3plex:
+
+1. **Node-layer pairs:** In a multilayer network, a node like "Bob" isn't just a single entity—it's represented as ``('Bob', 'friends')`` and ``('Bob', 'colleagues')`` separately. This allows the same person to have different attributes and connections in different contexts.
+
+2. **Layers as contexts:** Each layer represents a different type of relationship or interaction mode. The layer structure is preserved throughout analysis, not flattened away.
+
+3. **py3plex extends NetworkX:** Under the hood, py3plex uses NetworkX graphs. This means you can use any NetworkX algorithm on your multilayer network, while py3plex adds multilayer-specific capabilities on top.
+
+4. **Multilayer statistics reveal cross-layer patterns:** Metrics like node activity, layer density, and edge overlap help you understand how layers relate to each other—something you can't compute with single-layer tools.
 
 What's Next?
 ------------
