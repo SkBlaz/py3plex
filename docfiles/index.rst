@@ -222,20 +222,33 @@ py3plex is particularly well-suited for:
 What's in this Documentation?
 ==============================
 
-This documentation is organized to help different types of users find what they need quickly:
+This documentation is organized as a comprehensive guide that takes you from beginner to advanced user. It's structured in eight parts that you can read sequentially like a book, or jump to specific sections based on your needs:
 
-**New to py3plex?** Start with :doc:`getting_started/quickstart_5min` for a 5-minute introduction, then explore :doc:`getting_started/tutorial_10min` for a comprehensive walkthrough.
+**Part I - Getting Started:** New to py3plex? Begin with the 5-minute quickstart (:doc:`getting_started/quickstart_5min`) for a hands-on introduction, then continue to the 10-minute tutorial (:doc:`getting_started/tutorial_10min`) for a comprehensive walkthrough.
 
-**Power users?** Jump to the :doc:`user_guide/networks` and other user guide sections for detailed how-tos, or browse the :doc:`examples/index` for working code.
+**Part II - Concepts & Architecture:** Want to understand the theory? Check out :doc:`concepts/multilayer_networks_101` for foundational concepts and :doc:`concepts/py3plex_core_model` for py3plex's design philosophy.
 
-**Want to understand the concepts?** Check out :doc:`concepts/multilayer_networks_101` and :doc:`concepts/py3plex_core_model` for deep conceptual explanations.
+**Part III - User Guide:** Ready to dive deep? The user guide chapters cover every major feature from network creation to visualization, each building on the previous.
 
-**Deploying in production?** See the :doc:`deployment/cli_and_docker` and :doc:`deployment/performance_scalability` guides.
+**Part IV - Deployment:** Moving to production? See the :doc:`deployment/cli_and_docker` and :doc:`deployment/performance_scalability` guides for deployment strategies.
 
-**Contributing?** Read the :doc:`dev/development_guide` and :doc:`dev/contributing` pages.
+**Part V - GUI:** Prefer a visual interface? The GUI section covers the web-based interface for interactive network exploration.
+
+**Part VI - Developer Docs:** Want to contribute? Read the :doc:`dev/development_guide` and :doc:`dev/contributing` pages.
+
+**Part VII - Examples:** Learning by doing? Browse the curated :doc:`examples/index` for working code.
+
+**Part VIII - Reference:** Need API details? The reference section provides comprehensive algorithm and API documentation.
 
 Documentation Contents
 ======================
+
+----
+
+Part I: Getting Started
+-----------------------
+
+Whether you're new to py3plex or multilayer network analysis, this section provides everything you need to get up and running quickly. We begin with a 5-minute quickstart that demonstrates the core concepts through hands-on examples, then expand into a comprehensive 10-minute tutorial covering the most common workflows. The installation guide ensures you have all dependencies configured correctly, while the troubleshooting section addresses common issues you might encounter.
 
 .. toctree::
    :maxdepth: 2
@@ -246,6 +259,13 @@ Documentation Contents
    getting_started/installation
    getting_started/common_issues
 
+----
+
+Part II: Concepts & Architecture
+--------------------------------
+
+Before diving deeper into py3plex's capabilities, it's essential to understand the theoretical foundations of multilayer networks. This section introduces the core concepts that distinguish multilayer networks from traditional graph structures, explains py3plex's internal data model and design philosophy, and provides an overview of the algorithmic landscape available for multilayer network analysis. Understanding these foundations will help you make better decisions when designing your analysis workflows.
+
 .. toctree::
    :maxdepth: 2
    :caption: Concepts & Architecture
@@ -254,6 +274,13 @@ Documentation Contents
    concepts/py3plex_core_model
    concepts/design_principles
    concepts/algorithm_landscape
+
+----
+
+Part III: User Guide
+--------------------
+
+With the fundamentals in place, this section provides comprehensive how-to guides for every major feature of py3plex. You'll learn how to create and manipulate multilayer networks, compute network statistics and centrality measures, detect communities across layers, perform random walks for embeddings, handle various input/output formats, create publication-ready visualizations, use the SQL-like DSL for intuitive queries, and combine these techniques into complete analysis workflows. Each chapter builds on the previous ones, creating a progressive learning path.
 
 .. toctree::
    :maxdepth: 2
@@ -268,12 +295,26 @@ Documentation Contents
    user_guide/dsl
    user_guide/recipes_and_workflows
 
+----
+
+Part IV: Environments & Deployment
+----------------------------------
+
+Moving from development to production requires careful consideration of deployment strategies and performance optimization. This section covers how to use py3plex via command-line interfaces and Docker containers for reproducible analyses, as well as techniques for scaling to large networks and optimizing performance for demanding workloads.
+
 .. toctree::
    :maxdepth: 2
    :caption: Environments & Deployment
 
    deployment/cli_and_docker
    deployment/performance_scalability
+
+----
+
+Part V: Py3plex GUI
+-------------------
+
+For users who prefer a graphical interface, py3plex provides a web-based GUI for interactive network exploration and analysis. This section covers everything from basic usage to deployment, API integration, and testing. The GUI makes py3plex accessible to users who may not be comfortable with Python scripting while still providing access to the library's powerful analytical capabilities.
 
 .. toctree::
    :maxdepth: 2
@@ -285,6 +326,13 @@ Documentation Contents
    gui/gui_architecture
    gui/gui_testing
 
+----
+
+Part VI: Developer & Contributor Docs
+-------------------------------------
+
+If you're interested in contributing to py3plex or understanding its internal architecture for extension purposes, this section provides the necessary guidance. We cover development environment setup, code architecture and organization, repository layout, and contribution guidelines. Open-source contributions are welcomed and appreciated.
+
 .. toctree::
    :maxdepth: 2
    :caption: Developer & Contributor Docs
@@ -294,11 +342,25 @@ Documentation Contents
    dev/repo_layout
    dev/contributing
 
+----
+
+Part VII: Examples
+------------------
+
+Learning by example is often the most effective approach. This section provides a curated collection of working code examples that demonstrate py3plex's capabilities across various use cases. From basic network creation to advanced analysis workflows, these examples serve as templates for your own projects.
+
 .. toctree::
    :maxdepth: 1
    :caption: Examples
 
    examples/index
+
+----
+
+Part VIII: Reference & Citation
+-------------------------------
+
+This final section provides comprehensive reference materials including the complete algorithm reference, API documentation, and citation information. If you use py3plex in your research, please cite the original publication to support continued development.
 
 .. toctree::
    :maxdepth: 2
