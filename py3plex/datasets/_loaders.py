@@ -60,20 +60,14 @@ def load_aarhus_cs(directed: bool = False) -> multi_layer_network:
     This is a well-known multiplex social network representing relationships
     among employees of the Computer Science department at Aarhus University.
 
-    **Dataset details:**
-
-    - **Nodes**: 61 employees
-    - **Layers**: 5 (lunch, facebook, coauthor, leisure, work)
-    - **Edges**: ~600 relationships across layers
-    - **Type**: Undirected multiplex
+    Dataset details: 61 employees, 5 layers (lunch, facebook, coauthor,
+    leisure, work), approximately 600 relationships across layers,
+    undirected multiplex network.
 
     The layers represent different types of social interactions:
-
-    - **lunch**: Who has lunch together
-    - **facebook**: Facebook friendships
-    - **coauthor**: Co-authorship relations
-    - **leisure**: Leisure activities together
-    - **work**: Work-related interactions
+    lunch (who has lunch together), facebook (Facebook friendships),
+    coauthor (co-authorship relations), leisure (leisure activities together),
+    and work (work-related interactions).
 
     Parameters
     ----------
@@ -125,12 +119,8 @@ def load_synthetic_multilayer(directed: bool = False) -> multi_layer_network:
     tutorials, and examples. It provides a consistent reference
     network for reproducible demonstrations.
 
-    **Dataset details:**
-
-    - **Nodes**: 50 nodes
-    - **Layers**: 3 (layer1, layer2, layer3)
-    - **Edges**: ~200 edges across layers
-    - **Type**: Undirected multilayer
+    Dataset details: 50 nodes, 3 layers (layer1, layer2, layer3),
+    approximately 200 edges across layers, undirected multilayer network.
 
     Parameters
     ----------
