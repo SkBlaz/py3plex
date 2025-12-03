@@ -1,18 +1,26 @@
 Network Statistics
 ==================
 
-This guide covers the statistical measures available in py3plex for analyzing multilayer networks.
+*How to measure and compare the structure of your multilayer network.*
 
-Overview
---------
+----
+
+Once you've loaded a multilayer network, the next question is: *what does it look like?* This chapter shows you how to compute statistics that answer fundamental questions about your network's structure:
+
+- **How dense is each layer?** Sparse layers may indicate missing data or genuine sparsity.
+- **Who participates in multiple contexts?** High-activity nodes may be bridges or hubs.
+- **How similar are your layers?** Similar layers might be redundant; dissimilar layers reveal complementary information.
+- **What patterns emerge across layers?** Metrics like edge overlap and inter-layer degree correlation reveal cross-layer structure.
 
 py3plex provides three levels of network statistics:
 
-1. **Global Statistics** - Whole network properties (density, clustering, etc.)
-2. **Layer-Specific Statistics** - Per-layer measures and comparisons
-3. **Node-Level Statistics** - Node activity and participation across layers
+1. **Global Statistics** — Whole network properties (density, clustering, etc.)
+2. **Layer-Specific Statistics** — Per-layer measures and comparisons
+3. **Node-Level Statistics** — Node activity and participation across layers
 
 For centrality measures (degree, betweenness, PageRank, etc.), see :doc:`../concepts/algorithm_landscape`.
+
+----
 
 Basic Network Statistics
 ------------------------
@@ -593,19 +601,52 @@ Complete Example
     entropy = mls.entropy_of_multiplexity(network)
     print(f"Entropy of multiplexity: {entropy:.4f} bits")
 
-Next Steps
-----------
+What You Learned
+----------------
 
-* :doc:`community_detection` - Finding communities
-* :doc:`networks` - Creating and loading networks
-* :doc:`visualization` - Visualizing statistics
-* :doc:`../concepts/algorithm_landscape` - Overview of all algorithms
-* :doc:`../reference/algorithm_reference` - Complete API reference
+This chapter covered the statistical measures available for multilayer networks:
+
+**Basic network statistics:**
+
+- ``basic_stats()`` for quick overview of nodes, edges, and layers
+- Manual counting with ``get_nodes()``, ``get_edges()``, ``get_layers()``
+
+**Layer-specific statistics:**
+
+- Layer density with ``layer_density()``
+- Layer similarity with ``layer_similarity()`` (Jaccard, Pearson)
+- Edge overlap with ``edge_overlap()``
+- Inter-layer degree correlation with ``inter_layer_degree_correlation()``
+
+**Node-level statistics:**
+
+- Node activity with ``node_activity()`` — what fraction of layers does a node appear in?
+- Versatility centrality with ``versatility_centrality()`` — importance across layers
+- Participation coefficient with ``community_participation_coefficient()``
+
+**Network-level statistics:**
+
+- Entropy of multiplexity — how evenly distributed is the structure?
+- Algebraic connectivity — how robust is the network?
+- Multilayer clustering coefficient — local cohesion across layers
+
+**Integration:**
+
+- All NetworkX statistics work directly on ``network.core_network``
+- Extract layers with ``subnetwork()`` for layer-specific analysis
+
+What's Next?
+------------
+
+* :doc:`community_detection` — Finding communities that span layers
+* :doc:`visualization` — Visualizing statistics and network structure
+* :doc:`../concepts/algorithm_landscape` — Overview of all algorithms
+* :doc:`../reference/algorithm_reference` — Complete API reference
 
 **Related Examples:**
 
-* ``example_multilayer_statistics.py`` - Statistical analysis examples
-* ``example_layer_comparison.py`` - Comparing layers
-* ``example_node_metrics.py`` - Node-level metrics
+* ``example_multilayer_statistics.py`` — Statistical analysis examples
+* ``example_layer_comparison.py`` — Comparing layers
+* ``example_node_metrics.py`` — Node-level metrics
 
 Repository: https://github.com/SkBlaz/py3plex/tree/master/examples
