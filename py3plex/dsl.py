@@ -20,10 +20,21 @@ Example Usage:
 
 Supported Operations:
     - SELECT: Choose what to select (nodes, edges)
+    - MATCH: Cypher-like pattern matching for graph patterns
     - WHERE: Filter by conditions (layer, degree, centrality, etc.)
     - AND/OR/NOT: Logical operators for combining conditions
     - COMPUTE: Calculate network measures (degree, centrality, etc.)
+    - IN LAYER / IN LAYERS: Layer scoping clauses
+    - RETURN: Specify which aliases to return from MATCH queries
     - Comparison operators: >, <, =, >=, <=, !=
+
+Extended Syntax Examples:
+    # Layer scoping for SELECT queries
+    SELECT * FROM nodes IN LAYER 'ppi' WHERE degree > 10;
+    SELECT id, degree FROM nodes IN LAYERS ('ppi', 'coexpr') WHERE color = 'red';
+    
+    # Cypher-like MATCH pattern
+    MATCH (g:Gene)-[r:REGULATES]->(t:Gene) IN LAYER 'reg' WHERE g.degree > 10 RETURN g, t;
 
 See examples/network_analysis/example_dsl_queries.py for more examples.
 """
@@ -31,6 +42,7 @@ See examples/network_analysis/example_dsl_queries.py for more examples.
 import re
 import networkx as nx
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from dataclasses import dataclass, field
 from py3plex.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -46,8 +58,85 @@ class DSLExecutionError(Exception):
     pass
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# AST Node Types for MATCH Queries
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+@dataclass
+class NodePattern:
+    """Represents a node pattern in a MATCH query.
+    
+    Pattern syntax: (alias[:Label]?)
+    Examples: (g:Gene), (t), (x:Protein)
+    
+    Attributes:
+        alias: The variable name for the node (required)
+        label: The optional type/label filter for the node
+    """
+    alias: str
+    label: Optional[str] = None
+
+
+@dataclass
+class EdgePattern:
+    """Represents an edge pattern in a MATCH query.
+    
+    Pattern syntax: -[alias[:Type]?]->
+    Examples: -[r:REGULATES]->, -[e]->, -[:INTERACTS]->
+    
+    Attributes:
+        alias: The optional variable name for the edge
+        type: The optional type filter for the edge
+        directed: Whether the edge is directed (always True for now)
+    """
+    alias: Optional[str] = None
+    type: Optional[str] = None
+    directed: bool = True
+
+
+@dataclass
+class PathPattern:
+    """Represents a complete path pattern in a MATCH query.
+    
+    A path consists of alternating nodes and edges:
+    (n1)-[e1]->(n2)-[e2]->(n3)...
+    
+    Attributes:
+        nodes: List of NodePattern objects
+        edges: List of EdgePattern objects (len = len(nodes) - 1)
+    """
+    nodes: List[NodePattern] = field(default_factory=list)
+    edges: List[EdgePattern] = field(default_factory=list)
+
+
+@dataclass
+class MatchQuery:
+    """Represents a parsed MATCH query.
+    
+    Syntax: MATCH <pattern> [IN LAYER 'name' | IN LAYERS ('a', 'b')] [WHERE conditions] [RETURN aliases];
+    
+    Attributes:
+        pattern: The PathPattern to match
+        layers: Optional list of layer names to filter
+        conditions: List of WHERE condition dictionaries
+        return_aliases: List of aliases to return, or None for all (RETURN *)
+    """
+    pattern: PathPattern
+    layers: Optional[List[str]] = None
+    conditions: List[Dict[str, Any]] = field(default_factory=list)
+    return_aliases: Optional[List[str]] = None  # None means RETURN * (all aliases)
+
+
 def _tokenize_query(query: str) -> List[str]:
     """Tokenize a DSL query into components.
+    
+    Supports both SELECT and MATCH query syntax including:
+    - SELECT/MATCH/FROM/WHERE/COMPUTE/RETURN keywords
+    - IN LAYER / IN LAYERS clauses
+    - Node patterns: (alias:Label) or (alias)
+    - Edge patterns: -[alias:Type]-> or -[alias]->
+    - Comparison and logical operators
     
     Args:
         query: DSL query string
@@ -58,6 +147,8 @@ def _tokenize_query(query: str) -> List[str]:
     Examples:
         >>> _tokenize_query('SELECT nodes WHERE layer="transport"')
         ['SELECT', 'nodes', 'WHERE', 'layer', '=', 'transport']
+        >>> _tokenize_query("SELECT * FROM nodes IN LAYER 'ppi'")
+        ['SELECT', '*', 'FROM', 'nodes', 'IN', 'LAYER', 'ppi']
     """
     # Replace quoted strings with placeholders to preserve them
     string_pattern = r'"[^"]*"|\'[^\']*\''
@@ -67,15 +158,31 @@ def _tokenize_query(query: str) -> List[str]:
     for i, s in enumerate(strings):
         placeholder = f"__STRING_{i}__"
         placeholders[placeholder] = s.strip('"\'')
-        query = query.replace(s, placeholder, 1)
+        # Use indexed replacement to handle duplicate strings correctly
+        idx = query.find(s)
+        if idx != -1:
+            query = query[:idx] + placeholder + query[idx + len(s):]
     
-    # Define token patterns
+    # Define token patterns - order matters (longer patterns first)
     patterns = [
+        r'\]->',  # Edge end with arrow (must come before -> and ]-)
+        r'->\s*',  # Arrow (edge direction) - must come before >
         r'>=|<=|!=|>|<|=',  # Comparison operators
+        r'-\[',  # Start of edge pattern
+        r'\]-',  # End of edge pattern (without arrow)
+        r'\(',  # Open parenthesis
+        r'\)',  # Close parenthesis
+        r':',  # Colon (for type annotations)
+        r',',  # Comma (for multiple aliases in RETURN)
+        r'\*',  # Asterisk (for SELECT * or RETURN *)
+        r';',  # Semicolon (statement terminator)
         r'\bAND\b|\bOR\b|\bNOT\b',  # Logical operators
-        r'\bSELECT\b|\bWHERE\b|\bCOMPUTE\b',  # Keywords
+        r'\bSELECT\b|\bWHERE\b|\bCOMPUTE\b',  # Original keywords
+        r'\bMATCH\b|\bRETURN\b|\bFROM\b',  # New keywords
+        r'\bIN\b|\bLAYER\b|\bLAYERS\b',  # Layer clause keywords
         r'\bnodes\b|\bedges\b',  # Selection targets
-        r'__STRING_\d+__|[a-zA-Z_][a-zA-Z0-9_]*',  # Identifiers and placeholders
+        r'__STRING_\d+__',  # String placeholders
+        r'[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)?',  # Identifiers with optional dot notation
         r'\d+\.?\d*',  # Numbers
     ]
     
@@ -83,21 +190,105 @@ def _tokenize_query(query: str) -> List[str]:
     tokens = []
     
     for match in re.finditer(combined_pattern, query, re.IGNORECASE):
-        token = match.group(0)
+        token = match.group(0).strip()
+        if not token:
+            continue
+        # Handle ]-> as two tokens for the pattern parser
+        if token == ']->':
+            tokens.append(']-')
+            tokens.append('->')
+            continue
         # Replace placeholders back with actual strings
         if token.startswith('__STRING_'):
-            token = placeholders[token]
+            token = placeholders.get(token, token)
         tokens.append(token)
     
     return tokens
 
 
-def _parse_condition(tokens: List[str], start_idx: int) -> Tuple[Dict[str, Any], int]:
+def _tokenize_match_pattern(pattern_str: str) -> List[str]:
+    """Tokenize a MATCH pattern specifically.
+    
+    This handles the Cypher-like pattern syntax:
+    (alias:Label)-[edge:Type]->(alias2:Label2)
+    
+    Args:
+        pattern_str: The pattern string to tokenize
+        
+    Returns:
+        List of pattern tokens
+    """
+    # Use a more specific pattern for MATCH syntax
+    tokens = []
+    i = 0
+    while i < len(pattern_str):
+        c = pattern_str[i]
+        
+        if c.isspace():
+            i += 1
+            continue
+        
+        # Edge end with arrow: ]->
+        if pattern_str[i:i+3] == ']->':
+            tokens.append(']-')
+            tokens.append('->')
+            i += 3
+            continue
+        
+        # Arrow alone: ->
+        if pattern_str[i:i+2] == '->':
+            tokens.append('->')
+            i += 2
+            continue
+        
+        # Edge start: -[
+        if pattern_str[i:i+2] == '-[':
+            tokens.append('-[')
+            i += 2
+            continue
+        
+        # Edge end without arrow (just ]-): shouldn't happen normally but handle it
+        if pattern_str[i:i+2] == ']-':
+            tokens.append(']-')
+            i += 2
+            continue
+        
+        # Single character tokens
+        if c in '():,':
+            tokens.append(c)
+            i += 1
+            continue
+        
+        # Colon
+        if c == ':':
+            tokens.append(':')
+            i += 1
+            continue
+        
+        # Identifiers
+        if c.isalpha() or c == '_':
+            j = i
+            while j < len(pattern_str) and (pattern_str[j].isalnum() or pattern_str[j] == '_'):
+                j += 1
+            tokens.append(pattern_str[i:j])
+            i = j
+            continue
+        
+        i += 1
+    
+    return tokens
+
+
+def _parse_condition(tokens: List[str], start_idx: int, 
+                     stop_keywords: Optional[Set[str]] = None) -> Tuple[Dict[str, Any], int]:
     """Parse a single condition from tokens.
+    
+    Supports both plain attributes and alias.attribute syntax for MATCH queries.
     
     Args:
         tokens: List of tokens
         start_idx: Starting index in tokens
+        stop_keywords: Set of keywords that should stop parsing
         
     Returns:
         Tuple of (condition_dict, next_index)
@@ -105,6 +296,9 @@ def _parse_condition(tokens: List[str], start_idx: int) -> Tuple[Dict[str, Any],
     Raises:
         DSLSyntaxError: If condition syntax is invalid
     """
+    if stop_keywords is None:
+        stop_keywords = {'COMPUTE', 'RETURN'}
+    
     if start_idx >= len(tokens):
         raise DSLSyntaxError("Unexpected end of query while parsing condition")
     
@@ -135,14 +329,15 @@ def _parse_condition(tokens: List[str], start_idx: int) -> Tuple[Dict[str, Any],
     
     # Convert value to appropriate type
     try:
-        if '.' in value:
+        value_str = str(value)
+        if '.' in value_str and not any(c.isalpha() for c in value_str):
             value = float(value)
         else:
             try:
                 value = int(value)
             except ValueError:
                 pass  # Keep as string
-    except ValueError:
+    except (ValueError, TypeError):
         pass  # Keep as string
     
     condition = {
@@ -153,6 +348,338 @@ def _parse_condition(tokens: List[str], start_idx: int) -> Tuple[Dict[str, Any],
     }
     
     return condition, idx
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MATCH Query Parsing Functions
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def _parse_node_pattern(pattern_tokens: List[str], start_idx: int) -> Tuple[NodePattern, int]:
+    """Parse a node pattern from tokens.
+    
+    Pattern syntax: (alias[:Label]?)
+    
+    Args:
+        pattern_tokens: List of pattern tokens
+        start_idx: Starting index
+        
+    Returns:
+        Tuple of (NodePattern, next_index)
+    """
+    idx = start_idx
+    
+    # Expect opening parenthesis
+    if idx >= len(pattern_tokens) or pattern_tokens[idx] != '(':
+        raise DSLSyntaxError(f"Expected '(' at position {idx}")
+    idx += 1
+    
+    # Parse alias
+    if idx >= len(pattern_tokens):
+        raise DSLSyntaxError("Expected node alias")
+    
+    alias = pattern_tokens[idx]
+    idx += 1
+    
+    # Check for optional label
+    label = None
+    if idx < len(pattern_tokens) and pattern_tokens[idx] == ':':
+        idx += 1  # Skip colon
+        if idx >= len(pattern_tokens):
+            raise DSLSyntaxError("Expected label after ':'")
+        label = pattern_tokens[idx]
+        idx += 1
+    
+    # Expect closing parenthesis
+    if idx >= len(pattern_tokens) or pattern_tokens[idx] != ')':
+        raise DSLSyntaxError(f"Expected ')' at position {idx}")
+    idx += 1
+    
+    return NodePattern(alias=alias, label=label), idx
+
+
+def _parse_edge_pattern(pattern_tokens: List[str], start_idx: int) -> Tuple[EdgePattern, int]:
+    """Parse an edge pattern from tokens.
+    
+    Pattern syntax: -[alias[:Type]?]->
+    
+    Args:
+        pattern_tokens: List of pattern tokens
+        start_idx: Starting index
+        
+    Returns:
+        Tuple of (EdgePattern, next_index)
+    """
+    idx = start_idx
+    
+    # Expect opening edge syntax: -[
+    if idx >= len(pattern_tokens) or pattern_tokens[idx] != '-[':
+        raise DSLSyntaxError(f"Expected '-[' at position {idx}")
+    idx += 1
+    
+    alias = None
+    edge_type = None
+    
+    # Parse optional alias and type
+    if idx < len(pattern_tokens) and pattern_tokens[idx] not in [']-', ':']:
+        alias = pattern_tokens[idx]
+        idx += 1
+    
+    # Check for optional type
+    if idx < len(pattern_tokens) and pattern_tokens[idx] == ':':
+        idx += 1  # Skip colon
+        if idx >= len(pattern_tokens):
+            raise DSLSyntaxError("Expected edge type after ':'")
+        edge_type = pattern_tokens[idx]
+        idx += 1
+    
+    # Expect closing edge syntax: ]-
+    if idx >= len(pattern_tokens) or pattern_tokens[idx] != ']-':
+        raise DSLSyntaxError(f"Expected ']-' at position {idx}")
+    idx += 1
+    
+    # Expect arrow: ->
+    if idx >= len(pattern_tokens) or pattern_tokens[idx] != '->':
+        raise DSLSyntaxError(f"Expected '->' at position {idx}")
+    idx += 1
+    
+    return EdgePattern(alias=alias, type=edge_type, directed=True), idx
+
+
+def _parse_path_pattern(pattern_str: str) -> PathPattern:
+    """Parse a complete path pattern.
+    
+    Pattern syntax: (n1)-[e1]->(n2)-[e2]->(n3)...
+    
+    Args:
+        pattern_str: The pattern string to parse
+        
+    Returns:
+        PathPattern object
+    """
+    tokens = _tokenize_match_pattern(pattern_str)
+    if not tokens:
+        raise DSLSyntaxError("Empty pattern")
+    
+    path = PathPattern()
+    idx = 0
+    
+    # Parse first node
+    node, idx = _parse_node_pattern(tokens, idx)
+    path.nodes.append(node)
+    
+    # Parse remaining edge-node pairs
+    while idx < len(tokens):
+        # Check if there's an edge pattern
+        if tokens[idx] == '-[':
+            edge, idx = _parse_edge_pattern(tokens, idx)
+            path.edges.append(edge)
+            
+            # Parse next node
+            if idx >= len(tokens):
+                raise DSLSyntaxError("Expected node pattern after edge")
+            node, idx = _parse_node_pattern(tokens, idx)
+            path.nodes.append(node)
+        else:
+            break
+    
+    return path
+
+
+def _parse_layer_clause(tokens: List[str], start_idx: int) -> Tuple[Optional[List[str]], int]:
+    """Parse an IN LAYER or IN LAYERS clause.
+    
+    Syntax:
+        IN LAYER 'layer_name'
+        IN LAYERS ('layer_a', 'layer_b', ...)
+    
+    Args:
+        tokens: List of tokens
+        start_idx: Starting index (should point to 'IN')
+        
+    Returns:
+        Tuple of (list of layer names, next_index)
+    """
+    idx = start_idx
+    
+    # Check for IN keyword
+    if idx >= len(tokens) or tokens[idx].upper() != 'IN':
+        return None, start_idx
+    idx += 1
+    
+    # Check for LAYER or LAYERS
+    if idx >= len(tokens):
+        raise DSLSyntaxError("Expected 'LAYER' or 'LAYERS' after 'IN'")
+    
+    keyword = tokens[idx].upper()
+    if keyword not in ('LAYER', 'LAYERS'):
+        # Not a layer clause, backtrack
+        return None, start_idx
+    idx += 1
+    
+    layers = []
+    
+    if keyword == 'LAYER':
+        # Single layer: IN LAYER 'name'
+        if idx >= len(tokens):
+            raise DSLSyntaxError("Expected layer name after 'IN LAYER'")
+        layer_name = tokens[idx]
+        idx += 1
+        layers = [layer_name]
+    else:
+        # Multiple layers: IN LAYERS ('a', 'b', ...)
+        if idx >= len(tokens) or tokens[idx] != '(':
+            raise DSLSyntaxError("Expected '(' after 'IN LAYERS'")
+        idx += 1
+        
+        while idx < len(tokens):
+            if tokens[idx] == ')':
+                idx += 1
+                break
+            if tokens[idx] == ',':
+                idx += 1
+                continue
+            layers.append(tokens[idx])
+            idx += 1
+    
+    return layers, idx
+
+
+def _parse_return_clause(tokens: List[str], start_idx: int) -> Tuple[Optional[List[str]], int]:
+    """Parse a RETURN clause.
+    
+    Syntax:
+        RETURN *
+        RETURN alias1, alias2, ...
+    
+    Args:
+        tokens: List of tokens
+        start_idx: Starting index (should point to 'RETURN')
+        
+    Returns:
+        Tuple of (list of aliases or None for *, next_index)
+    """
+    idx = start_idx
+    
+    # Check for RETURN keyword
+    if idx >= len(tokens) or tokens[idx].upper() != 'RETURN':
+        return None, start_idx
+    idx += 1
+    
+    if idx >= len(tokens):
+        raise DSLSyntaxError("Expected alias(es) after 'RETURN'")
+    
+    # Check for RETURN *
+    if tokens[idx] == '*':
+        idx += 1
+        return None, idx  # None means return all
+    
+    # Parse list of aliases
+    aliases = []
+    while idx < len(tokens):
+        token = tokens[idx]
+        if token.upper() in ('WHERE', 'IN', ';'):
+            break
+        if token == ',':
+            idx += 1
+            continue
+        aliases.append(token)
+        idx += 1
+    
+    return aliases, idx
+
+
+def _parse_match_where_clause(tokens: List[str], start_idx: int) -> Tuple[List[Dict[str, Any]], int]:
+    """Parse WHERE clause for MATCH queries.
+    
+    Supports alias.attribute syntax (e.g., g.degree > 10).
+    
+    Args:
+        tokens: List of tokens
+        start_idx: Index of WHERE keyword
+        
+    Returns:
+        Tuple of (list of conditions, next_index)
+    """
+    conditions = []
+    idx = start_idx + 1  # Skip WHERE
+    
+    stop_keywords = {'RETURN', 'COMPUTE', ';'}
+    
+    while idx < len(tokens):
+        token = tokens[idx]
+        
+        # Stop at certain keywords
+        if token.upper() in stop_keywords or token == ';':
+            break
+        
+        # Handle logical operators
+        if token.upper() in ['AND', 'OR']:
+            if not conditions:
+                raise DSLSyntaxError(f"Unexpected '{token}' at start of WHERE clause")
+            conditions[-1]['logical_op'] = token.upper()
+            idx += 1
+            continue
+        
+        # Parse condition
+        condition, next_idx = _parse_condition(tokens, idx, stop_keywords)
+        conditions.append(condition)
+        idx = next_idx
+    
+    return conditions, idx
+
+
+def _parse_match_query(tokens: List[str]) -> MatchQuery:
+    """Parse a complete MATCH query.
+    
+    Syntax:
+        MATCH <pattern> [IN LAYER 'name' | IN LAYERS ('a', 'b')] [WHERE conditions] [RETURN aliases];
+    
+    Args:
+        tokens: List of tokens (starting with MATCH)
+        
+    Returns:
+        MatchQuery object
+    """
+    if not tokens or tokens[0].upper() != 'MATCH':
+        raise DSLSyntaxError("MATCH query must start with 'MATCH'")
+    
+    idx = 1  # Skip MATCH
+    
+    # Extract pattern - everything until IN, WHERE, RETURN, or ;
+    pattern_tokens = []
+    while idx < len(tokens):
+        token = tokens[idx]
+        if token.upper() in ('IN', 'WHERE', 'RETURN') or token == ';':
+            break
+        pattern_tokens.append(token)
+        idx += 1
+    
+    # Parse pattern
+    pattern_str = ' '.join(pattern_tokens)
+    pattern = _parse_path_pattern(pattern_str)
+    
+    # Parse optional layer clause
+    layers = None
+    if idx < len(tokens) and tokens[idx].upper() == 'IN':
+        layers, idx = _parse_layer_clause(tokens, idx)
+    
+    # Parse optional WHERE clause
+    conditions = []
+    if idx < len(tokens) and tokens[idx].upper() == 'WHERE':
+        conditions, idx = _parse_match_where_clause(tokens, idx)
+    
+    # Parse optional RETURN clause
+    return_aliases = None  # Default: return all
+    if idx < len(tokens) and tokens[idx].upper() == 'RETURN':
+        return_aliases, idx = _parse_return_clause(tokens, idx)
+    
+    return MatchQuery(
+        pattern=pattern,
+        layers=layers,
+        conditions=conditions,
+        return_aliases=return_aliases
+    )
 
 
 def _parse_where_clause(tokens: List[str], where_idx: int) -> List[Dict[str, Any]]:
@@ -377,13 +904,23 @@ def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -
 def execute_query(network: Any, query: str) -> Dict[str, Any]:
     """Execute a DSL query on a multilayer network.
     
+    Supports both SELECT and MATCH queries:
+    
+    SELECT queries:
+        SELECT nodes WHERE layer="transport" AND degree > 5
+        SELECT * FROM nodes IN LAYER 'ppi' WHERE degree > 10
+        SELECT id, degree FROM nodes IN LAYERS ('ppi', 'coexpr') WHERE color = 'red'
+    
+    MATCH queries (Cypher-like):
+        MATCH (g:Gene)-[r:REGULATES]->(t:Gene) IN LAYER 'reg' WHERE g.degree > 10 RETURN g, t
+    
     Args:
         network: Multilayer network object (multi_layer_network instance)
         query: DSL query string
         
     Returns:
         Dictionary containing:
-            - 'nodes' or 'edges': List of selected items
+            - 'nodes' or 'edges' or 'bindings': List of selected items / pattern matches
             - 'computed': Dictionary of computed measures (if COMPUTE used)
             - 'query': Original query string
             
@@ -425,25 +962,73 @@ def execute_query(network: Any, query: str) -> Dict[str, Any]:
     if not tokens:
         raise DSLSyntaxError("Empty query")
     
-    # Parse SELECT clause
-    if tokens[0].upper() != 'SELECT':
-        raise DSLSyntaxError("Query must start with SELECT")
+    # Determine query type and dispatch
+    first_token = tokens[0].upper()
     
+    if first_token == 'MATCH':
+        return _execute_match_query(network, query, tokens)
+    elif first_token == 'SELECT':
+        return _execute_select_query(network, query, tokens)
+    else:
+        raise DSLSyntaxError(f"Query must start with SELECT or MATCH, got '{tokens[0]}'")
+
+
+def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[str, Any]:
+    """Execute a SELECT query.
+    
+    Supports the original syntax plus new layer clauses:
+        SELECT nodes WHERE layer="transport"
+        SELECT * FROM nodes IN LAYER 'ppi' WHERE degree > 10
+        SELECT id, degree FROM nodes IN LAYERS ('ppi', 'coexpr') WHERE color = 'red'
+    """
     if len(tokens) < 2:
         raise DSLSyntaxError("SELECT requires a target (nodes or edges)")
     
-    target = tokens[1].lower()
+    idx = 1  # Skip SELECT
+    
+    # Check for column list (SELECT *, SELECT id, degree, etc.)
+    columns = None
+    if tokens[idx] == '*':
+        columns = ['*']
+        idx += 1
+    elif tokens[idx].lower() not in ['nodes', 'edges', 'from']:
+        # Parse column list
+        columns = []
+        while idx < len(tokens):
+            if tokens[idx].upper() in ['FROM', 'WHERE', 'COMPUTE', 'IN']:
+                break
+            if tokens[idx] == ',':
+                idx += 1
+                continue
+            columns.append(tokens[idx])
+            idx += 1
+    
+    # Check for FROM keyword
+    if idx < len(tokens) and tokens[idx].upper() == 'FROM':
+        idx += 1
+    
+    # Parse target (nodes or edges)
+    if idx >= len(tokens):
+        raise DSLSyntaxError("SELECT requires a target (nodes or edges)")
+    
+    target = tokens[idx].lower()
     if target not in ['nodes', 'edges']:
         raise DSLSyntaxError(f"Invalid SELECT target: {target}. Must be 'nodes' or 'edges'")
+    idx += 1
+    
+    # Parse optional layer clause
+    layers = None
+    if idx < len(tokens) and tokens[idx].upper() == 'IN':
+        layers, idx = _parse_layer_clause(tokens, idx)
     
     # Find WHERE and COMPUTE clauses
     where_idx = None
     compute_idx = None
     
-    for i, token in enumerate(tokens):
-        if token.upper() == 'WHERE':
+    for i in range(idx, len(tokens)):
+        if tokens[i].upper() == 'WHERE':
             where_idx = i
-        elif token.upper() == 'COMPUTE':
+        elif tokens[i].upper() == 'COMPUTE':
             compute_idx = i
     
     # Parse WHERE conditions
@@ -455,12 +1040,17 @@ def execute_query(network: Any, query: str) -> Dict[str, Any]:
     measures = []
     if compute_idx is not None:
         measures = tokens[compute_idx + 1:]
+        # Filter out semicolons
+        measures = [m for m in measures if m != ';']
     
     # Execute query
     result = {
         'query': query,
         'target': target,
     }
+    
+    if layers is not None:
+        result['layers'] = layers
     
     # Get all nodes or edges
     if target == 'nodes':
@@ -473,6 +1063,10 @@ def execute_query(network: Any, query: str) -> Dict[str, Any]:
             all_items = []
         else:
             all_items = list(network.get_edges())
+    
+    # Apply layer filter if specified
+    if layers is not None:
+        all_items = _filter_by_layers(all_items, layers, target)
     
     # Pre-compute centrality measures if needed in conditions
     context = {}
@@ -512,6 +1106,438 @@ def execute_query(network: Any, query: str) -> Dict[str, Any]:
     
     logger.info(f"Query returned {result['count']} {target}")
     return result
+
+
+def _filter_by_layers(items: List[Any], layers: List[str], target: str) -> List[Any]:
+    """Filter nodes or edges by layer membership.
+    
+    Args:
+        items: List of nodes (tuples) or edges
+        layers: List of layer names to filter by
+        target: 'nodes' or 'edges'
+        
+    Returns:
+        Filtered list of items
+    """
+    if target == 'nodes':
+        # Nodes are tuples (node_id, layer)
+        return [item for item in items 
+                if isinstance(item, tuple) and len(item) >= 2 and item[1] in layers]
+    else:
+        # Edges are tuples ((source_node, source_layer), (target_node, target_layer))
+        filtered = []
+        for item in items:
+            if isinstance(item, tuple) and len(item) >= 2:
+                source, target_node = item[0], item[1]
+                if isinstance(source, tuple) and isinstance(target_node, tuple):
+                    if len(source) >= 2 and len(target_node) >= 2:
+                        if source[1] in layers or target_node[1] in layers:
+                            filtered.append(item)
+        return filtered
+
+
+def _execute_match_query(network: Any, query: str, tokens: List[str]) -> Dict[str, Any]:
+    """Execute a MATCH query.
+    
+    Pattern matching for Cypher-like queries:
+        MATCH (g:Gene)-[r:REGULATES]->(t:Gene) IN LAYER 'reg' WHERE g.degree > 10 RETURN g, t
+    """
+    # Parse the MATCH query
+    match_query = _parse_match_query(tokens)
+    
+    # Execute pattern matching
+    result = {
+        'query': query,
+        'type': 'match',
+        'pattern': str(match_query.pattern),
+    }
+    
+    if match_query.layers is not None:
+        result['layers'] = match_query.layers
+    
+    # Execute pattern matching
+    bindings = _execute_pattern_match(network, match_query)
+    
+    # Apply WHERE conditions if any
+    if match_query.conditions:
+        bindings = _filter_match_bindings(bindings, match_query.conditions, network)
+    
+    # Apply RETURN clause
+    if match_query.return_aliases is not None:
+        # Filter bindings to only include requested aliases
+        bindings = [
+            {k: v for k, v in binding.items() if k in match_query.return_aliases}
+            for binding in bindings
+        ]
+    
+    result['bindings'] = bindings
+    result['count'] = len(bindings)
+    
+    logger.info(f"MATCH query returned {result['count']} bindings")
+    return result
+
+
+def _execute_pattern_match(network: Any, match_query: MatchQuery) -> List[Dict[str, Any]]:
+    """Execute pattern matching against the network.
+    
+    This is a basic implementation that finds all paths matching the pattern.
+    For complex patterns, more sophisticated algorithms could be used.
+    
+    Args:
+        network: Multilayer network object
+        match_query: Parsed MATCH query
+        
+    Returns:
+        List of binding dictionaries mapping aliases to nodes/edges
+    """
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        return []
+    
+    pattern = match_query.pattern
+    if not pattern.nodes:
+        return []
+    
+    # Get all nodes, filtered by layer if specified
+    all_nodes = list(network.get_nodes())
+    if match_query.layers:
+        all_nodes = [n for n in all_nodes 
+                    if isinstance(n, tuple) and len(n) >= 2 and n[1] in match_query.layers]
+    
+    # Get all edges, filtered by layer if specified
+    all_edges = list(network.get_edges())
+    if match_query.layers:
+        all_edges = [e for e in all_edges 
+                    if isinstance(e, tuple) and len(e) >= 2 and
+                    ((isinstance(e[0], tuple) and len(e[0]) >= 2 and e[0][1] in match_query.layers) or
+                     (isinstance(e[1], tuple) and len(e[1]) >= 2 and e[1][1] in match_query.layers))]
+    
+    bindings = []
+    
+    # Simple pattern: single node
+    if len(pattern.nodes) == 1:
+        node_pattern = pattern.nodes[0]
+        for node in all_nodes:
+            if _node_matches_pattern(node, node_pattern):
+                bindings.append({node_pattern.alias: node})
+        return bindings
+    
+    # Pattern with edges: (n1)-[e]->(n2)...
+    # Start by matching the first node, then follow edges
+    first_node_pattern = pattern.nodes[0]
+    
+    for start_node in all_nodes:
+        if not _node_matches_pattern(start_node, first_node_pattern):
+            continue
+        
+        # Try to extend this match through the pattern
+        current_bindings = [{first_node_pattern.alias: start_node}]
+        
+        for i, edge_pattern in enumerate(pattern.edges):
+            next_node_pattern = pattern.nodes[i + 1]
+            new_bindings = []
+            
+            for binding in current_bindings:
+                # Find the current node
+                current_node = binding[pattern.nodes[i].alias]
+                
+                # Find edges from current node
+                for edge in all_edges:
+                    if not isinstance(edge, tuple) or len(edge) < 2:
+                        continue
+                    
+                    source, target = edge[0], edge[1]
+                    
+                    # Check if edge starts from current node
+                    if source != current_node:
+                        continue
+                    
+                    # Check if edge matches pattern
+                    if not _edge_matches_pattern(edge, edge_pattern, network):
+                        continue
+                    
+                    # Check if target node matches pattern
+                    if not _node_matches_pattern(target, next_node_pattern):
+                        continue
+                    
+                    # Create new binding
+                    new_binding = binding.copy()
+                    if edge_pattern.alias:
+                        new_binding[edge_pattern.alias] = edge
+                    new_binding[next_node_pattern.alias] = target
+                    new_bindings.append(new_binding)
+            
+            current_bindings = new_bindings
+            if not current_bindings:
+                break
+        
+        bindings.extend(current_bindings)
+    
+    return bindings
+
+
+def _node_matches_pattern(node: Any, pattern: NodePattern) -> bool:
+    """Check if a node matches a node pattern.
+    
+    Args:
+        node: Node tuple (node_id, layer)
+        pattern: NodePattern to match against
+        
+    Returns:
+        True if node matches pattern
+    """
+    if not isinstance(node, tuple) or len(node) < 2:
+        return False
+    
+    # If pattern has a label, check if it matches the layer or node type
+    if pattern.label is not None:
+        # Label can match either the layer or node attributes
+        node_id, layer = node[0], node[1]
+        if layer != pattern.label:
+            return False
+    
+    return True
+
+
+def _edge_matches_pattern(edge: Any, pattern: EdgePattern, network: Any) -> bool:
+    """Check if an edge matches an edge pattern.
+    
+    Args:
+        edge: Edge tuple
+        pattern: EdgePattern to match against
+        network: Network object (for edge attribute lookup)
+        
+    Returns:
+        True if edge matches pattern
+    """
+    if pattern.type is None:
+        return True
+    
+    # Check edge type if pattern specifies one
+    if hasattr(network, 'core_network') and network.core_network is not None:
+        try:
+            source, target = edge[0], edge[1]
+            edge_data = network.core_network.get_edge_data(source, target)
+            if edge_data:
+                # Handle MultiGraph edge data
+                if isinstance(edge_data, dict):
+                    for key, data in edge_data.items():
+                        if isinstance(data, dict) and data.get('type') == pattern.type:
+                            return True
+                    return False
+        except Exception:
+            pass
+    
+    return True
+
+
+def _filter_match_bindings(bindings: List[Dict[str, Any]], 
+                           conditions: List[Dict[str, Any]],
+                           network: Any) -> List[Dict[str, Any]]:
+    """Filter MATCH bindings by WHERE conditions.
+    
+    Supports alias.attribute syntax (e.g., g.degree > 10).
+    
+    Args:
+        bindings: List of binding dictionaries
+        conditions: List of condition dictionaries
+        network: Network object
+        
+    Returns:
+        Filtered list of bindings
+    """
+    if not conditions:
+        return bindings
+    
+    filtered = []
+    for binding in bindings:
+        if _evaluate_match_conditions(binding, conditions, network):
+            filtered.append(binding)
+    
+    return filtered
+
+
+def _evaluate_match_conditions(binding: Dict[str, Any], 
+                               conditions: List[Dict[str, Any]],
+                               network: Any) -> bool:
+    """Evaluate all conditions for a MATCH binding.
+    
+    Args:
+        binding: Dictionary mapping aliases to nodes/edges
+        conditions: List of conditions
+        network: Network object
+        
+    Returns:
+        True if all conditions are satisfied
+    """
+    if not conditions:
+        return True
+    
+    # Build context for this binding
+    context = {}
+    
+    result = _evaluate_match_condition(binding, conditions[0], network, context)
+    
+    for i, condition in enumerate(conditions[1:], 1):
+        logical_op = conditions[i - 1].get('logical_op', 'AND')
+        current_result = _evaluate_match_condition(binding, condition, network, context)
+        
+        if logical_op == 'AND':
+            result = result and current_result
+        elif logical_op == 'OR':
+            result = result or current_result
+    
+    return result
+
+
+def _evaluate_match_condition(binding: Dict[str, Any],
+                              condition: Dict[str, Any],
+                              network: Any,
+                              context: Dict[str, Any]) -> bool:
+    """Evaluate a single condition for a MATCH binding.
+    
+    Supports alias.attribute syntax.
+    
+    Args:
+        binding: Dictionary mapping aliases to nodes/edges
+        condition: Condition dictionary
+        network: Network object
+        context: Context for cached values
+        
+    Returns:
+        True if condition is satisfied
+    """
+    attribute = condition['attribute']
+    operator = condition['operator']
+    expected_value = condition['value']
+    is_negated = condition.get('negated', False)
+    
+    # Parse alias.attribute syntax
+    if '.' in attribute:
+        parts = attribute.split('.', 1)
+        alias, attr_name = parts[0], parts[1]
+        
+        if alias not in binding:
+            return False
+        
+        node_or_edge = binding[alias]
+        actual_value = _get_attribute_value(node_or_edge, attr_name, network, context)
+    else:
+        # Plain attribute - apply to all bound nodes
+        actual_value = None
+        for alias, node_or_edge in binding.items():
+            val = _get_attribute_value(node_or_edge, attribute, network, context)
+            if val is not None:
+                actual_value = val
+                break
+    
+    # Evaluate comparison
+    result = _compare_values(actual_value, operator, expected_value)
+    
+    if is_negated:
+        result = not result
+    
+    return result
+
+
+def _get_attribute_value(node_or_edge: Any, attribute: str, 
+                         network: Any, context: Dict[str, Any]) -> Any:
+    """Get an attribute value from a node or edge.
+    
+    Args:
+        node_or_edge: Node tuple or edge tuple
+        attribute: Attribute name (e.g., 'degree', 'layer')
+        network: Network object
+        context: Context for cached values
+        
+    Returns:
+        Attribute value or None
+    """
+    # Handle nodes (tuples of (node_id, layer))
+    if isinstance(node_or_edge, tuple) and len(node_or_edge) >= 2:
+        node_id, layer = node_or_edge[0], node_or_edge[1]
+        
+        if attribute == 'layer':
+            return str(layer)
+        
+        if attribute == 'degree':
+            if hasattr(network, 'core_network') and network.core_network:
+                return network.core_network.degree(node_or_edge)
+            return 0
+        
+        if attribute in ['betweenness', 'betweenness_centrality']:
+            if 'betweenness_centrality' not in context:
+                try:
+                    context['betweenness_centrality'] = _compute_measure(network, 'betweenness_centrality')
+                except DSLExecutionError:
+                    return 0
+            return context['betweenness_centrality'].get(node_or_edge, 0)
+        
+        if attribute in ['closeness', 'closeness_centrality']:
+            if 'closeness_centrality' not in context:
+                try:
+                    context['closeness_centrality'] = _compute_measure(network, 'closeness_centrality')
+                except DSLExecutionError:
+                    return 0
+            return context['closeness_centrality'].get(node_or_edge, 0)
+        
+        if attribute in ['eigenvector', 'eigenvector_centrality']:
+            if 'eigenvector_centrality' not in context:
+                try:
+                    context['eigenvector_centrality'] = _compute_measure(network, 'eigenvector_centrality')
+                except DSLExecutionError:
+                    return 0
+            return context['eigenvector_centrality'].get(node_or_edge, 0)
+        
+        # Try to get from node attributes
+        if hasattr(network, 'core_network') and network.core_network:
+            node_data = network.core_network.nodes.get(node_or_edge, {})
+            return node_data.get(attribute)
+    
+    return None
+
+
+def _compare_values(actual: Any, operator: str, expected: Any) -> bool:
+    """Compare two values with the given operator.
+    
+    Args:
+        actual: Actual value
+        operator: Comparison operator
+        expected: Expected value
+        
+    Returns:
+        True if comparison is satisfied
+    """
+    if actual is None:
+        return False
+    
+    if operator == '=':
+        return str(actual) == str(expected)
+    elif operator == '!=':
+        return str(actual) != str(expected)
+    elif operator == '>':
+        try:
+            return float(actual) > float(expected)
+        except (ValueError, TypeError):
+            return False
+    elif operator == '<':
+        try:
+            return float(actual) < float(expected)
+        except (ValueError, TypeError):
+            return False
+    elif operator == '>=':
+        try:
+            return float(actual) >= float(expected)
+        except (ValueError, TypeError):
+            return False
+    elif operator == '<=':
+        try:
+            return float(actual) <= float(expected)
+        except (ValueError, TypeError):
+            return False
+    else:
+        raise DSLSyntaxError(f"Unknown operator: {operator}")
+    
+    return False
 
 
 def format_result(result: Dict[str, Any], limit: int = 10) -> str:
