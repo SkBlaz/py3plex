@@ -21,6 +21,17 @@ The DSL is particularly useful for:
 - **Educational purposes**: Learn network concepts with intuitive queries
 - **Production pipelines**: Create maintainable, self-documenting analysis code
 
+.. note::
+
+   **Flagship Example Available!**
+   
+   For a comprehensive demonstration of DSL capabilities including centrality analysis,
+   statistics, and community detection, see the flagship example::
+   
+       python examples/network_analysis/example_dsl_flagship.py
+   
+   This example showcases the full power of the DSL in a complete analysis workflow.
+
 Basic Syntax
 ------------
 
@@ -644,16 +655,29 @@ Compare network structure across different layers::
 Example Files
 ~~~~~~~~~~~~~
 
-Additional complete examples are available in the repository:
+Complete examples are available in the repository:
 
+- ``examples/network_analysis/example_dsl_flagship.py`` - **Flagship example**: Complete DSL-powered workflow with centralities, statistics, and community detection
 - ``examples/network_analysis/example_dsl_queries.py`` - Basic DSL usage with detailed output
 - ``examples/network_analysis/example_dsl_advanced.py`` - Advanced queries and transportation network analysis
 
 Run these examples::
 
     cd examples/network_analysis
+    python example_dsl_flagship.py   # Comprehensive flagship example
     python example_dsl_queries.py
     python example_dsl_advanced.py
+
+The flagship example (``example_dsl_flagship.py``) demonstrates:
+
+- DSL query syntax with all operators
+- Centrality analysis (betweenness, closeness, degree)
+- Cross-layer centrality comparison
+- Multilayer centrality with versatility scores
+- Statistical report generation
+- Community detection with Louvain algorithm
+- Convenience functions for common operations
+- First-class method usage on network objects
 
 API Reference
 -------------

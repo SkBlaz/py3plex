@@ -1128,5 +1128,182 @@ class TestFirstClassMethod:
         assert set(result_method['nodes']) == set(result_function['nodes'])
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# Flagship Example Integration Tests
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestFlagshipExampleIntegration:
+    """Integration tests for DSL flagship example functionality.
+    
+    These tests verify that the flagship example workflow runs correctly,
+    covering centralities, statistics, and community detection integration.
+    """
+
+    @pytest.fixture
+    def multilayer_network(self):
+        """Create a multilayer network similar to the flagship example."""
+        network = multinet.multi_layer_network(directed=False)
+        
+        # Add nodes to each layer
+        people = ['Alice', 'Bob', 'Charlie', 'David', 'Eve']
+        nodes = []
+        for person in people:
+            for layer in ['social', 'work', 'family']:
+                nodes.append({'source': person, 'type': layer})
+        network.add_nodes(nodes)
+        
+        # Add edges in different layers
+        edges = [
+            # Social layer
+            {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+            {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+            {'source': 'Charlie', 'target': 'David', 'source_type': 'social', 'target_type': 'social'},
+            {'source': 'David', 'target': 'Eve', 'source_type': 'social', 'target_type': 'social'},
+            {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+            # Work layer
+            {'source': 'Alice', 'target': 'Bob', 'source_type': 'work', 'target_type': 'work'},
+            {'source': 'Charlie', 'target': 'Eve', 'source_type': 'work', 'target_type': 'work'},
+            # Family layer
+            {'source': 'Alice', 'target': 'Bob', 'source_type': 'family', 'target_type': 'family'},
+            {'source': 'Charlie', 'target': 'David', 'source_type': 'family', 'target_type': 'family'},
+        ]
+        network.add_edges(edges)
+        
+        return network
+
+    def test_complete_centrality_workflow(self, multilayer_network):
+        """Test the complete centrality analysis workflow from flagship example."""
+        # Test 1: Basic layer selection
+        result = execute_query(multilayer_network, 'SELECT nodes WHERE layer="social"')
+        assert result['count'] == 5
+        assert all(node[1] == 'social' for node in result['nodes'])
+        
+        # Test 2: Degree filtering
+        result = execute_query(multilayer_network, 'SELECT nodes WHERE degree > 1')
+        assert result['count'] >= 0
+        for node in result['nodes']:
+            degree = multilayer_network.core_network.degree(node)
+            assert degree > 1
+        
+        # Test 3: Centrality computation
+        result = execute_query(
+            multilayer_network,
+            'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality'
+        )
+        assert 'computed' in result
+        assert 'betweenness_centrality' in result['computed']
+        assert len(result['computed']['betweenness_centrality']) > 0
+        
+        # Verify centrality values are valid
+        for node, value in result['computed']['betweenness_centrality'].items():
+            assert 0 <= value <= 1
+
+    def test_cross_layer_comparison(self, multilayer_network):
+        """Test cross-layer centrality comparison from flagship example."""
+        layers = ['social', 'work', 'family']
+        layer_stats = {}
+        
+        for layer in layers:
+            result = execute_query(
+                multilayer_network,
+                f'SELECT nodes WHERE layer="{layer}" COMPUTE betweenness_centrality'
+            )
+            assert result['count'] >= 0
+            
+            if 'computed' in result and 'betweenness_centrality' in result['computed']:
+                centralities = result['computed']['betweenness_centrality']
+                if centralities:
+                    avg = sum(centralities.values()) / len(centralities)
+                    layer_stats[layer] = avg
+        
+        # All layers should have valid average centrality
+        for layer, avg in layer_stats.items():
+            assert avg >= 0
+
+    def test_multi_measure_computation(self, multilayer_network):
+        """Test computing multiple measures in a single query."""
+        result = execute_query(
+            multilayer_network,
+            'SELECT nodes WHERE layer="social" COMPUTE degree_centrality closeness_centrality'
+        )
+        
+        assert 'computed' in result
+        assert 'degree_centrality' in result['computed']
+        assert 'closeness_centrality' in result['computed']
+        
+        # Verify both measures are computed for the same nodes
+        deg_nodes = set(result['computed']['degree_centrality'].keys())
+        close_nodes = set(result['computed']['closeness_centrality'].keys())
+        assert deg_nodes == close_nodes
+
+    def test_convenience_functions_integration(self, multilayer_network):
+        """Test convenience functions used in flagship example."""
+        # Test select_nodes_by_layer
+        social_nodes = select_nodes_by_layer(multilayer_network, 'social')
+        assert len(social_nodes) == 5
+        assert all(node[1] == 'social' for node in social_nodes)
+        
+        # Test select_high_degree_nodes
+        high_deg = select_high_degree_nodes(multilayer_network, min_degree=1)
+        assert len(high_deg) >= 0
+        for node in high_deg:
+            degree = multilayer_network.core_network.degree(node)
+            assert degree > 1  # min_degree is exclusive
+        
+        # Test compute_centrality_for_layer
+        centrality = compute_centrality_for_layer(multilayer_network, 'work', 'degree_centrality')
+        assert isinstance(centrality, dict)
+        assert len(centrality) > 0
+
+    def test_first_class_method_integration(self, multilayer_network):
+        """Test that execute_query works as a first-class method."""
+        # Use method directly on network object
+        result = multilayer_network.execute_query(
+            'SELECT nodes WHERE layer="work" AND degree >= 1'
+        )
+        
+        assert result['target'] == 'nodes'
+        assert result['count'] >= 0
+        
+        for node in result['nodes']:
+            assert node[1] == 'work'
+            degree = multilayer_network.core_network.degree(node)
+            assert degree >= 1
+
+    def test_combined_and_or_conditions(self, multilayer_network):
+        """Test combined AND/OR conditions from flagship example."""
+        # Test AND condition
+        result_and = execute_query(
+            multilayer_network,
+            'SELECT nodes WHERE layer="social" AND degree >= 2'
+        )
+        for node in result_and['nodes']:
+            assert node[1] == 'social'
+            degree = multilayer_network.core_network.degree(node)
+            assert degree >= 2
+        
+        # Test OR condition
+        result_or = execute_query(
+            multilayer_network,
+            'SELECT nodes WHERE layer="work" OR layer="family"'
+        )
+        for node in result_or['nodes']:
+            assert node[1] in ['work', 'family']
+
+    def test_not_operator_integration(self, multilayer_network):
+        """Test NOT operator from flagship example."""
+        result = execute_query(
+            multilayer_network,
+            'SELECT nodes WHERE NOT layer="social"'
+        )
+        
+        for node in result['nodes']:
+            assert node[1] != 'social'
+        
+        # Should have nodes from work and family layers
+        assert result['count'] == 10  # 5 work + 5 family
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

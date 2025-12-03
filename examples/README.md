@@ -35,11 +35,13 @@ Examples are organized into intuitive categories based on what you want to accom
 
 ### [Network Analysis](network_analysis/)
 **Analyze network properties and compute metrics**
+- **DSL Flagship Example** - Complete workflow with centralities, stats, and communities
 - Network statistics and metrics
 - Centrality measures (degree, betweenness, eigenvector, etc.)
 - Node and layer similarity
 - Statistical reports and comparisons
-- **16 examples** - Comprehensive analysis toolkit
+- SQL-like DSL for network queries
+- **17 examples** - Comprehensive analysis toolkit
 
 ### [Communities](communities/)
 **Detect and analyze community structure**
