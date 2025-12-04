@@ -1,7 +1,11 @@
 GUI Deployment Guide
 ====================
 
-This guide covers deploying the py3plex web interface for production use.
+This guide covers deploying the py3plex web interface.
+
+.. danger::
+
+   **Security Warning:** The GUI is in development mode—suitable for local use only. **Do not expose to public internet without proper security hardening.** See `Security Considerations`_ below for required steps before any production deployment.
 
 Overview
 --------

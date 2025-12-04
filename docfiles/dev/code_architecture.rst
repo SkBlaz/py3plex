@@ -584,21 +584,21 @@ Usage:
             raise LayerNotFoundError(f"Layer '{layer_name}' not found")
         return self.layer_name_map[layer_name]
 
-Future Architecture
--------------------
+Roadmap
+-------
 
-Planned Improvements
-~~~~~~~~~~~~~~~~~~~~
+.. note::
 
-1. **Backend Registry:** Support for igraph, cugraph backends
-2. **Streaming API:** Process networks larger than memory
-3. **Distributed Computing:** Dask/Ray integration for large-scale analysis
-4. **Plugin System:** Easy addition of third-party algorithms
-5. **Type System:** Full type hints coverage (currently 65%)
+   **Not Yet Implemented:** The following features are planned but not currently available.
+
+* **Backend Registry:** Support for igraph, cugraph backends
+* **Streaming API:** Process networks larger than memory
+* **Distributed Computing:** Dask/Ray integration for large-scale analysis
+* **Plugin System:** Easy addition of third-party algorithms
+* **Type System:** Full type hints coverage (currently ~65%)
 
 See Also
 --------
 
 * :doc:`contributing` - Contributing guidelines
-* :doc:`development` - Development workflow
-* :doc:`core` - Core API documentation
+* :doc:`development_guide` - Development workflow

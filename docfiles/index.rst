@@ -36,6 +36,15 @@ Getting Started
 * High-performance I/O with Arrow/Parquet support
 * Full NetworkX compatibility
 
+Quick Paths
+===========
+
+.. tip::
+
+   * **"I have a multilayer edge list and want communities"** → :doc:`getting_started/quickstart_5min` → :doc:`user_guide/community_detection`
+   * **"I want embeddings for ML"** → :doc:`getting_started/quickstart_5min` → :doc:`user_guide/random_walks_embeddings`
+   * **"I want to contribute a new algorithm"** → :doc:`dev/development_guide` → :doc:`dev/code_architecture`
+
 Quick Start
 ===========
 
