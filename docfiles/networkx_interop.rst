@@ -522,7 +522,7 @@ Next Steps
 ----------
 
 - :doc:`basic_usage_analysis` - Network analysis methods
-- :doc:`community_detection` - Community detection algorithms
+- :doc:`user_guide/community_detection` - Community detection algorithms
 - :doc:`visualization_guide` - Visualization options
 - :doc:`tutorials/csv_loading` - Load data from CSV
 
