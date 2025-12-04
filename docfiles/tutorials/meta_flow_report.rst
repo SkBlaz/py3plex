@@ -476,7 +476,7 @@ See Also
 --------
 
 * :doc:`multilayer_centrality` - Detailed centrality measures documentation
-* :doc:`community_detection` - Community detection algorithms
+* :doc:`../user_guide/community_detection` - Community detection algorithms
 * ``examples/network_analysis/example_meta_flow_report.py`` - Complete example
 
 References

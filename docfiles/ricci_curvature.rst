@@ -454,6 +454,6 @@ See Also
 --------
 
 * :doc:`ricci_visualization` - Ricci-flow-based visualization utilities
-* :doc:`community_detection` - Community detection algorithms
+* :doc:`user_guide/community_detection` - Community detection algorithms
 * :doc:`multilayer_concepts` - Understanding multilayer networks
 * :doc:`supra` - Supra-adjacency matrix representation

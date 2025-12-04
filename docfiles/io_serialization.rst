@@ -358,6 +358,6 @@ See Also
 --------
 
 * :doc:`getting_started/quickstart_5min` - Getting started guide
-* :doc:`basic_usage` - Basic network operations
+* :doc:`getting_started/tutorial_10min` - Complete tutorial
 * :doc:`networkx_interop` - NetworkX integration details
 * :doc:`deployment/performance_scalability` - Performance optimization tips
