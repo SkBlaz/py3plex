@@ -28,6 +28,14 @@ except ImportError:
     DSL_AVAILABLE = False
     pytest.skip("DSL module not available", allow_module_level=True)
 
+# Import graph_ops for integration tests
+try:
+    from py3plex.graph_ops import nodes as graph_ops_nodes
+    GRAPH_OPS_AVAILABLE = True
+except ImportError:
+    graph_ops_nodes = None
+    GRAPH_OPS_AVAILABLE = False
+
 
 # ============================================================================
 # Property Tests: Query Tokenization
@@ -1076,14 +1084,13 @@ def test_not_layer_is_complement(layer_idx):
 # ============================================================================
 
 @pytest.mark.property
+@pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
 @settings(deadline=None, max_examples=20)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1)
 )
 def test_dsl_and_graph_ops_equivalent_layer_filter(layer_idx):
     """Test that DSL layer filter and graph_ops layer filter produce equivalent results."""
-    from py3plex.graph_ops import nodes as graph_ops_nodes
-    
     network = create_test_network(num_nodes=5, num_layers=2)
     layer = f'layer{layer_idx}'
     
@@ -1098,14 +1105,13 @@ def test_dsl_and_graph_ops_equivalent_layer_filter(layer_idx):
 
 
 @pytest.mark.property
+@pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
 @settings(deadline=None, max_examples=20)
 @given(
     threshold=st.integers(min_value=0, max_value=5)
 )
 def test_dsl_and_graph_ops_equivalent_degree_filter(threshold):
     """Test that DSL degree filter and graph_ops filter produce equivalent results."""
-    from py3plex.graph_ops import nodes as graph_ops_nodes
-    
     network = create_test_network(num_nodes=5, num_layers=2)
     
     # DSL query
@@ -1119,6 +1125,7 @@ def test_dsl_and_graph_ops_equivalent_degree_filter(threshold):
 
 
 @pytest.mark.property
+@pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
 @settings(deadline=None, max_examples=20)
 @given(
     layer_idx=st.integers(min_value=0, max_value=1),
@@ -1126,8 +1133,6 @@ def test_dsl_and_graph_ops_equivalent_degree_filter(threshold):
 )
 def test_dsl_and_graph_ops_combined_filter(layer_idx, threshold):
     """Test DSL and graph_ops with combined layer and degree filters."""
-    from py3plex.graph_ops import nodes as graph_ops_nodes
-    
     network = create_test_network(num_nodes=5, num_layers=2)
     layer = f'layer{layer_idx}'
     

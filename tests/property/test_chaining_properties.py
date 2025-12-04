@@ -13,6 +13,14 @@ import math
 import pytest
 from hypothesis import given, settings, assume, strategies as st
 
+# Import pandas for to_pandas tests
+try:
+    import pandas as pd
+    PANDAS_AVAILABLE = True
+except ImportError:
+    pd = None
+    PANDAS_AVAILABLE = False
+
 # Import graph_ops module
 try:
     from py3plex.graph_ops import (
@@ -627,9 +635,9 @@ def test_edge_group_by_returns_grouped():
 # ============================================================================
 
 @pytest.mark.property
+@pytest.mark.skipif(not PANDAS_AVAILABLE, reason="pandas not available")
 def test_to_pandas_row_count_matches():
     """Test that to_pandas row count matches frame length."""
-    import pandas as pd
     network = create_test_network()
     
     frame = nodes(network)
@@ -639,9 +647,9 @@ def test_to_pandas_row_count_matches():
 
 
 @pytest.mark.property
+@pytest.mark.skipif(not PANDAS_AVAILABLE, reason="pandas not available")
 def test_to_pandas_excludes_internal_fields():
     """Test that to_pandas excludes fields starting with _."""
-    import pandas as pd
     network = create_test_network()
     
     df = nodes(network).to_pandas()
