@@ -154,6 +154,56 @@ Use SQL-like queries for intuitive network analysis:
     
 See :doc:`../user_guide/dsl` for comprehensive DSL documentation.
 
+End-to-End Example: DSL + Chaining
+-----------------------------------
+
+Here's a complete example combining DSL queries and dplyr-style method chaining for a fluid analysis experience:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query
+    from py3plex.graph_ops import nodes
+    import numpy as np
+
+    # Create network
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1],
+        ['Bob', 'friends', 'Carol', 'friends', 1],
+        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
+        ['Bob', 'colleagues', 'Dave', 'colleagues', 1]
+    ], input_type="list")
+
+    # DSL: Quick query for high-degree nodes with centrality
+    result = execute_query(network, 
+        'SELECT nodes WHERE degree > 1 COMPUTE betweenness_centrality')
+    print(f"Found {result['count']} high-degree nodes")
+
+    # Chaining: Fluent data analysis pipeline
+    summary = (
+        nodes(network)
+        .filter(lambda n: n["degree"] > 0)
+        .group_by("layer")
+        .summarise(
+            node_count=("id", len),
+            avg_degree=("degree", np.mean)
+        )
+        .to_pandas()
+    )
+    print(summary)
+
+**Output:**
+
+.. code-block:: text
+
+    Found 2 high-degree nodes
+       layer  node_count  avg_degree
+    0  friends          3    1.333333
+    1  colleagues       3    1.333333
+
+**Why both?** Use DSL for quick, SQL-like queries during exploration. Use chaining for complex transformations and integration with pandas. Together, they provide the syntax sugar that makes py3plex expressive and powerful.
+
 What You Learned
 ----------------
 

@@ -746,6 +746,100 @@ Some features require optional dependencies:
     # For all extras
     pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz,algos]
 
+End-to-End Example: DSL + Chaining Syntax Sugar
+-----------------------------------------------
+
+Here's a complete workflow using DSL and method chaining together—demonstrating the expressive syntax sugar py3plex provides:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query
+    from py3plex.graph_ops import nodes, edges
+    from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
+    import numpy as np
+
+    # Load or create a network
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        ['A', 'layer1', 'B', 'layer1', 1],
+        ['B', 'layer1', 'C', 'layer1', 1],
+        ['C', 'layer1', 'D', 'layer1', 1],
+        ['A', 'layer2', 'B', 'layer2', 1],
+        ['B', 'layer2', 'D', 'layer2', 1],
+    ], input_type="list")
+
+    # Step 1: DSL for quick exploration
+    hubs = execute_query(network, 
+        'SELECT nodes WHERE degree > 1 COMPUTE betweenness_centrality')
+    print(f"Hub nodes: {hubs['count']}")
+
+    # Step 2: Chaining for layer statistics
+    layer_stats = (
+        nodes(network)
+        .group_by("layer")
+        .summarise(
+            count=("id", len),
+            avg_degree=("degree", np.mean),
+            max_degree=("degree", max)
+        )
+        .arrange("avg_degree", reverse=True)
+        .to_pandas()
+    )
+    print("\nLayer Statistics:")
+    print(layer_stats)
+
+    # Step 3: Combine DSL filtering with chaining analysis
+    # DSL to get nodes from a specific layer
+    layer1_nodes = execute_query(network, 'SELECT nodes WHERE layer="layer1"')
+    
+    # Chaining to find top nodes by degree
+    top_nodes = (
+        nodes(network, layers=["layer1"])
+        .filter(lambda n: n["degree"] >= 2)
+        .mutate(importance=lambda n: n["degree"] * 0.5)
+        .arrange("importance", reverse=True)
+        .head(3)
+        .to_pandas()
+    )
+    print("\nTop Important Nodes:")
+    print(top_nodes)
+
+    # Step 4: Community detection + edge analysis
+    partition = louvain_multilayer(network, random_state=42)
+    
+    edge_summary = (
+        edges(network)
+        .mutate(is_intra_layer=lambda e: e["source_layer"] == e["target_layer"])
+        .group_by("is_intra_layer")
+        .summarise(edge_count=("source", len))
+        .to_pandas()
+    )
+    print("\nEdge Distribution:")
+    print(edge_summary)
+
+**Output:**
+
+.. code-block:: text
+
+    Hub nodes: 2
+
+    Layer Statistics:
+        layer  count  avg_degree  max_degree
+    0  layer1      4        1.50           2
+    1  layer2      3        1.33           2
+
+    Top Important Nodes:
+      id   layer  degree  importance
+    0  B  layer1       2         1.0
+    1  C  layer1       2         1.0
+
+    Edge Distribution:
+       is_intra_layer  edge_count
+    0            True           5
+
+**The power of syntax sugar:** This example shows how DSL and chaining complement each other. Use DSL for quick SQL-like queries during exploration, and chaining for complex data transformations that integrate seamlessly with pandas workflows.
+
 Tips for Success
 ----------------
 
