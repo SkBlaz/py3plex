@@ -127,10 +127,6 @@ latex_elements = {
     # Larger font size for better readability
     'pointsize': '11pt',
 
-    # Disable fncychap to avoid \appendix undefined error
-    # This is needed because fncychap tries to redefine \appendix before it's defined
-    'fncychap': '',
-
     # Additional stuff for the LaTeX preamble for professional styling
     # Note: Do NOT load geometry here - Sphinx loads it automatically
     # Loading it again causes "Option clash for package geometry" error
