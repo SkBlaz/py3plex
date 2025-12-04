@@ -423,7 +423,7 @@ Custom Visualization
 Next Steps
 ----------
 
-* :doc:`basic_usage` - Practical usage examples
+* :doc:`getting_started/tutorial_10min` - Practical usage examples
 * :doc:`tutorials/multilayer_centrality` - Centrality measures
 * :doc:`tutorials/multilayer_modularity` - Community detection
 * :doc:`algorithm_guide` - Algorithm selection guide

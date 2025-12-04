@@ -578,7 +578,7 @@ See Also
 --------
 
 * :doc:`ricci_curvature` - Ollivier-Ricci curvature and Ricci flow fundamentals
-* :doc:`community_detection` - Community detection algorithms
+* :doc:`user_guide/community_detection` - Community detection algorithms
 * :doc:`visualization_guide` - General visualization guide
 * :doc:`multilayer_concepts` - Understanding multilayer networks
 * :doc:`supra` - Supra-adjacency matrix representation

@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Guide: From Understanding to Mastery &mdash; py3plex 0.95a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=da898538"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Working with Networks" href="networks.html" />
+    <link rel="prev" title="Algorithm Landscape" href="../concepts/algorithm_landscape.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Chapter 5: Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide: From Understanding to Mastery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-heart-of-the-documentation">The Heart of the Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-overview">Chapter Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-use-this-section">How to Use This Section</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-philosophy-of-practice">A Philosophy of Practice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-real-world-connection">The Real-World Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#let-s-go-deeper">Let’s Go Deeper</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment: Taking It to Production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Visual Exploration for Everyone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs: Building Together</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples: Learning by Doing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">Reference &amp; Citation: The Complete Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">User Guide: From Understanding to Mastery</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/part_intro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="user-guide-from-understanding-to-mastery">
+<h1>User Guide: From Understanding to Mastery<a class="headerlink" href="#user-guide-from-understanding-to-mastery" title="Link to this heading"></a></h1>
+<p><em>“Knowing is not enough; we must apply. Willing is not enough; we must do.”</em> — Johann Wolfgang von Goethe</p>
+<section id="the-heart-of-the-documentation">
+<h2>The Heart of the Documentation<a class="headerlink" href="#the-heart-of-the-documentation" title="Link to this heading"></a></h2>
+<p>This section is the practical core of the py3plex documentation. While Part I got you started and Part II built your conceptual foundation, Part III is where you develop real competence.</p>
+<p>Each chapter in this section covers a major capability of py3plex. They’re designed to be read in order the first time through, building on each other. After that, they serve as reference material you can return to for specific tasks.</p>
+</section>
+<section id="chapter-overview">
+<h2>Chapter Overview<a class="headerlink" href="#chapter-overview" title="Link to this heading"></a></h2>
+<p><strong>Working with Networks</strong> covers the fundamental operations: creating networks, loading data, querying structure, extracting subnetworks. This is the foundation for everything else.</p>
+<p><strong>Statistics</strong> teaches you how to measure what matters. Layer density, node activity, edge overlap, versatility—these metrics quantify the multilayer structure of your data. Understanding what they measure (and don’t measure) is essential for valid analysis.</p>
+<p><strong>Community Detection</strong> addresses one of the most common analysis tasks: finding groups of nodes that naturally cluster together. In multilayer networks, this is more complex than single-layer community detection, and the algorithms offer parameters you need to understand.</p>
+<p><strong>Random Walks &amp; Embeddings</strong> covers techniques for turning network structure into features for machine learning. Random walks are also fundamental to many other algorithms, so understanding them opens doors to advanced methods.</p>
+<p><strong>I/O and Formats</strong> deals with the practical matter of getting data in and out of py3plex. Real-world data comes in many formats, and you often need to export results for other tools or collaborators.</p>
+<p><strong>Visualization</strong> teaches you to create visual representations of your networks. Good visualizations reveal patterns that statistics miss and are essential for communicating findings.</p>
+<p><strong>DSL (Domain-Specific Language)</strong> introduces py3plex’s SQL-like query language. For interactive exploration and quick analysis, the DSL is often faster than writing Python code.</p>
+<p><strong>Graph Operations</strong> covers the dplyr-style chainable API for data transformations. This modern interface makes complex operations readable and composable.</p>
+<p><strong>Recipes &amp; Workflows</strong> provides ready-to-use solutions for common tasks. When you need to accomplish something specific, check here first—we’ve probably already solved it.</p>
+<p><strong>Case Studies</strong> demonstrates complete analyses from start to finish. These are the most valuable chapters for understanding how to apply py3plex to real problems.</p>
+</section>
+<section id="how-to-use-this-section">
+<h2>How to Use This Section<a class="headerlink" href="#how-to-use-this-section" title="Link to this heading"></a></h2>
+<p><strong>If you’re learning py3plex for the first time:</strong></p>
+<p>Read the chapters in order. Each builds on concepts from previous chapters, and the examples often reference earlier material. Plan to work through the code examples—reading code is not the same as running it.</p>
+<p><strong>If you’re looking for a specific solution:</strong></p>
+<p>Check the Recipes &amp; Workflows chapter first. If your task isn’t there, look in the relevant topical chapter (e.g., Community Detection for clustering problems).</p>
+<p><strong>If you’re deepening your expertise:</strong></p>
+<p>The Case Studies chapter shows how experts approach real problems. Pay attention not just to what they do, but why they make specific choices.</p>
+</section>
+<section id="a-philosophy-of-practice">
+<h2>A Philosophy of Practice<a class="headerlink" href="#a-philosophy-of-practice" title="Link to this heading"></a></h2>
+<p>We believe that proficiency comes from deliberate practice with feedback. This means:</p>
+<ol class="arabic simple">
+<li><p><strong>Run the code.</strong> Don’t just read it. Type it in (or copy-paste), run it, and look at the output.</p></li>
+<li><p><strong>Modify and experiment.</strong> After running an example, change something. What happens if you use a different parameter? A different algorithm? A different dataset?</p></li>
+<li><p><strong>Apply to your own data.</strong> The examples use sample data, but the goal is to apply these techniques to your own problems. Start with small subsets of your data and scale up.</p></li>
+<li><p><strong>Reflect on what you learn.</strong> When something surprises you, stop and understand why. These surprises are often where the deepest learning happens.</p></li>
+</ol>
+</section>
+<section id="the-real-world-connection">
+<h2>The Real-World Connection<a class="headerlink" href="#the-real-world-connection" title="Link to this heading"></a></h2>
+<p>Every technique in this section exists because it solves real problems. Community detection has helped researchers identify functional modules in protein interaction networks. Random walk embeddings have improved drug-drug interaction prediction. Visualization has revealed unexpected patterns in transportation networks.</p>
+<p>As you work through these chapters, keep your own applications in mind. Ask yourself: How would I use this for my data? What questions could this help me answer?</p>
+</section>
+<section id="let-s-go-deeper">
+<h2>Let’s Go Deeper<a class="headerlink" href="#let-s-go-deeper" title="Link to this heading"></a></h2>
+<p>Ready to develop real competence with py3plex? Start with <a class="reference internal" href="networks.html"><span class="doc">Working with Networks</span></a> to learn the fundamental operations.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Progress Tracking:</strong></p>
+<p>As you work through this section, you might find it helpful to keep notes on:</p>
+<ul class="simple">
+<li><p>Techniques you’ve tried and how they worked</p></li>
+<li><p>Parameters that seem to work well for your data</p></li>
+<li><p>Questions that arise (these are great topics for the Community Detection or Statistics chapters)</p></li>
+<li><p>Ideas for your own analysis that you want to try later</p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../concepts/algorithm_landscape.html" class="btn btn-neutral float-left" title="Algorithm Landscape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="networks.html" class="btn btn-neutral float-right" title="Working with Networks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 Meta Flow Report - Comprehensive Network Analysis
-================================================
+==================================================
 
 The **Meta Flow Report** provides a unified interface for conducting multiple multilayer network analyses at once. Instead of running centrality measures, community detection, and statistics separately, you can now perform comprehensive analysis with a single function call.
 
@@ -476,7 +476,7 @@ See Also
 --------
 
 * :doc:`multilayer_centrality` - Detailed centrality measures documentation
-* :doc:`community_detection` - Community detection algorithms
+* :doc:`../user_guide/community_detection` - Community detection algorithms
 * ``examples/network_analysis/example_meta_flow_report.py`` - Complete example
 
 References

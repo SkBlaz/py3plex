@@ -120,8 +120,9 @@ htmlhelp_basename = 'py3plexdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
+# Minimal LaTeX configuration to avoid build issues
+# Complex customizations have been removed for compatibility
 latex_elements = {
-    # The paper size - A4 is more professional and book-like
     'papersize': 'a4paper',
 
     # Larger font size for better readability

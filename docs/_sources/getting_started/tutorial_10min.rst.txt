@@ -1,19 +1,37 @@
-10-Minute Tutorial: Getting Started with py3plex
+Chapter 2: The Complete Workflow in Ten Minutes
 ================================================
 
-This tutorial provides a quick introduction to py3plex, covering the most common tasks for working with multilayer networks.
+*In which we build a complete multilayer network analysis pipeline—from loading data through community detection to visualization—and learn to interpret results for research.*
+
+----
+
+In the previous chapter, you created a tiny multilayer network by hand and saw the basic building blocks. Now we'll tackle something more realistic: a complete analysis workflow that you could actually use in research.
+
+By the end of this chapter, you'll have a template for any multilayer network analysis project. Whether you're studying social networks, biological interactions, or transportation systems, the workflow stays the same: load → explore → analyze → visualize → interpret.
+
+The Scenario: A Multi-Platform Social Network
+----------------------------------------------
+
+Imagine you're a data scientist at a research institute studying how people interact across different online platforms. You've been given a dataset of users interacting on two social platforms over time: a messaging app (layer 1) and a professional network (layer 2). Some users are active on both platforms, others on only one. Your goals are:
+
+1. **Understand the structure** of each platform's network
+2. **Identify who is central** in each context—and who bridges both
+3. **Find communities** that span platforms
+4. **Generate features** for a downstream classification task
+
+This scenario captures the essence of multilayer network analysis: you have multiple "views" of the same entities (users), and you want to understand both the individual views and how they relate. Let's work through this with py3plex.
 
 What You Will Learn
 -------------------
 
 In 10 minutes, you will learn how to:
 
-1. Create and load multilayer networks
-2. Perform basic network analysis
-3. Compute multilayer statistics
-4. Detect communities
-5. Perform random walks for embeddings
-6. Visualize networks
+1. Create and load multilayer networks from various sources
+2. Navigate network structure with iteration and extraction
+3. Compute multilayer statistics (and interpret what they mean)
+4. Detect communities that span multiple layers
+5. Perform random walks for generating node embeddings
+6. Create visualizations for exploration and publication
 
 Prerequisites
 -------------
@@ -24,10 +42,19 @@ Make sure py3plex is installed:
 
     pip install git+https://github.com/SkBlaz/py3plex.git
 
-1. Creating Your First Multilayer Network (2 minutes)
-------------------------------------------------------
+----
 
-Start by creating a simple multilayer network from scratch:
+Part 1: Building and Loading Networks
+-------------------------------------
+
+*Time estimate: 3 minutes*
+
+1.1 Creating Networks from Scratch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Goal:** Build a multilayer network programmatically to understand the data model.
+
+Let's start by creating a small network by hand. This helps you understand exactly what's happening before we load larger data from files.
 
 .. code-block:: python
 
@@ -60,8 +87,12 @@ Start by creating a simple multilayer network from scratch:
       Layer 'layer1': 3 nodes
       Layer 'layer2': 3 nodes
 
-2. Loading Networks from Files (1 minute)
-------------------------------------------
+**What to notice:** We have 4 unique people (A, B, C, D) but 5 node-layer pairs because A and B appear in both layers. C only appears in layer1; D only in layer2. Node B is the most "active" (appears in both layers) and is connected in both contexts—this makes B a potential bridge between the two platforms.
+
+1.2 Loading Networks from Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Goal:** Load real data from a file and verify it loaded correctly.
 
 py3plex supports multiple input formats. Here is how to load from an edge list:
 
@@ -101,6 +132,8 @@ py3plex supports multiple input formats. Here is how to load from an edge list:
 
 3. Exploring Network Structure (2 minutes)
 -------------------------------------------
+
+**Goal:** Navigate the network to understand its components and extract relevant parts.
 
 Iterate Through Nodes and Edges
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,6 +175,8 @@ Iterate Through Nodes and Edges
 
     Neighbors of 1 in layer 1: [('2', '1'), ('3', '1')]
 
+**What to notice:** Nodes are tuples like ``('1', '1')`` meaning "node 1 in layer 1". The ``type`` attribute records the layer. Edges between layers (like ``('2', '1')`` to ``('6', '2')``) are **inter-layer edges**—these represent relationships that cross contexts, such as a professional connection forming between users who met on a personal platform.
+
 Extract Subnetworks
 ~~~~~~~~~~~~~~~~~~~
 
@@ -170,8 +205,12 @@ Extract Subnetworks
     Node subset: 2 node-layer pairs
     Specific pairs: [('2', '1'), ('1', '1')]
 
+**When to use each:** Use ``subset_by="layers"`` when you want to analyze one platform independently. Use ``subset_by="node_names"`` to trace a specific user across all their platforms. Use ``subset_by="node_layer_names"`` for precise control over exactly which node-layer pairs to include.
+
 4. Computing Network Metrics (2 minutes)
 -----------------------------------------
+
+**Goal:** Measure node importance and understand who is central in each layer.
 
 Basic Centrality Measures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -241,8 +280,12 @@ For multilayer-specific centrality measures:
       ('6', '2'): 0.0000
       ('5', '2'): 0.0000
 
+**Interpreting centrality:** Node 1 has the highest multilayer degree (2.0), meaning it's the most connected when we sum across layers. The betweenness values tell us node 1 in layer 1 lies on 66.7% of shortest paths—it's a broker connecting others. Nodes with high centrality in *multiple* measures are often the most important to study further.
+
 5. Multilayer Network Statistics (2 minutes)
 ---------------------------------------------
+
+**Goal:** Understand layer structure and how layers relate to each other.
 
 py3plex provides many specialized statistics for analyzing multilayer networks. Here are the most commonly used:
 
@@ -271,6 +314,14 @@ Basic Layer Statistics
     Layer 2 density: 0.000
     Layer diversity (entropy): 0.000 bits
 
+**Interpreting density:**
+
+* **High density (> 0.3):** The layer is tightly connected. In social terms, "everyone knows everyone."
+* **Low density (< 0.1):** Sparse connections, typical of large real-world networks.
+* **Density = 0:** No edges in this layer (check your data loading!).
+
+**Interpreting entropy:** Low entropy means activity is concentrated in few layers; high entropy means it's spread evenly across many layers.
+
 Node-Level Statistics
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -285,6 +336,8 @@ Node-Level Statistics
 .. code-block:: text
 
     Node activity for node 1: 0.500
+
+**Interpreting activity:** Node 1 appears in 50% of layers (1 out of 2). In our multi-platform scenario, this user is active on one platform. A user with activity 1.0 would be a "super-connector" present everywhere—often these are the most interesting nodes for understanding cross-platform dynamics.
 
 Network-Level Statistics
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -305,6 +358,12 @@ Network-Level Statistics
 
     Edge overlap between layers: 0.000
     Jaccard similarity between layers: 0.000
+
+**Interpreting overlap and similarity:**
+
+* **High overlap (> 0.5):** The same relationships exist in both layers—maybe the layers are redundant.
+* **Low overlap (< 0.1):** Layers capture different relationships—this is where multilayer analysis adds value.
+* **Jaccard = 0:** No common edges. The layers are completely complementary.
 
 **Available statistics:**
 
@@ -553,6 +612,8 @@ For more advanced visualizations with community colors:
 Complete Example: Putting It All Together
 ------------------------------------------
 
+**Goal:** Run a complete analysis pipeline to analyze and visualize a multilayer network.
+
 Here's a complete workflow:
 
 .. code-block:: python
@@ -643,6 +704,8 @@ Now that you've completed this tutorial, explore more advanced features:
 - **Multilayer Centrality**: See examples in ``examples/network_analysis/``
 - **More Examples**: Check the ``examples/`` directory for 80+ examples organized by topic
 - **Full Documentation**: Visit https://skblaz.github.io/py3plex/
+- **Community Detection Tuning**: See :doc:`../user_guide/community_detection` for parameter guidance
+- **Case Studies**: See :doc:`../user_guide/recipes_and_workflows` for domain-specific examples
 
 Common Issues
 -------------
@@ -686,11 +749,59 @@ Some features require optional dependencies:
 Tips for Success
 ----------------
 
-1. **Start Simple**: Begin with small test networks before scaling to large datasets
-2. **Check Stats**: Always run ``basic_stats()`` after loading to verify your network
-3. **Use Subnetworks**: Extract layers or subsets for faster prototyping
-4. **Seed Your Random**: Use ``seed`` parameters in algorithms for reproducible results
-5. **Visualize Early**: Quick plots help catch data loading issues early
+Before moving on, here are five practices that will save you time:
 
-Happy network analysis!
+1. **Start Simple.** Begin with small test networks before scaling to large datasets. A 100-node network will run in seconds; a 100,000-node network will require careful optimization.
+
+2. **Check Stats.** Always run ``basic_stats()`` after loading to verify your network. Many mysterious bugs stem from data loading issues that would have been obvious from a quick stats check.
+
+3. **Use Subnetworks.** Extract layers or subsets for faster prototyping. Develop your analysis pipeline on a single layer, then scale to the full multilayer network.
+
+4. **Seed Your Random.** Use ``seed`` or ``random_state`` parameters in algorithms for reproducible results. This is essential for research and debugging.
+
+5. **Visualize Early.** Quick plots help catch data loading issues early. If your visualization looks wrong, the underlying data probably is too.
+
+What You Learned
+----------------
+
+This chapter walked through a complete multilayer network analysis workflow:
+
+**Data handling:**
+
+- Creating networks from scratch with ``add_edges()``
+- Loading from files with ``load_network()`` and various input types
+- Navigating structure with ``get_nodes()``, ``get_edges()``, and ``get_neighbors()``
+- Extracting subnetworks by layer, node, or node-layer pair
+
+**Analysis:**
+
+- Computing layer-specific centrality with ``monoplex_nx_wrapper()``
+- Computing multilayer centrality with ``MultilayerCentrality``
+- Measuring layer density, node activity, and edge overlap
+- Detecting communities with ``louvain_multilayer()``
+- Generating random walks for embeddings
+
+**Presentation:**
+
+- Creating visualizations with ``hairball_plot()``
+- Color-coding by community membership
+
+What's Next?
+------------
+
+You now have the foundation for multilayer network analysis. The rest of this book expands on each of these topics:
+
+- :doc:`../concepts/multilayer_networks_101` — Understand the theory behind multilayer networks
+- :doc:`../concepts/py3plex_core_model` — Learn how py3plex represents networks internally
+- :doc:`../user_guide/statistics` — Comprehensive guide to all available statistics
+- :doc:`../user_guide/community_detection` — Tuning community detection parameters
+- :doc:`../user_guide/visualization` — Advanced visualization techniques
+
+**Ready to understand the theory?** Continue to :doc:`../concepts/multilayer_networks_101`.
+
+**Want to jump into coding?** Browse the ``examples/`` directory for 50+ working examples.
+
+----
+
+*Next chapter: :doc:`../concepts/multilayer_networks_101` — the conceptual foundations of multilayer networks.*
 

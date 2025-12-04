@@ -384,9 +384,9 @@ Next Steps
 After loading CSV data:
 
 * :doc:`../getting_started/quickstart_5min` - Learn basic operations
-* :doc:`basic_usage_analysis` - Perform network analysis
-* :doc:`visualization` - Create publication-quality visualizations
-* :doc:`community_detection` - Detect communities and clusters
+* :doc:`../getting_started/tutorial_10min` - Perform network analysis
+* :doc:`../user_guide/visualization` - Create publication-quality visualizations
+* :doc:`../user_guide/community_detection` - Detect communities and clusters
 
 For more examples, see the `examples/ directory <https://github.com/SkBlaz/py3plex/tree/main/examples>`_ 
 in the GitHub repository.

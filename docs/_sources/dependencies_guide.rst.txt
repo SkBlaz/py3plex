@@ -561,7 +561,7 @@ Keeping Dependencies Updated
 Next Steps
 ----------
 
-- :doc:`installation` - Full installation guide
+- :doc:`getting_started/installation` - Full installation guide
 - :doc:`getting_started/quickstart_5min` - Get started with Py3plex
 - :doc:`tutorials/csv_loading` - Load your data
 - :doc:`visualization_guide` - Create visualizations
