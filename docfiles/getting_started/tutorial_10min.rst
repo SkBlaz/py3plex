@@ -46,11 +46,11 @@ Load from file:
     network = multinet.multi_layer_network().load_network(
         "datasets/multiedgelist.txt",
         input_type="multiedgelist",  # Format: source target layer
-        directed=False
+        directed=False  # Set to True for directed networks
     )
     network.basic_stats()
 
-**Supported formats:** ``multiedgelist``, ``edgelist``, ``gpickle``, ``gml``, ``graphml``
+**Supported formats:** ``multiedgelist`` (source, target, layer), ``edgelist`` (source, target), ``gpickle``, ``gml``, ``graphml``
 
 Part 2: Exploring Structure (2 min)
 -----------------------------------
@@ -107,9 +107,9 @@ Multilayer statistics:
 
     from py3plex.algorithms.statistics import multilayer_statistics as mls
 
-    density = mls.layer_density(network, 'layer1')
-    activity = mls.node_activity(network, node='1')
-    overlap = mls.edge_overlap(network, 'layer1', 'layer2')
+    density = mls.layer_density(network, 'layer1')  # Edge density within a layer
+    activity = mls.node_activity(network, node='1')  # Fraction of layers node appears in
+    overlap = mls.edge_overlap(network, 'layer1', 'layer2')  # Shared edges between layers
     similarity = mls.layer_similarity(network, 'layer1', 'layer2', method='jaccard')
 
 **Available statistics:** ``layer_density``, ``entropy_of_multiplexity``, ``node_activity``, ``edge_overlap``, ``layer_similarity``, ``algebraic_connectivity``, ``multilayer_clustering_coefficient``, and more.
