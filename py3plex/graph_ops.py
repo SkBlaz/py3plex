@@ -535,6 +535,254 @@ class NodeFrame:
         new_data = self._data[:n]
         return NodeFrame(multinet=self._multinet, data=new_data)
 
+    def tail(self, n: int = 5) -> NodeFrame:
+        """Keep only the last n nodes in the current selection.
+
+        Corresponds to dplyr::tail.
+
+        Args:
+            n: Number of nodes to keep from the end (default: 5)
+
+        Returns:
+            A new NodeFrame with at most n nodes from the end
+
+        Example:
+            >>> frame.tail(10)
+        """
+        new_data = self._data[-n:] if n > 0 else []
+        return NodeFrame(multinet=self._multinet, data=new_data)
+
+    def sample(self, n: int = 5, seed: int | None = None) -> NodeFrame:
+        """Randomly sample n nodes from the current selection.
+
+        Args:
+            n: Number of nodes to sample (default: 5)
+            seed: Optional random seed for reproducibility
+
+        Returns:
+            A new NodeFrame with n randomly sampled nodes
+
+        Example:
+            >>> frame.sample(10, seed=42)
+        """
+        import random
+        rng = random.Random(seed)
+        if n >= len(self._data):
+            new_data = list(self._data)
+        else:
+            new_data = rng.sample(self._data, n)
+        return NodeFrame(multinet=self._multinet, data=new_data)
+
+    def distinct(self, *fields: str) -> NodeFrame:
+        """Keep only distinct/unique rows based on specified fields.
+
+        If no fields are specified, uses all non-internal fields for uniqueness.
+
+        Args:
+            *fields: Field names to check for uniqueness
+
+        Returns:
+            A new NodeFrame with duplicates removed
+
+        Example:
+            >>> frame.distinct("id")
+            >>> frame.distinct("layer", "degree")
+        """
+        if not fields:
+            # Use all non-internal fields
+            fields = tuple(
+                k for k in (self._data[0].keys() if self._data else [])
+                if not k.startswith("_")
+            )
+
+        seen: set[tuple[Any, ...]] = set()
+        new_data = []
+        for item in self._data:
+            key = tuple(item.get(f) for f in fields)
+            if key not in seen:
+                seen.add(key)
+                new_data.append(item)
+        return NodeFrame(multinet=self._multinet, data=new_data)
+
+    def count(self) -> int:
+        """Return the count of nodes in the current selection.
+
+        This is a terminal operation that returns an integer, not a NodeFrame.
+
+        Returns:
+            Number of nodes in the selection
+
+        Example:
+            >>> n = frame.filter(lambda n: n["degree"] > 5).count()
+        """
+        return len(self._data)
+
+    def rename(self, **renames: str) -> NodeFrame:
+        """Rename fields in the node dicts.
+
+        Args:
+            **renames: Mapping of old_name=new_name
+
+        Returns:
+            A new NodeFrame with renamed fields
+
+        Example:
+            >>> frame.rename(degree="node_degree", id="node_id")
+        """
+        new_data = []
+        for item in self._data:
+            new_item = {}
+            for key, value in item.items():
+                new_key = renames.get(key, key)
+                new_item[new_key] = value
+            new_data.append(new_item)
+        return NodeFrame(multinet=self._multinet, data=new_data)
+
+    def drop(self, *fields: str) -> NodeFrame:
+        """Drop specified fields from node dicts.
+
+        Inverse of select - keeps all fields except those specified.
+
+        Args:
+            *fields: Field names to drop
+
+        Returns:
+            A new NodeFrame without the specified fields
+
+        Example:
+            >>> frame.drop("_node_tuple", "_internal_id")
+        """
+        fields_set = set(fields)
+        new_data = []
+        for item in self._data:
+            new_item = {k: v for k, v in item.items() if k not in fields_set}
+            new_data.append(new_item)
+        return NodeFrame(multinet=self._multinet, data=new_data)
+
+    def where(self, predicate: Callable[[dict[str, Any]], bool]) -> NodeFrame:
+        """Filter nodes using a predicate function (alias for filter).
+
+        SQL-style alias for filter method.
+
+        Args:
+            predicate: A callable that takes a node dict and returns True to keep it
+
+        Returns:
+            A new NodeFrame with only the nodes where predicate(...) is True
+
+        Example:
+            >>> frame.where(lambda n: n["degree"] > 10)
+        """
+        return self.filter(predicate)
+
+    def order_by(
+        self,
+        key: str | Callable[[dict[str, Any]], Any],
+        descending: bool = False,
+    ) -> NodeFrame:
+        """Sort nodes by an attribute or key function (alias for arrange).
+
+        SQL-style alias for arrange method with descending parameter.
+
+        Args:
+            key: If a string, sort by that attribute. If callable, use as key function.
+            descending: If True, sort in descending order (default: False)
+
+        Returns:
+            A new NodeFrame with sorted nodes
+
+        Example:
+            >>> frame.order_by("degree", descending=True)
+        """
+        return self.arrange(key, reverse=descending)
+
+    def take(self, n: int = 5) -> NodeFrame:
+        """Keep only the first n nodes (alias for head).
+
+        SQL-style alias for head method.
+
+        Args:
+            n: Number of nodes to keep (default: 5)
+
+        Returns:
+            A new NodeFrame with at most n nodes
+
+        Example:
+            >>> frame.take(10)
+        """
+        return self.head(n)
+
+    def slice(self, start: int, end: int | None = None) -> NodeFrame:
+        """Slice the data from start to end index.
+
+        Args:
+            start: Starting index (0-based)
+            end: Ending index (exclusive). If None, slices to end.
+
+        Returns:
+            A new NodeFrame with the sliced data
+
+        Example:
+            >>> frame.slice(5, 15)  # rows 5-14
+            >>> frame.slice(10)     # rows 10 to end
+        """
+        new_data = self._data[start:end]
+        return NodeFrame(multinet=self._multinet, data=new_data)
+
+    def first(self) -> dict[str, Any] | None:
+        """Return the first node dict or None if empty.
+
+        Terminal operation that returns a single item.
+
+        Returns:
+            The first node dict or None
+
+        Example:
+            >>> node = frame.filter(lambda n: n["layer"] == "ppi").first()
+        """
+        return self._data[0] if self._data else None
+
+    def last(self) -> dict[str, Any] | None:
+        """Return the last node dict or None if empty.
+
+        Terminal operation that returns a single item.
+
+        Returns:
+            The last node dict or None
+
+        Example:
+            >>> node = frame.arrange("degree", reverse=True).last()
+        """
+        return self._data[-1] if self._data else None
+
+    def collect(self) -> list[dict[str, Any]]:
+        """Return all node dicts as a list.
+
+        Terminal operation that returns the underlying data.
+
+        Returns:
+            List of node dictionaries
+
+        Example:
+            >>> nodes = frame.filter(lambda n: n["degree"] > 5).collect()
+        """
+        return list(self._data)
+
+    def pluck(self, field: str) -> list[Any]:
+        """Extract values for a single field as a list.
+
+        Args:
+            field: Field name to extract
+
+        Returns:
+            List of values for the specified field
+
+        Example:
+            >>> degrees = frame.pluck("degree")
+            >>> ids = frame.filter(lambda n: n["layer"] == "ppi").pluck("id")
+        """
+        return [item.get(field) for item in self._data]
+
     def group_by(self, *fields: str) -> GroupedNodeFrame:
         """Group nodes by one or more fields.
 
@@ -894,6 +1142,250 @@ class EdgeFrame:
         """
         new_data = self._data[:n]
         return EdgeFrame(multinet=self._multinet, data=new_data)
+
+    def tail(self, n: int = 5) -> EdgeFrame:
+        """Keep only the last n edges in the current selection.
+
+        Corresponds to dplyr::tail.
+
+        Args:
+            n: Number of edges to keep from the end (default: 5)
+
+        Returns:
+            A new EdgeFrame with at most n edges from the end
+
+        Example:
+            >>> frame.tail(10)
+        """
+        new_data = self._data[-n:] if n > 0 else []
+        return EdgeFrame(multinet=self._multinet, data=new_data)
+
+    def sample(self, n: int = 5, seed: int | None = None) -> EdgeFrame:
+        """Randomly sample n edges from the current selection.
+
+        Args:
+            n: Number of edges to sample (default: 5)
+            seed: Optional random seed for reproducibility
+
+        Returns:
+            A new EdgeFrame with n randomly sampled edges
+
+        Example:
+            >>> frame.sample(10, seed=42)
+        """
+        import random
+        rng = random.Random(seed)
+        if n >= len(self._data):
+            new_data = list(self._data)
+        else:
+            new_data = rng.sample(self._data, n)
+        return EdgeFrame(multinet=self._multinet, data=new_data)
+
+    def distinct(self, *fields: str) -> EdgeFrame:
+        """Keep only distinct/unique rows based on specified fields.
+
+        If no fields are specified, uses all non-internal fields for uniqueness.
+
+        Args:
+            *fields: Field names to check for uniqueness
+
+        Returns:
+            A new EdgeFrame with duplicates removed
+
+        Example:
+            >>> frame.distinct("source", "target")
+        """
+        if not fields:
+            fields = tuple(
+                k for k in (self._data[0].keys() if self._data else [])
+                if not k.startswith("_")
+            )
+
+        seen: set[tuple[Any, ...]] = set()
+        new_data = []
+        for item in self._data:
+            key = tuple(item.get(f) for f in fields)
+            if key not in seen:
+                seen.add(key)
+                new_data.append(item)
+        return EdgeFrame(multinet=self._multinet, data=new_data)
+
+    def count(self) -> int:
+        """Return the count of edges in the current selection.
+
+        Terminal operation that returns an integer, not an EdgeFrame.
+
+        Returns:
+            Number of edges in the selection
+
+        Example:
+            >>> n = frame.filter(lambda e: e.get("weight", 0) > 0.5).count()
+        """
+        return len(self._data)
+
+    def rename(self, **renames: str) -> EdgeFrame:
+        """Rename fields in the edge dicts.
+
+        Args:
+            **renames: Mapping of old_name=new_name
+
+        Returns:
+            A new EdgeFrame with renamed fields
+
+        Example:
+            >>> frame.rename(weight="edge_weight", source="from_node")
+        """
+        new_data = []
+        for item in self._data:
+            new_item = {}
+            for key, value in item.items():
+                new_key = renames.get(key, key)
+                new_item[new_key] = value
+            new_data.append(new_item)
+        return EdgeFrame(multinet=self._multinet, data=new_data)
+
+    def drop(self, *fields: str) -> EdgeFrame:
+        """Drop specified fields from edge dicts.
+
+        Inverse of select - keeps all fields except those specified.
+
+        Args:
+            *fields: Field names to drop
+
+        Returns:
+            A new EdgeFrame without the specified fields
+
+        Example:
+            >>> frame.drop("_source_tuple", "_target_tuple")
+        """
+        fields_set = set(fields)
+        new_data = []
+        for item in self._data:
+            new_item = {k: v for k, v in item.items() if k not in fields_set}
+            new_data.append(new_item)
+        return EdgeFrame(multinet=self._multinet, data=new_data)
+
+    def where(self, predicate: Callable[[dict[str, Any]], bool]) -> EdgeFrame:
+        """Filter edges using a predicate function (alias for filter).
+
+        SQL-style alias for filter method.
+
+        Args:
+            predicate: A callable that takes an edge dict and returns True to keep it
+
+        Returns:
+            A new EdgeFrame with only the edges where predicate(...) is True
+
+        Example:
+            >>> frame.where(lambda e: e.get("weight", 0) > 0.5)
+        """
+        return self.filter(predicate)
+
+    def order_by(
+        self,
+        key: str | Callable[[dict[str, Any]], Any],
+        descending: bool = False,
+    ) -> EdgeFrame:
+        """Sort edges by an attribute or key function (alias for arrange).
+
+        SQL-style alias for arrange method.
+
+        Args:
+            key: If a string, sort by that attribute. If callable, use as key function.
+            descending: If True, sort in descending order (default: False)
+
+        Returns:
+            A new EdgeFrame with sorted edges
+
+        Example:
+            >>> frame.order_by("weight", descending=True)
+        """
+        return self.arrange(key, reverse=descending)
+
+    def take(self, n: int = 5) -> EdgeFrame:
+        """Keep only the first n edges (alias for head).
+
+        SQL-style alias for head method.
+
+        Args:
+            n: Number of edges to keep (default: 5)
+
+        Returns:
+            A new EdgeFrame with at most n edges
+
+        Example:
+            >>> frame.take(10)
+        """
+        return self.head(n)
+
+    def slice(self, start: int, end: int | None = None) -> EdgeFrame:
+        """Slice the data from start to end index.
+
+        Args:
+            start: Starting index (0-based)
+            end: Ending index (exclusive). If None, slices to end.
+
+        Returns:
+            A new EdgeFrame with the sliced data
+
+        Example:
+            >>> frame.slice(5, 15)  # rows 5-14
+        """
+        new_data = self._data[start:end]
+        return EdgeFrame(multinet=self._multinet, data=new_data)
+
+    def first(self) -> dict[str, Any] | None:
+        """Return the first edge dict or None if empty.
+
+        Terminal operation that returns a single item.
+
+        Returns:
+            The first edge dict or None
+
+        Example:
+            >>> edge = frame.filter(lambda e: e["source_layer"] == "ppi").first()
+        """
+        return self._data[0] if self._data else None
+
+    def last(self) -> dict[str, Any] | None:
+        """Return the last edge dict or None if empty.
+
+        Terminal operation that returns a single item.
+
+        Returns:
+            The last edge dict or None
+
+        Example:
+            >>> edge = frame.arrange("weight", reverse=True).last()
+        """
+        return self._data[-1] if self._data else None
+
+    def collect(self) -> list[dict[str, Any]]:
+        """Return all edge dicts as a list.
+
+        Terminal operation that returns the underlying data.
+
+        Returns:
+            List of edge dictionaries
+
+        Example:
+            >>> edges_list = frame.filter(lambda e: e.get("weight", 0) > 0.5).collect()
+        """
+        return list(self._data)
+
+    def pluck(self, field: str) -> list[Any]:
+        """Extract values for a single field as a list.
+
+        Args:
+            field: Field name to extract
+
+        Returns:
+            List of values for the specified field
+
+        Example:
+            >>> weights = frame.pluck("weight")
+        """
+        return [item.get(field) for item in self._data]
 
     def group_by(self, *fields: str) -> GroupedEdgeFrame:
         """Group edges by one or more fields.

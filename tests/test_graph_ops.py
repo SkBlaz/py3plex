@@ -578,5 +578,361 @@ class TestRepr:
         assert "EdgeFrame" in repr_str
 
 
+class TestNodeFrameTail:
+    """Test NodeFrame.tail() method."""
+
+    def test_tail_default(self, sample_network):
+        """Test tail with default n=5."""
+        result = nodes(sample_network).tail()
+        assert len(result) == 5
+
+    def test_tail_custom_n(self, sample_network):
+        """Test tail with custom n."""
+        result = nodes(sample_network).tail(2)
+        assert len(result) == 2
+
+    def test_tail_larger_than_data(self, sample_network):
+        """Test tail with n larger than data."""
+        original = nodes(sample_network)
+        result = original.tail(100)
+        assert len(result) == len(original)
+
+    def test_tail_zero(self, sample_network):
+        """Test tail with n=0."""
+        result = nodes(sample_network).tail(0)
+        assert len(result) == 0
+
+
+class TestNodeFrameSample:
+    """Test NodeFrame.sample() method."""
+
+    def test_sample_default(self, sample_network):
+        """Test sample with default n=5."""
+        result = nodes(sample_network).sample(seed=42)
+        assert len(result) == 5
+
+    def test_sample_custom_n(self, sample_network):
+        """Test sample with custom n."""
+        result = nodes(sample_network).sample(3, seed=42)
+        assert len(result) == 3
+
+    def test_sample_reproducible(self, sample_network):
+        """Test sample is reproducible with same seed."""
+        result1 = nodes(sample_network).sample(3, seed=42)
+        result2 = nodes(sample_network).sample(3, seed=42)
+        ids1 = [item['id'] for item in result1]
+        ids2 = [item['id'] for item in result2]
+        assert ids1 == ids2
+
+    def test_sample_larger_than_data(self, sample_network):
+        """Test sample with n larger than data."""
+        original = nodes(sample_network)
+        result = original.sample(100, seed=42)
+        assert len(result) == len(original)
+
+
+class TestNodeFrameDistinct:
+    """Test NodeFrame.distinct() method."""
+
+    def test_distinct_single_field(self, sample_network):
+        """Test distinct on single field."""
+        result = nodes(sample_network).distinct('id')
+        # A, B, C, D appear across layers - should have 4 unique IDs
+        ids = [item['id'] for item in result]
+        assert len(ids) == len(set(ids))
+        assert len(result) == 4  # 4 unique node IDs
+
+    def test_distinct_multiple_fields(self, sample_network):
+        """Test distinct on multiple fields."""
+        result = nodes(sample_network).distinct('id', 'layer')
+        # Each (id, layer) should be unique - should keep all 7
+        assert len(result) == 7
+
+
+class TestNodeFrameCount:
+    """Test NodeFrame.count() method."""
+
+    def test_count_all(self, sample_network):
+        """Test count on all nodes."""
+        count = nodes(sample_network).count()
+        assert count == 7
+
+    def test_count_filtered(self, sample_network):
+        """Test count after filter."""
+        count = nodes(sample_network).filter(lambda n: n['layer'] == 'layer1').count()
+        assert count == 4
+
+
+class TestNodeFrameRename:
+    """Test NodeFrame.rename() method."""
+
+    def test_rename_single_field(self, sample_network):
+        """Test renaming a single field."""
+        result = nodes(sample_network).rename(id='node_id')
+        for item in result:
+            assert 'node_id' in item
+            assert 'id' not in item
+
+    def test_rename_multiple_fields(self, sample_network):
+        """Test renaming multiple fields."""
+        result = nodes(sample_network).rename(id='node_id', layer='node_layer')
+        for item in result:
+            assert 'node_id' in item
+            assert 'node_layer' in item
+            assert 'id' not in item
+            assert 'layer' not in item
+
+
+class TestNodeFrameDrop:
+    """Test NodeFrame.drop() method."""
+
+    def test_drop_single_field(self, sample_network):
+        """Test dropping a single field."""
+        result = nodes(sample_network).drop('_node_tuple')
+        for item in result:
+            assert '_node_tuple' not in item
+            assert 'id' in item  # Other fields remain
+
+    def test_drop_multiple_fields(self, sample_network):
+        """Test dropping multiple fields."""
+        result = nodes(sample_network).drop('_node_tuple', 'degree')
+        for item in result:
+            assert '_node_tuple' not in item
+            assert 'degree' not in item
+            assert 'id' in item  # Other fields remain
+
+
+class TestNodeFrameWhere:
+    """Test NodeFrame.where() method (alias for filter)."""
+
+    def test_where_is_alias_for_filter(self, sample_network):
+        """Test where produces same result as filter."""
+        result_where = nodes(sample_network).where(lambda n: n['layer'] == 'layer1')
+        result_filter = nodes(sample_network).filter(lambda n: n['layer'] == 'layer1')
+        assert len(result_where) == len(result_filter)
+
+
+class TestNodeFrameOrderBy:
+    """Test NodeFrame.order_by() method (alias for arrange)."""
+
+    def test_order_by_ascending(self, sample_network):
+        """Test order_by ascending."""
+        result = nodes(sample_network).order_by('degree')
+        degrees = [item['degree'] for item in result]
+        assert degrees == sorted(degrees)
+
+    def test_order_by_descending(self, sample_network):
+        """Test order_by descending."""
+        result = nodes(sample_network).order_by('degree', descending=True)
+        degrees = [item['degree'] for item in result]
+        assert degrees == sorted(degrees, reverse=True)
+
+
+class TestNodeFrameTake:
+    """Test NodeFrame.take() method (alias for head)."""
+
+    def test_take_is_alias_for_head(self, sample_network):
+        """Test take produces same result as head."""
+        result_take = nodes(sample_network).take(3)
+        result_head = nodes(sample_network).head(3)
+        assert len(result_take) == len(result_head)
+
+
+class TestNodeFrameSlice:
+    """Test NodeFrame.slice() method."""
+
+    def test_slice_range(self, sample_network):
+        """Test slice with start and end."""
+        result = nodes(sample_network).slice(1, 4)
+        assert len(result) == 3
+
+    def test_slice_from_start(self, sample_network):
+        """Test slice from start index to end."""
+        result = nodes(sample_network).slice(5)
+        assert len(result) == 2  # indices 5, 6 of 0-6
+
+
+class TestNodeFrameFirst:
+    """Test NodeFrame.first() method."""
+
+    def test_first_returns_dict(self, sample_network):
+        """Test first returns a dict."""
+        result = nodes(sample_network).first()
+        assert isinstance(result, dict)
+
+    def test_first_on_empty(self, sample_network):
+        """Test first on empty frame returns None."""
+        result = nodes(sample_network).filter(lambda n: False).first()
+        assert result is None
+
+
+class TestNodeFrameLast:
+    """Test NodeFrame.last() method."""
+
+    def test_last_returns_dict(self, sample_network):
+        """Test last returns a dict."""
+        result = nodes(sample_network).last()
+        assert isinstance(result, dict)
+
+    def test_last_on_empty(self, sample_network):
+        """Test last on empty frame returns None."""
+        result = nodes(sample_network).filter(lambda n: False).last()
+        assert result is None
+
+
+class TestNodeFrameCollect:
+    """Test NodeFrame.collect() method."""
+
+    def test_collect_returns_list(self, sample_network):
+        """Test collect returns a list."""
+        result = nodes(sample_network).collect()
+        assert isinstance(result, list)
+        assert len(result) == 7
+
+    def test_collect_after_filter(self, sample_network):
+        """Test collect after filter."""
+        result = nodes(sample_network).filter(lambda n: n['layer'] == 'layer1').collect()
+        assert len(result) == 4
+
+
+class TestNodeFramePluck:
+    """Test NodeFrame.pluck() method."""
+
+    def test_pluck_field(self, sample_network):
+        """Test pluck extracts field values."""
+        result = nodes(sample_network).pluck('layer')
+        assert len(result) == 7
+        assert all(layer in ['layer1', 'layer2'] for layer in result)
+
+    def test_pluck_numeric_field(self, sample_network):
+        """Test pluck on numeric field."""
+        result = nodes(sample_network).pluck('degree')
+        assert all(isinstance(d, (int, float)) for d in result)
+
+
+class TestEdgeFrameNewMethods:
+    """Test new EdgeFrame methods."""
+
+    def test_edge_tail(self, sample_network):
+        """Test EdgeFrame.tail()."""
+        result = edges(sample_network).tail(2)
+        assert len(result) == 2
+
+    def test_edge_sample(self, sample_network):
+        """Test EdgeFrame.sample()."""
+        result = edges(sample_network).sample(2, seed=42)
+        assert len(result) == 2
+
+    def test_edge_distinct(self, sample_network):
+        """Test EdgeFrame.distinct()."""
+        result = edges(sample_network).distinct('source', 'target')
+        # All edges should be distinct by source-target pair
+        assert len(result) <= 6
+
+    def test_edge_count(self, sample_network):
+        """Test EdgeFrame.count()."""
+        count = edges(sample_network).count()
+        assert count == 6
+
+    def test_edge_rename(self, sample_network):
+        """Test EdgeFrame.rename()."""
+        result = edges(sample_network).rename(source='from_node')
+        for item in result:
+            assert 'from_node' in item
+            assert 'source' not in item
+
+    def test_edge_drop(self, sample_network):
+        """Test EdgeFrame.drop()."""
+        result = edges(sample_network).drop('_source_tuple')
+        for item in result:
+            assert '_source_tuple' not in item
+
+    def test_edge_where(self, sample_network):
+        """Test EdgeFrame.where()."""
+        result = edges(sample_network).where(lambda e: e.get('weight', 0) > 1)
+        assert len(result) > 0
+        for item in result:
+            assert item.get('weight', 0) > 1
+
+    def test_edge_order_by(self, sample_network):
+        """Test EdgeFrame.order_by()."""
+        result = edges(sample_network).order_by('weight', descending=True)
+        weights = [item.get('weight', 0) for item in result]
+        assert weights == sorted(weights, reverse=True)
+
+    def test_edge_take(self, sample_network):
+        """Test EdgeFrame.take()."""
+        result = edges(sample_network).take(2)
+        assert len(result) == 2
+
+    def test_edge_slice(self, sample_network):
+        """Test EdgeFrame.slice()."""
+        result = edges(sample_network).slice(1, 3)
+        assert len(result) == 2
+
+    def test_edge_first(self, sample_network):
+        """Test EdgeFrame.first()."""
+        result = edges(sample_network).first()
+        assert isinstance(result, dict)
+
+    def test_edge_last(self, sample_network):
+        """Test EdgeFrame.last()."""
+        result = edges(sample_network).last()
+        assert isinstance(result, dict)
+
+    def test_edge_collect(self, sample_network):
+        """Test EdgeFrame.collect()."""
+        result = edges(sample_network).collect()
+        assert isinstance(result, list)
+        assert len(result) == 6
+
+    def test_edge_pluck(self, sample_network):
+        """Test EdgeFrame.pluck()."""
+        result = edges(sample_network).pluck('weight')
+        assert len(result) == 6
+
+
+class TestEnhancedChaining:
+    """Test complex chaining with new methods."""
+
+    def test_full_chain_with_new_methods(self, sample_network):
+        """Test complete chain using new methods."""
+        result = (
+            nodes(sample_network)
+            .where(lambda n: n['layer'] == 'layer1')
+            .order_by('degree', descending=True)
+            .take(3)
+            .rename(id='node_id')
+            .drop('_node_tuple')
+            .collect()
+        )
+        assert len(result) <= 3
+        for item in result:
+            assert 'node_id' in item
+            assert '_node_tuple' not in item
+
+    def test_edge_chain_with_new_methods(self, sample_network):
+        """Test edge chaining with new methods."""
+        weights = (
+            edges(sample_network)
+            .where(lambda e: e.get('weight', 0) > 0.5)
+            .order_by('weight', descending=True)
+            .take(3)
+            .pluck('weight')
+        )
+        assert len(weights) <= 3
+        assert weights == sorted(weights, reverse=True)
+
+    def test_sample_in_chain(self, sample_network):
+        """Test sample in a chain."""
+        result = (
+            nodes(sample_network)
+            .filter(lambda n: n['degree'] >= 1)
+            .sample(3, seed=42)
+            .collect()
+        )
+        assert len(result) <= 3
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
