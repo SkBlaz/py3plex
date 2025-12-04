@@ -517,7 +517,7 @@ Next Steps
 
 - :doc:`networkx_interop` - NetworkX integration for Python workflows
 - :doc:`basic_usage_analysis` - Network analysis methods
-- :doc:`community_detection` - Community detection algorithms  
+- :doc:`user_guide/community_detection` - Community detection algorithms  
 - :doc:`visualization_guide` - Visualization options
 
 For Python examples with R code snippets, see `examples/r_interop_example.py <https://github.com/SkBlaz/py3plex/blob/main/examples/r_interop_example.py>`_ in the GitHub repository.

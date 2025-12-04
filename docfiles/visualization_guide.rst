@@ -1349,7 +1349,7 @@ Next Steps
 ----------
 
 - :doc:`basic_usage_analysis` - Analyze network properties
-- :doc:`community_detection` - Detect communities for coloring
+- :doc:`user_guide/community_detection` - Detect communities for coloring
 - :doc:`deployment/performance_scalability` - Optimize for large networks
 - :doc:`tutorials/csv_loading` - Load data from CSV
 
