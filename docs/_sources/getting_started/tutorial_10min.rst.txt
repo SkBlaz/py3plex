@@ -32,7 +32,6 @@ In 10 minutes, you will learn how to:
 4. Detect communities that span multiple layers
 5. Perform random walks for generating node embeddings
 6. Create visualizations for exploration and publication
-7. Narrate your findings for a research paper
 
 Prerequisites
 -------------
@@ -613,7 +612,7 @@ For more advanced visualizations with community colors:
 Complete Example: Putting It All Together
 ------------------------------------------
 
-**Goal:** Run a complete analysis pipeline and produce results ready for a research paper.
+**Goal:** Run a complete analysis pipeline to analyze and visualize a multilayer network.
 
 Here's a complete workflow:
 
@@ -695,25 +694,6 @@ Here's a complete workflow:
     Complete analysis saved to complete_analysis.png
 
 **Note:** In this example, the high number of communities (equal to the number of nodes) indicates that the network structure or parameters may need adjustment for meaningful community detection. In practice, adjust ``gamma`` (resolution) and ``omega`` (inter-layer coupling) parameters to achieve desired community granularity.
-
-Narrating Results for a Research Paper
---------------------------------------
-
-Once you've run your analysis, how do you present these findings in a research paper? Here's how you might narrate the results from the example above:
-
-**Example Methods Section:**
-
-    We analyzed a multiplex network of 46 users across 4 interaction layers using py3plex (Škrlj et al., 2019). Each layer represents a distinct mode of interaction, with all users present in all layers (a fully multiplex structure with 184 node-layer pairs and 1,691 edges total). We computed layer density to assess connectivity patterns and applied multilayer Louvain community detection (Mucha et al., 2010) with resolution parameter γ=1.0 and inter-layer coupling ω=1.0.
-
-**Example Results Section:**
-
-    The network exhibited moderate density with a uniform structure across layers, suggesting consistent interaction patterns across contexts. Degree centrality analysis revealed several hub nodes (e.g., nodes 15, 7, and 27 with centrality 0.244 in layer 1) that maintain high connectivity. Community detection initially yielded 46 communities—one per unique user—indicating that with default parameters, the algorithm treats each user's cross-layer presence as a distinct module. This suggests either (a) weak inter-user community structure, or (b) the need to reduce the resolution parameter γ to detect larger community groupings.
-
-**Example Discussion Point:**
-
-    The finding that each user forms their own "community" across layers is methodologically informative: it indicates that this network has strong vertical cohesion (each user is well-connected to themselves across layers via coupling edges) but weaker horizontal cohesion (users form few cross-layer communities with other users). This pattern is characteristic of multiplex networks where identity coupling dominates over community structure.
-
-This kind of narrative connects your technical analysis to domain interpretations that reviewers and readers can understand.
 
 Next Steps
 ----------
@@ -805,7 +785,6 @@ This chapter walked through a complete multilayer network analysis workflow:
 
 - Creating visualizations with ``hairball_plot()``
 - Color-coding by community membership
-- Narrating findings for research papers
 
 What's Next?
 ------------

@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Getting Started: Your Journey Begins" href="getting_started/part_intro.html" /> 
+    <link rel="next" title="Concepts &amp; Architecture: Understanding the Foundations" href="concepts/part_intro.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,15 +43,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/part_intro.html">Getting Started: Your Journey Begins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">Chapter 1: Your First Five Minutes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">Chapter 2: The Complete Workflow in Ten Minutes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a></li>
@@ -135,7 +127,6 @@
              
   <section id="py3plex-a-practical-guide-to-multilayer-network-analysis">
 <h1>Py3plex: A Practical Guide to Multilayer Network Analysis<a class="headerlink" href="#py3plex-a-practical-guide-to-multilayer-network-analysis" title="Link to this heading"></a></h1>
-<p><em>“Complexity is the enemy of execution.”</em> — Tony Robbins</p>
 <img alt="Py3plex Visualization Showcase" class="align-center" src="_images/py3plex_showcase.png" />
 <a class="reference external image-reference" href="https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml"><img alt="Tests" src="https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg" />
 </a>
@@ -146,403 +137,49 @@
 <hr class="docutils" />
 <p>Welcome to py3plex. This documentation is organized as a progressive learning journey—from your first five-minute example through conceptual foundations to advanced production workflows. Whether you’re a researcher exploring social network dynamics, a bioinformatician analyzing protein interactions across multiple evidence types, or a data scientist building features for machine learning, this guide will show you how to work effectively with multilayer network structures.</p>
 <p>py3plex enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.</p>
-<section id="welcome-to-py3plex">
-<h2>Welcome to py3plex<a class="headerlink" href="#welcome-to-py3plex" title="Link to this heading"></a></h2>
-<p>The world is connected. Social relationships span platforms and contexts. Transportation networks combine trains, buses, and flights. Biological systems involve protein interactions, gene regulation, and metabolic pathways. Yet most network analysis tools treat connections as if they were all the same.</p>
-<p><strong>py3plex is different.</strong> It’s built from the ground up for networks where the <em>type</em> of connection matters—where a friendship is different from a professional contact, where an experimental protein interaction is different from a computationally predicted one, where a subway connection is different from a bus route.</p>
-<p>This documentation will take you from zero to competent multilayer network analyst. Whether you’re a researcher looking to apply network science to your domain, a data scientist exploring graph-based features for machine learning, or an engineer building tools that leverage network structure, you’ll find what you need here.</p>
-</section>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<section id="what-is-py3plex-actually-for">
-<h3>What is py3plex Actually For?<a class="headerlink" href="#what-is-py3plex-actually-for" title="Link to this heading"></a></h3>
-<p>py3plex is a lightweight Python library designed specifically for analyzing and visualizing <strong>heterogeneous and multilayer networks</strong>—network structures where relationships are richer and more complex than simple graphs. Unlike traditional network analysis tools that focus on homogeneous networks (single node and edge type), py3plex provides specialized capabilities for networks with:</p>
-<ul class="simple">
-<li><p><strong>Multiple node types</strong> (e.g., authors, papers, venues in an academic network)</p></li>
-<li><p><strong>Multiple edge types</strong> (e.g., friendship, mentorship, collaboration)</p></li>
-<li><p><strong>Multiple layers of interaction</strong> (e.g., different social platforms, modes of transportation)</p></li>
-<li><p><strong>Temporal dynamics</strong> (e.g., evolving relationships over time)</p></li>
-<li><p><strong>Heterogeneous attributes</strong> (e.g., edge weights varying by relationship type)</p></li>
-</ul>
-<p>Real-world systems are rarely simple: a social network involves friendships <em>and</em> professional relationships; a transportation system includes buses <em>and</em> trains <em>and</em> flights; a biological system has protein-protein interactions <em>and</em> gene regulation <em>and</em> metabolic pathways. When you model these systems as multilayer networks rather than flattening them into a single graph, you preserve information that matters for analysis—and py3plex makes this kind of analysis practical.</p>
-<p><strong>Target Users:</strong> Researchers in network science, computational biology, complex systems, social network analysis, infrastructure/transportation modeling, and applied ML on graphs.</p>
-</section>
-<section id="real-world-impact">
-<h3>Real-World Impact<a class="headerlink" href="#real-world-impact" title="Link to this heading"></a></h3>
-<p>Multilayer network analysis isn’t just an academic exercise. Here are some ways it has been used in practice:</p>
-<ul class="simple">
-<li><p><strong>Drug discovery:</strong> Researchers model protein interactions, genetic associations, and drug-target relationships as a multilayer network. Proteins that are central across multiple evidence layers are prioritized as drug targets.</p></li>
-<li><p><strong>Pandemic modeling:</strong> Epidemiologists model human contact networks with layers for household, workplace, and community interactions. Each layer has different transmission dynamics, enabling more accurate predictions.</p></li>
-<li><p><strong>Infrastructure resilience:</strong> Urban planners model transportation systems with layers for different modes (subway, bus, bike-share). Analyzing inter-layer dependencies reveals vulnerabilities—what happens when a major subway hub fails?</p></li>
-<li><p><strong>Social media analysis:</strong> Researchers studying influence model users across platforms (Twitter, Instagram, YouTube). Cross-platform influencers behave differently from single-platform celebrities.</p></li>
-<li><p><strong>Recommendation systems:</strong> E-commerce platforms model user-item-category relationships as heterogeneous networks. Meta-path-based features improve recommendation quality.</p></li>
-</ul>
-<p>py3plex provides the tools to conduct these kinds of analyses—from simple exploration to publication-ready workflows.</p>
-</section>
-<section id="what-can-i-do-in-the-first-hour-first-day-and-first-week">
-<h3>What Can I Do in the First Hour, First Day, and First Week?<a class="headerlink" href="#what-can-i-do-in-the-first-hour-first-day-and-first-week" title="Link to this heading"></a></h3>
-<p><strong>First Hour:</strong></p>
-<ul class="simple">
-<li><p>Install py3plex and create your first multilayer network (see <a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">Chapter 1: Your First Five Minutes</span></a>)</p></li>
-<li><p>Load a dataset, compute basic statistics, and visualize your network with one of the built-in layouts</p></li>
-<li><p>Query your network with the SQL-like DSL (<code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">nodes</span> <span class="pre">WHERE</span> <span class="pre">layer=&quot;friends&quot;</span> <span class="pre">AND</span> <span class="pre">degree</span> <span class="pre">&gt;</span> <span class="pre">5</span></code>)</p></li>
-</ul>
-<p><strong>First Day:</strong></p>
-<ul class="simple">
-<li><p>Work through the 10-minute tutorial for a complete workflow (see <a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">Chapter 2: The Complete Workflow in Ten Minutes</span></a>)</p></li>
-<li><p>Compute multilayer statistics: layer density, node activity, edge overlap between layers</p></li>
-<li><p>Detect communities using multilayer Louvain and visualize them with community colors</p></li>
-<li><p>Generate random walks and create basic node embeddings for ML tasks</p></li>
-</ul>
-<p><strong>First Week:</strong></p>
-<ul class="simple">
-<li><p>Understand the core model: node-layer pairs, supra-adjacency matrices, and how py3plex extends NetworkX</p></li>
-<li><p>Implement complete analysis pipelines: load → compute statistics → detect communities → visualize → export</p></li>
-<li><p>Tune algorithm parameters (resolution, inter-layer coupling) for your specific domain</p></li>
-<li><p>Build production-ready workflows with Arrow/Parquet I/O for scalability</p></li>
-</ul>
-</section>
-<section id="when-should-i-use-py3plex-instead-of-just-networkx">
-<h3>When Should I Use py3plex Instead of Just NetworkX?<a class="headerlink" href="#when-should-i-use-py3plex-instead-of-just-networkx" title="Link to this heading"></a></h3>
-<p>NetworkX is excellent for single-layer, homogeneous networks. Use py3plex when:</p>
-<ol class="arabic simple">
-<li><p><strong>Your data has natural layers.</strong> If you’re tempted to add a <code class="docutils literal notranslate"><span class="pre">layer</span></code> attribute to NetworkX edges or to maintain multiple separate graphs, py3plex gives you a principled representation and layer-aware algorithms.</p></li>
-<li><p><strong>You need multilayer-specific metrics.</strong> Statistics like node activity (how many layers a node participates in), edge overlap (how many edges appear in multiple layers), or versatility centrality (node importance across layers) require multilayer-aware implementations.</p></li>
-<li><p><strong>You want consistent cross-layer analysis.</strong> Multilayer community detection finds groups that are consistent across layers. Multilayer centrality identifies nodes that are important in their context, not just locally.</p></li>
-<li><p><strong>You need specialized visualization.</strong> Diagonal projection and layered layouts show multilayer structure clearly. Hairball plots with layer-colored nodes reveal cross-layer patterns.</p></li>
-<li><p><strong>You want a SQL-like query interface.</strong> The py3plex DSL lets you query and filter networks intuitively (<code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">edges</span> <span class="pre">WHERE</span> <span class="pre">source_layer=&quot;l1&quot;</span> <span class="pre">AND</span> <span class="pre">weight</span> <span class="pre">&gt;</span> <span class="pre">0.5</span></code>).</p></li>
-</ol>
-<p>If your network is genuinely a single layer with one node type and one edge type, plain NetworkX is sufficient. py3plex adds value when that simplifying assumption doesn’t hold.</p>
+<p>Getting Started</p>
 <p><strong>Key Features:</strong></p>
 <ul class="simple">
 <li><p>Native support for multiplex and multilayer network structures</p></li>
-<li><p><strong>SQL-like DSL</strong> for intuitive network queries and analysis</p></li>
-<li><p>Diagonal projection visualization for large multilayer networks</p></li>
-<li><p>Comprehensive multilayer centrality measures (17+ statistics)</p></li>
+<li><p>SQL-like DSL for intuitive network queries</p></li>
+<li><p>17+ multilayer-specific statistics and centrality measures</p></li>
 <li><p>Community detection across network layers (Louvain, Infomap, multilayer modularity)</p></li>
-<li><p>Network decomposition and feature extraction for ML</p></li>
-<li><p>Random walk and node embedding algorithms (Node2Vec, DeepWalk)</p></li>
-<li><p>High-performance I/O with Arrow/Parquet for large-scale analysis</p></li>
-<li><p>Integration with NetworkX, igraph, and other graph libraries</p></li>
+<li><p>Random walk algorithms (Node2Vec, DeepWalk) for graph embeddings</p></li>
+<li><p>Publication-ready visualizations with diagonal projection layouts</p></li>
+<li><p>High-performance I/O with Arrow/Parquet support</p></li>
+<li><p>Full NetworkX compatibility</p></li>
 </ul>
-</section>
-<section id="typical-workflows">
-<h3>Typical Workflows<a class="headerlink" href="#typical-workflows" title="Link to this heading"></a></h3>
-<p>py3plex supports three main workflow patterns:</p>
-<p><strong>1. Exploratory Multilayer Network Analysis (Medium-sized Datasets)</strong></p>
-<p>For networks with a few thousand nodes across 2–10 layers, this is the most common workflow:</p>
-<ul class="simple">
-<li><p><strong>Load:</strong> Read your multilayer edgelist, GraphML, or CSV</p></li>
-<li><p><strong>Explore:</strong> Run <code class="docutils literal notranslate"><span class="pre">basic_stats()</span></code>, examine layer densities, node activity distributions</p></li>
-<li><p><strong>Analyze:</strong> Compute multilayer statistics, detect communities, compute centralities</p></li>
-<li><p><strong>Visualize:</strong> Create hairball plots with community colors, diagonal projections</p></li>
-<li><p><strong>Iterate:</strong> Refine layer selection, tune parameters, re-analyze</p></li>
-</ul>
-<p><em>Best for:</em> Social network analysis, biological networks (PPI, gene regulation), citation networks</p>
-<p><strong>2. Feature Extraction + Embeddings for ML Tasks</strong></p>
-<p>When your goal is to use network structure as features for machine learning:</p>
-<ul class="simple">
-<li><p><strong>Load:</strong> Import your network</p></li>
-<li><p><strong>Generate walks:</strong> Use <code class="docutils literal notranslate"><span class="pre">generate_walks()</span></code> with Node2Vec-style biased sampling</p></li>
-<li><p><strong>Train embeddings:</strong> Feed walks to Word2Vec or use py3plex’s embedding wrappers</p></li>
-<li><p><strong>Export features:</strong> Create node-level feature vectors for classification or link prediction</p></li>
-<li><p><strong>Integrate:</strong> Use embeddings in scikit-learn pipelines or deep learning models</p></li>
-</ul>
-<p><em>Best for:</em> Node classification, link prediction, graph-level classification, similarity search</p>
-<p><strong>3. Large-Scale Multilayer Analysis (Performance Constraints)</strong></p>
-<p>For networks with 100k+ nodes or when running many experiments:</p>
-<ul class="simple">
-<li><p><strong>Use Arrow/Parquet I/O:</strong> 2–3x faster read/write than JSON, better compression</p></li>
-<li><p><strong>Work layer-by-layer:</strong> Extract single layers for independent analysis when possible</p></li>
-<li><p><strong>Use sparse matrices:</strong> Always use <code class="docutils literal notranslate"><span class="pre">sparse=True</span></code> for supra-adjacency matrices</p></li>
-<li><p><strong>Sample for exploration:</strong> Use subnetworks and random sampling for initial exploration</p></li>
-<li><p><strong>Batch processing:</strong> Use CLI/Docker for reproducible, scriptable analysis</p></li>
-</ul>
-<p><em>Best for:</em> Large social graphs, infrastructure networks, repeated experiments, production pipelines</p>
-</section>
-<section id="design-at-a-glance">
-<h3>Design at a Glance<a class="headerlink" href="#design-at-a-glance" title="Link to this heading"></a></h3>
-<p>py3plex is organized into four main components:</p>
-<p><strong>Core (``py3plex.core``):</strong></p>
-<p>The <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class wraps NetworkX MultiGraph/MultiDiGraph with layer-aware semantics. Nodes are represented as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> tuples, enabling the same entity to appear in multiple layers. This representation is compatible with all NetworkX algorithms while providing multilayer-specific operations.</p>
-<p><strong>Algorithms (``py3plex.algorithms``):</strong></p>
-<ul class="simple">
-<li><p><strong>Statistics:</strong> Layer density, node activity, edge overlap, versatility centrality, and more</p></li>
-<li><p><strong>Community detection:</strong> Louvain, Infomap, multilayer modularity (Mucha et al. 2010)</p></li>
-<li><p><strong>Centrality:</strong> Multilayer degree, betweenness, closeness, PageRank</p></li>
-<li><p><strong>Random walks:</strong> Basic walks, Node2Vec-style biased walks, layer-constrained walks</p></li>
-</ul>
-<p><strong>Visualization (``py3plex.visualization``):</strong></p>
-<ul class="simple">
-<li><p><strong>Hairball plots:</strong> Force-directed layouts with layer coloring</p></li>
-<li><p><strong>Diagonal projection:</strong> 3D-like representation showing layer structure</p></li>
-<li><p><strong>Community visualization:</strong> Nodes colored by detected community</p></li>
-</ul>
-<p><strong>I/O (``py3plex.io``):</strong></p>
-<ul class="simple">
-<li><p><strong>Traditional formats:</strong> Edgelist, multiedgelist, GraphML, GML, pickle</p></li>
-<li><p><strong>Modern formats:</strong> Apache Arrow, Parquet for high-performance serialization</p></li>
-<li><p><strong>Schema-based API:</strong> <code class="docutils literal notranslate"><span class="pre">read()</span></code> and <code class="docutils literal notranslate"><span class="pre">write()</span></code> with automatic format detection</p></li>
-</ul>
-</section>
-</section>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
-<section id="install-from-github">
-<h3>Install from GitHub<a class="headerlink" href="#install-from-github" title="Link to this heading"></a></h3>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p>Install py3plex:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
 </pre></div>
 </div>
-</section>
-<section id="docker-installation-alternative">
-<h3>Docker Installation (Alternative)<a class="headerlink" href="#docker-installation-alternative" title="Link to this heading"></a></h3>
-<p>py3plex is also available as a Docker container with all dependencies pre-installed:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone and build</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
-<span class="nb">cd</span><span class="w"> </span>py3plex
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
-
-<span class="c1"># Run commands</span>
-docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>--version
-docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span>selftest
-</pre></div>
-</div>
-<p>See <a class="reference internal" href="deployment/cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation.</p>
-</section>
-<section id="install-from-source-for-development">
-<h3>Install from source for development<a class="headerlink" href="#install-from-source-for-development" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
-<span class="nb">cd</span><span class="w"> </span>py3plex
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="optional-dependencies">
-<h3>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Advanced community detection with Infomap</span>
-pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
-
-<span class="c1"># Additional algorithms (Louvain, cdlib)</span>
-pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>algos<span class="o">]</span>
-
-<span class="c1"># Advanced visualization (plotly, igraph)</span>
-pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
-
-<span class="c1"># For development (includes testing and linting tools)</span>
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="requirements">
-<h3>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p>Python 3.8 or higher</p></li>
-<li><p>NetworkX, NumPy, SciPy (automatically installed)</p></li>
-<li><p>Optional: Matplotlib, Plotly for visualization</p></li>
-</ul>
-</section>
-</section>
-<section id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
-<p>Create a simple multilayer network:</p>
+<p>Create your first multilayer network:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
-<span class="c1"># Create a new multilayer network</span>
+<span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
-<span class="c1"># Add edges within layers</span>
+<span class="c1"># Add edges (nodes are created automatically)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
 
-<span class="c1"># Display basic statistics</span>
+<span class="c1"># Display statistics and visualize</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
-
-<span class="c1"># Visualize</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
-<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Load from file and analyze:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load from edge list</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="c1"># Compute multilayer statistics</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
-<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
-
-<span class="c1"># Community detection</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_wrapper</span>
-<span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Query with DSL (SQL-like syntax):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
-
-<span class="c1"># Query nodes by layer and degree</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;layer1&quot; AND degree &gt; 1&#39;</span><span class="p">)</span>
-
-<span class="c1"># Compute centrality for filtered nodes</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;layer1&quot; COMPUTE betweenness_centrality&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>See <a class="reference internal" href="user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for comprehensive DSL documentation.</p>
-<p>Pythonic interface - use networks naturally:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core.multinet</span><span class="w"> </span><span class="kn">import</span> <span class="n">multi_layer_network</span>
-
-<span class="c1"># Create from edges directly with factory method</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="o">.</span><span class="n">from_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;l1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;l1&#39;</span><span class="p">}</span>
-<span class="p">])</span>
-
-<span class="c1"># Use len(), bool, and &#39;in&#39; naturally</span>
-<span class="k">if</span> <span class="n">network</span><span class="p">:</span>  <span class="c1"># True if network has nodes</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes across </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">layer_count</span><span class="si">}</span><span class="s2"> layers&quot;</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;l1&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">network</span><span class="p">:</span>  <span class="c1"># Check membership</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Node A exists in layer l1&quot;</span><span class="p">)</span>
-
-<span class="c1"># Iterate directly</span>
-<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-
-<span class="c1"># Method chaining</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;l1&#39;</span><span class="p">}])</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span><span class="o">...</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>See <a class="reference internal" href="user_guide/networks.html"><span class="doc">Working with Networks</span></a> for complete Pythonic interface documentation.</p>
-</section>
-<section id="why-py3plex">
-<h2>Why py3plex?<a class="headerlink" href="#why-py3plex" title="Link to this heading"></a></h2>
-<section id="vs-networkx">
-<h3>vs. NetworkX<a class="headerlink" href="#vs-networkx" title="Link to this heading"></a></h3>
-<p>NetworkX excels at single-layer homogeneous networks but lacks native multilayer support. py3plex builds on NetworkX while adding:</p>
-<ul class="simple">
-<li><p>Native multilayer data structures</p></li>
-<li><p>Layer-aware algorithms</p></li>
-<li><p>Specialized multilayer visualizations</p></li>
-<li><p>Heterogeneous network decomposition</p></li>
-</ul>
-</section>
-<section id="vs-other-multilayer-tools">
-<h3>vs. Other Multilayer Tools<a class="headerlink" href="#vs-other-multilayer-tools" title="Link to this heading"></a></h3>
-<p>py3plex provides:</p>
-<ul class="simple">
-<li><p>Lightweight and easy to integrate</p></li>
-<li><p>Comprehensive statistical measures (17+ multilayer metrics)</p></li>
-<li><p>Publication-ready visualizations</p></li>
-<li><p>Active development and research backing</p></li>
-</ul>
-</section>
-</section>
-<section id="use-cases">
-<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
-<p>py3plex is particularly well-suited for:</p>
-<ul class="simple">
-<li><p><strong>Biological networks:</strong> Protein-protein interactions with multiple evidence types, gene regulatory networks</p></li>
-<li><p><strong>Social networks:</strong> Multi-platform analysis (Twitter + Facebook), relationship type analysis</p></li>
-<li><p><strong>Citation networks:</strong> Author-paper-venue multilayer structures, knowledge graphs</p></li>
-<li><p><strong>Transportation:</strong> Multi-modal networks (bus, train, air), urban mobility</p></li>
-<li><p><strong>Temporal networks:</strong> Evolving social networks, dynamic community evolution</p></li>
-</ul>
-</section>
-<section id="what-s-in-this-documentation">
-<h2>What’s in this Documentation?<a class="headerlink" href="#what-s-in-this-documentation" title="Link to this heading"></a></h2>
-<p>This documentation is organized as a comprehensive guide that takes you from beginner to advanced user. It’s structured in eight parts that you can read sequentially like a book, or jump to specific sections based on your needs:</p>
-<p><strong>Part I - Getting Started:</strong> New to py3plex? Begin with the 5-minute quickstart (<a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">Chapter 1: Your First Five Minutes</span></a>) for a hands-on introduction, then continue to the 10-minute tutorial (<a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">Chapter 2: The Complete Workflow in Ten Minutes</span></a>) for a comprehensive walkthrough.</p>
-<p><strong>Part II - Concepts &amp; Architecture:</strong> Want to understand the theory? Check out <a class="reference internal" href="concepts/multilayer_networks_101.html"><span class="doc">Chapter 3: Multilayer Networks 101</span></a> for foundational concepts and <a class="reference internal" href="concepts/py3plex_core_model.html"><span class="doc">Chapter 4: The py3plex Core Model</span></a> for py3plex’s design philosophy.</p>
-<p><strong>Part III - User Guide:</strong> Ready to dive deep? The user guide chapters cover every major feature from network creation to visualization, each building on the previous.</p>
-<p><strong>Part IV - Deployment:</strong> Moving to production? See the <a class="reference internal" href="deployment/cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> and <a class="reference internal" href="deployment/performance_scalability.html"><span class="doc">Performance and Scalability Best Practices</span></a> guides for deployment strategies.</p>
-<p><strong>Part V - GUI:</strong> Prefer a visual interface? The GUI section covers the web-based interface for interactive network exploration.</p>
-<p><strong>Part VI - Developer Docs:</strong> Want to contribute? Read the <a class="reference internal" href="dev/development_guide.html"><span class="doc">Development Guide</span></a> and <a class="reference internal" href="dev/contributing.html"><span class="doc">Contributing to py3plex</span></a> pages.</p>
-<p><strong>Part VII - Examples:</strong> Learning by doing? Browse the curated <a class="reference internal" href="examples/index.html"><span class="doc">Examples</span></a> for working code.</p>
-<p><strong>Part VIII - Reference:</strong> Need API details? The reference section provides comprehensive algorithm and API documentation.</p>
+<p>For a complete introduction, see <a class="reference internal" href="getting_started/quickstart_5min.html"><span class="doc">Chapter 1: Your First Five Minutes</span></a> (5 minutes) or <a class="reference internal" href="getting_started/tutorial_10min.html"><span class="doc">Chapter 2: The Complete Workflow in Ten Minutes</span></a> (10 minutes).</p>
 </section>
 <section id="documentation-contents">
 <h2>Documentation Contents<a class="headerlink" href="#documentation-contents" title="Link to this heading"></a></h2>
-<section id="part-i-getting-started">
-<h3>Part I: Getting Started<a class="headerlink" href="#part-i-getting-started" title="Link to this heading"></a></h3>
-<p><em>Chapters 1–2: From zero to productive in 15 minutes.</em></p>
-<p>Whether you’re new to py3plex or multilayer network analysis, this section provides everything you need to get up and running quickly. We begin with a 5-minute quickstart that demonstrates the core concepts through hands-on examples, then expand into a comprehensive 10-minute tutorial covering the most common workflows. The installation guide ensures you have all dependencies configured correctly, while the troubleshooting section addresses common issues you might encounter.</p>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/part_intro.html">Getting Started: Your Journey Begins</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/part_intro.html#why-start-here">Why Start Here?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/part_intro.html#what-you-ll-find-here">What You’ll Find Here</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/part_intro.html#a-note-on-learning">A Note on Learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/part_intro.html#let-s-begin">Let’s Begin</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_5min.html">Chapter 1: Your First Five Minutes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#the-scenario">The Scenario</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#hello-world-your-first-multilayer-network">Hello World: Your First Multilayer Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#visualize-your-network">Visualize Your Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#basic-analysis">Basic Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#query-with-dsl-sql-like">Query with DSL (SQL-like)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#what-you-learned">What You Learned</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart_5min.html#what-s-next">What’s Next?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/tutorial_10min.html">Chapter 2: The Complete Workflow in Ten Minutes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#the-scenario-a-multi-platform-social-network">The Scenario: A Multi-Platform Social Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#what-you-will-learn">What You Will Learn</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#part-1-building-and-loading-networks">Part 1: Building and Loading Networks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#exploring-network-structure-2-minutes">3. Exploring Network Structure (2 minutes)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#computing-network-metrics-2-minutes">4. Computing Network Metrics (2 minutes)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#multilayer-network-statistics-2-minutes">5. Multilayer Network Statistics (2 minutes)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#community-detection-2-minutes">6. Community Detection (2 minutes)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#random-walks-1-minute">7. Random Walks (1 minute)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#basic-visualization-1-minute">8. Basic Visualization (1 minute)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#complete-example-putting-it-all-together">Complete Example: Putting It All Together</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#narrating-results-for-a-research-paper">Narrating Results for a Research Paper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#next-steps">Next Steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#common-issues">Common Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#tips-for-success">Tips for Success</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#what-you-learned">What You Learned</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/tutorial_10min.html#what-s-next">What’s Next?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation and Setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#basic-installation">Basic Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#optional-dependencies">Optional Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#system-requirements">System Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#external-binaries-optional">External Binaries (Optional)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#virtual-environment-setup">Virtual Environment Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#common-installation-issues">Common Installation Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#verifying-installation">Verifying Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#license-considerations">License Considerations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#next-steps">Next Steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html#getting-help">Getting Help</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="getting_started/common_issues.html">Common Issues and Troubleshooting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#installation-issues">Installation Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#data-loading-issues">Data Loading Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#visualization-issues">Visualization Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#missing-dependencies">Missing Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#performance-issues">Performance Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#algorithm-issues">Algorithm Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#docker-issues">Docker Issues</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#getting-help">Getting Help</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/common_issues.html#related-pages">Related Pages</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<hr class="docutils" />
 <section id="part-ii-concepts-architecture">
 <h3>Part II: Concepts &amp; Architecture<a class="headerlink" href="#part-ii-concepts-architecture" title="Link to this heading"></a></h3>
-<p><em>Chapters 3–6: Understanding the theory and design.</em></p>
-<p>Before diving deeper into py3plex’s capabilities, it’s essential to understand the theoretical foundations of multilayer networks. This section introduces the core concepts that distinguish multilayer networks from traditional graph structures, explains py3plex’s internal data model and design philosophy, and provides an overview of the algorithmic landscape available for multilayer network analysis. Understanding these foundations will help you make better decisions when designing your analysis workflows.</p>
+<p>Understand multilayer network theory and py3plex’s design philosophy.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
@@ -618,8 +255,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <hr class="docutils" />
 <section id="part-iii-user-guide">
 <h3>Part III: User Guide<a class="headerlink" href="#part-iii-user-guide" title="Link to this heading"></a></h3>
-<p><em>Chapters 7–16: Mastering every feature.</em></p>
-<p>With the fundamentals in place, this section provides comprehensive how-to guides for every major feature of py3plex. You’ll learn how to create and manipulate multilayer networks, compute network statistics and centrality measures, detect communities across layers, perform random walks for embeddings, handle various input/output formats, create publication-ready visualizations, use the SQL-like DSL for intuitive queries, use the dplyr-style chainable API for data transformations, and combine these techniques into complete analysis workflows. Each chapter builds on the previous ones, creating a progressive learning path.</p>
+<p>Comprehensive how-to guides for every major feature.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -789,7 +425,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <hr class="docutils" />
 <section id="part-iv-environments-deployment">
 <h3>Part IV: Environments &amp; Deployment<a class="headerlink" href="#part-iv-environments-deployment" title="Link to this heading"></a></h3>
-<p>Moving from development to production requires careful consideration of deployment strategies and performance optimization. This section covers how to use py3plex via command-line interfaces and Docker containers for reproducible analyses, as well as techniques for scaling to large networks and optimizing performance for demanding workloads.</p>
+<p>CLI, Docker, and performance optimization for production use.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
 <ul>
@@ -839,7 +475,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <hr class="docutils" />
 <section id="part-v-py3plex-gui">
 <h3>Part V: Py3plex GUI<a class="headerlink" href="#part-v-py3plex-gui" title="Link to this heading"></a></h3>
-<p>For users who prefer a graphical interface, py3plex provides a web-based GUI for interactive network exploration and analysis. This section covers everything from basic usage to deployment, API integration, and testing. The GUI makes py3plex accessible to users who may not be comfortable with Python scripting while still providing access to the library’s powerful analytical capabilities.</p>
+<p>Web-based graphical interface for interactive network exploration.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul>
@@ -931,7 +567,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <hr class="docutils" />
 <section id="part-vi-developer-contributor-docs">
 <h3>Part VI: Developer &amp; Contributor Docs<a class="headerlink" href="#part-vi-developer-contributor-docs" title="Link to this heading"></a></h3>
-<p>If you’re interested in contributing to py3plex or understanding its internal architecture for extension purposes, this section provides the necessary guidance. We cover development environment setup, code architecture and organization, repository layout, and contribution guidelines. Open-source contributions are welcomed and appreciated.</p>
+<p>Development setup, architecture, and contribution guidelines.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
 <ul>
@@ -1013,7 +649,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <hr class="docutils" />
 <section id="part-vii-examples">
 <h3>Part VII: Examples<a class="headerlink" href="#part-vii-examples" title="Link to this heading"></a></h3>
-<p>Learning by example is often the most effective approach. This section provides a curated collection of working code examples that demonstrate py3plex’s capabilities across various use cases. From basic network creation to advanced analysis workflows, these examples serve as templates for your own projects.</p>
+<p>Working code examples for various use cases.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
@@ -1025,7 +661,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <hr class="docutils" />
 <section id="part-viii-reference-citation">
 <h3>Part VIII: Reference &amp; Citation<a class="headerlink" href="#part-viii-reference-citation" title="Link to this heading"></a></h3>
-<p>This final section provides comprehensive reference materials including the complete algorithm reference, API documentation, and citation information. If you use py3plex in your research, please cite the original publication to support continued development.</p>
+<p>API documentation and citation information.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
 <ul>
@@ -1103,29 +739,11 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </div>
 </section>
 </section>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
-<p>The best way to learn py3plex is through examples.</p>
-<p>All examples are available in the <a class="reference external" href="https://github.com/SkBlaz/Py3Plex/tree/master/examples">examples/ directory</a>.</p>
-<p>Key examples:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">tutorial_10min.py</span></code> - Executable version of the 10-minute tutorial</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_queries.py</span></code> - SQL-like DSL for network queries</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_advanced.py</span></code> - Advanced DSL queries and analysis</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_random_walks.py</span></code> - Random walk primitives (Node2Vec, DeepWalk)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_visualization.py</span></code> - Network visualization</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_community_detection.py</span></code> - Community detection with Louvain and Infomap</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_network_decomposition.py</span></code> - Meta-path feature extraction</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_multilayer_statistics.py</span></code> - Computing multilayer metrics</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_n2v_embedding.py</span></code> - Node2Vec embeddings</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_label_propagation.py</span></code> - Semi-supervised learning</p></li>
-</ul>
-</section>
 <section id="citation">
 <h2>Citation<a class="headerlink" href="#citation" title="Link to this heading"></a></h2>
 <p>If you use py3plex in your research, please cite:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">Skrlj2019</span><span class="p">,</span>
-<span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Škrlj, Blaž and Kralj, Jan and Lavrač, Nada}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Skrlj, Blaz and Kralj, Jan and Lavrac, Nada}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{Py3plex toolkit for visualization and analysis of multilayer networks}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">journal</span><span class="p">=</span><span class="s">{Applied Network Science}</span><span class="p">,</span>
 <span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2019}</span><span class="p">,</span>
@@ -1151,7 +769,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="getting_started/part_intro.html" class="btn btn-neutral float-right" title="Getting Started: Your Journey Begins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="concepts/part_intro.html" class="btn btn-neutral float-right" title="Concepts &amp; Architecture: Understanding the Foundations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
