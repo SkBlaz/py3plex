@@ -25,6 +25,23 @@ Welcome to py3plex. This documentation is organized as a progressive learning jo
 
 py3plex enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.
 
+Getting Started
+===============
+
+New to py3plex? Start here! Begin with the 5-minute quickstart for a hands-on introduction, then continue to the 10-minute tutorial for a comprehensive walkthrough.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Getting Started
+
+   getting_started/part_intro
+   getting_started/quickstart_5min
+   getting_started/tutorial_10min
+   getting_started/installation
+   getting_started/common_issues
+
+----
+
 Welcome to py3plex
 ==================
 
@@ -393,25 +410,6 @@ This documentation is organized as a comprehensive guide that takes you from beg
 
 Documentation Contents
 ======================
-
-Part I: Getting Started
------------------------
-
-*Chapters 1–2: From zero to productive in 15 minutes.*
-
-Whether you're new to py3plex or multilayer network analysis, this section provides everything you need to get up and running quickly. We begin with a 5-minute quickstart that demonstrates the core concepts through hands-on examples, then expand into a comprehensive 10-minute tutorial covering the most common workflows. The installation guide ensures you have all dependencies configured correctly, while the troubleshooting section addresses common issues you might encounter.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Getting Started
-
-   getting_started/part_intro
-   getting_started/quickstart_5min
-   getting_started/tutorial_10min
-   getting_started/installation
-   getting_started/common_issues
-
-----
 
 Part II: Concepts & Architecture
 --------------------------------
