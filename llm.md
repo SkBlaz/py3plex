@@ -4,7 +4,9 @@
 
 ## Project Overview
 
-py3plex is a Python library for analyzing and visualizing multilayer and multiplex networks. It provides:
+py3plex is a Python library (version 0.96) for analyzing and visualizing multilayer and multiplex networks. It provides:
+
+**Core Features:**
 - Native support for multilayer network structures
 - SQL-like DSL for intuitive network queries
 - Dplyr-style chainable graph operations API (filter, select, mutate, arrange, group_by, summarise)
@@ -15,11 +17,22 @@ py3plex is a Python library for analyzing and visualizing multilayer and multipl
 - Community detection and centrality measures
 - Integration with NetworkX
 
+**Additional Features:**
+- **CLI Tool:** Full-featured command-line interface (`py3plex --help`)
+- **Built-in Datasets:** Similar to scikit-learn (`load_aarhus_cs()`, `make_random_multilayer()`)
+- **Plugin System:** Extensible architecture for custom algorithms
+- **Config-Driven Workflows:** YAML/JSON workflow definitions
+- **R Interoperability:** Use py3plex from R via reticulate
+- **Performance Profiling:** Built-in timing and benchmarking utilities
+- **File Linting:** Validate graph data files before loading
+- **Multiple I/O Formats:** EdgeList, GraphML, GML, JSON, CSV, Apache Arrow
+
 **Key Ergonomics Features:**
 - **DSL Queries:** `net.execute_query('SELECT nodes WHERE degree > 5')`
 - **Dplyr Pipes:** `nodes(net).filter(lambda n: n["degree"] > 5).mutate(...).to_pandas()`
 - **Method Chaining:** `net.add_nodes([...]).add_edges([...])`
 - **Pipelines:** `Pipeline([("load", LoadStep(...)), ("stats", ComputeStats())])`
+- **CLI:** `py3plex create --nodes 100 --layers 3 --output network.edgelist`
 
 **Repository:** https://github.com/SkBlaz/py3plex  
 **Documentation:** https://skblaz.github.io/py3plex/
@@ -1068,13 +1081,468 @@ result = net.execute_query('MATCH (a:layer1)-[r]->(b:layer1) RETURN a, b')
 
 ---
 
+## Command-Line Interface (CLI)
+
+py3plex provides a comprehensive CLI tool for multilayer network analysis. Run `py3plex --help` to see all available commands.
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `help` | Show detailed help information |
+| `check` | Lint and validate graph data files |
+| `create` | Create a new multilayer network |
+| `load` | Load and inspect a multilayer network |
+| `community` | Detect communities in the network |
+| `centrality` | Compute node centrality measures |
+| `stats` | Compute multilayer network statistics |
+| `visualize` | Visualize the multilayer network |
+| `aggregate` | Aggregate multilayer network into single layer |
+| `convert` | Convert network between different formats |
+| `selftest` | Run self-test to verify installation |
+| `quickstart` | Interactive demo with example graph |
+| `run-config` | Run workflow from YAML/JSON configuration |
+
+### CLI Examples
+
+```bash
+# Quick start - interactive demo
+py3plex quickstart
+
+# Create a random multilayer network
+py3plex create --nodes 100 --layers 3 --type random --probability 0.1 --output network.edgelist
+
+# Load and inspect network
+py3plex load network.edgelist --info --stats
+
+# Detect communities
+py3plex community network.edgelist --algorithm louvain --output communities.json
+
+# Compute centrality measures
+py3plex centrality network.edgelist --measure betweenness --top 20
+
+# Visualize the network
+py3plex visualize network.edgelist --output network.png --layout multilayer
+
+# Convert between formats
+py3plex convert network.edgelist --output network.graphml
+
+# Validate a data file
+py3plex check network.csv --strict
+```
+
+---
+
+## Built-in Datasets
+
+py3plex provides built-in datasets similar to scikit-learn, making it easy to get started with examples and testing.
+
+### Available Functions
+
+```python
+from py3plex.datasets import (
+    # Bundled datasets
+    load_aarhus_cs,           # Aarhus CS department social network (61 nodes, 5 layers)
+    load_synthetic_multilayer, # Synthetic multilayer network (50 nodes, 3 layers)
+    
+    # Synthetic generators
+    make_random_multilayer,   # Random multilayer Erdős-Rényi
+    make_random_multiplex,    # Random multiplex Erdős-Rényi
+    make_clique_multiplex,    # Multiplex with clique structure
+    make_social_network,      # Synthetic social network
+    
+    # Utilities
+    list_datasets,            # List all available datasets
+    get_data_dir,             # Get path to data directory
+)
+```
+
+### Example Usage
+
+```python
+from py3plex.datasets import load_aarhus_cs, make_random_multilayer, list_datasets
+
+# List available datasets
+for name, desc in list_datasets():
+    print(f"{name}: {desc}")
+
+# Load bundled dataset
+network = load_aarhus_cs()
+print(f"Nodes: {len(list(network.get_nodes()))}")
+print(f"Layers: {network.get_layers()}")
+
+# Generate synthetic network
+net = make_random_multilayer(n_nodes=100, n_layers=3, p=0.1, random_state=42)
+```
+
+**Output:**
+```
+aarhus_cs: Social network of Aarhus CS department (61 nodes, 5 layers)
+synthetic_multilayer: Synthetic multilayer network (50 nodes, 3 layers)
+Nodes: 305
+Layers: ['coauthor', 'facebook', 'leisure', 'lunch', 'work']
+```
+
+---
+
+## Plugin System
+
+py3plex supports a plugin architecture for extending functionality with custom algorithms.
+
+### Plugin Types
+
+```python
+from py3plex.plugins import (
+    BasePlugin,        # Abstract base for all plugins
+    CentralityPlugin,  # For custom centrality measures
+    CommunityPlugin,   # For custom community detection
+    LayoutPlugin,      # For custom layout algorithms
+    MetricPlugin,      # For custom network metrics
+    PluginRegistry,    # Registry for managing plugins
+    discover_plugins,  # Auto-discover installed plugins
+)
+```
+
+### Creating a Custom Plugin
+
+```python
+from py3plex.plugins import CentralityPlugin
+
+class MyCustomCentrality(CentralityPlugin):
+    @property
+    def name(self) -> str:
+        return "my_custom_centrality"
+    
+    @property
+    def description(self) -> str:
+        return "A custom centrality measure"
+    
+    def compute(self, network, **kwargs):
+        # Implement your centrality algorithm
+        centrality = {}
+        for node in network.get_nodes():
+            centrality[node] = network.core_network.degree(node)
+        return centrality
+
+# Register and use
+from py3plex.plugins import PluginRegistry
+registry = PluginRegistry()
+registry.register(MyCustomCentrality())
+
+# Use the plugin
+plugin = registry.get("my_custom_centrality")
+result = plugin.compute(network)
+```
+
+---
+
+## I/O API
+
+py3plex provides a flexible I/O system with format detection and a registry for custom formats.
+
+### Supported Formats
+
+| Format | Extension | Read | Write |
+|--------|-----------|------|-------|
+| EdgeList | `.edgelist`, `.txt` | ✓ | ✓ |
+| Multi-EdgeList | `.multiedgelist` | ✓ | ✓ |
+| GraphML | `.graphml` | ✓ | ✓ |
+| GML | `.gml` | ✓ | ✓ |
+| JSON | `.json` | ✓ | ✓ |
+| CSV | `.csv` | ✓ | ✓ |
+| Apache Arrow | `.arrow`, `.parquet` | ✓ | ✓ |
+
+### I/O Functions
+
+```python
+from py3plex.io.api import (
+    register_reader,    # Register custom reader
+    register_writer,    # Register custom writer
+)
+from py3plex.io.schema import MultiLayerGraph  # Schema for graph data
+```
+
+### Loading and Saving Networks
+
+```python
+from py3plex.core import multinet
+
+# Load from file
+network = multinet.multi_layer_network().load_network(
+    "network.edgelist",
+    input_type="multiedgelist",
+    directed=False
+)
+
+# Save to file (via NetworkX)
+import networkx as nx
+nx.write_graphml(network.core_network, "network.graphml")
+```
+
+---
+
+## Profiling Utilities
+
+py3plex includes built-in performance profiling tools for optimization and benchmarking.
+
+### Available Functions
+
+```python
+from py3plex.profiling import (
+    profile_performance,  # Decorator for timing functions
+    timed_section,        # Context manager for timing code blocks
+    benchmark,            # Decorator for benchmarking
+    get_monitor,          # Get global performance monitor
+)
+```
+
+### Example Usage
+
+```python
+from py3plex.profiling import profile_performance, timed_section, get_monitor
+
+@profile_performance
+def compute_centrality(network):
+    # ... computation
+    pass
+
+# Time a specific code block
+with timed_section("community_detection"):
+    communities = detect_communities(network)
+
+# Get performance report
+monitor = get_monitor()
+print(monitor.get_report())
+```
+
+**Output:**
+```
+Performance Report
+================================================================================
+Function                                   Calls   Total(s)     Avg(ms)     Min(ms)     Max(ms)
+--------------------------------------------------------------------------------
+compute_centrality                            10      1.234      123.4       100.2       150.3
+```
+
+---
+
+## Exception Hierarchy
+
+py3plex provides domain-specific exceptions for better error handling:
+
+```python
+from py3plex.exceptions import (
+    # Base exception
+    Py3plexException,           # Base for all py3plex exceptions
+    
+    # Network construction
+    NetworkConstructionError,   # Network construction failures
+    InvalidLayerError,          # Invalid layer specification
+    InvalidNodeError,           # Invalid node specification
+    InvalidEdgeError,           # Invalid edge specification
+    
+    # Parsing and I/O
+    ParsingError,               # Input data parsing failures
+    Py3plexIOError,             # File I/O failures
+    Py3plexFormatError,         # Invalid format errors
+    
+    # Algorithm errors
+    AlgorithmError,             # Algorithm execution failures
+    CommunityDetectionError,    # Community detection failures
+    CentralityComputationError, # Centrality computation failures
+    DecompositionError,         # Network decomposition failures
+    EmbeddingError,             # Embedding generation failures
+    
+    # Other errors
+    VisualizationError,         # Visualization failures
+    ConversionError,            # Format conversion failures
+    IncompatibleNetworkError,   # Incompatible network format
+    Py3plexMatrixError,         # Matrix operation failures
+    Py3plexLayoutError,         # Layout computation failures
+    ExternalToolError,          # External tool execution failures
+)
+```
+
+### Example Usage
+
+```python
+from py3plex.exceptions import ParsingError, InvalidLayerError
+
+try:
+    network.load_network("invalid_file.csv", input_type="csv")
+except ParsingError as e:
+    print(f"Failed to parse file: {e}")
+
+try:
+    result = execute_query(network, 'SELECT nodes WHERE layer="nonexistent"')
+except InvalidLayerError as e:
+    print(f"Layer not found: {e}")
+```
+
+---
+
+## Configuration
+
+py3plex provides centralized configuration for visualization and layout settings:
+
+```python
+from py3plex import config
+
+# Visualization settings
+config.DEFAULT_NODE_SIZE = 15
+config.DEFAULT_EDGE_ALPHA = 0.5
+config.DEFAULT_LAYER_ALPHA = 0.15
+
+# Color palettes
+config.COLOR_PALETTES  # Dict of available palettes: 'rainbow', 'pastel', 'vibrant', 'colorblind_safe', 'wong'
+
+# Multilayer geometry
+config.MULTILAYER_LAYER_OFFSET = 1.5  # Spacing between layers
+config.MULTILAYER_CIRCLE_SIZE = 1.05  # Layer background radius
+```
+
+---
+
+## Linter and Validation
+
+py3plex includes tools for validating graph data files before loading.
+
+### File Linter
+
+```python
+from py3plex.linter import GraphFileLinter, LintIssue
+
+# Lint a data file
+linter = GraphFileLinter("network.csv")
+issues = linter.lint()
+
+for issue in issues:
+    print(issue)
+    # [WARNING] Line 5: Duplicate edge detected
+    #   → Suggestion: Remove duplicate edges or use weighted edges
+```
+
+### Input Validation
+
+```python
+from py3plex.validation import (
+    validate_file_exists,
+    validate_csv_columns,
+)
+
+# Validate file exists
+validate_file_exists("network.csv")
+
+# Validate CSV has required columns
+validate_csv_columns(
+    "network.csv",
+    required_columns=["source", "target", "source_type", "target_type"],
+    optional_columns=["weight"]
+)
+```
+
+---
+
+## R Interoperability
+
+py3plex can be used from R via the reticulate package:
+
+```r
+library(reticulate)
+library(igraph)
+
+py3plex <- import("py3plex")
+r_interop <- import("py3plex.wrappers.r_interop")
+
+# Create network
+net <- py3plex$multi_layer_network()
+net$add_nodes(list(
+  list(source='Alice', type='social'),
+  list(source='Bob', type='social')
+))
+
+# Convert to igraph for R analysis
+g <- r_interop$to_igraph_for_r(net, mode='union')
+
+# Use R igraph functions
+deg <- degree(g)
+between <- betweenness(g)
+```
+
+### R Interop Functions
+
+| Function | Description |
+|----------|-------------|
+| `to_igraph_for_r()` | Convert py3plex network to igraph |
+| `export_edgelist()` | Export edges as R data frame structure |
+| `export_nodelist()` | Export nodes as R data frame structure |
+| `export_adjacency()` | Export adjacency matrix |
+| `get_network_stats()` | Get network statistics |
+| `get_layer_names()` | Get layer names |
+
+---
+
+## Version Information
+
+```python
+import py3plex
+
+print(py3plex.__version__)      # Current version: "0.96"
+print(py3plex.__api_version__)  # API version: "0.96"
+```
+
+---
+
 ## File Locations
 
-- **DSL Module:** `py3plex/dsl.py`
-- **Graph Ops Module:** `py3plex/graph_ops.py`
-- **Pipeline Module:** `py3plex/pipeline.py`
-- **Workflows Module:** `py3plex/workflows.py`
-- **DSL Documentation:** `docfiles/user_guide/dsl.rst`
-- **DSL Examples:** `examples/network_analysis/example_dsl_queries.py`
-- **Advanced Examples:** `examples/network_analysis/example_dsl_advanced.py`
-- **Tests:** `tests/test_dsl.py`, `tests/test_graph_ops.py`, `tests/test_pipeline.py`, `tests/test_ergonomics.py`
+- **Core Modules:**
+  - `py3plex/core/multinet.py` - Main multi_layer_network class
+  - `py3plex/dsl.py` - SQL-like DSL implementation
+  - `py3plex/graph_ops.py` - Dplyr-style chainable API
+  - `py3plex/pipeline.py` - Sklearn-style pipeline
+  - `py3plex/workflows.py` - Config-driven workflows
+
+- **Utilities:**
+  - `py3plex/cli.py` - Command-line interface
+  - `py3plex/config.py` - Centralized configuration
+  - `py3plex/exceptions.py` - Exception hierarchy
+  - `py3plex/validation.py` - Input validation
+  - `py3plex/linter.py` - File linting
+  - `py3plex/profiling.py` - Performance profiling
+  - `py3plex/logging_config.py` - Logging configuration
+
+- **I/O and Data:**
+  - `py3plex/io/` - I/O API and format handlers
+  - `py3plex/datasets/` - Built-in datasets and generators
+
+- **Extensibility:**
+  - `py3plex/plugins/` - Plugin system
+
+- **Interoperability:**
+  - `py3plex/wrappers/r_interop.py` - R interoperability
+
+- **Algorithms:**
+  - `py3plex/algorithms/` - Network algorithms (community detection, centrality, etc.)
+
+- **Visualization:**
+  - `py3plex/visualization/` - Visualization tools and layouts
+
+- **Documentation:**
+  - `docfiles/user_guide/dsl.rst` - DSL documentation
+  - `docfiles/r_interop.rst` - R interoperability guide
+
+- **Examples:**
+  - `examples/getting_started/` - Getting started tutorials
+  - `examples/network_analysis/` - Network analysis examples
+  - `examples/pipelines/` - Pipeline examples
+  - `examples/workflows/` - Workflow examples
+  - `examples/visualization/` - Visualization examples
+
+- **Tests:**
+  - `tests/test_dsl.py` - DSL tests
+  - `tests/test_graph_ops.py` - Graph operations tests
+  - `tests/test_pipeline.py` - Pipeline tests
+  - `tests/test_ergonomics.py` - Ergonomics tests
+  - `tests/test_cli.py` - CLI tests
+  - `tests/test_plugin_system.py` - Plugin system tests
+  - `tests/test_workflows.py` - Workflow tests
