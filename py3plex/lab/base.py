@@ -170,9 +170,9 @@ class Report:
         Note:
             Pandas is imported lazily inside this method.
         """
-        import pandas
+        import pandas as pd
 
-        return pandas.DataFrame(self._records)
+        return pd.DataFrame(self._records)
 
     def to_markdown(self, path: str) -> None:
         """
@@ -205,12 +205,10 @@ class Report:
         lines.append("")
 
         if self._records:
-            # Get all unique keys from records
-            all_keys: List[str] = []
-            for record in self._records:
-                for key in record.keys():
-                    if key not in all_keys:
-                        all_keys.append(key)
+            # Get all unique keys from records (preserve order, O(n) complexity)
+            all_keys: List[str] = list(
+                dict.fromkeys(key for record in self._records for key in record.keys())
+            )
 
             # Table header
             lines.append("| " + " | ".join(all_keys) + " |")
@@ -225,5 +223,5 @@ class Report:
 
         lines.append("")
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
