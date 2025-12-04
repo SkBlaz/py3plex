@@ -1069,3 +1069,124 @@ def test_not_layer_is_complement(layer_idx):
     
     # Sum of layer + not layer should equal all
     assert result_layer['count'] + result_not_layer['count'] == result_all['count']
+
+
+# ============================================================================
+# Property Tests: DSL and graph_ops Integration  
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_dsl_and_graph_ops_equivalent_layer_filter(layer_idx):
+    """Test that DSL layer filter and graph_ops layer filter produce equivalent results."""
+    from py3plex.graph_ops import nodes as graph_ops_nodes
+    
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    # DSL query
+    dsl_result = execute_query(network, f'SELECT nodes WHERE layer="{layer}"')
+    
+    # graph_ops filter
+    graph_ops_result = graph_ops_nodes(network, layers=[layer])
+    
+    # Both should return same count
+    assert dsl_result['count'] == len(graph_ops_result)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    threshold=st.integers(min_value=0, max_value=5)
+)
+def test_dsl_and_graph_ops_equivalent_degree_filter(threshold):
+    """Test that DSL degree filter and graph_ops filter produce equivalent results."""
+    from py3plex.graph_ops import nodes as graph_ops_nodes
+    
+    network = create_test_network(num_nodes=5, num_layers=2)
+    
+    # DSL query
+    dsl_result = execute_query(network, f'SELECT nodes WHERE degree > {threshold}')
+    
+    # graph_ops filter
+    graph_ops_result = graph_ops_nodes(network).filter(lambda n: n['degree'] > threshold)
+    
+    # Both should return same count
+    assert dsl_result['count'] == len(graph_ops_result)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1),
+    threshold=st.integers(min_value=0, max_value=5)
+)
+def test_dsl_and_graph_ops_combined_filter(layer_idx, threshold):
+    """Test DSL and graph_ops with combined layer and degree filters."""
+    from py3plex.graph_ops import nodes as graph_ops_nodes
+    
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    # DSL query with AND
+    dsl_result = execute_query(
+        network, 
+        f'SELECT nodes WHERE layer="{layer}" AND degree > {threshold}'
+    )
+    
+    # graph_ops chained filter
+    graph_ops_result = (
+        graph_ops_nodes(network, layers=[layer])
+        .filter(lambda n: n['degree'] > threshold)
+    )
+    
+    # Both should return same count
+    assert dsl_result['count'] == len(graph_ops_result)
+
+
+@pytest.mark.property
+def test_execute_query_method_on_network():
+    """Test that multi_layer_network has execute_query method."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    
+    # Use the method on the network object
+    result = network.execute_query('SELECT nodes')
+    
+    assert result['count'] == 8  # 4 nodes * 2 layers
+    assert result['target'] == 'nodes'
+
+
+# ============================================================================
+# Property Tests: Edge Cases and Error Paths
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    num_nodes=st.integers(min_value=1, max_value=5)
+)
+def test_select_edges_on_network(num_nodes):
+    """Test SELECT edges query."""
+    network = create_test_network(num_nodes=num_nodes, num_layers=1)
+    
+    result = execute_query(network, 'SELECT edges')
+    
+    assert result['target'] == 'edges'
+    assert 'edges' in result
+    assert result['count'] >= 0
+
+
+@pytest.mark.property
+def test_format_result_with_empty_nodes():
+    """Test format_result with zero results."""
+    network = create_test_network(num_nodes=3, num_layers=1)
+    
+    # Query that returns no results
+    result = execute_query(network, 'SELECT nodes WHERE degree > 1000')
+    formatted = format_result(result)
+    
+    assert 'Count: 0' in formatted
+    assert isinstance(formatted, str)

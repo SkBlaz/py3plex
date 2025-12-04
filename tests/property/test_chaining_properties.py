@@ -718,5 +718,116 @@ def test_select_same_fields_is_idempotent():
         assert set(item1.keys()) == set(item2.keys())
 
 
+# ============================================================================
+# Property Tests: to_subgraph and EdgeFrame Integration
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_to_subgraph_preserves_layer(layer_idx):
+    """Test that to_subgraph preserves layer information."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    subgraph = nodes(network, layers=[layer]).to_subgraph()
+    
+    # All nodes in subgraph should be from the specified layer
+    for node in subgraph.get_nodes():
+        if isinstance(node, tuple):
+            assert node[1] == layer
+
+
+@pytest.mark.property
+def test_to_subgraph_on_filtered_nodes():
+    """Test to_subgraph on filtered nodes."""
+    network = create_test_network(num_nodes=5, num_layers=1)
+    
+    subgraph = (
+        nodes(network)
+        .filter(lambda n: n['degree'] >= 1)
+        .to_subgraph()
+    )
+    
+    # Subgraph should have nodes
+    assert hasattr(subgraph, 'core_network')
+
+
+@pytest.mark.property
+def test_edge_filter_expr():
+    """Test EdgeFrame filter_expr method."""
+    network = create_test_network(num_nodes=4, num_layers=2, num_edges_per_layer=3)
+    
+    result = edges(network).filter_expr("weight >= 1")
+    
+    for item in result:
+        assert item.get('weight', 0) >= 1
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    n=st.integers(min_value=1, max_value=5)
+)
+def test_edge_select_fields(n):
+    """Test EdgeFrame select with various fields."""
+    network = create_test_network(num_nodes=5, num_layers=1, num_edges_per_layer=4)
+    
+    result = edges(network).select('source', 'target').head(n)
+    
+    for item in result:
+        assert 'source' in item
+        assert 'target' in item
+
+
+@pytest.mark.property
+def test_edge_summarise_count():
+    """Test EdgeFrame group_by and summarise."""
+    network = create_test_network(num_nodes=4, num_layers=2, num_edges_per_layer=3)
+    
+    result = (
+        edges(network)
+        .group_by('source_layer')
+        .summarise(n=('source', len))
+    )
+    
+    # Each group should have the count
+    for item in result:
+        assert 'source_layer' in item
+        assert 'n' in item
+
+
+@pytest.mark.property
+def test_repr_formats():
+    """Test __repr__ methods return strings."""
+    network = create_test_network()
+    
+    node_frame = nodes(network)
+    edge_frame = edges(network)
+    
+    assert isinstance(repr(node_frame), str)
+    assert isinstance(repr(edge_frame), str)
+    assert 'NodeFrame' in repr(node_frame)
+    assert 'EdgeFrame' in repr(edge_frame)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    num_layers=st.integers(min_value=1, max_value=3)
+)
+def test_group_by_multiple_fields(num_layers):
+    """Test group_by with multiple fields."""
+    network = create_test_network(num_nodes=4, num_layers=num_layers)
+    
+    # Group by layer only
+    result = nodes(network).group_by('layer').summarise(n=('id', len))
+    
+    # Should have one row per layer
+    assert len(result) == num_layers
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
