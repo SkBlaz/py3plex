@@ -134,7 +134,7 @@ latex_elements = {
 % Use Latin Modern fonts for better rendering
 \usepackage{lmodern}
 
-% Paragraph spacing
+% Improved paragraph spacing for readability
 \setlength{\parskip}{0.5em}
 \setlength{\parindent}{0pt}
 ''',
