@@ -19,7 +19,11 @@ Py3plex: A Practical Guide to Multilayer Network Analysis
 
 ----
 
-py3plex is a lightweight Python library for analyzing and visualizing **multilayer and multiplex networks**. It's designed for networks where the *type* of connection matters - where a friendship is different from a professional contact, where an experimental protein interaction is different from a computationally predicted one.
+Welcome to py3plex. This documentation is organized as a progressive learning journey—from your first five-minute example through conceptual foundations to advanced production workflows. Whether you're a researcher exploring social network dynamics, a bioinformatician analyzing protein interactions across multiple evidence types, or a data scientist building features for machine learning, this guide will show you how to work effectively with multilayer network structures.
+
+py3plex enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.
+
+Getting Started
 
 **Key Features:**
 
@@ -65,23 +69,6 @@ For a complete introduction, see :doc:`getting_started/quickstart_5min` (5 minut
 
 Documentation Contents
 ======================
-
-Part I: Getting Started
------------------------
-
-New to py3plex? Start here with hands-on tutorials and installation guides.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Getting Started
-
-   getting_started/part_intro
-   getting_started/quickstart_5min
-   getting_started/tutorial_10min
-   getting_started/installation
-   getting_started/common_issues
-
-----
 
 Part II: Concepts & Architecture
 --------------------------------
