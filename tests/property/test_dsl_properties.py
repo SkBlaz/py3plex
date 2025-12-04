@@ -28,6 +28,14 @@ except ImportError:
     DSL_AVAILABLE = False
     pytest.skip("DSL module not available", allow_module_level=True)
 
+# Import graph_ops for integration tests
+try:
+    from py3plex.graph_ops import nodes as graph_ops_nodes
+    GRAPH_OPS_AVAILABLE = True
+except ImportError:
+    graph_ops_nodes = None
+    GRAPH_OPS_AVAILABLE = False
+
 
 # ============================================================================
 # Property Tests: Query Tokenization
@@ -773,3 +781,417 @@ def test_empty_query_raises_error():
 
     with pytest.raises(DSLSyntaxError):
         execute_query(network, '')
+
+
+# ============================================================================
+# Property Tests: DSL Chaining - IN LAYER / IN LAYERS Clauses
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=30)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_in_layer_clause_filters_correctly(layer_idx):
+    """Test that IN LAYER clause filters to only specified layer."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result = execute_query(network, f"SELECT * FROM nodes IN LAYER '{layer}'")
+    
+    # All returned nodes should be from the specified layer
+    for node in result['nodes']:
+        assert node[1] == layer
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=30)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_in_layer_equivalent_to_where_layer(layer_idx):
+    """Test that IN LAYER produces same result as WHERE layer=..."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result_in = execute_query(network, f"SELECT * FROM nodes IN LAYER '{layer}'")
+    result_where = execute_query(network, f'SELECT nodes WHERE layer="{layer}"')
+    
+    # Both should return same number of nodes
+    assert result_in['count'] == result_where['count']
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    num_layers=st.integers(min_value=1, max_value=3)
+)
+def test_in_layers_multiple_layers(num_layers):
+    """Test IN LAYERS with multiple layers."""
+    network = create_test_network(num_nodes=4, num_layers=3)
+    layers = [f'layer{i}' for i in range(num_layers)]
+    layers_str = ', '.join(f"'{l}'" for l in layers)
+    
+    result = execute_query(network, f"SELECT * FROM nodes IN LAYERS ({layers_str})")
+    
+    # All nodes should be from one of the specified layers
+    for node in result['nodes']:
+        assert node[1] in layers
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_in_layer_with_where_clause(layer_idx):
+    """Test IN LAYER combined with WHERE clause."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result = execute_query(network, f"SELECT * FROM nodes IN LAYER '{layer}' WHERE degree >= 0")
+    
+    # All nodes should be from the specified layer
+    for node in result['nodes']:
+        assert node[1] == layer
+
+
+# ============================================================================
+# Property Tests: DSL Chaining - MATCH Queries
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_match_single_node_pattern(layer_idx):
+    """Test MATCH with single node pattern."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result = execute_query(network, f"MATCH (n:{layer}) RETURN n")
+    
+    assert result['type'] == 'match'
+    assert 'bindings' in result
+    
+    # Each binding should have 'n' from the correct layer
+    for binding in result['bindings']:
+        assert 'n' in binding
+        if binding['n']:
+            assert binding['n'][1] == layer
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_match_count_equals_bindings_length(layer_idx):
+    """Test that MATCH count equals bindings length."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result = execute_query(network, f"MATCH (n:{layer}) RETURN n")
+    
+    assert result['count'] == len(result['bindings'])
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_match_with_layer_clause(layer_idx):
+    """Test MATCH with IN LAYER clause."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result = execute_query(network, f"MATCH (n) IN LAYER '{layer}' RETURN n")
+    
+    assert 'layers' in result
+    assert result['layers'] == [layer]
+
+
+@pytest.mark.property
+def test_match_return_star():
+    """Test MATCH with RETURN * syntax."""
+    network = create_test_network(num_nodes=4, num_layers=1)
+    
+    result = execute_query(network, "MATCH (n:layer0) RETURN *")
+    
+    assert result['type'] == 'match'
+    # RETURN * should include 'n' in each binding
+    for binding in result['bindings']:
+        assert 'n' in binding
+
+
+@pytest.mark.property
+def test_match_on_empty_network():
+    """Test MATCH on empty network returns empty bindings."""
+    empty_network = multinet.multi_layer_network(directed=False)
+    
+    result = execute_query(empty_network, "MATCH (n:layer0) RETURN n")
+    
+    assert result['type'] == 'match'
+    assert result['count'] == 0
+    assert result['bindings'] == []
+
+
+# ============================================================================
+# Property Tests: DSL Query Chaining (SELECT with COMPUTE)
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    measure=st.sampled_from(['degree', 'betweenness_centrality', 'closeness_centrality'])
+)
+def test_select_compute_returns_computed(measure):
+    """Test that SELECT with COMPUTE returns computed measures."""
+    network = create_test_network(num_nodes=4, num_layers=1)
+    
+    result = execute_query(network, f"SELECT nodes COMPUTE {measure}")
+    
+    assert 'computed' in result
+    assert measure in result['computed']
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_select_in_layer_with_compute(layer_idx):
+    """Test SELECT with IN LAYER and COMPUTE."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result = execute_query(network, f"SELECT * FROM nodes IN LAYER '{layer}' COMPUTE degree")
+    
+    assert 'computed' in result
+    assert 'degree' in result['computed']
+    
+    # All nodes should be from the specified layer
+    for node in result['nodes']:
+        assert node[1] == layer
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1),
+    threshold=st.integers(min_value=0, max_value=5)
+)
+def test_select_where_in_layer_combined(layer_idx, threshold):
+    """Test SELECT with WHERE and IN LAYER combined."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result = execute_query(
+        network, 
+        f"SELECT * FROM nodes IN LAYER '{layer}' WHERE degree >= {threshold}"
+    )
+    
+    # All nodes should meet both conditions
+    for node in result['nodes']:
+        assert node[1] == layer
+        degree = network.core_network.degree(node)
+        assert degree >= threshold
+
+
+# ============================================================================
+# Property Tests: DSL Idempotence and Equivalence
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_double_layer_filter_is_idempotent(layer_idx):
+    """Test that filtering by same layer twice returns same result."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result_single = execute_query(network, f'SELECT nodes WHERE layer="{layer}"')
+    result_double = execute_query(
+        network, 
+        f'SELECT nodes WHERE layer="{layer}" AND layer="{layer}"'
+    )
+    
+    assert result_single['count'] == result_double['count']
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    threshold=st.integers(min_value=0, max_value=5)
+)
+def test_degree_filter_with_and_self(threshold):
+    """Test that degree > X AND degree > X equals single filter."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    
+    result_single = execute_query(network, f'SELECT nodes WHERE degree > {threshold}')
+    result_double = execute_query(
+        network, 
+        f'SELECT nodes WHERE degree > {threshold} AND degree > {threshold}'
+    )
+    
+    assert result_single['count'] == result_double['count']
+
+
+@pytest.mark.property
+def test_or_layer_expands_result():
+    """Test that OR with layers expands or maintains result."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    
+    result_layer0 = execute_query(network, 'SELECT nodes WHERE layer="layer0"')
+    result_layer1 = execute_query(network, 'SELECT nodes WHERE layer="layer1"')
+    result_or = execute_query(
+        network, 
+        'SELECT nodes WHERE layer="layer0" OR layer="layer1"'
+    )
+    
+    # OR result should be >= each individual result
+    assert result_or['count'] >= result_layer0['count']
+    assert result_or['count'] >= result_layer1['count']
+    
+    # OR result should be at most sum (when no overlap)
+    assert result_or['count'] <= result_layer0['count'] + result_layer1['count']
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_not_layer_is_complement(layer_idx):
+    """Test that NOT layer is complement of layer filter."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    result_layer = execute_query(network, f'SELECT nodes WHERE layer="{layer}"')
+    result_not_layer = execute_query(network, f'SELECT nodes WHERE NOT layer="{layer}"')
+    result_all = execute_query(network, 'SELECT nodes')
+    
+    # Sum of layer + not layer should equal all
+    assert result_layer['count'] + result_not_layer['count'] == result_all['count']
+
+
+# ============================================================================
+# Property Tests: DSL and graph_ops Integration  
+# ============================================================================
+
+@pytest.mark.property
+@pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1)
+)
+def test_dsl_and_graph_ops_equivalent_layer_filter(layer_idx):
+    """Test that DSL layer filter and graph_ops layer filter produce equivalent results."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    # DSL query
+    dsl_result = execute_query(network, f'SELECT nodes WHERE layer="{layer}"')
+    
+    # graph_ops filter
+    graph_ops_result = graph_ops_nodes(network, layers=[layer])
+    
+    # Both should return same count
+    assert dsl_result['count'] == len(graph_ops_result)
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
+@settings(deadline=None, max_examples=20)
+@given(
+    threshold=st.integers(min_value=0, max_value=5)
+)
+def test_dsl_and_graph_ops_equivalent_degree_filter(threshold):
+    """Test that DSL degree filter and graph_ops filter produce equivalent results."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    
+    # DSL query
+    dsl_result = execute_query(network, f'SELECT nodes WHERE degree > {threshold}')
+    
+    # graph_ops filter
+    graph_ops_result = graph_ops_nodes(network).filter(lambda n: n['degree'] > threshold)
+    
+    # Both should return same count
+    assert dsl_result['count'] == len(graph_ops_result)
+
+
+@pytest.mark.property
+@pytest.mark.skipif(not GRAPH_OPS_AVAILABLE, reason="graph_ops not available")
+@settings(deadline=None, max_examples=20)
+@given(
+    layer_idx=st.integers(min_value=0, max_value=1),
+    threshold=st.integers(min_value=0, max_value=5)
+)
+def test_dsl_and_graph_ops_combined_filter(layer_idx, threshold):
+    """Test DSL and graph_ops with combined layer and degree filters."""
+    network = create_test_network(num_nodes=5, num_layers=2)
+    layer = f'layer{layer_idx}'
+    
+    # DSL query with AND
+    dsl_result = execute_query(
+        network, 
+        f'SELECT nodes WHERE layer="{layer}" AND degree > {threshold}'
+    )
+    
+    # graph_ops chained filter
+    graph_ops_result = (
+        graph_ops_nodes(network, layers=[layer])
+        .filter(lambda n: n['degree'] > threshold)
+    )
+    
+    # Both should return same count
+    assert dsl_result['count'] == len(graph_ops_result)
+
+
+@pytest.mark.property
+def test_execute_query_method_on_network():
+    """Test that multi_layer_network has execute_query method."""
+    network = create_test_network(num_nodes=4, num_layers=2)
+    
+    # Use the method on the network object
+    result = network.execute_query('SELECT nodes')
+    
+    assert result['count'] == 8  # 4 nodes * 2 layers
+    assert result['target'] == 'nodes'
+
+
+# ============================================================================
+# Property Tests: Edge Cases and Error Paths
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    num_nodes=st.integers(min_value=1, max_value=5)
+)
+def test_select_edges_on_network(num_nodes):
+    """Test SELECT edges query."""
+    network = create_test_network(num_nodes=num_nodes, num_layers=1)
+    
+    result = execute_query(network, 'SELECT edges')
+    
+    assert result['target'] == 'edges'
+    assert 'edges' in result
+    assert result['count'] >= 0
+
+
+@pytest.mark.property
+def test_format_result_with_empty_nodes():
+    """Test format_result with zero results."""
+    network = create_test_network(num_nodes=3, num_layers=1)
+    
+    # Query that returns no results
+    result = execute_query(network, 'SELECT nodes WHERE degree > 1000')
+    formatted = format_result(result)
+    
+    assert 'Count: 0' in formatted
+    assert isinstance(formatted, str)
