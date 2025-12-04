@@ -7,6 +7,7 @@ Tests cover:
 - Centrality computation
 - Error handling
 - Convenience functions
+- Community detection via DSL
 """
 
 import pytest
@@ -32,6 +33,14 @@ from py3plex.dsl import (
     _parse_layer_clause,
     _parse_return_clause,
     _tokenize_match_pattern,
+    # Community detection functions
+    detect_communities,
+    get_community_partition,
+    get_biggest_community,
+    get_smallest_community,
+    get_num_communities,
+    get_community_sizes,
+    get_community_size_distribution,
 )
 
 
@@ -1207,16 +1216,6 @@ class TestCommunityConvenienceFunctions:
     @pytest.fixture
     def community_network(self):
         """Create a network with clear community structure."""
-        from py3plex.dsl import (
-            detect_communities,
-            get_community_partition,
-            get_biggest_community,
-            get_smallest_community,
-            get_num_communities,
-            get_community_sizes,
-            get_community_size_distribution,
-        )
-        
         network = multinet.multi_layer_network(directed=False)
 
         # Add nodes for two communities of different sizes
@@ -1251,8 +1250,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_detect_communities(self, community_network):
         """Test detect_communities function."""
-        from py3plex.dsl import detect_communities
-        
         result = detect_communities(community_network)
         
         assert 'partition' in result
@@ -1267,8 +1264,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_get_community_partition(self, community_network):
         """Test get_community_partition function."""
-        from py3plex.dsl import get_community_partition
-        
         partition = get_community_partition(community_network)
         
         assert isinstance(partition, dict)
@@ -1277,8 +1272,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_get_biggest_community(self, community_network):
         """Test get_biggest_community function."""
-        from py3plex.dsl import get_biggest_community
-        
         community_id, size, nodes = get_biggest_community(community_network)
         
         assert isinstance(community_id, int)
@@ -1289,8 +1282,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_get_smallest_community(self, community_network):
         """Test get_smallest_community function."""
-        from py3plex.dsl import get_smallest_community
-        
         community_id, size, nodes = get_smallest_community(community_network)
         
         assert isinstance(community_id, int)
@@ -1301,8 +1292,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_get_num_communities(self, community_network):
         """Test get_num_communities function."""
-        from py3plex.dsl import get_num_communities
-        
         num = get_num_communities(community_network)
         
         assert isinstance(num, int)
@@ -1310,8 +1299,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_get_community_sizes(self, community_network):
         """Test get_community_sizes function."""
-        from py3plex.dsl import get_community_sizes
-        
         sizes = get_community_sizes(community_network)
         
         assert isinstance(sizes, dict)
@@ -1320,8 +1307,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_get_community_size_distribution(self, community_network):
         """Test get_community_size_distribution function."""
-        from py3plex.dsl import get_community_size_distribution
-        
         distribution = get_community_size_distribution(community_network)
         
         assert isinstance(distribution, list)
@@ -1332,8 +1317,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_empty_network_communities(self):
         """Test community detection on empty network."""
-        from py3plex.dsl import detect_communities
-        
         empty_network = multinet.multi_layer_network(directed=False)
         result = detect_communities(empty_network)
         
@@ -1343,8 +1326,6 @@ class TestCommunityConvenienceFunctions:
 
     def test_single_node_network(self):
         """Test community detection on single node network."""
-        from py3plex.dsl import detect_communities
-        
         network = multinet.multi_layer_network(directed=False)
         network.add_nodes([{'source': 'A', 'type': 'social'}])
         

@@ -886,10 +886,27 @@ def _compute_communities(G: nx.Graph) -> Dict[Any, int]:
             "Please ensure py3plex is properly installed."
         )
     
-    # Convert to simple Graph for community detection (remove MultiGraph complexity)
-    simple_G = nx.Graph()
-    for edge in G.edges():
-        simple_G.add_edge(edge[0], edge[1])
+    # Convert to simple Graph for community detection
+    # Use nx.Graph constructor when possible, otherwise iterate edges
+    try:
+        if isinstance(G, nx.Graph) and not isinstance(G, nx.MultiGraph):
+            simple_G = G
+        else:
+            # Convert MultiGraph to simple Graph, preserving edge weights
+            simple_G = nx.Graph()
+            for u, v, data in G.edges(data=True):
+                if simple_G.has_edge(u, v):
+                    # If edge already exists, keep the maximum weight
+                    existing_weight = simple_G[u][v].get('weight', 1)
+                    new_weight = data.get('weight', 1)
+                    simple_G[u][v]['weight'] = max(existing_weight, new_weight)
+                else:
+                    simple_G.add_edge(u, v, weight=data.get('weight', 1))
+    except Exception:
+        # Fallback to simple conversion if weight handling fails
+        simple_G = nx.Graph()
+        for edge in G.edges():
+            simple_G.add_edge(edge[0], edge[1])
     
     if len(simple_G.nodes()) == 0:
         return {}
