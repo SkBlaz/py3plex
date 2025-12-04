@@ -17,13 +17,16 @@ Example Usage:
     >>> 
     >>> # Compute centrality for filtered nodes
     >>> result = execute_query(network, 'SELECT nodes WHERE layer="social" COMPUTE betweenness_centrality')
+    >>>
+    >>> # Compute community detection
+    >>> result = execute_query(network, 'SELECT nodes COMPUTE communities')
 
 Supported Operations:
     - SELECT: Choose what to select (nodes, edges)
     - MATCH: Cypher-like pattern matching for graph patterns
     - WHERE: Filter by conditions (layer, degree, centrality, etc.)
     - AND/OR/NOT: Logical operators for combining conditions
-    - COMPUTE: Calculate network measures (degree, centrality, etc.)
+    - COMPUTE: Calculate network measures (degree, centrality, communities, etc.)
     - IN LAYER / IN LAYERS: Layer scoping clauses
     - RETURN: Specify which aliases to return from MATCH queries
     - Comparison operators: >, <, =, >=, <=, !=
@@ -35,15 +38,27 @@ Extended Syntax Examples:
     
     # Cypher-like MATCH pattern
     MATCH (g:Gene)-[r:REGULATES]->(t:Gene) IN LAYER 'reg' WHERE g.degree > 10 RETURN g, t;
+    
+    # Community detection
+    SELECT nodes COMPUTE communities;
 
 See examples/network_analysis/example_dsl_queries.py for more examples.
 """
 
 import re
+from collections import Counter
 import networkx as nx
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from dataclasses import dataclass, field
 from py3plex.logging_config import get_logger
+
+# Import community detection algorithm (Louvain)
+try:
+    from py3plex.algorithms.community_detection.community_louvain import best_partition
+    COMMUNITY_DETECTION_AVAILABLE = True
+except ImportError:
+    COMMUNITY_DETECTION_AVAILABLE = False
+    best_partition = None
 
 logger = get_logger(__name__)
 
@@ -853,12 +868,45 @@ def _evaluate_conditions(node_or_edge: Any, conditions: List[Dict[str, Any]],
     return result
 
 
+def _compute_communities(G: nx.Graph) -> Dict[Any, int]:
+    """Compute community assignments for nodes using the Louvain algorithm.
+    
+    Args:
+        G: NetworkX graph to compute communities for
+        
+    Returns:
+        Dictionary mapping nodes to community IDs
+        
+    Raises:
+        DSLExecutionError: If community detection is not available
+    """
+    if not COMMUNITY_DETECTION_AVAILABLE or best_partition is None:
+        raise DSLExecutionError(
+            "Community detection is not available. "
+            "Please ensure py3plex is properly installed."
+        )
+    
+    # Convert to simple Graph for community detection (remove MultiGraph complexity)
+    simple_G = nx.Graph()
+    for edge in G.edges():
+        simple_G.add_edge(edge[0], edge[1])
+    
+    if len(simple_G.nodes()) == 0:
+        return {}
+    
+    try:
+        partition = best_partition(simple_G)
+        return partition
+    except Exception as e:
+        raise DSLExecutionError(f"Error computing communities: {str(e)}")
+
+
 def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -> Dict[Any, float]:
     """Compute a network measure for nodes.
     
     Args:
         network: Multilayer network object
-        measure: Name of measure to compute (e.g., 'degree', 'betweenness_centrality')
+        measure: Name of measure to compute (e.g., 'degree', 'betweenness_centrality', 'communities')
         nodes: Optional list of nodes to compute for (None = all nodes)
         
     Returns:
@@ -876,6 +924,10 @@ def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -
     if nodes is not None:
         G = G.subgraph(nodes).copy()
     
+    # Handle community detection separately
+    if measure in ('communities', 'community'):
+        return _compute_communities(G)
+    
     # Map measure names to NetworkX functions
     measure_map = {
         'degree': lambda g: dict(g.degree()),
@@ -891,7 +943,7 @@ def _compute_measure(network: Any, measure: str, nodes: Optional[List] = None) -
     }
     
     if measure not in measure_map:
-        raise DSLExecutionError(f"Unknown measure: {measure}. Supported measures: {list(measure_map.keys())}")
+        raise DSLExecutionError(f"Unknown measure: {measure}. Supported measures: {list(measure_map.keys()) + ['communities']}")
     
     try:
         func = measure_map[measure]
@@ -1632,3 +1684,217 @@ def compute_centrality_for_layer(network: Any, layer: str,
     result = execute_query(network, 
                           f'SELECT nodes WHERE layer="{layer}" COMPUTE {centrality}')
     return result['computed'].get(centrality, {})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Community Detection Convenience Functions
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def detect_communities(network: Any, layer: Optional[str] = None) -> Dict[str, Any]:
+    """Detect communities in the network using Louvain algorithm via DSL.
+    
+    Args:
+        network: Multilayer network object
+        layer: Optional layer to filter nodes by
+        
+    Returns:
+        Dictionary containing:
+            - 'partition': Dict mapping nodes to community IDs
+            - 'num_communities': Number of communities detected
+            - 'community_sizes': Dict mapping community ID to size
+            - 'biggest_community': Tuple (community_id, size)
+            - 'smallest_community': Tuple (community_id, size)
+            - 'size_distribution': List of community sizes
+            
+    Example:
+        >>> from py3plex.core import multinet
+        >>> from py3plex.dsl import detect_communities
+        >>> 
+        >>> # Create a sample network
+        >>> network = multinet.multi_layer_network()
+        >>> # ... add nodes and edges ...
+        >>> 
+        >>> # Detect communities
+        >>> result = detect_communities(network)
+        >>> print(f"Found {result['num_communities']} communities")
+        >>> print(f"Biggest community has {result['biggest_community'][1]} nodes")
+    """
+    if layer:
+        query = f'SELECT nodes WHERE layer="{layer}" COMPUTE communities'
+    else:
+        query = 'SELECT nodes COMPUTE communities'
+    
+    result = execute_query(network, query)
+    partition = result['computed'].get('communities', {})
+    
+    return _analyze_communities(partition)
+
+
+def get_community_partition(network: Any, layer: Optional[str] = None) -> Dict[Any, int]:
+    """Get community partition (mapping of nodes to community IDs).
+    
+    Args:
+        network: Multilayer network object
+        layer: Optional layer to filter nodes by
+        
+    Returns:
+        Dictionary mapping nodes to community IDs
+        
+    Example:
+        >>> partition = get_community_partition(network)
+        >>> for node, community_id in partition.items():
+        ...     print(f"Node {node} is in community {community_id}")
+    """
+    result = detect_communities(network, layer)
+    return result['partition']
+
+
+def get_biggest_community(network: Any, layer: Optional[str] = None) -> Tuple[int, int, List[Any]]:
+    """Get the largest community in the network.
+    
+    Args:
+        network: Multilayer network object
+        layer: Optional layer to filter nodes by
+        
+    Returns:
+        Tuple of (community_id, size, list_of_nodes)
+        
+    Example:
+        >>> community_id, size, nodes = get_biggest_community(network)
+        >>> print(f"Community {community_id} has {size} nodes")
+        >>> print(f"Nodes: {nodes}")
+    """
+    result = detect_communities(network, layer)
+    partition = result['partition']
+    
+    if not partition:
+        return (0, 0, [])
+    
+    community_id, size = result['biggest_community']
+    nodes = [node for node, comm_id in partition.items() if comm_id == community_id]
+    
+    return (community_id, size, nodes)
+
+
+def get_smallest_community(network: Any, layer: Optional[str] = None) -> Tuple[int, int, List[Any]]:
+    """Get the smallest community in the network.
+    
+    Args:
+        network: Multilayer network object
+        layer: Optional layer to filter nodes by
+        
+    Returns:
+        Tuple of (community_id, size, list_of_nodes)
+        
+    Example:
+        >>> community_id, size, nodes = get_smallest_community(network)
+        >>> print(f"Community {community_id} has {size} nodes")
+        >>> print(f"Nodes: {nodes}")
+    """
+    result = detect_communities(network, layer)
+    partition = result['partition']
+    
+    if not partition:
+        return (0, 0, [])
+    
+    community_id, size = result['smallest_community']
+    nodes = [node for node, comm_id in partition.items() if comm_id == community_id]
+    
+    return (community_id, size, nodes)
+
+
+def get_num_communities(network: Any, layer: Optional[str] = None) -> int:
+    """Get the number of communities in the network.
+    
+    Args:
+        network: Multilayer network object
+        layer: Optional layer to filter nodes by
+        
+    Returns:
+        Number of communities detected
+        
+    Example:
+        >>> num_communities = get_num_communities(network)
+        >>> print(f"Found {num_communities} communities")
+    """
+    result = detect_communities(network, layer)
+    return result['num_communities']
+
+
+def get_community_sizes(network: Any, layer: Optional[str] = None) -> Dict[int, int]:
+    """Get the size of each community in the network.
+    
+    Args:
+        network: Multilayer network object
+        layer: Optional layer to filter nodes by
+        
+    Returns:
+        Dictionary mapping community ID to its size
+        
+    Example:
+        >>> sizes = get_community_sizes(network)
+        >>> for comm_id, size in sizes.items():
+        ...     print(f"Community {comm_id}: {size} nodes")
+    """
+    result = detect_communities(network, layer)
+    return result['community_sizes']
+
+
+def get_community_size_distribution(network: Any, layer: Optional[str] = None) -> List[int]:
+    """Get the distribution of community sizes.
+    
+    Args:
+        network: Multilayer network object
+        layer: Optional layer to filter nodes by
+        
+    Returns:
+        List of community sizes sorted in descending order
+        
+    Example:
+        >>> distribution = get_community_size_distribution(network)
+        >>> print(f"Largest community: {distribution[0]} nodes")
+        >>> print(f"Smallest community: {distribution[-1]} nodes")
+        >>> print(f"Average size: {sum(distribution) / len(distribution):.1f}")
+    """
+    result = detect_communities(network, layer)
+    return result['size_distribution']
+
+
+def _analyze_communities(partition: Dict[Any, int]) -> Dict[str, Any]:
+    """Analyze community partition and compute statistics.
+    
+    Args:
+        partition: Dictionary mapping nodes to community IDs
+        
+    Returns:
+        Dictionary with community statistics
+    """
+    if not partition:
+        return {
+            'partition': {},
+            'num_communities': 0,
+            'community_sizes': {},
+            'biggest_community': (0, 0),
+            'smallest_community': (0, 0),
+            'size_distribution': [],
+        }
+    
+    # Count nodes in each community
+    community_sizes = Counter(partition.values())
+    
+    # Get sorted sizes
+    sizes = sorted(community_sizes.values(), reverse=True)
+    
+    # Find biggest and smallest
+    biggest_community_id = max(community_sizes.keys(), key=lambda k: community_sizes[k])
+    smallest_community_id = min(community_sizes.keys(), key=lambda k: community_sizes[k])
+    
+    return {
+        'partition': partition,
+        'num_communities': len(community_sizes),
+        'community_sizes': dict(community_sizes),
+        'biggest_community': (biggest_community_id, community_sizes[biggest_community_id]),
+        'smallest_community': (smallest_community_id, community_sizes[smallest_community_id]),
+        'size_distribution': sizes,
+    }

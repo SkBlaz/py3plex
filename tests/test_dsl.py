@@ -1128,5 +1128,232 @@ class TestFirstClassMethod:
         assert set(result_method['nodes']) == set(result_function['nodes'])
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# Community Detection via DSL Tests
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestCommunityDetectionDSL:
+    """Test community detection via DSL."""
+
+    @pytest.fixture
+    def community_network(self):
+        """Create a network with clear community structure."""
+        network = multinet.multi_layer_network(directed=False)
+
+        # Add nodes
+        nodes = [
+            {'source': 'A', 'type': 'social'},
+            {'source': 'B', 'type': 'social'},
+            {'source': 'C', 'type': 'social'},
+            {'source': 'D', 'type': 'social'},
+            {'source': 'E', 'type': 'social'},
+            {'source': 'F', 'type': 'social'},
+        ]
+        network.add_nodes(nodes)
+
+        # Add edges to form two clear communities
+        edges = [
+            # Community 1: A, B, C (densely connected)
+            {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            {'source': 'A', 'target': 'C', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            
+            # Community 2: D, E, F (densely connected)
+            {'source': 'D', 'target': 'E', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            {'source': 'D', 'target': 'F', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            {'source': 'E', 'target': 'F', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            
+            # Bridge between communities (weak connection)
+            {'source': 'C', 'target': 'D', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+        ]
+        network.add_edges(edges)
+
+        return network
+
+    def test_compute_communities(self, community_network):
+        """Test computing communities via DSL."""
+        result = execute_query(community_network, 'SELECT nodes COMPUTE communities')
+
+        assert 'computed' in result
+        assert 'communities' in result['computed']
+        
+        # Should assign community IDs to all nodes
+        communities = result['computed']['communities']
+        assert len(communities) == result['count']
+
+    def test_compute_community_alias(self, community_network):
+        """Test 'community' alias works same as 'communities'."""
+        result = execute_query(community_network, 'SELECT nodes COMPUTE community')
+
+        assert 'computed' in result
+        assert 'community' in result['computed']
+
+    def test_communities_with_layer_filter(self, sample_network):
+        """Test computing communities filtered by layer."""
+        result = execute_query(sample_network, 'SELECT nodes WHERE layer="layer1" COMPUTE communities')
+
+        assert 'computed' in result
+        assert 'communities' in result['computed']
+        
+        # All nodes should be from layer1
+        for node in result['nodes']:
+            assert node[1] == 'layer1'
+
+
+class TestCommunityConvenienceFunctions:
+    """Test community detection convenience functions."""
+
+    @pytest.fixture
+    def community_network(self):
+        """Create a network with clear community structure."""
+        from py3plex.dsl import (
+            detect_communities,
+            get_community_partition,
+            get_biggest_community,
+            get_smallest_community,
+            get_num_communities,
+            get_community_sizes,
+            get_community_size_distribution,
+        )
+        
+        network = multinet.multi_layer_network(directed=False)
+
+        # Add nodes for two communities of different sizes
+        nodes = [
+            {'source': 'A', 'type': 'social'},
+            {'source': 'B', 'type': 'social'},
+            {'source': 'C', 'type': 'social'},
+            {'source': 'D', 'type': 'social'},  # Bridge
+            {'source': 'E', 'type': 'social'},
+            {'source': 'F', 'type': 'social'},
+        ]
+        network.add_nodes(nodes)
+
+        # Add edges
+        edges = [
+            # Community 1: A, B, C (3 nodes)
+            {'source': 'A', 'target': 'B', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            {'source': 'A', 'target': 'C', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            {'source': 'B', 'target': 'C', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            
+            # Community 2: D, E, F (3 nodes)
+            {'source': 'D', 'target': 'E', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            {'source': 'D', 'target': 'F', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            {'source': 'E', 'target': 'F', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+            
+            # Bridge
+            {'source': 'C', 'target': 'D', 'source_type': 'social', 'target_type': 'social', 'weight': 1.0},
+        ]
+        network.add_edges(edges)
+
+        return network
+
+    def test_detect_communities(self, community_network):
+        """Test detect_communities function."""
+        from py3plex.dsl import detect_communities
+        
+        result = detect_communities(community_network)
+        
+        assert 'partition' in result
+        assert 'num_communities' in result
+        assert 'community_sizes' in result
+        assert 'biggest_community' in result
+        assert 'smallest_community' in result
+        assert 'size_distribution' in result
+        
+        # Should find at least 1 community
+        assert result['num_communities'] >= 1
+
+    def test_get_community_partition(self, community_network):
+        """Test get_community_partition function."""
+        from py3plex.dsl import get_community_partition
+        
+        partition = get_community_partition(community_network)
+        
+        assert isinstance(partition, dict)
+        # All nodes should be assigned
+        assert len(partition) == 6
+
+    def test_get_biggest_community(self, community_network):
+        """Test get_biggest_community function."""
+        from py3plex.dsl import get_biggest_community
+        
+        community_id, size, nodes = get_biggest_community(community_network)
+        
+        assert isinstance(community_id, int)
+        assert isinstance(size, int)
+        assert isinstance(nodes, list)
+        assert size > 0
+        assert len(nodes) == size
+
+    def test_get_smallest_community(self, community_network):
+        """Test get_smallest_community function."""
+        from py3plex.dsl import get_smallest_community
+        
+        community_id, size, nodes = get_smallest_community(community_network)
+        
+        assert isinstance(community_id, int)
+        assert isinstance(size, int)
+        assert isinstance(nodes, list)
+        assert size > 0
+        assert len(nodes) == size
+
+    def test_get_num_communities(self, community_network):
+        """Test get_num_communities function."""
+        from py3plex.dsl import get_num_communities
+        
+        num = get_num_communities(community_network)
+        
+        assert isinstance(num, int)
+        assert num >= 1
+
+    def test_get_community_sizes(self, community_network):
+        """Test get_community_sizes function."""
+        from py3plex.dsl import get_community_sizes
+        
+        sizes = get_community_sizes(community_network)
+        
+        assert isinstance(sizes, dict)
+        # Sum of sizes should equal number of nodes
+        assert sum(sizes.values()) == 6
+
+    def test_get_community_size_distribution(self, community_network):
+        """Test get_community_size_distribution function."""
+        from py3plex.dsl import get_community_size_distribution
+        
+        distribution = get_community_size_distribution(community_network)
+        
+        assert isinstance(distribution, list)
+        # Should be sorted in descending order
+        assert distribution == sorted(distribution, reverse=True)
+        # Sum should equal number of nodes
+        assert sum(distribution) == 6
+
+    def test_empty_network_communities(self):
+        """Test community detection on empty network."""
+        from py3plex.dsl import detect_communities
+        
+        empty_network = multinet.multi_layer_network(directed=False)
+        result = detect_communities(empty_network)
+        
+        assert result['num_communities'] == 0
+        assert result['partition'] == {}
+        assert result['size_distribution'] == []
+
+    def test_single_node_network(self):
+        """Test community detection on single node network."""
+        from py3plex.dsl import detect_communities
+        
+        network = multinet.multi_layer_network(directed=False)
+        network.add_nodes([{'source': 'A', 'type': 'social'}])
+        
+        result = detect_communities(network)
+        
+        # Single node without edges may be detected as 0 or 1 communities
+        # depending on the algorithm - we just verify it doesn't crash
+        assert result['num_communities'] >= 0
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

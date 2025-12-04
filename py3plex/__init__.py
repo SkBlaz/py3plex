@@ -35,6 +35,11 @@ Quick Start:
     >>> result = p3.execute_query(net, 'SELECT nodes WHERE layer="layer1"')
     >>> result = p3.execute_query(net, 'SELECT nodes WHERE degree > 1 COMPUTE betweenness_centrality')
     
+    # Use DSL for community detection
+    >>> result = p3.execute_query(net, 'SELECT nodes COMPUTE communities')
+    >>> communities = p3.detect_communities(net)
+    >>> print(f"Found {communities['num_communities']} communities")
+    
     # Use dplyr-style chainable API
     >>> import numpy as np
     >>> from py3plex.graph_ops import nodes
@@ -77,6 +82,14 @@ from py3plex.dsl import (
     select_nodes_by_layer,
     select_high_degree_nodes,
     compute_centrality_for_layer,
+    # Community detection functions
+    detect_communities,
+    get_community_partition,
+    get_biggest_community,
+    get_smallest_community,
+    get_num_communities,
+    get_community_sizes,
+    get_community_size_distribution,
 )
 from py3plex.graph_ops import (
     nodes,
