@@ -566,12 +566,11 @@ class NodeFrame:
             >>> frame.sample(10, seed=42)
         """
         import random
-        if seed is not None:
-            random.seed(seed)
+        rng = random.Random(seed)
         if n >= len(self._data):
             new_data = list(self._data)
         else:
-            new_data = random.sample(self._data, n)
+            new_data = rng.sample(self._data, n)
         return NodeFrame(multinet=self._multinet, data=new_data)
 
     def distinct(self, *fields: str) -> NodeFrame:
@@ -1175,12 +1174,11 @@ class EdgeFrame:
             >>> frame.sample(10, seed=42)
         """
         import random
-        if seed is not None:
-            random.seed(seed)
+        rng = random.Random(seed)
         if n >= len(self._data):
             new_data = list(self._data)
         else:
-            new_data = random.sample(self._data, n)
+            new_data = rng.sample(self._data, n)
         return EdgeFrame(multinet=self._multinet, data=new_data)
 
     def distinct(self, *fields: str) -> EdgeFrame:
