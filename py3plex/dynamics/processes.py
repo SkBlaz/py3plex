@@ -66,9 +66,9 @@ def sis_update_factory(params: Dict[str, Any], coupling: Dict[str, Any]) -> Call
     """
     beta = params.get("beta", 0.3)
     mu = params.get("mu", 0.1)
-    params.get("beta_cross", beta)  # Inter-layer transmission
-
-    coupling.get("node_replicas", "independent")
+    # Reserved for future multilayer coupling implementation
+    # beta_cross = params.get("beta_cross", beta)  # Inter-layer transmission
+    # node_replicas = coupling.get("node_replicas", "independent")
 
     def update_step(adj_matrix: np.ndarray, state: np.ndarray,
                     rng: np.random.Generator,
@@ -86,7 +86,6 @@ def sis_update_factory(params: Dict[str, Any], coupling: Dict[str, Any]) -> Call
         Returns:
             New state array
         """
-        len(state)
         new_state = state.copy()
 
         # Recovery: I -> S with probability mu
@@ -143,7 +142,6 @@ def sir_update_factory(params: Dict[str, Any], coupling: Dict[str, Any]) -> Call
         Returns:
             New state array
         """
-        len(state)
         new_state = state.copy()
 
         # Recovery: I -> R with probability gamma
