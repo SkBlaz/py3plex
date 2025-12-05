@@ -78,7 +78,8 @@ The py3plex CLI provides these main commands:
 * ``selftest`` - Verify installation and core functionality
 * ``check`` - Lint and validate graph data files
 * ``create`` - Create new multilayer networks
-* ``load`` - Load and inspect networks
+* ``load`` - Load and inspect networks (supports stdin with ``-``)
+* ``query`` - Execute DSL queries on networks (supports stdin with ``-``)
 * ``community`` - Detect communities
 * ``centrality`` - Compute centrality measures
 * ``stats`` - Compute multilayer network statistics
@@ -113,6 +114,174 @@ Quick Reference
 
     # Community detection workflow
     py3plex community net.graphml --algorithm louvain --output communities.json
+
+Unix Piping and Stdin Support
+-----------------------------
+
+Py3plex CLI supports Unix-style piping workflows, allowing you to chain commands together and integrate with other Unix tools. This is especially powerful for automation and scripting.
+
+Stdin Input with ``-``
+~~~~~~~~~~~~~~~~~~~~~~
+
+Use ``-`` as the input file argument to read network data from stdin:
+
+.. code-block:: bash
+
+    # Pipe network data to load command
+    cat network.edgelist | py3plex load - --info
+
+    # Pipe to query command
+    cat network.edgelist | py3plex query - "SELECT nodes COMPUTE degree"
+
+Piping Between Commands
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Chain py3plex commands together without intermediate files:
+
+.. code-block:: bash
+
+    # Create a network and immediately query it
+    py3plex create --nodes 50 --layers 3 -o /dev/stdout 2>/dev/null | \
+        py3plex query - "SELECT nodes COMPUTE degree" --format table
+
+    # Create and compute statistics in one pipeline
+    py3plex create --nodes 100 --layers 2 --seed 42 -o /dev/stdout 2>/dev/null | \
+        py3plex load - --info
+
+The Query Command
+~~~~~~~~~~~~~~~~~
+
+The ``query`` command executes DSL queries on networks and outputs results in multiple formats. This is particularly useful for piping workflows.
+
+**String DSL Syntax:**
+
+.. code-block:: bash
+
+    # Get all nodes
+    py3plex query network.edgelist "SELECT nodes"
+
+    # Filter by layer
+    py3plex query network.edgelist "SELECT nodes WHERE layer='social'"
+
+    # Compute metrics
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree"
+
+    # Multiple computations
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree, betweenness_centrality"
+
+**Python DSL Builder Syntax (use ``--dsl`` flag):**
+
+.. code-block:: bash
+
+    # Basic query with DSL builder
+    py3plex query network.edgelist 'Q.nodes().compute("degree")' --dsl
+
+    # With filtering, ordering, and limiting
+    py3plex query network.edgelist \
+        'Q.nodes().where(layer="social").compute("degree").order_by("-degree").limit(10)' --dsl
+
+    # Layer algebra (union of layers)
+    py3plex query network.edgelist \
+        'Q.nodes().from_layers(L["social"] + L["work"]).compute("degree")' --dsl
+
+Output Formats
+~~~~~~~~~~~~~~
+
+Control the output format for different use cases:
+
+.. code-block:: bash
+
+    # JSON output (default) - good for further processing
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree" --format json
+
+    # CSV output - good for spreadsheets and data analysis
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree" --format csv > results.csv
+
+    # Table output - good for human reading in terminal
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree" --format table
+
+Combining with Unix Tools
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Combine py3plex output with standard Unix tools for powerful data processing:
+
+**With jq (JSON processing):**
+
+.. code-block:: bash
+
+    # Get top 5 nodes by degree
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree" 2>/dev/null | \
+        jq '.nodes[:5]'
+
+    # Extract just the computed values
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree" 2>/dev/null | \
+        jq '.computed.degree'
+
+    # Count nodes
+    py3plex query network.edgelist "SELECT nodes" 2>/dev/null | \
+        jq '.count'
+
+**With grep and other tools:**
+
+.. code-block:: bash
+
+    # Filter JSON output
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree" --format json 2>/dev/null | \
+        grep -o '"count": [0-9]*'
+
+    # Count rows in CSV output
+    py3plex query network.edgelist "SELECT nodes COMPUTE degree" --format csv 2>/dev/null | \
+        wc -l
+
+Complete Piping Workflow Examples
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Example 1: End-to-end analysis pipeline**
+
+.. code-block:: bash
+
+    #!/bin/bash
+    # Generate network, analyze, and save results
+
+    # Create network
+    py3plex create --nodes 100 --layers 3 --probability 0.1 -o network.edgelist --seed 42
+
+    # Compute centrality and save top nodes using DSL
+    py3plex query network.edgelist \
+        'Q.nodes().compute("degree", "betweenness_centrality").order_by("-degree").limit(20)' \
+        --dsl -o top_nodes.json
+
+    # Detect communities
+    py3plex community network.edgelist --algorithm louvain -o communities.json
+
+**Example 2: Batch processing multiple files**
+
+.. code-block:: bash
+
+    #!/bin/bash
+    # Process multiple network files
+
+    for file in networks/*.edgelist; do
+        echo "Processing $file..."
+        py3plex query "$file" "SELECT nodes COMPUTE degree" \
+            --format csv > "${file%.edgelist}_degrees.csv"
+    done
+
+**Example 3: Create and analyze without intermediate files**
+
+.. code-block:: bash
+
+    # Create and immediately analyze - no file needed
+    py3plex create --nodes 50 --layers 2 -o /dev/stdout 2>/dev/null | \
+        py3plex query - 'Q.nodes().compute("degree").order_by("-degree").limit(5)' --dsl
+
+Tips for Piping Workflows
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. **Suppress logging**: Redirect stderr with ``2>/dev/null`` when piping to avoid log messages in output
+2. **Use appropriate formats**: Use ``--format json`` for programmatic processing, ``--format csv`` for large datasets
+3. **Reproducibility**: Always use ``--seed`` when creating random networks
+4. **Debugging**: Use ``--format table`` for quick visual inspection during development
 
 Validating Data Files
 ---------------------
