@@ -212,7 +212,7 @@
 <li><p>Use when nodes naturally appear in only some layers</p></li>
 <li><p>Inter-layer edges must be explicitly added</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Heterogeneous network: authors and papers are different node types</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">)</span>
@@ -282,7 +282,7 @@
 <p>The central data structure in py3plex is the <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> class, which provides a high-level API for working with multilayer networks while maintaining full compatibility with NetworkX.</p>
 <section id="basic-structure">
 <h3>Basic Structure<a class="headerlink" href="#basic-structure" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -304,7 +304,7 @@
 <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 
 <span class="c1"># Use any NetworkX function</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 <span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -457,7 +457,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 </section>
 <section id="construction">
 <h3>Construction<a class="headerlink" href="#construction" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="c1"># ... add nodes and edges ...</span>
@@ -487,8 +487,8 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <section id="visualization">
 <h3>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h3>
 <p>Visualize the supra-adjacency matrix structure:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Generate a small multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span>
@@ -554,7 +554,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <section id="using-networkx-functions-directly">
 <h3>Using NetworkX Functions Directly<a class="headerlink" href="#using-networkx-functions-directly" title="Link to this heading"></a></h3>
 <p>Because <code class="docutils literal notranslate"><span class="pre">network.core_network</span></code> is a standard NetworkX graph, you can use any NetworkX function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 
@@ -664,7 +664,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <section id="creating-networks-from-scratch">
 <h3>Creating Networks from Scratch<a class="headerlink" href="#creating-networks-from-scratch" title="Link to this heading"></a></h3>
 <p><strong>Method 1: Add edges directly</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
@@ -711,7 +711,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <section id="loading-from-files">
 <h3>Loading from Files<a class="headerlink" href="#loading-from-files" title="Link to this heading"></a></h3>
 <p>py3plex supports multiple input formats. See <a class="reference internal" href="../user_guide/io_and_formats.html"><span class="doc">I/O and Serialization</span></a> for complete documentation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># From simple edge list (source target)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
@@ -734,7 +734,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="p">)</span>
 
 <span class="c1"># From NetworkX graph</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network_from_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
@@ -814,8 +814,8 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <section id="full-networkx-compatibility">
 <h3>Full NetworkX Compatibility<a class="headerlink" href="#full-networkx-compatibility" title="Link to this heading"></a></h3>
 <p>Since py3plex builds on NetworkX, you can use any NetworkX algorithm:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create py3plex network</span>
 <span class="n">mlnet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -863,8 +863,8 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <section id="converting-between-formats">
 <h3>Converting Between Formats<a class="headerlink" href="#converting-between-formats" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From NetworkX to py3plex</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
 <span class="n">mlnet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -907,7 +907,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <section id="tensor-like-indexing">
 <h3>Tensor-Like Indexing<a class="headerlink" href="#tensor-like-indexing" title="Link to this heading"></a></h3>
 <p>You can access nodes and edges using tensor-like notation:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
 
 <span class="c1"># Create a network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

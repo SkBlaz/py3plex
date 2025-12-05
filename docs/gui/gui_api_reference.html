@@ -341,8 +341,7 @@
 <span class="w">  </span><span class="nt">&quot;partition&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;node1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;node2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;node3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="err">...</span>
+<span class="w">    </span><span class="nt">&quot;node3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -373,8 +372,7 @@
 <span class="w">    </span><span class="nt">&quot;degree_distribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
-<span class="w">      </span><span class="err">...</span>
+<span class="w">      </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -405,8 +403,7 @@
 <span class="w">  </span><span class="nt">&quot;centrality&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;node1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.42</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;node2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.35</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;node3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.15</span><span class="p">,</span>
-<span class="w">    </span><span class="err">...</span>
+<span class="w">    </span><span class="nt">&quot;node3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.15</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -475,8 +472,7 @@
 <span class="w">  </span><span class="nt">&quot;layout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;layout789&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;positions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;node1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;node2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">],</span>
-<span class="w">    </span><span class="err">...</span>
+<span class="w">    </span><span class="nt">&quot;node2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">]</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -621,9 +617,9 @@
 <li><p>10 uploads per hour per IP</p></li>
 </ul>
 <p>Rate limit headers in responses:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="err">X-RateLimit-Limit: 50</span>
-<span class="err">X-RateLimit-Remaining: 45</span>
-<span class="err">X-RateLimit-Reset: 1674480000</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>X-RateLimit-Limit: 50
+X-RateLimit-Remaining: 45
+X-RateLimit-Reset: 1674480000
 </pre></div>
 </div>
 </section>
@@ -631,7 +627,7 @@
 <h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
 <section id="python-client">
 <h3>Python Client<a class="headerlink" href="#python-client" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:5000/api&quot;</span>
 

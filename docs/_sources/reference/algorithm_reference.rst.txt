@@ -946,4 +946,4 @@ When using specific algorithm families, please cite the original papers:
 **Infomap:**
   Rosvall & Bergstrom (2008)
 
-See :doc:`citation` for complete citation information and BibTeX entries.
+See :doc:`citation_and_acknowledgements` for complete citation information and BibTeX entries.

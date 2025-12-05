@@ -177,7 +177,7 @@
 </ul>
 <section id="basic-structure">
 <h4>Basic Structure<a class="headerlink" href="#basic-structure" title="Link to this heading"></a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -216,7 +216,7 @@
 <h2>Network Construction<a class="headerlink" href="#network-construction" title="Link to this heading"></a></h2>
 <section id="creating-networks-from-scratch">
 <h3>Creating Networks from Scratch<a class="headerlink" href="#creating-networks-from-scratch" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
@@ -373,8 +373,8 @@ Network Operations (add, remove, query)
 <section id="full-networkx-compatibility">
 <h3>Full NetworkX Compatibility<a class="headerlink" href="#full-networkx-compatibility" title="Link to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">core_network</span></code> attribute is a standard NetworkX graph:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create py3plex network</span>
 <span class="n">mlnet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -393,8 +393,8 @@ Network Operations (add, remove, query)
 <section id="converting-to-from-networkx">
 <h3>Converting to/from NetworkX<a class="headerlink" href="#converting-to-from-networkx" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From NetworkX to py3plex</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
 <span class="n">mlnet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -426,7 +426,7 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 </section>
 <section id="construction-in-py3plex">
 <h3>Construction in py3plex<a class="headerlink" href="#construction-in-py3plex" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="c1"># ... add nodes and edges ...</span>
@@ -449,7 +449,7 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 <span class="n">layer_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layer_subgraph</span><span class="p">(</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
 
 <span class="c1"># Compute layer-specific metrics</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
 <span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">layer_graph</span><span class="p">)</span>
@@ -475,10 +475,10 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 <section id="adding-custom-algorithms">
 <h3>Adding Custom Algorithms<a class="headerlink" href="#adding-custom-algorithms" title="Link to this heading"></a></h3>
 <p>Extend py3plex by adding custom algorithms:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
-<span class="k">def</span> <span class="nf">my_custom_centrality</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_custom_centrality</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute custom centrality for multilayer network.&quot;&quot;&quot;</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span>
 
@@ -494,10 +494,10 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 </section>
 <section id="custom-visualization">
 <h3>Custom Visualization<a class="headerlink" href="#custom-visualization" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization</span> <span class="kn">import</span> <span class="n">drawing_machinery</span> <span class="k">as</span> <span class="n">dm</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">drawing_machinery</span> <span class="k">as</span> <span class="n">dm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="k">def</span> <span class="nf">custom_plot</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">custom_plot</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create custom visualization.&quot;&quot;&quot;</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 

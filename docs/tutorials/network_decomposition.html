@@ -168,8 +168,8 @@
 <h2>HINMINE Decomposition<a class="headerlink" href="#hinmine-decomposition" title="Link to this heading"></a></h2>
 <section id="basic-usage">
 <h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core.HINMINE</span> <span class="kn">import</span> <span class="n">decomposition</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core.HINMINE</span><span class="w"> </span><span class="kn">import</span> <span class="n">decomposition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load heterogeneous network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -313,9 +313,9 @@
 <h2>Node Classification Example<a class="headerlink" href="#node-classification-example" title="Link to this heading"></a></h2>
 <section id="complete-workflow">
 <h3>Complete Workflow<a class="headerlink" href="#complete-workflow" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
 
 <span class="c1"># 1. Load network with node labels</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -354,7 +354,7 @@
 <section id="feature-importance">
 <h3>Feature Importance<a class="headerlink" href="#feature-importance" title="Link to this heading"></a></h3>
 <p>Analyze which meta-paths are most informative:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Get feature importances from trained model</span>
 <span class="n">importances</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">feature_importances_</span>
@@ -376,7 +376,7 @@
 <h2>Link Prediction Example<a class="headerlink" href="#link-prediction-example" title="Link to this heading"></a></h2>
 <section id="predict-missing-edges">
 <h3>Predict Missing Edges<a class="headerlink" href="#predict-missing-edges" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
 
 <span class="c1"># 1. Sample node pairs (positive and negative examples)</span>
 <span class="n">positive_pairs</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Actual edges</span>
@@ -386,7 +386,7 @@
     <span class="n">positive_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
 <span class="c1"># Sample negative examples</span>
-<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
 <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">negative_pairs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">positive_pairs</span><span class="p">):</span>
     <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -394,7 +394,7 @@
         <span class="n">negative_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
 <span class="c1"># 2. Extract features for node pairs</span>
-<span class="k">def</span> <span class="nf">pair_features</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">node_to_idx</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pair_features</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">node_to_idx</span><span class="p">):</span>
     <span class="n">idx_u</span> <span class="o">=</span> <span class="n">node_to_idx</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
     <span class="n">idx_v</span> <span class="o">=</span> <span class="n">node_to_idx</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
     <span class="c1"># Concatenate, multiply, or subtract features</span>
@@ -472,7 +472,7 @@
     <span class="n">temporal_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
 <span class="c1"># Stack temporal features</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="n">full_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">temporal_features</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -495,7 +495,7 @@
 <section id="parallel-processing">
 <h3>Parallel Processing<a class="headerlink" href="#parallel-processing" title="Link to this heading"></a></h3>
 <p>For large networks, process meta-paths in parallel:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
 
 <span class="c1"># Compute meta-path instances in parallel</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)(</span>
@@ -510,13 +510,13 @@
 <section id="sparse-representations">
 <h3>Sparse Representations<a class="headerlink" href="#sparse-representations" title="Link to this heading"></a></h3>
 <p>Use sparse matrices for large feature spaces:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csr_matrix</span>
 
 <span class="c1"># Convert to sparse format</span>
 <span class="n">sparse_features</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
 <span class="c1"># Use with scikit-learn</span>
-<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">LinearSVC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearSVC</span>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">LinearSVC</span><span class="p">()</span>
 <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sparse_features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 </pre></div>

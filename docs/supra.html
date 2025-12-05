@@ -126,7 +126,7 @@
   <section id="supra-adjacency-matrices">
 <h1>Supra-Adjacency Matrices<a class="headerlink" href="#supra-adjacency-matrices" title="Link to this heading"></a></h1>
 <p>Multiplex networks can be represented as supra-adjacency matrices for tensor-based operations.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span><span class="p">,</span> <span class="n">random_generators</span>
 
 <span class="c1"># Generate network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span>
@@ -153,8 +153,8 @@
 <section id="tensor-like-indexing">
 <h2>Tensor-Like Indexing<a class="headerlink" href="#tensor-like-indexing" title="Link to this heading"></a></h2>
 <p>You can access nodes and edges using tensor-like indexing:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">random_generators</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_generators</span>
 
 <span class="c1"># Initiate an instance of a random graph</span>
 <span class="n">ER_multilayer</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
