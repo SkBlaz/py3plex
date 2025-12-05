@@ -143,7 +143,7 @@
 </section>
 <section id="create-your-first-network">
 <h2>Create Your First Network<a class="headerlink" href="#create-your-first-network" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
@@ -172,7 +172,7 @@ Nodes per layer:
 </section>
 <section id="visualize">
 <h2>Visualize<a class="headerlink" href="#visualize" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
 
 <span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -181,7 +181,7 @@ Nodes per layer:
 </section>
 <section id="basic-analysis">
 <h2>Basic Analysis<a class="headerlink" href="#basic-analysis" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="c1"># Layer density: how connected is each layer?</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Friends density: </span><span class="si">{</span><span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;friends&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -205,7 +205,7 @@ Bob&#39;s activity: 1.000
 <section id="query-with-dsl">
 <h2>Query with DSL<a class="headerlink" href="#query-with-dsl" title="Link to this heading"></a></h2>
 <p>Use SQL-like queries for network exploration:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Find high-degree nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE degree &gt; 1&#39;</span><span class="p">)</span>

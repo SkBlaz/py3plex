@@ -70,6 +70,22 @@
 <li class="toctree-l3"><a class="reference internal" href="#compute-clause">COMPUTE Clause</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#python-builder-api-dsl-v2">Python Builder API (DSL v2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#query-builder-methods">Query Builder Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#where-conditions">WHERE Conditions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compute-with-aliases">COMPUTE with Aliases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#order-by-and-limit">ORDER BY and LIMIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layer-algebra">Layer Algebra</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complete-builder-example">Complete Builder Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#queryresult-object">QueryResult Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#explain-mode">EXPLAIN Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameterized-queries">Parameterized Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convert-builder-to-dsl-string">Convert Builder to DSL String</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-handling-with-suggestions">Error Handling with Suggestions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#measure-registry">Measure Registry</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#example-queries">Example Queries</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-queries">Basic Queries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#complex-queries">Complex Queries</a></li>
@@ -88,7 +104,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#network-filtering">Network Filtering</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#legacy-error-types">Legacy Error Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dsl-v2-error-types">DSL v2 Error Types</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#complete-working-examples">Complete Working Examples</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example-1-basic-network-querying">Example 1: Basic Network Querying</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#example-2-multilayer-network-analysis">Example 2: Multilayer Network Analysis</a></li>
@@ -100,6 +120,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#main-functions">Main Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id1">Convenience Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dsl-v2-builder-api">DSL v2 Builder API</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#limitations-and-future-work">Limitations and Future Work</a></li>
@@ -188,55 +209,98 @@
 <li><p><a class="reference internal" href="#compute-clause" id="id8">COMPUTE Clause</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#example-queries" id="id9">Example Queries</a></p>
+<li><p><a class="reference internal" href="#python-builder-api-dsl-v2" id="id9">Python Builder API (DSL v2)</a></p>
 <ul>
-<li><p><a class="reference internal" href="#basic-queries" id="id10">Basic Queries</a></p></li>
-<li><p><a class="reference internal" href="#complex-queries" id="id11">Complex Queries</a></p></li>
-<li><p><a class="reference internal" href="#analytical-queries" id="id12">Analytical Queries</a></p></li>
+<li><p><a class="reference internal" href="#basic-usage" id="id10">Basic Usage</a></p></li>
+<li><p><a class="reference internal" href="#query-builder-methods" id="id11">Query Builder Methods</a></p></li>
+<li><p><a class="reference internal" href="#where-conditions" id="id12">WHERE Conditions</a></p></li>
+<li><p><a class="reference internal" href="#compute-with-aliases" id="id13">COMPUTE with Aliases</a></p></li>
+<li><p><a class="reference internal" href="#order-by-and-limit" id="id14">ORDER BY and LIMIT</a></p></li>
+<li><p><a class="reference internal" href="#layer-algebra" id="id15">Layer Algebra</a></p></li>
+<li><p><a class="reference internal" href="#complete-builder-example" id="id16">Complete Builder Example</a></p></li>
+<li><p><a class="reference internal" href="#queryresult-object" id="id17">QueryResult Object</a></p></li>
+<li><p><a class="reference internal" href="#explain-mode" id="id18">EXPLAIN Mode</a></p></li>
+<li><p><a class="reference internal" href="#parameterized-queries" id="id19">Parameterized Queries</a></p></li>
+<li><p><a class="reference internal" href="#convert-builder-to-dsl-string" id="id20">Convert Builder to DSL String</a></p></li>
+<li><p><a class="reference internal" href="#error-handling-with-suggestions" id="id21">Error Handling with Suggestions</a></p></li>
+<li><p><a class="reference internal" href="#measure-registry" id="id22">Measure Registry</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#working-with-results" id="id13">Working with Results</a></p>
+<li><p><a class="reference internal" href="#example-queries" id="id23">Example Queries</a></p>
 <ul>
-<li><p><a class="reference internal" href="#formatting-results" id="id14">Formatting Results</a></p></li>
+<li><p><a class="reference internal" href="#basic-queries" id="id24">Basic Queries</a></p></li>
+<li><p><a class="reference internal" href="#complex-queries" id="id25">Complex Queries</a></p></li>
+<li><p><a class="reference internal" href="#analytical-queries" id="id26">Analytical Queries</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#convenience-functions" id="id15">Convenience Functions</a></p></li>
-<li><p><a class="reference internal" href="#use-cases" id="id16">Use Cases</a></p>
+<li><p><a class="reference internal" href="#working-with-results" id="id27">Working with Results</a></p>
 <ul>
-<li><p><a class="reference internal" href="#hub-identification" id="id17">Hub Identification</a></p></li>
-<li><p><a class="reference internal" href="#layer-comparison" id="id18">Layer Comparison</a></p></li>
-<li><p><a class="reference internal" href="#node-importance-ranking" id="id19">Node Importance Ranking</a></p></li>
-<li><p><a class="reference internal" href="#network-filtering" id="id20">Network Filtering</a></p></li>
+<li><p><a class="reference internal" href="#formatting-results" id="id28">Formatting Results</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#error-handling" id="id21">Error Handling</a></p></li>
-<li><p><a class="reference internal" href="#complete-working-examples" id="id22">Complete Working Examples</a></p>
+<li><p><a class="reference internal" href="#convenience-functions" id="id29">Convenience Functions</a></p></li>
+<li><p><a class="reference internal" href="#use-cases" id="id30">Use Cases</a></p>
 <ul>
-<li><p><a class="reference internal" href="#example-1-basic-network-querying" id="id23">Example 1: Basic Network Querying</a></p></li>
-<li><p><a class="reference internal" href="#example-2-multilayer-network-analysis" id="id24">Example 2: Multilayer Network Analysis</a></p></li>
-<li><p><a class="reference internal" href="#example-3-hub-identification" id="id25">Example 3: Hub Identification</a></p></li>
-<li><p><a class="reference internal" href="#example-4-layer-comparison-workflow" id="id26">Example 4: Layer Comparison Workflow</a></p></li>
-<li><p><a class="reference internal" href="#example-files" id="id27">Example Files</a></p></li>
+<li><p><a class="reference internal" href="#hub-identification" id="id31">Hub Identification</a></p></li>
+<li><p><a class="reference internal" href="#layer-comparison" id="id32">Layer Comparison</a></p></li>
+<li><p><a class="reference internal" href="#node-importance-ranking" id="id33">Node Importance Ranking</a></p></li>
+<li><p><a class="reference internal" href="#network-filtering" id="id34">Network Filtering</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#api-reference" id="id28">API Reference</a></p>
+<li><p><a class="reference internal" href="#error-handling" id="id35">Error Handling</a></p>
 <ul>
-<li><p><a class="reference internal" href="#main-functions" id="id29">Main Functions</a></p></li>
-<li><p><a class="reference internal" href="#id1" id="id30">Convenience Functions</a></p></li>
+<li><p><a class="reference internal" href="#legacy-error-types" id="id36">Legacy Error Types</a></p></li>
+<li><p><a class="reference internal" href="#dsl-v2-error-types" id="id37">DSL v2 Error Types</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#limitations-and-future-work" id="id31">Limitations and Future Work</a></p></li>
-<li><p><a class="reference internal" href="#best-practices" id="id32">Best Practices</a></p></li>
-<li><p><a class="reference internal" href="#performance-considerations" id="id33">Performance Considerations</a></p></li>
-<li><p><a class="reference internal" href="#further-reading" id="id34">Further Reading</a></p></li>
-<li><p><a class="reference internal" href="#see-also" id="id35">See Also</a></p></li>
+<li><p><a class="reference internal" href="#complete-working-examples" id="id38">Complete Working Examples</a></p>
+<ul>
+<li><p><a class="reference internal" href="#example-1-basic-network-querying" id="id39">Example 1: Basic Network Querying</a></p></li>
+<li><p><a class="reference internal" href="#example-2-multilayer-network-analysis" id="id40">Example 2: Multilayer Network Analysis</a></p></li>
+<li><p><a class="reference internal" href="#example-3-hub-identification" id="id41">Example 3: Hub Identification</a></p></li>
+<li><p><a class="reference internal" href="#example-4-layer-comparison-workflow" id="id42">Example 4: Layer Comparison Workflow</a></p></li>
+<li><p><a class="reference internal" href="#example-files" id="id43">Example Files</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#api-reference" id="id44">API Reference</a></p>
+<ul>
+<li><p><a class="reference internal" href="#main-functions" id="id45">Main Functions</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id46">Convenience Functions</a></p></li>
+<li><p><a class="reference internal" href="#dsl-v2-builder-api" id="id47">DSL v2 Builder API</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#limitations-and-future-work" id="id48">Limitations and Future Work</a></p></li>
+<li><p><a class="reference internal" href="#best-practices" id="id49">Best Practices</a></p></li>
+<li><p><a class="reference internal" href="#performance-considerations" id="id50">Performance Considerations</a></p></li>
+<li><p><a class="reference internal" href="#further-reading" id="id51">Further Reading</a></p></li>
+<li><p><a class="reference internal" href="#see-also" id="id52">See Also</a></p></li>
 </ul>
 </nav>
 <section id="overview">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>Py3plex provides a Domain-Specific Language (DSL) for querying and analyzing multilayer networks using SQL-like syntax. This intuitive interface allows users to filter nodes and edges, compute network measures, and perform complex analyses with simple, readable queries.</p>
+<p><strong>DSL v2</strong> introduces several major improvements:</p>
+<ul class="simple">
+<li><p><strong>Python Builder API</strong>: Chainable, type-hinted query construction</p></li>
+<li><p><strong>Layer Algebra</strong>: Union, difference, and intersection operations on layers</p></li>
+<li><p><strong>Rich Results</strong>: Export to pandas, NetworkX, or Arrow formats</p></li>
+<li><p><strong>EXPLAIN Mode</strong>: Query execution plans with complexity estimates</p></li>
+<li><p><strong>Parameterized Queries</strong>: Safe parameter binding for dynamic queries</p></li>
+<li><p><strong>Better Errors</strong>: “Did you mean?” suggestions for typos</p></li>
+</ul>
 <p>The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot; AND degree &gt; 5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or using the new Builder API:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>The DSL is particularly useful for:</p>
@@ -263,8 +327,8 @@
 <section id="quick-start-example">
 <h2><a class="toc-backref" href="#id4" role="doc-backlink">Quick Start Example</a><a class="headerlink" href="#quick-start-example" title="Link to this heading"></a></h2>
 <p>Here’s a complete working example to get you started:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">format_result</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">format_result</span>
 
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -387,10 +451,315 @@ Nodes (showing 2 of 2):
 </div>
 </section>
 </section>
+<section id="python-builder-api-dsl-v2">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Python Builder API (DSL v2)</a><a class="headerlink" href="#python-builder-api-dsl-v2" title="Link to this heading"></a></h2>
+<p>DSL v2 introduces a Pythonic builder API that provides type hints, autocompletion,
+and a chainable interface for constructing queries. The builder API maps directly
+to the DSL syntax but with Python-native ergonomics.</p>
+<section id="basic-usage">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Basic Usage</a><a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<p>Import the builder components:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">Param</span>
+</pre></div>
+</div>
+<p>Create and execute a simple query:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select nodes in the social layer</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Get the count</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+
+<span class="c1"># Iterate over results</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="query-builder-methods">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Query Builder Methods</a><a class="headerlink" href="#query-builder-methods" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Q</span></code> class provides factory methods to start building queries:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Q.nodes()</span></code> - Start a query for nodes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Q.edges()</span></code> - Start a query for edges</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">QueryBuilder</span></code> returned supports these chainable methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+ <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layer_expr</span><span class="p">)</span>    <span class="c1"># Filter by layers (optional)</span>
+ <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">**</span><span class="n">conditions</span><span class="p">)</span>        <span class="c1"># Filter by conditions (optional)</span>
+ <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">measures</span><span class="p">)</span>         <span class="c1"># Compute measures (optional)</span>
+ <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">)</span>            <span class="c1"># Order results (optional)</span>
+ <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>                   <span class="c1"># Limit results (optional)</span>
+ <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span> <span class="c1"># Execute the query</span>
+</pre></div>
+</div>
+</section>
+<section id="where-conditions">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">WHERE Conditions</a><a class="headerlink" href="#where-conditions" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">where()</span></code> method supports Django-style field lookups:</p>
+<p><strong>Equality</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Comparisons</strong> (using double-underscore suffixes):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>      <span class="c1"># degree &gt; 5</span>
+<span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gte</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>     <span class="c1"># degree &gt;= 5</span>
+<span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__lt</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>     <span class="c1"># degree &lt; 10</span>
+<span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__lte</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>    <span class="c1"># degree &lt;= 10</span>
+<span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer__ne</span><span class="o">=</span><span class="s2">&quot;bots&quot;</span><span class="p">)</span>  <span class="c1"># layer != &quot;bots&quot;</span>
+</pre></div>
+</div>
+<p><strong>Multiple conditions</strong> (combined with AND):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Special predicates</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">intralayer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>                    <span class="c1"># Edges within same layer</span>
+<span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">interlayer</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">))</span>     <span class="c1"># Edges between specific layers</span>
+</pre></div>
+</div>
+</section>
+<section id="compute-with-aliases">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">COMPUTE with Aliases</a><a class="headerlink" href="#compute-with-aliases" title="Link to this heading"></a></h3>
+<p>Compute network measures with optional aliases:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single measure</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Single measure with alias</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;bc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Multiple measures</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Multiple measures with aliases</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">aliases</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">:</span> <span class="s2">&quot;bc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;closeness_centrality&quot;</span><span class="p">:</span> <span class="s2">&quot;cc&quot;</span>
+<span class="p">})</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="order-by-and-limit">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">ORDER BY and LIMIT</a><a class="headerlink" href="#order-by-and-limit" title="Link to this heading"></a></h3>
+<p>Sort and limit results:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Order by degree (ascending)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Order descending with - prefix</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Order by multiple keys</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Limit results</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="layer-algebra">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Layer Algebra</a><a class="headerlink" href="#layer-algebra" title="Link to this heading"></a></h3>
+<p>DSL v2 introduces layer algebra for combining multiple layers. Use the <code class="docutils literal notranslate"><span class="pre">L</span></code> proxy
+to reference layers and combine them with operators:</p>
+<p><strong>Union</strong> (+): Nodes from either layer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Difference</strong> (-): Nodes from one layer but not another:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;bots&quot;</span><span class="p">]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Intersection</strong> (&amp;): Nodes in both layers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Complex expressions</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (social OR work) - bots</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;bots&quot;</span><span class="p">]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="complete-builder-example">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Complete Builder Example</a><a class="headerlink" href="#complete-builder-example" title="Link to this heading"></a></h3>
+<p>Here’s a comprehensive example using the builder API:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Create network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Eve&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Eve&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Query using builder API</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;bc&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-bc&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Access results</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Top </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes by betweenness centrality:&quot;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="queryresult-object">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">QueryResult Object</a><a class="headerlink" href="#queryresult-object" title="Link to this heading"></a></h3>
+<p>The builder API returns a <code class="docutils literal notranslate"><span class="pre">QueryResult</span></code> object with rich export capabilities:</p>
+<p><strong>Properties</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">target</span>    <span class="c1"># &#39;nodes&#39; or &#39;edges&#39;</span>
+<span class="n">result</span><span class="o">.</span><span class="n">items</span>     <span class="c1"># List of node/edge tuples</span>
+<span class="n">result</span><span class="o">.</span><span class="n">count</span>     <span class="c1"># Number of items</span>
+<span class="n">result</span><span class="o">.</span><span class="n">nodes</span>     <span class="c1"># Alias for items (when target=&#39;nodes&#39;)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">edges</span>     <span class="c1"># Alias for items (when target=&#39;edges&#39;)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">attributes</span>  <span class="c1"># Computed measure values</span>
+</pre></div>
+</div>
+<p><strong>Export methods</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export to pandas DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># Export to NetworkX subgraph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_networkx</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Export to Apache Arrow table</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_arrow</span><span class="p">()</span>
+
+<span class="c1"># Export to dictionary</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Iteration</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+<span class="c1"># Length</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="explain-mode">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">EXPLAIN Mode</a><a class="headerlink" href="#explain-mode" title="Link to this heading"></a></h3>
+<p>Get a query execution plan without actually running the query:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Build a query</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get execution plan</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Inspect the plan</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">plan</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">estimated_complexity</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check for warnings</span>
+<span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">plan</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The execution plan includes:</p>
+<ul class="simple">
+<li><p>Step-by-step breakdown of query execution</p></li>
+<li><p>Estimated time complexity for each step</p></li>
+<li><p>Warnings for expensive operations (e.g., betweenness centrality on large graphs)</p></li>
+</ul>
+</section>
+<section id="parameterized-queries">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Parameterized Queries</a><a class="headerlink" href="#parameterized-queries" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">Param</span></code> to create queries with placeholders that are bound at execution time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">Param</span>
+
+<span class="c1"># Create a reusable query template</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">&quot;min_degree&quot;</span><span class="p">))</span>
+
+<span class="c1"># Execute with different parameters</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parameter types:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Param.int(&quot;name&quot;)</span></code> - Integer parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Param.float(&quot;name&quot;)</span></code> - Float parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Param.str(&quot;name&quot;)</span></code> - String parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Param.ref(&quot;name&quot;)</span></code> - Untyped parameter</p></li>
+</ul>
+</section>
+<section id="convert-builder-to-dsl-string">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Convert Builder to DSL String</a><a class="headerlink" href="#convert-builder-to-dsl-string" title="Link to this heading"></a></h3>
+<p>Convert a builder query back to DSL string format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Get DSL string</span>
+<span class="n">dsl_string</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">to_dsl</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dsl_string</span><span class="p">)</span>
+<span class="c1"># Output: SELECT nodes WHERE layer = &quot;social&quot; AND degree &gt; 5 COMPUTE degree LIMIT 10</span>
+</pre></div>
+</div>
+<p>This is useful for:</p>
+<ul class="simple">
+<li><p>Debugging queries</p></li>
+<li><p>Logging and auditing</p></li>
+<li><p>Serializing queries for later use</p></li>
+</ul>
+</section>
+<section id="error-handling-with-suggestions">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Error Handling with Suggestions</a><a class="headerlink" href="#error-handling-with-suggestions" title="Link to this heading"></a></h3>
+<p>DSL v2 provides helpful error messages with “Did you mean?” suggestions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">UnknownMeasureError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Typo in measure name</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenes&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">UnknownMeasureError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="c1"># Output: Unknown measure &#39;betweenes&#39;. Did you mean &#39;betweenness&#39;?</span>
+    <span class="c1">#         Known measures: betweenness_centrality, closeness_centrality, ...</span>
+</pre></div>
+</div>
+</section>
+<section id="measure-registry">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Measure Registry</a><a class="headerlink" href="#measure-registry" title="Link to this heading"></a></h3>
+<p>DSL v2 includes a centralized registry for network measures. View available measures:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">measure_registry</span>
+
+<span class="c1"># List all measures</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">measure_registry</span><span class="o">.</span><span class="n">list_measures</span><span class="p">())</span>
+
+<span class="c1"># Check if a measure exists</span>
+<span class="k">if</span> <span class="n">measure_registry</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;degree is available&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get measure description</span>
+<span class="n">desc</span> <span class="o">=</span> <span class="n">measure_registry</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="example-queries">
-<h2><a class="toc-backref" href="#id9" role="doc-backlink">Example Queries</a><a class="headerlink" href="#example-queries" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Example Queries</a><a class="headerlink" href="#example-queries" title="Link to this heading"></a></h2>
 <section id="basic-queries">
-<h3><a class="toc-backref" href="#id10" role="doc-backlink">Basic Queries</a><a class="headerlink" href="#basic-queries" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Basic Queries</a><a class="headerlink" href="#basic-queries" title="Link to this heading"></a></h3>
 <p>Select all nodes in a layer:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot;&#39;</span><span class="p">)</span>
 </pre></div>
@@ -405,7 +774,7 @@ Nodes (showing 2 of 2):
 </div>
 </section>
 <section id="complex-queries">
-<h3><a class="toc-backref" href="#id11" role="doc-backlink">Complex Queries</a><a class="headerlink" href="#complex-queries" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Complex Queries</a><a class="headerlink" href="#complex-queries" title="Link to this heading"></a></h3>
 <p>Combine multiple conditions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes in transport layer with high degree</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
@@ -432,7 +801,7 @@ Nodes (showing 2 of 2):
 </div>
 </section>
 <section id="analytical-queries">
-<h3><a class="toc-backref" href="#id12" role="doc-backlink">Analytical Queries</a><a class="headerlink" href="#analytical-queries" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Analytical Queries</a><a class="headerlink" href="#analytical-queries" title="Link to this heading"></a></h3>
 <p>Compute centrality for a layer:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
@@ -454,7 +823,7 @@ Nodes (showing 2 of 2):
 </section>
 </section>
 <section id="working-with-results">
-<h2><a class="toc-backref" href="#id13" role="doc-backlink">Working with Results</a><a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">Working with Results</a><a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">execute_query</span></code> function returns a dictionary containing:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">query</span></code>: Original query string</p></li>
@@ -487,9 +856,9 @@ Nodes (showing 2 of 2):
 </pre></div>
 </div>
 <section id="formatting-results">
-<h3><a class="toc-backref" href="#id14" role="doc-backlink">Formatting Results</a><a class="headerlink" href="#formatting-results" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Formatting Results</a><a class="headerlink" href="#formatting-results" title="Link to this heading"></a></h3>
 <p>Use <code class="docutils literal notranslate"><span class="pre">format_result</span></code> for human-readable output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_result</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">format_result</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE degree &gt; 3&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">format_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
@@ -498,16 +867,16 @@ Nodes (showing 2 of 2):
 </section>
 </section>
 <section id="convenience-functions">
-<h2><a class="toc-backref" href="#id15" role="doc-backlink">Convenience Functions</a><a class="headerlink" href="#convenience-functions" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Convenience Functions</a><a class="headerlink" href="#convenience-functions" title="Link to this heading"></a></h2>
 <p>The DSL module provides convenience functions for common operations:</p>
 <p>Select nodes by layer:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">select_nodes_by_layer</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">select_nodes_by_layer</span>
 
 <span class="n">nodes</span> <span class="o">=</span> <span class="n">select_nodes_by_layer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;transport&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Select high-degree nodes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">select_high_degree_nodes</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">select_high_degree_nodes</span>
 
 <span class="c1"># All high-degree nodes</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="n">select_high_degree_nodes</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
@@ -517,7 +886,7 @@ Nodes (showing 2 of 2):
 </pre></div>
 </div>
 <p>Compute centrality for a layer:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_centrality_for_layer</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">compute_centrality_for_layer</span>
 
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">compute_centrality_for_layer</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
@@ -528,9 +897,9 @@ Nodes (showing 2 of 2):
 </div>
 </section>
 <section id="use-cases">
-<h2><a class="toc-backref" href="#id16" role="doc-backlink">Use Cases</a><a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">Use Cases</a><a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
 <section id="hub-identification">
-<h3><a class="toc-backref" href="#id17" role="doc-backlink">Hub Identification</a><a class="headerlink" href="#hub-identification" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Hub Identification</a><a class="headerlink" href="#hub-identification" title="Link to this heading"></a></h3>
 <p>Find important nodes in each layer:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;transport&#39;</span><span class="p">]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
@@ -542,7 +911,7 @@ Nodes (showing 2 of 2):
 </div>
 </section>
 <section id="layer-comparison">
-<h3><a class="toc-backref" href="#id18" role="doc-backlink">Layer Comparison</a><a class="headerlink" href="#layer-comparison" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Layer Comparison</a><a class="headerlink" href="#layer-comparison" title="Link to this heading"></a></h3>
 <p>Compare network properties across layers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;transport&#39;</span><span class="p">]</span>
 
@@ -558,7 +927,7 @@ Nodes (showing 2 of 2):
 </div>
 </section>
 <section id="node-importance-ranking">
-<h3><a class="toc-backref" href="#id19" role="doc-backlink">Node Importance Ranking</a><a class="headerlink" href="#node-importance-ranking" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Node Importance Ranking</a><a class="headerlink" href="#node-importance-ranking" title="Link to this heading"></a></h3>
 <p>Rank nodes by multiple measures:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
@@ -579,7 +948,7 @@ Nodes (showing 2 of 2):
 </div>
 </section>
 <section id="network-filtering">
-<h3><a class="toc-backref" href="#id20" role="doc-backlink">Network Filtering</a><a class="headerlink" href="#network-filtering" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Network Filtering</a><a class="headerlink" href="#network-filtering" title="Link to this heading"></a></h3>
 <p>Create subnetworks based on queries:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get high-degree nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE degree &gt; 5&#39;</span><span class="p">)</span>
@@ -595,9 +964,12 @@ Nodes (showing 2 of 2):
 </section>
 </section>
 <section id="error-handling">
-<h2><a class="toc-backref" href="#id21" role="doc-backlink">Error Handling</a><a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
-<p>The DSL raises specific exceptions for different error types:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">DSLSyntaxError</span><span class="p">,</span> <span class="n">DSLExecutionError</span>
+<h2><a class="toc-backref" href="#id35" role="doc-backlink">Error Handling</a><a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>The DSL raises specific exceptions for different error types.</p>
+<section id="legacy-error-types">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Legacy Error Types</a><a class="headerlink" href="#legacy-error-types" title="Link to this heading"></a></h3>
+<p>For string DSL queries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">DSLSyntaxError</span><span class="p">,</span> <span class="n">DSLExecutionError</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE invalid_condition&#39;</span><span class="p">)</span>
@@ -607,6 +979,36 @@ Nodes (showing 2 of 2):
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="dsl-v2-error-types">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">DSL v2 Error Types</a><a class="headerlink" href="#dsl-v2-error-types" title="Link to this heading"></a></h3>
+<p>For builder API queries, more specific error types are available:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="p">,</span>
+    <span class="n">DslError</span><span class="p">,</span>              <span class="c1"># Base error class</span>
+    <span class="n">DslSyntaxError</span><span class="p">,</span>        <span class="c1"># Syntax errors</span>
+    <span class="n">DslExecutionError</span><span class="p">,</span>     <span class="c1"># Execution errors</span>
+    <span class="n">UnknownAttributeError</span><span class="p">,</span> <span class="c1"># Unknown attribute name</span>
+    <span class="n">UnknownMeasureError</span><span class="p">,</span>   <span class="c1"># Unknown measure name</span>
+    <span class="n">UnknownLayerError</span><span class="p">,</span>     <span class="c1"># Unknown layer name</span>
+    <span class="n">ParameterMissingError</span><span class="p">,</span> <span class="c1"># Missing parameter</span>
+    <span class="n">TypeMismatchError</span><span class="p">,</span>     <span class="c1"># Type mismatch</span>
+<span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;unknwon_measure&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">UnknownMeasureError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>  <span class="c1"># Includes &quot;Did you mean?&quot; suggestion</span>
+<span class="k">except</span> <span class="n">DslError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DSL error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All DSL v2 errors include:</p>
+<ul class="simple">
+<li><p>Original query context (when available)</p></li>
+<li><p>Line and column information for syntax errors</p></li>
+<li><p>“Did you mean?” suggestions using Levenshtein distance</p></li>
+</ul>
 <p>Common syntax errors:</p>
 <ul class="simple">
 <li><p>Missing SELECT keyword</p></li>
@@ -616,14 +1018,15 @@ Nodes (showing 2 of 2):
 <li><p>Invalid measure names</p></li>
 </ul>
 </section>
+</section>
 <section id="complete-working-examples">
-<h2><a class="toc-backref" href="#id22" role="doc-backlink">Complete Working Examples</a><a class="headerlink" href="#complete-working-examples" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id38" role="doc-backlink">Complete Working Examples</a><a class="headerlink" href="#complete-working-examples" title="Link to this heading"></a></h2>
 <p>This section provides complete, runnable examples demonstrating various DSL features with expected outputs.</p>
 <section id="example-1-basic-network-querying">
-<h3><a class="toc-backref" href="#id23" role="doc-backlink">Example 1: Basic Network Querying</a><a class="headerlink" href="#example-1-basic-network-querying" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">Example 1: Basic Network Querying</a><a class="headerlink" href="#example-1-basic-network-querying" title="Link to this heading"></a></h3>
 <p>Create a simple social network and query it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">format_result</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">format_result</span>
 
 <span class="c1"># Create network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -669,10 +1072,10 @@ High-degree nodes: 3
 </div>
 </section>
 <section id="example-2-multilayer-network-analysis">
-<h3><a class="toc-backref" href="#id24" role="doc-backlink">Example 2: Multilayer Network Analysis</a><a class="headerlink" href="#example-2-multilayer-network-analysis" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">Example 2: Multilayer Network Analysis</a><a class="headerlink" href="#example-2-multilayer-network-analysis" title="Link to this heading"></a></h3>
 <p>Analyze a network with multiple layers:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Create multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -719,10 +1122,10 @@ family layer: 3 nodes
 </div>
 </section>
 <section id="example-3-hub-identification">
-<h3><a class="toc-backref" href="#id25" role="doc-backlink">Example 3: Hub Identification</a><a class="headerlink" href="#example-3-hub-identification" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">Example 3: Hub Identification</a><a class="headerlink" href="#example-3-hub-identification" title="Link to this heading"></a></h3>
 <p>Find and rank important nodes using multiple centrality measures:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Create network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -777,10 +1180,10 @@ Top nodes by betweenness centrality:
 </div>
 </section>
 <section id="example-4-layer-comparison-workflow">
-<h3><a class="toc-backref" href="#id26" role="doc-backlink">Example 4: Layer Comparison Workflow</a><a class="headerlink" href="#example-4-layer-comparison-workflow" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">Example 4: Layer Comparison Workflow</a><a class="headerlink" href="#example-4-layer-comparison-workflow" title="Link to this heading"></a></h3>
 <p>Compare network structure across different layers:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Create multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -851,7 +1254,7 @@ transport    4        0.0000           0.0000
 </div>
 </section>
 <section id="example-files">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">Example Files</a><a class="headerlink" href="#example-files" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id43" role="doc-backlink">Example Files</a><a class="headerlink" href="#example-files" title="Link to this heading"></a></h3>
 <p>Additional complete examples are available in the repository:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_queries.py</span></code> - Basic DSL usage with detailed output</p></li>
@@ -866,10 +1269,10 @@ transport    4        0.0000           0.0000
 </section>
 </section>
 <section id="api-reference">
-<h2><a class="toc-backref" href="#id28" role="doc-backlink">API Reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id44" role="doc-backlink">API Reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
 <section id="main-functions">
-<h3><a class="toc-backref" href="#id29" role="doc-backlink">Main Functions</a><a class="headerlink" href="#main-functions" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<h3><a class="toc-backref" href="#id45" role="doc-backlink">Main Functions</a><a class="headerlink" href="#main-functions" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute a DSL query on a multilayer network.</span>
 
 <span class="sd">    Args:</span>
@@ -880,7 +1283,7 @@ transport    4        0.0000           0.0000
 <span class="sd">        Dictionary with &#39;nodes&#39;/&#39;edges&#39;, &#39;count&#39;, and optionally &#39;computed&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">format_result</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">format_result</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Format query result as human-readable string.</span>
 
 <span class="sd">    Args:</span>
@@ -894,23 +1297,109 @@ transport    4        0.0000           0.0000
 </div>
 </section>
 <section id="id1">
-<h3><a class="toc-backref" href="#id30" role="doc-backlink">Convenience Functions</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">select_nodes_by_layer</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<h3><a class="toc-backref" href="#id46" role="doc-backlink">Convenience Functions</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">select_nodes_by_layer</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select all nodes in a specific layer.&quot;&quot;&quot;</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">select_high_degree_nodes</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">min_degree</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">select_high_degree_nodes</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">min_degree</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                              <span class="n">layer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select nodes with degree above threshold.&quot;&quot;&quot;</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_centrality_for_layer</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">compute_centrality_for_layer</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                                  <span class="n">centrality</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute centrality for all nodes in a layer.&quot;&quot;&quot;</span>
 </pre></div>
 </div>
 </section>
+<section id="dsl-v2-builder-api">
+<h3><a class="toc-backref" href="#id47" role="doc-backlink">DSL v2 Builder API</a><a class="headerlink" href="#dsl-v2-builder-api" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Q</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Query factory for creating QueryBuilder instances.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">QueryBuilder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a query builder for nodes.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">edges</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">QueryBuilder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a query builder for edges.&quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">QueryBuilder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Chainable query builder.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">from_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_expr</span><span class="p">:</span> <span class="n">LayerExprBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryBuilder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter by layers using layer algebra.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">where</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryBuilder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add WHERE conditions.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">measures</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryBuilder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add measures to compute.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">order_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryBuilder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add ORDER BY clause.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryBuilder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Limit number of results.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExplainQuery</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create EXPLAIN query for execution plan.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">to_ast</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export as AST Query object.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">to_dsl</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export as DSL string.&quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">QueryResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rich result object from query execution.&quot;&quot;&quot;</span>
+
+    <span class="n">target</span><span class="p">:</span> <span class="nb">str</span>       <span class="c1"># &#39;nodes&#39; or &#39;edges&#39;</span>
+    <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>  <span class="c1"># List of node/edge tuples</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span>        <span class="c1"># Number of items</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="n">Dict</span>  <span class="c1"># Computed measure values</span>
+
+    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export to pandas DataFrame.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">to_networkx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export to NetworkX subgraph.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">to_arrow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export to Apache Arrow table.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export as dictionary.&quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">L</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Layer proxy for layer algebra.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerExprBuilder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create layer expression: L[&#39;social&#39;]&quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">Param</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory for parameter references.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">int</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParamRef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create integer parameter.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">float</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParamRef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create float parameter.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">str</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParamRef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create string parameter.&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="limitations-and-future-work">
-<h2><a class="toc-backref" href="#id31" role="doc-backlink">Limitations and Future Work</a><a class="headerlink" href="#limitations-and-future-work" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id48" role="doc-backlink">Limitations and Future Work</a><a class="headerlink" href="#limitations-and-future-work" title="Link to this heading"></a></h2>
 <p>Current limitations:</p>
 <ul class="simple">
 <li><p>Edge queries are not yet fully supported</p></li>
@@ -929,7 +1418,7 @@ transport    4        0.0000           0.0000
 </ul>
 </section>
 <section id="best-practices">
-<h2><a class="toc-backref" href="#id32" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id49" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p><strong>Start simple</strong>: Begin with basic queries and add complexity incrementally</p></li>
 <li><p><strong>Validate data</strong>: Ensure network is properly constructed before querying</p></li>
@@ -940,7 +1429,7 @@ transport    4        0.0000           0.0000
 </ol>
 </section>
 <section id="performance-considerations">
-<h2><a class="toc-backref" href="#id33" role="doc-backlink">Performance Considerations</a><a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id50" role="doc-backlink">Performance Considerations</a><a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Computing centrality measures can be expensive on large networks</p></li>
 <li><p>Filter by layer first to reduce search space</p></li>
@@ -970,7 +1459,7 @@ transport    4        0.0000           0.0000
 </div>
 </section>
 <section id="further-reading">
-<h2><a class="toc-backref" href="#id34" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id51" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="../getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a> - Network construction basics</p></li>
 <li><p><a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> - Understanding multilayer networks</p></li>
@@ -979,7 +1468,7 @@ transport    4        0.0000           0.0000
 </ul>
 </section>
 <section id="see-also">
-<h2><a class="toc-backref" href="#id35" role="doc-backlink">See Also</a><a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id52" role="doc-backlink">See Also</a><a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>NetworkX documentation for centrality measures</p></li>
 <li><p>Examples directory for complete use cases</p></li>
