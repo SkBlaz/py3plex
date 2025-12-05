@@ -209,8 +209,7 @@ Detect communities in a network.
       "partition": {
         "node1": 0,
         "node2": 0,
-        "node3": 1,
-        ...
+        "node3": 1
       }
     }
 
@@ -247,8 +246,7 @@ Compute network statistics.
         "degree_distribution": {
           "1": 10,
           "2": 25,
-          "3": 30,
-          ...
+          "3": 30
         }
       }
     }
@@ -285,8 +283,7 @@ Compute node centrality measures.
       "centrality": {
         "node1": 0.42,
         "node2": 0.35,
-        "node3": 0.15,
-        ...
+        "node3": 0.15
       }
     }
 
@@ -367,8 +364,7 @@ Compute network layout.
       "layout_id": "layout789",
       "positions": {
         "node1": [0.5, 0.3],
-        "node2": [0.6, 0.8],
-        ...
+        "node2": [0.6, 0.8]
       }
     }
 
@@ -518,7 +514,7 @@ Default rate limits (configurable):
 
 Rate limit headers in responses:
 
-.. code-block:: http
+.. code-block:: text
 
     X-RateLimit-Limit: 50
     X-RateLimit-Remaining: 45
