@@ -153,6 +153,21 @@ from py3plex.datasets import (
     make_social_network,
 )
 
+# Dynamics module for simulating dynamical processes
+from py3plex.dynamics import (
+    D,
+    SimulationBuilder,
+    ProcessSpec,
+    SIS,
+    SIR,
+    RandomWalk,
+    SimulationResult,
+    run_simulation,
+    DynamicsError,
+    UnknownProcessError,
+    MissingInitialConditionError,
+)
+
 __all__ = [
     # Version info
     "__version__",
@@ -243,4 +258,16 @@ __all__ = [
     "make_social_network",
     "list_datasets",
     "get_data_dir",
+    # Dynamics (simulation)
+    "D",
+    "SimulationBuilder",
+    "ProcessSpec",
+    "SIS",
+    "SIR",
+    "RandomWalk",
+    "SimulationResult",
+    "run_simulation",
+    "DynamicsError",
+    "UnknownProcessError",
+    "MissingInitialConditionError",
 ]
