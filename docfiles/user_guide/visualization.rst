@@ -49,6 +49,13 @@ Basic Multilayer Visualization
         labels=True
     )
 
+**Example output:**
+
+.. image:: ../../example_images/multilayer.png
+   :width: 600px
+   :align: center
+   :alt: Basic multilayer network visualization
+
 Preset Visualization Modes
 ---------------------------
 
@@ -94,6 +101,13 @@ Optimized for networks with many nodes where detail isn't critical.
 - Reduced visual clutter
 - Shows overall structure
 - Works with many nodes
+
+**Example output (minimal mode with large network):**
+
+.. image:: ../../example_images/hairball.png
+   :width: 500px
+   :align: center
+   :alt: Minimal mode visualization for large networks
 
 Balanced Mode (Medium Networks 100-1000 nodes)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,6 +189,13 @@ Maximum detail for small networks where every node and edge matters.
 - Clear node identification
 - Edge weights visible
 - Professional appearance
+
+**Example output (dense mode with small network):**
+
+.. image:: ../../example_images/multiplex.png
+   :width: 400px
+   :align: center
+   :alt: Dense mode visualization for small networks
 
 Layout Options
 --------------
@@ -378,6 +399,13 @@ Color nodes by community membership:
     
     # Visualize
     draw_multilayer_default(network.get_layers(), display=True)
+
+**Example output (community-colored network):**
+
+.. image:: ../../example_images/communities.png
+   :width: 500px
+   :align: center
+   :alt: Network with nodes colored by community membership
 
 Exporting Visualizations
 -------------------------
@@ -1188,6 +1216,11 @@ The flow visualization shows each layer as a horizontal band with nodes position
 x-axis. Inter-layer connections are drawn as flowing Bezier curves, with node activity encoded
 by color and size.
 
+.. image:: ../../example_images/multilayer_flow.png
+   :width: 600px
+   :align: center
+   :alt: Flow/Alluvial visualization showing inter-layer connections
+
 .. code-block:: python
 
     from py3plex.core import multinet
@@ -1216,6 +1249,11 @@ The Sankey-style diagram provides an aggregate view of inter-layer connection st
 The visualization uses text and arrows where width represents the number of connections
 between layers. This is ideal for understanding overall flow patterns rather than
 individual node connections.
+
+.. image:: ../../example_images/multilayer_sankey_diagram.png
+   :width: 500px
+   :align: center
+   :alt: Sankey diagram showing inter-layer flow strength
 
 .. code-block:: python
 
