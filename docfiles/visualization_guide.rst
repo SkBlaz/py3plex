@@ -1203,11 +1203,6 @@ The flow visualization shows each layer as a horizontal band with nodes position
 x-axis. Inter-layer connections are drawn as flowing Bezier curves, with node activity encoded
 by color and size.
 
-.. image:: ../example_images/multilayer_flow.png
-   :width: 600px
-   :align: center
-   :alt: Flow/Alluvial visualization showing inter-layer connections
-
 .. code-block:: python
 
     from py3plex.core import multinet
@@ -1221,6 +1216,13 @@ by color and size.
     
     # Or use 'alluvial' (same as 'flow')
     ax = network.visualize_network(style='alluvial', show=True)
+
+**Example output:**
+
+.. image:: ../example_images/multilayer_flow.png
+   :width: 600px
+   :align: center
+   :alt: Flow/Alluvial visualization showing inter-layer connections
 
 **Best for:**
 
@@ -1237,11 +1239,6 @@ The visualization uses text and arrows where width represents the number of conn
 between layers. This is ideal for understanding overall flow patterns rather than
 individual node connections.
 
-.. image:: ../example_images/multilayer_sankey_diagram.png
-   :width: 500px
-   :align: center
-   :alt: Sankey diagram showing inter-layer flow strength
-
 .. code-block:: python
 
     from py3plex.core import multinet
@@ -1252,6 +1249,13 @@ individual node connections.
     
     # Sankey-style diagram showing inter-layer flow strength
     ax = network.visualize_network(style='sankey', show=True)
+
+**Example output:**
+
+.. image:: ../example_images/multilayer_sankey_diagram.png
+   :width: 500px
+   :align: center
+   :alt: Sankey diagram showing inter-layer flow strength
 
 You can also use the function directly:
 
