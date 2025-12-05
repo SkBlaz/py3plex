@@ -63,7 +63,7 @@ Or install py3plex with all dependencies:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Quick Start
 -----------

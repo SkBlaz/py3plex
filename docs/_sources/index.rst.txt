@@ -35,7 +35,7 @@ Install:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Create a multilayer network:
 

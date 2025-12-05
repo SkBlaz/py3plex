@@ -10,7 +10,7 @@ The CLI tool is automatically available after installing py3plex:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 After installation, verify the CLI is available:
 

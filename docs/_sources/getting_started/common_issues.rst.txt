@@ -16,7 +16,7 @@ Installation Issues
 .. code-block:: bash
 
     pip install numpy
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Compilation Errors on Windows
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,7 +31,7 @@ Compilation Errors on Windows
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 "Permission denied" on Linux/macOS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +42,7 @@ Compilation Errors on Windows
 
 .. code-block:: bash
 
-    pip install --user git+https://github.com/SkBlaz/py3plex.git
+    pip install --user py3plex
 
 **Solution 2:** Use a virtual environment (recommended):
 
@@ -50,7 +50,7 @@ Compilation Errors on Windows
 
     python3 -m venv py3plex-env
     source py3plex-env/bin/activate  # On Windows: py3plex-env\Scripts\activate
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Old Version Installed
 ~~~~~~~~~~~~~~~~~~~~~
@@ -61,7 +61,7 @@ Old Version Installed
 
 .. code-block:: bash
 
-    pip install --upgrade git+https://github.com/SkBlaz/py3plex.git
+    pip install --upgrade py3plex
 
 Data Loading Issues
 -------------------
@@ -200,7 +200,7 @@ Missing Dependencies
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+    pip install py3plex[viz]
 
 "No module named 'infomap'"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -211,7 +211,7 @@ Missing Dependencies
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
+    pip install py3plex[infomap]
 
 Or use alternative community detection methods:
 
@@ -233,7 +233,7 @@ Very Slow Loading
 .. code-block:: bash
 
     # Install Arrow support
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[arrow]
+    pip install py3plex[arrow]
 
 .. code-block:: python
 

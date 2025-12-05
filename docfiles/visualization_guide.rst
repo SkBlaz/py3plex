@@ -439,7 +439,7 @@ networks dynamically in your web browser.
     pip install plotly
     
     # Or install py3plex with visualization extras
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+    pip install py3plex[viz]
 
 Basic Interactive Hairball Plot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

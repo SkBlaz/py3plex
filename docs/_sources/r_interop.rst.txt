@@ -31,7 +31,7 @@ Install required packages:
 .. code-block:: bash
 
     # In terminal/shell
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
     pip install python-igraph
 
 Quick Start: Simple Use Case with Centrality
@@ -456,7 +456,7 @@ If you get ``ModuleNotFoundError: No module named 'py3plex'``:
     py_config()
     
     # Install py3plex in that Python
-    py_install("git+https://github.com/SkBlaz/py3plex.git")
+    py_install("py3plex")
 
 igraph Import Error
 ~~~~~~~~~~~~~~~~~~~

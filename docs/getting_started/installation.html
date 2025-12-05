@@ -131,7 +131,7 @@
 <section id="install-from-github-recommended">
 <h3>Install from GitHub (Recommended)<a class="headerlink" href="#install-from-github-recommended" title="Link to this heading"></a></h3>
 <p>The latest version is always available on GitHub:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex
 </pre></div>
 </div>
 <p>This installs the core py3plex library with all required dependencies.</p>
@@ -184,28 +184,28 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 <section id="advanced-community-detection">
 <h3>Advanced Community Detection<a class="headerlink" href="#advanced-community-detection" title="Link to this heading"></a></h3>
 <p>Install Infomap for advanced overlapping community detection:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex<span class="o">[</span>infomap<span class="o">]</span>
 </pre></div>
 </div>
 </section>
 <section id="additional-algorithms">
 <h3>Additional Algorithms<a class="headerlink" href="#additional-algorithms" title="Link to this heading"></a></h3>
 <p>Install extra community detection algorithms (Louvain, cdlib):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>algos<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex<span class="o">[</span>algos<span class="o">]</span>
 </pre></div>
 </div>
 </section>
 <section id="advanced-visualization">
 <h3>Advanced Visualization<a class="headerlink" href="#advanced-visualization" title="Link to this heading"></a></h3>
 <p>Install Plotly and igraph for interactive and advanced visualizations:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex<span class="o">[</span>viz<span class="o">]</span>
 </pre></div>
 </div>
 </section>
 <section id="apache-arrow-support">
 <h3>Apache Arrow Support<a class="headerlink" href="#apache-arrow-support" title="Link to this heading"></a></h3>
 <p>Install pyarrow for high-performance I/O with Arrow/Parquet formats:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>arrow<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex<span class="o">[</span>arrow<span class="o">]</span>
 </pre></div>
 </div>
 <p>Arrow format provides 2-3x faster read/write operations and better compression compared to JSON.
@@ -214,7 +214,7 @@ See <a class="reference internal" href="../user_guide/io_and_formats.html"><span
 <section id="multiple-extras">
 <h3>Multiple Extras<a class="headerlink" href="#multiple-extras" title="Link to this heading"></a></h3>
 <p>Install multiple feature sets at once:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap,viz,algos,arrow<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex<span class="o">[</span>infomap,viz,algos,arrow<span class="o">]</span>
 </pre></div>
 </div>
 </section>
@@ -280,7 +280,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <h3>Infomap Community Detection<a class="headerlink" href="#infomap-community-detection" title="Link to this heading"></a></h3>
 <p>For advanced community detection using Infomap:</p>
 <p><strong>Option 1:</strong> Use the bundled Python implementation (recommended):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex<span class="o">[</span>infomap<span class="o">]</span>
 </pre></div>
 </div>
 <p><strong>Option 2:</strong> Download the C++ binary from the official source:</p>
@@ -327,7 +327,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </
 py3plex-env<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
 
 <span class="c1"># Install py3plex</span>
-pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+pip<span class="w"> </span>install py3plex
 </pre></div>
 </div>
 </section>
@@ -340,7 +340,7 @@ conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </
 conda<span class="w"> </span>activate<span class="w"> </span>py3plex
 
 <span class="c1"># Install py3plex</span>
-pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+pip<span class="w"> </span>install py3plex
 </pre></div>
 </div>
 </section>
@@ -351,7 +351,7 @@ pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com
 <h3>Issue: “No module named ‘numpy’”<a class="headerlink" href="#issue-no-module-named-numpy" title="Link to this heading"></a></h3>
 <p><strong>Solution:</strong> Install numpy first:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy
-pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+pip<span class="w"> </span>install py3plex
 </pre></div>
 </div>
 </section>
@@ -367,7 +367,7 @@ pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com
 <section id="issue-permission-denied-on-linux-macos">
 <h3>Issue: “Permission denied” on Linux/macOS<a class="headerlink" href="#issue-permission-denied-on-linux-macos" title="Link to this heading"></a></h3>
 <p><strong>Solution:</strong> Use pip install with –user flag:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install --user py3plex
 </pre></div>
 </div>
 <p>Or use a virtual environment (recommended).</p>
@@ -375,7 +375,7 @@ pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com
 <section id="issue-old-version-installed">
 <h3>Issue: Old version installed<a class="headerlink" href="#issue-old-version-installed" title="Link to this heading"></a></h3>
 <p><strong>Solution:</strong> Upgrade to latest version:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>git+https://github.com/SkBlaz/py3plex.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install --upgrade py3plex
 </pre></div>
 </div>
 </section>

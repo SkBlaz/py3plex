@@ -46,7 +46,7 @@ Install from GitHub
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Docker Installation (Alternative)
 ----------------------------------
@@ -81,13 +81,13 @@ Optional Dependencies
 .. code-block:: bash
 
     # Advanced community detection with Infomap
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
+    pip install py3plex[infomap]
 
     # Additional algorithms (Louvain, cdlib)
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[algos]
+    pip install py3plex[algos]
 
     # Advanced visualization (plotly, igraph)
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+    pip install py3plex[viz]
 
     # For development (includes testing and linting tools)
     pip install -e ".[dev]"
