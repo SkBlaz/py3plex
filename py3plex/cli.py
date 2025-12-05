@@ -116,15 +116,94 @@ def _parse_node(node: Any) -> tuple:
     return (node,)
 
 
-def _load_network(file_path: str) -> "multinet.multi_layer_network":
-    """Load a network from file, handling different formats.
+def _load_network_from_stdin(input_format: str = "multiedgelist") -> "multinet.multi_layer_network":
+    """Load a network from stdin.
 
     Args:
-        file_path: Path to the network file
+        input_format: Expected format of stdin data ('multiedgelist', 'edgelist', 'json')
 
     Returns:
         Loaded multi_layer_network object
     """
+    network = multinet.multi_layer_network()
+    
+    # Read all stdin content
+    stdin_content = sys.stdin.read()
+    if not stdin_content.strip():
+        raise ValueError("No data received from stdin")
+    
+    if input_format == "json":
+        # Parse JSON format
+        data = json.loads(stdin_content)
+        
+        # Handle py3plex JSON format with nodes and edges
+        if "nodes" in data and "edges" in data:
+            # Reconstruct network from JSON data
+            for edge in data.get("edges", []):
+                source = edge.get("source", "")
+                target = edge.get("target", "")
+                # Try to parse as tuple strings from convert output
+                if source.startswith("(") and target.startswith("("):
+                    import ast
+                    try:
+                        source_tuple = ast.literal_eval(source)
+                        target_tuple = ast.literal_eval(target)
+                        if isinstance(source_tuple, tuple) and isinstance(target_tuple, tuple):
+                            network.add_edges([{
+                                "source": source_tuple[0],
+                                "target": target_tuple[0],
+                                "source_type": source_tuple[1] if len(source_tuple) > 1 else "default",
+                                "target_type": target_tuple[1] if len(target_tuple) > 1 else "default",
+                            }], input_type="dict")
+                        continue
+                    except (ValueError, SyntaxError):
+                        pass
+                # Handle simple edge format
+                network.add_edges([{
+                    "source": source,
+                    "target": target,
+                    "source_type": edge.get("source_layer", "default"),
+                    "target_type": edge.get("target_layer", "default"),
+                }], input_type="dict")
+        else:
+            raise ValueError("Invalid JSON format: expected 'nodes' and 'edges' keys")
+    else:
+        # Write to temp file and load
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            f.write(stdin_content)
+            temp_path = f.name
+        
+        try:
+            # Detect format from content
+            lines = stdin_content.strip().split('\n')
+            first_line = lines[0].strip() if lines else ""
+            parts = first_line.split()
+            
+            if len(parts) in [4, 5]:
+                # Multilayer format
+                network.load_network(temp_path, input_type="multiedgelist")
+            else:
+                # Simple edgelist
+                network.load_network(temp_path, input_type="edgelist")
+        finally:
+            Path(temp_path).unlink(missing_ok=True)
+    
+    return network
+
+
+def _load_network(file_path: str) -> "multinet.multi_layer_network":
+    """Load a network from file or stdin (use '-' for stdin).
+
+    Args:
+        file_path: Path to the network file, or '-' for stdin
+
+    Returns:
+        Loaded multi_layer_network object
+    """
+    # Handle stdin input
+    if file_path == "-":
+        return _load_network_from_stdin()
+    
     network = multinet.multi_layer_network()
     input_path = Path(file_path)
 
@@ -291,6 +370,19 @@ Examples:
   # Aggregate multilayer network into single layer
   py3plex aggregate network.edgelist --method sum --output aggregated.edgelist
 
+Unix Piping (use '-' for stdin):
+  # Pipe network data to query command
+  cat network.edgelist | py3plex query - "SELECT nodes COMPUTE degree"
+
+  # Query and output JSON for further processing
+  py3plex query network.edgelist "SELECT nodes WHERE degree > 5 COMPUTE betweenness_centrality" | jq '.nodes[:5]'
+
+  # Use DSL builder syntax
+  py3plex query network.edgelist --dsl "Q.nodes().where(layer='social').compute('degree')"
+
+  # Load network from stdin
+  cat network.edgelist | py3plex load - --stats
+
 Note: The recommended format for multilayer networks is the multiedgelist/edgelist format
       (.edgelist or .txt). GraphML (.graphml) and other formats are also supported.
 
@@ -366,9 +458,9 @@ For more information, visit: https://github.com/SkBlaz/py3plex
 
     # LOAD command
     load_parser = subparsers.add_parser(
-        "load", help="Load and inspect a multilayer network"
+        "load", help="Load and inspect a multilayer network (use '-' for stdin)"
     )
-    load_parser.add_argument("input", help="Input network file")
+    load_parser.add_argument("input", help="Input network file (use '-' to read from stdin)")
     load_parser.add_argument(
         "--info", action="store_true", help="Display network information"
     )
@@ -376,6 +468,12 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--stats", action="store_true", help="Display basic statistics"
     )
     load_parser.add_argument("--output", "-o", help="Save output to file (JSON format)")
+    load_parser.add_argument(
+        "--input-format",
+        choices=["auto", "multiedgelist", "edgelist", "json"],
+        default="auto",
+        help="Input format for stdin data (default: auto-detect)",
+    )
 
     # COMMUNITY command
     community_parser = subparsers.add_parser(
@@ -492,6 +590,76 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "-o",
         required=True,
         help="Output file path - Format determined by extension: .graphml (GraphML), .gexf (GEXF), .gpickle (NetworkX pickle), .json (JSON)",
+    )
+
+    # QUERY command - Execute DSL queries on networks (supports Unix piping)
+    query_parser = subparsers.add_parser(
+        "query",
+        help="Execute DSL queries on networks (supports stdin with '-')",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Unix Piping Examples:
+  # Pipe network data and run a query
+  cat network.edgelist | py3plex query - "SELECT nodes WHERE layer='social' COMPUTE degree"
+
+  # Chain commands: create -> query
+  py3plex create --nodes 50 --layers 3 -o /dev/stdout --format json | py3plex query - --json "SELECT nodes COMPUTE degree ORDER BY degree DESC LIMIT 10"
+
+  # Use with the Python DSL builder syntax
+  py3plex query network.edgelist --dsl "Q.nodes().where(layer='social').compute('degree')"
+
+DSL Query Syntax:
+  SELECT nodes|edges
+  [FROM LAYER("name") [+ LAYER("name2")]]
+  [WHERE condition [AND condition ...]]
+  [COMPUTE measure [AS alias], ...]
+  [ORDER BY field [DESC]]
+  [LIMIT n]
+
+Examples:
+  # Get all nodes in the social layer
+  py3plex query network.edgelist "SELECT nodes WHERE layer='social'"
+
+  # Compute degree and betweenness for high-degree nodes
+  py3plex query network.edgelist "SELECT nodes WHERE degree > 5 COMPUTE betweenness_centrality ORDER BY betweenness_centrality DESC LIMIT 20"
+
+  # Get nodes from multiple layers
+  py3plex query network.edgelist 'SELECT nodes FROM LAYER("social") + LAYER("work")'
+        """,
+    )
+    query_parser.add_argument(
+        "input",
+        help="Input network file (use '-' to read from stdin)",
+    )
+    query_parser.add_argument(
+        "query",
+        nargs="?",
+        help="DSL query string (if not provided, reads from --query-file)",
+    )
+    query_parser.add_argument(
+        "--query-file", "-f",
+        help="File containing DSL query",
+    )
+    query_parser.add_argument(
+        "--output", "-o",
+        help="Output file (JSON format). If not specified, outputs to stdout",
+    )
+    query_parser.add_argument(
+        "--format",
+        choices=["json", "csv", "table"],
+        default="json",
+        help="Output format (default: json)",
+    )
+    query_parser.add_argument(
+        "--input-format",
+        choices=["auto", "multiedgelist", "edgelist", "json"],
+        default="auto",
+        help="Input format for stdin data (default: auto-detect)",
+    )
+    query_parser.add_argument(
+        "--dsl",
+        action="store_true",
+        help="Interpret query as Python DSL builder syntax (e.g., Q.nodes().compute('degree'))",
     )
 
     # SELFTEST command
@@ -727,8 +895,15 @@ def cmd_load(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        logger.info(f"Loading network from {args.input}...")
-        network = _load_network(args.input)
+        # Load network (supports stdin with '-')
+        if args.input == "-":
+            input_format = getattr(args, 'input_format', 'auto')
+            if input_format == "auto":
+                input_format = "multiedgelist"
+            network = _load_network_from_stdin(input_format)
+        else:
+            logger.info(f"Loading network from {args.input}...")
+            network = _load_network(args.input)
 
         output_data = {}
 
@@ -1249,6 +1424,189 @@ def cmd_convert(args: argparse.Namespace) -> int:
         return 0
     except Exception as e:
         logger.error(f"Error converting network: {e}")
+        return 1
+
+
+def cmd_query(args: argparse.Namespace) -> int:
+    """Execute DSL queries on networks with Unix piping support.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    try:
+        # Get query string
+        query_str = args.query
+        if not query_str and args.query_file:
+            with open(args.query_file) as f:
+                query_str = f.read().strip()
+        
+        if not query_str:
+            logger.error("No query provided. Use positional argument or --query-file")
+            return 1
+        
+        # Load network (supports stdin with '-')
+        if args.input == "-":
+            # Determine input format
+            input_format = args.input_format
+            if input_format == "auto":
+                input_format = "multiedgelist"  # Default for stdin
+            network = _load_network_from_stdin(input_format)
+        else:
+            logger.info(f"Loading network from {args.input}...")
+            network = _load_network(args.input)
+        
+        # Execute query
+        if args.dsl:
+            # Interpret as Python DSL builder syntax
+            from py3plex.dsl import Q, L, Param
+            
+            # Create a restricted namespace with only DSL classes
+            # and no builtins for safety
+            namespace = {
+                "Q": Q,
+                "L": L,
+                "Param": Param,
+                "__builtins__": {},  # Disable all builtins for security
+            }
+            
+            # Basic validation: only allow expected patterns
+            allowed_patterns = [
+                "Q.", "L[", "Param.",
+                ".nodes(", ".edges(", ".from_layers(", ".where(",
+                ".compute(", ".order_by(", ".limit(", ".execute(",
+                '"', "'", "(", ")", ",", "=", "+", "-", "&", "[", "]",
+                "_", "layer", "degree", "centrality", "clustering",
+                "betweenness", "closeness", "eigenvector", "pagerank",
+            ]
+            
+            # Check for potentially dangerous patterns
+            dangerous_patterns = [
+                "__", "import", "exec", "eval", "compile", "open",
+                "file", "input", "raw_input", "os.", "sys.", "subprocess",
+            ]
+            
+            query_lower = query_str.lower()
+            for pattern in dangerous_patterns:
+                if pattern in query_lower:
+                    raise ValueError(f"Potentially unsafe pattern '{pattern}' not allowed in DSL query")
+            
+            # Execute the builder expression with restricted namespace
+            try:
+                query_builder = eval(query_str, namespace)  # noqa: S307
+            except NameError as e:
+                raise ValueError(f"Invalid DSL syntax: {e}. Only Q, L, and Param are allowed.")
+            
+            result = query_builder.execute(network)
+        else:
+            # Use legacy string DSL parser
+            from py3plex.dsl import execute_query
+            result = execute_query(network, query_str)
+        
+        # Format output
+        if args.dsl:
+            # Convert QueryResult to dict
+            output_data = result.to_dict()
+        else:
+            # Legacy result is already a dict
+            output_data = result
+        
+        # Make output JSON-serializable (convert tuple keys to strings)
+        def make_serializable(obj):
+            """Recursively convert tuples to strings for JSON serialization."""
+            if isinstance(obj, dict):
+                return {
+                    (str(k) if isinstance(k, tuple) else k): make_serializable(v)
+                    for k, v in obj.items()
+                }
+            elif isinstance(obj, list):
+                return [make_serializable(item) for item in obj]
+            elif isinstance(obj, tuple):
+                return str(obj)
+            else:
+                return obj
+        
+        output_data = make_serializable(output_data)
+        
+        # Output results
+        if args.format == "json":
+            output_str = json.dumps(output_data, indent=2, default=str)
+        elif args.format == "csv":
+            # Convert to CSV format
+            import io
+            import csv
+            
+            output_buffer = io.StringIO()
+            
+            if "nodes" in output_data:
+                writer = csv.writer(output_buffer)
+                # Header
+                computed_keys = list(output_data.get("computed", {}).keys())
+                writer.writerow(["node"] + computed_keys)
+                
+                # Data rows
+                for node in output_data["nodes"]:
+                    row = [str(node)]
+                    for key in computed_keys:
+                        computed = output_data.get("computed", {}).get(key, {})
+                        value = computed.get(str(node), computed.get(node, ""))
+                        row.append(value)
+                    writer.writerow(row)
+            elif "edges" in output_data:
+                writer = csv.writer(output_buffer)
+                writer.writerow(["source", "target"])
+                for edge in output_data["edges"]:
+                    if isinstance(edge, (list, tuple)) and len(edge) >= 2:
+                        writer.writerow([str(edge[0]), str(edge[1])])
+                    else:
+                        writer.writerow([str(edge)])
+            
+            output_str = output_buffer.getvalue()
+        elif args.format == "table":
+            # Pretty-print as table
+            lines = []
+            if "nodes" in output_data:
+                computed_keys = list(output_data.get("computed", {}).keys())
+                
+                # Header
+                header = ["Node"] + computed_keys
+                lines.append(" | ".join(f"{h:>15}" for h in header))
+                lines.append("-" * (17 * len(header)))
+                
+                # Data rows
+                for node in output_data["nodes"][:50]:  # Limit to 50 rows for table
+                    row = [str(node)[:15]]
+                    for key in computed_keys:
+                        computed = output_data.get("computed", {}).get(key, {})
+                        value = computed.get(str(node), computed.get(node, ""))
+                        if isinstance(value, float):
+                            row.append(f"{value:.4f}")
+                        else:
+                            row.append(str(value)[:15])
+                    lines.append(" | ".join(f"{v:>15}" for v in row))
+                
+                if len(output_data["nodes"]) > 50:
+                    lines.append(f"... and {len(output_data['nodes']) - 50} more rows")
+            
+            lines.append(f"\nTotal: {output_data.get('count', len(output_data.get('nodes', [])))} items")
+            output_str = "\n".join(lines)
+        
+        # Write output
+        if args.output:
+            with open(args.output, "w") as f:
+                f.write(output_str)
+            logger.info(f"Query results saved to {args.output}")
+        else:
+            # Output to stdout for piping
+            print(output_str)
+        
+        return 0
+    
+    except Exception as e:
+        logger.error(f"Error executing query: {e}")
+        traceback.print_exc()
         return 1
 
 
@@ -2636,6 +2994,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "check": cmd_check,
         "create": cmd_create,
         "load": cmd_load,
+        "query": cmd_query,
         "community": cmd_community,
         "centrality": cmd_centrality,
         "stats": cmd_stats,
