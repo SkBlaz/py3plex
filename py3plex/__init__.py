@@ -11,7 +11,6 @@ Key Features:
     - **SQL-like DSL for intuitive network queries**
     - **Dplyr-style chainable graph operations API**
     - **Built-in datasets** (similar to scikit-learn)
-    - **Pluggable backend system** (NetworkX default, pymnet optional)
     - Dict-based API for adding nodes and edges
     - NetworkX interoperability
     - Multiple I/O formats (edgelist, GML, GraphML, etc.)
@@ -20,19 +19,19 @@ Key Features:
     - Random walk and embedding generation
     - **Plugin system for extensibility**
 
-Backend System:
-    py3plex supports multiple backends for multilayer network representation:
+Interoperability with pymnet (Experimental):
+    py3plex provides conversion utilities for working with pymnet:
     
-    - **networkx** (default): Uses NetworkX MultiGraph/MultiDiGraph
-    - **pymnet** (optional): Uses pymnet's native multilayer structures
-    
-    To use pymnet backend:
-        pip install pymnet
-        
     >>> import py3plex as p3
-    >>> p3.list_backends()  # See available backends
-    ['networkx']
-    >>> p3.set_default_backend('pymnet')  # Switch default  # doctest: +SKIP
+    >>> from py3plex.backends import to_pymnet, from_pymnet  # doctest: +SKIP
+    >>>
+    >>> # Convert py3plex network to pymnet
+    >>> pymnet_net = to_pymnet(my_network)  # doctest: +SKIP
+    >>>
+    >>> # Import pymnet network into py3plex
+    >>> net = from_pymnet(pymnet_network)  # doctest: +SKIP
+    
+    To install pymnet: pip install pymnet
 
 Quick Start:
     >>> import py3plex as p3
@@ -168,13 +167,15 @@ from py3plex.datasets import (
     make_social_network,
 )
 
-# Backend system for pluggable multilayer network representations
+# Backend system (experimental) - for interoperability with other libraries
 from py3plex.backends import (
     get_backend,
     set_default_backend,
     list_backends,
     is_backend_available,
     BackendNotAvailableError,
+    to_pymnet,
+    from_pymnet,
 )
 
 __all__ = [
@@ -267,10 +268,12 @@ __all__ = [
     "make_social_network",
     "list_datasets",
     "get_data_dir",
-    # Backend system
+    # Backend system (experimental)
     "get_backend",
     "set_default_backend",
     "list_backends",
     "is_backend_available",
     "BackendNotAvailableError",
+    "to_pymnet",
+    "from_pymnet",
 ]

@@ -399,3 +399,97 @@ class TestBackendInteroperability:
         
         # Basic verification
         assert g2 is not None
+
+
+class TestConversionFunctions:
+    """Tests for to_pymnet and from_pymnet conversion functions."""
+
+    def test_to_pymnet_raises_without_pymnet(self):
+        """Test that to_pymnet raises error when pymnet not available."""
+        from py3plex.backends import to_pymnet
+        from py3plex import multi_layer_network
+
+        if is_backend_available("pymnet"):
+            pytest.skip("pymnet is available, cannot test unavailable case")
+
+        net = multi_layer_network()
+        net.add_edges([
+            {'source': 'A', 'target': 'B',
+             'source_type': 'layer1', 'target_type': 'layer1'}
+        ])
+
+        with pytest.raises(BackendNotAvailableError):
+            to_pymnet(net)
+
+    def test_from_pymnet_raises_without_pymnet(self):
+        """Test that from_pymnet raises error when pymnet not available."""
+        from py3plex.backends import from_pymnet
+
+        if is_backend_available("pymnet"):
+            pytest.skip("pymnet is available, cannot test unavailable case")
+
+        with pytest.raises(BackendNotAvailableError):
+            from_pymnet(None)
+
+    @pytest.mark.skipif(
+        not is_backend_available("pymnet"),
+        reason="pymnet not installed"
+    )
+    def test_to_pymnet_conversion(self):
+        """Test converting py3plex network to pymnet."""
+        from py3plex.backends import to_pymnet
+        from py3plex import multi_layer_network
+
+        # Create py3plex network
+        net = multi_layer_network(directed=False)
+        net.add_edges([
+            {'source': 'A', 'target': 'B',
+             'source_type': 'layer1', 'target_type': 'layer1'},
+            {'source': 'B', 'target': 'C',
+             'source_type': 'layer1', 'target_type': 'layer1'},
+        ])
+
+        # Convert to pymnet
+        pymnet_net = to_pymnet(net)
+        assert pymnet_net is not None
+
+    @pytest.mark.skipif(
+        not is_backend_available("pymnet"),
+        reason="pymnet not installed"
+    )
+    def test_from_pymnet_conversion(self):
+        """Test importing pymnet network to py3plex."""
+        from py3plex.backends import from_pymnet, get_backend
+
+        # Create a simple pymnet network using the backend
+        pymnet_backend = get_backend("pymnet")
+        pymnet_net = pymnet_backend.create_graph(directed=False)
+        pymnet_backend.add_edge(pymnet_net, ('A', 'layer1'), ('B', 'layer1'))
+
+        # Convert to py3plex
+        net = from_pymnet(pymnet_net)
+        assert net is not None
+        assert hasattr(net, 'core_network')
+
+    @pytest.mark.skipif(
+        not is_backend_available("pymnet"),
+        reason="pymnet not installed"
+    )
+    def test_roundtrip_conversion(self):
+        """Test py3plex -> pymnet -> py3plex roundtrip."""
+        from py3plex.backends import to_pymnet, from_pymnet
+        from py3plex import multi_layer_network
+
+        # Create original network
+        net1 = multi_layer_network(directed=False)
+        net1.add_edges([
+            {'source': 'A', 'target': 'B',
+             'source_type': 'layer1', 'target_type': 'layer1'},
+        ])
+
+        # Convert to pymnet and back
+        pymnet_net = to_pymnet(net1)
+        net2 = from_pymnet(pymnet_net)
+
+        # Verify basic structure
+        assert net2.core_network is not None
