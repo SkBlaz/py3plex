@@ -316,6 +316,9 @@
 <span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Example output:</strong></p>
+<a class="reference internal image-reference" href="../_images/multilayer.png"><img alt="Basic multilayer network visualization" class="align-center" src="../_images/multilayer.png" style="width: 600px;" />
+</a>
 </section>
 </section>
 <section id="preset-visualization-modes">
@@ -357,6 +360,9 @@
 - Reduced visual clutter
 - Shows overall structure
 - Works with many nodes</p>
+<p><strong>Example output (minimal mode with large network):</strong></p>
+<a class="reference internal image-reference" href="../_images/hairball.png"><img alt="Minimal mode visualization for large networks" class="align-center" src="../_images/hairball.png" style="width: 500px;" />
+</a>
 </section>
 <section id="balanced-mode-medium-networks-100-1000-nodes">
 <h3><a class="toc-backref" href="#id6" role="doc-backlink">Balanced Mode (Medium Networks 100-1000 nodes)</a><a class="headerlink" href="#balanced-mode-medium-networks-100-1000-nodes" title="Link to this heading"></a></h3>
@@ -430,6 +436,9 @@
 - Clear node identification
 - Edge weights visible
 - Professional appearance</p>
+<p><strong>Example output (dense mode with small network):</strong></p>
+<a class="reference internal image-reference" href="../_images/multiplex.png"><img alt="Dense mode visualization for small networks" class="align-center" src="../_images/multiplex.png" style="width: 400px;" />
+</a>
 </section>
 </section>
 <section id="layout-options">
@@ -614,6 +623,9 @@
 <span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Example output (community-colored network):</strong></p>
+<a class="reference internal image-reference" href="../_images/communities.png"><img alt="Network with nodes colored by community membership" class="align-center" src="../_images/communities.png" style="width: 500px;" />
+</a>
 </section>
 </section>
 <section id="exporting-visualizations">
@@ -1367,6 +1379,9 @@ by color and size.</p>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;alluvial&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Example output:</strong></p>
+<a class="reference internal image-reference" href="../_images/multilayer_flow.png"><img alt="Flow/Alluvial visualization showing inter-layer connections" class="align-center" src="../_images/multilayer_flow.png" style="width: 600px;" />
+</a>
 <p><strong>Best for:</strong></p>
 <ul class="simple">
 <li><p>Visualizing node-level connectivity across layers</p></li>
@@ -1391,6 +1406,9 @@ individual node connections.</p>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;sankey&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Example output:</strong></p>
+<a class="reference internal image-reference" href="../_images/multilayer_sankey_diagram.png"><img alt="Sankey diagram showing inter-layer flow strength" class="align-center" src="../_images/multilayer_sankey_diagram.png" style="width: 500px;" />
+</a>
 <p>You can also use the function directly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.sankey</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_sankey</span>
 

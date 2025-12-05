@@ -9732,6 +9732,11 @@ This chapter shows you how to create visualizations that reveal structure rather
 \PYG{p}{)}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
+\sphinxstylestrong{Example output:}
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=600\sphinxpxdimen]{{multilayer}.png}\hspace*{\fill}}
+
 
 \subsubsection{Preset Visualization Modes}
 \label{\detokenize{user_guide/visualization:preset-visualization-modes}}
@@ -9781,6 +9786,11 @@ Optimized for networks with many nodes where detail isn’t critical.
 \sphinxhyphen{} Reduced visual clutter
 \sphinxhyphen{} Shows overall structure
 \sphinxhyphen{} Works with many nodes
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example output (minimal mode with large network):}
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=500\sphinxpxdimen]{{hairball}.png}\hspace*{\fill}}
 
 
 \paragraph{Balanced Mode (Medium Networks 100\sphinxhyphen{}1000 nodes)}
@@ -9868,6 +9878,11 @@ Maximum detail for small networks where every node and edge matters.
 \sphinxhyphen{} Clear node identification
 \sphinxhyphen{} Edge weights visible
 \sphinxhyphen{} Professional appearance
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example output (dense mode with small network):}
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=400\sphinxpxdimen]{{multiplex}.png}\hspace*{\fill}}
 
 
 \subsubsection{Layout Options}
@@ -10107,6 +10122,11 @@ Color nodes by community membership:
 \PYG{c+c1}{\PYGZsh{} Visualize}
 \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}layers}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,} \PYG{n}{display}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
 \end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example output (community\sphinxhyphen{}colored network):}
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=500\sphinxpxdimen]{{communities}.png}\hspace*{\fill}}
 
 
 \subsubsection{Exporting Visualizations}
@@ -11275,6 +11295,11 @@ by color and size.
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
+\sphinxstylestrong{Example output:}
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=600\sphinxpxdimen]{{multilayer_flow}.png}\hspace*{\fill}}
+
+\sphinxAtStartPar
 \sphinxstylestrong{Best for:}
 \begin{itemize}
 \item {} 
@@ -11314,6 +11339,11 @@ individual node connections.
 \PYG{c+c1}{\PYGZsh{} Sankey\PYGZhy{}style diagram showing inter\PYGZhy{}layer flow strength}
 \PYG{n}{ax} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{visualize\PYGZus{}network}\PYG{p}{(}\PYG{n}{style}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sankey}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{show}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
 \end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example output:}
+
+\noindent{\hspace*{\fill}\sphinxincludegraphics[width=500\sphinxpxdimen]{{multilayer_sankey_diagram}.png}\hspace*{\fill}}
 
 \sphinxAtStartPar
 You can also use the function directly:
@@ -55041,6 +55071,31 @@ Exit code (0 for success)
 \pysigstopsignatures
 \sphinxAtStartPar
 Compute multilayer network statistics.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{args}} \textendash{} Parsed command\sphinxhyphen{}line arguments
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Exit code (0 for success)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{cmd\_tutorial() (in module py3plex.cli)@\spxentry{cmd\_tutorial()}\spxextra{in module py3plex.cli}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.cli.cmd_tutorial}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.cli.}}\sphinxbfcode{\sphinxupquote{cmd\_tutorial}}}
+{\sphinxparam{\DUrole{n}{args}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Namespace}}}
+{{ $\rightarrow$ int}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Run interactive tutorial mode to learn py3plex step by step.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
