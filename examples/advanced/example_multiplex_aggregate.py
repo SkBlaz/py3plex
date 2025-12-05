@@ -1,15 +1,13 @@
 """
 Multilayer Example: Aggregating Multiplex Networks
 
-This example demonstrates network aggregation using two approaches:
+This example demonstrates network aggregation using multiple approaches:
 1. Pipeline-based approach with chaining (simpler, more elegant)
-2. Direct method calls for advanced customization
+2. DSL-based approach for querying aggregated networks
+3. Interoperability: showing how Pipeline and DSL work with the same objects
 
-Aggregation combines information from multiple layers into a single network,
-useful for:
-- Simplifying analysis while preserving multi-layer information
-- Creating weighted networks that reflect layer contributions
-- Reducing computational complexity
+The key point is that all py3plex objects are interoperable - networks generated
+via Pipeline can be analyzed with DSL, and vice versa.
 
 SKIP_CI: external_deps - Uses deprecated networkx.info() API
 """
@@ -17,6 +15,7 @@ SKIP_CI: external_deps - Uses deprecated networkx.info() API
 import networkx as nx
 from py3plex.core import random_generators
 from py3plex.pipeline import Pipeline, LoadStep, AggregateLayers, ComputeStats
+from py3plex.dsl import execute_query
 
 print("=" * 70)
 print("MULTIPLEX NETWORK AGGREGATION")
@@ -46,10 +45,30 @@ print(f"  Edges: {result['edges']}")
 print(f"  Density: {result['density']:.4f}")
 
 # ============================================================================
-# Approach 2: Direct method calls for comparison
+# Approach 2: Interoperability - Generate with Pipeline, Analyze with DSL
 # ============================================================================
 print("\n" + "=" * 70)
-print("Approach 2: Direct Method Calls (Advanced)")
+print("Approach 2: Interoperability - Pipeline + DSL")
+print("=" * 70)
+
+# Generate network using Pipeline step
+network = LoadStep(generator='random_er', n=50, l=3, p=0.08).transform(None)
+print(f"Generated network: {network.core_network.number_of_nodes()} nodes")
+
+# Analyze with DSL - objects are fully compatible
+dsl_result = execute_query(network, 'SELECT nodes WHERE degree > 2 COMPUTE degree_centrality')
+print(f"DSL query: SELECT nodes WHERE degree > 2 COMPUTE degree_centrality")
+print(f"High-degree nodes found: {dsl_result['count']}")
+
+# Aggregate using direct method and analyze with DSL
+aggregated = network.aggregate_edges(metric="sum")
+print(f"Aggregated network: {aggregated.number_of_nodes()} nodes, {aggregated.number_of_edges()} edges")
+
+# ============================================================================
+# Approach 3: Direct method calls for advanced customization
+# ============================================================================
+print("\n" + "=" * 70)
+print("Approach 3: Direct Method Calls (Advanced)")
 print("=" * 70)
 
 print("\nGenerating random multiplex network...")
@@ -89,17 +108,16 @@ print(f"Aggregated network: {aggregated_network2.number_of_nodes()} nodes, "
 # Summary
 # ============================================================================
 print("\n" + "=" * 70)
-print("COMPARISON SUMMARY")
+print("SUMMARY: Object Interoperability")
 print("=" * 70)
 
-print("\nPipeline approach:")
-print("  ✓ Concise, readable, chainable")
-print("  ✓ Best for standard workflows")
+print("\nAll approaches work with the same multi_layer_network object:")
+print("  ✓ Pipeline generates/transforms multi_layer_network")
+print("  ✓ DSL queries work on multi_layer_network")
+print("  ✓ Direct methods work on multi_layer_network")
+print("  ✓ Objects can be passed between Pipeline, DSL, and direct calls")
 
-print("\nDirect method approach:")
-print("  ✓ Full control over parameters")
-print("  ✓ Best for advanced customization (degree vs raw normalization)")
-
-print("\nChoosing aggregation method:")
-print("  - Degree normalization: Better for heterogeneous networks")
-print("  - Raw counts: Better for homogeneous networks")
+print("\nChoose based on your needs:")
+print("  - Pipeline: Best for reproducible, chainable workflows")
+print("  - DSL: Best for declarative, SQL-like analysis")
+print("  - Direct: Best for full control and customization")
