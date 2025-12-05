@@ -1463,15 +1463,42 @@ def cmd_query(args: argparse.Namespace) -> int:
             # Interpret as Python DSL builder syntax
             from py3plex.dsl import Q, L, Param
             
-            # Create a safe namespace for eval
+            # Create a restricted namespace with only DSL classes
+            # and no builtins for safety
             namespace = {
                 "Q": Q,
                 "L": L,
                 "Param": Param,
+                "__builtins__": {},  # Disable all builtins for security
             }
             
-            # Execute the builder expression
-            query_builder = eval(query_str, namespace)  # noqa: S307
+            # Basic validation: only allow expected patterns
+            allowed_patterns = [
+                "Q.", "L[", "Param.",
+                ".nodes(", ".edges(", ".from_layers(", ".where(",
+                ".compute(", ".order_by(", ".limit(", ".execute(",
+                '"', "'", "(", ")", ",", "=", "+", "-", "&", "[", "]",
+                "_", "layer", "degree", "centrality", "clustering",
+                "betweenness", "closeness", "eigenvector", "pagerank",
+            ]
+            
+            # Check for potentially dangerous patterns
+            dangerous_patterns = [
+                "__", "import", "exec", "eval", "compile", "open",
+                "file", "input", "raw_input", "os.", "sys.", "subprocess",
+            ]
+            
+            query_lower = query_str.lower()
+            for pattern in dangerous_patterns:
+                if pattern in query_lower:
+                    raise ValueError(f"Potentially unsafe pattern '{pattern}' not allowed in DSL query")
+            
+            # Execute the builder expression with restricted namespace
+            try:
+                query_builder = eval(query_str, namespace)  # noqa: S307
+            except NameError as e:
+                raise ValueError(f"Invalid DSL syntax: {e}. Only Q, L, and Param are allowed.")
+            
             result = query_builder.execute(network)
         else:
             # Use legacy string DSL parser
