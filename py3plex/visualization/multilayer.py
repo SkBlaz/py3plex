@@ -3,6 +3,7 @@
 # draw multi layered network, takes .nx object list as input
 
 from typing import Any, Dict, List, Optional, Tuple, Union
+import warnings
 
 import networkx as nx
 import numpy as np
@@ -222,6 +223,7 @@ def draw_multilayer_default(
     node_labels: bool = False,
     node_font_size: int = 5,
     scale_by_size: bool = False,
+    *,  # Force remaining args to be keyword-only
     axis: Optional[Any] = None,  # Deprecated: use ax instead
 ) -> Any:
     """Core multilayer drawing method.
@@ -266,9 +268,15 @@ def draw_multilayer_default(
         >>> # Caller controls when to display
         >>> plt.savefig("multilayer.png")  # or plt.show()
     """
-    # Handle deprecated 'axis' parameter
-    if axis is not None and ax is None:
-        ax = axis
+    # Handle deprecated 'axis' parameter with warning
+    if axis is not None:
+        warnings.warn(
+            "The 'axis' parameter is deprecated. Use 'ax' instead.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        if ax is None:
+            ax = axis
     
     # Convert dict to list if necessary
     if isinstance(network_list, dict):

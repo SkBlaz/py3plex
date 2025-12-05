@@ -207,7 +207,7 @@ class TestVisualizationAxesAPI(unittest.TestCase):
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
         import numpy as np
-        from py3plex.visualization.multilayer import supra_adjacency_matrix_plot
+        from py3plex.visualization import supra_adjacency_matrix_plot
         
         matrix = np.random.rand(10, 10)
         
