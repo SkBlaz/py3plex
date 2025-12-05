@@ -16,7 +16,7 @@ import os
 import sys
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
 class Severity(Enum):
@@ -159,7 +159,7 @@ class SourceContext:
         try:
             with open(file_path) as f:
                 all_lines = f.readlines()
-        except (OSError, IOError):
+        except OSError:
             return cls(file_path=file_path)
 
         # Calculate range of lines to include

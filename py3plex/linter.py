@@ -21,10 +21,8 @@ For graph data files (CSV, edgelist, multiedgelist formats).
 """
 
 import csv
-import os
-import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import List, Optional, Set, Tuple
 
 from py3plex.logging_config import get_logger
 
@@ -109,7 +107,7 @@ class LintIssue:
             Formatted error message string
         """
         try:
-            from py3plex.errors import Colors, ErrorMessage, Note, Severity, Suggestion
+            from py3plex.errors import ErrorMessage, Severity, Suggestion
 
             severity_map = {
                 self.SEVERITY_ERROR: Severity.ERROR,
@@ -196,9 +194,9 @@ class GraphFileLinter:
         """Read and cache file lines for providing context."""
         if not self._file_lines:
             try:
-                with open(self.file_path, "r") as f:
+                with open(self.file_path) as f:
                     self._file_lines = [line.rstrip("\n\r") for line in f.readlines()]
-            except (OSError, IOError):
+            except OSError:
                 self._file_lines = []
         return self._file_lines
 
@@ -267,7 +265,7 @@ class GraphFileLinter:
 
         # Check file is readable
         try:
-            with open(self.file_path, "r") as f:
+            with open(self.file_path):
                 pass
         except PermissionError:
             self._add_issue(
@@ -305,12 +303,9 @@ class GraphFileLinter:
         Returns:
             Format string: 'csv', 'edgelist', or 'multiedgelist'
         """
-        # Check file extension
-        suffix = self.file_path.suffix.lower()
-
         # Try to detect by reading first few lines
         try:
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 first_line = f.readline().strip()
                 if not first_line:
                     return "edgelist"
@@ -351,7 +346,7 @@ class GraphFileLinter:
     def _lint_csv(self) -> None:
         """Lint a CSV format file."""
         try:
-            with open(self.file_path, "r", newline="") as f:
+            with open(self.file_path, newline="") as f:
                 # Try to detect delimiter
                 sample = f.read(1024)
                 f.seek(0)
@@ -543,7 +538,7 @@ class GraphFileLinter:
         line_num = 0
 
         try:
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 for line in f:
                     line_num += 1
                     line = line.strip()
@@ -631,7 +626,7 @@ class GraphFileLinter:
         line_num = 0
 
         try:
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 for line in f:
                     line_num += 1
                     line = line.strip()
