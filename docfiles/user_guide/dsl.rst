@@ -10,9 +10,29 @@ Overview
 
 Py3plex provides a Domain-Specific Language (DSL) for querying and analyzing multilayer networks using SQL-like syntax. This intuitive interface allows users to filter nodes and edges, compute network measures, and perform complex analyses with simple, readable queries.
 
+**DSL v2** introduces several major improvements:
+
+- **Python Builder API**: Chainable, type-hinted query construction
+- **Layer Algebra**: Union, difference, and intersection operations on layers
+- **Rich Results**: Export to pandas, NetworkX, or Arrow formats
+- **EXPLAIN Mode**: Query execution plans with complexity estimates
+- **Parameterized Queries**: Safe parameter binding for dynamic queries
+- **Better Errors**: "Did you mean?" suggestions for typos
+
 The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write::
 
     execute_query(network, 'SELECT nodes WHERE layer="social" AND degree > 5')
+
+Or using the new Builder API::
+
+    from py3plex.dsl import Q, L
+    
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .where(degree__gt=5)
+         .execute(network)
+    )
 
 The DSL is particularly useful for:
 
@@ -164,6 +184,317 @@ Calculates network measures for filtered nodes::
 **Multiple measures**::
 
     COMPUTE degree betweenness_centrality closeness_centrality
+
+Python Builder API (DSL v2)
+---------------------------
+
+DSL v2 introduces a Pythonic builder API that provides type hints, autocompletion, 
+and a chainable interface for constructing queries. The builder API maps directly 
+to the DSL syntax but with Python-native ergonomics.
+
+Basic Usage
+~~~~~~~~~~~
+
+Import the builder components::
+
+    from py3plex.dsl import Q, L, Param
+
+Create and execute a simple query::
+
+    # Select nodes in the social layer
+    result = Q.nodes().where(layer="social").execute(network)
+    
+    # Get the count
+    print(f"Found {result.count} nodes")
+    
+    # Iterate over results
+    for node in result:
+        print(node)
+
+Query Builder Methods
+~~~~~~~~~~~~~~~~~~~~~
+
+The ``Q`` class provides factory methods to start building queries:
+
+- ``Q.nodes()`` - Start a query for nodes
+- ``Q.edges()`` - Start a query for edges
+
+The ``QueryBuilder`` returned supports these chainable methods:
+
+.. code-block:: python
+
+    Q.nodes()
+     .from_layers(layer_expr)    # Filter by layers (optional)
+     .where(**conditions)        # Filter by conditions (optional)
+     .compute(*measures)         # Compute measures (optional)
+     .order_by(*keys)            # Order results (optional)
+     .limit(n)                   # Limit results (optional)
+     .execute(network, **params) # Execute the query
+
+WHERE Conditions
+~~~~~~~~~~~~~~~~
+
+The ``where()`` method supports Django-style field lookups:
+
+**Equality**::
+
+    .where(layer="social")
+
+**Comparisons** (using double-underscore suffixes)::
+
+    .where(degree__gt=5)      # degree > 5
+    .where(degree__gte=5)     # degree >= 5
+    .where(degree__lt=10)     # degree < 10
+    .where(degree__lte=10)    # degree <= 10
+    .where(layer__ne="bots")  # layer != "bots"
+
+**Multiple conditions** (combined with AND)::
+
+    .where(layer="social", degree__gt=5)
+
+**Special predicates**::
+
+    .where(intralayer=True)                    # Edges within same layer
+    .where(interlayer=("social", "work"))     # Edges between specific layers
+
+COMPUTE with Aliases
+~~~~~~~~~~~~~~~~~~~~
+
+Compute network measures with optional aliases::
+
+    # Single measure
+    result = Q.nodes().compute("betweenness_centrality").execute(network)
+    
+    # Single measure with alias
+    result = Q.nodes().compute("betweenness_centrality", alias="bc").execute(network)
+    
+    # Multiple measures
+    result = Q.nodes().compute("degree", "clustering").execute(network)
+    
+    # Multiple measures with aliases
+    result = Q.nodes().compute(aliases={
+        "betweenness_centrality": "bc",
+        "closeness_centrality": "cc"
+    }).execute(network)
+
+ORDER BY and LIMIT
+~~~~~~~~~~~~~~~~~~
+
+Sort and limit results::
+
+    # Order by degree (ascending)
+    result = Q.nodes().compute("degree").order_by("degree").execute(network)
+    
+    # Order descending with - prefix
+    result = Q.nodes().compute("degree").order_by("-degree").execute(network)
+    
+    # Order by multiple keys
+    result = Q.nodes().compute("degree", "clustering").order_by("-degree", "clustering").execute(network)
+    
+    # Limit results
+    result = Q.nodes().compute("degree").order_by("-degree").limit(10).execute(network)
+
+Layer Algebra
+~~~~~~~~~~~~~
+
+DSL v2 introduces layer algebra for combining multiple layers. Use the ``L`` proxy 
+to reference layers and combine them with operators:
+
+**Union** (+): Nodes from either layer::
+
+    layers = L["social"] + L["work"]
+    result = Q.nodes().from_layers(layers).execute(network)
+
+**Difference** (-): Nodes from one layer but not another::
+
+    layers = L["social"] - L["bots"]
+    result = Q.nodes().from_layers(layers).execute(network)
+
+**Intersection** (&): Nodes in both layers::
+
+    layers = L["social"] & L["work"]
+    result = Q.nodes().from_layers(layers).execute(network)
+
+**Complex expressions**::
+
+    # (social OR work) - bots
+    layers = L["social"] + L["work"] - L["bots"]
+    result = Q.nodes().from_layers(layers).execute(network)
+
+Complete Builder Example
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Here's a comprehensive example using the builder API::
+
+    from py3plex.core import multinet
+    from py3plex.dsl import Q, L
+    
+    # Create network
+    network = multinet.multi_layer_network(directed=False)
+    network.add_nodes([
+        {'source': 'Alice', 'type': 'social'},
+        {'source': 'Bob', 'type': 'social'},
+        {'source': 'Charlie', 'type': 'social'},
+        {'source': 'Dave', 'type': 'work'},
+        {'source': 'Eve', 'type': 'work'},
+    ])
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Bob', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Alice', 'target': 'Charlie', 'source_type': 'social', 'target_type': 'social'},
+        {'source': 'Dave', 'target': 'Eve', 'source_type': 'work', 'target_type': 'work'},
+    ])
+    
+    # Query using builder API
+    result = (
+        Q.nodes()
+         .from_layers(L["social"] + L["work"])
+         .where(degree__gt=0)
+         .compute("betweenness_centrality", alias="bc")
+         .order_by("-bc")
+         .limit(3)
+         .execute(network)
+    )
+    
+    # Access results
+    print(f"Top {result.count} nodes by betweenness centrality:")
+    df = result.to_pandas()
+    print(df)
+
+QueryResult Object
+~~~~~~~~~~~~~~~~~~
+
+The builder API returns a ``QueryResult`` object with rich export capabilities:
+
+**Properties**::
+
+    result.target    # 'nodes' or 'edges'
+    result.items     # List of node/edge tuples
+    result.count     # Number of items
+    result.nodes     # Alias for items (when target='nodes')
+    result.edges     # Alias for items (when target='edges')
+    result.attributes  # Computed measure values
+
+**Export methods**::
+
+    # Export to pandas DataFrame
+    df = result.to_pandas()
+    
+    # Export to NetworkX subgraph
+    G = result.to_networkx(network)
+    
+    # Export to Apache Arrow table
+    table = result.to_arrow()
+    
+    # Export to dictionary
+    d = result.to_dict()
+
+**Iteration**::
+
+    for node in result:
+        print(node)
+    
+    # Length
+    print(len(result))
+
+EXPLAIN Mode
+~~~~~~~~~~~~
+
+Get a query execution plan without actually running the query::
+
+    from py3plex.dsl import Q
+    
+    # Build a query
+    q = Q.nodes().where(layer="social").compute("betweenness_centrality")
+    
+    # Get execution plan
+    plan = q.explain().execute(network)
+    
+    # Inspect the plan
+    for step in plan.steps:
+        print(f"{step.description} ({step.estimated_complexity})")
+    
+    # Check for warnings
+    for warning in plan.warnings:
+        print(f"Warning: {warning}")
+
+The execution plan includes:
+
+- Step-by-step breakdown of query execution
+- Estimated time complexity for each step
+- Warnings for expensive operations (e.g., betweenness centrality on large graphs)
+
+Parameterized Queries
+~~~~~~~~~~~~~~~~~~~~~
+
+Use ``Param`` to create queries with placeholders that are bound at execution time::
+
+    from py3plex.dsl import Q, Param
+    
+    # Create a reusable query template
+    q = Q.nodes().where(layer="social", degree__gt=Param.int("min_degree"))
+    
+    # Execute with different parameters
+    result1 = q.execute(network, min_degree=5)
+    result2 = q.execute(network, min_degree=10)
+
+Parameter types:
+
+- ``Param.int("name")`` - Integer parameter
+- ``Param.float("name")`` - Float parameter
+- ``Param.str("name")`` - String parameter
+- ``Param.ref("name")`` - Untyped parameter
+
+Convert Builder to DSL String
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Convert a builder query back to DSL string format::
+
+    q = Q.nodes().where(layer="social", degree__gt=5).compute("degree").limit(10)
+    
+    # Get DSL string
+    dsl_string = q.to_dsl()
+    print(dsl_string)
+    # Output: SELECT nodes WHERE layer = "social" AND degree > 5 COMPUTE degree LIMIT 10
+
+This is useful for:
+
+- Debugging queries
+- Logging and auditing
+- Serializing queries for later use
+
+Error Handling with Suggestions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DSL v2 provides helpful error messages with "Did you mean?" suggestions::
+
+    from py3plex.dsl import Q, UnknownMeasureError
+    
+    try:
+        # Typo in measure name
+        result = Q.nodes().compute("betweenes").execute(network)
+    except UnknownMeasureError as e:
+        print(e)
+        # Output: Unknown measure 'betweenes'. Did you mean 'betweenness'?
+        #         Known measures: betweenness_centrality, closeness_centrality, ...
+
+Measure Registry
+~~~~~~~~~~~~~~~~
+
+DSL v2 includes a centralized registry for network measures. View available measures::
+
+    from py3plex.dsl import measure_registry
+    
+    # List all measures
+    print(measure_registry.list_measures())
+    
+    # Check if a measure exists
+    if measure_registry.has("degree"):
+        print("degree is available")
+    
+    # Get measure description
+    desc = measure_registry.get_description("betweenness_centrality")
+    print(desc)
 
 Example Queries
 ---------------
@@ -378,7 +709,12 @@ Create subnetworks based on queries::
 Error Handling
 --------------
 
-The DSL raises specific exceptions for different error types::
+The DSL raises specific exceptions for different error types.
+
+Legacy Error Types
+~~~~~~~~~~~~~~~~~~
+
+For string DSL queries::
 
     from py3plex.dsl import execute_query, DSLSyntaxError, DSLExecutionError
     
@@ -388,6 +724,36 @@ The DSL raises specific exceptions for different error types::
         print(f"Syntax error: {e}")
     except DSLExecutionError as e:
         print(f"Execution error: {e}")
+
+DSL v2 Error Types
+~~~~~~~~~~~~~~~~~~
+
+For builder API queries, more specific error types are available::
+
+    from py3plex.dsl import (
+        Q,
+        DslError,              # Base error class
+        DslSyntaxError,        # Syntax errors
+        DslExecutionError,     # Execution errors
+        UnknownAttributeError, # Unknown attribute name
+        UnknownMeasureError,   # Unknown measure name
+        UnknownLayerError,     # Unknown layer name
+        ParameterMissingError, # Missing parameter
+        TypeMismatchError,     # Type mismatch
+    )
+    
+    try:
+        result = Q.nodes().compute("unknwon_measure").execute(network)
+    except UnknownMeasureError as e:
+        print(e)  # Includes "Did you mean?" suggestion
+    except DslError as e:
+        print(f"DSL error: {e}")
+
+All DSL v2 errors include:
+
+- Original query context (when available)
+- Line and column information for syntax errors
+- "Did you mean?" suggestions using Levenshtein distance
 
 Common syntax errors:
 
@@ -700,6 +1066,93 @@ Convenience Functions
     def compute_centrality_for_layer(network: Any, layer: str, 
                                      centrality: str = 'betweenness_centrality') -> Dict[Any, float]:
         """Compute centrality for all nodes in a layer."""
+
+DSL v2 Builder API
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    class Q:
+        """Query factory for creating QueryBuilder instances."""
+        
+        @staticmethod
+        def nodes() -> QueryBuilder:
+            """Create a query builder for nodes."""
+        
+        @staticmethod
+        def edges() -> QueryBuilder:
+            """Create a query builder for edges."""
+    
+    class QueryBuilder:
+        """Chainable query builder."""
+        
+        def from_layers(self, layer_expr: LayerExprBuilder) -> QueryBuilder:
+            """Filter by layers using layer algebra."""
+        
+        def where(self, **kwargs) -> QueryBuilder:
+            """Add WHERE conditions."""
+        
+        def compute(self, *measures: str, alias: str = None) -> QueryBuilder:
+            """Add measures to compute."""
+        
+        def order_by(self, *keys: str, desc: bool = False) -> QueryBuilder:
+            """Add ORDER BY clause."""
+        
+        def limit(self, n: int) -> QueryBuilder:
+            """Limit number of results."""
+        
+        def explain(self) -> ExplainQuery:
+            """Create EXPLAIN query for execution plan."""
+        
+        def execute(self, network: Any, **params) -> QueryResult:
+            """Execute the query."""
+        
+        def to_ast(self) -> Query:
+            """Export as AST Query object."""
+        
+        def to_dsl(self) -> str:
+            """Export as DSL string."""
+    
+    class QueryResult:
+        """Rich result object from query execution."""
+        
+        target: str       # 'nodes' or 'edges'
+        items: List[Any]  # List of node/edge tuples
+        count: int        # Number of items
+        attributes: Dict  # Computed measure values
+        
+        def to_pandas(self):
+            """Export to pandas DataFrame."""
+        
+        def to_networkx(self, network=None):
+            """Export to NetworkX subgraph."""
+        
+        def to_arrow(self):
+            """Export to Apache Arrow table."""
+        
+        def to_dict(self) -> Dict[str, Any]:
+            """Export as dictionary."""
+    
+    class L:
+        """Layer proxy for layer algebra."""
+        
+        def __getitem__(self, name: str) -> LayerExprBuilder:
+            """Create layer expression: L['social']"""
+    
+    class Param:
+        """Factory for parameter references."""
+        
+        @staticmethod
+        def int(name: str) -> ParamRef:
+            """Create integer parameter."""
+        
+        @staticmethod
+        def float(name: str) -> ParamRef:
+            """Create float parameter."""
+        
+        @staticmethod
+        def str(name: str) -> ParamRef:
+            """Create string parameter."""
 
 Limitations and Future Work
 ----------------------------
