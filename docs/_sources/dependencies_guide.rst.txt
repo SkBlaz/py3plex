@@ -239,8 +239,7 @@ Issue: "No matching distribution found"
 
 .. code-block:: bash
 
-    pip install --index-url https://pypi.org/simple/ \
-        py3plex
+    pip install --index-url https://pypi.org/simple/ py3plex
 
 **Solution 3:** Check platform compatibility
 
