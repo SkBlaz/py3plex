@@ -2167,6 +2167,34 @@ def _tutorial_wait_for_input(non_interactive: bool, prompt: str = "Press Enter t
         input(f"\n{prompt}")
 
 
+# Tutorial step names - used for display and consistency
+TUTORIAL_STEP_NAMES = {
+    1: "Understanding Multilayer Networks",
+    2: "Creating Your First Network",
+    3: "Exploring Network Structure",
+    4: "Computing Network Statistics",
+    5: "Detecting Communities",
+    6: "Visualizing Networks",
+}
+
+
+def _create_tutorial_network() -> "multinet.multi_layer_network":
+    """Create the sample network used in the tutorial.
+
+    Returns:
+        A multilayer network with friendship and work layers
+    """
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        ['Alice', 'friendship', 'Bob', 'friendship', 1],
+        ['Bob', 'friendship', 'Carol', 'friendship', 1],
+        ['Alice', 'friendship', 'Carol', 'friendship', 1],
+        ['Alice', 'work', 'David', 'work', 1],
+        ['David', 'work', 'Carol', 'work', 1],
+    ], input_type='list')
+    return network
+
+
 def cmd_tutorial(args: argparse.Namespace) -> int:
     """Run interactive tutorial mode to learn py3plex step by step.
 
@@ -2276,15 +2304,8 @@ network.add_edges([
             print("Running this code now...")
             print()
 
-            # Actually run the code
-            network = multinet.multi_layer_network()
-            network.add_edges([
-                ['Alice', 'friendship', 'Bob', 'friendship', 1],
-                ['Bob', 'friendship', 'Carol', 'friendship', 1],
-                ['Alice', 'friendship', 'Carol', 'friendship', 1],
-                ['Alice', 'work', 'David', 'work', 1],
-                ['David', 'work', 'Carol', 'work', 1],
-            ], input_type='list')
+            # Actually run the code using the helper function
+            network = _create_tutorial_network()
 
             # Save network for later steps
             network_file = output_dir / "tutorial_network.edgelist"
@@ -2308,14 +2329,7 @@ network.add_edges([
 
             # Recreate network if needed (for single step mode)
             if step == 3:
-                network = multinet.multi_layer_network()
-                network.add_edges([
-                    ['Alice', 'friendship', 'Bob', 'friendship', 1],
-                    ['Bob', 'friendship', 'Carol', 'friendship', 1],
-                    ['Alice', 'friendship', 'Carol', 'friendship', 1],
-                    ['Alice', 'work', 'David', 'work', 1],
-                    ['David', 'work', 'Carol', 'work', 1],
-                ], input_type='list')
+                network = _create_tutorial_network()
 
             print("Let's explore the network structure!")
             print()
@@ -2370,14 +2384,7 @@ network.basic_stats()
 
             # Recreate network if needed (for single step mode)
             if step == 4:
-                network = multinet.multi_layer_network()
-                network.add_edges([
-                    ['Alice', 'friendship', 'Bob', 'friendship', 1],
-                    ['Bob', 'friendship', 'Carol', 'friendship', 1],
-                    ['Alice', 'friendship', 'Carol', 'friendship', 1],
-                    ['Alice', 'work', 'David', 'work', 1],
-                    ['David', 'work', 'Carol', 'work', 1],
-                ], input_type='list')
+                network = _create_tutorial_network()
 
             print("Let's compute some multilayer-specific statistics!")
             print()
@@ -2447,14 +2454,7 @@ versatility = mls.versatility_centrality(network, centrality_type='degree')
 
             # Recreate network if needed (for single step mode)
             if step == 5:
-                network = multinet.multi_layer_network()
-                network.add_edges([
-                    ['Alice', 'friendship', 'Bob', 'friendship', 1],
-                    ['Bob', 'friendship', 'Carol', 'friendship', 1],
-                    ['Alice', 'friendship', 'Carol', 'friendship', 1],
-                    ['Alice', 'work', 'David', 'work', 1],
-                    ['David', 'work', 'Carol', 'work', 1],
-                ], input_type='list')
+                network = _create_tutorial_network()
 
             print("Community detection finds groups of densely connected nodes.")
             print()
@@ -2519,14 +2519,7 @@ for node, comm_id in partition.items():
 
             # Recreate network if needed (for single step mode)
             if step == 6:
-                network = multinet.multi_layer_network()
-                network.add_edges([
-                    ['Alice', 'friendship', 'Bob', 'friendship', 1],
-                    ['Bob', 'friendship', 'Carol', 'friendship', 1],
-                    ['Alice', 'friendship', 'Carol', 'friendship', 1],
-                    ['Alice', 'work', 'David', 'work', 1],
-                    ['David', 'work', 'Carol', 'work', 1],
-                ], input_type='list')
+                network = _create_tutorial_network()
 
             print("py3plex supports multiple visualization styles!")
             print()
@@ -2590,15 +2583,7 @@ hairball_plot(graph, network_colors)
         print()
         print(f"Steps completed: {len(steps_completed)}/6")
         for step_num in steps_completed:
-            step_names = {
-                1: "Understanding Multilayer Networks",
-                2: "Creating Your First Network",
-                3: "Exploring Network Structure",
-                4: "Computing Network Statistics",
-                5: "Detecting Communities",
-                6: "Visualizing Networks",
-            }
-            print(f"  [OK] Step {step_num}: {step_names[step_num]}")
+            print(f"  [OK] Step {step_num}: {TUTORIAL_STEP_NAMES[step_num]}")
         print()
 
         if cleanup:
