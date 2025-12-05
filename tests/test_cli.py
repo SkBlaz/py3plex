@@ -1128,3 +1128,136 @@ class TestCLIQuickstart:
         assert "Cleaning up" in captured.out or "temporary" in captured.out.lower()
 
 
+class TestCLITutorial:
+    """Test the 'tutorial' command."""
+
+    def test_tutorial_basic(self, capsys):
+        """Test that tutorial runs successfully in non-interactive mode."""
+        result = cli.main(["tutorial", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "PY3PLEX INTERACTIVE TUTORIAL" in captured.out
+        assert "TUTORIAL COMPLETE!" in captured.out
+        assert "Steps completed: 6/6" in captured.out
+
+    def test_tutorial_specific_step(self, capsys):
+        """Test running a specific tutorial step."""
+        result = cli.main(["tutorial", "--step", "1", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "STEP 1: Understanding Multilayer Networks" in captured.out
+        assert "Steps completed: 1/6" in captured.out
+        # Step 2 should not be present
+        assert "STEP 2:" not in captured.out
+
+    def test_tutorial_step_2(self, capsys):
+        """Test tutorial step 2 creates network."""
+        result = cli.main(["tutorial", "--step", "2", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "STEP 2: Creating Your First Network" in captured.out
+        assert "Network created and saved to:" in captured.out
+        assert "Total nodes: 6" in captured.out
+        assert "Total edges: 5" in captured.out
+
+    def test_tutorial_step_3(self, capsys):
+        """Test tutorial step 3 explores structure."""
+        result = cli.main(["tutorial", "--step", "3", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "STEP 3: Exploring Network Structure" in captured.out
+        assert "Getting all nodes:" in captured.out
+        assert "Getting all edges:" in captured.out
+        assert "Getting layers:" in captured.out
+
+    def test_tutorial_step_4(self, capsys):
+        """Test tutorial step 4 computes statistics."""
+        result = cli.main(["tutorial", "--step", "4", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "STEP 4: Computing Network Statistics" in captured.out
+        assert "Layer Density" in captured.out
+        assert "Node Activity" in captured.out
+        assert "Edge Overlap" in captured.out
+
+    def test_tutorial_step_5(self, capsys):
+        """Test tutorial step 5 detects communities."""
+        result = cli.main(["tutorial", "--step", "5", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "STEP 5: Detecting Communities" in captured.out
+        assert "Found" in captured.out and "communities!" in captured.out
+        assert "Community assignments:" in captured.out
+
+    def test_tutorial_step_6(self, capsys):
+        """Test tutorial step 6 creates visualization."""
+        result = cli.main(["tutorial", "--step", "6", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "STEP 6: Visualizing Networks" in captured.out
+        assert "Visualization saved to:" in captured.out
+
+    def test_tutorial_creates_files(self, tmp_path, capsys):
+        """Test that tutorial creates the expected files when run fully."""
+        result = cli.main(
+            ["tutorial", "--non-interactive", "--keep-files", "--output-dir", str(tmp_path)]
+        )
+        assert result == 0
+
+        # Check that files were created
+        assert (tmp_path / "tutorial_network.edgelist").exists()
+        assert (tmp_path / "tutorial_communities.json").exists()
+        assert (tmp_path / "tutorial_visualization.png").exists()
+
+    def test_tutorial_keep_files(self, tmp_path, capsys):
+        """Test that --keep-files preserves files."""
+        result = cli.main(
+            ["tutorial", "--non-interactive", "--keep-files", "--output-dir", str(tmp_path)]
+        )
+        assert result == 0
+
+        # Files should exist after command completes
+        assert (tmp_path / "tutorial_network.edgelist").exists()
+
+        captured = capsys.readouterr()
+        assert "Generated files saved in:" in captured.out
+
+    def test_tutorial_cleanup_by_default(self, capsys):
+        """Test that tutorial cleans up by default."""
+        result = cli.main(["tutorial", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        # Should mention cleanup
+        assert "Cleaning up" in captured.out
+
+    def test_tutorial_shows_next_steps(self, capsys):
+        """Test that tutorial shows next steps."""
+        result = cli.main(["tutorial", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Next steps:" in captured.out
+        assert "py3plex --help" in captured.out
+        assert "py3plex selftest" in captured.out
+        assert "py3plex quickstart" in captured.out
+
+    def test_tutorial_shows_all_steps_in_intro(self, capsys):
+        """Test that tutorial shows all available steps in introduction."""
+        result = cli.main(["tutorial", "--step", "1", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Step 1: Understanding Multilayer Networks" in captured.out
+        assert "Step 2: Creating Your First Network" in captured.out
+        assert "Step 3: Exploring Network Structure" in captured.out
+        assert "Step 4: Computing Network Statistics" in captured.out
+        assert "Step 5: Detecting Communities" in captured.out
+        assert "Step 6: Visualizing Networks" in captured.out
+
+    def test_tutorial_includes_code_examples(self, capsys):
+        """Test that tutorial includes code examples."""
+        result = cli.main(["tutorial", "--step", "2", "--non-interactive"])
+        assert result == 0
+        captured = capsys.readouterr()
+        # Should include code snippets
+        assert "from py3plex.core import multinet" in captured.out
+        assert "network.add_edges" in captured.out
+

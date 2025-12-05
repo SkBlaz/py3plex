@@ -239,7 +239,8 @@ def create_parser() -> argparse.ArgumentParser:
         epilog="""
 Quick Start:
   # New to py3plex? Start here:
-  py3plex quickstart           # Interactive demo with example graph
+  py3plex tutorial             # Interactive step-by-step tutorial
+  py3plex quickstart           # Quick demo with example graph
   py3plex selftest             # Verify installation
   py3plex --version            # Show version
   py3plex --help               # Show this help
@@ -531,6 +532,36 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--validate-only",
         action="store_true",
         help="Only validate configuration without running workflow",
+    )
+
+    # TUTORIAL command
+    tutorial_parser = subparsers.add_parser(
+        "tutorial",
+        help="Interactive tutorial mode - learn py3plex step by step",
+    )
+    tutorial_parser.add_argument(
+        "--step",
+        "-s",
+        type=int,
+        default=None,
+        choices=[1, 2, 3, 4, 5, 6],
+        help="Run a specific tutorial step (1-6). If not specified, runs all steps.",
+    )
+    tutorial_parser.add_argument(
+        "--non-interactive",
+        action="store_true",
+        help="Run without pausing between steps (for automated testing)",
+    )
+    tutorial_parser.add_argument(
+        "--keep-files",
+        action="store_true",
+        help="Keep generated files instead of cleaning them up",
+    )
+    tutorial_parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=None,
+        help="Directory for output files (default: temporary directory)",
     )
 
     return parser
@@ -2125,6 +2156,476 @@ def cmd_run_config(args: argparse.Namespace) -> int:
         return 1
 
 
+def _tutorial_wait_for_input(non_interactive: bool, prompt: str = "Press Enter to continue...") -> None:
+    """Wait for user input unless in non-interactive mode.
+
+    Args:
+        non_interactive: If True, skip waiting for input
+        prompt: The prompt to display
+    """
+    if not non_interactive:
+        input(f"\n{prompt}")
+
+
+def cmd_tutorial(args: argparse.Namespace) -> int:
+    """Run interactive tutorial mode to learn py3plex step by step.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    # Set matplotlib backend early
+    import matplotlib
+
+    matplotlib.use("Agg")  # Non-interactive backend
+    import matplotlib.pyplot as plt
+
+    non_interactive = args.non_interactive
+    step = args.step
+
+    print()
+    print("=" * 70)
+    print("  PY3PLEX INTERACTIVE TUTORIAL")
+    print("  Learn multilayer network analysis step by step")
+    print("=" * 70)
+    print()
+    print("This tutorial covers:")
+    print("  Step 1: Understanding Multilayer Networks")
+    print("  Step 2: Creating Your First Network")
+    print("  Step 3: Exploring Network Structure")
+    print("  Step 4: Computing Network Statistics")
+    print("  Step 5: Detecting Communities")
+    print("  Step 6: Visualizing Networks")
+    print()
+    print("Tip: You can run a specific step with --step N (e.g., py3plex tutorial --step 1)")
+    print()
+
+    # Determine output directory
+    if args.output_dir:
+        output_dir = Path(args.output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        cleanup = False
+    else:
+        temp_dir = tempfile.mkdtemp(prefix="py3plex_tutorial_")
+        output_dir = Path(temp_dir)
+        cleanup = not args.keep_files
+
+    steps_completed = []
+
+    try:
+        # STEP 1: Understanding Multilayer Networks
+        if step is None or step == 1:
+            _tutorial_wait_for_input(non_interactive, "Press Enter to start Step 1...")
+            print()
+            print("-" * 70)
+            print("STEP 1: Understanding Multilayer Networks")
+            print("-" * 70)
+            print()
+            print("A multilayer network consists of:")
+            print()
+            print("  • NODES: Entities in your network (e.g., people, proteins, cities)")
+            print("  • LAYERS: Different types of relationships or contexts")
+            print("  • EDGES: Connections between nodes within or across layers")
+            print()
+            print("Example: A social network with layers for:")
+            print("  - 'friendship' layer: who is friends with whom")
+            print("  - 'work' layer: who works with whom")
+            print("  - 'family' layer: family relationships")
+            print()
+            print("The same person (node) can appear in multiple layers with")
+            print("different connections in each layer!")
+            print()
+            print("In py3plex, nodes are represented as tuples: (node_id, layer_id)")
+            print("For example: ('Alice', 'friendship') or ('Alice', 'work')")
+            print()
+            print("  [OK] Step 1 completed: You understand what multilayer networks are!")
+            steps_completed.append(1)
+
+        # STEP 2: Creating Your First Network
+        if step is None or step == 2:
+            _tutorial_wait_for_input(non_interactive, "Press Enter to start Step 2...")
+            print()
+            print("-" * 70)
+            print("STEP 2: Creating Your First Network")
+            print("-" * 70)
+            print()
+            print("Let's create a simple social network with 2 layers!")
+            print()
+            print("Code example:")
+            print("-" * 50)
+            print("""
+from py3plex.core import multinet
+
+# Create an empty multilayer network
+network = multinet.multi_layer_network()
+
+# Add edges (this also creates nodes automatically)
+# Format: [source, source_layer, target, target_layer, weight]
+network.add_edges([
+    ['Alice', 'friendship', 'Bob', 'friendship', 1],
+    ['Bob', 'friendship', 'Carol', 'friendship', 1],
+    ['Alice', 'friendship', 'Carol', 'friendship', 1],
+    ['Alice', 'work', 'David', 'work', 1],
+    ['David', 'work', 'Carol', 'work', 1],
+], input_type='list')
+""")
+            print("-" * 50)
+            print()
+            print("Running this code now...")
+            print()
+
+            # Actually run the code
+            network = multinet.multi_layer_network()
+            network.add_edges([
+                ['Alice', 'friendship', 'Bob', 'friendship', 1],
+                ['Bob', 'friendship', 'Carol', 'friendship', 1],
+                ['Alice', 'friendship', 'Carol', 'friendship', 1],
+                ['Alice', 'work', 'David', 'work', 1],
+                ['David', 'work', 'Carol', 'work', 1],
+            ], input_type='list')
+
+            # Save network for later steps
+            network_file = output_dir / "tutorial_network.edgelist"
+            network.save_network(str(network_file), output_type="multiedgelist")
+
+            print(f"Network created and saved to: {network_file}")
+            print(f"  Total nodes: {network.core_network.number_of_nodes()}")
+            print(f"  Total edges: {network.core_network.number_of_edges()}")
+            print()
+            print("  [OK] Step 2 completed: You can now create multilayer networks!")
+            steps_completed.append(2)
+
+        # STEP 3: Exploring Network Structure
+        if step is None or step == 3:
+            _tutorial_wait_for_input(non_interactive, "Press Enter to start Step 3...")
+            print()
+            print("-" * 70)
+            print("STEP 3: Exploring Network Structure")
+            print("-" * 70)
+            print()
+
+            # Recreate network if needed (for single step mode)
+            if step == 3:
+                network = multinet.multi_layer_network()
+                network.add_edges([
+                    ['Alice', 'friendship', 'Bob', 'friendship', 1],
+                    ['Bob', 'friendship', 'Carol', 'friendship', 1],
+                    ['Alice', 'friendship', 'Carol', 'friendship', 1],
+                    ['Alice', 'work', 'David', 'work', 1],
+                    ['David', 'work', 'Carol', 'work', 1],
+                ], input_type='list')
+
+            print("Let's explore the network structure!")
+            print()
+            print("1. Getting all nodes:")
+            print("-" * 50)
+            nodes = list(network.get_nodes())
+            print(f"   Nodes: {nodes}")
+            print()
+
+            print("2. Getting all edges:")
+            print("-" * 50)
+            edges = list(network.get_edges())
+            for edge in edges[:5]:
+                print(f"   {edge}")
+            print()
+
+            print("3. Getting layers:")
+            print("-" * 50)
+            # Get unique layer names from nodes
+            layers = set()
+            for node in nodes:
+                if isinstance(node, tuple) and len(node) >= 2:
+                    layers.add(node[1])
+            print(f"   Layers: {sorted(layers)}")
+            print()
+
+            print("Code to explore structure:")
+            print("-" * 50)
+            print("""
+# Get all nodes (as tuples of node_id, layer_id)
+nodes = list(network.get_nodes())
+
+# Get all edges (with source and target nodes)
+edges = list(network.get_edges())
+
+# Get basic statistics
+network.basic_stats()
+""")
+            print("-" * 50)
+            print()
+            print("  [OK] Step 3 completed: You can explore network structure!")
+            steps_completed.append(3)
+
+        # STEP 4: Computing Network Statistics
+        if step is None or step == 4:
+            _tutorial_wait_for_input(non_interactive, "Press Enter to start Step 4...")
+            print()
+            print("-" * 70)
+            print("STEP 4: Computing Network Statistics")
+            print("-" * 70)
+            print()
+
+            # Recreate network if needed (for single step mode)
+            if step == 4:
+                network = multinet.multi_layer_network()
+                network.add_edges([
+                    ['Alice', 'friendship', 'Bob', 'friendship', 1],
+                    ['Bob', 'friendship', 'Carol', 'friendship', 1],
+                    ['Alice', 'friendship', 'Carol', 'friendship', 1],
+                    ['Alice', 'work', 'David', 'work', 1],
+                    ['David', 'work', 'Carol', 'work', 1],
+                ], input_type='list')
+
+            print("Let's compute some multilayer-specific statistics!")
+            print()
+
+            from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+            print("1. Layer Density (how connected is each layer):")
+            print("-" * 50)
+            try:
+                friendship_density = mls.layer_density(network, 'friendship')
+                work_density = mls.layer_density(network, 'work')
+                print(f"   friendship layer density: {friendship_density:.3f}")
+                print(f"   work layer density: {work_density:.3f}")
+            except Exception as e:
+                print(f"   (Could not compute: {e})")
+            print()
+
+            print("2. Node Activity (how many layers is each node active in):")
+            print("-" * 50)
+            try:
+                for node_name in ['Alice', 'Bob', 'Carol', 'David']:
+                    activity = mls.node_activity(network, node_name)
+                    print(f"   {node_name}: active in {activity*100:.0f}% of layers")
+            except Exception as e:
+                print(f"   (Could not compute: {e})")
+            print()
+
+            print("3. Edge Overlap (shared connections between layers):")
+            print("-" * 50)
+            try:
+                overlap = mls.edge_overlap(network, 'friendship', 'work')
+                print(f"   friendship-work overlap: {overlap:.3f}")
+            except Exception as e:
+                print(f"   (Could not compute: {e})")
+            print()
+
+            print("Code for statistics:")
+            print("-" * 50)
+            print("""
+from py3plex.algorithms.statistics import multilayer_statistics as mls
+
+# Layer density
+density = mls.layer_density(network, 'layer_name')
+
+# Node activity across layers
+activity = mls.node_activity(network, 'node_name')
+
+# Edge overlap between layers
+overlap = mls.edge_overlap(network, 'layer1', 'layer2')
+
+# Versatility centrality (how important is a node across layers)
+versatility = mls.versatility_centrality(network, centrality_type='degree')
+""")
+            print("-" * 50)
+            print()
+            print("  [OK] Step 4 completed: You can compute multilayer statistics!")
+            steps_completed.append(4)
+
+        # STEP 5: Detecting Communities
+        if step is None or step == 5:
+            _tutorial_wait_for_input(non_interactive, "Press Enter to start Step 5...")
+            print()
+            print("-" * 70)
+            print("STEP 5: Detecting Communities")
+            print("-" * 70)
+            print()
+
+            # Recreate network if needed (for single step mode)
+            if step == 5:
+                network = multinet.multi_layer_network()
+                network.add_edges([
+                    ['Alice', 'friendship', 'Bob', 'friendship', 1],
+                    ['Bob', 'friendship', 'Carol', 'friendship', 1],
+                    ['Alice', 'friendship', 'Carol', 'friendship', 1],
+                    ['Alice', 'work', 'David', 'work', 1],
+                    ['David', 'work', 'Carol', 'work', 1],
+                ], input_type='list')
+
+            print("Community detection finds groups of densely connected nodes.")
+            print()
+            print("Let's use the Louvain algorithm:")
+            print()
+
+            from py3plex.algorithms.community_detection import community_wrapper
+
+            # Convert to undirected if needed
+            G = (
+                network.core_network.to_undirected()
+                if network.core_network.is_directed()
+                else network.core_network
+            )
+            partition = community_wrapper.louvain_communities(G)
+
+            num_communities = len(set(partition.values()))
+            print(f"Found {num_communities} communities!")
+            print()
+
+            print("Community assignments:")
+            print("-" * 50)
+            for node, comm_id in partition.items():
+                print(f"   {node} -> Community {comm_id}")
+            print()
+
+            # Save communities
+            comm_file = output_dir / "tutorial_communities.json"
+            with open(comm_file, "w") as f:
+                json.dump({str(k): int(v) for k, v in partition.items()}, f, indent=2)
+            print(f"Communities saved to: {comm_file}")
+            print()
+
+            print("Code for community detection:")
+            print("-" * 50)
+            print("""
+from py3plex.algorithms.community_detection import community_wrapper
+
+# Get undirected version of the network
+G = network.core_network.to_undirected()
+
+# Detect communities using Louvain
+partition = community_wrapper.louvain_communities(G)
+
+# partition is a dict: {node: community_id}
+for node, comm_id in partition.items():
+    print(f"{node} -> Community {comm_id}")
+""")
+            print("-" * 50)
+            print()
+            print("  [OK] Step 5 completed: You can detect communities!")
+            steps_completed.append(5)
+
+        # STEP 6: Visualizing Networks
+        if step is None or step == 6:
+            _tutorial_wait_for_input(non_interactive, "Press Enter to start Step 6...")
+            print()
+            print("-" * 70)
+            print("STEP 6: Visualizing Networks")
+            print("-" * 70)
+            print()
+
+            # Recreate network if needed (for single step mode)
+            if step == 6:
+                network = multinet.multi_layer_network()
+                network.add_edges([
+                    ['Alice', 'friendship', 'Bob', 'friendship', 1],
+                    ['Bob', 'friendship', 'Carol', 'friendship', 1],
+                    ['Alice', 'friendship', 'Carol', 'friendship', 1],
+                    ['Alice', 'work', 'David', 'work', 1],
+                    ['David', 'work', 'Carol', 'work', 1],
+                ], input_type='list')
+
+            print("py3plex supports multiple visualization styles!")
+            print()
+            print("Creating a basic network visualization...")
+            print()
+
+            try:
+                # Simple visualization with NetworkX
+                pos = nx.spring_layout(network.core_network)
+                plt.figure(figsize=(10, 8))
+                nx.draw(
+                    network.core_network,
+                    pos,
+                    node_size=500,
+                    node_color="lightblue",
+                    edge_color="gray",
+                    alpha=0.8,
+                    with_labels=True,
+                    font_size=8,
+                )
+                plt.title("Tutorial Multilayer Network", fontsize=14)
+
+                viz_file = output_dir / "tutorial_visualization.png"
+                plt.savefig(viz_file, dpi=150, bbox_inches="tight")
+                plt.close()
+                print(f"[OK] Visualization saved to: {viz_file}")
+            except Exception as e:
+                print(f"   (Visualization error: {e})")
+            print()
+
+            print("Code for visualization:")
+            print("-" * 50)
+            print("""
+import matplotlib.pyplot as plt
+import networkx as nx
+
+# Simple NetworkX visualization
+pos = nx.spring_layout(network.core_network)
+plt.figure(figsize=(10, 8))
+nx.draw(network.core_network, pos,
+        node_size=500, node_color='lightblue',
+        with_labels=True)
+plt.savefig('network.png')
+
+# Or use py3plex multilayer visualization:
+from py3plex.visualization.multilayer import hairball_plot
+
+network_colors, graph = network.get_layers(style="hairball")
+hairball_plot(graph, network_colors)
+""")
+            print("-" * 50)
+            print()
+            print("  [OK] Step 6 completed: You can visualize networks!")
+            steps_completed.append(6)
+
+        # Summary
+        print()
+        print("=" * 70)
+        print("  TUTORIAL COMPLETE!")
+        print("=" * 70)
+        print()
+        print(f"Steps completed: {len(steps_completed)}/6")
+        for step_num in steps_completed:
+            step_names = {
+                1: "Understanding Multilayer Networks",
+                2: "Creating Your First Network",
+                3: "Exploring Network Structure",
+                4: "Computing Network Statistics",
+                5: "Detecting Communities",
+                6: "Visualizing Networks",
+            }
+            print(f"  [OK] Step {step_num}: {step_names[step_num]}")
+        print()
+
+        if cleanup:
+            print(f"Cleaning up temporary files in {output_dir}...")
+            shutil.rmtree(output_dir)
+            print("   (Use --keep-files to preserve generated files)")
+        else:
+            print(f"Generated files saved in: {output_dir}")
+            for file in output_dir.glob("tutorial_*"):
+                print(f"  - {file}")
+        print()
+
+        print("Next steps:")
+        print("  • Run 'py3plex --help' to see all available commands")
+        print("  • Run 'py3plex selftest' to verify your installation")
+        print("  • Run 'py3plex quickstart' for a quick demo workflow")
+        print("  • Check documentation: https://skblaz.github.io/py3plex/")
+        print()
+
+        return 0
+
+    except Exception as e:
+        print(f"\nError during tutorial: {e}")
+        traceback.print_exc()
+        return 1
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
@@ -2159,6 +2660,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "selftest": cmd_selftest,
         "quickstart": cmd_quickstart,
         "run-config": cmd_run_config,
+        "tutorial": cmd_tutorial,
     }
 
     handler = command_handlers.get(args.command)
