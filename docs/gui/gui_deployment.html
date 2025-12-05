@@ -153,7 +153,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
@@ -373,7 +372,7 @@ gunicorn<span class="w"> </span><span class="se">\</span>
 <span class="na">autorestart</span><span class="o">=</span><span class="s">true</span>
 <span class="na">redirect_stderr</span><span class="o">=</span><span class="s">true</span>
 <span class="na">stdout_logfile</span><span class="o">=</span><span class="s">/var/log/py3plex-gui.log</span>
-<span class="na">environment=FLASK_ENV</span><span class="o">=</span><span class="s">&quot;production&quot;</span><span class="na">,SECRET_KEY</span><span class="o">=</span><span class="s">&quot;your-secret-key&quot;</span>
+<span class="na">environment</span><span class="o">=</span><span class="s">FLASK_ENV=&quot;production&quot;,SECRET_KEY=&quot;your-secret-key&quot;</span>
 </pre></div>
 </div>
 <p>Start with:</p>
@@ -539,7 +538,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <span class="n">MAX_CONTENT_LENGTH</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 100 MB</span>
 
 <span class="c1"># Validate uploads</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">allowed_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">allowed_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="k">return</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">filename</span> <span class="ow">and</span> \
            <span class="n">filename</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ALLOWED_EXTENSIONS</span>
 </pre></div>
@@ -548,8 +547,8 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <section id="rate-limiting">
 <h3>Rate Limiting<a class="headerlink" href="#rate-limiting" title="Link to this heading"></a></h3>
 <p>Implement rate limiting for API endpoints:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_limiter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Limiter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">flask_limiter.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_remote_address</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_limiter</span> <span class="kn">import</span> <span class="n">Limiter</span>
+<span class="kn">from</span> <span class="nn">flask_limiter.util</span> <span class="kn">import</span> <span class="n">get_remote_address</span>
 
 <span class="n">limiter</span> <span class="o">=</span> <span class="n">Limiter</span><span class="p">(</span>
     <span class="n">app</span><span class="p">,</span>
@@ -559,7 +558,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/upload&quot;</span><span class="p">)</span>
 <span class="nd">@limiter</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="s2">&quot;10 per hour&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">upload</span><span class="p">():</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
@@ -567,14 +566,14 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <section id="authentication">
 <h3>Authentication<a class="headerlink" href="#authentication" title="Link to this heading"></a></h3>
 <p>Add user authentication for production:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoginManager</span><span class="p">,</span> <span class="n">login_required</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">LoginManager</span><span class="p">,</span> <span class="n">login_required</span>
 
 <span class="n">login_manager</span> <span class="o">=</span> <span class="n">LoginManager</span><span class="p">()</span>
 <span class="n">login_manager</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/dashboard&quot;</span><span class="p">)</span>
 <span class="nd">@login_required</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">dashboard</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">dashboard</span><span class="p">():</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
@@ -585,8 +584,8 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <section id="application-logging">
 <h3>Application Logging<a class="headerlink" href="#application-logging" title="Link to this heading"></a></h3>
 <p>Configure structured logging:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">logging.handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">RotatingFileHandler</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">logging.handlers</span> <span class="kn">import</span> <span class="n">RotatingFileHandler</span>
 
 <span class="c1"># Configure logging</span>
 <span class="n">handler</span> <span class="o">=</span> <span class="n">RotatingFileHandler</span><span class="p">(</span>
@@ -605,7 +604,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <section id="prometheus-metrics">
 <h3>Prometheus Metrics<a class="headerlink" href="#prometheus-metrics" title="Link to this heading"></a></h3>
 <p>Export metrics for Prometheus:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">prometheus_flask_exporter</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrometheusMetrics</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">prometheus_flask_exporter</span> <span class="kn">import</span> <span class="n">PrometheusMetrics</span>
 
 <span class="n">metrics</span> <span class="o">=</span> <span class="n">PrometheusMetrics</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
@@ -618,7 +617,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <h3>Health Checks<a class="headerlink" href="#health-checks" title="Link to this heading"></a></h3>
 <p>Implement health check endpoint:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/health&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">health</span><span class="p">():</span>
     <span class="c1"># Check dependencies</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Test database connection, file system, etc.</span>
@@ -717,13 +716,13 @@ gunicorn<span class="w"> </span><span class="se">\</span>
 <section id="caching">
 <h3>Caching<a class="headerlink" href="#caching" title="Link to this heading"></a></h3>
 <p>Implement caching for expensive operations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_caching</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cache</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_caching</span> <span class="kn">import</span> <span class="n">Cache</span>
 
 <span class="n">cache</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;CACHE_TYPE&#39;</span><span class="p">:</span> <span class="s1">&#39;simple&#39;</span><span class="p">})</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/stats/&lt;network_id&gt;&#39;</span><span class="p">)</span>
 <span class="nd">@cache</span><span class="o">.</span><span class="n">cached</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">network_stats</span><span class="p">(</span><span class="n">network_id</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">network_stats</span><span class="p">(</span><span class="n">network_id</span><span class="p">):</span>
     <span class="c1"># Expensive computation</span>
     <span class="k">return</span> <span class="n">stats</span>
 </pre></div>
@@ -732,7 +731,7 @@ gunicorn<span class="w"> </span><span class="se">\</span>
 <section id="database-for-persistence">
 <h3>Database for Persistence<a class="headerlink" href="#database-for-persistence" title="Link to this heading"></a></h3>
 <p>For production, consider a database:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
 
 <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SQLALCHEMY_DATABASE_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;postgresql://user:pass@localhost/py3plex&#39;</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">SQLAlchemy</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>

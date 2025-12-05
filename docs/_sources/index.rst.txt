@@ -157,7 +157,6 @@ Working code examples for various use cases.
    :maxdepth: 1
    :caption: Examples
 
-   examples/part_intro
    examples/index
 
 ----
