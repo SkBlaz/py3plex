@@ -9,6 +9,7 @@ with full coverage of main algorithms.
 import argparse
 import json
 import random
+import re
 import shutil
 import sys
 import tempfile
@@ -2272,7 +2273,11 @@ def _parse_simple_dsl_query(query_str: str) -> Dict[str, Any]:
     Returns:
         Dictionary with parsed components
     """
-    query_str = query_str.strip().lower()
+    # Store original for extracting case-sensitive values
+    original_query = query_str.strip()
+    # Lowercase for keyword matching only
+    query_lower = original_query.lower()
+    
     result = {
         "target": "nodes",
         "layers": [],
@@ -2282,37 +2287,39 @@ def _parse_simple_dsl_query(query_str: str) -> Dict[str, Any]:
     }
 
     # Parse target (nodes or edges)
-    if query_str.startswith("edges"):
+    if query_lower.startswith("edges"):
         result["target"] = "edges"
-        query_str = query_str[5:].strip()
-    elif query_str.startswith("nodes"):
-        query_str = query_str[5:].strip()
+        original_query = original_query[5:].strip()
+        query_lower = query_lower[5:].strip()
+    elif query_lower.startswith("nodes"):
+        original_query = original_query[5:].strip()
+        query_lower = query_lower[5:].strip()
 
-    # Parse FROM LAYER clause
-    import re
-
-    layer_match = re.search(r'from\s+layer\s*\(\s*["\']([^"\']+)["\']\s*\)', query_str)
+    # Parse FROM LAYER clause - use case-insensitive matching but preserve layer name case
+    layer_pattern = r"from\s+layer\s*\(\s*[\"']([^\"']+)[\"']\s*\)"
+    layer_match = re.search(layer_pattern, original_query, re.IGNORECASE)
     if layer_match:
-        result["layers"].append(layer_match.group(1))
-        query_str = query_str[: layer_match.start()] + query_str[layer_match.end() :]
+        result["layers"].append(layer_match.group(1))  # Preserve original case
+        original_query = original_query[: layer_match.start()] + original_query[layer_match.end() :]
+        query_lower = query_lower[: layer_match.start()] + query_lower[layer_match.end() :]
 
     # Parse WHERE clause (simple conditions)
-    where_match = re.search(r"where\s+(\w+)\s*([><=!]+)\s*(\d+(?:\.\d+)?)", query_str)
+    where_match = re.search(r"where\s+(\w+)\s*([><=!]+)\s*(\d+(?:\.\d+)?)", query_lower)
     if where_match:
         attr = where_match.group(1)
         op = where_match.group(2)
         value = float(where_match.group(3))
         result["conditions"].append({"attr": attr, "op": op, "value": value})
-        query_str = query_str[: where_match.start()] + query_str[where_match.end() :]
+        query_lower = query_lower[: where_match.start()] + query_lower[where_match.end() :]
 
     # Parse COMPUTE clause
-    compute_match = re.search(r"compute\s+(\w+)", query_str)
+    compute_match = re.search(r"compute\s+(\w+)", query_lower)
     if compute_match:
         result["compute"].append(compute_match.group(1))
-        query_str = query_str[: compute_match.start()] + query_str[compute_match.end() :]
+        query_lower = query_lower[: compute_match.start()] + query_lower[compute_match.end() :]
 
     # Parse LIMIT clause
-    limit_match = re.search(r"limit\s+(\d+)", query_str)
+    limit_match = re.search(r"limit\s+(\d+)", query_lower)
     if limit_match:
         result["limit"] = int(limit_match.group(1))
 
@@ -2361,7 +2368,8 @@ def _format_query_output(
                 item_str = f"  {item}"
                 if "attributes" in result:
                     for attr, values in result["attributes"].items():
-                        val = values.get(item, values.get(str(item), ""))
+                        # Try item first, then string representation
+                        val = values.get(item) if item in values else values.get(str(item), "")
                         if val:
                             item_str += f" | {attr}={val}"
                 lines.append(item_str)

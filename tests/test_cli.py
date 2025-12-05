@@ -4,6 +4,7 @@ Tests for the py3plex CLI tool.
 This module tests all CLI commands and their functionality.
 """
 
+import io
 import json
 import subprocess
 import sys
@@ -1250,8 +1251,6 @@ class TestCLIStdinPiping:
 
     def test_load_from_stdin(self, capsys, monkeypatch):
         """Test loading network from stdin."""
-        import io
-        
         stdin_content = "node0 layer1 node1 layer1\nnode1 layer1 node2 layer1\n"
         monkeypatch.setattr('sys.stdin', io.StringIO(stdin_content))
         
@@ -1260,8 +1259,6 @@ class TestCLIStdinPiping:
 
     def test_query_from_stdin(self, capsys, monkeypatch):
         """Test query command with stdin input."""
-        import io
-        
         stdin_content = "node0 layer1 node1 layer1\nnode1 layer1 node2 layer1\n"
         monkeypatch.setattr('sys.stdin', io.StringIO(stdin_content))
         
@@ -1273,8 +1270,6 @@ class TestCLIStdinPiping:
 
     def test_query_stdin_json_format(self, capsys, monkeypatch):
         """Test query with JSON input format from stdin."""
-        import io
-        
         stdin_content = '{"edges": [{"source": "a", "target": "b", "source_type": "layer1", "target_type": "layer1"}]}'
         monkeypatch.setattr('sys.stdin', io.StringIO(stdin_content))
         
