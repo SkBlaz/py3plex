@@ -11,6 +11,7 @@ Key Features:
     - **SQL-like DSL for intuitive network queries**
     - **Dplyr-style chainable graph operations API**
     - **Built-in datasets** (similar to scikit-learn)
+    - **Pluggable backend system** (NetworkX default, pymnet optional)
     - Dict-based API for adding nodes and edges
     - NetworkX interoperability
     - Multiple I/O formats (edgelist, GML, GraphML, etc.)
@@ -18,6 +19,20 @@ Key Features:
     - Community detection and centrality analysis
     - Random walk and embedding generation
     - **Plugin system for extensibility**
+
+Backend System:
+    py3plex supports multiple backends for multilayer network representation:
+    
+    - **networkx** (default): Uses NetworkX MultiGraph/MultiDiGraph
+    - **pymnet** (optional): Uses pymnet's native multilayer structures
+    
+    To use pymnet backend:
+        pip install pymnet
+        
+    >>> import py3plex as p3
+    >>> p3.list_backends()  # See available backends
+    ['networkx']
+    >>> p3.set_default_backend('pymnet')  # Switch default  # doctest: +SKIP
 
 Quick Start:
     >>> import py3plex as p3
@@ -153,6 +168,15 @@ from py3plex.datasets import (
     make_social_network,
 )
 
+# Backend system for pluggable multilayer network representations
+from py3plex.backends import (
+    get_backend,
+    set_default_backend,
+    list_backends,
+    is_backend_available,
+    BackendNotAvailableError,
+)
+
 __all__ = [
     # Version info
     "__version__",
@@ -243,4 +267,10 @@ __all__ = [
     "make_social_network",
     "list_datasets",
     "get_data_dir",
+    # Backend system
+    "get_backend",
+    "set_default_backend",
+    "list_backends",
+    "is_backend_available",
+    "BackendNotAvailableError",
 ]

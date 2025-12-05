@@ -94,6 +94,10 @@ workflows = [
 arrow = [
     "pyarrow>=10.0.0",
 ]
+# Optional: pymnet backend for native multilayer network support
+pymnet = [
+    "pymnet>=0.4.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"

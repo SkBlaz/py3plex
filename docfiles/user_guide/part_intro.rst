@@ -6,6 +6,7 @@ This section provides comprehensive how-to guides for every major py3plex capabi
 **This section covers:**
 
 * **Networks** — Create, load, query, and extract subnetworks
+* **Backends** — Use different network representation backends (NetworkX, pymnet)
 * **Statistics** — Measure layer density, node activity, edge overlap, versatility
 * **Community Detection** — Find groups of nodes that cluster together across layers
 * **Random Walks & Embeddings** — Generate features for machine learning

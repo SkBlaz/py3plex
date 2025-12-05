@@ -2,16 +2,28 @@
 Centralized configuration for py3plex.
 
 This module provides default settings for visualization, layout algorithms,
-and other configurable aspects of the library. Users can override these
-settings by modifying the values after import.
+backends, and other configurable aspects of the library. Users can override
+these settings by modifying the values after import.
 
 Example:
     >>> from py3plex import config
     >>> config.DEFAULT_NODE_SIZE = 15
     >>> config.DEFAULT_EDGE_ALPHA = 0.5
+    >>> config.DEFAULT_BACKEND = 'networkx'  # or 'pymnet' if installed
 """
 
 from typing import Dict, List, Tuple
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Backend Settings
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Default backend for multilayer network representation
+# Options: 'networkx' (always available), 'pymnet' (optional, requires pip install pymnet)
+DEFAULT_BACKEND: str = "networkx"
+
+# Available backends (dynamically populated based on installed packages)
+AVAILABLE_BACKENDS: List[str] = ["networkx"]  # Will be updated at runtime
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Visualization Settings
