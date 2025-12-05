@@ -8,6 +8,8 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 import random
 import networkx as nx
 
+from py3plex.core import multinet
+
 
 class ModelRegistry:
     """Registry for null model algorithms.
@@ -79,8 +81,6 @@ def _copy_network(network: Any) -> Any:
         return network.copy()
     
     # Manual copy for py3plex networks
-    from py3plex.core import multinet
-    
     new_network = multinet.multi_layer_network(
         directed=network.directed if hasattr(network, 'directed') else False
     )
@@ -159,8 +159,6 @@ def configuration_model(
     random_G = nx.relabel_nodes(random_G, mapping)
     
     # Create new py3plex network
-    from py3plex.core import multinet
-    
     new_network = multinet.multi_layer_network(
         directed=network.directed if hasattr(network, 'directed') else False
     )
@@ -229,8 +227,6 @@ def erdos_renyi_model(
     random_G = nx.relabel_nodes(random_G, mapping)
     
     # Create new py3plex network
-    from py3plex.core import multinet
-    
     new_network = multinet.multi_layer_network(
         directed=network.directed if hasattr(network, 'directed') else False
     )
@@ -295,8 +291,6 @@ def layer_shuffle_model(
     layer_mapping = dict(zip(layers, shuffled_layers))
     
     # Create new py3plex network
-    from py3plex.core import multinet
-    
     new_network = multinet.multi_layer_network(
         directed=network.directed if hasattr(network, 'directed') else False
     )
@@ -370,8 +364,6 @@ def edge_swap_model(
         pass
     
     # Create new py3plex network
-    from py3plex.core import multinet
-    
     new_network = multinet.multi_layer_network(
         directed=network.directed if hasattr(network, 'directed') else False
     )

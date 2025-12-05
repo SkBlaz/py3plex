@@ -168,7 +168,7 @@ def multiplex_jaccard(
 
 
 @metric_registry.register("multilayer_resistance_distance",
-                          description="Resistance distance based on supra-adjacency matrix")
+                          description="Resistance distance based on supra-Laplacian matrix")
 def multilayer_resistance_distance(
     network_a: Any,
     network_b: Any,

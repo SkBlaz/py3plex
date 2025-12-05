@@ -239,7 +239,7 @@ def all_paths(
 
 
 @path_registry.register("random_walk",
-                        description="Perform random walk and compute visit frequencies")
+                        description="Perform random walk and compute node visit frequencies")
 def random_walk(
     network: Any,
     source: Any,
