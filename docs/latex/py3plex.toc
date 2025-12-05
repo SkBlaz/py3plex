@@ -994,63 +994,63 @@
 \contentsline {subsubsection}{Core Modules}{355}{subsubsection*.1214}%
 \contentsline {paragraph}{HINMINE Network Decomposition}{394}{paragraph*.1331}%
 \contentsline {subsubsection}{Configuration and Utilities}{396}{subsubsection*.1356}%
-\contentsline {subsubsection}{Domain\sphinxhyphen {}Specific Language (DSL)}{403}{subsubsection*.1392}%
-\contentsline {subsubsection}{Algorithms}{430}{subsubsection*.1654}%
-\contentsline {paragraph}{Community Detection}{430}{paragraph*.1655}%
-\contentsline {paragraph}{Statistics}{453}{paragraph*.1688}%
-\contentsline {paragraph}{Multilayer Algorithms}{482}{paragraph*.1735}%
-\contentsline {subparagraph}{Weight Handling Notes:}{482}{subparagraph*.1736}%
-\contentsline {paragraph}{General Algorithms}{509}{paragraph*.1802}%
-\contentsline {paragraph}{Node Ranking}{515}{paragraph*.1810}%
-\contentsline {paragraph}{Network Classification}{517}{paragraph*.1819}%
-\contentsline {subsubsection}{Visualization}{521}{subsubsection*.1820}%
-\contentsline {subsubsection}{Wrappers}{545}{subsubsection*.1878}%
-\contentsline {subsubsection}{I/O Operations}{548}{subsubsection*.1887}%
-\contentsline {subsubsection}{Profiling Utilities}{550}{subsubsection*.1892}%
-\contentsline {subsubsection}{Logging Configuration}{553}{subsubsection*.1903}%
-\contentsline {subsubsection}{I/O Schema and Validation}{553}{subsubsection*.1906}%
-\contentsline {subsubsection}{Hedwig Rule Learning}{560}{subsubsection*.1915}%
-\contentsline {subsubsection}{Force Atlas 2 Visualization}{562}{subsubsection*.1945}%
-\contentsline {subsubsection}{Embedding Visualization}{563}{subsubsection*.1972}%
-\contentsline {subsubsection}{Network Generation and Benchmarking}{563}{subsubsection*.1974}%
-\contentsline {subsubsection}{Additional Statistics and Analysis}{563}{subsubsection*.1975}%
-\contentsline {subsubsection}{Community Detection Advanced}{568}{subsubsection*.1987}%
-\contentsline {subsubsection}{Node Ranking and Classification}{569}{subsubsection*.1994}%
-\contentsline {subsubsection}{Embeddings and Wrappers}{578}{subsubsection*.2014}%
-\contentsline {subsubsection}{Network Motifs and Patterns}{580}{subsubsection*.2018}%
-\contentsline {subsubsection}{HINMINE Data Structures}{580}{subsubsection*.2019}%
-\contentsline {subsubsection}{Command\sphinxhyphen {}Line Interface}{580}{subsubsection*.2031}%
-\contentsline {subsubsection}{Validation Utilities}{583}{subsubsection*.2048}%
-\contentsline {subsubsection}{Network Comparison and Testing}{584}{subsubsection*.2055}%
-\contentsline {subsubsection}{Hedwig Learning Algorithms}{584}{subsubsection*.2056}%
-\contentsline {subsubsection}{Hedwig Statistics and Scoring}{586}{subsubsection*.2086}%
-\contentsline {subsubsection}{Hedwig Core Components}{587}{subsubsection*.2100}%
-\contentsline {subsubsection}{Time Series and Temporal Analysis}{589}{subsubsection*.2142}%
-\contentsline {subsubsection}{Advanced Visualization}{589}{subsubsection*.2143}%
-\contentsline {subsubsection}{Link Prediction}{590}{subsubsection*.2145}%
-\contentsline {subsection}{\numberline {2.7.4}Citation and References}{590}{subsection.2.7.4}%
-\contentsline {subsubsection}{Primary Citation}{590}{subsubsection*.2146}%
-\contentsline {subsubsection}{Conference Paper}{590}{subsubsection*.2147}%
-\contentsline {subsubsection}{Algorithm\sphinxhyphen {}Specific Citations}{591}{subsubsection*.2148}%
-\contentsline {paragraph}{Multilayer Modularity}{591}{paragraph*.2149}%
-\contentsline {paragraph}{Node2Vec}{591}{paragraph*.2150}%
-\contentsline {paragraph}{Louvain Algorithm}{591}{paragraph*.2151}%
-\contentsline {paragraph}{Infomap}{592}{paragraph*.2152}%
-\contentsline {paragraph}{MultiXRank}{592}{paragraph*.2153}%
-\contentsline {paragraph}{DeepWalk}{592}{paragraph*.2154}%
-\contentsline {paragraph}{Multilayer Network Theory}{592}{paragraph*.2155}%
-\contentsline {subsubsection}{Complete Citation List}{593}{subsubsection*.2156}%
-\contentsline {subsubsection}{Acknowledgments}{593}{subsubsection*.2157}%
-\contentsline {paragraph}{Development and Contributors}{593}{paragraph*.2158}%
-\contentsline {paragraph}{Funding and Support}{594}{paragraph*.2159}%
-\contentsline {paragraph}{External Libraries}{594}{paragraph*.2160}%
-\contentsline {paragraph}{Community Acknowledgments}{594}{paragraph*.2161}%
-\contentsline {subsubsection}{License Information}{594}{subsubsection*.2162}%
-\contentsline {subsubsection}{Contact}{595}{subsubsection*.2163}%
-\contentsline {subsubsection}{Related Work}{595}{subsubsection*.2164}%
-\contentsline {subsubsection}{Usage in Publications}{595}{subsubsection*.2165}%
-\contentsline {subsubsection}{See Also}{595}{subsubsection*.2166}%
-\contentsline {chapter}{\numberline {3}Citation}{596}{chapter.3}%
-\contentsline {chapter}{\numberline {4}Indices and Tables}{597}{chapter.4}%
-\contentsline {chapter}{Python Module Index}{598}{section*.2169}%
-\contentsline {chapter}{Index}{600}{section*.2170}%
+\contentsline {subsubsection}{Domain\sphinxhyphen {}Specific Language (DSL)}{407}{subsubsection*.1416}%
+\contentsline {subsubsection}{Algorithms}{434}{subsubsection*.1678}%
+\contentsline {paragraph}{Community Detection}{434}{paragraph*.1679}%
+\contentsline {paragraph}{Statistics}{456}{paragraph*.1712}%
+\contentsline {paragraph}{Multilayer Algorithms}{485}{paragraph*.1759}%
+\contentsline {subparagraph}{Weight Handling Notes:}{485}{subparagraph*.1760}%
+\contentsline {paragraph}{General Algorithms}{512}{paragraph*.1826}%
+\contentsline {paragraph}{Node Ranking}{518}{paragraph*.1834}%
+\contentsline {paragraph}{Network Classification}{520}{paragraph*.1843}%
+\contentsline {subsubsection}{Visualization}{524}{subsubsection*.1844}%
+\contentsline {subsubsection}{Wrappers}{548}{subsubsection*.1902}%
+\contentsline {subsubsection}{I/O Operations}{551}{subsubsection*.1911}%
+\contentsline {subsubsection}{Profiling Utilities}{553}{subsubsection*.1916}%
+\contentsline {subsubsection}{Logging Configuration}{556}{subsubsection*.1927}%
+\contentsline {subsubsection}{I/O Schema and Validation}{556}{subsubsection*.1930}%
+\contentsline {subsubsection}{Hedwig Rule Learning}{563}{subsubsection*.1939}%
+\contentsline {subsubsection}{Force Atlas 2 Visualization}{565}{subsubsection*.1969}%
+\contentsline {subsubsection}{Embedding Visualization}{566}{subsubsection*.1996}%
+\contentsline {subsubsection}{Network Generation and Benchmarking}{566}{subsubsection*.1998}%
+\contentsline {subsubsection}{Additional Statistics and Analysis}{566}{subsubsection*.1999}%
+\contentsline {subsubsection}{Community Detection Advanced}{571}{subsubsection*.2011}%
+\contentsline {subsubsection}{Node Ranking and Classification}{572}{subsubsection*.2018}%
+\contentsline {subsubsection}{Embeddings and Wrappers}{581}{subsubsection*.2038}%
+\contentsline {subsubsection}{Network Motifs and Patterns}{583}{subsubsection*.2042}%
+\contentsline {subsubsection}{HINMINE Data Structures}{583}{subsubsection*.2043}%
+\contentsline {subsubsection}{Command\sphinxhyphen {}Line Interface}{583}{subsubsection*.2055}%
+\contentsline {subsubsection}{Validation Utilities}{586}{subsubsection*.2073}%
+\contentsline {subsubsection}{Network Comparison and Testing}{588}{subsubsection*.2080}%
+\contentsline {subsubsection}{Hedwig Learning Algorithms}{588}{subsubsection*.2081}%
+\contentsline {subsubsection}{Hedwig Statistics and Scoring}{589}{subsubsection*.2111}%
+\contentsline {subsubsection}{Hedwig Core Components}{590}{subsubsection*.2125}%
+\contentsline {subsubsection}{Time Series and Temporal Analysis}{592}{subsubsection*.2167}%
+\contentsline {subsubsection}{Advanced Visualization}{592}{subsubsection*.2168}%
+\contentsline {subsubsection}{Link Prediction}{593}{subsubsection*.2170}%
+\contentsline {subsection}{\numberline {2.7.4}Citation and References}{593}{subsection.2.7.4}%
+\contentsline {subsubsection}{Primary Citation}{593}{subsubsection*.2171}%
+\contentsline {subsubsection}{Conference Paper}{593}{subsubsection*.2172}%
+\contentsline {subsubsection}{Algorithm\sphinxhyphen {}Specific Citations}{594}{subsubsection*.2173}%
+\contentsline {paragraph}{Multilayer Modularity}{594}{paragraph*.2174}%
+\contentsline {paragraph}{Node2Vec}{594}{paragraph*.2175}%
+\contentsline {paragraph}{Louvain Algorithm}{594}{paragraph*.2176}%
+\contentsline {paragraph}{Infomap}{595}{paragraph*.2177}%
+\contentsline {paragraph}{MultiXRank}{595}{paragraph*.2178}%
+\contentsline {paragraph}{DeepWalk}{595}{paragraph*.2179}%
+\contentsline {paragraph}{Multilayer Network Theory}{596}{paragraph*.2180}%
+\contentsline {subsubsection}{Complete Citation List}{597}{subsubsection*.2181}%
+\contentsline {subsubsection}{Acknowledgments}{597}{subsubsection*.2182}%
+\contentsline {paragraph}{Development and Contributors}{597}{paragraph*.2183}%
+\contentsline {paragraph}{Funding and Support}{597}{paragraph*.2184}%
+\contentsline {paragraph}{External Libraries}{597}{paragraph*.2185}%
+\contentsline {paragraph}{Community Acknowledgments}{597}{paragraph*.2186}%
+\contentsline {subsubsection}{License Information}{597}{subsubsection*.2187}%
+\contentsline {subsubsection}{Contact}{598}{subsubsection*.2188}%
+\contentsline {subsubsection}{Related Work}{598}{subsubsection*.2189}%
+\contentsline {subsubsection}{Usage in Publications}{598}{subsubsection*.2190}%
+\contentsline {subsubsection}{See Also}{599}{subsubsection*.2191}%
+\contentsline {chapter}{\numberline {3}Citation}{600}{chapter.3}%
+\contentsline {chapter}{\numberline {4}Indices and Tables}{601}{chapter.4}%
+\contentsline {chapter}{Python Module Index}{602}{section*.2194}%
+\contentsline {chapter}{Index}{604}{section*.2195}%

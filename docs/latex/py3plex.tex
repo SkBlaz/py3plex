@@ -34940,19 +34940,54 @@ Custom exception types for the py3plex library.
 \sphinxAtStartPar
 This module defines domain\sphinxhyphen{}specific exceptions to provide clear error messages
 and enable better error handling throughout the library.
+
+\sphinxAtStartPar
+Py3plex follows Rust’s approach to error messages:
+\sphinxhyphen{} Clear, descriptive error messages
+\sphinxhyphen{} Error codes (e.g., PX101, PX201)
+\sphinxhyphen{} Helpful suggestions for fixing issues
+\sphinxhyphen{} “Did you mean?” suggestions for typos
+\sphinxhyphen{} Context showing the relevant location in files
+\begin{description}
+\sphinxlineitem{Example usage:}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{exceptions}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{InvalidLayerError}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k}{raise} \PYG{n}{InvalidLayerError}\PYG{p}{(}
+\PYG{g+gp}{... }    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{n}{available\PYGZus{}layers}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{family}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social\PYGZus{}media}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{n}{suggestion}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Did you mean }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{social\PYGZus{}media}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{?}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{... }\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{description}
 \index{AlgorithmError@\spxentry{AlgorithmError}}
 
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.AlgorithmError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{AlgorithmError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{algorithm\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{valid\_algorithms}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when an algorithm execution fails.
+
+\sphinxAtStartPar
+Error code: PX301
+\index{default\_code (py3plex.exceptions.AlgorithmError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.AlgorithmError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.AlgorithmError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX301\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -34961,14 +34996,29 @@ Exception raised when an algorithm execution fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.CentralityComputationError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{CentralityComputationError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{algorithm\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{valid\_algorithms}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.AlgorithmError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{AlgorithmError}}}}}
 
 \sphinxAtStartPar
 Exception raised when centrality computation fails.
+
+\sphinxAtStartPar
+Error code: PX301
+\index{default\_code (py3plex.exceptions.CentralityComputationError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.CentralityComputationError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.CentralityComputationError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX301\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -34977,14 +35027,29 @@ Exception raised when centrality computation fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.CommunityDetectionError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{CommunityDetectionError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{algorithm\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{valid\_algorithms}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.AlgorithmError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{AlgorithmError}}}}}
 
 \sphinxAtStartPar
 Exception raised when community detection fails.
+
+\sphinxAtStartPar
+Error code: PX301
+\index{default\_code (py3plex.exceptions.CommunityDetectionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.CommunityDetectionError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.CommunityDetectionError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX301\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -34993,14 +35058,29 @@ Exception raised when community detection fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.ConversionError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{ConversionError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when format conversion fails.
+
+\sphinxAtStartPar
+Error code: PX501
+\index{default\_code (py3plex.exceptions.ConversionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ConversionError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.ConversionError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX501\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35009,14 +35089,29 @@ Exception raised when format conversion fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.DecompositionError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{DecompositionError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{algorithm\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{valid\_algorithms}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.AlgorithmError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{AlgorithmError}}}}}
 
 \sphinxAtStartPar
 Exception raised when network decomposition fails.
+
+\sphinxAtStartPar
+Error code: PX301
+\index{default\_code (py3plex.exceptions.DecompositionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.DecompositionError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.DecompositionError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX301\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35025,14 +35120,29 @@ Exception raised when network decomposition fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.EmbeddingError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{EmbeddingError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{algorithm\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{valid\_algorithms}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.AlgorithmError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{AlgorithmError}}}}}
 
 \sphinxAtStartPar
 Exception raised when embedding generation fails.
+
+\sphinxAtStartPar
+Error code: PX301
+\index{default\_code (py3plex.exceptions.EmbeddingError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.EmbeddingError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.EmbeddingError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX301\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35041,14 +35151,29 @@ Exception raised when embedding generation fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.ExternalToolError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{ExternalToolError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when external tool execution fails.
+
+\sphinxAtStartPar
+Error code: PX001
+\index{default\_code (py3plex.exceptions.ExternalToolError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ExternalToolError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.ExternalToolError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX001\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35057,14 +35182,29 @@ Exception raised when external tool execution fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.IncompatibleNetworkError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{IncompatibleNetworkError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when network format is incompatible with an operation.
+
+\sphinxAtStartPar
+Error code: PX304
+\index{default\_code (py3plex.exceptions.IncompatibleNetworkError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.IncompatibleNetworkError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.IncompatibleNetworkError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX304\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35073,14 +35213,29 @@ Exception raised when network format is incompatible with an operation.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.InvalidEdgeError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{InvalidEdgeError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when an invalid edge is specified.
+
+\sphinxAtStartPar
+Error code: PX203
+\index{default\_code (py3plex.exceptions.InvalidEdgeError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.InvalidEdgeError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.InvalidEdgeError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX203\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35089,14 +35244,37 @@ Exception raised when an invalid edge is specified.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.InvalidLayerError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{InvalidLayerError}}}
+{\sphinxparam{\DUrole{n}{layer\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{available\_layers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when an invalid layer is specified.
+
+\sphinxAtStartPar
+Error code: PX201
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k}{raise} \PYG{n}{InvalidLayerError}\PYG{p}{(}
+\PYG{g+gp}{... }    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+\PYG{g+gp}{... }    \PYG{n}{available\PYGZus{}layers}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{family}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
+\PYG{g+gp}{... }\PYG{p}{)}
+\end{sphinxVerbatim}
+\index{default\_code (py3plex.exceptions.InvalidLayerError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.InvalidLayerError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.InvalidLayerError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX201\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35105,14 +35283,29 @@ Exception raised when an invalid layer is specified.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.InvalidNodeError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{InvalidNodeError}}}
+{\sphinxparam{\DUrole{n}{node\_id}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{available\_nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when an invalid node is specified.
+
+\sphinxAtStartPar
+Error code: PX202
+\index{default\_code (py3plex.exceptions.InvalidNodeError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.InvalidNodeError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.InvalidNodeError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX202\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35121,14 +35314,29 @@ Exception raised when an invalid node is specified.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.NetworkConstructionError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{NetworkConstructionError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when network construction fails.
+
+\sphinxAtStartPar
+Error code: PX208
+\index{default\_code (py3plex.exceptions.NetworkConstructionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.NetworkConstructionError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.NetworkConstructionError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX208\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35137,14 +35345,29 @@ Exception raised when network construction fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.ParsingError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{ParsingError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{file\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{line\_number}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{expected}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{got}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when parsing input data fails.
+
+\sphinxAtStartPar
+Error code: PX105
+\index{default\_code (py3plex.exceptions.ParsingError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ParsingError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.ParsingError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX105\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35153,14 +35376,103 @@ Exception raised when parsing input data fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{Py3plexException}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: \sphinxcode{\sphinxupquote{Exception}}
 
 \sphinxAtStartPar
 Base exception class for all py3plex\sphinxhyphen{}specific exceptions.
+\index{code (py3plex.exceptions.Py3plexException attribute)@\spxentry{code}\spxextra{py3plex.exceptions.Py3plexException attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexException.code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{code}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Error code (e.g., “PX001”)
+
+\end{fulllineitems}\end{savenotes}
+
+\index{suggestions (py3plex.exceptions.Py3plexException attribute)@\spxentry{suggestions}\spxextra{py3plex.exceptions.Py3plexException attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexException.suggestions}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{suggestions}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+List of suggestions for fixing the error
+
+\end{fulllineitems}\end{savenotes}
+
+\index{notes (py3plex.exceptions.Py3plexException attribute)@\spxentry{notes}\spxextra{py3plex.exceptions.Py3plexException attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexException.notes}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{notes}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Additional context/notes
+
+\end{fulllineitems}\end{savenotes}
+
+\index{did\_you\_mean (py3plex.exceptions.Py3plexException attribute)@\spxentry{did\_you\_mean}\spxextra{py3plex.exceptions.Py3plexException attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexException.did_you_mean}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{did\_you\_mean}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Suggested correction for typos
+
+\end{fulllineitems}\end{savenotes}
+
+\index{default\_code (py3plex.exceptions.Py3plexException attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexException attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexException.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX001\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{format\_message() (py3plex.exceptions.Py3plexException method)@\spxentry{format\_message()}\spxextra{py3plex.exceptions.Py3plexException method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexException.format_message}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{format\_message}}}
+{\sphinxparam{\DUrole{n}{use\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}}
+{{ $\rightarrow$ str}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Format the exception with Rust\sphinxhyphen{}style error formatting.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{use\_color}} \textendash{} Whether to use ANSI colors
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Formatted error message string
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35169,14 +35481,29 @@ Base exception class for all py3plex\sphinxhyphen{}specific exceptions.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexFormatError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{Py3plexFormatError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{valid\_formats}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{input\_format}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when input format is invalid or cannot be parsed.
+
+\sphinxAtStartPar
+Error code: PX103
+\index{default\_code (py3plex.exceptions.Py3plexFormatError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexFormatError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexFormatError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX103\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35185,14 +35512,29 @@ Exception raised when input format is invalid or cannot be parsed.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexIOError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{Py3plexIOError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when I/O operations fail (file reading, writing, etc.).
+
+\sphinxAtStartPar
+Error code: PX101
+\index{default\_code (py3plex.exceptions.Py3plexIOError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexIOError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexIOError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX101\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35201,14 +35543,29 @@ Exception raised when I/O operations fail (file reading, writing, etc.).
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexLayoutError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{Py3plexLayoutError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when layout computation or visualization positioning fails.
+
+\sphinxAtStartPar
+Error code: PX402
+\index{default\_code (py3plex.exceptions.Py3plexLayoutError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexLayoutError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexLayoutError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX402\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35217,14 +35574,29 @@ Exception raised when layout computation or visualization positioning fails.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexMatrixError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{Py3plexMatrixError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when matrix operations fail or matrix is invalid.
+
+\sphinxAtStartPar
+Error code: PX001
+\index{default\_code (py3plex.exceptions.Py3plexMatrixError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexMatrixError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.Py3plexMatrixError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX001\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -35233,14 +35605,29 @@ Exception raised when matrix operations fail or matrix is invalid.
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.VisualizationError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.exceptions.}}\sphinxbfcode{\sphinxupquote{VisualizationError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{code}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suggestions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{did\_you\_mean}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{reference/api_index:py3plex.exceptions.Py3plexException}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Py3plexException}}}}}
 
 \sphinxAtStartPar
 Exception raised when visualization operations fail.
+
+\sphinxAtStartPar
+Error code: PX401
+\index{default\_code (py3plex.exceptions.VisualizationError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.VisualizationError attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.exceptions.VisualizationError.default_code}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{default\_code}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}PX401\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -54971,6 +55358,31 @@ Exit code (0 for success)
 \pysigstopsignatures
 \sphinxAtStartPar
 Load and inspect a network.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{args}} \textendash{} Parsed command\sphinxhyphen{}line arguments
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Exit code (0 for success)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{cmd\_query() (in module py3plex.cli)@\spxentry{cmd\_query()}\spxextra{in module py3plex.cli}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.cli.cmd_query}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.cli.}}\sphinxbfcode{\sphinxupquote{cmd\_query}}}
+{\sphinxparam{\DUrole{n}{args}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Namespace}}}
+{{ $\rightarrow$ int}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Execute DSL queries on networks with Unix piping support.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
