@@ -1,22 +1,56 @@
 """
 File linter for py3plex graph data files.
 
-Validates data format, detects potential issues, and suggests fixes for
-graph data files (CSV, edgelist, multiedgelist formats).
+Validates data format, detects potential issues, and provides Rust-style
+error messages with helpful suggestions for fixing issues.
+
+Example output:
+    error[PX105]: parse error
+      --> network.csv:3:1
+       |
+     2 | A,B,1.0
+     3 | C,D,invalid
+       | ^
+       |
+       = Invalid weight value 'invalid' (not a number)
+
+    help: weights must be numeric values
+          Use a floating-point number like 1.0 or 0.5
+
+For graph data files (CSV, edgelist, multiedgelist formats).
 """
 
 import csv
-import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import List, Optional, Set, Tuple
 
 from py3plex.logging_config import get_logger
 
 logger = get_logger(__name__)
 
 
+# Error codes for linting issues
+LINT_ERROR_CODES = {
+    "file_not_found": "PX101",
+    "permission_denied": "PX102",
+    "invalid_format": "PX103",
+    "parse_error": "PX105",
+    "missing_column": "PX106",
+    "invalid_value": "PX107",
+    "self_loop": "PX206",
+    "duplicate_edge": "PX205",
+}
+
+
 class LintIssue:
-    """Represents a linting issue found in a graph data file."""
+    """Represents a linting issue found in a graph data file.
+
+    Provides Rust-style error formatting with:
+    - Error codes (e.g., PX105)
+    - Clear error messages
+    - Helpful suggestions
+    - Source context with line highlighting
+    """
 
     SEVERITY_ERROR = "ERROR"
     SEVERITY_WARNING = "WARNING"
@@ -28,6 +62,10 @@ class LintIssue:
         message: str,
         line_number: Optional[int] = None,
         suggestion: Optional[str] = None,
+        code: Optional[str] = None,
+        line_content: Optional[str] = None,
+        column: Optional[int] = None,
+        file_path: Optional[str] = None,
     ):
         """
         Initialize a lint issue.
@@ -37,14 +75,94 @@ class LintIssue:
             message: Description of the issue
             line_number: Optional line number where issue was found
             suggestion: Optional suggestion for fixing the issue
+            code: Optional error code (e.g., "PX105")
+            line_content: Optional content of the line with the issue
+            column: Optional column number (1-indexed)
+            file_path: Optional path to the file
         """
         self.severity = severity
         self.message = message
         self.line_number = line_number
         self.suggestion = suggestion
+        self.code = code or self._default_code()
+        self.line_content = line_content
+        self.column = column or 1
+        self.file_path = file_path
 
-    def __str__(self) -> str:
-        """String representation of the lint issue."""
+    def _default_code(self) -> str:
+        """Get default error code based on severity."""
+        if self.severity == self.SEVERITY_ERROR:
+            return "PX105"
+        elif self.severity == self.SEVERITY_WARNING:
+            return "PX107"
+        return "PX001"
+
+    def format(self, use_color: bool = True) -> str:
+        """Format the lint issue with Rust-style error formatting.
+
+        Args:
+            use_color: Whether to use ANSI colors
+
+        Returns:
+            Formatted error message string
+        """
+        try:
+            from py3plex.errors import ErrorMessage, Severity, Suggestion
+
+            severity_map = {
+                self.SEVERITY_ERROR: Severity.ERROR,
+                self.SEVERITY_WARNING: Severity.WARNING,
+                self.SEVERITY_INFO: Severity.INFO,
+            }
+
+            # Create source context if we have line info
+            context = None
+            if self.file_path and self.line_number and self.line_content:
+                from py3plex.errors import SourceContext, Span
+
+                context = SourceContext(
+                    file_path=self.file_path,
+                    lines=[self.line_content],
+                    span=Span(
+                        line=self.line_number,
+                        column=self.column,
+                        length=len(self.line_content) if self.line_content else 1,
+                    ),
+                )
+
+            suggestions = []
+            if self.suggestion:
+                suggestions.append(Suggestion(message=self.suggestion))
+
+            error = ErrorMessage(
+                code=self.code,
+                severity=severity_map.get(self.severity, Severity.ERROR),
+                title=self._get_title(),
+                message=self.message,
+                context=context,
+                suggestions=suggestions,
+            )
+            return error.format(use_color=use_color)
+        except ImportError:
+            # Fallback to simple formatting
+            return self._simple_format()
+
+    def _get_title(self) -> str:
+        """Get a short title based on the error code."""
+        titles = {
+            "PX101": "file not found",
+            "PX102": "permission denied",
+            "PX103": "invalid format",
+            "PX105": "parse error",
+            "PX106": "missing column",
+            "PX107": "invalid value",
+            "PX205": "duplicate edge",
+            "PX206": "self-loop",
+        }
+        return titles.get(self.code, "lint issue")
+
+    def _simple_format(self) -> str:
+        """Simple fallback formatting."""
         result = f"[{self.severity}]"
         if self.line_number is not None:
             result += f" Line {self.line_number}:"
@@ -53,9 +171,13 @@ class LintIssue:
             result += f"\n  → Suggestion: {self.suggestion}"
         return result
 
+    def __str__(self) -> str:
+        """String representation of the lint issue."""
+        return self.format(use_color=True)
+
 
 class GraphFileLinter:
-    """Linter for graph data files."""
+    """Linter for graph data files with Rust-style error messages."""
 
     def __init__(self, file_path: str):
         """
@@ -66,6 +188,60 @@ class GraphFileLinter:
         """
         self.file_path = Path(file_path)
         self.issues: List[LintIssue] = []
+        self._file_lines: List[str] = []  # Cache file lines for context
+
+    def _read_file_lines(self) -> List[str]:
+        """Read and cache file lines for providing context."""
+        if not self._file_lines:
+            try:
+                with open(self.file_path) as f:
+                    self._file_lines = [line.rstrip("\n\r") for line in f.readlines()]
+            except OSError:
+                self._file_lines = []
+        return self._file_lines
+
+    def _get_line_content(self, line_number: int) -> Optional[str]:
+        """Get content of a specific line (1-indexed)."""
+        lines = self._read_file_lines()
+        if 0 < line_number <= len(lines):
+            return lines[line_number - 1]
+        return None
+
+    def _add_issue(
+        self,
+        severity: str,
+        message: str,
+        line_number: Optional[int] = None,
+        suggestion: Optional[str] = None,
+        code: Optional[str] = None,
+        column: Optional[int] = None,
+    ) -> None:
+        """Add an issue with file context.
+
+        Args:
+            severity: Issue severity
+            message: Issue message
+            line_number: Line number (1-indexed)
+            suggestion: Suggestion for fixing
+            code: Error code
+            column: Column number (1-indexed)
+        """
+        line_content = None
+        if line_number:
+            line_content = self._get_line_content(line_number)
+
+        self.issues.append(
+            LintIssue(
+                severity=severity,
+                message=message,
+                line_number=line_number,
+                suggestion=suggestion,
+                code=code,
+                line_content=line_content,
+                column=column,
+                file_path=str(self.file_path),
+            )
+        )
 
     def lint(self) -> List[LintIssue]:
         """
@@ -75,29 +251,28 @@ class GraphFileLinter:
             List of issues found
         """
         self.issues = []
+        self._file_lines = []  # Reset cache
 
         # Check file exists
         if not self.file_path.exists():
-            self.issues.append(
-                LintIssue(
-                    LintIssue.SEVERITY_ERROR,
-                    f"File not found: {self.file_path}",
-                    suggestion="Check the file path is correct",
-                )
+            self._add_issue(
+                LintIssue.SEVERITY_ERROR,
+                f"File not found: {self.file_path}",
+                suggestion="Check the file path is correct",
+                code="PX101",
             )
             return self.issues
 
         # Check file is readable
         try:
-            with open(self.file_path, "r") as f:
+            with open(self.file_path):
                 pass
         except PermissionError:
-            self.issues.append(
-                LintIssue(
-                    LintIssue.SEVERITY_ERROR,
-                    f"File is not readable: {self.file_path}",
-                    suggestion="Check file permissions",
-                )
+            self._add_issue(
+                LintIssue.SEVERITY_ERROR,
+                f"File is not readable: {self.file_path}",
+                suggestion="Check file permissions",
+                code="PX102",
             )
             return self.issues
 
@@ -112,11 +287,10 @@ class GraphFileLinter:
         elif file_format == "multiedgelist":
             self._lint_multiedgelist()
         else:
-            self.issues.append(
-                LintIssue(
-                    LintIssue.SEVERITY_WARNING,
-                    f"Unknown file format, treating as edgelist",
-                )
+            self._add_issue(
+                LintIssue.SEVERITY_WARNING,
+                "Unknown file format, treating as edgelist",
+                code="PX108",
             )
             self._lint_edgelist()
 
@@ -129,12 +303,9 @@ class GraphFileLinter:
         Returns:
             Format string: 'csv', 'edgelist', or 'multiedgelist'
         """
-        # Check file extension
-        suffix = self.file_path.suffix.lower()
-
         # Try to detect by reading first few lines
         try:
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 first_line = f.readline().strip()
                 if not first_line:
                     return "edgelist"
@@ -175,7 +346,7 @@ class GraphFileLinter:
     def _lint_csv(self) -> None:
         """Lint a CSV format file."""
         try:
-            with open(self.file_path, "r", newline="") as f:
+            with open(self.file_path, newline="") as f:
                 # Try to detect delimiter
                 sample = f.read(1024)
                 f.seek(0)
@@ -190,12 +361,12 @@ class GraphFileLinter:
 
                 # Check for required columns
                 if reader.fieldnames is None:
-                    self.issues.append(
-                        LintIssue(
-                            LintIssue.SEVERITY_ERROR,
-                            "CSV file has no header row",
-                            suggestion="Add a header row with column names like: src,dst,src_layer,dst_layer",
-                        )
+                    self._add_issue(
+                        LintIssue.SEVERITY_ERROR,
+                        "CSV file has no header row",
+                        line_number=1,
+                        suggestion="Add a header row with column names like: src,dst,src_layer,dst_layer",
+                        code="PX106",
                     )
                     return
 
@@ -210,21 +381,21 @@ class GraphFileLinter:
                 has_dst = any(col in fieldnames for col in dst_cols)
 
                 if not has_src:
-                    self.issues.append(
-                        LintIssue(
-                            LintIssue.SEVERITY_ERROR,
-                            f"Missing source node column. Found columns: {', '.join(fieldnames)}",
-                            suggestion=f"Add a column named one of: {', '.join(src_cols)}",
-                        )
+                    self._add_issue(
+                        LintIssue.SEVERITY_ERROR,
+                        f"Missing source node column. Found columns: {', '.join(fieldnames)}",
+                        line_number=1,
+                        suggestion=f"Add a column named one of: {', '.join(src_cols)}",
+                        code="PX106",
                     )
 
                 if not has_dst:
-                    self.issues.append(
-                        LintIssue(
-                            LintIssue.SEVERITY_ERROR,
-                            f"Missing destination node column. Found columns: {', '.join(fieldnames)}",
-                            suggestion=f"Add a column named one of: {', '.join(dst_cols)}",
-                        )
+                    self._add_issue(
+                        LintIssue.SEVERITY_ERROR,
+                        f"Missing destination node column. Found columns: {', '.join(fieldnames)}",
+                        line_number=1,
+                        suggestion=f"Add a column named one of: {', '.join(dst_cols)}",
+                        code="PX106",
                     )
 
                 # Check for multilayer columns
@@ -232,39 +403,37 @@ class GraphFileLinter:
                 has_dst_layer = any(col in fieldnames for col in dst_layer_cols)
 
                 if not has_src_layer and not has_dst_layer:
-                    self.issues.append(
-                        LintIssue(
-                            LintIssue.SEVERITY_INFO,
-                            "No layer columns found - this appears to be a single-layer network",
-                        )
+                    self._add_issue(
+                        LintIssue.SEVERITY_INFO,
+                        "No layer columns found - this appears to be a single-layer network",
+                        line_number=1,
                     )
                 elif has_src_layer and not has_dst_layer:
-                    self.issues.append(
-                        LintIssue(
-                            LintIssue.SEVERITY_WARNING,
-                            "Source layer column found but destination layer column is missing",
-                            suggestion=f"Add a column named one of: {', '.join(dst_layer_cols)}",
-                        )
+                    self._add_issue(
+                        LintIssue.SEVERITY_WARNING,
+                        "Source layer column found but destination layer column is missing",
+                        line_number=1,
+                        suggestion=f"Add a column named one of: {', '.join(dst_layer_cols)}",
+                        code="PX106",
                     )
                 elif has_dst_layer and not has_src_layer:
-                    self.issues.append(
-                        LintIssue(
-                            LintIssue.SEVERITY_WARNING,
-                            "Destination layer column found but source layer column is missing",
-                            suggestion=f"Add a column named one of: {', '.join(src_layer_cols)}",
-                        )
+                    self._add_issue(
+                        LintIssue.SEVERITY_WARNING,
+                        "Destination layer column found but source layer column is missing",
+                        line_number=1,
+                        suggestion=f"Add a column named one of: {', '.join(src_layer_cols)}",
+                        code="PX106",
                     )
 
                 # Validate data rows
                 self._validate_csv_rows(reader, fieldnames)
 
         except Exception as e:
-            self.issues.append(
-                LintIssue(
-                    LintIssue.SEVERITY_ERROR,
-                    f"Failed to parse CSV file: {str(e)}",
-                    suggestion="Check that the file is properly formatted CSV",
-                )
+            self._add_issue(
+                LintIssue.SEVERITY_ERROR,
+                f"Failed to parse CSV file: {str(e)}",
+                suggestion="Check that the file is properly formatted CSV",
+                code="PX105",
             )
 
     def _validate_csv_rows(self, reader: csv.DictReader, fieldnames: List[str]) -> None:
@@ -284,34 +453,31 @@ class GraphFileLinter:
             dst = row.get("dst") or row.get("destination") or row.get("to") or row.get("target") or row.get("node2")
 
             if not src or not src.strip():
-                self.issues.append(
-                    LintIssue(
-                        LintIssue.SEVERITY_ERROR,
-                        "Empty source node",
-                        line_number=line_num,
-                        suggestion="Provide a valid source node ID",
-                    )
+                self._add_issue(
+                    LintIssue.SEVERITY_ERROR,
+                    "Empty source node",
+                    line_number=line_num,
+                    suggestion="Provide a valid source node ID",
+                    code="PX107",
                 )
 
             if not dst or not dst.strip():
-                self.issues.append(
-                    LintIssue(
-                        LintIssue.SEVERITY_ERROR,
-                        "Empty destination node",
-                        line_number=line_num,
-                        suggestion="Provide a valid destination node ID",
-                    )
+                self._add_issue(
+                    LintIssue.SEVERITY_ERROR,
+                    "Empty destination node",
+                    line_number=line_num,
+                    suggestion="Provide a valid destination node ID",
+                    code="PX107",
                 )
 
             # Check for self-loops
             if src and dst and src.strip() == dst.strip():
-                self.issues.append(
-                    LintIssue(
-                        LintIssue.SEVERITY_WARNING,
-                        f"Self-loop detected: {src} -> {src}",
-                        line_number=line_num,
-                        suggestion="Self-loops may not be supported by all algorithms",
-                    )
+                self._add_issue(
+                    LintIssue.SEVERITY_WARNING,
+                    f"Self-loop detected: {src} -> {src}",
+                    line_number=line_num,
+                    suggestion="Self-loops may not be supported by all algorithms",
+                    code="PX206",
                 )
 
             # Check weight column if present
@@ -321,22 +487,20 @@ class GraphFileLinter:
                     try:
                         w = float(weight)
                         if w < 0:
-                            self.issues.append(
-                                LintIssue(
-                                    LintIssue.SEVERITY_WARNING,
-                                    f"Negative weight: {w}",
-                                    line_number=line_num,
-                                    suggestion="Negative weights may not be supported by all algorithms",
-                                )
+                            self._add_issue(
+                                LintIssue.SEVERITY_WARNING,
+                                f"Negative weight: {w}",
+                                line_number=line_num,
+                                suggestion="Negative weights may not be supported by all algorithms",
+                                code="PX107",
                             )
                     except ValueError:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_ERROR,
-                                f"Invalid weight value: '{weight}' (not a number)",
-                                line_number=line_num,
-                                suggestion="Weights must be numeric values",
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_ERROR,
+                            f"Invalid weight value: '{weight}' (not a number)",
+                            line_number=line_num,
+                            suggestion="Weights must be numeric values",
+                            code="PX107",
                         )
 
             # Check for duplicate edges
@@ -357,13 +521,12 @@ class GraphFileLinter:
             if src and dst:
                 edge_key = (src.strip(), dst.strip(), src_layer, dst_layer)
                 if edge_key in seen_edges:
-                    self.issues.append(
-                        LintIssue(
-                            LintIssue.SEVERITY_WARNING,
-                            f"Duplicate edge: {src} -> {dst} (layers: {src_layer}, {dst_layer})",
-                            line_number=line_num,
-                            suggestion="Remove duplicate edges or consolidate with edge weights",
-                        )
+                    self._add_issue(
+                        LintIssue.SEVERITY_WARNING,
+                        f"Duplicate edge: {src} -> {dst} (layers: {src_layer}, {dst_layer})",
+                        line_number=line_num,
+                        suggestion="Remove duplicate edges or consolidate with edge weights",
+                        code="PX205",
                     )
                 seen_edges.add(edge_key)
 
@@ -375,7 +538,7 @@ class GraphFileLinter:
         line_num = 0
 
         try:
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 for line in f:
                     line_num += 1
                     line = line.strip()
@@ -387,13 +550,12 @@ class GraphFileLinter:
                     parts = line.split()
 
                     if len(parts) < 2:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_ERROR,
-                                f"Invalid edgelist format: expected at least 2 columns, got {len(parts)}",
-                                line_number=line_num,
-                                suggestion="Edgelist format: node1 node2 [weight]",
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_ERROR,
+                            f"Invalid edgelist format: expected at least 2 columns, got {len(parts)}",
+                            line_number=line_num,
+                            suggestion="Edgelist format: node1 node2 [weight]",
+                            code="PX103",
                         )
                         continue
 
@@ -401,22 +563,21 @@ class GraphFileLinter:
 
                     # Check for empty nodes
                     if not src or not dst:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_ERROR,
-                                "Empty node ID",
-                                line_number=line_num,
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_ERROR,
+                            "Empty node ID",
+                            line_number=line_num,
+                            code="PX107",
                         )
 
                     # Check for self-loops
                     if src == dst:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_WARNING,
-                                f"Self-loop detected: {src} -> {src}",
-                                line_number=line_num,
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_WARNING,
+                            f"Self-loop detected: {src} -> {src}",
+                            line_number=line_num,
+                            suggestion="Self-loops may cause issues with some algorithms",
+                            code="PX206",
                         )
 
                     # Check weight if present
@@ -424,40 +585,39 @@ class GraphFileLinter:
                         try:
                             w = float(parts[2])
                             if w < 0:
-                                self.issues.append(
-                                    LintIssue(
-                                        LintIssue.SEVERITY_WARNING,
-                                        f"Negative weight: {w}",
-                                        line_number=line_num,
-                                    )
+                                self._add_issue(
+                                    LintIssue.SEVERITY_WARNING,
+                                    f"Negative weight: {w}",
+                                    line_number=line_num,
+                                    suggestion="Negative weights may not be supported by all algorithms",
+                                    code="PX107",
                                 )
                         except ValueError:
-                            self.issues.append(
-                                LintIssue(
-                                    LintIssue.SEVERITY_ERROR,
-                                    f"Invalid weight value: '{parts[2]}' (not a number)",
-                                    line_number=line_num,
-                                )
+                            self._add_issue(
+                                LintIssue.SEVERITY_ERROR,
+                                f"Invalid weight value: '{parts[2]}' (not a number)",
+                                line_number=line_num,
+                                suggestion="Weights must be numeric values",
+                                code="PX107",
                             )
 
                     # Check for duplicates
                     edge_key = (src, dst)
                     if edge_key in seen_edges:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_WARNING,
-                                f"Duplicate edge: {src} -> {dst}",
-                                line_number=line_num,
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_WARNING,
+                            f"Duplicate edge: {src} -> {dst}",
+                            line_number=line_num,
+                            suggestion="Remove duplicate edges or use weights",
+                            code="PX205",
                         )
                     seen_edges.add(edge_key)
 
         except Exception as e:
-            self.issues.append(
-                LintIssue(
-                    LintIssue.SEVERITY_ERROR,
-                    f"Failed to parse edgelist file: {str(e)}",
-                )
+            self._add_issue(
+                LintIssue.SEVERITY_ERROR,
+                f"Failed to parse edgelist file: {str(e)}",
+                code="PX105",
             )
 
     def _lint_multiedgelist(self) -> None:
@@ -466,7 +626,7 @@ class GraphFileLinter:
         line_num = 0
 
         try:
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 for line in f:
                     line_num += 1
                     line = line.strip()
@@ -478,13 +638,12 @@ class GraphFileLinter:
                     parts = line.split()
 
                     if len(parts) < 4:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_ERROR,
-                                f"Invalid multiedgelist format: expected at least 4 columns, got {len(parts)}",
-                                line_number=line_num,
-                                suggestion="Multiedgelist format: node1 layer1 node2 layer2 [weight]",
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_ERROR,
+                            f"Invalid multiedgelist format: expected at least 4 columns, got {len(parts)}",
+                            line_number=line_num,
+                            suggestion="Multiedgelist format: node1 layer1 node2 layer2 [weight]",
+                            code="PX103",
                         )
                         continue
 
@@ -492,31 +651,30 @@ class GraphFileLinter:
 
                     # Check for empty values
                     if not src or not dst:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_ERROR,
-                                "Empty node ID",
-                                line_number=line_num,
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_ERROR,
+                            "Empty node ID",
+                            line_number=line_num,
+                            code="PX107",
                         )
 
                     if not src_layer or not dst_layer:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_ERROR,
-                                "Empty layer ID",
-                                line_number=line_num,
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_ERROR,
+                            "Empty layer ID",
+                            line_number=line_num,
+                            suggestion="Each edge must specify source and destination layers",
+                            code="PX107",
                         )
 
                     # Check for self-loops
                     if src == dst and src_layer == dst_layer:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_WARNING,
-                                f"Self-loop detected: ({src}, {src_layer}) -> ({src}, {src_layer})",
-                                line_number=line_num,
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_WARNING,
+                            f"Self-loop detected: ({src}, {src_layer}) -> ({src}, {src_layer})",
+                            line_number=line_num,
+                            suggestion="Self-loops may cause issues with some algorithms",
+                            code="PX206",
                         )
 
                     # Check weight if present
@@ -524,40 +682,39 @@ class GraphFileLinter:
                         try:
                             w = float(parts[4])
                             if w < 0:
-                                self.issues.append(
-                                    LintIssue(
-                                        LintIssue.SEVERITY_WARNING,
-                                        f"Negative weight: {w}",
-                                        line_number=line_num,
-                                    )
+                                self._add_issue(
+                                    LintIssue.SEVERITY_WARNING,
+                                    f"Negative weight: {w}",
+                                    line_number=line_num,
+                                    suggestion="Negative weights may not be supported by all algorithms",
+                                    code="PX107",
                                 )
                         except ValueError:
-                            self.issues.append(
-                                LintIssue(
-                                    LintIssue.SEVERITY_ERROR,
-                                    f"Invalid weight value: '{parts[4]}' (not a number)",
-                                    line_number=line_num,
-                                )
+                            self._add_issue(
+                                LintIssue.SEVERITY_ERROR,
+                                f"Invalid weight value: '{parts[4]}' (not a number)",
+                                line_number=line_num,
+                                suggestion="Weights must be numeric values",
+                                code="PX107",
                             )
 
                     # Check for duplicates
                     edge_key = (src, src_layer, dst, dst_layer)
                     if edge_key in seen_edges:
-                        self.issues.append(
-                            LintIssue(
-                                LintIssue.SEVERITY_WARNING,
-                                f"Duplicate edge: ({src}, {src_layer}) -> ({dst}, {dst_layer})",
-                                line_number=line_num,
-                            )
+                        self._add_issue(
+                            LintIssue.SEVERITY_WARNING,
+                            f"Duplicate edge: ({src}, {src_layer}) -> ({dst}, {dst_layer})",
+                            line_number=line_num,
+                            suggestion="Remove duplicate edges or use weights to combine them",
+                            code="PX205",
                         )
                     seen_edges.add(edge_key)
 
         except Exception as e:
-            self.issues.append(
-                LintIssue(
-                    LintIssue.SEVERITY_ERROR,
-                    f"Failed to parse multiedgelist file: {str(e)}",
-                )
+            self._add_issue(
+                LintIssue.SEVERITY_ERROR,
+                f"Failed to parse multiedgelist file: {str(e)}",
+                code="PX105",
             )
 
     def has_errors(self) -> bool:

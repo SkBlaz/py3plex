@@ -14,15 +14,17 @@ class TestLintIssue:
     def test_lint_issue_str_without_line_number(self):
         """Test string representation without line number."""
         issue = LintIssue(LintIssue.SEVERITY_ERROR, "Test error")
-        assert "[ERROR]" in str(issue)
-        assert "Test error" in str(issue)
+        result = str(issue)
+        # Should contain error severity in Rust-style format
+        assert "error" in result.lower()
+        assert "Test error" in result
 
     def test_lint_issue_str_with_line_number(self):
         """Test string representation with line number."""
         issue = LintIssue(LintIssue.SEVERITY_WARNING, "Test warning", line_number=42)
         result = str(issue)
-        assert "[WARNING]" in result
-        assert "Line 42" in result
+        # Should contain warning severity in Rust-style format
+        assert "warning" in result.lower()
         assert "Test warning" in result
 
     def test_lint_issue_str_with_suggestion(self):
@@ -33,7 +35,9 @@ class TestLintIssue:
             suggestion="Try this fix",
         )
         result = str(issue)
-        assert "Suggestion: Try this fix" in result
+        # Suggestions now appear as "help:" in Rust-style format
+        assert "help:" in result.lower() or "suggestion" in result.lower()
+        assert "Try this fix" in result
 
 
 class TestGraphFileLinter:
