@@ -17,7 +17,7 @@ Core dependencies are **automatically installed** when you install Py3plex:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 **Core dependencies include:**
 
@@ -69,7 +69,7 @@ Install Plotly and igraph for interactive and advanced visualizations:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+    pip install py3plex[viz]
 
 **Provides:**
 
@@ -102,7 +102,7 @@ Install extra community detection and clustering algorithms:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[algos]
+    pip install py3plex[algos]
 
 **Provides:**
 
@@ -133,7 +133,7 @@ Install Infomap for information-theoretic community detection:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
+    pip install py3plex[infomap]
 
 **Provides:**
 
@@ -169,7 +169,7 @@ Install everything at once:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz,algos,infomap]
+    pip install py3plex[viz,algos,infomap]
 
 Development Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -240,7 +240,7 @@ Issue: "No matching distribution found"
 .. code-block:: bash
 
     pip install --index-url https://pypi.org/simple/ \
-        git+https://github.com/SkBlaz/py3plex.git
+        py3plex
 
 **Solution 3:** Check platform compatibility
 
@@ -283,13 +283,13 @@ Issue: "Permission denied"
     source py3plex-env/bin/activate  # Linux/macOS
     # OR: py3plex-env\Scripts\activate  # Windows
     
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 **Solution 2:** User installation
 
 .. code-block:: bash
 
-    pip install --user git+https://github.com/SkBlaz/py3plex.git
+    pip install --user py3plex
 
 Runtime Dependency Issues
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -303,7 +303,7 @@ Issue: "No module named 'plotly'"
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+    pip install py3plex[viz]
     
     # OR install just what you need
     pip install plotly
@@ -319,7 +319,7 @@ Issue: "ImportError: cannot import name 'infomap'"
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
+    pip install py3plex[infomap]
 
 **Alternative:** Use Louvain algorithm instead:
 
@@ -377,7 +377,7 @@ Issue: "Incompatible versions of numpy and scipy"
 
     pip uninstall numpy scipy
     pip install numpy scipy
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Issue: "AttributeError: module 'networkx' has no attribute 'X'"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -417,7 +417,7 @@ When a user encounters a missing dependency error:
     pip install plotly
     
     # OR install full viz bundle:
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+    pip install py3plex[viz]
 
 **Step 3:** Provide alternative solutions
 
@@ -474,7 +474,7 @@ Provide users with this diagnostic script:
                 print(f"  [X] {package:20s} ({category}) - Not installed")
         
         print("\nInstallation commands:")
-        print("  Core: pip install git+https://github.com/SkBlaz/py3plex.git")
+        print("  Core: pip install py3plex")
         print("  Viz:  pip install py3plex[viz]")
         print("  All:  pip install py3plex[viz,algos]")
     
@@ -498,28 +498,28 @@ Recommendations for Different Use Cases
 .. code-block:: bash
 
     # Core only
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 **For visualization-heavy work:**
 
 .. code-block:: bash
 
     # Core + visualization
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+    pip install py3plex[viz]
 
 **For comprehensive analysis:**
 
 .. code-block:: bash
 
     # Everything except Infomap (avoid AGPLv3 license)
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz,algos]
+    pip install py3plex[viz,algos]
 
 **For commercial projects:**
 
 .. code-block:: bash
 
     # Core + algos (all permissive licenses)
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz,algos]
+    pip install py3plex[viz,algos]
     # Avoid: infomap (AGPLv3)
 
 Virtual Environment Workflow
@@ -536,7 +536,7 @@ Virtual Environment Workflow
     source venv/bin/activate  # Linux/macOS
     
     # Install Py3plex
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz,algos]
+    pip install py3plex[viz,algos]
     
     # Save dependencies
     pip freeze > requirements.txt
@@ -550,7 +550,7 @@ Keeping Dependencies Updated
 .. code-block:: bash
 
     # Update Py3plex
-    pip install --upgrade git+https://github.com/SkBlaz/py3plex.git
+    pip install --upgrade py3plex
     
     # Update all dependencies
     pip install --upgrade numpy scipy networkx matplotlib

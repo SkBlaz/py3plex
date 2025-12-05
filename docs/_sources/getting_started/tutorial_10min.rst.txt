@@ -17,7 +17,7 @@ Prerequisites
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 ----
 
@@ -242,7 +242,7 @@ Common Issues
 
 **Visualization not showing:** In Jupyter, add ``%matplotlib inline``. In scripts, use ``plt.show()`` or save to file.
 
-**Missing dependencies:** Install extras with ``pip install git+...#egg=py3plex[viz,algos]``
+**Missing dependencies:** Install extras with ``pip install py3plex[viz,algos]``
 
 Next Steps
 ----------

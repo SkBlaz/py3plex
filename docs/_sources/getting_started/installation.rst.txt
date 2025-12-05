@@ -13,7 +13,7 @@ The latest version is always available on GitHub:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 This installs the core py3plex library with all required dependencies.
 
@@ -75,7 +75,7 @@ Install Infomap for advanced overlapping community detection:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
+    pip install py3plex[infomap]
 
 Additional Algorithms
 ~~~~~~~~~~~~~~~~~~~~~
@@ -84,7 +84,7 @@ Install extra community detection algorithms (Louvain, cdlib):
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[algos]
+    pip install py3plex[algos]
 
 Advanced Visualization
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -93,7 +93,7 @@ Install Plotly and igraph for interactive and advanced visualizations:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[viz]
+    pip install py3plex[viz]
 
 Apache Arrow Support
 ~~~~~~~~~~~~~~~~~~~~
@@ -102,7 +102,7 @@ Install pyarrow for high-performance I/O with Arrow/Parquet formats:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[arrow]
+    pip install py3plex[arrow]
 
 Arrow format provides 2-3x faster read/write operations and better compression compared to JSON.
 See :doc:`../user_guide/io_and_formats` for details on using Arrow format.
@@ -114,7 +114,7 @@ Install multiple feature sets at once:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap,viz,algos,arrow]
+    pip install py3plex[infomap,viz,algos,arrow]
 
 Development Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -186,7 +186,7 @@ For advanced community detection using Infomap:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/SkBlaz/py3plex.git#egg=py3plex[infomap]
+    pip install py3plex[infomap]
 
 **Option 2:** Download the C++ binary from the official source:
 
@@ -245,7 +245,7 @@ Using venv
     py3plex-env\Scripts\activate
     
     # Install py3plex
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Using conda
 ~~~~~~~~~~~
@@ -259,7 +259,7 @@ Using conda
     conda activate py3plex
     
     # Install py3plex
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Common Installation Issues
 --------------------------
@@ -272,7 +272,7 @@ Issue: "No module named 'numpy'"
 .. code-block:: bash
 
     pip install numpy
-    pip install git+https://github.com/SkBlaz/py3plex.git
+    pip install py3plex
 
 Issue: Compilation errors on Windows
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -290,7 +290,7 @@ Issue: "Permission denied" on Linux/macOS
 
 .. code-block:: bash
 
-    pip install --user git+https://github.com/SkBlaz/py3plex.git
+    pip install --user py3plex
 
 Or use a virtual environment (recommended).
 
@@ -301,7 +301,7 @@ Issue: Old version installed
 
 .. code-block:: bash
 
-    pip install --upgrade git+https://github.com/SkBlaz/py3plex.git
+    pip install --upgrade py3plex
 
 Verifying Installation
 ----------------------
