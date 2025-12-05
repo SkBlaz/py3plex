@@ -277,13 +277,13 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <li><p>Private members: <code class="docutils literal notranslate"><span class="pre">_leading_underscore</span></code></p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">compute_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
     <span class="n">MAX_ITERATIONS</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">centrality_scores</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">return</span> <span class="n">centrality_scores</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">MultilayerNetwork</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MultilayerNetwork</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="p">{}</span>
 </pre></div>
 </div>
@@ -291,7 +291,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <section id="docstrings">
 <h3>Docstrings<a class="headerlink" href="#docstrings" title="Link to this heading"></a></h3>
 <p>Use NumPy-style docstrings for all public functions and classes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">multilayer_degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">multilayer_degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute degree centrality for multilayer network.</span>
 
@@ -337,10 +337,10 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <section id="type-hints">
 <h3>Type Hints<a class="headerlink" href="#type-hints" title="Link to this heading"></a></h3>
 <p>Add type hints to improve code clarity:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core.multinet</span><span class="w"> </span><span class="kn">import</span> <span class="n">multi_layer_network</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">py3plex.core.multinet</span> <span class="kn">import</span> <span class="n">multi_layer_network</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_statistics</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">compute_statistics</span><span class="p">(</span>
     <span class="n">network</span><span class="p">:</span> <span class="n">multi_layer_network</span><span class="p">,</span>
     <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
@@ -366,11 +366,11 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <h3>Writing Tests<a class="headerlink" href="#writing-tests" title="Link to this heading"></a></h3>
 <p>Use pytest for testing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># tests/test_my_feature.py</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">test_layer_density</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">test_layer_density</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test layer density calculation.&quot;&quot;&quot;</span>
     <span class="c1"># Setup</span>
     <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -386,7 +386,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">density</span> <span class="o">&lt;=</span> <span class="mi">1</span>
     <span class="k">assert</span> <span class="n">density</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">0.333</span><span class="p">,</span> <span class="nb">abs</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">test_invalid_layer</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">test_invalid_layer</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test error handling for invalid layer.&quot;&quot;&quot;</span>
     <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
