@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "v*"  # runs when you push a tag like v0.1.0
+  release:
+    types: [published]  # runs when a release is published via GitHub GUI
+  workflow_dispatch:  # allows manual triggering
 
 jobs:
   build-and-publish:
