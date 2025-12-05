@@ -159,13 +159,25 @@ class PymnetBackend(BaseBackend):
         Args:
             graph: Pymnet MultiplexNetwork.
             node: Node as (node_id, layer_id) tuple.
+
+        Note:
+            Pymnet's MultiplexNetwork doesn't support direct node removal.
+            This method attempts to remove the node by clearing its edges,
+            but the node may still appear in the network structure.
+            For complete removal, consider recreating the network without
+            the unwanted nodes.
         """
         node_id, layer_id = node
         # Pymnet doesn't have a direct remove_node for node-layer pairs
-        # We need to remove all edges connected to this node-layer pair
+        # We attempt to clear edges connected to this node in the layer
         try:
-            del graph.A[layer_id][node_id]
-        except (KeyError, IndexError):
+            # Try to access the layer's adjacency structure
+            if hasattr(graph, 'A') and layer_id in graph.get_layers():
+                layer_graph = graph.A[layer_id]
+                if hasattr(layer_graph, '__delitem__') and node_id in layer_graph:
+                    del layer_graph[node_id]
+        except (KeyError, IndexError, AttributeError, TypeError):
+            # Node doesn't exist or pymnet structure doesn't support this operation
             pass
 
     def remove_edge(

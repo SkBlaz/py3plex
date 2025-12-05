@@ -281,9 +281,16 @@ class BaseBackend(ABC):
             Neighbor nodes.
         """
         # Default implementation - backends may override for efficiency
+        # For undirected graphs, we need to check both directions
+        seen = set()
         for source, target in self.edges(graph):
-            if source == node:
+            if source == node and target not in seen:
+                seen.add(target)
                 yield target
+            elif target == node and source not in seen:
+                # For undirected graphs, the node could be either source or target
+                seen.add(source)
+                yield source
 
     def degree(self, graph: Any, node: Tuple[Any, Any]) -> int:
         """Get the degree of a node.
