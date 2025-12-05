@@ -107,6 +107,16 @@ from py3plex.exceptions import (
     Py3plexMatrixError,
     VisualizationError,
 )
+from py3plex.errors import (
+    ErrorMessage,
+    Note,
+    Severity,
+    SourceContext,
+    Span,
+    Suggestion,
+    find_similar,
+    format_exception,
+)
 from py3plex.profiling import (
     benchmark,
     get_monitor,
@@ -222,6 +232,15 @@ __all__ = [
     "Py3plexFormatError",
     "Py3plexLayoutError",
     "Py3plexMatrixError",
+    # Error formatting (Rust-style error messages)
+    "ErrorMessage",
+    "Note",
+    "Severity",
+    "SourceContext",
+    "Span",
+    "Suggestion",
+    "find_similar",
+    "format_exception",
     # Profiling utilities
     "profile_performance",
     "timed_section",

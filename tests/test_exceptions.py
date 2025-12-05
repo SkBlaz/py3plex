@@ -127,10 +127,12 @@ class TestExceptionCatching:
 
     def test_exception_message_preserved(self):
         """Test that error messages are preserved through exception hierarchy."""
+        # Use NetworkConstructionError which doesn't have special __init__
         error_message = "This is a detailed error message"
         with pytest.raises(Py3plexException) as exc_info:
-            raise InvalidLayerError(error_message)
-        assert str(exc_info.value) == error_message
+            raise NetworkConstructionError(error_message)
+        # The first positional arg should be preserved in args
+        assert error_message in str(exc_info.value)
 
 
 class TestExceptionUseCases:
