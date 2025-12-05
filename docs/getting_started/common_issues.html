@@ -281,7 +281,7 @@ pip<span class="w"> </span>install py3plex
 <h3>“No module named ‘plotly’”<a class="headerlink" href="#no-module-named-plotly" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Interactive visualization features not working.</p>
 <p><strong>Solution:</strong> Install visualization extras:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex#egg<span class="o">=</span>py3plex<span class="o">[</span>viz<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex<span class="o">[</span>viz<span class="o">]</span>
 </pre></div>
 </div>
 </section>
@@ -289,7 +289,7 @@ pip<span class="w"> </span>install py3plex
 <h3>“No module named ‘infomap’”<a class="headerlink" href="#no-module-named-infomap" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Infomap community detection not working.</p>
 <p><strong>Solution:</strong> Install Infomap support:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex#egg<span class="o">=</span>py3plex<span class="o">[</span>infomap<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install py3plex<span class="o">[</span>infomap<span class="o">]</span>
 </pre></div>
 </div>
 <p>Or use alternative community detection methods:</p>
@@ -306,7 +306,7 @@ pip<span class="w"> </span>install py3plex
 <p><strong>Problem:</strong> Loading large networks takes too long.</p>
 <p><strong>Solution 1:</strong> Use Arrow/Parquet format for large networks:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Arrow support</span>
-pip<span class="w"> </span>install py3plex#egg<span class="o">=</span>py3plex<span class="o">[</span>arrow<span class="o">]</span>
+pip<span class="w"> </span>install py3plex<span class="o">[</span>arrow<span class="o">]</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
