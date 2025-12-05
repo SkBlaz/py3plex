@@ -8,8 +8,13 @@ analyzing multilayer networks. DSL v2 introduces:
 3. Multilayer-specific abstractions (layer algebra, intralayer/interlayer)
 4. Improved ergonomics (ORDER BY, LIMIT, EXPLAIN, rich results)
 
+DSL Extensions (v2.1):
+5. Network comparison (C.compare())
+6. Null models (N.model())
+7. Path queries (P.shortest(), P.random_walk())
+
 Example Usage:
-    >>> from py3plex.dsl import Q, L, Param
+    >>> from py3plex.dsl import Q, L, Param, C, N, P
     >>> 
     >>> # Build a query using the builder API
     >>> q = (
@@ -24,6 +29,15 @@ Example Usage:
     >>> # Execute the query
     >>> result = q.execute(network, k=5)
     >>> df = result.to_pandas()
+    >>> 
+    >>> # Compare two networks
+    >>> comparison = C.compare("baseline", "treatment").using("multiplex_jaccard").execute(networks)
+    >>> 
+    >>> # Generate null models
+    >>> nullmodels = N.configuration().samples(100).seed(42).execute(network)
+    >>> 
+    >>> # Find paths
+    >>> paths = P.shortest("Alice", "Bob").crossing_layers().execute(network)
 
 The DSL also supports a string syntax:
     SELECT nodes
@@ -57,6 +71,11 @@ from .ast import (
     # Execution plan
     PlanStep,
     ExecutionPlan,
+    # DSL Extensions AST nodes
+    CompareStmt,
+    NullModelStmt,
+    PathStmt,
+    ExtendedQuery,
 )
 
 from .builder import (
@@ -66,6 +85,13 @@ from .builder import (
     LayerProxy,
     L,
     Param,
+    # DSL Extensions builders
+    C,
+    CompareBuilder,
+    N,
+    NullModelBuilder,
+    P,
+    PathBuilder,
 )
 
 from .result import QueryResult
@@ -134,6 +160,11 @@ __all__ = [
     "ParamRef",
     "PlanStep",
     "ExecutionPlan",
+    # DSL Extensions AST
+    "CompareStmt",
+    "NullModelStmt",
+    "PathStmt",
+    "ExtendedQuery",
     # Builder
     "Q",
     "QueryBuilder",
@@ -141,6 +172,13 @@ __all__ = [
     "LayerProxy",
     "L",
     "Param",
+    # DSL Extensions Builders
+    "C",
+    "CompareBuilder",
+    "N",
+    "NullModelBuilder",
+    "P",
+    "PathBuilder",
     # Result
     "QueryResult",
     # Executor
@@ -174,4 +212,4 @@ __all__ = [
 ]
 
 # DSL version for metadata and backwards compatibility
-DSL_VERSION = "2.0"
+DSL_VERSION = "2.1"
