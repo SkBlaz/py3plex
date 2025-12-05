@@ -116,15 +116,73 @@ def _parse_node(node: Any) -> tuple:
     return (node,)
 
 
-def _load_network(file_path: str) -> "multinet.multi_layer_network":
-    """Load a network from file, handling different formats.
+def _load_network_from_stdin(
+    input_format: str = "multiedgelist",
+) -> "multinet.multi_layer_network":
+    """Load a network from stdin.
 
     Args:
-        file_path: Path to the network file
+        input_format: Format of the input data ("multiedgelist", "edgelist", "json")
 
     Returns:
         Loaded multi_layer_network object
     """
+    network = multinet.multi_layer_network()
+    stdin_content = sys.stdin.read()
+
+    if not stdin_content.strip():
+        return network
+
+    if input_format == "json":
+        # Parse JSON format
+        data = json.loads(stdin_content)
+        # Build network from JSON edges
+        for edge in data.get("edges", []):
+            if isinstance(edge, dict):
+                network.add_edges([edge], input_type="dict")
+            elif isinstance(edge, list):
+                network.add_edges([edge], input_type="list")
+    else:
+        # Parse text-based formats (multiedgelist or edgelist)
+        lines = stdin_content.strip().split("\n")
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split()
+            if len(parts) >= 4:
+                # Multilayer format: node1 layer1 node2 layer2 [weight]
+                weight = float(parts[4]) if len(parts) > 4 else 1.0
+                network.add_edges(
+                    [parts[:4] + [weight]], input_type="list"
+                )
+            elif len(parts) >= 2:
+                # Simple edgelist: node1 node2 [weight]
+                weight = float(parts[2]) if len(parts) > 2 else 1.0
+                src, tgt = parts[0], parts[1]
+                network.add_edges(
+                    [[src, "default", tgt, "default", weight]], input_type="list"
+                )
+
+    return network
+
+
+def _load_network(
+    file_path: str, input_format: Optional[str] = None
+) -> "multinet.multi_layer_network":
+    """Load a network from file or stdin, handling different formats.
+
+    Args:
+        file_path: Path to the network file, or "-" for stdin
+        input_format: Optional format hint ("multiedgelist", "edgelist", "json")
+
+    Returns:
+        Loaded multi_layer_network object
+    """
+    # Handle stdin input
+    if file_path == "-":
+        return _load_network_from_stdin(input_format or "multiedgelist")
+
     network = multinet.multi_layer_network()
     input_path = Path(file_path)
 
@@ -290,6 +348,19 @@ Examples:
   # Aggregate multilayer network into single layer
   py3plex aggregate network.edgelist --method sum --output aggregated.edgelist
 
+Unix Piping (DSL Queries):
+  # Read network from stdin and query nodes
+  cat edges.txt | py3plex query - "nodes compute degree"
+
+  # Query specific layer and output as JSON for further processing
+  py3plex query network.edgelist "nodes from layer('social')" --output-format json
+
+  # Filter high-degree nodes
+  py3plex query network.edgelist "nodes where degree > 10" --output-format json
+
+  # Pipe stats output to other tools
+  py3plex load network.edgelist --stats -o /dev/stdout | jq '.statistics'
+
 Note: The recommended format for multilayer networks is the multiedgelist/edgelist format
       (.edgelist or .txt). GraphML (.graphml) and other formats are also supported.
 
@@ -367,7 +438,15 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     load_parser = subparsers.add_parser(
         "load", help="Load and inspect a multilayer network"
     )
-    load_parser.add_argument("input", help="Input network file")
+    load_parser.add_argument(
+        "input", help="Input network file, or '-' for stdin (multiedgelist format)"
+    )
+    load_parser.add_argument(
+        "--input-format",
+        choices=["multiedgelist", "edgelist", "json", "auto"],
+        default="auto",
+        help="Input format when reading from stdin (default: auto-detect)",
+    )
     load_parser.add_argument(
         "--info", action="store_true", help="Display network information"
     )
@@ -531,6 +610,59 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--validate-only",
         action="store_true",
         help="Only validate configuration without running workflow",
+    )
+
+    # QUERY command - DSL queries for piping
+    query_parser = subparsers.add_parser(
+        "query",
+        help="Execute DSL queries on networks (supports Unix piping)",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Query nodes from a specific layer
+  py3plex query network.edgelist "nodes from layer('social')"
+
+  # Filter high-degree nodes and output as JSON
+  py3plex query network.edgelist "nodes where degree > 10" --output-format json
+
+  # Compute centrality for top nodes
+  py3plex query network.edgelist "nodes compute degree limit 20" --output-format json
+
+  # Use stdin for input (piping)
+  cat edges.txt | py3plex query - "nodes compute degree"
+
+  # Chain commands with Unix pipes
+  py3plex create --nodes 50 --layers 2 -o - | py3plex query - "nodes where degree > 5"
+""",
+    )
+    query_parser.add_argument(
+        "input",
+        help="Input network file, or '-' for stdin",
+    )
+    query_parser.add_argument(
+        "query",
+        help="DSL query string (e.g., 'nodes from layer(\"social\") compute degree')",
+    )
+    query_parser.add_argument(
+        "--input-format",
+        choices=["multiedgelist", "edgelist", "json", "auto"],
+        default="auto",
+        help="Input format when reading from stdin (default: auto-detect)",
+    )
+    query_parser.add_argument(
+        "--output-format",
+        choices=["text", "json", "csv"],
+        default="text",
+        help="Output format (default: text for human-readable, json/csv for piping)",
+    )
+    query_parser.add_argument(
+        "--output", "-o",
+        help="Output file (default: stdout)",
+    )
+    query_parser.add_argument(
+        "--explain",
+        action="store_true",
+        help="Show query execution plan instead of running",
     )
 
     return parser
@@ -697,7 +829,10 @@ def cmd_load(args: argparse.Namespace) -> int:
     """
     try:
         logger.info(f"Loading network from {args.input}...")
-        network = _load_network(args.input)
+        input_format = (
+            args.input_format if hasattr(args, "input_format") and args.input_format != "auto" else None
+        )
+        network = _load_network(args.input, input_format)
 
         output_data = {}
 
@@ -2125,6 +2260,232 @@ def cmd_run_config(args: argparse.Namespace) -> int:
         return 1
 
 
+def _parse_simple_dsl_query(query_str: str) -> Dict[str, Any]:
+    """Parse a simple DSL query string into components.
+
+    Supports simplified syntax:
+        nodes [from layer("X")] [where <condition>] [compute <measure>] [limit N]
+
+    Args:
+        query_str: Query string
+
+    Returns:
+        Dictionary with parsed components
+    """
+    query_str = query_str.strip().lower()
+    result = {
+        "target": "nodes",
+        "layers": [],
+        "conditions": [],
+        "compute": [],
+        "limit": None,
+    }
+
+    # Parse target (nodes or edges)
+    if query_str.startswith("edges"):
+        result["target"] = "edges"
+        query_str = query_str[5:].strip()
+    elif query_str.startswith("nodes"):
+        query_str = query_str[5:].strip()
+
+    # Parse FROM LAYER clause
+    import re
+
+    layer_match = re.search(r'from\s+layer\s*\(\s*["\']([^"\']+)["\']\s*\)', query_str)
+    if layer_match:
+        result["layers"].append(layer_match.group(1))
+        query_str = query_str[: layer_match.start()] + query_str[layer_match.end() :]
+
+    # Parse WHERE clause (simple conditions)
+    where_match = re.search(r"where\s+(\w+)\s*([><=!]+)\s*(\d+(?:\.\d+)?)", query_str)
+    if where_match:
+        attr = where_match.group(1)
+        op = where_match.group(2)
+        value = float(where_match.group(3))
+        result["conditions"].append({"attr": attr, "op": op, "value": value})
+        query_str = query_str[: where_match.start()] + query_str[where_match.end() :]
+
+    # Parse COMPUTE clause
+    compute_match = re.search(r"compute\s+(\w+)", query_str)
+    if compute_match:
+        result["compute"].append(compute_match.group(1))
+        query_str = query_str[: compute_match.start()] + query_str[compute_match.end() :]
+
+    # Parse LIMIT clause
+    limit_match = re.search(r"limit\s+(\d+)", query_str)
+    if limit_match:
+        result["limit"] = int(limit_match.group(1))
+
+    return result
+
+
+def _format_query_output(
+    result: Dict[str, Any], output_format: str
+) -> str:
+    """Format query result for output.
+
+    Args:
+        result: Query result dictionary
+        output_format: Output format ("text", "json", "csv")
+
+    Returns:
+        Formatted string
+    """
+    if output_format == "json":
+        return json.dumps(result, indent=2, default=str)
+
+    elif output_format == "csv":
+        lines = []
+        if "items" in result and result["items"]:
+            # Get headers from first item or attributes
+            if "attributes" in result and result["attributes"]:
+                headers = ["item"] + list(result["attributes"].keys())
+            else:
+                headers = ["item"]
+            lines.append(",".join(headers))
+
+            for item in result["items"]:
+                row = [str(item)]
+                if "attributes" in result:
+                    for attr in result["attributes"]:
+                        val = result["attributes"][attr].get(str(item), "")
+                        row.append(str(val))
+                lines.append(",".join(row))
+        return "\n".join(lines)
+
+    else:  # text format
+        lines = []
+        if "items" in result:
+            lines.append(f"Found {len(result['items'])} items:")
+            for item in result["items"][:20]:  # Limit display
+                item_str = f"  {item}"
+                if "attributes" in result:
+                    for attr, values in result["attributes"].items():
+                        val = values.get(item, values.get(str(item), ""))
+                        if val:
+                            item_str += f" | {attr}={val}"
+                lines.append(item_str)
+            if len(result["items"]) > 20:
+                lines.append(f"  ... and {len(result['items']) - 20} more")
+        return "\n".join(lines)
+
+
+def cmd_query(args: argparse.Namespace) -> int:
+    """Execute a DSL query on a network.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    try:
+        # Determine input format for stdin
+        input_format = args.input_format if args.input_format != "auto" else "multiedgelist"
+
+        # Load network (supports stdin with '-')
+        if args.input == "-":
+            logger.debug("Loading network from stdin...")
+            network = _load_network("-", input_format)
+        else:
+            logger.debug(f"Loading network from {args.input}...")
+            network = _load_network(args.input)
+
+        # Parse the query
+        parsed = _parse_simple_dsl_query(args.query)
+
+        # Build and execute query using the DSL builder
+        from py3plex.dsl import Q, L
+
+        if parsed["target"] == "nodes":
+            query_builder = Q.nodes()
+        else:
+            query_builder = Q.edges()
+
+        # Apply layer filter
+        if parsed["layers"]:
+            layer_expr = L[parsed["layers"][0]]
+            for layer_name in parsed["layers"][1:]:
+                layer_expr = layer_expr + L[layer_name]
+            query_builder = query_builder.from_layers(layer_expr)
+
+        # Apply conditions
+        for cond in parsed["conditions"]:
+            attr = cond["attr"]
+            op = cond["op"]
+            value = cond["value"]
+            # Map operator to kwarg suffix
+            if op == ">":
+                query_builder = query_builder.where(**{f"{attr}__gt": value})
+            elif op == ">=":
+                query_builder = query_builder.where(**{f"{attr}__gte": value})
+            elif op == "<":
+                query_builder = query_builder.where(**{f"{attr}__lt": value})
+            elif op == "<=":
+                query_builder = query_builder.where(**{f"{attr}__lte": value})
+            elif op == "=" or op == "==":
+                query_builder = query_builder.where(**{f"{attr}__eq": value})
+            elif op == "!=" or op == "<>":
+                query_builder = query_builder.where(**{f"{attr}__ne": value})
+
+        # Apply compute
+        for measure in parsed["compute"]:
+            query_builder = query_builder.compute(measure)
+
+        # Apply limit
+        if parsed["limit"]:
+            query_builder = query_builder.limit(parsed["limit"])
+
+        # Check for explain mode
+        if args.explain:
+            plan = query_builder.explain().execute(network)
+            print("Execution Plan:")
+            for i, step in enumerate(plan.steps, 1):
+                print(f"  {i}. {step.description}")
+                if step.estimated_complexity:
+                    print(f"     Complexity: {step.estimated_complexity}")
+            if plan.warnings:
+                print("\nWarnings:")
+                for warning in plan.warnings:
+                    print(f"  - {warning}")
+            return 0
+
+        # Execute query
+        query_result = query_builder.execute(network)
+
+        # Build output dictionary
+        output_data = {
+            "target": query_result.target,
+            "items": [str(item) for item in query_result.items],
+            "count": len(query_result.items),
+        }
+
+        if query_result.attributes:
+            output_data["attributes"] = {}
+            for attr, values in query_result.attributes.items():
+                output_data["attributes"][attr] = {
+                    str(k): v for k, v in values.items()
+                }
+
+        # Format output
+        formatted = _format_query_output(output_data, args.output_format)
+
+        # Write output
+        if args.output:
+            with open(args.output, "w") as f:
+                f.write(formatted)
+            logger.info(f"Output written to {args.output}")
+        else:
+            print(formatted)
+
+        return 0
+
+    except Exception as e:
+        logger.error(f"Error executing query: {e}")
+        traceback.print_exc()
+        return 1
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
@@ -2159,6 +2520,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "selftest": cmd_selftest,
         "quickstart": cmd_quickstart,
         "run-config": cmd_run_config,
+        "query": cmd_query,
     }
 
     handler = command_handlers.get(args.command)

@@ -1128,3 +1128,155 @@ class TestCLIQuickstart:
         assert "Cleaning up" in captured.out or "temporary" in captured.out.lower()
 
 
+
+
+class TestCLIQuery:
+    """Test the 'query' command for DSL queries and Unix piping."""
+
+    @pytest.fixture
+    def sample_network(self, tmp_path):
+        """Create a sample network for query testing."""
+        network = multinet.multi_layer_network()
+
+        # Add nodes in multiple layers
+        for layer in ["layer1", "layer2"]:
+            nodes_dict = [{"source": f"node{i}", "type": layer} for i in range(8)]
+            network.add_nodes(nodes_dict, input_type="dict")
+
+            # Create edges
+            edges_dict = [
+                {
+                    "source": f"node{i}",
+                    "target": f"node{i+1}",
+                    "source_type": layer,
+                    "target_type": layer,
+                }
+                for i in range(7)
+            ]
+            network.add_edges(edges_dict, input_type="dict")
+
+        output_file = tmp_path / "query_test.edgelist"
+        network.save_network(str(output_file), output_type="multiedgelist")
+        return output_file
+
+    def test_query_nodes_basic(self, sample_network):
+        """Test basic nodes query."""
+        result = cli.main(["query", str(sample_network), "nodes"])
+        assert result == 0
+
+    def test_query_nodes_json_output(self, sample_network, capsys):
+        """Test query with JSON output format."""
+        result = cli.main(
+            ["query", str(sample_network), "nodes", "--output-format", "json"]
+        )
+        assert result == 0
+        captured = capsys.readouterr()
+        output = json.loads(captured.out)
+        assert "items" in output
+        assert "count" in output
+        assert output["count"] > 0
+
+    def test_query_nodes_csv_output(self, sample_network, capsys):
+        """Test query with CSV output format."""
+        result = cli.main(
+            ["query", str(sample_network), "nodes", "--output-format", "csv"]
+        )
+        assert result == 0
+
+    def test_query_with_compute(self, sample_network, capsys):
+        """Test query with compute clause."""
+        result = cli.main(
+            ["query", str(sample_network), "nodes compute degree", "--output-format", "json"]
+        )
+        assert result == 0
+        captured = capsys.readouterr()
+        output = json.loads(captured.out)
+        assert "attributes" in output
+        assert "degree" in output["attributes"]
+
+    def test_query_with_limit(self, sample_network, capsys):
+        """Test query with limit clause."""
+        result = cli.main(
+            ["query", str(sample_network), "nodes limit 5", "--output-format", "json"]
+        )
+        assert result == 0
+        captured = capsys.readouterr()
+        output = json.loads(captured.out)
+        assert output["count"] <= 5
+
+    def test_query_with_where_condition(self, sample_network, capsys):
+        """Test query with where condition."""
+        result = cli.main(
+            ["query", str(sample_network), "nodes where degree > 1", "--output-format", "json"]
+        )
+        assert result == 0
+        captured = capsys.readouterr()
+        output = json.loads(captured.out)
+        # All returned nodes should have degree > 1 condition matched
+        assert "count" in output
+
+    def test_query_explain_mode(self, sample_network, capsys):
+        """Test query explain mode."""
+        result = cli.main(
+            ["query", str(sample_network), "nodes compute degree", "--explain"]
+        )
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "Execution Plan" in captured.out
+
+    def test_query_with_output_file(self, sample_network, tmp_path):
+        """Test query with output file."""
+        output_file = tmp_path / "query_output.json"
+        result = cli.main(
+            [
+                "query",
+                str(sample_network),
+                "nodes",
+                "--output-format",
+                "json",
+                "--output",
+                str(output_file),
+            ]
+        )
+        assert result == 0
+        assert output_file.exists()
+        with open(output_file) as f:
+            data = json.load(f)
+            assert "items" in data
+
+
+class TestCLIStdinPiping:
+    """Test stdin piping support for CLI commands."""
+
+    def test_load_from_stdin(self, capsys, monkeypatch):
+        """Test loading network from stdin."""
+        import io
+        
+        stdin_content = "node0 layer1 node1 layer1\nnode1 layer1 node2 layer1\n"
+        monkeypatch.setattr('sys.stdin', io.StringIO(stdin_content))
+        
+        result = cli.main(["load", "-", "--info"])
+        assert result == 0
+
+    def test_query_from_stdin(self, capsys, monkeypatch):
+        """Test query command with stdin input."""
+        import io
+        
+        stdin_content = "node0 layer1 node1 layer1\nnode1 layer1 node2 layer1\n"
+        monkeypatch.setattr('sys.stdin', io.StringIO(stdin_content))
+        
+        result = cli.main(["query", "-", "nodes", "--output-format", "json"])
+        assert result == 0
+        captured = capsys.readouterr()
+        output = json.loads(captured.out)
+        assert output["count"] == 3  # 3 nodes: node0, node1, node2
+
+    def test_query_stdin_json_format(self, capsys, monkeypatch):
+        """Test query with JSON input format from stdin."""
+        import io
+        
+        stdin_content = '{"edges": [{"source": "a", "target": "b", "source_type": "layer1", "target_type": "layer1"}]}'
+        monkeypatch.setattr('sys.stdin', io.StringIO(stdin_content))
+        
+        result = cli.main(["query", "-", "nodes", "--input-format", "json", "--output-format", "json"])
+        assert result == 0
