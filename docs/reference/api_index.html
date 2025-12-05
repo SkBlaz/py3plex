@@ -45,15 +45,15 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture: Understanding the Foundations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Chapter 3: Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Chapter 5: Design Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide: From Understanding to Mastery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection</a></li>
@@ -67,13 +67,13 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment: Taking It to Production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Visual Exploration for Everyone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
@@ -82,7 +82,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs: Building Together</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
@@ -90,12 +90,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples: Learning by Doing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/part_intro.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="part_intro.html">Reference &amp; Citation: The Complete Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">Reference &amp; Citation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="algorithm_reference.html">Algorithm Roadmap</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-py3plex.core.multinet">Core Modules</a><ul>
@@ -198,8 +198,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.NodePattern"><code class="docutils literal notranslate"><span class="pre">NodePattern</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.PathPattern"><code class="docutils literal notranslate"><span class="pre">PathPattern</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.compute_centrality_for_layer"><code class="docutils literal notranslate"><span class="pre">compute_centrality_for_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.detect_communities"><code class="docutils literal notranslate"><span class="pre">detect_communities()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.execute_query"><code class="docutils literal notranslate"><span class="pre">execute_query()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.format_result"><code class="docutils literal notranslate"><span class="pre">format_result()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_biggest_community"><code class="docutils literal notranslate"><span class="pre">get_biggest_community()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_community_partition"><code class="docutils literal notranslate"><span class="pre">get_community_partition()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_community_size_distribution"><code class="docutils literal notranslate"><span class="pre">get_community_size_distribution()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_community_sizes"><code class="docutils literal notranslate"><span class="pre">get_community_sizes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_num_communities"><code class="docutils literal notranslate"><span class="pre">get_num_communities()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.get_smallest_community"><code class="docutils literal notranslate"><span class="pre">get_smallest_community()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.select_high_degree_nodes"><code class="docutils literal notranslate"><span class="pre">select_high_degree_nodes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.dsl.select_nodes_by_layer"><code class="docutils literal notranslate"><span class="pre">select_nodes_by_layer()</span></code></a></li>
 </ul>
@@ -3676,6 +3683,9 @@ based on various network properties and computing analytical measures.</p>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute centrality for filtered nodes</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot; COMPUTE betweenness_centrality&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute community detection</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes COMPUTE communities&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -3684,7 +3694,7 @@ based on various network properties and computing analytical measures.</p>
 <li><p>MATCH: Cypher-like pattern matching for graph patterns</p></li>
 <li><p>WHERE: Filter by conditions (layer, degree, centrality, etc.)</p></li>
 <li><p>AND/OR/NOT: Logical operators for combining conditions</p></li>
-<li><p>COMPUTE: Calculate network measures (degree, centrality, etc.)</p></li>
+<li><p>COMPUTE: Calculate network measures (degree, centrality, communities, etc.)</p></li>
 <li><p>IN LAYER / IN LAYERS: Layer scoping clauses</p></li>
 <li><p>RETURN: Specify which aliases to return from MATCH queries</p></li>
 <li><p>Comparison operators: &gt;, &lt;, =, &gt;=, &lt;=, !=</p></li>
@@ -3695,6 +3705,8 @@ SELECT * FROM nodes IN LAYER ‘ppi’ WHERE degree &gt; 10;
 SELECT id, degree FROM nodes IN LAYERS (‘ppi’, ‘coexpr’) WHERE color = ‘red’;</p>
 <p># Cypher-like MATCH pattern
 MATCH (g:Gene)-[r:REGULATES]-&gt;(t:Gene) IN LAYER ‘reg’ WHERE g.degree &gt; 10 RETURN g, t;</p>
+<p># Community detection
+SELECT nodes COMPUTE communities;</p>
 </dd>
 </dl>
 <p>See examples/network_analysis/example_dsl_queries.py for more examples.</p>
@@ -3942,6 +3954,48 @@ Examples: (g:Gene), (t), (x:Protein)</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.detect_communities">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">detect_communities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.detect_communities" title="Link to this definition"></a></dt>
+<dd><p>Detect communities in the network using Louvain algorithm via DSL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – Multilayer network object</p></li>
+<li><p><strong>layer</strong> – Optional layer to filter nodes by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>‘partition’: Dict mapping nodes to community IDs</p></li>
+<li><p>’num_communities’: Number of communities detected</p></li>
+<li><p>’community_sizes’: Dict mapping community ID to size</p></li>
+<li><p>’biggest_community’: Tuple (community_id, size)</p></li>
+<li><p>’smallest_community’: Tuple (community_id, size)</p></li>
+<li><p>’size_distribution’: List of community sizes</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_communities</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a sample network</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... add nodes and edges ...</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Detect communities</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">detect_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;num_communities&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Biggest community has </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;biggest_community&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="py3plex.dsl.execute_query">
 <span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">execute_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.execute_query" title="Link to this definition"></a></dt>
 <dd><p>Execute a DSL query on a multilayer network.</p>
@@ -4023,6 +4077,144 @@ SELECT id, degree FROM nodes IN LAYERS (‘ppi’, ‘coexpr’) WHERE color = �
 <dd class="field-even"><p>Formatted string representation</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.get_biggest_community">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">get_biggest_community</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.get_biggest_community" title="Link to this definition"></a></dt>
+<dd><p>Get the largest community in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – Multilayer network object</p></li>
+<li><p><strong>layer</strong> – Optional layer to filter nodes by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (community_id, size, list_of_nodes)</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">community_id</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">nodes</span> <span class="o">=</span> <span class="n">get_biggest_community</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community </span><span class="si">{</span><span class="n">community_id</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="n">nodes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.get_community_partition">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">get_community_partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.get_community_partition" title="Link to this definition"></a></dt>
+<dd><p>Get community partition (mapping of nodes to community IDs).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – Multilayer network object</p></li>
+<li><p><strong>layer</strong> – Optional layer to filter nodes by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary mapping nodes to community IDs</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">partition</span> <span class="o">=</span> <span class="n">get_community_partition</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">community_id</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> is in community </span><span class="si">{</span><span class="n">community_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.get_community_size_distribution">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">get_community_size_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.get_community_size_distribution" title="Link to this definition"></a></dt>
+<dd><p>Get the distribution of community sizes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – Multilayer network object</p></li>
+<li><p><strong>layer</strong> – Optional layer to filter nodes by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of community sizes sorted in descending order</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">distribution</span> <span class="o">=</span> <span class="n">get_community_size_distribution</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Largest community: </span><span class="si">{</span><span class="n">distribution</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Smallest community: </span><span class="si">{</span><span class="n">distribution</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average size: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.get_community_sizes">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">get_community_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.get_community_sizes" title="Link to this definition"></a></dt>
+<dd><p>Get the size of each community in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – Multilayer network object</p></li>
+<li><p><strong>layer</strong> – Optional layer to filter nodes by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary mapping community ID to its size</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sizes</span> <span class="o">=</span> <span class="n">get_community_sizes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">sizes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.get_num_communities">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">get_num_communities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#py3plex.dsl.get_num_communities" title="Link to this definition"></a></dt>
+<dd><p>Get the number of communities in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – Multilayer network object</p></li>
+<li><p><strong>layer</strong> – Optional layer to filter nodes by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of communities detected</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">num_communities</span> <span class="o">=</span> <span class="n">get_num_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.dsl.get_smallest_community">
+<span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">get_smallest_community</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.get_smallest_community" title="Link to this definition"></a></dt>
+<dd><p>Get the smallest community in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> – Multilayer network object</p></li>
+<li><p><strong>layer</strong> – Optional layer to filter nodes by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (community_id, size, list_of_nodes)</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">community_id</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">nodes</span> <span class="o">=</span> <span class="n">get_smallest_community</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Community </span><span class="si">{</span><span class="n">community_id</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="n">nodes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">

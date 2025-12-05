@@ -1,5 +1,5 @@
-Py3plex: A Practical Guide to Multilayer Network Analysis
-***********************************************************
+Py3plex: Multilayer Network Analysis
+*************************************
 
 .. image:: ../example_images/py3plex_showcase.png
    :alt: Py3plex Visualization Showcase
@@ -15,57 +15,45 @@ Py3plex: A Practical Guide to Multilayer Network Analysis
 
 ----
 
-*A practical, hands-on guide to analyzing and visualizing multilayer networks in Python.*
-
-----
-
-Welcome to py3plex. This documentation is organized as a progressive learning journey—from your first five-minute example through conceptual foundations to advanced production workflows. Whether you're a researcher exploring social network dynamics, a bioinformatician analyzing protein interactions across multiple evidence types, or a data scientist building features for machine learning, this guide will show you how to work effectively with multilayer network structures.
-
-py3plex enables scalable analysis and visualization of multilayer and multiplex networks in Python, supporting complex network modeling across diverse scientific and applied domains.
-
-Getting Started
+py3plex provides scalable analysis and visualization of multilayer and multiplex networks in Python.
 
 **Key Features:**
 
-* Native support for multiplex and multilayer network structures
-* SQL-like DSL for intuitive network queries
-* 17+ multilayer-specific statistics and centrality measures
-* Community detection across network layers (Louvain, Infomap, multilayer modularity)
-* Random walk algorithms (Node2Vec, DeepWalk) for graph embeddings
-* Publication-ready visualizations with diagonal projection layouts
+* Multiplex and multilayer network structures
+* SQL-like DSL for network queries
+* 17+ multilayer statistics and centrality measures
+* Community detection (Louvain, Infomap, multilayer modularity)
+* Random walk algorithms (Node2Vec, DeepWalk) for embeddings
+* Publication-ready visualizations
 * High-performance I/O with Arrow/Parquet support
 * Full NetworkX compatibility
 
 Quick Start
 ===========
 
-Install py3plex:
+Install:
 
 .. code-block:: bash
 
     pip install git+https://github.com/SkBlaz/py3plex.git
 
-Create your first multilayer network:
+Create a multilayer network:
 
 .. code-block:: python
 
     from py3plex.core import multinet
 
-    # Create a multilayer network
     network = multinet.multi_layer_network()
-
-    # Add edges (nodes are created automatically)
     network.add_edges([
         ['Alice', 'friends', 'Bob', 'friends', 1],
         ['Bob', 'friends', 'Carol', 'friends', 1],
         ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
     ], input_type="list")
 
-    # Display statistics and visualize
     network.basic_stats()
     network.visualize_network(show=True)
 
-For a complete introduction, see :doc:`getting_started/quickstart_5min` (5 minutes) or :doc:`getting_started/tutorial_10min` (10 minutes).
+See :doc:`getting_started/quickstart_5min` (5 min) or :doc:`getting_started/tutorial_10min` (10 min) for complete introductions.
 
 Documentation Contents
 ======================
