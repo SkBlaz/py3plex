@@ -204,7 +204,7 @@ def _draw_background_shape(
 
 def draw_multilayer_default(
     network_list: Union[List[nx.Graph], Dict[Any, nx.Graph]],
-    display: bool = True,
+    display: bool = False,
     node_size: int = 10,
     alphalevel: float = 0.13,
     rectanglex: float = 1,
@@ -217,17 +217,23 @@ def draw_multilayer_default(
     label_position: int = 1,
     verbose: bool = False,
     remove_isolated_nodes: bool = False,
-    axis: Optional[Any] = None,
+    ax: Optional[Any] = None,
     edge_size: float = 1,
     node_labels: bool = False,
     node_font_size: int = 5,
     scale_by_size: bool = False,
-) -> None:
+    axis: Optional[Any] = None,  # Deprecated: use ax instead
+) -> Any:
     """Core multilayer drawing method.
+
+    Draws a diagonal multilayer network visualization where each layer is
+    offset to create a 3D-like effect. Nodes within each layer are drawn
+    with their positions, and background shapes indicate layer boundaries.
 
     Args:
         network_list: List of NetworkX graphs to visualize (or dict of layer_name -> graph)
-        display: Whether to display the plot directly
+        display: If True, calls plt.show() after drawing. Default is False
+            to let the caller control rendering.
         node_size: Base size of nodes
         alphalevel: Transparency level for background shapes
         rectanglex: Width of rectangular backgrounds
@@ -240,20 +246,39 @@ def draw_multilayer_default(
         label_position: Position offset for layer labels
         verbose: Whether to log network information
         remove_isolated_nodes: Whether to remove isolated nodes
-        axis: Matplotlib axis to draw on (None for current axis)
+        ax: Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
         edge_size: Width of edges
         node_labels: Whether to display node labels
         node_font_size: Font size for node labels
         scale_by_size: Whether to scale node size by degree
+        axis: Deprecated. Use ax instead.
 
     Returns:
-        None
+        Matplotlib Axes object containing the visualization.
+
+    Example:
+        >>> import matplotlib.pyplot as plt
+        >>> from py3plex.visualization import draw_multilayer_default
+        >>> # Create figure and get axes
+        >>> fig, ax = plt.subplots(figsize=(10, 10))
+        >>> # Draw on the axes (returns the axes)
+        >>> ax = draw_multilayer_default(graphs, ax=ax)
+        >>> # Caller controls when to display
+        >>> plt.savefig("multilayer.png")  # or plt.show()
     """
+    # Handle deprecated 'axis' parameter
+    if axis is not None and ax is None:
+        ax = axis
+    
     # Convert dict to list if necessary
     if isinstance(network_list, dict):
         network_list = list(network_list.values())
 
-    shape_subplot = plt.gca()
+    # Use provided axes or get current axes
+    if ax is None:
+        shape_subplot = plt.gca()
+    else:
+        shape_subplot = ax
 
     # Get color palettes
     facecolor_list_background, alphalevel = _get_background_colors(
@@ -285,7 +310,7 @@ def draw_multilayer_default(
         # Draw layer label if provided
         if labels:
             try:
-                plt.text(
+                shape_subplot.text(
                     start_location_network + label_position,
                     start_location_network - label_position,
                     labels[color],  # type: ignore[index]
@@ -320,12 +345,14 @@ def draw_multilayer_default(
             edge_size=edge_size,
             node_size=node_sizes,
             arrowsize=arrowsize,
-            ax=axis,
+            ax=shape_subplot,
             font_size=node_font_size,
         )
 
     if display:
         plt.show()
+
+    return shape_subplot
 
 
 def draw_multiedges(
@@ -341,26 +368,47 @@ def draw_multiedges(
     invert: bool = False,
     linmod: str = "both",
     resolution: float = 0.001,
-) -> None:
+    ax: Optional[Any] = None,
+) -> Any:
     """Draw edges connecting multiple layers.
+
+    Draws curved or straight edges that connect nodes across different layers
+    in a multilayer network visualization. Typically used after draw_multilayer_default
+    to add inter-layer connections.
 
     Args:
         network_list: List of NetworkX graphs (layers) or dict of layer_name -> graph
-        multi_edge_tuple: Tuple specifying edges to draw
+        multi_edge_tuple: List of tuples specifying edges to draw, e.g. [(node1, node2), ...]
         input_type: Type of input ("nodes" or other)
-        linepoints: Line style
-        alphachannel: Transparency level
+        linepoints: Line style (e.g., "-.", "--", "-")
+        alphachannel: Transparency level (0.0 to 1.0)
         linecolor: Color of the lines
         curve_height: Height of curved edges
-        style: Style of edges ("curve2_bezier", "line", etc.)
+        style: Style of edges ("curve2_bezier", "line", "curve3_bezier", "curve3_fit", "piramidal")
         linewidth: Width of lines
         invert: Whether to invert drawing direction
         linmod: Line modification mode
         resolution: Resolution for curve drawing
+        ax: Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
+
+    Returns:
+        Matplotlib Axes object containing the visualization.
+
+    Example:
+        >>> import matplotlib.pyplot as plt
+        >>> from py3plex.visualization import draw_multilayer_default, draw_multiedges
+        >>> fig, ax = plt.subplots(figsize=(10, 10))
+        >>> ax = draw_multilayer_default(graphs, ax=ax)
+        >>> ax = draw_multiedges(graphs, edges, ax=ax)
+        >>> plt.savefig("multilayer_with_edges.png")
     """
     # Convert dict to list if necessary
     if isinstance(network_list, dict):
         network_list = list(network_list.values())
+
+    # Use provided axes or get current axes
+    if ax is None:
+        ax = plt.gca()
 
     # indices are correct network positions
 
@@ -387,7 +435,7 @@ def draw_multiedges(
 
                 if style == "line":
 
-                    plt.plot(
+                    ax.plot(
                         p1,
                         p2,
                         linestyle=linepoints,
@@ -408,7 +456,7 @@ def draw_multiedges(
                         resolution=resolution,
                     )
 
-                    plt.plot(
+                    ax.plot(
                         x,
                         y,
                         linestyle=linepoints,
@@ -427,12 +475,12 @@ def draw_multiedges(
 
                     x, y = polyfit.draw_order3(len(network_list), p1, p2)
 
-                    plt.plot(x, y)
+                    ax.plot(x, y)
 
                 elif style == "piramidal":
 
                     x, y = polyfit.draw_piramidal(len(network_list), p1, p2)
-                    plt.plot(
+                    ax.plot(
                         x,
                         y,
                         linestyle=linepoints,
@@ -446,6 +494,8 @@ def draw_multiedges(
 
             except Exception:
                 pass
+
+    return ax
 
 
 #                print(err,"test")
@@ -558,16 +608,45 @@ def generate_random_networks(number_of_networks: int) -> List[nx.Graph]:
     return network_list
 
 
-def supra_adjacency_matrix_plot(matrix: np.ndarray, display: bool = False) -> None:
-    """Plot a supra-adjacency matrix.
+def supra_adjacency_matrix_plot(
+    matrix: np.ndarray,
+    display: bool = False,
+    ax: Optional[Any] = None,
+    cmap: str = "binary",
+) -> Any:
+    """Plot a supra-adjacency matrix as a heatmap.
+
+    Visualizes the supra-adjacency matrix of a multilayer network, where the
+    matrix shows both intra-layer and inter-layer connections. The matrix is
+    displayed as a heatmap with configurable colormap.
 
     Args:
-        matrix: Supra-adjacency matrix to plot
-        display: Whether to display the plot immediately
+        matrix: Supra-adjacency matrix to plot (numpy ndarray or scipy sparse matrix)
+        display: If True, calls plt.show() after drawing. Default is False
+            to let the caller control rendering.
+        ax: Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
+        cmap: Colormap to use for the heatmap (default: "binary")
+
+    Returns:
+        Matplotlib Axes object containing the visualization.
+
+    Example:
+        >>> import matplotlib.pyplot as plt
+        >>> from py3plex.visualization import supra_adjacency_matrix_plot
+        >>> fig, ax = plt.subplots(figsize=(8, 8))
+        >>> ax = supra_adjacency_matrix_plot(supra_matrix, ax=ax, cmap="viridis")
+        >>> plt.colorbar(ax.images[0])
+        >>> plt.savefig("supra_matrix.png")
     """
-    plt.imshow(matrix, interpolation="nearest", cmap="binary")
+    if ax is None:
+        ax = plt.gca()
+    
+    ax.imshow(matrix, interpolation="nearest", cmap=cmap)
+    
     if display:
         plt.show()
+    
+    return ax
 
 
 def onclick(event: Any) -> None:
@@ -603,24 +682,49 @@ def hairball_plot(
     labels: Optional[List[str]] = None,
     draw: bool = True,
     label_font_size: int = 2,
-) -> Optional[Any]:  # Returns tuple when draw=False, None otherwise
-    """A method for drawing force-directed plots
-    Args:
-    network (networkx): A network to be visualized
-    color_list (list): A list of colors for nodes
-    node_size (float): Size of nodes
-    layout_parameters (dict): A dictionary of label parameters
-    legend (bool): Display legend?
-    scale_by_size (bool): Rescale nodes?
-    layout_algorithm (string): What type of layout algorithm is to be used?
-    edge_width (float): Width of edges
-    alpha_channel (float): Transparency level.
-    labels (bool): Display labels?
-    label_font_size (int): Sizes of labels
-    Returns:
-        None
-    """
+    ax: Optional[Any] = None,
+) -> Optional[Any]:
+    """Draw a force-directed "hairball" visualization of a network.
 
+    Creates a force-directed layout visualization where nodes are colored by
+    type/layer and sized by degree. This is a common visualization for showing
+    the overall structure of a network.
+
+    Args:
+        g: NetworkX graph to visualize
+        color_list: List of colors for nodes. If None, colors are assigned
+            based on node types.
+        display: If True, calls plt.show() after drawing. Default is False
+            to let the caller control rendering.
+        node_size: Base size of nodes
+        text_color: Color for node labels
+        node_sizes: Custom list of node sizes (overrides node_size and scale_by_size)
+        layout_parameters: Parameters for the layout algorithm (e.g., {"pos": {...}})
+        legend: If True, display a legend mapping colors to node types
+        scale_by_size: If True, scale node sizes by log(degree)
+        layout_algorithm: Layout algorithm to use. Options:
+            - "force": Force-directed layout (spring layout)
+            - "random": Random layout
+            - "custom_coordinates": Use positions from layout_parameters["pos"]
+            - "custom_coordinates_initial_force": Use custom positions as initial layout
+        edge_width: Width of edges
+        alpha_channel: Transparency level (0.0 to 1.0)
+        labels: List of node labels to display (None for no labels)
+        draw: If True, draw the network. If False, only compute layout and return data.
+        label_font_size: Font size for node labels
+        ax: Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
+
+    Returns:
+        - If draw=True: Matplotlib Axes object containing the visualization
+        - If draw=False: Tuple of (graph, node_sizes, color_mapping, positions)
+
+    Example:
+        >>> import matplotlib.pyplot as plt
+        >>> from py3plex.visualization import hairball_plot
+        >>> fig, ax = plt.subplots(figsize=(10, 10))
+        >>> ax = hairball_plot(network.core_network, ax=ax, legend=True)
+        >>> plt.savefig("hairball.png")
+    """
 
     logger.info("Beginning parsing..")
     nodes = g.nodes(data=True)
@@ -699,10 +803,15 @@ def hairball_plot(
             f"Please choose a valid layout algorithm."
         )
 
+    # Use provided axes or get current axes
+    if ax is None:
+        ax = plt.gca()
+
     if draw:
         nx.draw_networkx_edges(
             g,
             pos,
+            ax=ax,
             alpha=alpha_channel,
             edge_color="black",
             width=edge_width,
@@ -711,6 +820,7 @@ def hairball_plot(
         nx.draw_networkx_nodes(
             g,
             pos,
+            ax=ax,
             nodelist=[n1[0] for n1 in nodes],
             node_color=final_color_mapping,
             node_size=nsizes,
@@ -720,13 +830,13 @@ def hairball_plot(
         for el in labels:
             pos_el = pos[el]
             if draw:
-                plt.text(
+                ax.text(
                     pos_el[0], pos_el[1], el, fontsize=label_font_size, color=text_color
                 )
 
     #        nx.draw_networkx_labels(g, pos, font_size=label_font_size)
 
-    plt.axis("off")
+    ax.axis("off")
 
     #  add legend {"color":"string"}
     if legend is not None and legend:
@@ -740,7 +850,7 @@ def hairball_plot(
             for key in legend_colors
         ]
         if draw:
-            plt.legend(
+            ax.legend(
                 markers,
                 [color_to_type_map[color] for color in legend_colors],
                 numpoints=1,
@@ -752,7 +862,7 @@ def hairball_plot(
 
     if not draw:
         return g, nsizes, final_color_mapping, pos
-    return None  # Explicit return when draw=True
+    return ax  # Return the axes when draw=True
 
 
 def interactive_hairball_plot(

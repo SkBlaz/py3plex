@@ -4,6 +4,7 @@ Visualization module for py3plex.
 This module provides visualization tools for multilayer networks, including:
 - Multilayer network layouts (diagonal, hairball, force-directed)
 - Sankey diagrams for inter-layer flows
+- Supra-adjacency matrix heatmaps
 - Color utilities for node and edge coloring
 - Embedding visualization tools
 - Layout algorithms
@@ -16,6 +17,21 @@ Traditional imports (also supported for backwards compatibility):
     from py3plex.visualization.colors import colors_default
     from py3plex.visualization.embedding_visualization import embedding_tools
     from py3plex.visualization.sankey import draw_multilayer_sankey
+
+Visualization API Design:
+    All visualization functions follow these conventions:
+    - Accept an optional `ax` parameter for the Matplotlib Axes to draw on
+    - If `ax` is None, uses the current axes (plt.gca())
+    - Return the Axes object to allow further customization
+    - Default `display=False` to not call plt.show() automatically
+    - Caller controls when to render/save the plot
+
+Example:
+    >>> import matplotlib.pyplot as plt
+    >>> from py3plex.visualization import draw_multilayer_default
+    >>> fig, ax = plt.subplots(figsize=(10, 10))
+    >>> ax = draw_multilayer_default(graphs, ax=ax)
+    >>> plt.savefig("multilayer.png")  # or plt.show()
 """
 
 # Import most commonly used visualization functions for convenience
@@ -23,6 +39,7 @@ from .multilayer import (
     hairball_plot,
     draw_multilayer_default,
     draw_multiedges,
+    supra_adjacency_matrix_plot,
     interactive_hairball_plot,
     interactive_diagonal_plot,
 )
@@ -47,6 +64,7 @@ __all__ = [
     "hairball_plot",
     "draw_multilayer_default",
     "draw_multiedges",
+    "supra_adjacency_matrix_plot",
     "draw_multilayer_sankey",
     "interactive_hairball_plot",
     "interactive_diagonal_plot",
