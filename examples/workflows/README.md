@@ -6,7 +6,6 @@ This directory contains examples for complete analysis workflows, configuration-
 
 ### Config-Driven Workflows
 - **`example_config_workflow.py`** - Drive analysis using configuration files
-- **`config_driven_README.md`** - Documentation for config-driven workflows
 
 ### Plugin System
 - **`example_plugin_usage.py`** - Create and use custom algorithms via the plugin system
@@ -17,41 +16,110 @@ This directory contains examples for complete analysis workflows, configuration-
 
 ### Configuration Files
 Example configuration files for workflows:
-- `example_config.yaml` - YAML configuration example
-- `load_and_compare.json` - JSON configuration for loading and comparing
-- `comparison_config.json` - Configuration for network comparison
-- `load_from_file.yaml` - Configuration for file loading
+- `example_config.yaml` - Basic workflow with generated network (YAML)
+- `load_from_file.yaml` - Load network from file and analyze (YAML)
+- `load_and_compare.json` - Compare file-loaded vs generated networks (JSON)
+- `comparison_config.json` - Multi-dataset comparison workflow (JSON)
 
 ### Sample Data
-- `sample_network.graphml` - Example network in GraphML format
+- `sample_network.graphml` - Sample multilayer network file for examples
 - Various `.png` files - Example outputs
 
 ## Config-Driven Analysis
 
-Config-driven workflows let you define entire analysis pipelines in configuration files:
+Config-driven workflows allow you to define network analysis pipelines using YAML or JSON configuration files. This approach enables:
+
+- **Reproducible research**: Share exact experiment configurations
+- **Pipeline automation**: Integrate with CI/CD systems
+- **Batch processing**: Run multiple experiments easily
+- **Version control**: Track experimental setups alongside code
+
+### Running Config-Driven Workflows
+
+#### Using Python
+
+```bash
+python example_config_workflow.py
+```
+
+This runs three examples:
+1. Loading network from file (YAML)
+2. File vs generated comparison (JSON)
+3. Network generation (YAML)
+
+#### Using CLI
+
+```bash
+# Load network from file
+py3plex run-config load_from_file.yaml
+
+# Compare file-loaded and generated networks
+py3plex run-config load_and_compare.json
+
+# Generate and analyze network
+py3plex run-config example_config.yaml
+
+# Validate configuration without running
+py3plex run-config load_from_file.yaml --validate-only
+```
+
+### Configuration Format
+
+#### Basic Structure
 
 ```yaml
-# example_config.yaml
-network:
-  source: "data/network.edgelist"
-  directed: false
+name: "My Workflow"
+description: "Description of what this workflow does"
 
-analysis:
-  - type: centrality
-    algorithms: [degree, betweenness, eigenvector]
-  - type: communities
-    algorithm: leiden
+datasets:
+  - name: "network_name"
+    type: "file"  # or "generate"
+    path: "network.graphml"
+
+operations:
+  - type: "stats"
+    dataset: "network_name"
+    parameters: {}
 
 output:
-  format: report
-  path: "results/"
+  directory: "results"
+  summary: "summary.json"
 ```
 
-Then run:
-```python
-from py3plex.workflows import run_config
-run_config("example_config.yaml")
+#### Dataset Types
+
+**Load from File (Recommended):**
+```yaml
+- name: "my_network"
+  type: "file"
+  path: "data/network.graphml"
 ```
+
+Supported formats:
+- GraphML (`.graphml`)
+- GPickle (`.gpickle`)
+- Multiedgelist (`.edgelist`, `.txt`)
+
+**Generate Networks:**
+```yaml
+- name: "generated_net"
+  type: "generate"
+  generator: "random"
+  parameters:
+    nodes: 100
+    layers: 3
+    probability: 0.1
+    seed: 42  # optional, for reproducibility
+```
+
+#### Available Operations
+
+- `stats` - Compute network statistics
+- `community` - Detect communities (louvain algorithm)
+- `centrality` - Compute centrality measures (degree, betweenness, closeness)
+- `visualize` - Create network visualizations
+- `aggregate` - Aggregate multilayer networks
+- `convert` - Convert between formats
 
 ## Plugin System
 
@@ -103,3 +171,14 @@ See `example_plugin_usage.py` for complete examples.
 - See [PLUGIN_GUIDE.md](../../PLUGIN_GUIDE.md) for detailed plugin documentation
 - Check config files in this directory for examples
 - Explore notebooks for interactive workflows
+- Online docs: https://skblaz.github.io/py3plex/config_workflows.html
+- Local docs: `docfiles/config_workflows.rst`
+
+## Requirements
+
+- py3plex installed
+- PyYAML for YAML support (optional, JSON always works)
+
+```bash
+pip install pyyaml
+```
