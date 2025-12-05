@@ -425,3 +425,380 @@ class Q:
     def edges() -> QueryBuilder:
         """Create a query builder for edges."""
         return QueryBuilder(Target.EDGES)
+
+
+# ==============================================================================
+# Builder API for DSL Extensions
+# ==============================================================================
+
+
+class CompareBuilder:
+    """Builder for COMPARE statements.
+    
+    Example:
+        >>> from py3plex.dsl import C, L
+        >>> 
+        >>> result = (
+        ...     C.compare("baseline", "intervention")
+        ...      .using("multiplex_jaccard")
+        ...      .on_layers(L["social"] + L["work"])
+        ...      .measure("global_distance", "layerwise_distance")
+        ...      .execute(networks)
+        ... )
+    """
+    
+    def __init__(self, network_a: str, network_b: str):
+        """Initialize builder with two network names."""
+        from .ast import CompareStmt
+        self._stmt = CompareStmt(
+            network_a=network_a,
+            network_b=network_b,
+            metric_name="multiplex_jaccard",
+        )
+    
+    def using(self, metric: str) -> "CompareBuilder":
+        """Set the comparison metric.
+        
+        Args:
+            metric: Metric name (e.g., "multiplex_jaccard")
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.metric_name = metric
+        return self
+    
+    def on_layers(self, layer_expr: LayerExprBuilder) -> "CompareBuilder":
+        """Filter by layers using layer algebra.
+        
+        Args:
+            layer_expr: Layer expression (e.g., L["social"] + L["work"])
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.layer_expr = layer_expr._to_ast()
+        return self
+    
+    def measure(self, *measures: str) -> "CompareBuilder":
+        """Specify which measures to compute.
+        
+        Args:
+            *measures: Measure names (e.g., "global_distance", "layerwise_distance")
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.measures.extend(measures)
+        return self
+    
+    def to(self, target: str) -> "CompareBuilder":
+        """Set export target.
+        
+        Args:
+            target: Export format ('pandas', 'json')
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.export_target = target
+        return self
+    
+    def execute(self, networks: Dict[str, Any]) -> "ComparisonResult":
+        """Execute the comparison.
+        
+        Args:
+            networks: Dictionary mapping network names to network objects
+            
+        Returns:
+            ComparisonResult with comparison results
+        """
+        from py3plex.comparison import execute_compare_stmt
+        return execute_compare_stmt(networks, self._stmt)
+    
+    def to_ast(self) -> "CompareStmt":
+        """Export as AST CompareStmt object."""
+        return self._stmt
+    
+    def __repr__(self) -> str:
+        return f"CompareBuilder('{self._stmt.network_a}' vs '{self._stmt.network_b}')"
+
+
+class C:
+    """Compare factory for creating CompareBuilder instances.
+    
+    Example:
+        >>> C.compare("baseline", "intervention").using("multiplex_jaccard")
+    """
+    
+    @staticmethod
+    def compare(network_a: str, network_b: str) -> CompareBuilder:
+        """Create a comparison builder for two networks."""
+        return CompareBuilder(network_a, network_b)
+
+
+class NullModelBuilder:
+    """Builder for NULLMODEL statements.
+    
+    Example:
+        >>> from py3plex.dsl import N, L
+        >>> 
+        >>> result = (
+        ...     N.model("configuration")
+        ...      .on_layers(L["social"])
+        ...      .with_params(preserve_degree=True)
+        ...      .samples(100)
+        ...      .seed(42)
+        ...      .execute(network)
+        ... )
+    """
+    
+    def __init__(self, model_type: str):
+        """Initialize builder with model type."""
+        from .ast import NullModelStmt
+        self._stmt = NullModelStmt(model_type=model_type)
+    
+    def on_layers(self, layer_expr: LayerExprBuilder) -> "NullModelBuilder":
+        """Filter by layers using layer algebra.
+        
+        Args:
+            layer_expr: Layer expression
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.layer_expr = layer_expr._to_ast()
+        return self
+    
+    def with_params(self, **params) -> "NullModelBuilder":
+        """Set model parameters.
+        
+        Args:
+            **params: Model parameters
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.params.update(params)
+        return self
+    
+    def samples(self, n: int) -> "NullModelBuilder":
+        """Set number of samples to generate.
+        
+        Args:
+            n: Number of samples
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.num_samples = n
+        return self
+    
+    def seed(self, seed: int) -> "NullModelBuilder":
+        """Set random seed.
+        
+        Args:
+            seed: Random seed
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.seed = seed
+        return self
+    
+    def to(self, target: str) -> "NullModelBuilder":
+        """Set export target.
+        
+        Args:
+            target: Export format
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.export_target = target
+        return self
+    
+    def execute(self, network: Any) -> "NullModelResult":
+        """Execute null model generation.
+        
+        Args:
+            network: Multilayer network
+            
+        Returns:
+            NullModelResult with generated samples
+        """
+        from py3plex.nullmodels import execute_nullmodel_stmt
+        return execute_nullmodel_stmt(network, self._stmt)
+    
+    def to_ast(self) -> "NullModelStmt":
+        """Export as AST NullModelStmt object."""
+        return self._stmt
+    
+    def __repr__(self) -> str:
+        return f"NullModelBuilder(model='{self._stmt.model_type}')"
+
+
+class N:
+    """NullModel factory for creating NullModelBuilder instances.
+    
+    Example:
+        >>> N.model("configuration").samples(100).seed(42)
+    """
+    
+    @staticmethod
+    def model(model_type: str) -> NullModelBuilder:
+        """Create a null model builder."""
+        return NullModelBuilder(model_type)
+    
+    @staticmethod
+    def configuration() -> NullModelBuilder:
+        """Create a configuration model builder."""
+        return NullModelBuilder("configuration")
+    
+    @staticmethod
+    def erdos_renyi() -> NullModelBuilder:
+        """Create an Erdős-Rényi model builder."""
+        return NullModelBuilder("erdos_renyi")
+    
+    @staticmethod
+    def layer_shuffle() -> NullModelBuilder:
+        """Create a layer shuffle model builder."""
+        return NullModelBuilder("layer_shuffle")
+    
+    @staticmethod
+    def edge_swap() -> NullModelBuilder:
+        """Create an edge swap model builder."""
+        return NullModelBuilder("edge_swap")
+
+
+class PathBuilder:
+    """Builder for PATH statements.
+    
+    Example:
+        >>> from py3plex.dsl import P, L
+        >>> 
+        >>> result = (
+        ...     P.shortest("Alice", "Bob")
+        ...      .on_layers(L["social"] + L["work"])
+        ...      .crossing_layers()
+        ...      .execute(network)
+        ... )
+    """
+    
+    def __init__(self, path_type: str, source: Any, target: Optional[Any] = None):
+        """Initialize builder with path type and endpoints."""
+        from .ast import PathStmt
+        self._stmt = PathStmt(
+            path_type=path_type,
+            source=source,
+            target=target,
+        )
+    
+    def on_layers(self, layer_expr: LayerExprBuilder) -> "PathBuilder":
+        """Filter by layers using layer algebra.
+        
+        Args:
+            layer_expr: Layer expression
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.layer_expr = layer_expr._to_ast()
+        return self
+    
+    def crossing_layers(self, allow: bool = True) -> "PathBuilder":
+        """Allow or disallow cross-layer paths.
+        
+        Args:
+            allow: Whether to allow cross-layer paths
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.cross_layer = allow
+        return self
+    
+    def with_params(self, **params) -> "PathBuilder":
+        """Set additional parameters.
+        
+        Args:
+            **params: Additional parameters
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.params.update(params)
+        return self
+    
+    def limit(self, n: int) -> "PathBuilder":
+        """Limit number of results.
+        
+        Args:
+            n: Maximum number of results
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.limit = n
+        return self
+    
+    def to(self, target: str) -> "PathBuilder":
+        """Set export target.
+        
+        Args:
+            target: Export format
+            
+        Returns:
+            Self for chaining
+        """
+        self._stmt.export_target = target
+        return self
+    
+    def execute(self, network: Any) -> "PathResult":
+        """Execute path query.
+        
+        Args:
+            network: Multilayer network
+            
+        Returns:
+            PathResult with found paths
+        """
+        from py3plex.paths import execute_path_stmt
+        return execute_path_stmt(network, self._stmt)
+    
+    def to_ast(self) -> "PathStmt":
+        """Export as AST PathStmt object."""
+        return self._stmt
+    
+    def __repr__(self) -> str:
+        target_str = f" -> {self._stmt.target}" if self._stmt.target else ""
+        return f"PathBuilder({self._stmt.path_type}: {self._stmt.source}{target_str})"
+
+
+class P:
+    """Path factory for creating PathBuilder instances.
+    
+    Example:
+        >>> P.shortest("Alice", "Bob").crossing_layers()
+        >>> P.random_walk("Alice").with_params(steps=100, teleport=0.1)
+    """
+    
+    @staticmethod
+    def shortest(source: Any, target: Any) -> PathBuilder:
+        """Create a shortest path query builder."""
+        return PathBuilder("shortest", source, target)
+    
+    @staticmethod
+    def all_paths(source: Any, target: Any) -> PathBuilder:
+        """Create an all-paths query builder."""
+        return PathBuilder("all", source, target)
+    
+    @staticmethod
+    def random_walk(source: Any) -> PathBuilder:
+        """Create a random walk query builder."""
+        return PathBuilder("random_walk", source)
+    
+    @staticmethod
+    def flow(source: Any, target: Any) -> PathBuilder:
+        """Create a flow analysis query builder."""
+        return PathBuilder("flow", source, target)

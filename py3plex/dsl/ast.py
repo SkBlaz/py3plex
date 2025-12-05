@@ -248,3 +248,132 @@ class ExecutionPlan:
     """
     steps: List[PlanStep] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
+
+
+# ==============================================================================
+# DSL Extensions: Multilayer Comparison (Part A)
+# ==============================================================================
+
+
+@dataclass
+class CompareStmt:
+    """COMPARE statement for network comparison.
+    
+    DSL Example:
+        COMPARE NETWORK baseline, intervention
+        USING multiplex_jaccard
+        ON LAYER("offline") + LAYER("online")
+        MEASURE global_distance
+        TO pandas
+    
+    Attributes:
+        network_a: Name/key for first network
+        network_b: Name/key for second network
+        metric_name: Comparison metric (e.g., "multiplex_jaccard")
+        layer_expr: Optional layer expression for filtering
+        measures: List of measure types (e.g., ["global_distance", "layerwise_distance"])
+        export_target: Optional export format
+    """
+    network_a: str
+    network_b: str
+    metric_name: str
+    layer_expr: Optional[LayerExpr] = None
+    measures: List[str] = field(default_factory=list)
+    export_target: Optional[str] = None
+
+
+# ==============================================================================
+# DSL Extensions: Null Models & Randomization (Part B)
+# ==============================================================================
+
+
+@dataclass
+class NullModelStmt:
+    """NULLMODEL statement for generating randomized networks.
+    
+    DSL Example:
+        NULLMODEL configuration
+        ON LAYER("social") + LAYER("work")
+        WITH preserve_degree=True, preserve_layer_sizes=True
+        SAMPLES 100
+        SEED 42
+    
+    Attributes:
+        model_type: Type of null model (e.g., "configuration", "erdos_renyi", "layer_shuffle")
+        layer_expr: Optional layer expression for filtering
+        params: Model parameters
+        num_samples: Number of samples to generate
+        seed: Optional random seed
+        export_target: Optional export format
+    """
+    model_type: str
+    layer_expr: Optional[LayerExpr] = None
+    params: Dict[str, Any] = field(default_factory=dict)
+    num_samples: int = 1
+    seed: Optional[int] = None
+    export_target: Optional[str] = None
+
+
+# ==============================================================================
+# DSL Extensions: Path Queries & Flow (Part C)
+# ==============================================================================
+
+
+@dataclass
+class PathStmt:
+    """PATH statement for path queries and flow analysis.
+    
+    DSL Example:
+        PATH SHORTEST FROM "Alice" TO "Bob"
+        ON LAYER("social") + LAYER("work")
+        CROSSING LAYERS
+        LIMIT 10
+    
+    Attributes:
+        path_type: Type of path query ("shortest", "all", "random_walk", "flow")
+        source: Source node identifier
+        target: Optional target node identifier
+        layer_expr: Optional layer expression for filtering
+        cross_layer: Whether to allow cross-layer paths
+        params: Additional parameters (e.g., max_length, teleport probability)
+        limit: Optional limit on results
+        export_target: Optional export format
+    """
+    path_type: str
+    source: Union[str, ParamRef]
+    target: Optional[Union[str, ParamRef]] = None
+    layer_expr: Optional[LayerExpr] = None
+    cross_layer: bool = False
+    params: Dict[str, Any] = field(default_factory=dict)
+    limit: Optional[int] = None
+    export_target: Optional[str] = None
+
+
+# ==============================================================================
+# Extended Query: Top-level query with multiple statement types
+# ==============================================================================
+
+
+@dataclass
+class ExtendedQuery:
+    """Extended query supporting multiple statement types.
+    
+    This extends the basic Query to support COMPARE, NULLMODEL, and PATH statements
+    in addition to SELECT statements.
+    
+    Attributes:
+        kind: Query type ("select", "compare", "nullmodel", "path")
+        explain: If True, return execution plan instead of results
+        select: SELECT statement (if kind == "select")
+        compare: COMPARE statement (if kind == "compare")
+        nullmodel: NULLMODEL statement (if kind == "nullmodel")
+        path: PATH statement (if kind == "path")
+        dsl_version: DSL version for compatibility
+    """
+    kind: str
+    explain: bool = False
+    select: Optional[SelectStmt] = None
+    compare: Optional[CompareStmt] = None
+    nullmodel: Optional[NullModelStmt] = None
+    path: Optional[PathStmt] = None
+    dsl_version: str = "2.0"
