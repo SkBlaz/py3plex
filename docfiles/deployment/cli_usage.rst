@@ -78,7 +78,8 @@ The py3plex CLI provides these main commands:
 * ``selftest`` - Verify installation and core functionality
 * ``check`` - Lint and validate graph data files
 * ``create`` - Create new multilayer networks
-* ``load`` - Load and inspect networks
+* ``load`` - Load and inspect networks (supports stdin with ``-``)
+* ``query`` - Execute DSL queries on networks (supports stdin with ``-``)
 * ``community`` - Detect communities
 * ``centrality`` - Compute centrality measures
 * ``stats`` - Compute multilayer network statistics
