@@ -150,7 +150,13 @@ def _compute_eigenvector(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any,
     try:
         centrality = nx.eigenvector_centrality(G, max_iter=1000)
     except nx.PowerIterationFailedConvergence:
-        # Fallback for non-convergence
+        # Fallback for non-convergence - log warning and return zeros
+        import warnings
+        warnings.warn(
+            "Eigenvector centrality failed to converge. "
+            "Returning zero values. Consider using a different centrality measure.",
+            RuntimeWarning
+        )
         centrality = {node: 0.0 for node in G.nodes()}
     if nodes is not None:
         return {node: centrality.get(node, 0) for node in nodes}

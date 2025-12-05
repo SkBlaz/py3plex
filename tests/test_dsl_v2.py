@@ -481,15 +481,17 @@ class TestExplain:
         """Test that expensive operations generate warnings."""
         # Create a larger network to trigger warnings
         network = multinet.multi_layer_network(directed=False)
-        for i in range(100):
-            network.add_nodes([{'source': f'N{i}', 'type': 'layer1'}])
         
-        # Connect nodes
-        for i in range(50):
-            network.add_edges([{
-                'source': f'N{i}', 'target': f'N{i+50}',
-                'source_type': 'layer1', 'target_type': 'layer1'
-            }])
+        # Batch node creation for efficiency
+        nodes = [{'source': f'N{i}', 'type': 'layer1'} for i in range(100)]
+        network.add_nodes(nodes)
+        
+        # Batch edge creation for efficiency
+        edges = [{
+            'source': f'N{i}', 'target': f'N{i+50}',
+            'source_type': 'layer1', 'target_type': 'layer1'
+        } for i in range(50)]
+        network.add_edges(edges)
         
         q = Q.nodes().compute("betweenness_centrality")
         plan = q.explain().execute(network)

@@ -29,6 +29,7 @@ from .errors import (
     DslExecutionError,
     ParameterMissingError,
     UnknownLayerError,
+    UnknownMeasureError,
 )
 
 
@@ -209,8 +210,15 @@ def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
                 values = measure_fn(subgraph, items)
                 result_name = compute_item.result_name
                 attributes[result_name] = values
+            except UnknownMeasureError:
+                # Re-raise unknown measure errors (they have helpful suggestions)
+                raise
             except Exception as e:
-                # Log error but continue with other measures
+                # Log specific error and continue with other measures
+                import logging
+                logging.getLogger(__name__).warning(
+                    f"Error computing measure '{compute_item.name}': {e}"
+                )
                 attributes[compute_item.result_name] = {}
     
     # Step 5: Apply ORDER BY

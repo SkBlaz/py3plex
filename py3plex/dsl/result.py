@@ -16,12 +16,12 @@ class QueryResult:
     Attributes:
         target: 'nodes' or 'edges'
         items: Sequence of node/edge identifiers
-        attributes: Dictionary of computed attributes (column -> values)
+        attributes: Dictionary of computed attributes (column -> values or dict)
         meta: Metadata about the query execution
     """
     
     def __init__(self, target: str, items: List[Any],
-                 attributes: Optional[Dict[str, List[Any]]] = None,
+                 attributes: Optional[Dict[str, Union[List[Any], Dict[Any, Any]]]] = None,
                  meta: Optional[Dict[str, Any]] = None):
         """Initialize QueryResult.
         
