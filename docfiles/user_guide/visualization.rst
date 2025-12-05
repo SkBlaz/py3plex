@@ -49,6 +49,13 @@ Basic Multilayer Visualization
         labels=True
     )
 
+**Example output:**
+
+.. image:: ../../example_images/multilayer.png
+   :width: 600px
+   :align: center
+   :alt: Basic multilayer network visualization
+
 Preset Visualization Modes
 ---------------------------
 
@@ -94,6 +101,13 @@ Optimized for networks with many nodes where detail isn't critical.
 - Reduced visual clutter
 - Shows overall structure
 - Works with many nodes
+
+**Example output (minimal mode with large network):**
+
+.. image:: ../../example_images/hairball.png
+   :width: 500px
+   :align: center
+   :alt: Minimal mode visualization for large networks
 
 Balanced Mode (Medium Networks 100-1000 nodes)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,6 +189,13 @@ Maximum detail for small networks where every node and edge matters.
 - Clear node identification
 - Edge weights visible
 - Professional appearance
+
+**Example output (dense mode with small network):**
+
+.. image:: ../../example_images/multiplex.png
+   :width: 400px
+   :align: center
+   :alt: Dense mode visualization for small networks
 
 Layout Options
 --------------
@@ -378,6 +399,13 @@ Color nodes by community membership:
     
     # Visualize
     draw_multilayer_default(network.get_layers(), display=True)
+
+**Example output (community-colored network):**
+
+.. image:: ../../example_images/communities.png
+   :width: 500px
+   :align: center
+   :alt: Network with nodes colored by community membership
 
 Exporting Visualizations
 -------------------------
@@ -1202,6 +1230,13 @@ by color and size.
     # Or use 'alluvial' (same as 'flow')
     ax = network.visualize_network(style='alluvial', show=True)
 
+**Example output:**
+
+.. image:: ../../example_images/multilayer_flow.png
+   :width: 600px
+   :align: center
+   :alt: Flow/Alluvial visualization showing inter-layer connections
+
 **Best for:**
 
 - Visualizing node-level connectivity across layers
@@ -1227,6 +1262,13 @@ individual node connections.
     
     # Sankey-style diagram showing inter-layer flow strength
     ax = network.visualize_network(style='sankey', show=True)
+
+**Example output:**
+
+.. image:: ../../example_images/multilayer_sankey_diagram.png
+   :width: 500px
+   :align: center
+   :alt: Sankey diagram showing inter-layer flow strength
 
 You can also use the function directly:
 
