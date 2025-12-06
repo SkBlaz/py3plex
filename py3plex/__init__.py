@@ -51,8 +51,8 @@ For detailed documentation, see: https://py3plex.readthedocs.io
 """
 
 # Version information
-__version__ = "0.96"
-__api_version__ = "0.96"
+__version__ = "1.0"
+__api_version__ = "1.0"
 
 from py3plex.core.multinet import multi_layer_network
 from py3plex.core.types import (
