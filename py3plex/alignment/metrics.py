@@ -4,7 +4,7 @@ This module provides functions to compute similarity metrics between nodes
 and compare aligned multilayer networks.
 """
 
-from typing import Dict, Hashable
+from typing import Dict, Hashable, Optional
 
 import numpy as np
 
@@ -71,7 +71,7 @@ def edge_agreement(
     net_a: "multinet.multi_layer_network",
     net_b: "multinet.multi_layer_network",
     node_mapping: Dict[Hashable, Hashable],
-    layer_mapping: Dict[str, str] | None = None,
+    layer_mapping: Optional[Dict[str, str]] = None,
 ) -> float:
     """
     Compute the edge agreement score between two aligned multilayer networks.
