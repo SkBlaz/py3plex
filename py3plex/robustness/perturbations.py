@@ -7,7 +7,7 @@ helper to chain perturbations together.
 
 from __future__ import annotations
 
-from typing import Optional, Protocol
+from typing import Protocol
 
 import numpy as np
 
@@ -23,9 +23,9 @@ class Perturbation(Protocol):
 
     def apply(
         self,
-        network: "multinet.multi_layer_network",
+        network: multinet.multi_layer_network,
         rng: np.random.Generator,
-    ) -> "multinet.multi_layer_network":
+    ) -> multinet.multi_layer_network:
         """Apply the perturbation to a network.
 
         Args:
@@ -50,7 +50,7 @@ class EdgeDrop:
         If None, apply to all layers.
     """
 
-    def __init__(self, p: float, layer: Optional[str] = None) -> None:
+    def __init__(self, p: float, layer: str | None = None) -> None:
         if not (0.0 <= p <= 1.0):
             raise ValueError("p must be in [0, 1]")
         self.p = p
@@ -58,9 +58,9 @@ class EdgeDrop:
 
     def apply(
         self,
-        network: "multinet.multi_layer_network",
+        network: multinet.multi_layer_network,
         rng: np.random.Generator,
-    ) -> "multinet.multi_layer_network":
+    ) -> multinet.multi_layer_network:
         """Apply edge drop perturbation.
 
         Args:
@@ -118,7 +118,6 @@ class EdgeDrop:
 
         for node in network.get_nodes():
             if node not in nodes_in_edges:
-                new_net._initiate_network()
                 new_net.core_network.add_node(node)
 
         return new_net
@@ -137,7 +136,7 @@ class EdgeAdd:
         Edges are only added within each layer (no new inter-layer edges).
     """
 
-    def __init__(self, p: float, layer: Optional[str] = None) -> None:
+    def __init__(self, p: float, layer: str | None = None) -> None:
         if not (0.0 <= p <= 1.0):
             raise ValueError("p must be in [0, 1]")
         self.p = p
@@ -145,9 +144,9 @@ class EdgeAdd:
 
     def apply(
         self,
-        network: "multinet.multi_layer_network",
+        network: multinet.multi_layer_network,
         rng: np.random.Generator,
-    ) -> "multinet.multi_layer_network":
+    ) -> multinet.multi_layer_network:
         """Apply edge add perturbation.
 
         Args:
@@ -245,7 +244,6 @@ class EdgeAdd:
 
         for node in network.get_nodes():
             if node not in nodes_in_edges:
-                new_net._initiate_network()
                 new_net.core_network.add_node(node)
 
         return new_net
@@ -267,9 +265,9 @@ class NodeDrop:
 
     def apply(
         self,
-        network: "multinet.multi_layer_network",
+        network: multinet.multi_layer_network,
         rng: np.random.Generator,
-    ) -> "multinet.multi_layer_network":
+    ) -> multinet.multi_layer_network:
         """Apply node drop perturbation.
 
         Args:
@@ -320,7 +318,6 @@ class NodeDrop:
 
         for node in kept_nodes:
             if node not in nodes_in_edges:
-                new_net._initiate_network()
                 new_net.core_network.add_node(node)
 
         return new_net
@@ -334,9 +331,9 @@ class _ComposedPerturbation:
 
     def apply(
         self,
-        network: "multinet.multi_layer_network",
+        network: multinet.multi_layer_network,
         rng: np.random.Generator,
-    ) -> "multinet.multi_layer_network":
+    ) -> multinet.multi_layer_network:
         """Apply all perturbations in sequence.
 
         Args:

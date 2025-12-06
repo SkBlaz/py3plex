@@ -6,7 +6,7 @@ perturbations and analyzing centrality robustness.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, Union
 
 import numpy as np
 
@@ -28,12 +28,12 @@ except ImportError:
 
 
 def estimate_metric_distribution(
-    network: "multinet.multi_layer_network",
-    metric_fn: Callable[["multinet.multi_layer_network"], MetricValue],
+    network: multinet.multi_layer_network,
+    metric_fn: Callable[[multinet.multi_layer_network], MetricValue],
     perturbation: Perturbation,
     n_samples: int = 100,
     random_state: int | None = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Estimate the distribution of a metric under random perturbations.
 
     Args
@@ -94,7 +94,7 @@ def estimate_metric_distribution(
         raise ValueError("n_samples must be positive")
 
     rng = np.random.default_rng(random_state)
-    samples: List[MetricValue] = []
+    samples: list[MetricValue] = []
 
     for _ in range(n_samples):
         perturbed = perturbation.apply(network, rng)
@@ -104,7 +104,7 @@ def estimate_metric_distribution(
     # Determine if scalar or dict
     if samples and isinstance(samples[0], dict):
         # Dict case
-        summary: Dict[str, Dict[str, Any]] = {}
+        summary: dict[str, dict[str, Any]] = {}
         all_keys = set()
         for s in samples:
             if isinstance(s, dict):
@@ -143,12 +143,12 @@ def estimate_metric_distribution(
 
 
 def centrality_robustness(
-    network: "multinet.multi_layer_network",
-    centrality_fn: Callable[["multinet.multi_layer_network"], Dict[Any, float]],
+    network: multinet.multi_layer_network,
+    centrality_fn: Callable[[multinet.multi_layer_network], dict[Any, float]],
     perturbation: Perturbation,
     n_samples: int = 100,
     random_state: int | None = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Analyze robustness of a node centrality measure under perturbations.
 
     Parameters
@@ -209,8 +209,8 @@ def centrality_robustness(
     nodes = sorted(c0.keys(), key=lambda x: str(x))  # Consistent ordering
     baseline_vals = np.array([c0[n] for n in nodes], dtype=float)
 
-    samples: List[Dict[Any, float]] = []
-    tau_values: List[float] = []
+    samples: list[dict[Any, float]] = []
+    tau_values: list[float] = []
 
     for _ in range(n_samples):
         perturbed = perturbation.apply(network, rng)
@@ -229,7 +229,7 @@ def centrality_robustness(
                     tau_values.append(float(tau))
 
     # Build node_stats
-    node_stats: Dict[Any, Dict[str, float]] = {}
+    node_stats: dict[Any, dict[str, float]] = {}
     for node in nodes:
         vals = [c.get(node, 0.0) for c in samples]
         vals_arr = np.array(vals, dtype=float)
