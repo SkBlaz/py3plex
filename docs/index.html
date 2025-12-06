@@ -9,7 +9,7 @@
   <title>Py3plex: Multilayer Network Analysis &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3ea41ae2" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c94df887" />
 
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="user_guide/networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/statistics.html">Network Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/community_detection.html">Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/multilayer_dynamics.html">Multilayer Dynamics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/io_and_formats.html">I/O and Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/visualization.html">Visualization</a></li>
@@ -154,7 +155,7 @@
 <li><p>Full NetworkX compatibility</p></li>
 </ul>
 <div class="dsl-example admonition">
-<p class="admonition-title">🔍 DSL: Query Networks Like SQL</p>
+<p class="admonition-title">DSL: Query Networks Like SQL</p>
 <p>The py3plex DSL lets you query networks using intuitive SQL-like syntax or a type-safe Python builder API:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
@@ -183,7 +184,7 @@
 <li><p>Educational purposes</p></li>
 <li><p>Production pipelines</p></li>
 </ul>
-<p>📖 See the complete <a class="reference internal" href="user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> guide for all features!</p>
+<p>See the complete <a class="reference internal" href="user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> guide for all features!</p>
 </div>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
@@ -393,6 +394,21 @@
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#what-you-learned">What You Learned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#references">References</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/community_detection.html#what-s-next">What’s Next?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/multilayer_dynamics.html">Multilayer Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#overview-of-dynamics-models">Overview of Dynamics Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#sir-epidemic-dynamics">SIR Epidemic Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#sis-epidemic-dynamics">SIS Epidemic Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#random-walk-dynamics">Random Walk Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#working-with-results">Working with Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#mathematical-formalism">Mathematical Formalism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#advanced-topics">Advanced Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#dsl-integration">DSL Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#examples-and-tutorials">Examples and Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#key-takeaways">Key Takeaways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/multilayer_dynamics.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/random_walks_embeddings.html">Random Walk Algorithms</a><ul>

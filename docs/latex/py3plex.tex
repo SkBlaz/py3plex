@@ -150,7 +150,7 @@ Full NetworkX compatibility
 
 \end{itemize}
 
-\begin{sphinxadmonition}{note}{🔍 DSL: Query Networks Like SQL}
+\begin{sphinxadmonition}{note}{DSL: Query Networks Like SQL}
 
 \sphinxAtStartPar
 The py3plex DSL lets you query networks using intuitive SQL\sphinxhyphen{}like syntax or a type\sphinxhyphen{}safe Python builder API:
@@ -198,7 +198,7 @@ Production pipelines
 \end{itemize}
 
 \sphinxAtStartPar
-📖 See the complete {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} guide for all features!
+See the complete {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} guide for all features!
 \end{sphinxadmonition}
 
 
@@ -1165,7 +1165,7 @@ Bob\PYGZsq{}s activity: 1.000
 \sphinxAtStartPar
 Py3plex features a powerful SQL\sphinxhyphen{}like DSL for querying networks!
 
-\begin{sphinxadmonition}{note}{🔍 DSL Example: Network Queries}
+\begin{sphinxadmonition}{note}{DSL Example: Network Queries}
 
 \sphinxAtStartPar
 Use SQL\sphinxhyphen{}like queries for network exploration:
@@ -1543,7 +1543,7 @@ With community colors:
 \sphinxAtStartPar
 The SQL\sphinxhyphen{}like DSL makes many analysis tasks even simpler:
 
-\begin{sphinxadmonition}{note}{🔍 DSL Example: Quick Analysis}
+\begin{sphinxadmonition}{note}{DSL Example: Quick Analysis}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
@@ -6122,7 +6122,7 @@ Comprehensive how\sphinxhyphen{}to guides for every major feature.
 \sphinxAtStartPar
 This section provides comprehensive how\sphinxhyphen{}to guides for every major py3plex capability.
 
-\begin{sphinxadmonition}{note}{🔍 Featured: DSL Query Language}
+\begin{sphinxadmonition}{note}{Featured: DSL Query Language}
 
 \sphinxAtStartPar
 One of py3plex’s standout features is the \sphinxstylestrong{SQL\sphinxhyphen{}like DSL} for querying networks:
@@ -6214,7 +6214,7 @@ Start with {\hyperref[\detokenize{user_guide/networks::doc}]{\sphinxcrossref{\DU
 \sphinxAtStartPar
 This guide covers everything you need to know about creating, loading, and manipulating multilayer networks in py3plex.
 
-\begin{sphinxadmonition}{note}{🔍 DSL Tip: Query Networks Easily}
+\begin{sphinxadmonition}{note}{DSL Tip: Query Networks Easily}
 
 \sphinxAtStartPar
 Once you’ve created a network, use the DSL to explore it:
@@ -7353,7 +7353,7 @@ Repository: \sphinxurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
 \sphinxAtStartPar
 \sphinxstyleemphasis{How to measure and compare the structure of your multilayer network.}
 
-\begin{sphinxadmonition}{note}{🔍 DSL for Quick Statistics}
+\begin{sphinxadmonition}{note}{DSL for Quick Statistics}
 
 \sphinxAtStartPar
 Compute statistics efficiently with the DSL:
@@ -8296,7 +8296,7 @@ Repository: \sphinxurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
 \sphinxAtStartPar
 \sphinxstyleemphasis{Finding groups that span multiple layers of interaction.}
 
-\begin{sphinxadmonition}{note}{💡 DSL Tip: Filter by Communities}
+\begin{sphinxadmonition}{note}{DSL Tip: Filter by Communities}
 
 \sphinxAtStartPar
 After detecting communities, use DSL to analyze them:
@@ -9483,6 +9483,1218 @@ See {\hyperref[\detokenize{reference/citation_and_acknowledgements::doc}]{\sphin
 \item {} 
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{examples/communities/example\_multilayer\_louvain.py}} — Parameter tuning
+
+\end{itemize}
+
+\sphinxstepscope
+
+
+\subsection{Multilayer Dynamics}
+\label{\detokenize{user_guide/multilayer_dynamics:multilayer-dynamics}}\label{\detokenize{user_guide/multilayer_dynamics::doc}}
+\sphinxAtStartPar
+\sphinxstyleemphasis{Simulating epidemic spread, diffusion, and other dynamical processes on multilayer networks.}
+
+\begin{sphinxadmonition}{note}{🔬 DSL for Dynamics}
+
+\sphinxAtStartPar
+Run dynamics simulations declaratively with the DSL:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{D}\PYG{p}{,} \PYG{n}{SIS}
+
+\PYG{c+c1}{\PYGZsh{} Define and run SIS simulation}
+\PYG{n}{sim} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{D}\PYG{o}{.}\PYG{n}{process}\PYG{p}{(}\PYG{n}{SIS}\PYG{p}{(}\PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{mu}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{initial}\PYG{p}{(}\PYG{n}{infected}\PYG{o}{=}\PYG{l+m+mf}{0.05}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{steps}\PYG{p}{(}\PYG{l+m+mi}{100}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sim}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Peak prevalence: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{o}{.}\PYG{n}{data}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{prevalence}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{max}\PYG{p}{(}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} for complete dynamics DSL documentation!
+\end{sphinxadmonition}
+
+
+\bigskip\hrule\bigskip
+
+
+\sphinxAtStartPar
+Many real\sphinxhyphen{}world phenomena involve \sphinxstylestrong{processes that evolve over time} on network structures. Epidemics spread through contact networks. Information diffuses through social media. Ideas propagate through collaboration networks. \sphinxstylestrong{Multilayer dynamics} capture how these processes unfold when nodes interact through multiple, simultaneous channels.
+
+\sphinxAtStartPar
+This chapter shows you how to:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Simulate \sphinxstylestrong{epidemic dynamics} (SIR, SIS) on multilayer networks
+
+\item {} 
+\sphinxAtStartPar
+Run \sphinxstylestrong{random walks} and analyze exploration patterns
+
+\item {} 
+\sphinxAtStartPar
+Configure \sphinxstylestrong{initial conditions} and \sphinxstylestrong{parameters}
+
+\item {} 
+\sphinxAtStartPar
+Extract and visualize \sphinxstylestrong{simulation results}
+
+\item {} 
+\sphinxAtStartPar
+Understand how \sphinxstylestrong{layer structure affects dynamics}
+
+\end{itemize}
+
+\sphinxAtStartPar
+py3plex provides a clean, object\sphinxhyphen{}oriented API for dynamics that integrates seamlessly with the rest of the library.
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Overview of Dynamics Models}
+\label{\detokenize{user_guide/multilayer_dynamics:overview-of-dynamics-models}}
+\sphinxAtStartPar
+py3plex supports three main classes of dynamics:
+
+\sphinxAtStartPar
+\sphinxstylestrong{Epidemic Models}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{SIR (Susceptible\sphinxhyphen{}Infected\sphinxhyphen{}Recovered)} — Models diseases with lasting immunity (measles, chickenpox)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{SIS (Susceptible\sphinxhyphen{}Infected\sphinxhyphen{}Susceptible)} — Models diseases without immunity (common cold, computer viruses)
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Diffusion Processes}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Random Walk} — Models exploration, search, and diffusion on networks
+
+\end{itemize}
+
+\sphinxAtStartPar
+All models support:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Multilayer networks} — Different interaction contexts (physical, digital, etc.)
+
+\item {} 
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Reproducible simulations} — Seeded random number generation
+
+\item {} 
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Rich output measures} — Prevalence, state counts, trajectories
+
+\item {} 
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Clean API} — Object\sphinxhyphen{}oriented design aligned with best practices
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{SIR Epidemic Dynamics}
+\label{\detokenize{user_guide/multilayer_dynamics:sir-epidemic-dynamics}}
+\sphinxAtStartPar
+The \sphinxstylestrong{SIR model} simulates epidemic spread where infected individuals recover with lasting immunity. This is appropriate for many infectious diseases and for modeling information spread where people don’t “forget” what they’ve learned.
+
+\sphinxAtStartPar
+\sphinxstylestrong{States:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{S (Susceptible)} — Not infected, can become infected
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{I (Infected)} — Currently infected, can transmit to susceptibles
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{R (Recovered)} — Recovered with immunity, cannot be re\sphinxhyphen{}infected
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Parameters:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{beta}} (β) — Transmission rate (probability per contact per time step)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{gamma}} (γ) — Recovery rate (probability of recovery per time step)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{initial\_infected}} — Fraction or number of initially infected nodes
+
+\end{itemize}
+
+
+\paragraph{Basic Example}
+\label{\detokenize{user_guide/multilayer_dynamics:basic-example}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{SIRDynamics}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Create a network}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Create SIR dynamics}
+\PYG{n}{sir} \PYG{o}{=} \PYG{n}{SIRDynamics}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,}              \PYG{c+c1}{\PYGZsh{} Infection probability}
+    \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,}             \PYG{c+c1}{\PYGZsh{} Recovery probability}
+    \PYG{n}{initial\PYGZus{}infected}\PYG{o}{=}\PYG{l+m+mf}{0.1}   \PYG{c+c1}{\PYGZsh{} 10\PYGZpc{} initially infected}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Set seed for reproducibility}
+\PYG{n}{sir}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Run simulation}
+\PYG{n}{results} \PYG{o}{=} \PYG{n}{sir}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Extract measures}
+\PYG{n}{prevalence} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{state\PYGZus{}counts} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{state\PYGZus{}counts}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Peak prevalence: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{prevalence}\PYG{o}{.}\PYG{n}{max}\PYG{p}{(}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Final recovered: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{R}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example Output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Peak prevalence: 35.29\PYGZpc{}
+Final recovered: 30
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The epidemic infects about 88\% of the network before dying out naturally.
+
+
+\paragraph{Multilayer SIR Example}
+\label{\detokenize{user_guide/multilayer_dynamics:multilayer-sir-example}}
+\sphinxAtStartPar
+On multilayer networks, infection can spread through different interaction contexts:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{SIRDynamics}
+
+\PYG{c+c1}{\PYGZsh{} Create two\PYGZhy{}layer network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Add nodes to two layers}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{20}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{physical}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+        \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{digital}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+    \PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Physical layer: local ring connections}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{20}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{\PYGZpc{}} \PYG{l+m+mi}{20}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{physical}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{physical}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Digital layer: random connections (more global)}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{n}{rng} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{default\PYGZus{}rng}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{\PYGZus{}} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{30}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{i}\PYG{p}{,} \PYG{n}{j} \PYG{o}{=} \PYG{n}{rng}\PYG{o}{.}\PYG{n}{integers}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{20}\PYG{p}{)}\PYG{p}{,} \PYG{n}{rng}\PYG{o}{.}\PYG{n}{integers}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{20}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{i} \PYG{o}{!=} \PYG{n}{j}\PYG{p}{:}
+        \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}
+            \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{j}\PYG{p}{,}
+            \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{digital}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{digital}\PYG{l+s+s1}{\PYGZsq{}}
+        \PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Run SIR dynamics}
+\PYG{n}{sir} \PYG{o}{=} \PYG{n}{SIRDynamics}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+\PYG{n}{sir}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{results} \PYG{o}{=} \PYG{n}{sir}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Analyze results}
+\PYG{n}{prevalence} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{state\PYGZus{}counts} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{state\PYGZus{}counts}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Peak prevalence: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{prevalence}\PYG{o}{.}\PYG{n}{max}\PYG{p}{(}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ at step }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{prevalence}\PYG{o}{.}\PYG{n}{argmax}\PYG{p}{(}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Attack rate: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{R}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{/}\PYG{+w}{ }\PYG{l+m+mi}{40}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example Output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Peak prevalence: 30.00\PYGZpc{} at step 10
+Attack rate: 55.00\PYGZpc{}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The multilayer structure allows faster spread through the digital layer while maintaining local spread through physical contacts.
+
+
+\paragraph{Understanding SIR Parameters}
+\label{\detokenize{user_guide/multilayer_dynamics:understanding-sir-parameters}}
+\sphinxAtStartPar
+The \sphinxstylestrong{basic reproduction number} R\(\sb{\text{0}}\) determines epidemic outcome:
+\begin{equation*}
+\begin{split}R_0 = \\frac{\\beta}{\\gamma} \\times \\langle k \\rangle\end{split}
+\end{equation*}
+\sphinxAtStartPar
+where \(\\langle k \\rangle\) is the average degree.
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{R\(\sb{\text{0}}\) \textgreater{} 1}: Epidemic spreads (each infected person infects \textgreater{}1 others on average)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{R\(\sb{\text{0}}\) \textless{} 1}: Epidemic dies out quickly
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{R\(\sb{\text{0}}\) ≈ 1}: Epidemic threshold — critical point
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Parameter Effects:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Compare different parameters}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{n}{params} \PYG{o}{=} \PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{beta}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{gamma}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{label}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Low transmission (R\(\sb{\text{0}}\)≈9)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{beta}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.4}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{gamma}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{label}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{High transmission (R\(\sb{\text{0}}\)≈18)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{beta}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{gamma}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.05}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{label}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Slow recovery}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{beta}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{gamma}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{label}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Fast recovery}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{p}{]}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{k}{for} \PYG{n}{p} \PYG{o+ow}{in} \PYG{n}{params}\PYG{p}{:}
+    \PYG{n}{sir} \PYG{o}{=} \PYG{n}{SIRDynamics}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{n}{p}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{beta}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{n}{p}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{gamma}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}
+                     \PYG{n}{initial\PYGZus{}infected}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+    \PYG{n}{sir}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+    \PYG{n}{results} \PYG{o}{=} \PYG{n}{sir}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{50}\PYG{p}{)}
+    \PYG{n}{prevalence} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{prevalence}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{n}{p}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{label}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{linewidth}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Time step}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Prevalence (fraction infected)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SIR Dynamics with Different Parameters}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Output Characteristics:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Higher β}: Faster, higher peak, larger attack rate
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Higher γ}: Faster recovery, lower peak, smaller attack rate
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Slow recovery}: Epidemic lasts longer, more sustained infections
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{SIS Epidemic Dynamics}
+\label{\detokenize{user_guide/multilayer_dynamics:sis-epidemic-dynamics}}
+\sphinxAtStartPar
+The \sphinxstylestrong{SIS model} simulates diseases without lasting immunity — individuals recover but can be immediately re\sphinxhyphen{}infected. This creates an \sphinxstylestrong{endemic equilibrium} where infection persists indefinitely (unlike SIR which always dies out).
+
+\sphinxAtStartPar
+\sphinxstylestrong{States:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{S (Susceptible)} — Not infected, can become infected
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{I (Infected)} — Currently infected, can transmit and recover
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{No recovered state} — recovered individuals return to susceptible.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Parameters:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{beta}} (β) — Transmission rate
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{gamma}} (γ) — Recovery rate
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{initial\_infected}} — Fraction or number initially infected
+
+\end{itemize}
+
+
+\paragraph{Basic Example}
+\label{\detokenize{user_guide/multilayer_dynamics:id1}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{SISDynamics}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Create a small\PYGZhy{}world network}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{watts\PYGZus{}strogatz\PYGZus{}graph}\PYG{p}{(}\PYG{n}{n}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{6}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Create SIS dynamics}
+\PYG{n}{sis} \PYG{o}{=} \PYG{n}{SISDynamics}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,}      \PYG{c+c1}{\PYGZsh{} Infection rate}
+    \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,}     \PYG{c+c1}{\PYGZsh{} Recovery rate}
+    \PYG{n}{initial\PYGZus{}infected}\PYG{o}{=}\PYG{l+m+mf}{0.05}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Set seed and run}
+\PYG{n}{sis}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{results} \PYG{o}{=} \PYG{n}{sis}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{200}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Extract measures}
+\PYG{n}{prevalence} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Endemic equilibrium (mean of last 50 steps)}
+\PYG{n}{endemic\PYGZus{}level} \PYG{o}{=} \PYG{n}{prevalence}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{50}\PYG{p}{:}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Endemic prevalence: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{endemic\PYGZus{}level}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Std deviation: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{prevalence}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{50}\PYG{p}{:}\PYG{p}{]}\PYG{o}{.}\PYG{n}{std}\PYG{p}{(}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example Output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Endemic prevalence: 89.48\PYGZpc{}
+Std deviation: 2.77\PYGZpc{}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The infection reaches a \sphinxstylestrong{stable endemic state} where it persists indefinitely, unlike SIR.
+
+
+\paragraph{SIS vs SIR Comparison}
+\label{\detokenize{user_guide/multilayer_dynamics:sis-vs-sir-comparison}}
+\sphinxAtStartPar
+The key difference: \sphinxstylestrong{SIS sustains infection, SIR dies out}:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{SISDynamics}\PYG{p}{,} \PYG{n}{SIRDynamics}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} SIS dynamics}
+\PYG{n}{sis} \PYG{o}{=} \PYG{n}{SISDynamics}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{initial\PYGZus{}infected}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+\PYG{n}{sis}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{sis\PYGZus{}results} \PYG{o}{=} \PYG{n}{sis}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+\PYG{n}{sis\PYGZus{}prevalence} \PYG{o}{=} \PYG{n}{sis\PYGZus{}results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} SIR dynamics}
+\PYG{n}{sir} \PYG{o}{=} \PYG{n}{SIRDynamics}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{initial\PYGZus{}infected}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+\PYG{n}{sir}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{sir\PYGZus{}results} \PYG{o}{=} \PYG{n}{sir}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+\PYG{n}{sir\PYGZus{}prevalence} \PYG{o}{=} \PYG{n}{sir\PYGZus{}results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Plot comparison}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{sis\PYGZus{}prevalence}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SIS (no immunity)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+         \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{red}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{linewidth}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{sir\PYGZus{}prevalence}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SIR (with immunity)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+         \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{blue}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{linewidth}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Time step}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Prevalence}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SIS vs SIR Epidemic Dynamics}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Output Characteristics:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{SIS}: Initial outbreak \(\rightarrow\) settles to endemic equilibrium \(\rightarrow\) persists indefinitely
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{SIR}: Initial outbreak \(\rightarrow\) peak \(\rightarrow\) gradual decline \(\rightarrow\) complete extinction
+
+\end{itemize}
+
+
+\paragraph{Endemic Threshold}
+\label{\detokenize{user_guide/multilayer_dynamics:endemic-threshold}}
+\sphinxAtStartPar
+SIS has an \sphinxstylestrong{epidemic threshold} below which infection dies out:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{G}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}edges}\PYG{p}{(}\PYG{p}{)} \PYG{o}{/} \PYG{n}{G}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{n}{gamma} \PYG{o}{=} \PYG{l+m+mf}{0.1}
+\PYG{n}{beta\PYGZus{}values} \PYG{o}{=} \PYG{p}{[}\PYG{l+m+mf}{0.01}\PYG{p}{,} \PYG{l+m+mf}{0.02}\PYG{p}{,} \PYG{l+m+mf}{0.03}\PYG{p}{,} \PYG{l+m+mf}{0.05}\PYG{p}{,} \PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{l+m+mf}{0.3}\PYG{p}{]}
+
+\PYG{k}{for} \PYG{n}{beta} \PYG{o+ow}{in} \PYG{n}{beta\PYGZus{}values}\PYG{p}{:}
+    \PYG{n}{sis} \PYG{o}{=} \PYG{n}{SISDynamics}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{n}{beta}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{n}{gamma}\PYG{p}{,} \PYG{n}{initial\PYGZus{}infected}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+    \PYG{n}{sis}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+    \PYG{n}{results} \PYG{o}{=} \PYG{n}{sis}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{200}\PYG{p}{)}
+    \PYG{n}{prevalence} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} Endemic level (mean of last 50 steps)}
+    \PYG{n}{endemic} \PYG{o}{=} \PYG{n}{prevalence}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{50}\PYG{p}{:}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{R0} \PYG{o}{=} \PYG{n}{beta} \PYG{o}{/} \PYG{n}{gamma} \PYG{o}{*} \PYG{n}{avg\PYGZus{}degree}
+    \PYG{n}{status} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{endemic}\PYG{l+s+s2}{\PYGZdq{}} \PYG{k}{if} \PYG{n}{endemic} \PYG{o}{\PYGZgt{}} \PYG{l+m+mf}{0.01} \PYG{k}{else} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{extinct}\PYG{l+s+s2}{\PYGZdq{}}
+
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{β=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{beta}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{, R\(\sb{\text{0}}\)=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{R0}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{endemic}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ (}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{status}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example Output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+β=0.01, R\(\sb{\text{0}}\)=0.46: 0.00\PYGZpc{} (extinct)
+β=0.02, R\(\sb{\text{0}}\)=0.92: 0.00\PYGZpc{} (extinct)
+β=0.03, R\(\sb{\text{0}}\)=1.38: 27.35\PYGZpc{} (endemic)
+β=0.05, R\(\sb{\text{0}}\)=2.29: 56.41\PYGZpc{} (endemic)
+β=0.10, R\(\sb{\text{0}}\)=4.59: 75.00\PYGZpc{} (endemic)
+β=0.20, R\(\sb{\text{0}}\)=9.18: 83.06\PYGZpc{} (endemic)
+β=0.30, R\(\sb{\text{0}}\)=13.76: 86.24\PYGZpc{} (endemic)
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Threshold occurs at R\(\sb{\text{0}}\) ≈ 1} (between β=0.02 and β=0.03 in this network).
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Random Walk Dynamics}
+\label{\detokenize{user_guide/multilayer_dynamics:random-walk-dynamics}}
+\sphinxAtStartPar
+Random walks simulate \sphinxstylestrong{exploration} and \sphinxstylestrong{diffusion} on networks. At each step, a walker moves to a random neighbor (or stays in place with some probability).
+
+\sphinxAtStartPar
+\sphinxstylestrong{Use cases:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Computing \sphinxstylestrong{PageRank} and other centrality measures
+
+\item {} 
+\sphinxAtStartPar
+Modeling \sphinxstylestrong{search} and \sphinxstylestrong{navigation}
+
+\item {} 
+\sphinxAtStartPar
+Analyzing \sphinxstylestrong{community structure} through exploration patterns
+
+\item {} 
+\sphinxAtStartPar
+Understanding \sphinxstylestrong{information diffusion}
+
+\end{itemize}
+
+
+\paragraph{Basic Example}
+\label{\detokenize{user_guide/multilayer_dynamics:id2}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{RandomWalkDynamics}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Create network}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Create random walk starting at node 0}
+\PYG{n}{walk} \PYG{o}{=} \PYG{n}{RandomWalkDynamics}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{start\PYGZus{}node}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,}
+    \PYG{n}{lazy\PYGZus{}probability}\PYG{o}{=}\PYG{l+m+mf}{0.1}  \PYG{c+c1}{\PYGZsh{} 10\PYGZpc{} chance to stay in place}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Set seed and run}
+\PYG{n}{walk}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{results} \PYG{o}{=} \PYG{n}{walk}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{1000}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Get trajectory}
+\PYG{n}{trajectory} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{trajectory}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Walk length: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{trajectory}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Start: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{trajectory}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{, End: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{trajectory}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Count visits}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{collections}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Counter}
+\PYG{n}{visits} \PYG{o}{=} \PYG{n}{Counter}\PYG{p}{(}\PYG{n}{trajectory}\PYG{p}{)}
+\PYG{n}{top\PYGZus{}5} \PYG{o}{=} \PYG{n}{visits}\PYG{o}{.}\PYG{n}{most\PYGZus{}common}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Most visited nodes:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{node}\PYG{p}{,} \PYG{n}{count} \PYG{o+ow}{in} \PYG{n}{top\PYGZus{}5}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  Node }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ visits}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example Output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Walk length: 1001
+Start: 0, End: 2
+Most visited nodes:
+  Node 33: 87 visits
+  Node 0: 76 visits
+  Node 2: 64 visits
+  Node 1: 58 visits
+  Node 32: 51 visits
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+High\sphinxhyphen{}degree nodes (hubs) get visited more frequently due to more incoming edges.
+
+
+\paragraph{Multilayer Random Walk}
+\label{\detokenize{user_guide/multilayer_dynamics:multilayer-random-walk}}
+\sphinxAtStartPar
+Random walks on multilayer networks can \sphinxstylestrong{switch between layers} at inter\sphinxhyphen{}layer connections:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{RandomWalkDynamics}
+
+\PYG{c+c1}{\PYGZsh{} Create two\PYGZhy{}layer network with different structures}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+
+\PYG{n}{n} \PYG{o}{=} \PYG{l+m+mi}{15}
+\PYG{n}{nodes} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{nodes}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ring}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    \PYG{n}{nodes}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{star}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{n}{nodes}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Layer 1: Ring topology}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{\PYGZpc{}} \PYG{n}{n}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ring}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ring}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Layer 2: Star topology (node 0 is hub)}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{n}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{star}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{star}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Inter\PYGZhy{}layer connections}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}\PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{i}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{source\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ring}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{target\PYGZus{}type}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{star}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{p}{\PYGZcb{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Run random walk}
+\PYG{n}{walk} \PYG{o}{=} \PYG{n}{RandomWalkDynamics}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{start\PYGZus{}node}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ring}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{walk}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{results} \PYG{o}{=} \PYG{n}{walk}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{1000}\PYG{p}{)}
+\PYG{n}{trajectory} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{trajectory}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Analyze layer switching}
+\PYG{n}{switches} \PYG{o}{=} \PYG{l+m+mi}{0}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{trajectory}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{if} \PYG{n}{trajectory}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{!=} \PYG{n}{trajectory}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{:}
+        \PYG{n}{switches} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Layer switches: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{switches}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Switch rate: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{switches}\PYG{+w}{ }\PYG{o}{/}\PYG{+w}{ }\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{trajectory}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example Output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Layer switches: 348
+Switch rate: 34.77\PYGZpc{}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The walker frequently moves between layers, exploring both network structures.
+
+
+\paragraph{Lazy Random Walks}
+\label{\detokenize{user_guide/multilayer_dynamics:lazy-random-walks}}
+\sphinxAtStartPar
+The \sphinxstylestrong{lazy probability} controls how often the walker stays in place:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{path\PYGZus{}graph}\PYG{p}{(}\PYG{l+m+mi}{20}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Simple chain}
+
+\PYG{n}{lazy\PYGZus{}probs} \PYG{o}{=} \PYG{p}{[}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{l+m+mf}{0.8}\PYG{p}{]}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{k}{for} \PYG{n}{lazy\PYGZus{}p} \PYG{o+ow}{in} \PYG{n}{lazy\PYGZus{}probs}\PYG{p}{:}
+    \PYG{n}{walk} \PYG{o}{=} \PYG{n}{RandomWalkDynamics}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{start\PYGZus{}node}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+                              \PYG{n}{lazy\PYGZus{}probability}\PYG{o}{=}\PYG{n}{lazy\PYGZus{}p}\PYG{p}{)}
+    \PYG{n}{walk}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+    \PYG{n}{results} \PYG{o}{=} \PYG{n}{walk}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+    \PYG{n}{trajectory} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{trajectory}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{trajectory}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Lazy p=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{lazy\PYGZus{}p}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+            \PYG{n}{linewidth}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.7}\PYG{p}{)}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Time step}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Node position}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Random Walk with Different Lazy Probabilities}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Output Characteristics:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{lazy\_p = 0.0}: Active walk, explores quickly
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{lazy\_p = 0.5}: Balanced, moderate exploration
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{lazy\_p = 0.8}: Mostly stationary, slow exploration
+
+\end{itemize}
+
+\sphinxAtStartPar
+Higher lazy probability \(\rightarrow\) slower diffusion, more time at current location.
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Working with Results}
+\label{\detokenize{user_guide/multilayer_dynamics:working-with-results}}
+\sphinxAtStartPar
+All dynamics simulations return a \sphinxcode{\sphinxupquote{DynamicsResult}} object with rich output measures.
+
+
+\paragraph{Available Measures}
+\label{\detokenize{user_guide/multilayer_dynamics:available-measures}}
+\sphinxAtStartPar
+\sphinxstylestrong{Epidemic Models (SIR, SIS):}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{"prevalence"}} — Fraction of nodes infected at each time step (array)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{"state\_counts"}} — Count of nodes in each state over time (dict of arrays)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{"trajectory"}} — Full state history (list of dicts mapping node \(\rightarrow\) state)
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Random Walk:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{"trajectory"}} — Sequence of visited nodes (list)
+
+\end{itemize}
+
+
+\paragraph{Extracting Measures}
+\label{\detokenize{user_guide/multilayer_dynamics:extracting-measures}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Run simulation}
+\PYG{n}{sir} \PYG{o}{=} \PYG{n}{SIRDynamics}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+\PYG{n}{sir}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{results} \PYG{o}{=} \PYG{n}{sir}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Get prevalence over time}
+\PYG{n}{prevalence} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Get state counts}
+\PYG{n}{state\PYGZus{}counts} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{state\PYGZus{}counts}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{S} \PYG{o}{=} \PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{S}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} Susceptible over time}
+\PYG{n}{I} \PYG{o}{=} \PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{I}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} Infected over time}
+\PYG{n}{R} \PYG{o}{=} \PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{R}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} Recovered over time}
+
+\PYG{c+c1}{\PYGZsh{} Get full trajectory (memory intensive for large networks)}
+\PYG{n}{trajectory} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{trajectory}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} trajectory[t] is dict: \PYGZob{}node: state\PYGZcb{} at time t}
+\end{sphinxVerbatim}
+
+
+\paragraph{Converting to Pandas}
+\label{\detokenize{user_guide/multilayer_dynamics:converting-to-pandas}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Convert to pandas DataFrame}
+\PYG{n}{df\PYGZus{}dict} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} For epidemic models, returns dict of DataFrames}
+\PYG{n}{prevalence\PYGZus{}df} \PYG{o}{=} \PYG{n}{df\PYGZus{}dict}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{prevalence}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+\PYG{n}{state\PYGZus{}counts\PYGZus{}df} \PYG{o}{=} \PYG{n}{df\PYGZus{}dict}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{state\PYGZus{}counts}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZsh{} Export to CSV}
+\PYG{n}{prevalence\PYGZus{}df}\PYG{o}{.}\PYG{n}{to\PYGZus{}csv}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence.csv}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{state\PYGZus{}counts\PYGZus{}df}\PYG{o}{.}\PYG{n}{to\PYGZus{}csv}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{state\PYGZus{}counts.csv}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Visualization}
+\label{\detokenize{user_guide/multilayer_dynamics:visualization}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{c+c1}{\PYGZsh{} Run SIR simulation}
+\PYG{n}{sir} \PYG{o}{=} \PYG{n}{SIRDynamics}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{initial\PYGZus{}infected}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+\PYG{n}{sir}\PYG{o}{.}\PYG{n}{set\PYGZus{}seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{results} \PYG{o}{=} \PYG{n}{sir}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+
+\PYG{n}{prevalence} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{state\PYGZus{}counts} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{state\PYGZus{}counts}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Create figure with two subplots}
+\PYG{n}{fig}\PYG{p}{,} \PYG{p}{(}\PYG{n}{ax1}\PYG{p}{,} \PYG{n}{ax2}\PYG{p}{)} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{14}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Plot state counts}
+\PYG{n}{steps} \PYG{o}{=} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{S}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{ax1}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{steps}\PYG{p}{,} \PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{S}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Susceptible}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+        \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{blue}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{linewidth}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{ax1}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{steps}\PYG{p}{,} \PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{I}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Infected}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+        \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{red}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{linewidth}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{ax1}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{steps}\PYG{p}{,} \PYG{n}{state\PYGZus{}counts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{R}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Recovered}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+        \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{green}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{linewidth}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{ax1}\PYG{o}{.}\PYG{n}{set\PYGZus{}xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Time step}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax1}\PYG{o}{.}\PYG{n}{set\PYGZus{}ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Number of nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax1}\PYG{o}{.}\PYG{n}{set\PYGZus{}title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SIR Epidemic Dynamics}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax1}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{ax1}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Plot prevalence}
+\PYG{n}{ax2}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{steps}\PYG{p}{,} \PYG{n}{prevalence}\PYG{p}{,} \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{red}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{linewidth}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{ax2}\PYG{o}{.}\PYG{n}{fill\PYGZus{}between}\PYG{p}{(}\PYG{n}{steps}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{prevalence}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{red}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax2}\PYG{o}{.}\PYG{n}{set\PYGZus{}xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Time step}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax2}\PYG{o}{.}\PYG{n}{set\PYGZus{}ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Prevalence (fraction infected)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax2}\PYG{o}{.}\PYG{n}{set\PYGZus{}title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Infection Prevalence Over Time}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax2}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{)}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{tight\PYGZus{}layout}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+This produces publication\sphinxhyphen{}ready epidemic curves showing the full dynamics.
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Mathematical Formalism}
+\label{\detokenize{user_guide/multilayer_dynamics:mathematical-formalism}}
+
+\paragraph{SIR Model}
+\label{\detokenize{user_guide/multilayer_dynamics:sir-model}}
+\sphinxAtStartPar
+\sphinxstylestrong{Discrete\sphinxhyphen{}time update rules} (per time step):
+
+\sphinxAtStartPar
+For each susceptible node \sphinxstyleemphasis{i}:
+\begin{equation*}
+\begin{split}P(S_i \\rightarrow I_i) = 1 - \\prod_{j \\in N(i)} (1 - \\beta)^{\\mathbb{1}_{I_j}}\end{split}
+\end{equation*}
+\sphinxAtStartPar
+where \(N(i)\) are neighbors and \(\\mathbb{1}_{I_j}\) indicates if neighbor \sphinxstyleemphasis{j} is infected.
+
+\sphinxAtStartPar
+For each infected node \sphinxstyleemphasis{i}:
+\begin{equation*}
+\begin{split}P(I_i \\rightarrow R_i) = \\gamma\end{split}
+\end{equation*}
+\sphinxAtStartPar
+\sphinxstylestrong{Continuous\sphinxhyphen{}time interpretation:}
+
+\sphinxAtStartPar
+Transition rates: \(S \\xrightarrow{\\beta \\lambda_i} I \\xrightarrow{\\gamma} R\)
+
+\sphinxAtStartPar
+where \(\\lambda_i = \\sum_{j \\in N(i)} \\mathbb{1}_{I_j}\) is the number of infected neighbors.
+
+
+\paragraph{SIS Model}
+\label{\detokenize{user_guide/multilayer_dynamics:sis-model}}
+\sphinxAtStartPar
+\sphinxstylestrong{Discrete\sphinxhyphen{}time update rules:}
+
+\sphinxAtStartPar
+Same infection rule as SIR, but recovery returns to susceptible:
+\begin{equation*}
+\begin{split}P(I_i \\rightarrow S_i) = \\gamma\end{split}
+\end{equation*}
+\sphinxAtStartPar
+\sphinxstylestrong{Endemic equilibrium} (mean\sphinxhyphen{}field approximation):
+\begin{equation*}
+\begin{split}\\rho^* = 1 - \\frac{\\gamma}{\\beta \\langle k \\rangle}\end{split}
+\end{equation*}
+\sphinxAtStartPar
+where \(\\rho^*\) is endemic prevalence and \(\\langle k \\rangle\) is average degree.
+
+
+\paragraph{Random Walk}
+\label{\detokenize{user_guide/multilayer_dynamics:random-walk}}
+\sphinxAtStartPar
+\sphinxstylestrong{Transition probability} from node \sphinxstyleemphasis{i} to node \sphinxstyleemphasis{j}:
+\begin{equation*}
+\begin{split}P(i \\rightarrow j) =
+\\begin{cases}
+p_{\\text{lazy}} & \\text{if } j = i \\\\
+\\frac{1 - p_{\\text{lazy}}}{\\text{degree}(i)} & \\text{if } j \\in N(i) \\\\
+0 & \\text{otherwise}
+\\end{cases}\end{split}
+\end{equation*}
+\sphinxAtStartPar
+\sphinxstylestrong{Stationary distribution} (long\sphinxhyphen{}run proportion of time at each node):
+\begin{equation*}
+\begin{split}\\pi_i \\propto \\text{degree}(i)\end{split}
+\end{equation*}
+\sphinxAtStartPar
+High\sphinxhyphen{}degree nodes are visited more frequently.
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Advanced Topics}
+\label{\detokenize{user_guide/multilayer_dynamics:advanced-topics}}
+
+\paragraph{Multilayer Coupling}
+\label{\detokenize{user_guide/multilayer_dynamics:multilayer-coupling}}
+\sphinxAtStartPar
+In multilayer networks, nodes can have \sphinxstylestrong{different infection states in different layers} (weak coupling) or \sphinxstylestrong{share a single state across all layers} (strong coupling).
+
+\sphinxAtStartPar
+py3plex uses \sphinxstylestrong{strong coupling by default} — each node has one state shared across all its layer\sphinxhyphen{}specific replicas. This is appropriate for most epidemic models (a person is either infected or not, regardless of which social context you observe them in).
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Strong coupling (default): node state shared across layers}
+\PYG{n}{sir} \PYG{o}{=} \PYG{n}{SIRDynamics}\PYG{p}{(}\PYG{n}{multilayer\PYGZus{}network}\PYG{p}{,} \PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Infection can spread through any layer}
+\PYG{c+c1}{\PYGZsh{} Recovery is per\PYGZhy{}node, not per\PYGZhy{}layer}
+\end{sphinxVerbatim}
+
+
+\paragraph{Time\sphinxhyphen{}Varying Parameters}
+\label{\detokenize{user_guide/multilayer_dynamics:time-varying-parameters}}
+\sphinxAtStartPar
+Parameters can be \sphinxstylestrong{functions of time} for more realistic models:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Seasonal variation in transmission}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{seasonal\PYGZus{}beta}\PYG{p}{(}\PYG{n}{t}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{math}
+    \PYG{k}{return} \PYG{l+m+mf}{0.3} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{+} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{math}\PYG{o}{.}\PYG{n}{sin}\PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{math}\PYG{o}{.}\PYG{n}{pi} \PYG{o}{*} \PYG{n}{t} \PYG{o}{/} \PYG{l+m+mi}{365}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Note: Advanced feature, check core module support}
+\PYG{c+c1}{\PYGZsh{} sir = SIRDynamics(G, beta=seasonal\PYGZus{}beta, gamma=0.1)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Heterogeneous Parameters}
+\label{\detokenize{user_guide/multilayer_dynamics:heterogeneous-parameters}}
+\sphinxAtStartPar
+Different nodes can have different recovery rates:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{c+c1}{\PYGZsh{} Assign random recovery rates}
+\PYG{n}{n\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{G}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{recovery\PYGZus{}rates} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{(}\PYG{l+m+mf}{0.05}\PYG{p}{,} \PYG{l+m+mf}{0.15}\PYG{p}{,} \PYG{n}{n\PYGZus{}nodes}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Note: Advanced feature, check core module support}
+\PYG{c+c1}{\PYGZsh{} sir = SIRDynamics(G, beta=0.3, gamma=recovery\PYGZus{}rates)}
+\end{sphinxVerbatim}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Performance Considerations}
+\label{\detokenize{user_guide/multilayer_dynamics:performance-considerations}}
+\sphinxAtStartPar
+\sphinxstylestrong{Simulation speed} depends on:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Network size}: Larger networks take longer
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Number of steps}: More steps = more computation
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Trajectory storage}: Storing full state history uses memory
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Tips for efficiency:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} For large networks, avoid storing full trajectory}
+\PYG{n}{results} \PYG{o}{=} \PYG{n}{sir}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Only extract measures you need}
+\PYG{n}{prevalence} \PYG{o}{=} \PYG{n}{results}\PYG{o}{.}\PYG{n}{get\PYGZus{}measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Lightweight}
+\PYG{c+c1}{\PYGZsh{} trajectory = results.get\PYGZus{}measure(\PYGZdq{}trajectory\PYGZdq{})  \PYGZsh{} Heavy for large networks}
+
+\PYG{c+c1}{\PYGZsh{} Use moderate step counts for exploration}
+\PYG{c+c1}{\PYGZsh{} Refine with more steps once parameters are tuned}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Typical performance} (on modern laptop):
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Network with 1000 nodes, 100 steps: \textasciitilde{}1 second
+
+\item {} 
+\sphinxAtStartPar
+Network with 10,000 nodes, 100 steps: \textasciitilde{}10 seconds
+
+\item {} 
+\sphinxAtStartPar
+Network with 100,000 nodes, 100 steps: \textasciitilde{}2 minutes
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{DSL Integration}
+\label{\detokenize{user_guide/multilayer_dynamics:dsl-integration}}
+\sphinxAtStartPar
+The {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} provides declarative syntax for dynamics:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dynamics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{D}\PYG{p}{,} \PYG{n}{SIS}\PYG{p}{,} \PYG{n}{SIR}\PYG{p}{,} \PYG{n}{RandomWalk}
+
+\PYG{c+c1}{\PYGZsh{} Define simulation}
+\PYG{n}{sim} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{D}\PYG{o}{.}\PYG{n}{process}\PYG{p}{(}\PYG{n}{SIS}\PYG{p}{(}\PYG{n}{beta}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{mu}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{)}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{initial}\PYG{p}{(}\PYG{n}{infected}\PYG{o}{=}\PYG{l+m+mf}{0.05}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{steps}\PYG{p}{(}\PYG{l+m+mi}{100}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{measure}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{prevalence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{incidence}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{replicates}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Run 10 independent trials}
+     \PYG{o}{.}\PYG{n}{seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Execute}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{sim}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Aggregate across replicates}
+\PYG{n}{mean\PYGZus{}prevalence} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{data}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{prevalence}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{n}{std\PYGZus{}prevalence} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{data}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{prevalence}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{std}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{See also:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} — Complete DSL documentation
+
+\item {} 
+\sphinxAtStartPar
+\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../../../book/part3\_dsl/chapter10\_advanced\_queries\_workflows}}} — Advanced dynamics DSL with formalism
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Examples and Tutorials}
+\label{\detokenize{user_guide/multilayer_dynamics:examples-and-tutorials}}
+\sphinxAtStartPar
+\sphinxstylestrong{Working examples} in \sphinxcode{\sphinxupquote{examples/dynamics/}}:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sir\_epidemic.py}} — Complete SIR epidemic simulation with multilayer networks and parameter comparison
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{sis\_dynamics.py}} — SIS dynamics, endemic equilibrium, threshold analysis
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{random\_walk.py}} — Random walks on multilayer networks, layer switching, hitting times
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Run an example:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+python\PYG{+w}{ }examples/dynamics/sir\PYGZus{}epidemic.py
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Additional resources:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/network\_analysis/example\_dsl\_dynamics.py}} — Dynamics using DSL
+
+\item {} 
+\sphinxAtStartPar
+\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../sir\_epidemic\_simulator}}} — Detailed SIR epidemic documentation
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Key Takeaways}
+\label{\detokenize{user_guide/multilayer_dynamics:key-takeaways}}
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Three dynamics models}: SIR (with immunity), SIS (without immunity), RandomWalk (diffusion)
+
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Clean API}: \sphinxcode{\sphinxupquote{DynamicsClass(network, params).set\_seed(seed).run(steps)}}
+
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Rich outputs}: Prevalence, state counts, trajectories via \sphinxcode{\sphinxupquote{results.get\_measure()}}
+
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Multilayer support}: Dynamics spread through multiple interaction contexts
+
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Reproducible}: Always use \sphinxcode{\sphinxupquote{.set\_seed()}} for deterministic results
+
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Tunable parameters}: Adjust β, γ to model different scenarios
+
+\sphinxAtStartPar
+✅ \sphinxstylestrong{Visualization ready}: Extract numpy arrays or pandas DataFrames for plotting
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Next Steps}
+\label{\detokenize{user_guide/multilayer_dynamics:next-steps}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Experiment with parameters}: How does R\(\sb{\text{0}}\) affect your specific network?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Compare layer effects}: Run dynamics on single layers vs full multilayer network
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Analyze real data}: Apply to your domain (social networks, biological systems, etc.)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Combine with DSL}: Use declarative syntax for complex workflows
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Read formalism}: See book chapters for mathematical foundations
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Related documentation:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} — Query and dynamics DSL
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/statistics::doc}]{\sphinxcrossref{\DUrole{doc}{Network Statistics}}}} — Network statistics and measures
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/community_detection::doc}]{\sphinxcrossref{\DUrole{doc}{Community Detection}}}} — Finding communities
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/visualization::doc}]{\sphinxcrossref{\DUrole{doc}{Visualization}}}} — Plotting networks and results
 
 \end{itemize}
 
@@ -10874,7 +12086,7 @@ Repository: \sphinxurl{https://github.com/SkBlaz/py3plex}
 \sphinxAtStartPar
 py3plex provides a comprehensive I/O system for reading and writing multilayer graphs in various formats. The system is designed to be extensible, efficient, and easy to use.
 
-\begin{sphinxadmonition}{note}{🔍 DSL Example: Export Query Results}
+\begin{sphinxadmonition}{note}{DSL Example: Export Query Results}
 
 \sphinxAtStartPar
 DSL makes it easy to export analysis results:
@@ -11486,7 +12698,7 @@ Complete examples are available in \sphinxcode{\sphinxupquote{examples/io\_and\_
 \sphinxAtStartPar
 \sphinxstyleemphasis{From hairball to insight: making multilayer networks visible.}
 
-\begin{sphinxadmonition}{note}{💡 DSL Tip: Filter Before Visualizing}
+\begin{sphinxadmonition}{note}{DSL Tip: Filter Before Visualizing}
 
 \sphinxAtStartPar
 Use DSL to create focused visualizations:
@@ -17458,7 +18670,7 @@ You’re integrating with pandas workflows
 This guide provides \sphinxstylestrong{practical recipes} for \sphinxstylestrong{common analysis workflows} in py3plex.
 Each recipe is a \sphinxstylestrong{complete, ready\sphinxhyphen{}to\sphinxhyphen{}use solution} for a real\sphinxhyphen{}world task.
 
-\begin{sphinxadmonition}{note}{🔍 DSL for Rapid Analysis}
+\begin{sphinxadmonition}{note}{DSL for Rapid Analysis}
 
 \sphinxAtStartPar
 Many recipes can be expressed concisely using the DSL:
@@ -19008,7 +20220,7 @@ The py3plex DSL provides powerful, concise syntax for network queries. These rec
 \sphinxAtStartPar
 \sphinxstylestrong{Task:} Find and rank influential nodes across layers using the DSL.
 
-\begin{sphinxadmonition}{note}{🔍 DSL Example: Hub Identification}
+\begin{sphinxadmonition}{note}{DSL Example: Hub Identification}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
@@ -19045,7 +20257,7 @@ The py3plex DSL provides powerful, concise syntax for network queries. These rec
 \sphinxAtStartPar
 \sphinxstylestrong{Task:} Compare network structure across different layers using DSL.
 
-\begin{sphinxadmonition}{note}{🔍 DSL Example: Layer Comparison}
+\begin{sphinxadmonition}{note}{DSL Example: Layer Comparison}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
@@ -19089,7 +20301,7 @@ The py3plex DSL provides powerful, concise syntax for network queries. These rec
 \sphinxAtStartPar
 \sphinxstylestrong{Task:} Complex multi\sphinxhyphen{}criteria filtering with automated export.
 
-\begin{sphinxadmonition}{note}{🔍 DSL Example: Advanced Filtering}
+\begin{sphinxadmonition}{note}{DSL Example: Advanced Filtering}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
@@ -19128,7 +20340,7 @@ The py3plex DSL provides powerful, concise syntax for network queries. These rec
 \sphinxAtStartPar
 \sphinxstylestrong{Task:} Create reusable query templates for systematic analysis.
 
-\begin{sphinxadmonition}{note}{💡 DSL Example: Query Templates}
+\begin{sphinxadmonition}{note}{DSL Example: Query Templates}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}\PYG{p}{,} \PYG{n}{Param}
@@ -19173,7 +20385,7 @@ The py3plex DSL provides powerful, concise syntax for network queries. These rec
 \sphinxAtStartPar
 \sphinxstylestrong{Task:} Optimize queries before execution on large networks.
 
-\begin{sphinxadmonition}{note}{💡 DSL Example: Query Optimization}
+\begin{sphinxadmonition}{note}{DSL Example: Query Optimization}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
@@ -19225,7 +20437,7 @@ The py3plex DSL provides powerful, concise syntax for network queries. These rec
 \sphinxAtStartPar
 \sphinxstyleemphasis{“In theory there is no difference between theory and practice. In practice there is.”} — Yogi Berra
 
-\begin{sphinxadmonition}{note}{🔍 DSL in Case Studies}
+\begin{sphinxadmonition}{note}{DSL in Case Studies}
 
 \sphinxAtStartPar
 Throughout these case studies, notice how DSL simplifies analysis:
@@ -30095,7 +31307,7 @@ This page provides a curated list of example scripts demonstrating py3plex featu
 %
 \end{footnote} of the repository.
 
-\begin{sphinxadmonition}{note}{🔍 Featured: DSL Examples}
+\begin{sphinxadmonition}{note}{Featured: DSL Examples}
 
 \sphinxAtStartPar
 The DSL examples showcase py3plex’s SQL\sphinxhyphen{}like query language:
