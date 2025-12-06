@@ -248,7 +248,7 @@ class TestRandomMultilayerSBM:
             n_nodes=10,
             n_blocks=1,
             p_in=0.5,
-            p_out=0.1,  # p_out is ignored for single block
+            p_out=0.1,  # p_out only affects off-diagonal of block_matrix (empty for single block)
             seed=42,
         )
 
