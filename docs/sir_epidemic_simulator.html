@@ -89,7 +89,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="examples/part_intro.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
@@ -195,9 +194,9 @@
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <section id="discrete-time-simulation">
 <h3>Discrete-Time Simulation<a class="headerlink" href="#discrete-time-simulation" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.sir_multiplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_sir_multiplex_discrete</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.sir_multiplex</span> <span class="kn">import</span> <span class="n">simulate_sir_multiplex_discrete</span>
 
 <span class="c1"># Create a simple ring network</span>
 <span class="n">N</span> <span class="o">=</span> <span class="mi">20</span>
@@ -223,7 +222,7 @@
 </section>
 <section id="continuous-time-gillespie-simulation">
 <h3>Continuous-Time (Gillespie) Simulation<a class="headerlink" href="#continuous-time-gillespie-simulation" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.sir_multiplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_sir_multiplex_gillespie</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.sir_multiplex</span> <span class="kn">import</span> <span class="n">simulate_sir_multiplex_gillespie</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">simulate_sir_multiplex_gillespie</span><span class="p">(</span>
     <span class="n">A_layers</span><span class="o">=</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
@@ -271,7 +270,7 @@
 <span class="p">)</span>
 
 <span class="c1"># Analyze layer contributions</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.sir_multiplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">summarize</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.sir_multiplex</span> <span class="kn">import</span> <span class="n">summarize</span>
 <span class="n">summary</span> <span class="o">=</span> <span class="n">summarize</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer contributions: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;layer_contributions&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>

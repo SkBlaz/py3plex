@@ -88,7 +88,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="examples/part_intro.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
@@ -155,8 +154,8 @@
 </section>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.stats_comparison</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_multilayer_networks</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.stats_comparison</span> <span class="kn">import</span> <span class="n">compare_multilayer_networks</span>
 
 <span class="c1"># Create networks</span>
 <span class="n">net1</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -265,8 +264,8 @@
 <h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
 <section id="basic-two-network-comparison">
 <h3>Basic Two-Network Comparison<a class="headerlink" href="#basic-two-network-comparison" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.stats_comparison</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_multilayer_networks</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.stats_comparison</span> <span class="kn">import</span> <span class="n">compare_multilayer_networks</span>
 
 <span class="c1"># Create networks with different densities</span>
 <span class="n">net1</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -316,12 +315,12 @@
 </section>
 <section id="bootstrap-confidence-intervals">
 <h3>Bootstrap Confidence Intervals<a class="headerlink" href="#bootstrap-confidence-intervals" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.stats_comparison</span><span class="w"> </span><span class="kn">import</span> <span class="n">bootstrap_confidence_interval</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.stats_comparison</span> <span class="kn">import</span> <span class="n">bootstrap_confidence_interval</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">avg_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">avg_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute average clustering coefficient.&quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+    <span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
     <span class="n">clustering</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multilayer_clustering_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">clustering</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
