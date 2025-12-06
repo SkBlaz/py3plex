@@ -24,6 +24,28 @@ class ExportTarget(Enum):
 
 
 @dataclass
+class ExportSpec:
+    """Specification for exporting query results to a file.
+    
+    Used to declaratively export results as part of the DSL pipeline.
+    
+    Attributes:
+        path: Output file path
+        fmt: Format type ('csv', 'json', 'tsv', etc.)
+        columns: Optional list of columns to include/order
+        options: Additional format-specific options (e.g., delimiter, orient)
+    
+    Example:
+        ExportSpec(path='results.csv', fmt='csv', columns=['node', 'score'])
+        ExportSpec(path='output.json', fmt='json', options={'orient': 'records'})
+    """
+    path: str
+    fmt: str = "csv"
+    columns: Optional[List[str]] = None
+    options: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
 class ParamRef:
     """Reference to a query parameter.
     
@@ -201,7 +223,8 @@ class SelectStmt:
         compute: List of measures to compute
         order_by: List of ordering specifications
         limit: Optional limit on results
-        export: Optional export target
+        export: Optional export target (for result format conversion)
+        file_export: Optional file export specification (for writing to files)
     """
     target: Target
     layer_expr: Optional[LayerExpr] = None
@@ -210,6 +233,7 @@ class SelectStmt:
     order_by: List[OrderItem] = field(default_factory=list)
     limit: Optional[int] = None
     export: Optional[ExportTarget] = None
+    file_export: Optional['ExportSpec'] = None
 
 
 @dataclass

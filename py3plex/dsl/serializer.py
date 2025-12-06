@@ -83,7 +83,18 @@ def _serialize_select(select: SelectStmt) -> str:
     if select.limit is not None:
         parts.append(f"LIMIT {select.limit}")
     
-    # TO export
+    # EXPORT (file export)
+    if select.file_export:
+        # Escape single quotes in path
+        escaped_path = select.file_export.path.replace("'", "\\'")
+        export_str = f"EXPORT TO '{escaped_path}'"
+        export_str += f" FORMAT {select.file_export.fmt.upper()}"
+        if select.file_export.columns:
+            cols = ", ".join(select.file_export.columns)
+            export_str += f" COLUMNS ({cols})"
+        parts.append(export_str)
+    
+    # TO export (result format conversion)
     if select.export:
         parts.append(f"TO {select.export.value}")
     

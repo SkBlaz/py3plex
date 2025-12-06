@@ -25,6 +25,7 @@ from .ast import (
     SelectStmt,
     Target,
     ExportTarget,
+    ExportSpec,
     LayerExpr,
     LayerTerm,
     ConditionExpr,
@@ -363,6 +364,100 @@ class QueryBuilder:
             raise ValueError(f"Unknown export target: {target}. Options: {list(target_map.keys())}")
         self._select.export = target_map[target.lower()]
         return self
+    
+    def export(
+        self,
+        path: str,
+        fmt: str = "csv",
+        columns: Optional[List[str]] = None,
+        **options,
+    ) -> "QueryBuilder":
+        """Attach a file export specification to the query.
+        
+        This adds a side-effect to write query results to a file when executed.
+        The query will still return the QueryResult as normal.
+        
+        Args:
+            path: Output file path (string)
+            fmt: Format type ('csv', 'json', 'tsv')
+            columns: Optional list of column names to include/order
+            **options: Format-specific options (e.g., delimiter=';', orient='records')
+            
+        Returns:
+            Self for chaining
+            
+        Raises:
+            ValueError: If format is not supported
+            
+        Example:
+            >>> q = (
+            ...     Q.nodes()
+            ...      .compute("degree")
+            ...      .export("results.csv", fmt="csv", columns=["node", "degree"])
+            ... )
+        """
+        # Validate format early
+        supported_formats = {"csv", "json", "tsv"}
+        fmt_lower = fmt.lower()
+        if fmt_lower not in supported_formats:
+            raise ValueError(
+                f"Unsupported export format: '{fmt}'. "
+                f"Supported formats: {', '.join(sorted(supported_formats))}"
+            )
+        
+        self._select.file_export = ExportSpec(
+            path=path,
+            fmt=fmt_lower,
+            columns=columns,
+            options=options,
+        )
+        return self
+    
+    def export_csv(
+        self,
+        path: str,
+        columns: Optional[List[str]] = None,
+        delimiter: str = ",",
+        **options,
+    ) -> "QueryBuilder":
+        """Export query results to CSV file.
+        
+        Convenience wrapper around .export() for CSV format.
+        
+        Args:
+            path: Output CSV file path
+            columns: Optional list of columns to include/order
+            delimiter: CSV delimiter (default: ',')
+            **options: Additional CSV-specific options
+            
+        Returns:
+            Self for chaining
+        """
+        options["delimiter"] = delimiter
+        return self.export(path, fmt="csv", columns=columns, **options)
+    
+    def export_json(
+        self,
+        path: str,
+        columns: Optional[List[str]] = None,
+        orient: str = "records",
+        **options,
+    ) -> "QueryBuilder":
+        """Export query results to JSON file.
+        
+        Convenience wrapper around .export() for JSON format.
+        
+        Args:
+            path: Output JSON file path
+            columns: Optional list of columns to include/order
+            orient: JSON orientation ('records', 'split', 'index', 'columns', 'values')
+            **options: Additional JSON-specific options
+            
+        Returns:
+            Self for chaining
+        """
+        options["orient"] = orient
+        return self.export(path, fmt="json", columns=columns, **options)
     
     def explain(self) -> ExplainQuery:
         """Create EXPLAIN query for execution plan.

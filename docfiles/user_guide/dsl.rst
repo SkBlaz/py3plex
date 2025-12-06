@@ -119,6 +119,10 @@ DSL Cheat Sheet
      - ``Q.nodes().from_layers(L["social"] - L["bots"])``
    * - Order and limit
      - ``Q.nodes().compute("degree").order_by("-degree").limit(10)``
+   * - Export to CSV
+     - ``Q.nodes().compute("degree").export_csv("output.csv")``
+   * - Export to JSON
+     - ``Q.nodes().compute("degree").export_json("output.json")``
 
 Quick Start Example
 -------------------
@@ -462,6 +466,137 @@ The builder API returns a ``QueryResult`` object with rich export capabilities:
     
     # Length
     print(len(result))
+
+Declarative File Exports
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DSL v2 supports declarative file exports, allowing you to export query results 
+to files as part of the query pipeline itself. The export is a side-effect - 
+the query still returns a ``QueryResult`` object to Python.
+
+**Basic CSV Export**::
+
+    from py3plex.dsl import Q, L
+    
+    # Export to CSV file
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree")
+         .export_csv("results/social_degree.csv")
+         .execute(network)
+    )
+    
+    # Result is still available in Python
+    print(f"Exported {result.count} nodes")
+
+**JSON Export with Options**::
+
+    # Export to JSON with custom format
+    result = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality")
+         .order_by("degree", desc=True)
+         .limit(10)
+         .export_json(
+             "results/top_nodes.json",
+             columns=["id", "degree", "betweenness_centrality"],
+             orient="records"
+         )
+         .execute(network)
+    )
+
+**Generic Export Method**::
+
+    # Export with explicit format specification
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree")
+         .export(
+             path="results/output.csv",
+             fmt="csv",
+             columns=["id", "degree"],
+             delimiter=";"
+         )
+         .execute(network)
+    )
+
+**Supported Export Formats:**
+
+- ``csv`` - Comma-separated values (default)
+- ``json`` - JSON format with various orientations
+- ``tsv`` - Tab-separated values
+
+**Export Options:**
+
+*CSV/TSV Options:*
+
+- ``delimiter`` - Field delimiter (default: ``,`` for CSV, ``\t`` for TSV)
+- ``columns`` - List of columns to include/order
+
+*JSON Options:*
+
+- ``orient`` - JSON orientation (``records``, ``columns``, ``split``, ``index``, ``values``)
+- ``indent`` - Indentation level (default: 2)
+- ``columns`` - List of columns to include/order
+
+**Column Selection**::
+
+    # Export only specific columns in specific order
+    result = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality", "clustering")
+         .export_csv(
+             "results/selected.csv",
+             columns=["id", "degree"]  # Only export ID and degree
+         )
+         .execute(network)
+    )
+
+**Complete Export Example**::
+
+    from py3plex.core import multinet
+    from py3plex.dsl import Q, L
+    
+    # Create network
+    network = multinet.multi_layer_network(directed=False)
+    # ... add nodes and edges ...
+    
+    # Export social layer analysis to CSV
+    (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree", "betweenness_centrality")
+         .order_by("degree", desc=True)
+         .export_csv("results/social_analysis.csv")
+         .execute(network)
+    )
+    
+    # Export work layer analysis to JSON
+    (
+        Q.nodes()
+         .from_layers(L["work"])
+         .compute("degree")
+         .export_json("results/work_analysis.json", orient="records")
+         .execute(network)
+    )
+    
+    # Export combined analysis with custom delimiter
+    (
+        Q.nodes()
+         .compute("degree")
+         .export_csv("results/all_nodes.tsv", delimiter="\t")
+         .execute(network)
+    )
+
+The export functionality automatically creates parent directories if needed and 
+provides clear error messages for unsupported formats or file I/O issues.
+
+.. seealso::
+
+   For a comprehensive example with 7 different usage patterns, see:
+   ``examples/network_analysis/example_dsl_export.py``
 
 EXPLAIN Mode
 ~~~~~~~~~~~~

@@ -237,7 +237,12 @@ def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
         meta={"dsl_version": "2.0"}
     )
     
-    # Step 7: Apply export if specified
+    # Step 7: Apply file export if specified
+    if select.file_export:
+        from .export import export_result
+        export_result(result, select.file_export)
+    
+    # Step 8: Apply export if specified (for result format conversion)
     if select.export:
         if select.export == ExportTarget.PANDAS:
             return result.to_pandas()
