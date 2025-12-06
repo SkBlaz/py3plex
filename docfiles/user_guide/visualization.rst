@@ -5,11 +5,6 @@ Visualization
 
 ----
 
-.. image:: ../../example_images/py3plex_showcase.png
-   :alt: Py3plex Visualization Showcase
-   :align: center
-   :width: 100%
-
 A network you can't see is a network you can't understand. Visualization transforms abstract adjacency structures into spatial patterns that human perception can process—clusters become visible groups, hubs become prominent nodes, and cross-layer connections become the bridges they conceptually are.
 
 This chapter shows you how to create visualizations that reveal structure rather than obscure it. We'll cover:
@@ -51,13 +46,6 @@ Basic Multilayer Visualization
         display=True,
         labels=labels
     )
-
-**Example output:**
-
-.. image:: ../../example_images/multilayer.png
-   :width: 600px
-   :align: center
-   :alt: Basic multilayer network visualization
 
 Preset Visualization Modes
 ---------------------------
@@ -107,13 +95,6 @@ Optimized for networks with many nodes where detail isn't critical.
 - Reduced visual clutter
 - Shows overall structure
 - Works with many nodes
-
-**Example output (minimal mode with large network):**
-
-.. image:: ../../example_images/hairball.png
-   :width: 500px
-   :align: center
-   :alt: Minimal mode visualization for large networks
 
 Balanced Mode (Medium Networks 100-1000 nodes)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -201,13 +182,6 @@ Maximum detail for small networks where every node and edge matters.
 - Clear node identification
 - Edge weights visible
 - Professional appearance
-
-**Example output (dense mode with small network):**
-
-.. image:: ../../example_images/multiplex.png
-   :width: 400px
-   :align: center
-   :alt: Dense mode visualization for small networks
 
 Layout Options
 --------------
@@ -422,13 +396,6 @@ Color nodes by community membership:
     # Visualize
     labels, graphs, multilinks = network.get_layers()
     draw_multilayer_default(graphs, display=True, labels=labels)
-
-**Example output (community-colored network):**
-
-.. image:: ../../example_images/communities.png
-   :width: 500px
-   :align: center
-   :alt: Network with nodes colored by community membership
 
 Exporting Visualizations
 -------------------------
@@ -983,11 +950,6 @@ Small Multiples View
 Displays each layer as a separate subplot in a grid layout, making it easy to compare
 layer structures side-by-side.
 
-.. image:: ../../example_images/multilayer_small_multiples_shared.png
-   :width: 600px
-   :align: center
-   :alt: Small multiples visualization with shared layout
-
 .. code-block:: python
 
     from py3plex.visualization.multilayer import visualize_multilayer_network
@@ -1031,11 +993,6 @@ Edge-Colored Projection
 
 Projects all layers onto a single 2D graph, using edge colors to indicate layer membership.
 Useful for seeing the overall structure while maintaining layer information.
-
-.. image:: ../../example_images/multilayer_edge_projection_spring.png
-   :width: 600px
-   :align: center
-   :alt: Edge-colored projection visualization
 
 .. code-block:: python
 
@@ -1084,11 +1041,6 @@ Supra-Adjacency Heatmap
 Shows the multilayer network as a block matrix where each block represents the
 adjacency matrix of one layer. Can optionally include inter-layer connections.
 
-.. image:: ../../example_images/multilayer_supra_heatmap_inter.png
-   :width: 600px
-   :align: center
-   :alt: Supra-adjacency heatmap with inter-layer connections
-
 .. code-block:: python
 
     from py3plex.visualization.multilayer import visualize_multilayer_network
@@ -1135,11 +1087,6 @@ Radial/Concentric Layers
 
 Arranges layers as concentric circles, with nodes positioned on rings and
 inter-layer edges shown as radial connections.
-
-.. image:: ../../example_images/multilayer_radial_with_inter.png
-   :width: 600px
-   :align: center
-   :alt: Radial layers visualization with concentric circles
 
 .. code-block:: python
 
@@ -1188,11 +1135,6 @@ Ego-Centric Multilayer View
 
 Focuses on a single node (the "ego") and shows its neighborhood across different layers,
 highlighting the ego node's position in each layer context.
-
-.. image:: ../../example_images/multilayer_ego_node3_1hop.png
-   :width: 600px
-   :align: center
-   :alt: Ego-centric multilayer visualization showing node neighborhood
 
 .. code-block:: python
 
@@ -1268,13 +1210,6 @@ by color and size.
     # Or use 'alluvial' (same as 'flow')
     ax = network.visualize_network(style='alluvial', show=True)
 
-**Example output:**
-
-.. image:: ../../example_images/multilayer_flow.png
-   :width: 600px
-   :align: center
-   :alt: Flow/Alluvial visualization showing inter-layer connections
-
 **Best for:**
 
 - Visualizing node-level connectivity across layers
@@ -1300,13 +1235,6 @@ individual node connections.
     
     # Sankey-style diagram showing inter-layer flow strength
     ax = network.visualize_network(style='sankey', show=True)
-
-**Example output:**
-
-.. image:: ../../example_images/multilayer_sankey_diagram.png
-   :width: 500px
-   :align: center
-   :alt: Sankey diagram showing inter-layer flow strength
 
 You can also use the function directly:
 
