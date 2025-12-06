@@ -3,6 +3,11 @@ SIR Epidemic Simulator on Multiplex Graphs
 
 This module provides efficient, reproducible SIR (Susceptible-Infected-Recovered) epidemic simulators for multiplex networks (same node set, multiple edge layers).
 
+**Two APIs Available:**
+
+1. **OOP-Style API** (recommended): Clean object-oriented interface with ``SIRDynamics`` class
+2. **Function-Based API**: Lower-level functions with sparse matrix input
+
 Features
 --------
 
@@ -14,6 +19,87 @@ Features
 - **Rich outputs**: Incidence curves, event logs, per-layer attribution
 - **Sparse linear algebra**: Efficient handling of large networks
 - **Reproducible**: Seeded random number generation
+
+OOP-Style API (Recommended)
+----------------------------
+
+The recommended way to run SIR simulations is using the ``SIRDynamics`` class,
+which provides a clean, book-aligned API.
+
+Basic Example
+~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.dynamics import SIRDynamics
+    import networkx as nx
+
+    # Create a network
+    G = nx.karate_club_graph()
+
+    # Create SIR dynamics
+    sir = SIRDynamics(
+        G,
+        beta=0.3,              # Infection probability
+        gamma=0.1,             # Recovery probability
+        initial_infected=0.1   # 10% initially infected
+    )
+
+    # Set seed for reproducibility
+    sir.set_seed(42)
+
+    # Run simulation
+    results = sir.run(steps=100)
+
+    # Extract measures
+    prevalence = results.get_measure("prevalence")
+    state_counts = results.get_measure("state_counts")
+
+    print(f"Peak prevalence: {prevalence.max():.2%}")
+    print(f"Final recovered: {state_counts['R'][-1]}")
+
+Multilayer Example
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from py3plex.dynamics import SIRDynamics
+    from py3plex.core import multinet
+
+    # Create multilayer network
+    network = multinet.multi_layer_network(directed=False)
+
+    # Add nodes to two layers
+    for i in range(20):
+        network.add_nodes([
+            {'source': i, 'type': 'physical'},
+            {'source': i, 'type': 'digital'}
+        ])
+
+    # Add edges (simplified)
+    for i in range(19):
+        network.add_edges([{
+            'source': i, 'target': i+1,
+            'source_type': 'physical', 'target_type': 'physical'
+        }])
+
+    # Run SIR dynamics
+    sir = SIRDynamics(network, beta=0.3, gamma=0.1)
+    sir.set_seed(42)
+    results = sir.run(steps=100)
+
+Key Methods
+~~~~~~~~~~~
+
+- ``set_seed(seed)``: Set random seed for reproducibility
+- ``run(steps)``: Run simulation for specified number of steps, returns ``DynamicsResult``
+- ``results.get_measure(name)``: Extract measures from results
+
+  - ``"prevalence"``: Fraction infected over time (array)
+  - ``"state_counts"``: Counts of S, I, R over time (dict of arrays)
+  - ``"trajectory"``: Full state history (list of dicts)
+
+- ``results.to_pandas()``: Convert to pandas DataFrame for analysis
 
 Model Definition
 ----------------
@@ -65,11 +151,17 @@ Or install py3plex with all dependencies:
 
     pip install py3plex
 
+Function-Based API
+------------------
+
+For advanced users who need direct access to sparse matrices and detailed control,
+the function-based API is also available.
+
 Quick Start
------------
+~~~~~~~~~~~
 
 Discrete-Time Simulation
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 

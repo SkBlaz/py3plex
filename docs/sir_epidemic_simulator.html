@@ -9,7 +9,7 @@
   <title>SIR Epidemic Simulator on Multiplex Graphs &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=53982409" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3ea41ae2" />
 
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
@@ -135,6 +135,11 @@
   <section id="sir-epidemic-simulator-on-multiplex-graphs">
 <h1>SIR Epidemic Simulator on Multiplex Graphs<a class="headerlink" href="#sir-epidemic-simulator-on-multiplex-graphs" title="Link to this heading"></a></h1>
 <p>This module provides efficient, reproducible SIR (Susceptible-Infected-Recovered) epidemic simulators for multiplex networks (same node set, multiple edge layers).</p>
+<p><strong>Two APIs Available:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>OOP-Style API</strong> (recommended): Clean object-oriented interface with <code class="docutils literal notranslate"><span class="pre">SIRDynamics</span></code> class</p></li>
+<li><p><strong>Function-Based API</strong>: Lower-level functions with sparse matrix input</p></li>
+</ol>
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>
 <ul class="simple">
@@ -147,6 +152,86 @@
 <li><p><strong>Sparse linear algebra</strong>: Efficient handling of large networks</p></li>
 <li><p><strong>Reproducible</strong>: Seeded random number generation</p></li>
 </ul>
+</section>
+<section id="oop-style-api-recommended">
+<h2>OOP-Style API (Recommended)<a class="headerlink" href="#oop-style-api-recommended" title="Link to this heading"></a></h2>
+<p>The recommended way to run SIR simulations is using the <code class="docutils literal notranslate"><span class="pre">SIRDynamics</span></code> class,
+which provides a clean, book-aligned API.</p>
+<section id="basic-example">
+<h3>Basic Example<a class="headerlink" href="#basic-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Create a network</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Create SIR dynamics</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>              <span class="c1"># Infection probability</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>             <span class="c1"># Recovery probability</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span>   <span class="c1"># 10% initially infected</span>
+<span class="p">)</span>
+
+<span class="c1"># Set seed for reproducibility</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Run simulation</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Extract measures</span>
+<span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+<span class="n">state_counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;state_counts&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Peak prevalence: </span><span class="si">{</span><span class="n">prevalence</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final recovered: </span><span class="si">{</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="multilayer-example">
+<h3>Multilayer Example<a class="headerlink" href="#multilayer-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># Create multilayer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Add nodes to two layers</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;physical&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;digital&#39;</span><span class="p">}</span>
+    <span class="p">])</span>
+
+<span class="c1"># Add edges (simplified)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">19</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;physical&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;physical&#39;</span>
+    <span class="p">}])</span>
+
+<span class="c1"># Run SIR dynamics</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="key-methods">
+<h3>Key Methods<a class="headerlink" href="#key-methods" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_seed(seed)</span></code>: Set random seed for reproducibility</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run(steps)</span></code>: Run simulation for specified number of steps, returns <code class="docutils literal notranslate"><span class="pre">DynamicsResult</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">results.get_measure(name)</span></code>: Extract measures from results</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;prevalence&quot;</span></code>: Fraction infected over time (array)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;state_counts&quot;</span></code>: Counts of S, I, R over time (dict of arrays)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;trajectory&quot;</span></code>: Full state history (list of dicts)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">results.to_pandas()</span></code>: Convert to pandas DataFrame for analysis</p></li>
+</ul>
+</section>
 </section>
 <section id="model-definition">
 <h2>Model Definition<a class="headerlink" href="#model-definition" title="Link to this heading"></a></h2>
@@ -199,10 +284,14 @@
 </pre></div>
 </div>
 </section>
+<section id="function-based-api">
+<h2>Function-Based API<a class="headerlink" href="#function-based-api" title="Link to this heading"></a></h2>
+<p>For advanced users who need direct access to sparse matrices and detailed control,
+the function-based API is also available.</p>
 <section id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<h3>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h3>
 <section id="discrete-time-simulation">
-<h3>Discrete-Time Simulation<a class="headerlink" href="#discrete-time-simulation" title="Link to this heading"></a></h3>
+<h4>Discrete-Time Simulation<a class="headerlink" href="#discrete-time-simulation" title="Link to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.sir_multiplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_sir_multiplex_discrete</span>
@@ -228,6 +317,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final attack rate: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">R</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">N</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
 </section>
 <section id="continuous-time-gillespie-simulation">
 <h3>Continuous-Time (Gillespie) Simulation<a class="headerlink" href="#continuous-time-gillespie-simulation" title="Link to this heading"></a></h3>
