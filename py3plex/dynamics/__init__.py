@@ -85,6 +85,34 @@ from .errors import (
 
 from .serializer import sim_ast_to_dsl
 
+# Core abstractions for implementing custom dynamics
+from .core import (
+    DynamicsProcess,
+    ContinuousTimeProcess,
+    TemporalGraph,
+    TemporalDynamicsProcess,
+)
+
+# Discrete-time models
+from .models import (
+    RandomWalkDynamics,
+    MultiRandomWalkDynamics,
+    SISDynamics,
+    AdaptiveSISDynamics,
+    TemporalRandomWalk,
+)
+
+# Continuous-time and compartmental models
+from .compartmental import (
+    SISContinuousTime,
+    CompartmentalDynamics,
+    SIRDynamics,
+    SEIRDynamics,
+)
+
+# Config-based dynamics
+from .config import build_dynamics_from_config
+
 __all__ = [
     # AST
     "SimulationStmt",
@@ -115,6 +143,24 @@ __all__ = [
     "SimulationConfigError",
     # Serializer
     "sim_ast_to_dsl",
+    # Core abstractions (NEW)
+    "DynamicsProcess",
+    "ContinuousTimeProcess",
+    "TemporalGraph",
+    "TemporalDynamicsProcess",
+    # Discrete-time models (NEW)
+    "RandomWalkDynamics",
+    "MultiRandomWalkDynamics",
+    "SISDynamics",
+    "AdaptiveSISDynamics",
+    "TemporalRandomWalk",
+    # Continuous-time & compartmental (NEW)
+    "SISContinuousTime",
+    "CompartmentalDynamics",
+    "SIRDynamics",
+    "SEIRDynamics",
+    # Config-based (NEW)
+    "build_dynamics_from_config",
 ]
 
 # Module version
