@@ -129,15 +129,15 @@ def _normalize_query_result(
     # Base column is the item ID
     id_col = "id"
     
-    for item in result.items:
+    for idx, item in enumerate(result.items):
         row = {id_col: str(item)}
         
         # Add computed attributes
         for attr_name, values in result.attributes.items():
             if isinstance(values, dict):
                 row[attr_name] = values.get(item, None)
-            elif isinstance(values, list) and len(values) > len(rows):
-                row[attr_name] = values[len(rows)]
+            elif isinstance(values, list) and idx < len(values):
+                row[attr_name] = values[idx]
             else:
                 row[attr_name] = None
         
@@ -172,8 +172,11 @@ def _normalize_dict_result(
     if not result:
         return [], []
     
-    # Check the first key to determine structure
-    first_key = next(iter(result.keys()))
+    # Check the first key to determine structure (defensive handling of empty dict)
+    try:
+        first_key = next(iter(result.keys()))
+    except StopIteration:
+        return [], []
     
     if isinstance(first_key, tuple):
         # Multi-column key (e.g., (node, layer))
@@ -226,7 +229,15 @@ def _normalize_list_of_dicts(
 def _normalize_dataframe(
     df: 'pd.DataFrame', columns_hint: Optional[List[str]] = None
 ) -> Tuple[List[Dict[str, Any]], List[str]]:
-    """Normalize pandas DataFrame to rows and columns."""
+    """Normalize pandas DataFrame to rows and columns.
+    
+    Args:
+        df: pandas DataFrame to normalize
+        columns_hint: Optional column selection/ordering hint
+        
+    Returns:
+        Tuple of (rows as list of dicts, column names as list)
+    """
     # Apply column hint if provided
     if columns_hint:
         available_cols = [c for c in columns_hint if c in df.columns]

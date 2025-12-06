@@ -85,7 +85,9 @@ def _serialize_select(select: SelectStmt) -> str:
     
     # EXPORT (file export)
     if select.file_export:
-        export_str = f"EXPORT TO '{select.file_export.path}'"
+        # Escape single quotes in path
+        escaped_path = select.file_export.path.replace("'", "\\'")
+        export_str = f"EXPORT TO '{escaped_path}'"
         export_str += f" FORMAT {select.file_export.fmt.upper()}"
         if select.file_export.columns:
             cols = ", ".join(select.file_export.columns)

@@ -386,6 +386,9 @@ class QueryBuilder:
         Returns:
             Self for chaining
             
+        Raises:
+            ValueError: If format is not supported
+            
         Example:
             >>> q = (
             ...     Q.nodes()
@@ -393,9 +396,18 @@ class QueryBuilder:
             ...      .export("results.csv", fmt="csv", columns=["node", "degree"])
             ... )
         """
+        # Validate format early
+        supported_formats = {"csv", "json", "tsv"}
+        fmt_lower = fmt.lower()
+        if fmt_lower not in supported_formats:
+            raise ValueError(
+                f"Unsupported export format: '{fmt}'. "
+                f"Supported formats: {', '.join(sorted(supported_formats))}"
+            )
+        
         self._select.file_export = ExportSpec(
             path=path,
-            fmt=fmt.lower(),
+            fmt=fmt_lower,
             columns=columns,
             options=options,
         )

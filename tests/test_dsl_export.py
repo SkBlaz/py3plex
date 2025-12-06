@@ -300,50 +300,40 @@ class TestExportWithoutSpec:
 
     def test_no_export_no_file(self, sample_network, tmp_path):
         """Test that no file is written without export spec."""
-        # Change to tmp_path to avoid creating files in other directories
-        import os
-        original_cwd = os.getcwd()
-        os.chdir(tmp_path)
+        q = (
+            Q.nodes()
+            .from_layers(L["social"])
+            .compute("degree")
+        )
+        result = q.execute(sample_network)
 
-        try:
-            q = (
-                Q.nodes()
-                .from_layers(L["social"])
-                .compute("degree")
-            )
-            result = q.execute(sample_network)
+        # Verify result is returned
+        assert isinstance(result, QueryResult)
 
-            # Verify result is returned
-            assert isinstance(result, QueryResult)
-
-            # Verify no CSV/JSON files were created
-            csv_files = list(tmp_path.glob("*.csv"))
-            json_files = list(tmp_path.glob("*.json"))
-            assert len(csv_files) == 0
-            assert len(json_files) == 0
-        finally:
-            os.chdir(original_cwd)
+        # Verify no CSV/JSON files were created in tmp_path
+        csv_files = list(tmp_path.glob("*.csv"))
+        json_files = list(tmp_path.glob("*.json"))
+        assert len(csv_files) == 0
+        assert len(json_files) == 0
 
 
 class TestExportErrorHandling:
     """Test error handling for export operations."""
 
-    def test_invalid_format_raises_error(self, sample_network, tmp_path):
-        """Test that invalid format raises clear error."""
-        output_file = tmp_path / "data.xyz"
+    def test_invalid_format_raises_error_at_build_time(self):
+        """Test that invalid format is caught at builder time."""
+        output_file = "data.xyz"
 
-        q = (
-            Q.nodes()
-            .from_layers(L["social"])
-            .compute("degree")
-            .export(str(output_file), fmt="invalid_format")
-        )
-
-        with pytest.raises(DslExecutionError) as exc_info:
-            q.execute(sample_network)
+        with pytest.raises(ValueError) as exc_info:
+            q = (
+                Q.nodes()
+                .compute("degree")
+                .export(output_file, fmt="invalid_format")
+            )
 
         assert "Unsupported export format" in str(exc_info.value)
         assert "invalid_format" in str(exc_info.value)
+        assert "csv, json, tsv" in str(exc_info.value)
 
     def test_export_creates_parent_directories(self, sample_network, tmp_path):
         """Test that export creates parent directories if needed."""
