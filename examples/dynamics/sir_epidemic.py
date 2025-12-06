@@ -13,6 +13,7 @@ The example shows:
 - Plotting the epidemic curve
 """
 
+import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 from py3plex.core import multinet
