@@ -14,7 +14,7 @@ python examples/getting_started/tutorial_10min.py
 python examples/getting_started/example_random_generator.py
 ```
 
-## 📂 Browse Examples by Topic
+## Browse Examples by Topic
 
 Examples are organized into intuitive categories based on what you want to accomplish:
 
