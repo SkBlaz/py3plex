@@ -3,6 +3,31 @@ Visualization
 
 *From hairball to insight: making multilayer networks visible.*
 
+.. admonition:: 💡 DSL Tip: Filter Before Visualizing
+   :class: dsl-info
+
+   Use DSL to create focused visualizations:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Get high-degree nodes for cleaner visualization
+       important_nodes = (
+           Q.nodes()
+            .where(degree__gt=5)
+            .compute("degree")
+            .execute(network)
+       )
+
+       # Create subnetwork with just these nodes
+       subgraph = important_nodes.to_networkx(network)
+       
+       # Now visualize the focused subgraph
+       # (clearer than visualizing entire network)
+
+   Filter first, visualize second for better insights!
+
 ----
 
 A network you can't see is a network you can't understand. Visualization transforms abstract adjacency structures into spatial patterns that human perception can process—clusters become visible groups, hubs become prominent nodes, and cross-layer connections become the bridges they conceptually are.

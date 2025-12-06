@@ -5,6 +5,37 @@ Use Cases & Case Studies
 
 *"In theory there is no difference between theory and practice. In practice there is."* — Yogi Berra
 
+.. admonition:: 🔍 DSL in Case Studies
+   :class: dsl-example
+
+   Throughout these case studies, notice how DSL simplifies analysis:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Identify candidate proteins (biological networks)
+       candidates = (
+           Q.nodes()
+            .where(degree__gt=10)
+            .compute("betweenness_centrality", "clustering")
+            .order_by("-betweenness_centrality")
+            .limit(50)
+            .execute(ppi_network)
+       )
+
+       # Compare social media presence (social networks)
+       for platform in ["twitter", "facebook", "instagram"]:
+           influencers = (
+               Q.nodes()
+                .from_layers(L[platform])
+                .where(degree__gt=100)
+                .execute(social_network)
+           )
+           print(f"{platform}: {influencers.count} influencers")
+
+   DSL enables rapid iteration in exploratory analysis!
+
 This chapter provides complete, end-to-end case studies demonstrating py3plex in different research domains. Each case study includes:
 
 1. **Problem context** — What real-world question are we answering?
