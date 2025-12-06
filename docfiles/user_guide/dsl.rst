@@ -19,11 +19,28 @@ Py3plex provides a Domain-Specific Language (DSL) for querying and analyzing mul
 - **Parameterized Queries**: Safe parameter binding for dynamic queries
 - **Better Errors**: "Did you mean?" suggestions for typos
 
-The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write::
+.. admonition:: Quick Start with Builder API
+   :class: tip
+
+   For the fastest start, see the comprehensive builder API example:
+   
+   .. code-block:: bash
+   
+       python examples/network_analysis/example_dsl_builder_api.py
+   
+   This example demonstrates all DSL v2 features with working code and explanations.
+
+The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write:
+
+**String DSL syntax:**
+
+.. code-block:: python
 
     execute_query(network, 'SELECT nodes WHERE layer="social" AND degree > 5')
 
-Or using the new Builder API::
+**Or using the new Builder API (recommended):**
+
+.. code-block:: python
 
     from py3plex.dsl import Q, L
     
@@ -1096,14 +1113,22 @@ Example Files
 
 Additional complete examples are available in the repository:
 
-- ``examples/network_analysis/example_dsl_queries.py`` - Basic DSL usage with detailed output
+- ``examples/network_analysis/example_dsl_builder_api.py`` - **Comprehensive builder API examples** (recommended starting point for DSL v2)
+- ``examples/network_analysis/example_dsl_queries.py`` - Basic DSL usage with string syntax
 - ``examples/network_analysis/example_dsl_advanced.py`` - Advanced queries and transportation network analysis
+- ``examples/network_analysis/example_dsl_community_detection.py`` - Community detection with DSL
+- ``examples/cli/example_3_dsl_queries.sh`` - CLI usage examples for both string and builder syntax
 
 Run these examples::
 
-    cd examples/network_analysis
-    python example_dsl_queries.py
-    python example_dsl_advanced.py
+    # Recommended: Comprehensive builder API examples
+    python examples/network_analysis/example_dsl_builder_api.py
+    
+    # String DSL examples
+    python examples/network_analysis/example_dsl_queries.py
+    
+    # Advanced queries
+    python examples/network_analysis/example_dsl_advanced.py
 
 API Reference
 -------------
