@@ -14,7 +14,7 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Tuple, Union
 from collections import defaultdict
 import networkx as nx
 
@@ -67,7 +67,7 @@ def explain_node_centrality(
     score = centrality_scores[node]
 
     # Get core network for analysis
-    if hasattr(graph, 'core_network') and graph.core_network is not None:
+    if hasattr(graph, "core_network") and graph.core_network is not None:
         G = graph.core_network
     else:
         raise ValueError("Network has no core_network attribute")
@@ -83,10 +83,9 @@ def explain_node_centrality(
 
     # Extract node information
     if isinstance(node, tuple):
-        node_id, node_layer = node
+        node_id, _ = node
     else:
         node_id = node
-        node_layer = None
 
     # Analyze per-layer contributions
     explanation["degree_per_layer"] = _compute_degree_per_layer(G, node_id)
@@ -137,11 +136,7 @@ def explain_top_k_central_nodes(
         ['B', 'A']  # or ['B', 'C'] depending on tie-breaking
     """
     # Sort nodes by centrality score (descending)
-    sorted_nodes = sorted(
-        centrality_scores.items(),
-        key=lambda x: x[1],
-        reverse=True
-    )
+    sorted_nodes = sorted(centrality_scores.items(), key=lambda x: x[1], reverse=True)
 
     # Get top-k nodes
     top_k_nodes = sorted_nodes[:k]
@@ -155,10 +150,7 @@ def explain_top_k_central_nodes(
             )
         except Exception as e:
             # If explanation fails, still include basic info
-            explanations[node] = {
-                "score": score,
-                "error": str(e)
-            }
+            explanations[node] = {"score": score, "error": str(e)}
 
     return explanations
 
@@ -192,8 +184,7 @@ def _compute_degree_per_layer(
                 # Count edges in this layer
                 neighbors = list(G.neighbors(node))
                 layer_neighbors = [
-                    n for n in neighbors
-                    if isinstance(n, tuple) and n[1] == n_layer
+                    n for n in neighbors if isinstance(n, tuple) and n[1] == n_layer
                 ]
                 degree_per_layer[n_layer] = len(layer_neighbors)
         else:
@@ -252,8 +243,7 @@ def _compute_layer_contributions(
                 if n_id == node_id:
                     neighbors = list(G.neighbors(node))
                     layer_neighbors = [
-                        n for n in neighbors
-                        if isinstance(n, tuple) and n[1] == n_layer
+                        n for n in neighbors if isinstance(n, tuple) and n[1] == n_layer
                     ]
                     # Sum neighbor centralities
                     neighbor_sum = sum(
@@ -263,9 +253,7 @@ def _compute_layer_contributions(
             else:
                 if node == node_id:
                     neighbors = list(G.neighbors(node))
-                    neighbor_sum = sum(
-                        centrality_scores.get(n, 0) for n in neighbors
-                    )
+                    neighbor_sum = sum(centrality_scores.get(n, 0) for n in neighbors)
                     contributions["default"] = neighbor_sum
 
     return dict(contributions)
