@@ -54,6 +54,55 @@ Where:
 - **conditions**: Filtering criteria (optional)
 - **measures**: Network measures to compute (optional)
 
+DSL Cheat Sheet
+---------------
+
+**Quick Syntax Reference:**
+
+.. code-block:: text
+
+    SELECT target WHERE conditions COMPUTE measures ORDER BY field LIMIT n
+
+**Common Query Patterns:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Task
+     - DSL Query
+   * - Select all nodes in a layer
+     - ``SELECT nodes WHERE layer="social"``
+   * - Find high-degree nodes
+     - ``SELECT nodes WHERE degree > 5``
+   * - Filter by degree range
+     - ``SELECT nodes WHERE degree >= 2 AND degree <= 10``
+   * - Compute centrality
+     - ``SELECT nodes COMPUTE betweenness_centrality``
+   * - Filter + compute
+     - ``SELECT nodes WHERE layer="social" COMPUTE degree_centrality``
+
+**DSL String vs Python Builder API:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 50 50
+
+   * - DSL String
+     - Python Builder API
+   * - ``'SELECT nodes WHERE layer="social"'``
+     - ``Q.nodes().where(layer="social")``
+   * - ``'SELECT nodes WHERE degree > 5'``
+     - ``Q.nodes().where(degree__gt=5)``
+   * - ``'SELECT nodes WHERE layer="social" AND degree > 3'``
+     - ``Q.nodes().where(layer="social", degree__gt=3)``
+   * - Layer union (social OR work)
+     - ``Q.nodes().from_layers(L["social"] + L["work"])``
+   * - Layer difference (social NOT bots)
+     - ``Q.nodes().from_layers(L["social"] - L["bots"])``
+   * - Order and limit
+     - ``Q.nodes().compute("degree").order_by("-degree").limit(10)``
+
 Quick Start Example
 -------------------
 
@@ -763,6 +812,41 @@ Common syntax errors:
 - Unknown operators
 - Invalid measure names
 
+Common DSL Errors
+~~~~~~~~~~~~~~~~~
+
+Here's an example of a common error and how to fix it:
+
+**Malformed Query (missing quotes around layer name):**
+
+.. code-block:: python
+
+    # Wrong - missing quotes around layer name
+    result = execute_query(network, 'SELECT nodes WHERE layer=social')
+
+**Error:**
+
+.. code-block:: text
+
+    DslSyntaxError: Invalid condition at position 27: expected quoted string for layer value.
+    Hint: Use layer="social" instead of layer=social
+
+**Fix:**
+
+.. code-block:: python
+
+    # Correct - layer name is quoted
+    result = execute_query(network, 'SELECT nodes WHERE layer="social"')
+
+**Unknown measure name:**
+
+.. code-block:: python
+
+    result = Q.nodes().compute("betweenes").execute(network)
+    # UnknownMeasureError: Unknown measure 'betweenes'. Did you mean 'betweenness_centrality'?
+
+See the :doc:`../reference/api_index` for complete details on DSL exceptions and error types.
+
 Complete Working Examples
 -------------------------
 
@@ -1223,6 +1307,7 @@ Further Reading
 See Also
 --------
 
+- :doc:`graph_ops` - Dplyr-style chainable graph operations (alternative API for complex transformations)
 - NetworkX documentation for centrality measures
 - Examples directory for complete use cases
 - API documentation for detailed function signatures

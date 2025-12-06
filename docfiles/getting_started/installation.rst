@@ -3,6 +3,25 @@ Installation and Setup
 
 This guide covers all aspects of installing py3plex and setting up your environment.
 
+Installation Modes
+------------------
+
+Choose the installation method based on your needs:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 35 45
+
+   * - Mode
+     - Command
+     - When to Use
+   * - **User Install**
+     - ``pip install py3plex``
+     - Standard usage: running analyses, using the library
+   * - **Developer Install**
+     - Clone repo + ``make setup`` + ``make dev-install``
+     - Contributing code, running tests, building docs
+
 Basic Installation
 ------------------
 
@@ -121,13 +140,24 @@ Development Installation
 
 For contributors, install with development tools (testing, linting):
 
+**Recommended (Makefile-based):**
+
+.. code-block:: bash
+
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    make setup        # Create virtual environment
+    make dev-install  # Install with dev dependencies
+
+**Alternative (manual):**
+
 .. code-block:: bash
 
     git clone https://github.com/SkBlaz/py3plex.git
     cd py3plex
     pip install -e ".[dev]"
 
-This installs:
+Both methods install:
 
 * pytest and coverage tools
 * black, ruff, isort for code formatting
