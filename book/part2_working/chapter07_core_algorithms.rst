@@ -99,29 +99,79 @@ Explainable Centrality
 Dynamics and Processes
 -----------------------
 
+py3plex provides comprehensive support for simulating dynamical processes on multilayer networks, including epidemic models and random walks.
+
+**For complete documentation**, see the user guide section on multilayer dynamics and the SIR epidemic simulator documentation.
+
 Random Walks
 ~~~~~~~~~~~~
 
-[Node2Vec, DeepWalk for embeddings]
+Random walks simulate exploration and diffusion on networks:
+
+.. code-block:: python
+
+    from py3plex.dynamics import RandomWalkDynamics
+    
+    # Create random walk
+    walk = RandomWalkDynamics(network, start_node=0, lazy_probability=0.1)
+    walk.set_seed(42)
+    results = walk.run(steps=1000)
+    
+    # Analyze trajectory
+    trajectory = results.get_measure("trajectory")
+
+Random walks are fundamental to PageRank, community detection, and network embeddings (Node2Vec, DeepWalk).
 
 Epidemic Models
 ~~~~~~~~~~~~~~~
 
-[SIS, SIR, SEIR models]
+Simulate disease spread and information diffusion with SIR and SIS models:
 
 .. code-block:: python
 
-    from py3plex.dynamics.models import SIRDynamics
+    from py3plex.dynamics import SIRDynamics, SISDynamics
     
-    # Configure epidemic model
-    sir = SIRDynamics(network, beta=0.3, gamma=0.1)
+    # SIR: Susceptible-Infected-Recovered (with immunity)
+    sir = SIRDynamics(network, beta=0.3, gamma=0.1, initial_infected=0.1)
     sir.set_seed(42)
     results = sir.run(steps=100)
+    
+    # Extract measures
+    prevalence = results.get_measure("prevalence")
+    state_counts = results.get_measure("state_counts")
+    
+    print(f"Peak prevalence: {prevalence.max():.2%}")
+    print(f"Final recovered: {state_counts['R'][-1]}")
 
-Diffusion Processes
+**Key parameters:**
+
+- **beta (β)**: Transmission rate (infection probability per contact)
+- **gamma (γ)**: Recovery rate (recovery probability per time step)
+- **R₀ = β/γ × ⟨k⟩**: Basic reproduction number (epidemic threshold at R₀=1)
+
+**Models:**
+
+- **SIR** — Epidemic with immunity (measles, chickenpox). Always dies out eventually.
+- **SIS** — Endemic disease without immunity (common cold, malware). Reaches stable equilibrium.
+
+Multilayer Dynamics
 ~~~~~~~~~~~~~~~~~~~
 
-[Information spreading, cascades]
+Infection spreads through multiple interaction channels:
+
+.. code-block:: python
+
+    # Two-layer network: physical + digital contacts
+    network = multinet.multi_layer_network(directed=False)
+    
+    # Add physical layer (local connections)
+    # Add digital layer (global connections)
+    
+    # Run dynamics
+    sir = SIRDynamics(network, beta=0.3, gamma=0.1)
+    results = sir.run(steps=100)
+
+The multilayer structure allows simultaneous spread through different contexts, often leading to faster and more extensive diffusion than single-layer networks.
 
 Algorithm Complexity and Scaling
 ---------------------------------
