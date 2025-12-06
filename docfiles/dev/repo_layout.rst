@@ -227,6 +227,22 @@ Working with the Repository
 Initial Setup
 ~~~~~~~~~~~~~
 
+**Recommended (Makefile-based):**
+
+.. code-block:: bash
+
+    # Clone repository
+    git clone https://github.com/SkBlaz/py3plex.git
+    cd py3plex
+    
+    # Create virtual environment and install dependencies
+    make setup
+    
+    # Install package in editable mode with dev dependencies
+    make dev-install
+
+**Alternative (manual venv + pip):**
+
 .. code-block:: bash
 
     # Clone repository

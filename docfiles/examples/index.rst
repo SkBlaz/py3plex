@@ -195,30 +195,33 @@ Real-World Datasets
 Running Examples
 ----------------
 
-All examples can be run directly with Python:
+All examples can be run directly with Python from the repository root:
 
 .. code-block:: bash
 
-    # Basic usage
-    python examples/example_multilayer_visualization.py
+    # Run a visualization example
+    python examples/visualization/example_multilayer_visualization.py
     
-    # With custom data
-    python examples/example_load_network.py path/to/your/network.edgelist
+    # Run a community detection example
+    python examples/communities/example_community_detection.py
     
-    # From repository root
-    cd py3plex
-    python examples/basic/example_load_network.py
+    # Run a getting started example
+    python examples/getting_started/tutorial_10min.py
+    
+    # Run a network analysis example
+    python examples/network_analysis/example_dsl_queries.py
 
 Many examples accept command-line arguments:
 
 .. code-block:: bash
 
-    python examples/example_community_detection.py --algorithm louvain --input data.graphml
+    python examples/communities/example_community_detection.py --algorithm louvain
 
 Example Template
 ----------------
 
-Use this template for your own scripts:
+Use this template when creating new example scripts. The pattern includes
+a docstring, a ``main()`` function, and an ``if __name__ == "__main__":`` guard:
 
 .. code-block:: python
 
@@ -229,7 +232,7 @@ Use this template for your own scripts:
     Description of what this example demonstrates.
     
     Usage:
-        python example_your_feature.py
+        python examples/<category>/example_your_feature.py
     """
     
     from py3plex.core import multinet
@@ -256,11 +259,12 @@ Contributing Examples
 
 To contribute an example:
 
-1. Create a well-documented script in ``examples/``
-2. Use the template above
-3. Test that it runs without errors
-4. Add it to this index with a brief description
-5. Submit a pull request
+1. Create a well-documented script in the appropriate ``examples/<category>/`` directory
+2. Use the template above with docstring + ``main()`` + ``if __name__ == "__main__":``
+3. Follow the naming convention: ``example_<feature>.py``
+4. Test that it runs without errors
+5. Add it to this index with a brief description
+6. Submit a pull request
 
 See :doc:`../dev/contributing` for detailed guidelines.
 

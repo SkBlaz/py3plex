@@ -39,7 +39,21 @@ Fork and Clone
 Development Setup
 ~~~~~~~~~~~~~~~~~
 
-Install in development mode with all dependencies:
+**Recommended (Makefile-based):**
+
+Use the Makefile for a streamlined setup:
+
+.. code-block:: bash
+
+    # Create virtual environment and install dependencies
+    make setup
+    
+    # Install package in editable mode with dev dependencies
+    make dev-install
+
+**Alternative (manual venv + pip):**
+
+If you prefer manual setup:
 
 .. code-block:: bash
 
@@ -50,7 +64,7 @@ Install in development mode with all dependencies:
     # Install in editable mode with dev dependencies
     pip install -e ".[dev]"
 
-This installs:
+Both methods install:
 
 * Core dependencies
 * Testing tools (pytest, coverage)

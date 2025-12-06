@@ -121,7 +121,18 @@ Key Concepts
 Next Steps
 ----------
 
+**Continue Learning:**
+
 * :doc:`tutorial_10min` — Complete workflow with community detection and embeddings
 * :doc:`installation` — Optional dependencies and setup options
 * :doc:`common_issues` — Solutions to common problems
+
+**Advanced Topics:**
+
+* :ref:`recipes` — Ready-to-use analysis workflows and patterns
+* :doc:`../user_guide/dsl` — SQL-like DSL for querying multilayer networks
+* :doc:`../user_guide/graph_ops` — Dplyr-style chainable graph operations
+
+**Examples:**
+
 * ``examples/`` directory — 50+ working examples
