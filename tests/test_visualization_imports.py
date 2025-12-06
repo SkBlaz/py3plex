@@ -148,5 +148,105 @@ class TestBackwardsCompatibility(unittest.TestCase):
         self.assertIs(cd1, cd2)
 
 
+class TestVisualizationAxesAPI(unittest.TestCase):
+    """Test the improved visualization API with optional axes."""
+
+    def test_draw_multilayer_default_returns_axes(self):
+        """Test that draw_multilayer_default returns axes object."""
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import networkx as nx
+        from py3plex.visualization import draw_multilayer_default
+        
+        # Create simple test graphs
+        G1 = nx.Graph()
+        G1.add_edge(1, 2)
+        nx.set_node_attributes(G1, {1: (0, 0), 2: (1, 1)}, 'pos')
+        
+        fig, ax = plt.subplots()
+        result = draw_multilayer_default([G1], ax=ax)
+        
+        self.assertIsNotNone(result)
+        plt.close(fig)
+
+    def test_draw_multilayer_default_display_false_by_default(self):
+        """Test that display defaults to False."""
+        import inspect
+        from py3plex.visualization import draw_multilayer_default
+        
+        sig = inspect.signature(draw_multilayer_default)
+        display_param = sig.parameters.get('display')
+        self.assertIsNotNone(display_param)
+        self.assertEqual(display_param.default, False)
+
+    def test_hairball_plot_returns_axes(self):
+        """Test that hairball_plot returns axes object when draw=True."""
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import networkx as nx
+        from py3plex.visualization import hairball_plot
+        
+        # Create a multilayer-style graph with tuple nodes
+        G = nx.Graph()
+        G.add_edges_from([
+            ((1, 'layer1'), (2, 'layer1')),
+            ((2, 'layer1'), (3, 'layer1')),
+        ])
+        
+        fig, ax = plt.subplots()
+        result = hairball_plot(G, ax=ax, draw=True)
+        
+        self.assertIsNotNone(result)
+        plt.close(fig)
+
+    def test_supra_adjacency_matrix_plot_returns_axes(self):
+        """Test that supra_adjacency_matrix_plot returns axes object."""
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from py3plex.visualization import supra_adjacency_matrix_plot
+        
+        matrix = np.random.rand(10, 10)
+        
+        fig, ax = plt.subplots()
+        result = supra_adjacency_matrix_plot(matrix, ax=ax)
+        
+        self.assertIsNotNone(result)
+        plt.close(fig)
+
+    def test_draw_multiedges_returns_axes(self):
+        """Test that draw_multiedges returns axes object."""
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import networkx as nx
+        from py3plex.visualization import draw_multiedges
+        
+        # Create simple test graphs with positions
+        G1 = nx.Graph()
+        G1.add_node(1)
+        G1.add_node(2)
+        nx.set_node_attributes(G1, {1: (0, 0), 2: (1, 1)}, 'pos')
+        
+        fig, ax = plt.subplots()
+        result = draw_multiedges([G1], [(1, 2)], ax=ax)
+        
+        self.assertIsNotNone(result)
+        plt.close(fig)
+
+    def test_draw_multilayer_sankey_display_false_by_default(self):
+        """Test that draw_multilayer_sankey display defaults to False."""
+        import inspect
+        from py3plex.visualization import draw_multilayer_sankey
+        
+        sig = inspect.signature(draw_multilayer_sankey)
+        display_param = sig.parameters.get('display')
+        self.assertIsNotNone(display_param)
+        self.assertEqual(display_param.default, False)
+
+
 if __name__ == "__main__":
     unittest.main()

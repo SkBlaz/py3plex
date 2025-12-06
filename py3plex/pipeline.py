@@ -5,6 +5,17 @@ This module provides a Pipeline class that enables chaining multiple network
 analysis steps together in a scikit-learn style API. This is useful for
 creating reproducible workflows and prototyping different analysis strategies.
 
+Public API:
+    - Pipeline: Main class for chaining pipeline steps
+    - PipelineStep: Abstract base class for custom pipeline steps
+    - LoadStep: Load network from file or generate random network
+    - AggregateLayers: Aggregate edges across layers
+    - LeidenMultilayer: Community detection using Leiden algorithm
+    - LouvainCommunity: Community detection using Louvain algorithm
+    - ComputeStats: Compute basic network statistics
+    - FilterNodes: Filter nodes based on conditions
+    - SaveNetwork: Save network to file
+
 Example:
     >>> from py3plex.pipeline import Pipeline, LoadStep, AggregateLayers
     >>> from py3plex.pipeline import LeidenMultilayer
@@ -25,6 +36,18 @@ from py3plex.core import multinet, random_generators
 from py3plex.logging_config import get_logger
 
 logger = get_logger(__name__)
+
+__all__ = [
+    "Pipeline",
+    "PipelineStep",
+    "LoadStep",
+    "AggregateLayers",
+    "LeidenMultilayer",
+    "LouvainCommunity",
+    "ComputeStats",
+    "FilterNodes",
+    "SaveNetwork",
+]
 
 
 class PipelineStep(ABC):

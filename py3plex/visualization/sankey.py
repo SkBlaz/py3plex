@@ -26,7 +26,7 @@ def draw_multilayer_sankey(
     multilinks: Dict[str, List[Tuple]],
     labels: Optional[List[str]] = None,
     ax: Optional[Any] = None,
-    display: bool = True,
+    display: bool = False,
     **kwargs
 ) -> Any:
     """Draw inter-layer flow diagram showing connection strength in multilayer networks.
@@ -41,17 +41,22 @@ def draw_multilayer_sankey(
         multilinks: Dictionary mapping edge_type -> list of multi-layer edges
         labels: Optional list of layer labels. If None, uses layer indices
         ax: Matplotlib axes to draw on. If None, creates new figure
-        display: If True, calls plt.show() at the end
+        display: If True, calls plt.show() after drawing. Default is False
+            to let the caller control rendering.
         **kwargs: Reserved for future extensions
 
     Returns:
         Matplotlib axes object
 
     Examples:
+        >>> import matplotlib.pyplot as plt
+        >>> from py3plex.visualization import draw_multilayer_sankey
         >>> network = multi_layer_network()
         >>> network.load_network("data.txt", input_type="multiedgelist")
         >>> labels, graphs, multilinks = network.get_layers()
-        >>> draw_multilayer_sankey(graphs, multilinks, labels=labels)
+        >>> fig, ax = plt.subplots(figsize=(12, 8))
+        >>> ax = draw_multilayer_sankey(graphs, multilinks, labels=labels, ax=ax)
+        >>> plt.savefig("sankey.png")
 
     Note:
         This visualization is most effective for networks with 2-5 layers.
