@@ -58,6 +58,14 @@ html_theme_options = {
 
 html_title = "Practical Multilayer Network Analysis with Py3plex"
 
+# Add custom static files
+html_static_path = ['_static']
+
+# Add custom CSS files
+html_css_files = [
+    'custom.css',
+]
+
 # -- Options for LaTeX/PDF output --------------------------------------------
 
 latex_engine = 'pdflatex'
