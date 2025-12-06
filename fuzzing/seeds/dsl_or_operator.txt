@@ -1,0 +1,1 @@
+SELECT nodes WHERE layer="layer1" OR layer="layer2"

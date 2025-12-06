@@ -1,0 +1,73 @@
+# Malformed DSL queries for edge case testing
+
+# Missing WHERE keyword
+SELECT nodes layer="layer1"
+
+# Invalid operator
+SELECT nodes WHERE degree ~~ 5
+
+# Missing quotes
+SELECT nodes WHERE layer=layer1
+
+# Unbalanced quotes
+SELECT nodes WHERE layer="layer1
+
+# Unknown target
+SELECT invalid_target
+
+# Unknown measure
+SELECT nodes COMPUTE unknown_measure
+
+# Empty SELECT
+SELECT
+
+# Incomplete WHERE
+SELECT nodes WHERE
+
+# Incomplete COMPUTE
+SELECT nodes COMPUTE
+
+# Extra spaces and tabs
+SELECT	nodes	WHERE	layer = "layer1"	
+
+# Mixed case keywords
+SeLeCt NoDeS wHeRe LaYeR="layer1"
+
+# Unicode characters
+SELECT nodes WHERE layer="🔥"
+
+# Very long strings
+SELECT nodes WHERE layer="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+# Negative numbers
+SELECT nodes WHERE degree > -999
+
+# Very large numbers
+SELECT nodes WHERE degree > 99999999999999999999
+
+# Special characters in identifiers
+SELECT nodes WHERE layer="@#$%^&*()"
+
+# SQL injection attempts
+SELECT nodes WHERE layer="layer1'; DROP TABLE nodes; --"
+
+# Nested quotes
+SELECT nodes WHERE layer="layer\\"1"
+
+# Multiple ANDs
+SELECT nodes WHERE layer="layer1" AND degree > 1 AND betweenness > 0
+
+# Parentheses (not supported but should fail gracefully)
+SELECT nodes WHERE (layer="layer1" OR layer="layer2") AND degree > 1
+
+# ORDER BY without COMPUTE
+SELECT nodes WHERE layer="layer1" ORDER BY degree
+
+# LIMIT without number
+SELECT nodes LIMIT
+
+# Zero limit
+SELECT nodes LIMIT 0
+
+# Negative limit
+SELECT nodes LIMIT -5
