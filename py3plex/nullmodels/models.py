@@ -85,12 +85,20 @@ def _copy_network(network: Any) -> Any:
         directed=network.directed if hasattr(network, 'directed') else False
     )
     
+    # Check if network has core_network initialized
+    if not hasattr(network, 'core_network') or network.core_network is None:
+        return new_network
+    
     # Copy nodes
     if hasattr(network, 'get_nodes'):
-        nodes = list(network.get_nodes())
-        for node in nodes:
-            if isinstance(node, tuple) and len(node) >= 2:
-                new_network.add_nodes([{'source': node[0], 'type': node[1]}])
+        try:
+            nodes = list(network.get_nodes())
+            for node in nodes:
+                if isinstance(node, tuple) and len(node) >= 2:
+                    new_network.add_nodes([{'source': node[0], 'type': node[1]}])
+        except (AttributeError, TypeError):
+            # Network may not have nodes yet
+            pass
     
     # Copy edges
     if hasattr(network, 'core_network') and network.core_network:
