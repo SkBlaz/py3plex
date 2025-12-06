@@ -11957,15 +11957,31 @@ Py3plex provides a Domain\sphinxhyphen{}Specific Language (DSL) for querying and
 
 \end{itemize}
 
+\begin{sphinxadmonition}{note}{Quick Start with Builder API}
+
+\sphinxAtStartPar
+For the fastest start, see the comprehensive builder API example:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+python\PYG{+w}{ }examples/network\PYGZus{}analysis/example\PYGZus{}dsl\PYGZus{}builder\PYGZus{}api.py
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+This example demonstrates all DSL v2 features with working code and explanations.
+\end{sphinxadmonition}
+
 \sphinxAtStartPar
 The DSL enables you to express complex network queries in a natural, SQL\sphinxhyphen{}like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write:
+
+\sphinxAtStartPar
+\sphinxstylestrong{String DSL syntax:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE layer=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{ AND degree \PYGZgt{} 5}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-Or using the new Builder API:
+\sphinxstylestrong{Or using the new Builder API (recommended):}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
@@ -13460,11 +13476,23 @@ Additional complete examples are available in the repository:
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxcode{\sphinxupquote{examples/network\_analysis/example\_dsl\_queries.py}} \sphinxhyphen{} Basic DSL usage with detailed output
+\sphinxcode{\sphinxupquote{examples/network\_analysis/example\_dsl\_builder\_api.py}} \sphinxhyphen{} \sphinxstylestrong{Comprehensive builder API examples} (recommended starting point for DSL v2)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/network\_analysis/example\_dsl\_queries.py}} \sphinxhyphen{} Basic DSL usage with string syntax
 
 \item {} 
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{examples/network\_analysis/example\_dsl\_advanced.py}} \sphinxhyphen{} Advanced queries and transportation network analysis
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/network\_analysis/example\_dsl\_community\_detection.py}} \sphinxhyphen{} Community detection with DSL
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/cli/example\_3\_dsl\_queries.sh}} \sphinxhyphen{} CLI usage examples for both string and builder syntax
 
 \end{itemize}
 
@@ -13472,9 +13500,14 @@ Additional complete examples are available in the repository:
 Run these examples:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{n}{cd} \PYG{n}{examples}\PYG{o}{/}\PYG{n}{network\PYGZus{}analysis}
-\PYG{n}{python} \PYG{n}{example\PYGZus{}dsl\PYGZus{}queries}\PYG{o}{.}\PYG{n}{py}
-\PYG{n}{python} \PYG{n}{example\PYGZus{}dsl\PYGZus{}advanced}\PYG{o}{.}\PYG{n}{py}
+\PYG{c+c1}{\PYGZsh{} Recommended: Comprehensive builder API examples}
+\PYG{n}{python} \PYG{n}{examples}\PYG{o}{/}\PYG{n}{network\PYGZus{}analysis}\PYG{o}{/}\PYG{n}{example\PYGZus{}dsl\PYGZus{}builder\PYGZus{}api}\PYG{o}{.}\PYG{n}{py}
+
+\PYG{c+c1}{\PYGZsh{} String DSL examples}
+\PYG{n}{python} \PYG{n}{examples}\PYG{o}{/}\PYG{n}{network\PYGZus{}analysis}\PYG{o}{/}\PYG{n}{example\PYGZus{}dsl\PYGZus{}queries}\PYG{o}{.}\PYG{n}{py}
+
+\PYG{c+c1}{\PYGZsh{} Advanced queries}
+\PYG{n}{python} \PYG{n}{examples}\PYG{o}{/}\PYG{n}{network\PYGZus{}analysis}\PYG{o}{/}\PYG{n}{example\PYGZus{}dsl\PYGZus{}advanced}\PYG{o}{.}\PYG{n}{py}
 \end{sphinxVerbatim}
 
 
@@ -13665,33 +13698,168 @@ Save/load query results
 
 
 \subsubsection{Best Practices}
-\label{\detokenize{user_guide/dsl:best-practices}}\begin{enumerate}
-\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\label{\detokenize{user_guide/dsl:best-practices}}
+\sphinxAtStartPar
+\sphinxstylestrong{1. Choose the Right API}
+\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Start simple}: Begin with basic queries and add complexity incrementally
+\sphinxstylestrong{Builder API (Q.nodes())}: Recommended for production code, complex queries, and when type hints are important
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Validate data}: Ensure network is properly constructed before querying
+\sphinxstylestrong{String DSL}: Good for simple queries, interactive exploration, and when learning the syntax
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{2. Start simple, build incrementally}
+
+\sphinxAtStartPar
+Begin with basic queries and add complexity step by step:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Start simple}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Add filtering}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Add computation}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Add ordering and limiting}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{3. Use parameterized queries for reusability}
+
+\sphinxAtStartPar
+Create reusable query templates with Param:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Define once}
+\PYG{n}{top\PYGZus{}nodes\PYGZus{}query} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{layer}\PYG{o}{=}\PYG{n}{Param}\PYG{o}{.}\PYG{n}{str}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer\PYGZus{}name}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{n}{Param}\PYG{o}{.}\PYG{n}{int}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{threshold}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{n}{Param}\PYG{o}{.}\PYG{n}{int}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{top\PYGZus{}n}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Execute many times with different parameters}
+\PYG{n}{social\PYGZus{}hubs} \PYG{o}{=} \PYG{n}{top\PYGZus{}nodes\PYGZus{}query}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer\PYGZus{}name}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{threshold}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{,} \PYG{n}{top\PYGZus{}n}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{)}
+\PYG{n}{work\PYGZus{}hubs} \PYG{o}{=} \PYG{n}{top\PYGZus{}nodes\PYGZus{}query}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer\PYGZus{}name}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{threshold}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{top\PYGZus{}n}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{4. Use EXPLAIN for expensive queries}
+
+\sphinxAtStartPar
+Before running expensive queries on large networks, check the execution plan:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{q} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plan} \PYG{o}{=} \PYG{n}{q}\PYG{o}{.}\PYG{n}{explain}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{k}{for} \PYG{n}{step} \PYG{o+ow}{in} \PYG{n}{plan}\PYG{o}{.}\PYG{n}{steps}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{step}\PYG{o}{.}\PYG{n}{description}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ \PYGZhy{} }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{step}\PYG{o}{.}\PYG{n}{estimated\PYGZus{}complexity}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{k}{if} \PYG{n}{plan}\PYG{o}{.}\PYG{n}{warnings}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Warnings:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{plan}\PYG{o}{.}\PYG{n}{warnings}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{5. Validate data and check results}
+
+\sphinxAtStartPar
+Always inspect result counts and samples before processing large result sets:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Found }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{if} \PYG{n}{result}\PYG{o}{.}\PYG{n}{count} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Sample: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{o}{.}\PYG{n}{items}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{c+c1}{\PYGZsh{} Process results...}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{6. Choose appropriate export format}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{to\_pandas()}: Best for data analysis, statistical operations, and visualization
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Check results}: Inspect result counts and samples before processing
+\sphinxstylestrong{to\_networkx()}: Best for further NetworkX operations or subgraph analysis
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Use convenience functions}: For common operations, use provided shortcuts
+\sphinxstylestrong{to\_arrow()}: Best for large datasets, columnar operations, or data interchange
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Handle errors}: Wrap queries in try\sphinxhyphen{}except for robust code
+\sphinxstylestrong{to\_dict()}: Best for serialization, API responses, or custom processing
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{7. Handle errors gracefully}
+
+\sphinxAtStartPar
+Use try\sphinxhyphen{}except blocks and leverage error messages:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{UnknownMeasureError}
+
+\PYG{k}{try}\PYG{p}{:}
+    \PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{my\PYGZus{}measure}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{k}{except} \PYG{n}{UnknownMeasureError} \PYG{k}{as} \PYG{n}{e}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Measure not found: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{e}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{c+c1}{\PYGZsh{} Fallback logic or use suggested measure}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{8. Performance optimization}
+
+\sphinxAtStartPar
+For large networks, follow these guidelines:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Filter by layer first to reduce search space
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Performance}: For large networks, filter by layer first to reduce computation
+Use \sphinxcode{\sphinxupquote{limit()}} to restrict result size when you don’t need all results
 
-\end{enumerate}
+\item {} 
+\sphinxAtStartPar
+Cache computed measures if reusing them multiple times
+
+\item {} 
+\sphinxAtStartPar
+Consider using \sphinxcode{\sphinxupquote{degree}} instead of more expensive centrality measures for initial filtering
+
+\end{itemize}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Less efficient \PYGZhy{} computes centrality for all nodes}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} More efficient \PYGZhy{} filter by degree first}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\end{sphinxVerbatim}
 
 
 \subsubsection{Performance Considerations}
@@ -27222,6 +27390,40 @@ This page provides a curated list of example scripts demonstrating py3plex featu
 \end{itemize}
 
 
+\subsubsection{DSL and Query Examples}
+\label{\detokenize{examples/index:dsl-and-query-examples}}
+\sphinxAtStartPar
+\sphinxstylestrong{DSL v2 (Recommended)}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{example\_dsl\_builder\_api.py}} \sphinxhyphen{} Comprehensive Python builder API examples (Q, L, Param)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{example\_dsl\_queries.py}} \sphinxhyphen{} String DSL syntax examples
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{example\_dsl\_advanced.py}} \sphinxhyphen{} Advanced queries and transportation network analysis
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{example\_dsl\_community\_detection.py}} \sphinxhyphen{} Community detection with DSL
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Features}:
+\sphinxhyphen{} SQL\sphinxhyphen{}like syntax for network queries
+\sphinxhyphen{} Python builder API with type hints (\sphinxcode{\sphinxupquote{Q.nodes()}}, \sphinxcode{\sphinxupquote{L{[}"layer"{]}}}, \sphinxcode{\sphinxupquote{Param}})
+\sphinxhyphen{} Layer algebra (union, difference, intersection)
+\sphinxhyphen{} Django\sphinxhyphen{}style WHERE conditions (\sphinxcode{\sphinxupquote{degree\_\_gt=5}})
+\sphinxhyphen{} COMPUTE measures with aliases
+\sphinxhyphen{} ORDER BY, LIMIT, EXPLAIN mode
+\sphinxhyphen{} Export to pandas, NetworkX, Arrow
+
+
 \subsubsection{Network Statistics Examples}
 \label{\detokenize{examples/index:network-statistics-examples}}
 \sphinxAtStartPar
@@ -27579,6 +27781,15 @@ This page provides a curated list of example scripts demonstrating py3plex featu
 All examples can be run directly with Python from the repository root:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Run DSL builder API examples (recommended starting point)}
+python\PYG{+w}{ }examples/network\PYGZus{}analysis/example\PYGZus{}dsl\PYGZus{}builder\PYGZus{}api.py
+
+\PYG{c+c1}{\PYGZsh{} Run string DSL examples}
+python\PYG{+w}{ }examples/network\PYGZus{}analysis/example\PYGZus{}dsl\PYGZus{}queries.py
+
+\PYG{c+c1}{\PYGZsh{} Run advanced DSL examples}
+python\PYG{+w}{ }examples/network\PYGZus{}analysis/example\PYGZus{}dsl\PYGZus{}advanced.py
+
 \PYG{c+c1}{\PYGZsh{} Run a visualization example}
 python\PYG{+w}{ }examples/visualization/example\PYGZus{}multilayer\PYGZus{}visualization.py
 
@@ -27587,9 +27798,6 @@ python\PYG{+w}{ }examples/communities/example\PYGZus{}community\PYGZus{}detectio
 
 \PYG{c+c1}{\PYGZsh{} Run a getting started example}
 python\PYG{+w}{ }examples/getting\PYGZus{}started/tutorial\PYGZus{}10min.py
-
-\PYG{c+c1}{\PYGZsh{} Run a network analysis example}
-python\PYG{+w}{ }examples/network\PYGZus{}analysis/example\PYGZus{}dsl\PYGZus{}queries.py
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar

@@ -291,12 +291,21 @@
 <li><p><strong>Parameterized Queries</strong>: Safe parameter binding for dynamic queries</p></li>
 <li><p><strong>Better Errors</strong>: “Did you mean?” suggestions for typos</p></li>
 </ul>
-<p>The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot; AND degree &gt; 5&#39;</span><span class="p">)</span>
+<div class="tip admonition">
+<p class="admonition-title">Quick Start with Builder API</p>
+<p>For the fastest start, see the comprehensive builder API example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/network_analysis/example_dsl_builder_api.py
 </pre></div>
 </div>
-<p>Or using the new Builder API:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<p>This example demonstrates all DSL v2 features with working code and explanations.</p>
+</div>
+<p>The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write:</p>
+<p><strong>String DSL syntax:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot; AND degree &gt; 5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Or using the new Builder API (recommended):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
@@ -1353,13 +1362,21 @@ transport    4        0.0000           0.0000
 <h3><a class="toc-backref" href="#id45" role="doc-backlink">Example Files</a><a class="headerlink" href="#example-files" title="Link to this heading"></a></h3>
 <p>Additional complete examples are available in the repository:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_queries.py</span></code> - Basic DSL usage with detailed output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_builder_api.py</span></code> - <strong>Comprehensive builder API examples</strong> (recommended starting point for DSL v2)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_queries.py</span></code> - Basic DSL usage with string syntax</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_advanced.py</span></code> - Advanced queries and transportation network analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_community_detection.py</span></code> - Community detection with DSL</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/cli/example_3_dsl_queries.sh</span></code> - CLI usage examples for both string and builder syntax</p></li>
 </ul>
 <p>Run these examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">examples</span><span class="o">/</span><span class="n">network_analysis</span>
-<span class="n">python</span> <span class="n">example_dsl_queries</span><span class="o">.</span><span class="n">py</span>
-<span class="n">python</span> <span class="n">example_dsl_advanced</span><span class="o">.</span><span class="n">py</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Recommended: Comprehensive builder API examples</span>
+<span class="n">python</span> <span class="n">examples</span><span class="o">/</span><span class="n">network_analysis</span><span class="o">/</span><span class="n">example_dsl_builder_api</span><span class="o">.</span><span class="n">py</span>
+
+<span class="c1"># String DSL examples</span>
+<span class="n">python</span> <span class="n">examples</span><span class="o">/</span><span class="n">network_analysis</span><span class="o">/</span><span class="n">example_dsl_queries</span><span class="o">.</span><span class="n">py</span>
+
+<span class="c1"># Advanced queries</span>
+<span class="n">python</span> <span class="n">examples</span><span class="o">/</span><span class="n">network_analysis</span><span class="o">/</span><span class="n">example_dsl_advanced</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 </section>
@@ -1515,14 +1532,104 @@ transport    4        0.0000           0.0000
 </section>
 <section id="best-practices">
 <h2><a class="toc-backref" href="#id51" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
-<ol class="arabic simple">
-<li><p><strong>Start simple</strong>: Begin with basic queries and add complexity incrementally</p></li>
-<li><p><strong>Validate data</strong>: Ensure network is properly constructed before querying</p></li>
-<li><p><strong>Check results</strong>: Inspect result counts and samples before processing</p></li>
-<li><p><strong>Use convenience functions</strong>: For common operations, use provided shortcuts</p></li>
-<li><p><strong>Handle errors</strong>: Wrap queries in try-except for robust code</p></li>
-<li><p><strong>Performance</strong>: For large networks, filter by layer first to reduce computation</p></li>
-</ol>
+<p><strong>1. Choose the Right API</strong></p>
+<ul class="simple">
+<li><p><strong>Builder API (Q.nodes())</strong>: Recommended for production code, complex queries, and when type hints are important</p></li>
+<li><p><strong>String DSL</strong>: Good for simple queries, interactive exploration, and when learning the syntax</p></li>
+</ul>
+<p><strong>2. Start simple, build incrementally</strong></p>
+<p>Begin with basic queries and add complexity step by step:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start simple</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Add filtering</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Add computation</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Add ordering and limiting</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>3. Use parameterized queries for reusability</strong></p>
+<p>Create reusable query templates with Param:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define once</span>
+<span class="n">top_nodes_query</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">Param</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="s2">&quot;layer_name&quot;</span><span class="p">),</span> <span class="n">degree__gt</span><span class="o">=</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">&quot;top_n&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Execute many times with different parameters</span>
+<span class="n">social_hubs</span> <span class="o">=</span> <span class="n">top_nodes_query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">work_hubs</span> <span class="o">=</span> <span class="n">top_nodes_query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>4. Use EXPLAIN for expensive queries</strong></p>
+<p>Before running expensive queries on large networks, check the execution plan:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">plan</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">estimated_complexity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">plan</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warnings:&quot;</span><span class="p">,</span> <span class="n">plan</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>5. Validate data and check results</strong></p>
+<p>Always inspect result counts and samples before processing large result sets:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Process results...</span>
+</pre></div>
+</div>
+<p><strong>6. Choose appropriate export format</strong></p>
+<ul class="simple">
+<li><p><strong>to_pandas()</strong>: Best for data analysis, statistical operations, and visualization</p></li>
+<li><p><strong>to_networkx()</strong>: Best for further NetworkX operations or subgraph analysis</p></li>
+<li><p><strong>to_arrow()</strong>: Best for large datasets, columnar operations, or data interchange</p></li>
+<li><p><strong>to_dict()</strong>: Best for serialization, API responses, or custom processing</p></li>
+</ul>
+<p><strong>7. Handle errors gracefully</strong></p>
+<p>Use try-except blocks and leverage error messages:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">UnknownMeasureError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;my_measure&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">UnknownMeasureError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measure not found: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Fallback logic or use suggested measure</span>
+</pre></div>
+</div>
+<p><strong>8. Performance optimization</strong></p>
+<p>For large networks, follow these guidelines:</p>
+<ul class="simple">
+<li><p>Filter by layer first to reduce search space</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">limit()</span></code> to restrict result size when you don’t need all results</p></li>
+<li><p>Cache computed measures if reusing them multiple times</p></li>
+<li><p>Consider using <code class="docutils literal notranslate"><span class="pre">degree</span></code> instead of more expensive centrality measures for initial filtering</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Less efficient - computes centrality for all nodes</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># More efficient - filter by degree first</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="performance-considerations">
 <h2><a class="toc-backref" href="#id52" role="doc-backlink">Performance Considerations</a><a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>

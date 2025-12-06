@@ -94,6 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#getting-started-examples">Getting Started Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visualization-examples">Visualization Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#community-detection-examples">Community Detection Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dsl-and-query-examples">DSL and Query Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#network-statistics-examples">Network Statistics Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-o-and-data-format-examples">I/O and Data Format Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#random-walks-and-embeddings">Random Walks and Embeddings</a></li>
@@ -195,6 +196,24 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">example_modularity.py</span></code> - Modularity optimization</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">example_overlapping_communities.py</span></code> - Overlapping community detection</p></li>
 </ul>
+</section>
+<section id="dsl-and-query-examples">
+<h2>DSL and Query Examples<a class="headerlink" href="#dsl-and-query-examples" title="Link to this heading"></a></h2>
+<p><strong>DSL v2 (Recommended)</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_builder_api.py</span></code> - Comprehensive Python builder API examples (Q, L, Param)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_queries.py</span></code> - String DSL syntax examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_advanced.py</span></code> - Advanced queries and transportation network analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_community_detection.py</span></code> - Community detection with DSL</p></li>
+</ul>
+<p><strong>Features</strong>:
+- SQL-like syntax for network queries
+- Python builder API with type hints (<code class="docutils literal notranslate"><span class="pre">Q.nodes()</span></code>, <code class="docutils literal notranslate"><span class="pre">L[&quot;layer&quot;]</span></code>, <code class="docutils literal notranslate"><span class="pre">Param</span></code>)
+- Layer algebra (union, difference, intersection)
+- Django-style WHERE conditions (<code class="docutils literal notranslate"><span class="pre">degree__gt=5</span></code>)
+- COMPUTE measures with aliases
+- ORDER BY, LIMIT, EXPLAIN mode
+- Export to pandas, NetworkX, Arrow</p>
 </section>
 <section id="network-statistics-examples">
 <h2>Network Statistics Examples<a class="headerlink" href="#network-statistics-examples" title="Link to this heading"></a></h2>
@@ -343,7 +362,16 @@
 <section id="running-examples">
 <h2>Running Examples<a class="headerlink" href="#running-examples" title="Link to this heading"></a></h2>
 <p>All examples can be run directly with Python from the repository root:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run a visualization example</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run DSL builder API examples (recommended starting point)</span>
+python<span class="w"> </span>examples/network_analysis/example_dsl_builder_api.py
+
+<span class="c1"># Run string DSL examples</span>
+python<span class="w"> </span>examples/network_analysis/example_dsl_queries.py
+
+<span class="c1"># Run advanced DSL examples</span>
+python<span class="w"> </span>examples/network_analysis/example_dsl_advanced.py
+
+<span class="c1"># Run a visualization example</span>
 python<span class="w"> </span>examples/visualization/example_multilayer_visualization.py
 
 <span class="c1"># Run a community detection example</span>
@@ -351,9 +379,6 @@ python<span class="w"> </span>examples/communities/example_community_detection.p
 
 <span class="c1"># Run a getting started example</span>
 python<span class="w"> </span>examples/getting_started/tutorial_10min.py
-
-<span class="c1"># Run a network analysis example</span>
-python<span class="w"> </span>examples/network_analysis/example_dsl_queries.py
 </pre></div>
 </div>
 <p>Many examples accept command-line arguments:</p>

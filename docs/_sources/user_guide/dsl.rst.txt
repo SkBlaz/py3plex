@@ -19,11 +19,28 @@ Py3plex provides a Domain-Specific Language (DSL) for querying and analyzing mul
 - **Parameterized Queries**: Safe parameter binding for dynamic queries
 - **Better Errors**: "Did you mean?" suggestions for typos
 
-The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write::
+.. admonition:: Quick Start with Builder API
+   :class: tip
+
+   For the fastest start, see the comprehensive builder API example:
+   
+   .. code-block:: bash
+   
+       python examples/network_analysis/example_dsl_builder_api.py
+   
+   This example demonstrates all DSL v2 features with working code and explanations.
+
+The DSL enables you to express complex network queries in a natural, SQL-like language without writing verbose code. For example, instead of manually iterating through nodes and checking conditions, you can write:
+
+**String DSL syntax:**
+
+.. code-block:: python
 
     execute_query(network, 'SELECT nodes WHERE layer="social" AND degree > 5')
 
-Or using the new Builder API::
+**Or using the new Builder API (recommended):**
+
+.. code-block:: python
 
     from py3plex.dsl import Q, L
     
@@ -1096,14 +1113,22 @@ Example Files
 
 Additional complete examples are available in the repository:
 
-- ``examples/network_analysis/example_dsl_queries.py`` - Basic DSL usage with detailed output
+- ``examples/network_analysis/example_dsl_builder_api.py`` - **Comprehensive builder API examples** (recommended starting point for DSL v2)
+- ``examples/network_analysis/example_dsl_queries.py`` - Basic DSL usage with string syntax
 - ``examples/network_analysis/example_dsl_advanced.py`` - Advanced queries and transportation network analysis
+- ``examples/network_analysis/example_dsl_community_detection.py`` - Community detection with DSL
+- ``examples/cli/example_3_dsl_queries.sh`` - CLI usage examples for both string and builder syntax
 
 Run these examples::
 
-    cd examples/network_analysis
-    python example_dsl_queries.py
-    python example_dsl_advanced.py
+    # Recommended: Comprehensive builder API examples
+    python examples/network_analysis/example_dsl_builder_api.py
+    
+    # String DSL examples
+    python examples/network_analysis/example_dsl_queries.py
+    
+    # Advanced queries
+    python examples/network_analysis/example_dsl_advanced.py
 
 API Reference
 -------------
@@ -1260,12 +1285,120 @@ Planned enhancements:
 Best Practices
 --------------
 
-1. **Start simple**: Begin with basic queries and add complexity incrementally
-2. **Validate data**: Ensure network is properly constructed before querying
-3. **Check results**: Inspect result counts and samples before processing
-4. **Use convenience functions**: For common operations, use provided shortcuts
-5. **Handle errors**: Wrap queries in try-except for robust code
-6. **Performance**: For large networks, filter by layer first to reduce computation
+**1. Choose the Right API**
+
+- **Builder API (Q.nodes())**: Recommended for production code, complex queries, and when type hints are important
+- **String DSL**: Good for simple queries, interactive exploration, and when learning the syntax
+
+**2. Start simple, build incrementally**
+
+Begin with basic queries and add complexity step by step:
+
+.. code-block:: python
+
+    # Start simple
+    result = Q.nodes().execute(network)
+    
+    # Add filtering
+    result = Q.nodes().where(layer="social").execute(network)
+    
+    # Add computation
+    result = Q.nodes().where(layer="social").compute("degree").execute(network)
+    
+    # Add ordering and limiting
+    result = (
+        Q.nodes()
+        .where(layer="social")
+        .compute("degree")
+        .order_by("-degree")
+        .limit(10)
+        .execute(network)
+    )
+
+**3. Use parameterized queries for reusability**
+
+Create reusable query templates with Param:
+
+.. code-block:: python
+
+    # Define once
+    top_nodes_query = (
+        Q.nodes()
+        .where(layer=Param.str("layer_name"), degree__gt=Param.int("threshold"))
+        .compute("betweenness_centrality")
+        .order_by("-betweenness_centrality")
+        .limit(Param.int("top_n"))
+    )
+    
+    # Execute many times with different parameters
+    social_hubs = top_nodes_query.execute(network, layer_name="social", threshold=5, top_n=10)
+    work_hubs = top_nodes_query.execute(network, layer_name="work", threshold=3, top_n=20)
+
+**4. Use EXPLAIN for expensive queries**
+
+Before running expensive queries on large networks, check the execution plan:
+
+.. code-block:: python
+
+    q = Q.nodes().compute("betweenness_centrality")
+    plan = q.explain().execute(network)
+    
+    for step in plan.steps:
+        print(f"{step.description} - {step.estimated_complexity}")
+    
+    if plan.warnings:
+        print("Warnings:", plan.warnings)
+
+**5. Validate data and check results**
+
+Always inspect result counts and samples before processing large result sets:
+
+.. code-block:: python
+
+    result = Q.nodes().where(degree__gt=5).execute(network)
+    
+    print(f"Found {result.count} nodes")
+    if result.count > 0:
+        print(f"Sample: {result.items[:3]}")
+        # Process results...
+
+**6. Choose appropriate export format**
+
+- **to_pandas()**: Best for data analysis, statistical operations, and visualization
+- **to_networkx()**: Best for further NetworkX operations or subgraph analysis
+- **to_arrow()**: Best for large datasets, columnar operations, or data interchange
+- **to_dict()**: Best for serialization, API responses, or custom processing
+
+**7. Handle errors gracefully**
+
+Use try-except blocks and leverage error messages:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, UnknownMeasureError
+    
+    try:
+        result = Q.nodes().compute("my_measure").execute(network)
+    except UnknownMeasureError as e:
+        print(f"Measure not found: {e}")
+        # Fallback logic or use suggested measure
+
+**8. Performance optimization**
+
+For large networks, follow these guidelines:
+
+- Filter by layer first to reduce search space
+- Use ``limit()`` to restrict result size when you don't need all results
+- Cache computed measures if reusing them multiple times
+- Consider using ``degree`` instead of more expensive centrality measures for initial filtering
+
+.. code-block:: python
+
+    # Less efficient - computes centrality for all nodes
+    result = Q.nodes().compute("betweenness_centrality").order_by("-betweenness_centrality").limit(10).execute(network)
+    
+    # More efficient - filter by degree first
+    result = Q.nodes().where(degree__gt=5).compute("betweenness_centrality").order_by("-betweenness_centrality").limit(10).execute(network)
 
 Performance Considerations
 --------------------------

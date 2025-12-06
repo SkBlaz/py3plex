@@ -53,6 +53,25 @@ Community Detection Examples
 * ``example_modularity.py`` - Modularity optimization
 * ``example_overlapping_communities.py`` - Overlapping community detection
 
+DSL and Query Examples
+----------------------
+
+**DSL v2 (Recommended)**
+
+* ``example_dsl_builder_api.py`` - Comprehensive Python builder API examples (Q, L, Param)
+* ``example_dsl_queries.py`` - String DSL syntax examples  
+* ``example_dsl_advanced.py`` - Advanced queries and transportation network analysis
+* ``example_dsl_community_detection.py`` - Community detection with DSL
+
+**Features**:
+- SQL-like syntax for network queries
+- Python builder API with type hints (``Q.nodes()``, ``L["layer"]``, ``Param``)
+- Layer algebra (union, difference, intersection)
+- Django-style WHERE conditions (``degree__gt=5``)
+- COMPUTE measures with aliases
+- ORDER BY, LIMIT, EXPLAIN mode
+- Export to pandas, NetworkX, Arrow
+
 Network Statistics Examples
 ----------------------------
 
@@ -199,6 +218,15 @@ All examples can be run directly with Python from the repository root:
 
 .. code-block:: bash
 
+    # Run DSL builder API examples (recommended starting point)
+    python examples/network_analysis/example_dsl_builder_api.py
+    
+    # Run string DSL examples
+    python examples/network_analysis/example_dsl_queries.py
+    
+    # Run advanced DSL examples
+    python examples/network_analysis/example_dsl_advanced.py
+    
     # Run a visualization example
     python examples/visualization/example_multilayer_visualization.py
     
@@ -207,9 +235,6 @@ All examples can be run directly with Python from the repository root:
     
     # Run a getting started example
     python examples/getting_started/tutorial_10min.py
-    
-    # Run a network analysis example
-    python examples/network_analysis/example_dsl_queries.py
 
 Many examples accept command-line arguments:
 
