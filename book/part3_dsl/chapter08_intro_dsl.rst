@@ -594,6 +594,6 @@ The next chapter covers the EXPLAIN mode for understanding query execution and p
 Further Reading
 ---------------
 
-* Chapter 9: The Builder API and Explain Plans
-* Chapter 10: Advanced Queries and Workflows
+* The Builder API and Explain Plans
+* Advanced Queries and Workflows
 * ``examples/network_analysis/example_dsl_builder_api.py`` — Complete examples
