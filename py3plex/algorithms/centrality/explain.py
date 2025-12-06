@@ -98,9 +98,20 @@ def explain_node_centrality(
     explanation["local_motifs"] = _compute_local_motifs(G, node)
 
     # Compute ranking information
-    sorted_scores = sorted(centrality_scores.values(), reverse=True)
-    rank = sorted_scores.index(score) + 1
-    percentile = (len(sorted_scores) - rank) / len(sorted_scores) * 100
+    # Sort by score descending, then by node for stable ordering
+    sorted_items = sorted(centrality_scores.items(), key=lambda x: (-x[1], str(x[0])))
+
+    # Find rank (handle ties by giving same rank to same scores)
+    rank = 1
+    for i, (n, s) in enumerate(sorted_items):
+        if i > 0 and sorted_items[i - 1][1] != s:
+            rank = i + 1
+        if n == node:
+            break
+
+    # Percentile calculation
+    num_nodes = len(centrality_scores)
+    percentile = (num_nodes - rank) / num_nodes * 100 if num_nodes > 1 else 0.0
 
     explanation["rank"] = rank
     explanation["percentile"] = round(percentile, 2)

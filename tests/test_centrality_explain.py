@@ -197,6 +197,34 @@ class TestExplainNodeCentrality(unittest.TestCase):
         self.assertLessEqual(explanation_b["percentile"], 100)
 
     @skip_if_no_deps
+    def test_ranking_with_ties(self):
+        """Test that ranking handles tied scores correctly."""
+        scores = {
+            ("A", "L1"): 0.5,
+            ("B", "L1"): 0.5,  # Tie with A
+            ("C", "L1"): 0.3,
+        }
+
+        explanation_a = explain_node_centrality(
+            self.triangle_network, ("A", "L1"), scores, method="degree"
+        )
+
+        explanation_b = explain_node_centrality(
+            self.triangle_network, ("B", "L1"), scores, method="degree"
+        )
+
+        explanation_c = explain_node_centrality(
+            self.triangle_network, ("C", "L1"), scores, method="degree"
+        )
+
+        # A and B should have same rank (both are tied for first)
+        self.assertEqual(explanation_a["rank"], 1)
+        self.assertEqual(explanation_b["rank"], 1)
+
+        # C should be ranked lower
+        self.assertEqual(explanation_c["rank"], 3)
+
+    @skip_if_no_deps
     def test_layer_breakdown_for_degree(self):
         """Test that layer breakdown is correct for degree centrality."""
         scores = {
