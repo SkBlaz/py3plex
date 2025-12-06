@@ -339,8 +339,16 @@ def _evaluate_expression(
         raise ValueError(f"Unsafe expression: {expr}")
     
     try:
-        # Evaluate using Python's eval with restricted namespace
-        result = eval(safe_expr, {"__builtins__": {}}, {})
+        # Evaluate using Python's eval with very restricted namespace
+        # Only allow basic arithmetic operations
+        allowed_names = {
+            '__builtins__': {},
+            # Allow only safe math operations
+        }
+        result = eval(safe_expr, allowed_names, {})
         return float(result)
-    except Exception as e:
+    except (SyntaxError, ValueError, NameError, TypeError) as e:
         raise ValueError(f"Failed to evaluate expression '{expr}': {e}")
+    except Exception as e:
+        # Catch any other exceptions for safety
+        raise ValueError(f"Unsafe or invalid expression '{expr}': {e}")

@@ -67,6 +67,17 @@ class DynamicsProcess(ABC):
         self.seed = seed
         self.rng = np.random.default_rng(seed)
     
+    def set_seed(self, seed: int) -> None:
+        """Set or reset the random seed for the process.
+        
+        This method allows re-seeding the process without creating a new instance.
+        
+        Args:
+            seed: New random seed
+        """
+        self.seed = seed
+        self.rng = np.random.default_rng(seed)
+    
     @abstractmethod
     def initialize_state(self, seed: Optional[int] = None) -> Any:
         """Construct and return the initial state for the process.
@@ -197,6 +208,17 @@ class ContinuousTimeProcess(ABC):
         self.seed = seed
         self.rng = np.random.default_rng(seed)
         self.current_time = 0.0
+    
+    def set_seed(self, seed: int) -> None:
+        """Set or reset the random seed for the process.
+        
+        This method allows re-seeding the process without creating a new instance.
+        
+        Args:
+            seed: New random seed
+        """
+        self.seed = seed
+        self.rng = np.random.default_rng(seed)
     
     @abstractmethod
     def initialize_state(self, seed: Optional[int] = None) -> Any:

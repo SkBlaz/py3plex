@@ -266,9 +266,7 @@ def example_config_based():
     
     # Build dynamics from config
     dynamics = build_dynamics_from_config(G, config)
-    dynamics.seed = 42
-    import numpy as np
-    dynamics.rng = np.random.default_rng(42)
+    dynamics.set_seed(42)  # Set seed using the new method
     
     # Run simulation
     trajectory = dynamics.run(steps=50)

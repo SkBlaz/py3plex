@@ -492,10 +492,9 @@ class TestConfigBasedDynamics:
             "initial": {"I": 0.1}
         }
         
-        # Build dynamics with seed in constructor
+        # Build dynamics and set seed using the new method
         dynamics = build_dynamics_from_config(small_graph, config)
-        dynamics.seed = 42
-        dynamics.rng = np.random.default_rng(42)
+        dynamics.set_seed(42)
         trajectory = dynamics.run(steps=20)
         
         assert len(trajectory) == 21
@@ -516,10 +515,9 @@ class TestConfigBasedDynamics:
             "initial": {"A": 1.0}
         }
         
-        # Build dynamics with seed in constructor
+        # Build dynamics and set seed using the new method
         dynamics = build_dynamics_from_config(small_graph, config)
-        dynamics.seed = 42
-        dynamics.rng = np.random.default_rng(42)
+        dynamics.set_seed(42)
         trajectory = dynamics.run(steps=10)
         
         # Should have transitions from A to B
