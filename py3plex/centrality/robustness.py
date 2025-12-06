@@ -21,6 +21,8 @@ import networkx as nx
 import numpy as np
 
 from py3plex.core import multinet
+from py3plex.dynamics import D, SIS, SIR
+from py3plex.dynamics.errors import DynamicsError
 
 
 def robustness_centrality(
@@ -88,6 +90,7 @@ def robustness_centrality(
     - For each target, it removes the target, recomputes the metric, and takes
       the difference: baseline - perturbed.
     - For dynamics metrics, it runs a simulation with fixed seed and parameters.
+    - Each metric computation uses a fresh random state to ensure independence.
     """
     # Validate inputs
     if target not in ("node", "layer"):
@@ -102,11 +105,13 @@ def robustness_centrality(
     if metric not in valid_metrics:
         raise ValueError(f"metric must be one of {valid_metrics}, got '{metric}'")
     
-    # Set up random state for dynamics
-    rng = np.random.default_rng(seed)
+    # Create base RNG
+    base_rng = np.random.default_rng(seed)
     
-    # Compute baseline metric
-    baseline = _compute_metric(graph, metric, dynamics_params, rng)
+    # Compute baseline metric (use a fresh seed for baseline)
+    baseline_seed = int(base_rng.integers(0, 2**31))
+    baseline_rng = np.random.default_rng(baseline_seed)
+    baseline = _compute_metric(graph, metric, dynamics_params, baseline_rng)
     
     # Determine targets to measure
     if target == "node":
@@ -135,8 +140,10 @@ def robustness_centrality(
         else:  # target == "layer"
             perturbed = _remove_layer(graph, tgt)
         
-        # Compute metric on perturbed network
-        perturbed_value = _compute_metric(perturbed, metric, dynamics_params, rng)
+        # Compute metric on perturbed network (use a fresh seed)
+        perturbed_seed = int(base_rng.integers(0, 2**31))
+        perturbed_rng = np.random.default_rng(perturbed_seed)
+        perturbed_value = _compute_metric(perturbed, metric, dynamics_params, perturbed_rng)
         
         # Robustness is the impact: baseline - perturbed
         # For metrics where higher is better (giant_component), this is positive
@@ -233,6 +240,11 @@ def _compute_avg_shortest_path(graph: multinet.multi_layer_network) -> float:
     -------
     float
         Average shortest path length, or float('inf') if not computable.
+    
+    Notes
+    -----
+    For very large components (>1000 nodes), this can be expensive. Consider
+    using sampling or approximation methods for large networks.
     """
     G = graph.core_network
     
@@ -253,6 +265,15 @@ def _compute_avg_shortest_path(graph: multinet.multi_layer_network) -> float:
     
     for comp in components:
         if len(comp) < 2:
+            continue
+        
+        # Skip very large components for performance
+        if len(comp) > 1000:
+            warnings.warn(
+                f"Skipping large component with {len(comp)} nodes for performance. "
+                "Consider using sampling for large networks.",
+                RuntimeWarning
+            )
             continue
         
         subgraph = G.subgraph(comp)
@@ -304,9 +325,6 @@ def _compute_sis_prevalence(
     if dynamics_params:
         params.update(dynamics_params)
     
-    # Use the dynamics module
-    from py3plex.dynamics import D, SIS
-    
     try:
         # Build simulation
         sim = (
@@ -329,7 +347,7 @@ def _compute_sis_prevalence(
             return final_prevalence
         else:
             return 0.0
-    except Exception as e:
+    except (DynamicsError, ValueError, KeyError) as e:
         # If simulation fails (e.g., empty network), return 0
         warnings.warn(f"SIS simulation failed: {e}", RuntimeWarning)
         return 0.0
@@ -366,9 +384,6 @@ def _compute_sir_final_size(
     if dynamics_params:
         params.update(dynamics_params)
     
-    # Use the dynamics module
-    from py3plex.dynamics import D, SIR
-    
     try:
         # Build simulation - use state_counts to get R count
         sim = (
@@ -396,7 +411,7 @@ def _compute_sir_final_size(
                 recovered_count = final_counts.get(2, 0)
                 return float(recovered_count) / float(total_nodes)
         return 0.0
-    except Exception as e:
+    except (DynamicsError, ValueError, KeyError) as e:
         # If simulation fails (e.g., empty network), return 0
         warnings.warn(f"SIR simulation failed: {e}", RuntimeWarning)
         return 0.0

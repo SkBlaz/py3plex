@@ -153,8 +153,13 @@ class TestNodeRobustness:
 
     def test_empty_network(self):
         """Test handling of empty network."""
+        # Create empty network by adding no edges
         net = multinet.multi_layer_network(directed=False, verbose=False)
-        net._initiate_network()
+        # Force initialization by attempting to add an empty edge list
+        try:
+            net.add_edges([], input_type="list")
+        except:
+            pass  # May fail, but that's ok
         
         scores = robustness_centrality(
             net, target="node", metric="giant_component", seed=42
@@ -311,8 +316,11 @@ class TestEdgeCases:
     def test_single_node_network(self):
         """Test network with single node."""
         net = multinet.multi_layer_network(directed=False, verbose=False)
-        net._initiate_network()
-        net.core_network.add_node(("a", "L0"))
+        # Add a single isolated node by creating and then removing an edge
+        edges = [["a", "L0", "b", "L0", 1.0]]
+        net.add_edges(edges, input_type="list")
+        # Now remove node b to leave only node a
+        net.core_network.remove_node(("b", "L0"))
         
         scores = robustness_centrality(
             net, target="node", metric="giant_component", seed=42
