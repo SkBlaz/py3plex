@@ -16,6 +16,7 @@
       <script src="_static/documentation_options.js?v=da898538"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -150,7 +151,7 @@
 </pre></div>
 </div>
 <p>Create a multilayer network:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
@@ -648,34 +649,34 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="reference/api_index.html">API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#core-modules">Core Modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#configuration-and-utilities">Configuration and Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#domain-specific-language-dsl">Domain-Specific Language (DSL)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.core.multinet">Core Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.config">Configuration and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.dsl">Domain-Specific Language (DSL)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#algorithms">Algorithms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#visualization">Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#wrappers">Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.visualization.multilayer">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.wrappers.benchmark_nodes">Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#i-o-operations">I/O Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#profiling-utilities">Profiling Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#logging-configuration">Logging Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.profiling">Profiling Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.logging_config">Logging Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#i-o-schema-and-validation">I/O Schema and Validation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hedwig-rule-learning">Hedwig Rule Learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#force-atlas-2-visualization">Force Atlas 2 Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#embedding-visualization">Embedding Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.hedwig">Hedwig Rule Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.visualization.fa2.forceatlas2">Force Atlas 2 Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.visualization.embedding_visualization.embedding_visualization">Embedding Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#network-generation-and-benchmarking">Network Generation and Benchmarking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#additional-statistics-and-analysis">Additional Statistics and Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#community-detection-advanced">Community Detection Advanced</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#node-ranking-and-classification">Node Ranking and Classification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#embeddings-and-wrappers">Embeddings and Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.statistics.bayesiantests">Additional Statistics and Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.community_detection.NoRC">Community Detection Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.node_ranking">Node Ranking and Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.wrappers.train_node2vec_embedding">Embeddings and Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#network-motifs-and-patterns">Network Motifs and Patterns</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hinmine-data-structures">HINMINE Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#command-line-interface">Command-Line Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#validation-utilities">Validation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.core.HINMINE.dataStructures">HINMINE Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.cli">Command-Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.validation">Validation Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#network-comparison-and-testing">Network Comparison and Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hedwig-learning-algorithms">Hedwig Learning Algorithms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hedwig-statistics-and-scoring">Hedwig Statistics and Scoring</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#hedwig-core-components">Hedwig Core Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.hedwig.learners.learner">Hedwig Learning Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.hedwig.stats.scorefunctions">Hedwig Statistics and Scoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.algorithms.hedwig.core.converters">Hedwig Core Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#time-series-and-temporal-analysis">Time Series and Temporal Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#advanced-visualization">Advanced Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#module-py3plex.visualization.sankey">Advanced Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/api_index.html#link-prediction">Link Prediction</a></li>
 </ul>
 </li>

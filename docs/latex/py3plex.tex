@@ -71,7 +71,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Dec 05, 2025}
+\date{Dec 06, 2025}
 \release{0.95a}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -26769,110 +26769,6 @@ Working code examples for various use cases.
 
 
 \subsection{Examples}
-\label{\detokenize{examples/part_intro:examples}}\label{\detokenize{examples/part_intro::doc}}
-\sphinxAtStartPar
-This section provides complete, working code examples for various py3plex use cases.
-
-\sphinxAtStartPar
-Each example is:
-\begin{itemize}
-\item {} 
-\sphinxAtStartPar
-\sphinxstylestrong{Complete} — Runs from start to finish without modification
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstylestrong{Annotated} — Explains what the code does and why
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstylestrong{Practical} — Based on real analysis patterns
-
-\end{itemize}
-
-\sphinxAtStartPar
-\sphinxstylestrong{Examples cover:}
-\begin{itemize}
-\item {} 
-\sphinxAtStartPar
-Network creation and loading
-
-\item {} 
-\sphinxAtStartPar
-Statistical analysis
-
-\item {} 
-\sphinxAtStartPar
-Community detection
-
-\item {} 
-\sphinxAtStartPar
-Visualization
-
-\item {} 
-\sphinxAtStartPar
-Random walks and embeddings
-
-\item {} 
-\sphinxAtStartPar
-Complete end\sphinxhyphen{}to\sphinxhyphen{}end workflows
-
-\end{itemize}
-
-
-\subsubsection{How to Use}
-\label{\detokenize{examples/part_intro:how-to-use}}\begin{itemize}
-\item {} 
-\sphinxAtStartPar
-\sphinxstylestrong{Learning:} Work through examples in order to build skills progressively
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstylestrong{Templates:} Find a similar example and adapt it to your problem
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstylestrong{Reference:} Quick reminder of how to do specific tasks
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstylestrong{Validation:} Verify your installation works correctly
-
-\end{itemize}
-
-\sphinxAtStartPar
-Browse the {\hyperref[\detokenize{examples/index::doc}]{\sphinxcrossref{\DUrole{doc}{Examples}}}} to find relevant examples.
-
-\begin{sphinxadmonition}{note}{Note:}
-\sphinxAtStartPar
-All examples require py3plex to be installed. Some need optional dependencies—check imports at the top of each example.
-
-\sphinxAtStartPar
-Common optional dependencies:
-\begin{itemize}
-\item {} 
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{matplotlib}} — visualization
-
-\item {} 
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{gensim}} — embeddings
-
-\item {} 
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{python\sphinxhyphen{}louvain}} — community detection
-
-\item {} 
-\sphinxAtStartPar
-\sphinxcode{\sphinxupquote{sklearn}} — machine learning
-
-\end{itemize}
-\end{sphinxadmonition}
-
-\sphinxstepscope
-
-
-\subsection{Examples}
 \label{\detokenize{examples/index:examples}}\label{\detokenize{examples/index::doc}}
 \sphinxAtStartPar
 This page provides a curated list of example scripts demonstrating py3plex features. All examples are available in the \sphinxhref{https://github.com/SkBlaz/py3plex/tree/master/examples}{examples/ directory}%
@@ -48111,11 +48007,16 @@ DataFrame with validation results
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.visualization.multilayer.}}\sphinxbfcode{\sphinxupquote{draw\_multiedges}}}
-{\sphinxparam{\DUrole{n}{network\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Graph\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Graph\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multi\_edge\_tuple}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{input\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}nodes\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{linepoints}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}\sphinxhyphen{}.\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alphachannel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.3}}\sphinxparamcomma \sphinxparam{\DUrole{n}{linecolor}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}black\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{curve\_height}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{style}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}curve2\_bezier\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{linewidth}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{invert}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{linmod}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}both\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{resolution}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.001}}}
-{{ $\rightarrow$ None}}
+{\sphinxparam{\DUrole{n}{network\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Graph\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Graph\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multi\_edge\_tuple}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{input\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}nodes\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{linepoints}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}\sphinxhyphen{}.\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alphachannel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.3}}\sphinxparamcomma \sphinxparam{\DUrole{n}{linecolor}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}black\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{curve\_height}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{style}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}curve2\_bezier\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{linewidth}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{invert}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{linmod}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}both\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{resolution}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.001}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ax}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ Any}}
 \pysigstopsignatures
 \sphinxAtStartPar
 Draw edges connecting multiple layers.
+
+\sphinxAtStartPar
+Draws curved or straight edges that connect nodes across different layers
+in a multilayer network visualization. Typically used after draw\_multilayer\_default
+to add inter\sphinxhyphen{}layer connections.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
@@ -48124,7 +48025,7 @@ Draw edges connecting multiple layers.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{multi\_edge\_tuple}} \textendash{} Tuple specifying edges to draw
+\sphinxstyleliteralstrong{\sphinxupquote{multi\_edge\_tuple}} \textendash{} List of tuples specifying edges to draw, e.g. {[}(node1, node2), …{]}
 
 \item {} 
 \sphinxAtStartPar
@@ -48132,11 +48033,11 @@ Draw edges connecting multiple layers.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{linepoints}} \textendash{} Line style
+\sphinxstyleliteralstrong{\sphinxupquote{linepoints}} \textendash{} Line style (e.g., “\sphinxhyphen{}.”, “\textendash{}”, “\sphinxhyphen{}“)
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{alphachannel}} \textendash{} Transparency level
+\sphinxstyleliteralstrong{\sphinxupquote{alphachannel}} \textendash{} Transparency level (0.0 to 1.0)
 
 \item {} 
 \sphinxAtStartPar
@@ -48148,7 +48049,7 @@ Draw edges connecting multiple layers.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{style}} \textendash{} Style of edges (“curve2\_bezier”, “line”, etc.)
+\sphinxstyleliteralstrong{\sphinxupquote{style}} \textendash{} Style of edges (“curve2\_bezier”, “line”, “curve3\_bezier”, “curve3\_fit”, “piramidal”)
 
 \item {} 
 \sphinxAtStartPar
@@ -48166,9 +48067,27 @@ Draw edges connecting multiple layers.
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{resolution}} \textendash{} Resolution for curve drawing
 
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ax}} \textendash{} Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
+
 \end{itemize}
 
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Matplotlib Axes object containing the visualization.
+
 \end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}\PYG{p}{,} \PYG{n}{draw\PYGZus{}multiedges}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{fig}\PYG{p}{,} \PYG{n}{ax} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{ax} \PYG{o}{=} \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}\PYG{p}{(}\PYG{n}{graphs}\PYG{p}{,} \PYG{n}{ax}\PYG{o}{=}\PYG{n}{ax}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{ax} \PYG{o}{=} \PYG{n}{draw\PYGZus{}multiedges}\PYG{p}{(}\PYG{n}{graphs}\PYG{p}{,} \PYG{n}{edges}\PYG{p}{,} \PYG{n}{ax}\PYG{o}{=}\PYG{n}{ax}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multilayer\PYGZus{}with\PYGZus{}edges.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -48179,11 +48098,16 @@ Draw edges connecting multiple layers.
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.visualization.multilayer.}}\sphinxbfcode{\sphinxupquote{draw\_multilayer\_default}}}
-{\sphinxparam{\DUrole{n}{network\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Graph\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Graph\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alphalevel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.13}}\sphinxparamcomma \sphinxparam{\DUrole{n}{rectanglex}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{rectangley}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{background\_shape}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}circle\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{background\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}rainbow\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{networks\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}rainbow\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{arrowsize}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{label\_position}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{verbose}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{remove\_isolated\_nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{axis}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{edge\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_font\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{scale\_by\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
-{{ $\rightarrow$ None}}
+{\sphinxparam{\DUrole{n}{network\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Graph\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Graph\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alphalevel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.13}}\sphinxparamcomma \sphinxparam{\DUrole{n}{rectanglex}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{rectangley}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{background\_shape}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}circle\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{background\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}rainbow\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{networks\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}rainbow\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{arrowsize}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{label\_position}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{verbose}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{remove\_isolated\_nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ax}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{edge\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_font\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{scale\_by\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{axis}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ Any}}
 \pysigstopsignatures
 \sphinxAtStartPar
 Core multilayer drawing method.
+
+\sphinxAtStartPar
+Draws a diagonal multilayer network visualization where each layer is
+offset to create a 3D\sphinxhyphen{}like effect. Nodes within each layer are drawn
+with their positions, and background shapes indicate layer boundaries.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
@@ -48192,7 +48116,8 @@ Core multilayer drawing method.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{display}} \textendash{} Whether to display the plot directly
+\sphinxstyleliteralstrong{\sphinxupquote{display}} \textendash{} If True, calls plt.show() after drawing. Default is False
+to let the caller control rendering.
 
 \item {} 
 \sphinxAtStartPar
@@ -48244,7 +48169,7 @@ Core multilayer drawing method.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{axis}} \textendash{} Matplotlib axis to draw on (None for current axis)
+\sphinxstyleliteralstrong{\sphinxupquote{ax}} \textendash{} Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
 
 \item {} 
 \sphinxAtStartPar
@@ -48262,13 +48187,29 @@ Core multilayer drawing method.
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{scale\_by\_size}} \textendash{} Whether to scale node size by degree
 
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{axis}} \textendash{} Deprecated. Use ax instead.
+
 \end{itemize}
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-None
+Matplotlib Axes object containing the visualization.
 
 \end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Create figure and get axes}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{fig}\PYG{p}{,} \PYG{n}{ax} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Draw on the axes (returns the axes)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{ax} \PYG{o}{=} \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}\PYG{p}{(}\PYG{n}{graphs}\PYG{p}{,} \PYG{n}{ax}\PYG{o}{=}\PYG{n}{ax}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Caller controls when to display}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multilayer.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} or plt.show()}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -48454,24 +48395,115 @@ List of NetworkX graphs with random layouts
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.visualization.multilayer.}}\sphinxbfcode{\sphinxupquote{hairball\_plot}}}
-{\sphinxparam{\DUrole{n}{g}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Graph\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{color\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }List\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{text\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}black\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_parameters}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{dict\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{legend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{scale\_by\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_algorithm}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}force\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{edge\_width}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.01}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alpha\_channel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{draw}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{label\_font\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2}}}
+{\sphinxparam{\DUrole{n}{g}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Graph\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{color\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }List\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{text\_color}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}black\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_parameters}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{dict\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{legend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{scale\_by\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layout\_algorithm}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}force\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{edge\_width}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.01}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alpha\_channel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{draw}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{label\_font\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ax}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {{ $\rightarrow$ Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}
 \pysigstopsignatures
 \sphinxAtStartPar
-A method for drawing force\sphinxhyphen{}directed plots
-Args:
-network (networkx): A network to be visualized
-color\_list (list): A list of colors for nodes
-node\_size (float): Size of nodes
-layout\_parameters (dict): A dictionary of label parameters
-legend (bool): Display legend?
-scale\_by\_size (bool): Rescale nodes?
-layout\_algorithm (string): What type of layout algorithm is to be used?
-edge\_width (float): Width of edges
-alpha\_channel (float): Transparency level.
-labels (bool): Display labels?
-label\_font\_size (int): Sizes of labels
-:returns: None
+Draw a force\sphinxhyphen{}directed “hairball” visualization of a network.
+
+\sphinxAtStartPar
+Creates a force\sphinxhyphen{}directed layout visualization where nodes are colored by
+type/layer and sized by degree. This is a common visualization for showing
+the overall structure of a network.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{g}} \textendash{} NetworkX graph to visualize
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{color\_list}} \textendash{} List of colors for nodes. If None, colors are assigned
+based on node types.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{display}} \textendash{} If True, calls plt.show() after drawing. Default is False
+to let the caller control rendering.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{node\_size}} \textendash{} Base size of nodes
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{text\_color}} \textendash{} Color for node labels
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{node\_sizes}} \textendash{} Custom list of node sizes (overrides node\_size and scale\_by\_size)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{layout\_parameters}} \textendash{} Parameters for the layout algorithm (e.g., \{“pos”: \{…\}\})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{legend}} \textendash{} If True, display a legend mapping colors to node types
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{scale\_by\_size}} \textendash{} If True, scale node sizes by log(degree)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{layout\_algorithm}} \textendash{} Layout algorithm to use. Options:
+\sphinxhyphen{} “force”: Force\sphinxhyphen{}directed layout (spring layout)
+\sphinxhyphen{} “random”: Random layout
+\sphinxhyphen{} “custom\_coordinates”: Use positions from layout\_parameters{[}“pos”{]}
+\sphinxhyphen{} “custom\_coordinates\_initial\_force”: Use custom positions as initial layout
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{edge\_width}} \textendash{} Width of edges
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{alpha\_channel}} \textendash{} Transparency level (0.0 to 1.0)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{labels}} \textendash{} List of node labels to display (None for no labels)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{draw}} \textendash{} If True, draw the network. If False, only compute layout and return data.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{label\_font\_size}} \textendash{} Font size for node labels
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ax}} \textendash{} Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Matplotlib Axes object containing the visualization
+\sphinxhyphen{} If draw=False: Tuple of (graph, node\_sizes, color\_mapping, positions)
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+If draw=True
+
+\end{itemize}
+
+
+\end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{hairball\PYGZus{}plot}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{fig}\PYG{p}{,} \PYG{n}{ax} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{ax} \PYG{o}{=} \PYG{n}{hairball\PYGZus{}plot}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{p}{,} \PYG{n}{ax}\PYG{o}{=}\PYG{n}{ax}\PYG{p}{,} \PYG{n}{legend}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{hairball.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -48953,24 +48985,52 @@ matplotlib.figure.Figure
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.visualization.multilayer.}}\sphinxbfcode{\sphinxupquote{supra\_adjacency\_matrix\_plot}}}
-{\sphinxparam{\DUrole{n}{matrix}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
-{{ $\rightarrow$ None}}
+{\sphinxparam{\DUrole{n}{matrix}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ax}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{cmap}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}binary\textquotesingle{}}}}
+{{ $\rightarrow$ Any}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Plot a supra\sphinxhyphen{}adjacency matrix.
+Plot a supra\sphinxhyphen{}adjacency matrix as a heatmap.
+
+\sphinxAtStartPar
+Visualizes the supra\sphinxhyphen{}adjacency matrix of a multilayer network, where the
+matrix shows both intra\sphinxhyphen{}layer and inter\sphinxhyphen{}layer connections. The matrix is
+displayed as a heatmap with configurable colormap.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{matrix}} \textendash{} Supra\sphinxhyphen{}adjacency matrix to plot
+\sphinxstyleliteralstrong{\sphinxupquote{matrix}} \textendash{} Supra\sphinxhyphen{}adjacency matrix to plot (numpy ndarray or scipy sparse matrix)
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{display}} \textendash{} Whether to display the plot immediately
+\sphinxstyleliteralstrong{\sphinxupquote{display}} \textendash{} If True, calls plt.show() after drawing. Default is False
+to let the caller control rendering.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ax}} \textendash{} Matplotlib Axes to draw on. If None, uses current axes (plt.gca())
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{cmap}} \textendash{} Colormap to use for the heatmap (default: “binary”)
 
 \end{itemize}
 
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Matplotlib Axes object containing the visualization.
+
 \end{description}\end{quote}
+\subsubsection*{Example}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{supra\PYGZus{}adjacency\PYGZus{}matrix\PYGZus{}plot}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{fig}\PYG{p}{,} \PYG{n}{ax} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{8}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{)}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{ax} \PYG{o}{=} \PYG{n}{supra\PYGZus{}adjacency\PYGZus{}matrix\PYGZus{}plot}\PYG{p}{(}\PYG{n}{supra\PYGZus{}matrix}\PYG{p}{,} \PYG{n}{ax}\PYG{o}{=}\PYG{n}{ax}\PYG{p}{,} \PYG{n}{cmap}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{viridis}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{plt}\PYG{o}{.}\PYG{n}{colorbar}\PYG{p}{(}\PYG{n}{ax}\PYG{o}{.}\PYG{n}{images}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{supra\PYGZus{}matrix.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
@@ -56949,7 +57009,7 @@ map directly to multilayer network inter\sphinxhyphen{}layer connections.
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.visualization.sankey.}}\sphinxbfcode{\sphinxupquote{draw\_multilayer\_sankey}}}
-{\sphinxparam{\DUrole{n}{graphs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Graph\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multilinks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }List\DUrole{p}{{[}}Tuple\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ax}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{\sphinxparam{\DUrole{n}{graphs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Graph\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multilinks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }List\DUrole{p}{{[}}Tuple\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{labels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{ax}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{display}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {{ $\rightarrow$ Any}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -56980,7 +57040,8 @@ Creates a flow visualization where:
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{display}} \textendash{} If True, calls plt.show() at the end
+\sphinxstyleliteralstrong{\sphinxupquote{display}} \textendash{} If True, calls plt.show() after drawing. Default is False
+to let the caller control rendering.
 
 \item {} 
 \sphinxAtStartPar
@@ -56996,10 +57057,14 @@ Matplotlib axes object
 \subsubsection*{Examples}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}sankey}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{network} \PYG{o}{=} \PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{labels}\PYG{p}{,} \PYG{n}{graphs}\PYG{p}{,} \PYG{n}{multilinks} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}layers}\PYG{p}{(}\PYG{p}{)}
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{draw\PYGZus{}multilayer\PYGZus{}sankey}\PYG{p}{(}\PYG{n}{graphs}\PYG{p}{,} \PYG{n}{multilinks}\PYG{p}{,} \PYG{n}{labels}\PYG{o}{=}\PYG{n}{labels}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{fig}\PYG{p}{,} \PYG{n}{ax} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{12}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{)}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{ax} \PYG{o}{=} \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}sankey}\PYG{p}{(}\PYG{n}{graphs}\PYG{p}{,} \PYG{n}{multilinks}\PYG{p}{,} \PYG{n}{labels}\PYG{o}{=}\PYG{n}{labels}\PYG{p}{,} \PYG{n}{ax}\PYG{o}{=}\PYG{n}{ax}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{sankey.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 \begin{sphinxadmonition}{note}{Note:}
