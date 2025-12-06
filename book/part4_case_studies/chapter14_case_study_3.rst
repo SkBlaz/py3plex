@@ -1,4 +1,4 @@
-Chapter 14: Case Study 3 — Transportation Network (Optional)
+Case Study 3 — Transportation Network (Optional)
 ============================================================
 
 *TODO: Advanced case study with heavy DSL usage or large-scale analysis*

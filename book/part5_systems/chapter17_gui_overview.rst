@@ -1,4 +1,4 @@
-Chapter 17: The Py3plex GUI (Overview)
+The Py3plex GUI (Overview)
 =======================================
 
 *TODO: High-level GUI overview—detailed deployment in Appendix B*

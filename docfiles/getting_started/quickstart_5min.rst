@@ -94,7 +94,7 @@ Query with DSL
 
 Py3plex features a powerful SQL-like DSL for querying networks!
 
-.. admonition:: 🔍 DSL Example: Network Queries
+.. admonition:: DSL Example: Network Queries
    :class: dsl-example
 
    Use SQL-like queries for network exploration:

@@ -1,4 +1,4 @@
-Chapter 16: Reproducible Environments
+Reproducible Environments
 ======================================
 
 *TODO: Consolidate environment setup practices—defer details to Appendix*

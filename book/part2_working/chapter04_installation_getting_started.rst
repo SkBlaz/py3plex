@@ -1,9 +1,9 @@
-Chapter 4: Installation and Getting Started
+Installation and Getting Started
 ===========================================
 
 This chapter covers installing py3plex and running your first multilayer network analysis. We provide a minimal quickstart example followed by installation details for different use cases.
 
-.. admonition:: 🔍 DSL Quick Start
+.. admonition:: DSL Quick Start
    :class: dsl-example
 
    After installation, try the DSL for instant network exploration:

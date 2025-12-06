@@ -1,4 +1,4 @@
-Chapter 13: Case Study 2 — Biological Multilayer Network
+Case Study 2 — Biological Multilayer Network
 ========================================================
 
 *TODO: Different domain from Case Study 1—focus on dynamics/epidemic modeling*

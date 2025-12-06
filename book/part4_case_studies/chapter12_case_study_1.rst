@@ -1,7 +1,7 @@
-Chapter 12: Case Study 1 — Social Multiplex Network
+Case Study 1 — Social Multiplex Network
 ===================================================
 
-.. admonition:: 🔍 DSL in Case Studies
+.. admonition:: DSL in Case Studies
    :class: dsl-example
 
    This case study demonstrates DSL throughout the analysis workflow:

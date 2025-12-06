@@ -3,7 +3,7 @@ Community Detection
 
 *Finding groups that span multiple layers of interaction.*
 
-.. admonition:: 💡 DSL Tip: Filter by Communities
+.. admonition:: DSL Tip: Filter by Communities
    :class: dsl-info
 
    After detecting communities, use DSL to analyze them:

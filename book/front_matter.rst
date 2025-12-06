@@ -14,7 +14,7 @@ This book covers:
 * **A powerful SQL-like DSL for network queries**
 * Production deployment and reproducibility practices
 
-.. admonition:: 🔍 DSL Feature Highlight
+.. admonition:: DSL Feature Highlight
    :class: dsl-example
 
    Py3plex includes a first-class DSL for querying networks with SQL-like syntax:

@@ -1,4 +1,4 @@
-Chapter 10: Advanced Queries and Workflows
+Advanced Queries and Workflows
 ==========================================
 
 This chapter covers advanced DSL patterns including dynamics simulation,
@@ -250,7 +250,7 @@ The ``SimulationResult`` object provides rich analysis capabilities:
     )
 This chapter explores advanced DSL patterns for complex multilayer network analyses.
 
-.. admonition:: 🔍 Advanced DSL Patterns
+.. admonition:: Advanced DSL Patterns
    :class: dsl-example
 
    The DSL supports sophisticated analysis workflows:
@@ -400,8 +400,8 @@ This chapter covered:
 Further Reading
 ---------------
 
-* Chapter 8: Introduction to the Py3plex DSL
-* Chapter 9: The Builder API and Explain Plans
+* Introduction to the Py3plex DSL
+* The Builder API and Explain Plans
 * ``examples/network_analysis/example_dsl_dynamics.py`` — Complete examples
 * ``examples/advanced/example_dynamics_core.py`` — Core dynamics classes
 * ``docfiles/sir_epidemic_simulator.rst`` — SIR multiplex simulator documentation

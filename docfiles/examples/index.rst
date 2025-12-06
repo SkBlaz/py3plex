@@ -3,7 +3,7 @@ Examples
 
 This page provides a curated list of example scripts demonstrating py3plex features. All examples are available in the `examples/ directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ of the repository.
 
-.. admonition:: 🔍 Featured: DSL Examples
+.. admonition:: Featured: DSL Examples
    :class: dsl-example
 
    The DSL examples showcase py3plex's SQL-like query language:
