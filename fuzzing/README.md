@@ -148,18 +148,6 @@ The fuzzing harnesses can be integrated into CI/CD pipelines:
     ./run_fuzzing.sh 300  # 5-minute quick check
 ```
 
-## Docker Support
-
-A Dockerfile is provided for containerized fuzzing:
-
-```bash
-# Build the fuzzing container
-docker build -t py3plex-fuzzer .
-
-# Run fuzzing in container
-docker run py3plex-fuzzer
-```
-
 ## Extending Fuzzers
 
 To add new fuzzing harnesses:

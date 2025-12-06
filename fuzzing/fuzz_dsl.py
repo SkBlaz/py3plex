@@ -33,21 +33,26 @@ except ImportError:
     print("Error: atheris not installed. Install with: pip install atheris")
     sys.exit(1)
 
-from py3plex.core import multinet
-from py3plex.dsl import (
-    execute_query,
-    Q,
-    L,
-    Param,
-    DslError,
-    DslSyntaxError,
-    DslExecutionError,
-    UnknownMeasureError,
-    UnknownAttributeError,
-    UnknownLayerError,
-    ParameterMissingError,
-    TypeMismatchError,
-)
+try:
+    from py3plex.core import multinet
+    from py3plex.dsl import (
+        execute_query,
+        Q,
+        L,
+        Param,
+        DslError,
+        DslSyntaxError,
+        DslExecutionError,
+        UnknownMeasureError,
+        UnknownAttributeError,
+        UnknownLayerError,
+        ParameterMissingError,
+        TypeMismatchError,
+    )
+except ImportError as e:
+    print(f"Error: Failed to import py3plex or DSL module: {e}")
+    print("Install with: pip install -e .")
+    sys.exit(1)
 
 # DSL query components for generating varied queries
 DSL_KEYWORDS = [
@@ -72,12 +77,35 @@ DSL_MEASURES = [
 DSL_EXPORT_FORMATS = ["pandas", "dict", "networkx", "arrow"]
 
 
+def _is_critical_error(error_msg: str) -> bool:
+    """Check if an error message indicates a critical crash.
+    
+    Args:
+        error_msg: The error message to check
+        
+    Returns:
+        True if the error is critical (crash, segfault, etc.), False otherwise
+    """
+    error_msg_lower = error_msg.lower()
+    return any(word in error_msg_lower for word in ['crash', 'segfault', 'corruption', 'overflow'])
+
+
+# Create a reusable sample network to avoid recreating it on every iteration
+_SAMPLE_NETWORK = None
+
+
 def create_sample_network():
     """Create a small sample multilayer network for fuzzing.
     
     Returns:
         A multilayer network with a few nodes and edges
     """
+    global _SAMPLE_NETWORK
+    
+    # Cache the network to avoid recreating it on every iteration
+    if _SAMPLE_NETWORK is not None:
+        return _SAMPLE_NETWORK
+    
     network = multinet.multi_layer_network(directed=False, verbose=False)
     
     # Add a minimal set of nodes and edges for testing
@@ -97,6 +125,7 @@ def create_sample_network():
     ]
     network.add_edges(edges)
     
+    _SAMPLE_NETWORK = network
     return network
 
 
@@ -168,8 +197,7 @@ def fuzz_string_dsl(data: bytes, network):
         raise
     except Exception as e:
         # Check if it's a real crash
-        error_msg = str(e).lower()
-        if any(word in error_msg for word in ['crash', 'segfault', 'corruption', 'overflow']):
+        if _is_critical_error(str(e)):
             raise
         # Otherwise, it's likely a validation error - let it pass
         return
@@ -262,8 +290,7 @@ def fuzz_builder_api(data: bytes, network):
     except AssertionError:
         raise
     except Exception as e:
-        error_msg = str(e).lower()
-        if any(word in error_msg for word in ['crash', 'segfault', 'corruption', 'overflow']):
+        if _is_critical_error(str(e)):
             raise
         return
 
@@ -306,8 +333,7 @@ def fuzz_one_input(data: bytes):
         raise
     except Exception as e:
         # For unexpected exceptions, check if they're critical
-        error_msg = str(e).lower()
-        if any(word in error_msg for word in ['crash', 'segfault', 'corruption', 'overflow']):
+        if _is_critical_error(str(e)):
             raise
         # Otherwise, it's likely a validation error - let it pass
         return
@@ -317,18 +343,21 @@ def main():
     """Entry point for the fuzzer."""
     atheris.Setup(sys.argv, fuzz_one_input)
     
-    print("=" * 60)
-    print("Py3plex DSL Fuzzer")
-    print("=" * 60)
-    print("Fuzzing targets:")
-    print("  - String DSL syntax (SQL-like queries)")
-    print("  - Builder API (Python chainable API)")
-    print("  - Query parsing and validation")
-    print("  - Condition evaluation")
-    print("  - Measure computation")
-    print(f"Usage: {sys.argv[0]} <seed_corpus_dir>")
-    print("=" * 60)
+    banner = """
+============================================================
+Py3plex DSL Fuzzer
+============================================================
+Fuzzing targets:
+  - String DSL syntax (SQL-like queries)
+  - Builder API (Python chainable API)
+  - Query parsing and validation
+  - Condition evaluation
+  - Measure computation
+Usage: {} <seed_corpus_dir>
+============================================================
+""".format(sys.argv[0])
     
+    print(banner)
     atheris.Fuzz()
 
 
