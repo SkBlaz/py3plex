@@ -52,7 +52,7 @@ SELECT nodes WHERE layer="@#$%^&*()"
 SELECT nodes WHERE layer="layer1'; DROP TABLE nodes; --"
 
 # Nested quotes
-SELECT nodes WHERE layer="layer\"1"
+SELECT nodes WHERE layer="layer\\"1"
 
 # Multiple ANDs
 SELECT nodes WHERE layer="layer1" AND degree > 1 AND betweenness > 0

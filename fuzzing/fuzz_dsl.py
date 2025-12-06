@@ -76,6 +76,9 @@ DSL_MEASURES = [
 
 DSL_EXPORT_FORMATS = ["pandas", "dict", "networkx", "arrow"]
 
+# Maximum query length to avoid excessive memory usage during fuzzing
+MAX_QUERY_LENGTH = 10000
+
 
 def _is_critical_error(error_msg: str) -> bool:
     """Check if an error message indicates a critical crash.
@@ -87,7 +90,11 @@ def _is_critical_error(error_msg: str) -> bool:
         True if the error is critical (crash, segfault, etc.), False otherwise
     """
     error_msg_lower = error_msg.lower()
-    return any(word in error_msg_lower for word in ['crash', 'segfault', 'corruption', 'overflow'])
+    critical_keywords = [
+        'crash', 'segfault', 'corruption', 'overflow',
+        'assertion', 'panic', 'abort', 'fatal'
+    ]
+    return any(word in error_msg_lower for word in critical_keywords)
 
 
 # Create a reusable sample network to avoid recreating it on every iteration
@@ -150,8 +157,8 @@ def fuzz_string_dsl(data: bytes, network):
         return
     
     # Limit query length to avoid excessive memory usage
-    if len(query) > 10000:
-        query = query[:10000]
+    if len(query) > MAX_QUERY_LENGTH:
+        query = query[:MAX_QUERY_LENGTH]
     
     try:
         # Try to execute the query
@@ -343,7 +350,7 @@ def main():
     """Entry point for the fuzzer."""
     atheris.Setup(sys.argv, fuzz_one_input)
     
-    banner = """
+    banner = f"""
 ============================================================
 Py3plex DSL Fuzzer
 ============================================================
@@ -353,9 +360,9 @@ Fuzzing targets:
   - Query parsing and validation
   - Condition evaluation
   - Measure computation
-Usage: {} <seed_corpus_dir>
+Usage: {sys.argv[0]} <seed_corpus_dir>
 ============================================================
-""".format(sys.argv[0])
+"""
     
     print(banner)
     atheris.Fuzz()
