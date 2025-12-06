@@ -484,3 +484,4 @@ class TestSimulationResultProperties:
         
         assert isinstance(prevalence, np.ndarray)
         assert prevalence.shape == (2, 10)
+

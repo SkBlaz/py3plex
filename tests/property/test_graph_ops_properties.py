@@ -629,3 +629,4 @@ class TestToPandasProperties:
         
         for col in df.columns:
             assert not col.startswith("_")
+
