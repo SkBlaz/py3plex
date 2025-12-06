@@ -32,14 +32,6 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * **Examples:** [examples/](examples/) - 50+ example scripts demonstrating usage
 * **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 
-## For AI/LLM Assistants
-
-This repository is designed to be LLM-friendly:
-
-* **[llm.md](llm.md)** - Comprehensive documentation optimized for LLM agents
-* **[CLAUDE.md](CLAUDE.md)** - Claude/Anthropic AI context file
-* **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - GitHub Copilot instructions
-
 # Citations
 ```
 @Article{Skrlj2019,
