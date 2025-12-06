@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Documentation &mdash; py3plex 0.95a documentation</title>
+  <title>API Documentation &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=da898538"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -2298,7 +2298,80 @@ Otherwise returns None</p>
 <span class="sig-prename descclassname"><span class="pre">py3plex.core.converters.</span></span><span class="sig-name descname"><span class="pre">require</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.converters.require" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py function" id="module-py3plex.core.random_generators">
+<dl class="py class" id="module-py3plex.core.random_generators">
+<dt class="sig sig-object py" id="py3plex.core.random_generators.SBMMetadata">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.core.random_generators.</span></span><span class="sig-name descname"><span class="pre">SBMMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_memberships</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.random_generators.SBMMetadata" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Ground-truth information for a multilayer SBM sample.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.core.random_generators.SBMMetadata.block_memberships">
+<span class="sig-name descname"><span class="pre">block_memberships</span></span><a class="headerlink" href="#py3plex.core.random_generators.SBMMetadata.block_memberships" title="Link to this definition"></a></dt>
+<dd><p>Array of shape (n_nodes,) with integer block labels in {0, …, n_blocks-1}.
+Shared across layers in this simple multiplex model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.core.random_generators.SBMMetadata.block_matrix">
+<span class="sig-name descname"><span class="pre">block_matrix</span></span><a class="headerlink" href="#py3plex.core.random_generators.SBMMetadata.block_matrix" title="Link to this definition"></a></dt>
+<dd><p>Array of shape (n_blocks, n_blocks) with edge probabilities p_ab.
+Same for all layers in this simple model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.core.random_generators.SBMMetadata.node_ids">
+<span class="sig-name descname"><span class="pre">node_ids</span></span><a class="headerlink" href="#py3plex.core.random_generators.SBMMetadata.node_ids" title="Link to this definition"></a></dt>
+<dd><p>Node identifiers used in the resulting multi_layer_network (e.g. “v0”, “v1”, …).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.core.random_generators.SBMMetadata.layer_names">
+<span class="sig-name descname"><span class="pre">layer_names</span></span><a class="headerlink" href="#py3plex.core.random_generators.SBMMetadata.layer_names" title="Link to this definition"></a></dt>
+<dd><p>Names of the layers used in the multi_layer_network (e.g. “L0”, “L1”, …).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">block_matrix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">block_memberships</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#id11" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">layer_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id12" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">node_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id13" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="py3plex.core.random_generators.ensure">
 <span class="sig-prename descclassname"><span class="pre">py3plex.core.random_generators.</span></span><span class="sig-name descname"><span class="pre">ensure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.random_generators.ensure" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -2329,6 +2402,65 @@ Otherwise returns None</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.core.random_generators.random_multilayer_SBM">
+<span class="sig-prename descclassname"><span class="pre">py3plex.core.random_generators.</span></span><span class="sig-name descname"><span class="pre">random_multilayer_SBM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_blocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="reference/api_index.html#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="reference/api_index.html#py3plex.core.random_generators.SBMMetadata" title="py3plex.core.random_generators.SBMMetadata"><span class="pre">SBMMetadata</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.core.random_generators.random_multilayer_SBM" title="Link to this definition"></a></dt>
+<dd><p>Generate a simple multiplex multilayer stochastic block model (SBM) network.</p>
+<p>This function creates a multilayer network with:
+- <cite>n_nodes</cite> nodes shared across all layers,
+- <cite>n_layers</cite> layers,
+- <cite>n_blocks</cite> latent communities (blocks),
+- within-block edge probability <cite>p_in</cite>,
+- between-block edge probability <cite>p_out</cite>,
+- optional diagonal inter-layer coupling with probability <cite>coupling</cite></p>
+<blockquote>
+<div><p>between replicas of the same node across layers.</p>
+</div></blockquote>
+<p>The block memberships are shared across layers in this simple model,
+and the same block probability matrix is used for all layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_layers</strong> (<em>int</em>) – Number of layers.</p></li>
+<li><p><strong>n_nodes</strong> (<em>int</em>) – Number of nodes (shared across all layers).</p></li>
+<li><p><strong>n_blocks</strong> (<em>int</em>) – Number of blocks (communities).</p></li>
+<li><p><strong>p_in</strong> (<em>float</em>) – Edge probability for edges within the same block.</p></li>
+<li><p><strong>p_out</strong> (<em>float</em>) – Edge probability for edges between different blocks.</p></li>
+<li><p><strong>coupling</strong> (<em>float</em><em>, </em><em>optional</em>) – Probability of inter-layer edges between replicas of the same node
+in different layers. Defaults to 0.0 (no inter-layer edges).</p></li>
+<li><p><strong>directed</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to generate directed layers. Defaults to False.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>network</strong> (<em>multi_layer_network</em>) – The generated multilayer network.</p></li>
+<li><p><strong>metadata</strong> (<em>SBMMetadata</em>) – Ground-truth metadata containing block memberships and block matrix.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Node IDs are strings “v0”, “v1”, …, “v{n_nodes-1}”.</p></li>
+<li><p>Layer names are strings “L0”, “L1”, …, “L{n_layers-1}”.</p></li>
+<li><p>Edges are inserted via the py3plex list-based API:
+[src_node, src_layer, dst_node, dst_layer, weight].</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core.random_generators</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_multilayer_SBM</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">random_multilayer_SBM</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">n_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_nodes</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_blocks</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">p_in</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">p_out</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">coupling</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">block_memberships</span><span class="p">))</span>
+<span class="go">20</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">layer_names</span><span class="p">))</span>
+<span class="go">3</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -4448,12 +4580,12 @@ For undirected: kᵢᵅ = Σⱼ Aᵢⱼᵅ</p>
 <dt class="sig sig-object py" id="py3plex.algorithms.statistics.multilayer_statistics.edge_overlap">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.statistics.multilayer_statistics.</span></span><span class="sig-name descname"><span class="pre">edge_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#py3plex.algorithms.statistics.multilayer_statistics.edge_overlap" title="Link to this definition"></a></dt>
 <dd><p>Calculate edge overlap (ω^αβ).</p>
-<p>Formula: ω^αβ = <a href="#id19"><span class="problematic" id="id20">|Eₐ ∩ Eᵦ|</span></a> / <a href="#id21"><span class="problematic" id="id22">|Eₐ ∪ Eᵦ|</span></a></p>
+<p>Formula: ω^αβ = <a href="#id22"><span class="problematic" id="id23">|Eₐ ∩ Eᵦ|</span></a> / <a href="#id24"><span class="problematic" id="id25">|Eₐ ∪ Eᵦ|</span></a></p>
 <p>Jaccard similarity of edge sets between two layers; measures structural redundancy.</p>
 <dl class="simple">
 <dt>Variables:</dt><dd><p>Eₐ = set of edges in layer α
 Eᵦ = set of edges in layer β
-<a href="#id23"><span class="problematic" id="id24">|·|</span></a> = cardinality (number of elements)</p>
+<a href="#id26"><span class="problematic" id="id27">|·|</span></a> = cardinality (number of elements)</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -4889,7 +5021,7 @@ De Domenico et al. (2014), “Identifying modular flows”</p>
 <p>Measures the proportion of edges in one layer that are redundant
 (also present) in another layer. Values close to 1 indicate high
 redundancy, while values close to 0 indicate complementary layers.</p>
-<p>Formula: Rᵅᵝ = <a href="#id25"><span class="problematic" id="id26">|Eᵅ ∩ Eᵝ|</span></a> / <a href="#id27"><span class="problematic" id="id28">|Eᵅ|</span></a></p>
+<p>Formula: Rᵅᵝ = <a href="#id28"><span class="problematic" id="id29">|Eᵅ ∩ Eᵝ|</span></a> / <a href="#id30"><span class="problematic" id="id31">|Eᵅ|</span></a></p>
 <p>where Eᵅ and Eᵝ are edge sets of layers α and β.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -5991,7 +6123,7 @@ normalizing by the number of node pairs.</p>
 <p>Local efficiency measures how efficiently information is exchanged among
 a node’s neighbors when the node is removed. It quantifies the fault
 tolerance of the network.</p>
-<p>LE(u) = (1 / (<a href="#id29"><span class="problematic" id="id30">|N_u|*(|N_u|</span></a>-1))) * sum_{i≠j in N_u} [1 / d(i,j)]</p>
+<p>LE(u) = (1 / (<a href="#id32"><span class="problematic" id="id33">|N_u|*(|N_u|</span></a>-1))) * sum_{i≠j in N_u} [1 / d(i,j)]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>{(node, layer): local_efficiency}</p>
@@ -6011,7 +6143,7 @@ tolerance of the network.</p>
 <span class="sig-name descname"><span class="pre">lp_aggregated_centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_centralities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.multilayer_algorithms.centrality.MultilayerCentrality.lp_aggregated_centrality" title="Link to this definition"></a></dt>
 <dd><p>Compute Lp-aggregated per-layer centrality.</p>
 <p>Aggregates per-layer centrality values using Lp norm.</p>
-<p>C_i = (sum_{ℓ in L_i} w_ℓ * <a href="#id31"><span class="problematic" id="id32">|c^ℓ[i]|^p)^{1/p}  for p &lt; ∞
+<p>C_i = (sum_{ℓ in L_i} w_ℓ * <a href="#id34"><span class="problematic" id="id35">|c^ℓ[i]|^p)^{1/p}  for p &lt; ∞
 C_i = max_{ℓ in L_i} (w_ℓ * |c^ℓ[i]|</span></a>)          for p = ∞</p>
 <p>where L_i is the set of layers where node i exists.</p>
 <dl class="field-list simple">
@@ -8309,7 +8441,7 @@ See <code class="xref py py-mod docutils literal notranslate"><span class="pre">
 compute node positions.</p></li>
 <li><p><strong>arrows</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – For directed graphs, if True draw arrowheads.
 Note: Arrows will be the same color as edges.</p></li>
-<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id11"><span class="problematic" id="id12">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrowsheads.
+<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id14"><span class="problematic" id="id15">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrowsheads.
 See :py:class: <cite>matplotlib.patches.ArrowStyle</cite> for more
 options.</p></li>
 <li><p><strong>arrowsize</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – For directed graphs, choose the size of the arrow head head’s length and
@@ -8441,7 +8573,7 @@ colors using the edge_cmap and edge_vmin,edge_vmax parameters.</p></li>
 <li><p><strong>ax</strong> (<em>Matplotlib Axes object</em><em>, </em><em>optional</em>) – Draw the graph in the specified Matplotlib axes.</p></li>
 <li><p><strong>arrows</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – For directed graphs, if True draw arrowheads.
 Note: Arrows will be the same color as edges.</p></li>
-<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id13"><span class="problematic" id="id14">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrow heads.
+<li><p><strong>arrowstyle</strong> (str, optional (default=’-<a href="#id16"><span class="problematic" id="id17">|</span></a>&gt;’)) – For directed graphs, choose the style of the arrow heads.
 See :py:class: <cite>matplotlib.patches.ArrowStyle</cite> for more
 options.</p></li>
 <li><p><strong>arrowsize</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – For directed graphs, choose the size of the arrow head head’s length and
@@ -9900,7 +10032,7 @@ format detection and a registry system for extensibility.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>format_name</strong> – Name of the format (e.g., ‘json’, ‘csv’, ‘graphml’)</p></li>
-<li><p><strong>reader_func</strong> – Function that takes (filepath, <a href="#id15"><span class="problematic" id="id16">**</span></a>kwargs) and returns MultiLayerGraph</p></li>
+<li><p><strong>reader_func</strong> – Function that takes (filepath, <a href="#id18"><span class="problematic" id="id19">**</span></a>kwargs) and returns MultiLayerGraph</p></li>
 </ul>
 </dd>
 </dl>
@@ -9929,7 +10061,7 @@ format detection and a registry system for extensibility.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>format_name</strong> – Name of the format (e.g., ‘json’, ‘csv’, ‘graphml’)</p></li>
-<li><p><strong>writer_func</strong> – Function that takes (graph, filepath, <a href="#id17"><span class="problematic" id="id18">**</span></a>kwargs) and writes to file</p></li>
+<li><p><strong>writer_func</strong> – Function that takes (graph, filepath, <a href="#id20"><span class="problematic" id="id21">**</span></a>kwargs) and writes to file</p></li>
 </ul>
 </dd>
 </dl>
