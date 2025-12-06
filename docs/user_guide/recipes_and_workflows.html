@@ -9,6 +9,7 @@
   <title>Analysis Recipes &amp; Workflows &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ca2d1f9e" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -125,6 +126,14 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#further-reading">Further Reading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dsl-query-recipes">DSL Query Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#recipe-18-hub-identification-with-dsl">Recipe 18: Hub Identification with DSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recipe-19-multi-layer-comparative-analysis">Recipe 19: Multi-Layer Comparative Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recipe-20-advanced-filtering-and-export">Recipe 20: Advanced Filtering and Export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recipe-21-parameterized-query-templates">Recipe 21: Parameterized Query Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recipe-22-dsl-with-explain-mode">Recipe 22: DSL with EXPLAIN Mode</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="case_studies.html">Use Cases &amp; Case Studies</a></li>
@@ -192,6 +201,34 @@
 <span id="recipes"></span><h1>Analysis Recipes &amp; Workflows<a class="headerlink" href="#analysis-recipes-workflows" title="Link to this heading"></a></h1>
 <p>This guide provides <strong>practical recipes</strong> for <strong>common analysis workflows</strong> in py3plex.
 Each recipe is a <strong>complete, ready-to-use solution</strong> for a real-world task.</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL for Rapid Analysis</p>
+<p>Many recipes can be expressed concisely using the DSL:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Quick hub identification</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Multi-layer comparison</span>
+<span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="s2">&quot;family&quot;</span><span class="p">]:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See the DSL recipes section below for more patterns!</p>
+</div>
 <p><strong>Related Example Scripts:</strong></p>
 <p>Many recipes have corresponding runnable example scripts in the repository:</p>
 <ul class="simple">
@@ -268,6 +305,15 @@ Each recipe is a <strong>complete, ready-to-use solution</strong> for a real-wor
 </ul>
 </li>
 <li><p><a class="reference internal" href="#further-reading" id="id36">Further Reading</a></p></li>
+<li><p><a class="reference internal" href="#dsl-query-recipes" id="id37">DSL Query Recipes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#recipe-18-hub-identification-with-dsl" id="id38">Recipe 18: Hub Identification with DSL</a></p></li>
+<li><p><a class="reference internal" href="#recipe-19-multi-layer-comparative-analysis" id="id39">Recipe 19: Multi-Layer Comparative Analysis</a></p></li>
+<li><p><a class="reference internal" href="#recipe-20-advanced-filtering-and-export" id="id40">Recipe 20: Advanced Filtering and Export</a></p></li>
+<li><p><a class="reference internal" href="#recipe-21-parameterized-query-templates" id="id41">Recipe 21: Parameterized Query Templates</a></p></li>
+<li><p><a class="reference internal" href="#recipe-22-dsl-with-explain-mode" id="id42">Recipe 22: DSL with EXPLAIN Mode</a></p></li>
+</ul>
+</li>
 </ul>
 </nav>
 <section id="data-import-setup">
@@ -1304,6 +1350,200 @@ Unique nodes: 120
 <li><p>De Domenico et al. (2013) - Mathematical framework</p></li>
 <li><p>See Citations section in main documentation for complete reference list</p></li>
 </ul>
+</section>
+<section id="dsl-query-recipes">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">DSL Query Recipes</a><a class="headerlink" href="#dsl-query-recipes" title="Link to this heading"></a></h2>
+<p>The py3plex DSL provides powerful, concise syntax for network queries. These recipes showcase common patterns.</p>
+<section id="recipe-18-hub-identification-with-dsl">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">Recipe 18: Hub Identification with DSL</a><a class="headerlink" href="#recipe-18-hub-identification-with-dsl" title="Link to this heading"></a></h3>
+<p><strong>Task:</strong> Find and rank influential nodes across layers using the DSL.</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL Example: Hub Identification</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Load network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
+    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Find top 20 hubs by betweenness centrality</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Pre-filter by degree for efficiency</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;top_hubs.csv&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Display results</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><strong>When to use:</strong> Identifying key players, finding bridge nodes, influence analysis.</p>
+</section>
+<section id="recipe-19-multi-layer-comparative-analysis">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">Recipe 19: Multi-Layer Comparative Analysis</a><a class="headerlink" href="#recipe-19-multi-layer-comparative-analysis" title="Link to this heading"></a></h3>
+<p><strong>Task:</strong> Compare network structure across different layers using DSL.</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL Example: Layer Comparison</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Analyze each layer separately</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="s2">&quot;family&quot;</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Calculate layer-level statistics</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    <span class="n">layer_stats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer_name</span><span class="p">,</span>
+        <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="p">,</span>
+        <span class="s1">&#39;avg_degree&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s1">&#39;max_centrality&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+        <span class="s1">&#39;avg_clustering&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+    <span class="p">}</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer_stats</span><span class="p">)</span>
+
+<span class="c1"># Create comparison table</span>
+<span class="n">comparison_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">comparison_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><strong>When to use:</strong> Understanding layer-specific properties, detecting structural differences.</p>
+</section>
+<section id="recipe-20-advanced-filtering-and-export">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">Recipe 20: Advanced Filtering and Export</a><a class="headerlink" href="#recipe-20-advanced-filtering-and-export" title="Link to this heading"></a></h3>
+<p><strong>Task:</strong> Complex multi-criteria filtering with automated export.</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL Example: Advanced Filtering</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Find nodes that meet multiple criteria</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="c1"># Combine layers using set operations</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;bots&quot;</span><span class="p">])</span>
+     <span class="c1"># Multiple filter conditions</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gte</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">clustering__gt</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+     <span class="c1"># Compute multiple measures</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="c1"># Sort and limit</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+     <span class="c1"># Export in multiple formats</span>
+     <span class="o">.</span><span class="n">export_json</span><span class="p">(</span><span class="s2">&quot;filtered_nodes.json&quot;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Also available as pandas DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># Or as NetworkX subgraph</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_networkx</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><strong>When to use:</strong> Targeted analysis, automated reporting, filtering complex networks.</p>
+</section>
+<section id="recipe-21-parameterized-query-templates">
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">Recipe 21: Parameterized Query Templates</a><a class="headerlink" href="#recipe-21-parameterized-query-templates" title="Link to this heading"></a></h3>
+<p><strong>Task:</strong> Create reusable query templates for systematic analysis.</p>
+<div class="dsl-info admonition">
+<p class="admonition-title">💡 DSL Example: Query Templates</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">Param</span>
+
+<span class="c1"># Define a reusable query template</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_top_nodes</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">degree_threshold</span><span class="p">,</span> <span class="n">top_n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reusable template for finding top nodes in a layer&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="n">degree_threshold</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">top_n</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="c1"># Use the template with different parameters</span>
+<span class="n">social_hubs</span> <span class="o">=</span> <span class="n">find_top_nodes</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">work_hubs</span> <span class="o">=</span> <span class="n">find_top_nodes</span><span class="p">(</span><span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Alternative: Use Param for dynamic parameter binding</span>
+<span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">Param</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">&quot;min_degree&quot;</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">&quot;top_n&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Execute with different parameters</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><strong>When to use:</strong> Batch analysis, systematic parameter sweeps, reproducible workflows.</p>
+</section>
+<section id="recipe-22-dsl-with-explain-mode">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">Recipe 22: DSL with EXPLAIN Mode</a><a class="headerlink" href="#recipe-22-dsl-with-explain-mode" title="Link to this heading"></a></h3>
+<p><strong>Task:</strong> Optimize queries before execution on large networks.</p>
+<div class="dsl-info admonition">
+<p class="admonition-title">💡 DSL Example: Query Optimization</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Build a potentially expensive query</span>
+<span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># O(n³) operation!</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Check the execution plan first</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Query Execution Plan:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">plan</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Complexity: </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">estimated_complexity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check for warnings</span>
+<span class="k">if</span> <span class="n">plan</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Warnings:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">plan</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠️  </span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Optimized version: filter first to reduce computation</span>
+<span class="n">optimized_query</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># Pre-filter to reduce nodes</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Execute the optimized query</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">optimized_query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><strong>When to use:</strong> Large networks, expensive centrality computations, performance optimization.</p>
+</section>
 </section>
 </section>
 

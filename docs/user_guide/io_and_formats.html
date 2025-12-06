@@ -9,6 +9,7 @@
   <title>I/O and Serialization &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ca2d1f9e" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -160,6 +161,28 @@
   <section id="i-o-and-serialization">
 <h1>I/O and Serialization<a class="headerlink" href="#i-o-and-serialization" title="Link to this heading"></a></h1>
 <p>py3plex provides a comprehensive I/O system for reading and writing multilayer graphs in various formats. The system is designed to be extensible, efficient, and easy to use.</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL Example: Export Query Results</p>
+<p>DSL makes it easy to export analysis results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Analyze and export in one pipeline</span>
+<span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;top_influencers.csv&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_json</span><span class="p">(</span><span class="s2">&quot;top_influencers.json&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Results automatically saved to files!</span>
+</pre></div>
+</div>
+<p>Declarative exports streamline data analysis workflows!</p>
+</div>
 <section id="supported-formats">
 <h2>Supported Formats<a class="headerlink" href="#supported-formats" title="Link to this heading"></a></h2>
 <p>The I/O system supports multiple file formats, each with different trade-offs:</p>

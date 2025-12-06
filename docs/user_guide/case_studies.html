@@ -9,6 +9,7 @@
   <title>Use Cases &amp; Case Studies &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ca2d1f9e" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -166,6 +167,34 @@
   <section id="use-cases-case-studies">
 <span id="case-studies"></span><h1>Use Cases &amp; Case Studies<a class="headerlink" href="#use-cases-case-studies" title="Link to this heading"></a></h1>
 <p><em>“In theory there is no difference between theory and practice. In practice there is.”</em> — Yogi Berra</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL in Case Studies</p>
+<p>Throughout these case studies, notice how DSL simplifies analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Identify candidate proteins (biological networks)</span>
+<span class="n">candidates</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ppi_network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Compare social media presence (social networks)</span>
+<span class="k">for</span> <span class="n">platform</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;twitter&quot;</span><span class="p">,</span> <span class="s2">&quot;facebook&quot;</span><span class="p">,</span> <span class="s2">&quot;instagram&quot;</span><span class="p">]:</span>
+    <span class="n">influencers</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">platform</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">social_network</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">influencers</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> influencers&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>DSL enables rapid iteration in exploratory analysis!</p>
+</div>
 <p>This chapter provides complete, end-to-end case studies demonstrating py3plex in different research domains. Each case study includes:</p>
 <ol class="arabic simple">
 <li><p><strong>Problem context</strong> — What real-world question are we answering?</p></li>

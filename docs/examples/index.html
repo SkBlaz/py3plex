@@ -9,6 +9,7 @@
   <title>Examples &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ca2d1f9e" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -155,6 +156,32 @@
   <section id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
 <p>This page provides a curated list of example scripts demonstrating py3plex features. All examples are available in the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">examples/ directory</a> of the repository.</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 Featured: DSL Examples</p>
+<p>The DSL examples showcase py3plex’s SQL-like query language:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># From example_dsl_builder_api.py - Comprehensive DSL v2</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;top_influencers.csv&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Recommended starting points:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_builder_api.py</span></code> — Complete DSL v2 tutorial</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_queries.py</span></code> — String DSL syntax</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example_dsl_advanced.py</span></code> — Advanced patterns</p></li>
+</ul>
+<p>See <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for full DSL documentation!</p>
+</div>
 <section id="getting-started-examples">
 <h2>Getting Started Examples<a class="headerlink" href="#getting-started-examples" title="Link to this heading"></a></h2>
 <p><strong>Basic Network Creation</strong></p>

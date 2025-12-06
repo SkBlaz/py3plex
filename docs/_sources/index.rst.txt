@@ -20,13 +20,48 @@ py3plex provides scalable analysis and visualization of multilayer and multiplex
 **Key Features:**
 
 * Multiplex and multilayer network structures
-* SQL-like DSL for network queries
+* **SQL-like DSL for network queries** — first-class feature
 * 17+ multilayer statistics and centrality measures
 * Community detection (Louvain, Infomap, multilayer modularity)
 * Random walk algorithms (Node2Vec, DeepWalk) for embeddings
 * Publication-ready visualizations
 * High-performance I/O with Arrow/Parquet support
 * Full NetworkX compatibility
+
+.. admonition:: 🔍 DSL: Query Networks Like SQL
+   :class: dsl-example
+
+   The py3plex DSL lets you query networks using intuitive SQL-like syntax or a type-safe Python builder API:
+
+   .. code-block:: python
+
+       from py3plex.dsl import execute_query, Q, L
+
+       # String DSL: Simple and readable
+       result = execute_query(network, 
+           'SELECT nodes WHERE layer="social" AND degree > 5 '
+           'COMPUTE betweenness_centrality'
+       )
+
+       # Builder API: Type-safe with autocompletion
+       result = (
+           Q.nodes()
+            .from_layers(L["social"])
+            .where(degree__gt=5)
+            .compute("betweenness_centrality")
+            .order_by("-betweenness_centrality")
+            .limit(10)
+            .execute(network)
+       )
+
+   The DSL is **perfect for**:
+   
+   * Interactive network exploration
+   * Rapid prototyping
+   * Educational purposes
+   * Production pipelines
+
+   📖 See the complete :doc:`user_guide/dsl` guide for all features!
 
 Quick Start
 ===========
