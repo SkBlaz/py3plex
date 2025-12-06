@@ -15,7 +15,7 @@ Key Classes:
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -261,7 +261,7 @@ class ContinuousTimeProcess(ABC):
         """
         pass
     
-    def step(self, state: Any) -> tuple[Any, float, Any]:
+    def step(self, state: Any) -> Tuple[Any, float, Any]:
         """Perform one Gillespie step.
         
         This method:
@@ -317,7 +317,7 @@ class ContinuousTimeProcess(ABC):
         state: Optional[Any] = None,
         record: bool = True,
         callbacks: Optional[List[Callable[[Any, float], None]]] = None,
-    ) -> Union[tuple[Any, List[float]], tuple[Any, float]]:
+    ) -> Union[Tuple[Any, List[float]], Tuple[Any, float]]:
         """Simulate until time >= t_max.
         
         Args:
