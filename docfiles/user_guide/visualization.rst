@@ -5,11 +5,6 @@ Visualization
 
 ----
 
-.. image:: ../../example_images/py3plex_showcase.png
-   :alt: Py3plex Visualization Showcase
-   :align: center
-   :width: 100%
-
 A network you can't see is a network you can't understand. Visualization transforms abstract adjacency structures into spatial patterns that human perception can process—clusters become visible groups, hubs become prominent nodes, and cross-layer connections become the bridges they conceptually are.
 
 This chapter shows you how to create visualizations that reveal structure rather than obscure it. We'll cover:
@@ -42,19 +37,15 @@ Basic Multilayer Visualization
     network = multinet.multi_layer_network()
     network.load_network("network.csv", input_type="multiedgelist")
     
+    # Get layer data (returns: labels, graphs, multilinks)
+    labels, graphs, multilinks = network.get_layers()
+    
     # Visualize with defaults
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         display=True,
-        labels=True
+        labels=labels
     )
-
-**Example output:**
-
-.. image:: ../../example_images/multilayer.png
-   :width: 600px
-   :align: center
-   :alt: Basic multilayer network visualization
 
 Preset Visualization Modes
 ---------------------------
@@ -70,12 +61,15 @@ Optimized for networks with many nodes where detail isn't critical.
 
     from py3plex.visualization.multilayer import draw_multilayer_default
     
+    # Get layer data
+    labels, graphs, multilinks = network.get_layers()
+    
     # Minimal preset for large networks
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         # Node settings
         node_size=5,              # Small nodes
-        labels=False,             # No node labels (too cluttered)
+        labels=False,             # No layer labels (too cluttered)
         node_labels=False,        # No node IDs
         
         # Edge settings
@@ -102,13 +96,6 @@ Optimized for networks with many nodes where detail isn't critical.
 - Shows overall structure
 - Works with many nodes
 
-**Example output (minimal mode with large network):**
-
-.. image:: ../../example_images/hairball.png
-   :width: 500px
-   :align: center
-   :alt: Minimal mode visualization for large networks
-
 Balanced Mode (Medium Networks 100-1000 nodes)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -116,12 +103,15 @@ Default settings that work well for most networks. Good balance between detail a
 
 .. code-block:: python
 
+    # Get layer data
+    labels, graphs, multilinks = network.get_layers()
+    
     # Balanced preset (this is the default)
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         # Node settings
         node_size=10,             # Medium nodes
-        labels=True,              # Show layer labels
+        labels=labels,            # Show layer labels
         node_labels=False,        # Node IDs hidden by default
         
         # Edge settings
@@ -155,12 +145,15 @@ Maximum detail for small networks where every node and edge matters.
 
 .. code-block:: python
 
+    # Get layer data
+    labels, graphs, multilinks = network.get_layers()
+    
     # Dense preset for small, detailed networks
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         # Node settings
         node_size=20,             # Large nodes
-        labels=True,              # Show all labels
+        labels=labels,            # Show all labels
         node_labels=True,         # Show node IDs
         node_font_size=10,        # Readable font
         scale_by_size=True,       # Scale by degree
@@ -190,13 +183,6 @@ Maximum detail for small networks where every node and edge matters.
 - Edge weights visible
 - Professional appearance
 
-**Example output (dense mode with small network):**
-
-.. image:: ../../example_images/multiplex.png
-   :width: 400px
-   :align: center
-   :alt: Dense mode visualization for small networks
-
 Layout Options
 --------------
 
@@ -209,8 +195,9 @@ Arranges layers in a circle. Good for showing inter-layer connections.
 
 .. code-block:: python
 
+    labels, graphs, multilinks = network.get_layers()
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         background_shape="circle",
         rectanglex=1.0,  # Circle radius x
         rectangley=1.0   # Circle radius y
@@ -228,8 +215,9 @@ Arranges layers in a grid. Good for many layers or hierarchical structures.
 
 .. code-block:: python
 
+    labels, graphs, multilinks = network.get_layers()
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         background_shape="rectangle",
         rectanglex=2.0,  # Width of layout
         rectangley=1.0   # Height of layout
@@ -253,8 +241,9 @@ Scale node sizes by degree (number of connections):
 
 .. code-block:: python
 
+    labels, graphs, multilinks = network.get_layers()
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         scale_by_size=True,    # Enable auto-scaling
         node_size=10           # Base size (scaled up/down by degree)
     )
@@ -272,15 +261,17 @@ Py3plex uses colorblind-safe palettes by default:
 
 .. code-block:: python
 
+    labels, graphs, multilinks = network.get_layers()
+    
     # Rainbow colors (automatic assignment)
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         networks_color="rainbow"  # Auto-assign distinct colors
     )
     
     # Custom palette
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         networks_color=["#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A"]
     )
 
@@ -301,12 +292,14 @@ Layout parameters auto-adjust to network size:
     # For small networks, layout is compact
     small_network = multinet.multi_layer_network()
     # ... load 50-node network ...
-    draw_multilayer_default(small_network.get_layers())  # Compact layout
+    labels, graphs, multilinks = small_network.get_layers()
+    draw_multilayer_default(graphs)  # Compact layout
     
     # For large networks, layout expands
     large_network = multinet.multi_layer_network()
     # ... load 1000-node network ...
-    draw_multilayer_default(large_network.get_layers())  # Expanded layout
+    labels, graphs, multilinks = large_network.get_layers()
+    draw_multilayer_default(graphs)  # Expanded layout
 
 Customization Options
 ---------------------
@@ -316,8 +309,11 @@ Complete Parameter Reference
 
 .. code-block:: python
 
+    # Get layer data first
+    labels, graphs, multilinks = network.get_layers()
+    
     draw_multilayer_default(
-        network_list,             # List of layer subgraphs
+        graphs,                   # List of layer subgraphs
         
         # Display control
         display=True,             # Show plot immediately
@@ -364,16 +360,16 @@ Customize individual layers:
     import matplotlib.pyplot as plt
     from py3plex.visualization.multilayer import draw_multilayer_default
     
-    # Get layers
-    layers = network.get_layers()
+    # Get layer data
+    labels, graphs, multilinks = network.get_layers()
     
     # Modify specific layer (e.g., highlight layer 0)
-    for node in layers[0].nodes():
-        layers[0].nodes[node]['color'] = 'red'
-        layers[0].nodes[node]['size'] = 20
+    for node in graphs[0].nodes():
+        graphs[0].nodes[node]['color'] = 'red'
+        graphs[0].nodes[node]['size'] = 20
     
     # Visualize with custom layer
-    draw_multilayer_default(layers, display=True)
+    draw_multilayer_default(graphs, display=True, labels=labels)
 
 Color-Coding by Community
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -382,12 +378,12 @@ Color nodes by community membership:
 
 .. code-block:: python
 
-    from py3plex.algorithms.community_detection import community_louvain
+    from py3plex.algorithms.community_detection import community_wrapper as cw
     import matplotlib.pyplot as plt
     import matplotlib.cm as cm
     
     # Detect communities
-    communities = community_louvain.best_partition(network.core_network)
+    communities = cw.louvain_communities(network.core_network)
     
     # Assign colors
     num_communities = len(set(communities.values()))
@@ -398,14 +394,8 @@ Color nodes by community membership:
         network.core_network.nodes[node]['color'] = colors[comm_id]
     
     # Visualize
-    draw_multilayer_default(network.get_layers(), display=True)
-
-**Example output (community-colored network):**
-
-.. image:: ../../example_images/communities.png
-   :width: 500px
-   :align: center
-   :alt: Network with nodes colored by community membership
+    labels, graphs, multilinks = network.get_layers()
+    draw_multilayer_default(graphs, display=True, labels=labels)
 
 Exporting Visualizations
 -------------------------
@@ -417,14 +407,18 @@ Save to File
 
     import matplotlib.pyplot as plt
     
+    # Get layer data
+    labels, graphs, multilinks = network.get_layers()
+    
     # Create figure
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     
     # Draw network
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         display=False,
-        axis=ax
+        axis=ax,
+        labels=labels
     )
     
     # Customize and save
@@ -445,16 +439,19 @@ High-Quality Publications
     plt.rcParams['font.size'] = 10
     plt.rcParams['figure.dpi'] = 300
     
+    # Get layer data
+    labels, graphs, multilinks = network.get_layers()
+    
     # Large figure for detail
     fig, ax = plt.subplots(1, 1, figsize=(10, 8))
     
     # Dense mode for publications
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         display=False,
         axis=ax,
         node_size=15,
-        labels=True,
+        labels=labels,
         alphalevel=0.5,
         background_shape="circle"
     )
@@ -788,7 +785,8 @@ Jupyter Notebook Integration
     
     # Visualize
     from py3plex.visualization.multilayer import draw_multilayer_default
-    draw_multilayer_default(network.get_layers(), display=True)
+    labels, graphs, multilinks = network.get_layers()
+    draw_multilayer_default(graphs, display=True, labels=labels)
 
 Performance Tips
 ----------------
@@ -811,14 +809,16 @@ For Large Networks
     subnetwork = network.get_subnetwork(sample_nodes)
     
     # Visualize sample
-    draw_multilayer_default(subnetwork.get_layers(), display=True)
+    labels, graphs, multilinks = subnetwork.get_layers()
+    draw_multilayer_default(graphs, display=True, labels=labels)
 
 3. **Remove isolated nodes**:
 
 .. code-block:: python
 
+    labels, graphs, multilinks = network.get_layers()
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         remove_isolated_nodes=True  # Faster rendering
     )
 
@@ -844,7 +844,8 @@ Visualization Not Showing
     %matplotlib inline
     
     # Python script: Add plt.show()
-    draw_multilayer_default(network.get_layers(), display=False)
+    labels, graphs, multilinks = network.get_layers()
+    draw_multilayer_default(graphs, display=False)
     plt.show()
     
     # Headless server: Save to file
@@ -860,12 +861,14 @@ Nodes Overlapping
 
 .. code-block:: python
 
+    labels, graphs, multilinks = network.get_layers()
+    
     # 1. Use smaller node size
-    draw_multilayer_default(network.get_layers(), node_size=5)
+    draw_multilayer_default(graphs, node_size=5)
     
     # 2. Increase layout area
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         rectanglex=2.0,  # Wider layout
         rectangley=2.0   # Taller layout
     )
@@ -882,19 +885,21 @@ Labels Too Crowded
 
 .. code-block:: python
 
+    labels, graphs, multilinks = network.get_layers()
+    
     # 1. Disable labels for large networks
-    draw_multilayer_default(network.get_layers(), labels=False)
+    draw_multilayer_default(graphs, labels=False)
     
     # 2. Adjust label position
     draw_multilayer_default(
-        network.get_layers(),
-        labels=True,
+        graphs,
+        labels=labels,
         label_position=1.2  # Move labels outward
     )
     
     # 3. Use smaller font
     draw_multilayer_default(
-        network.get_layers(),
+        graphs,
         node_font_size=3  # Smaller font
     )
 
@@ -945,11 +950,6 @@ Small Multiples View
 Displays each layer as a separate subplot in a grid layout, making it easy to compare
 layer structures side-by-side.
 
-.. image:: ../../example_images/multilayer_small_multiples_shared.png
-   :width: 600px
-   :align: center
-   :alt: Small multiples visualization with shared layout
-
 .. code-block:: python
 
     from py3plex.visualization.multilayer import visualize_multilayer_network
@@ -993,11 +993,6 @@ Edge-Colored Projection
 
 Projects all layers onto a single 2D graph, using edge colors to indicate layer membership.
 Useful for seeing the overall structure while maintaining layer information.
-
-.. image:: ../../example_images/multilayer_edge_projection_spring.png
-   :width: 600px
-   :align: center
-   :alt: Edge-colored projection visualization
 
 .. code-block:: python
 
@@ -1046,11 +1041,6 @@ Supra-Adjacency Heatmap
 Shows the multilayer network as a block matrix where each block represents the
 adjacency matrix of one layer. Can optionally include inter-layer connections.
 
-.. image:: ../../example_images/multilayer_supra_heatmap_inter.png
-   :width: 600px
-   :align: center
-   :alt: Supra-adjacency heatmap with inter-layer connections
-
 .. code-block:: python
 
     from py3plex.visualization.multilayer import visualize_multilayer_network
@@ -1097,11 +1087,6 @@ Radial/Concentric Layers
 
 Arranges layers as concentric circles, with nodes positioned on rings and
 inter-layer edges shown as radial connections.
-
-.. image:: ../../example_images/multilayer_radial_with_inter.png
-   :width: 600px
-   :align: center
-   :alt: Radial layers visualization with concentric circles
 
 .. code-block:: python
 
@@ -1150,11 +1135,6 @@ Ego-Centric Multilayer View
 
 Focuses on a single node (the "ego") and shows its neighborhood across different layers,
 highlighting the ego node's position in each layer context.
-
-.. image:: ../../example_images/multilayer_ego_node3_1hop.png
-   :width: 600px
-   :align: center
-   :alt: Ego-centric multilayer visualization showing node neighborhood
 
 .. code-block:: python
 
@@ -1230,13 +1210,6 @@ by color and size.
     # Or use 'alluvial' (same as 'flow')
     ax = network.visualize_network(style='alluvial', show=True)
 
-**Example output:**
-
-.. image:: ../../example_images/multilayer_flow.png
-   :width: 600px
-   :align: center
-   :alt: Flow/Alluvial visualization showing inter-layer connections
-
 **Best for:**
 
 - Visualizing node-level connectivity across layers
@@ -1262,13 +1235,6 @@ individual node connections.
     
     # Sankey-style diagram showing inter-layer flow strength
     ax = network.visualize_network(style='sankey', show=True)
-
-**Example output:**
-
-.. image:: ../../example_images/multilayer_sankey_diagram.png
-   :width: 500px
-   :align: center
-   :alt: Sankey diagram showing inter-layer flow strength
 
 You can also use the function directly:
 
