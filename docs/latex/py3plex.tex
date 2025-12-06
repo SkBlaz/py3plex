@@ -56,7 +56,7 @@
 % Set up styles of URL: it should be placed after hyperref.
 \urlstyle{same}
 
-\addto\captionsenglish{\renewcommand{\contentsname}{Concepts & Architecture}}
+\addto\captionsenglish{\renewcommand{\contentsname}{Getting Started}}
 
 \usepackage{sphinxmessages}
 \setcounter{tocdepth}{1}
@@ -178,11 +178,1807 @@ Create a multilayer network:
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-See \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{getting\_started/quickstart\_5min}}} (5 min) or \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{getting\_started/tutorial\_10min}}} (10 min) for complete introductions.
+See {\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}} (5 min) or {\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}} (10 min) for complete introductions.
 
 
 \chapter{Documentation Contents}
 \label{\detokenize{index:documentation-contents}}
+
+\section{Part I: Getting Started}
+\label{\detokenize{index:part-i-getting-started}}
+\sphinxAtStartPar
+Installation, quick start guides, and tutorials to get you up and running with py3plex.
+
+\sphinxstepscope
+
+
+\subsection{Getting Started}
+\label{\detokenize{getting_started/part_intro:getting-started}}\label{\detokenize{getting_started/part_intro::doc}}
+\sphinxAtStartPar
+This section helps you install py3plex and run your first multilayer network analysis.
+
+\sphinxAtStartPar
+\sphinxstylestrong{This section covers:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}} — Create a network, compute statistics, and visualize in 5 minutes
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}} — Complete workflow from loading data to community detection
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/installation::doc}]{\sphinxcrossref{\DUrole{doc}{Installation and Setup}}}} — Installation options and optional dependencies
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/common_issues::doc}]{\sphinxcrossref{\DUrole{doc}{Common Issues and Troubleshooting}}}} — Solutions to common problems
+
+\end{itemize}
+
+
+\subsubsection{Recommended Path}
+\label{\detokenize{getting_started/part_intro:recommended-path}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{New to py3plex?} Start with {\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{New to multilayer networks?} Read {\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}}, then Part II (Concepts)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Experienced with networks?} Skim {\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}}, then jump to Part III (User Guide)
+
+\end{itemize}
+
+\sphinxstepscope
+
+
+\subsection{Installation and Setup}
+\label{\detokenize{getting_started/installation:installation-and-setup}}\label{\detokenize{getting_started/installation::doc}}
+\sphinxAtStartPar
+This guide covers all aspects of installing py3plex and setting up your environment.
+
+
+\subsubsection{Installation Modes}
+\label{\detokenize{getting_started/installation:installation-modes}}
+\sphinxAtStartPar
+Choose the installation method based on your needs:
+
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{20}{100}\X{35}{100}\X{45}{100}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Mode
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Command
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+When to Use
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+\sphinxstylestrong{User Install}
+&
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{pip install py3plex}}
+&
+\sphinxAtStartPar
+Standard usage: running analyses, using the library
+\\
+\sphinxhline
+\sphinxAtStartPar
+\sphinxstylestrong{Developer Install}
+&
+\sphinxAtStartPar
+Clone repo + \sphinxcode{\sphinxupquote{make setup}} + \sphinxcode{\sphinxupquote{make dev\sphinxhyphen{}install}}
+&
+\sphinxAtStartPar
+Contributing code, running tests, building docs
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+
+\subsubsection{Basic Installation}
+\label{\detokenize{getting_started/installation:basic-installation}}
+
+\paragraph{Install from GitHub (Recommended)}
+\label{\detokenize{getting_started/installation:install-from-github-recommended}}
+\sphinxAtStartPar
+The latest version is always available on GitHub:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+This installs the core py3plex library with all required dependencies.
+
+
+\paragraph{Install from Source}
+\label{\detokenize{getting_started/installation:install-from-source}}
+\sphinxAtStartPar
+For development or to access the latest features:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
+pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }.
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The \sphinxcode{\sphinxupquote{\sphinxhyphen{}e}} flag installs in editable mode, so changes to the source code are immediately available.
+
+
+\paragraph{Docker Installation (Alternative)}
+\label{\detokenize{getting_started/installation:docker-installation-alternative}}
+\sphinxAtStartPar
+For a containerized environment with all dependencies pre\sphinxhyphen{}installed, use Docker:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Clone the repository}
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
+
+\PYG{c+c1}{\PYGZsh{} Build the Docker image}
+docker\PYG{+w}{ }build\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }py3plex:latest\PYG{+w}{ }.
+
+\PYG{c+c1}{\PYGZsh{} Run py3plex commands}
+docker\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}\PYGZhy{}rm\PYG{+w}{ }py3plex:latest\PYG{+w}{ }\PYGZhy{}\PYGZhy{}version
+docker\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}\PYGZhy{}rm\PYG{+w}{ }py3plex:latest\PYG{+w}{ }selftest
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Benefits of Docker installation:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+No Python environment setup required
+
+\item {} 
+\sphinxAtStartPar
+All dependencies pre\sphinxhyphen{}installed and tested
+
+\item {} 
+\sphinxAtStartPar
+Consistent environment across different systems
+
+\item {} 
+\sphinxAtStartPar
+Isolated from system Python installation
+
+\end{itemize}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{deployment/cli_and_docker::doc}]{\sphinxcrossref{\DUrole{doc}{Docker Usage Guide}}}} for complete Docker documentation including:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Building and running the container
+
+\item {} 
+\sphinxAtStartPar
+Working with data files via volume mounts
+
+\item {} 
+\sphinxAtStartPar
+Docker Compose usage
+
+\item {} 
+\sphinxAtStartPar
+Helper scripts (\sphinxcode{\sphinxupquote{py3plex\sphinxhyphen{}docker.sh}})
+
+\item {} 
+\sphinxAtStartPar
+Batch processing and CI/CD integration
+
+\end{itemize}
+
+
+\subsubsection{Optional Dependencies}
+\label{\detokenize{getting_started/installation:optional-dependencies}}
+\sphinxAtStartPar
+py3plex offers several optional feature sets that can be installed separately:
+
+
+\paragraph{Advanced Community Detection}
+\label{\detokenize{getting_started/installation:advanced-community-detection}}
+\sphinxAtStartPar
+Install Infomap for advanced overlapping community detection:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}infomap\PYG{o}{]}
+\end{sphinxVerbatim}
+
+
+\paragraph{Additional Algorithms}
+\label{\detokenize{getting_started/installation:additional-algorithms}}
+\sphinxAtStartPar
+Install extra community detection algorithms (Louvain, cdlib):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}algos\PYG{o}{]}
+\end{sphinxVerbatim}
+
+
+\paragraph{Advanced Visualization}
+\label{\detokenize{getting_started/installation:advanced-visualization}}
+\sphinxAtStartPar
+Install Plotly and igraph for interactive and advanced visualizations:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}viz\PYG{o}{]}
+\end{sphinxVerbatim}
+
+
+\paragraph{Apache Arrow Support}
+\label{\detokenize{getting_started/installation:apache-arrow-support}}
+\sphinxAtStartPar
+Install pyarrow for high\sphinxhyphen{}performance I/O with Arrow/Parquet formats:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}arrow\PYG{o}{]}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Arrow format provides 2\sphinxhyphen{}3x faster read/write operations and better compression compared to JSON.
+See {\hyperref[\detokenize{user_guide/io_and_formats::doc}]{\sphinxcrossref{\DUrole{doc}{I/O and Serialization}}}} for details on using Arrow format.
+
+
+\paragraph{Multiple Extras}
+\label{\detokenize{getting_started/installation:multiple-extras}}
+\sphinxAtStartPar
+Install multiple feature sets at once:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}infomap,viz,algos,arrow\PYG{o}{]}
+\end{sphinxVerbatim}
+
+
+\paragraph{Development Installation}
+\label{\detokenize{getting_started/installation:development-installation}}
+\sphinxAtStartPar
+For contributors, install with development tools (testing, linting):
+
+\sphinxAtStartPar
+\sphinxstylestrong{Recommended (Makefile\sphinxhyphen{}based):}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
+make\PYG{+w}{ }setup\PYG{+w}{        }\PYG{c+c1}{\PYGZsh{} Create virtual environment}
+make\PYG{+w}{ }dev\PYGZhy{}install\PYG{+w}{  }\PYG{c+c1}{\PYGZsh{} Install with dev dependencies}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Alternative (manual):}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
+pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}.[dev]\PYGZdq{}}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Both methods install:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+pytest and coverage tools
+
+\item {} 
+\sphinxAtStartPar
+black, ruff, isort for code formatting
+
+\item {} 
+\sphinxAtStartPar
+mypy for type checking
+
+\item {} 
+\sphinxAtStartPar
+sphinx for documentation building
+
+\end{itemize}
+
+
+\subsubsection{System Requirements}
+\label{\detokenize{getting_started/installation:system-requirements}}
+
+\paragraph{Python Version}
+\label{\detokenize{getting_started/installation:python-version}}
+\sphinxAtStartPar
+py3plex requires Python 3.8 or higher. We test on:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Python 3.8
+
+\item {} 
+\sphinxAtStartPar
+Python 3.9
+
+\item {} 
+\sphinxAtStartPar
+Python 3.10
+
+\item {} 
+\sphinxAtStartPar
+Python 3.11
+
+\item {} 
+\sphinxAtStartPar
+Python 3.12
+
+\end{itemize}
+
+
+\paragraph{Platform Support}
+\label{\detokenize{getting_started/installation:platform-support}}
+\sphinxAtStartPar
+py3plex is cross\sphinxhyphen{}platform and tested on:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Linux} (Ubuntu 20.04, 22.04)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{macOS} (macOS 11, 12, 13)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Windows} (Windows Server 2019, 2022)
+
+\end{itemize}
+
+
+\paragraph{Core Dependencies}
+\label{\detokenize{getting_started/installation:core-dependencies}}
+\sphinxAtStartPar
+These are automatically installed with py3plex:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{networkx\textgreater{}=2.5}} \sphinxhyphen{} Graph data structures and algorithms
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{numpy\textgreater{}=0.8}} \sphinxhyphen{} Numerical computing
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{scipy\textgreater{}=1.1.0}} \sphinxhyphen{} Scientific computing and sparse matrices
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{pandas}} \sphinxhyphen{} Data manipulation
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{matplotlib}} \sphinxhyphen{} Static visualization
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{scikit\sphinxhyphen{}learn}} \sphinxhyphen{} Machine learning utilities
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{tqdm}} \sphinxhyphen{} Progress bars
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{rdflib\textgreater{}=0.1}} \sphinxhyphen{} Semantic web support
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{bitarray\textgreater{}=2.0.0}} \sphinxhyphen{} Efficient boolean arrays
+
+\end{itemize}
+
+
+\subsubsection{External Binaries (Optional)}
+\label{\detokenize{getting_started/installation:external-binaries-optional}}
+\sphinxAtStartPar
+\sphinxstylestrong{Note:} As of October 2025, py3plex no longer bundles external binaries to reduce repository size and improve licensing clarity.
+
+
+\paragraph{Infomap Community Detection}
+\label{\detokenize{getting_started/installation:infomap-community-detection}}
+\sphinxAtStartPar
+For advanced community detection using Infomap:
+
+\sphinxAtStartPar
+\sphinxstylestrong{Option 1:} Use the bundled Python implementation (recommended):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}infomap\PYG{o}{]}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Option 2:} Download the C++ binary from the official source:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Website: \sphinxurl{https://www.mapequation.org/infomap/}
+
+\item {} 
+\sphinxAtStartPar
+Follow platform\sphinxhyphen{}specific installation instructions
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Alternative:} Use the built\sphinxhyphen{}in Louvain algorithm (no binary needed):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{community\PYGZus{}louvain}
+\PYG{n}{communities} \PYG{o}{=} \PYG{n}{community\PYGZus{}louvain}\PYG{o}{.}\PYG{n}{best\PYGZus{}partition}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Node2Vec Embeddings}
+\label{\detokenize{getting_started/installation:node2vec-embeddings}}
+\sphinxAtStartPar
+For Node2Vec node embeddings, use pure Python alternatives:
+
+\sphinxAtStartPar
+\sphinxstylestrong{Option 1:} Use pecanpy (fast parallel implementation):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }pecanpy
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Option 2:} Use node2vec package:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }node2vec
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Option 3:} Use py3plex’s built\sphinxhyphen{}in random walk implementation:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{,} \PYG{n}{generate\PYGZus{}walks}
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{p}{,} \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{80}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Virtual Environment Setup}
+\label{\detokenize{getting_started/installation:virtual-environment-setup}}
+\sphinxAtStartPar
+We strongly recommend using a virtual environment:
+
+
+\paragraph{Using venv}
+\label{\detokenize{getting_started/installation:using-venv}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Create virtual environment}
+python3\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }venv\PYG{+w}{ }py3plex\PYGZhy{}env
+
+\PYG{c+c1}{\PYGZsh{} Activate (Linux/macOS)}
+\PYG{n+nb}{source}\PYG{+w}{ }py3plex\PYGZhy{}env/bin/activate
+
+\PYG{c+c1}{\PYGZsh{} Activate (Windows)}
+py3plex\PYGZhy{}env\PYG{l+s+se}{\PYGZbs{}S}cripts\PYG{l+s+se}{\PYGZbs{}a}ctivate
+
+\PYG{c+c1}{\PYGZsh{} Install py3plex}
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\paragraph{Using conda}
+\label{\detokenize{getting_started/installation:using-conda}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Create conda environment}
+conda\PYG{+w}{ }create\PYG{+w}{ }\PYGZhy{}n\PYG{+w}{ }py3plex\PYG{+w}{ }\PYG{n+nv}{python}\PYG{o}{=}\PYG{l+m}{3}.10
+
+\PYG{c+c1}{\PYGZsh{} Activate}
+conda\PYG{+w}{ }activate\PYG{+w}{ }py3plex
+
+\PYG{c+c1}{\PYGZsh{} Install py3plex}
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\subsubsection{Common Installation Issues}
+\label{\detokenize{getting_started/installation:common-installation-issues}}
+
+\paragraph{Issue: “No module named ‘numpy’”}
+\label{\detokenize{getting_started/installation:issue-no-module-named-numpy}}
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Install numpy first:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }numpy
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\paragraph{Issue: Compilation errors on Windows}
+\label{\detokenize{getting_started/installation:issue-compilation-errors-on-windows}}
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Install Visual C++ Build Tools:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+Download from: \sphinxurl{https://visualstudio.microsoft.com/visual-cpp-build-tools/}
+
+\item {} 
+\sphinxAtStartPar
+Install “Desktop development with C++”
+
+\item {} 
+\sphinxAtStartPar
+Retry installation
+
+\end{enumerate}
+
+
+\paragraph{Issue: “Permission denied” on Linux/macOS}
+\label{\detokenize{getting_started/installation:issue-permission-denied-on-linux-macos}}
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Use pip install with \textendash{}user flag:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}\PYGZhy{}user\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Or use a virtual environment (recommended).
+
+
+\paragraph{Issue: Old version installed}
+\label{\detokenize{getting_started/installation:issue-old-version-installed}}
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Upgrade to latest version:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}\PYGZhy{}upgrade\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\subsubsection{Verifying Installation}
+\label{\detokenize{getting_started/installation:verifying-installation}}
+\sphinxAtStartPar
+Test that py3plex is correctly installed:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{py3plex}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{py3plex}\PYG{o}{.}\PYG{n}{\PYGZus{}\PYGZus{}version\PYGZus{}\PYGZus{}}\PYG{p}{)}
+
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{py3plex installed successfully!}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Run the test suite:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Clone repository (if not already)}
+git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
+
+\PYG{c+c1}{\PYGZsh{} Run tests}
+python\PYG{+w}{ }run\PYGZus{}tests.py
+\end{sphinxVerbatim}
+
+
+\subsubsection{License Considerations}
+\label{\detokenize{getting_started/installation:license-considerations}}
+
+\paragraph{Main Library License}
+\label{\detokenize{getting_started/installation:main-library-license}}
+\sphinxAtStartPar
+py3plex core is distributed under the MIT License (permissive, commercial\sphinxhyphen{}friendly).
+
+
+\paragraph{Bundled Code Licenses}
+\label{\detokenize{getting_started/installation:bundled-code-licenses}}
+\sphinxAtStartPar
+\sphinxstylestrong{Important:} The repository contains AGPLv3\sphinxhyphen{}licensed code in \sphinxcode{\sphinxupquote{py3plex/algorithms/community\_detection/infomap/}}.
+
+\sphinxAtStartPar
+If you use Infomap\sphinxhyphen{}based community detection functions, your application may be subject to AGPLv3 requirements (copyleft).
+
+
+\paragraph{License Matrix}
+\label{\detokenize{getting_started/installation:license-matrix}}
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{30}{100}\X{15}{100}\X{15}{100}\X{40}{100}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Feature Category
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+License
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Commercial Use
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Notes
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+Core multilayer functionality
+&
+\sphinxAtStartPar
+MIT
+&
+\sphinxAtStartPar
+{[}OK{]} Yes
+&
+\sphinxAtStartPar
+Safe for proprietary use
+\\
+\sphinxhline
+\sphinxAtStartPar
+Network visualization
+&
+\sphinxAtStartPar
+MIT
+&
+\sphinxAtStartPar
+{[}OK{]} Yes
+&
+\sphinxAtStartPar
+Safe for proprietary use
+\\
+\sphinxhline
+\sphinxAtStartPar
+I/O operations
+&
+\sphinxAtStartPar
+MIT
+&
+\sphinxAtStartPar
+{[}OK{]} Yes
+&
+\sphinxAtStartPar
+Safe for proprietary use
+\\
+\sphinxhline
+\sphinxAtStartPar
+Louvain community detection
+&
+\sphinxAtStartPar
+BSD\sphinxhyphen{}3\sphinxhyphen{}Clause
+&
+\sphinxAtStartPar
+{[}OK{]} Yes
+&
+\sphinxAtStartPar
+Safe for proprietary use
+\\
+\sphinxhline
+\sphinxAtStartPar
+Label propagation
+&
+\sphinxAtStartPar
+MIT
+&
+\sphinxAtStartPar
+{[}OK{]} Yes
+&
+\sphinxAtStartPar
+Safe for proprietary use
+\\
+\sphinxhline
+\sphinxAtStartPar
+\sphinxstylestrong{Infomap community detection}
+&
+\sphinxAtStartPar
+\sphinxstylestrong{AGPLv3}
+&
+\sphinxAtStartPar
+WARNING Restricted
+&
+\sphinxAtStartPar
+Viral license \sphinxhyphen{} requires open\sphinxhyphen{}sourcing derived works
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+
+\paragraph{Recommendations}
+\label{\detokenize{getting_started/installation:recommendations}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+For commercial/proprietary projects: Avoid Infomap functions or use the pure Python \sphinxcode{\sphinxupquote{infomap}} package separately
+
+\item {} 
+\sphinxAtStartPar
+For open\sphinxhyphen{}source projects: All features are safe to use
+
+\item {} 
+\sphinxAtStartPar
+When in doubt: Use alternative algorithms (Louvain, label propagation) which are BSD/MIT licensed
+
+\end{itemize}
+
+
+\subsubsection{Next Steps}
+\label{\detokenize{getting_started/installation:next-steps}}
+\sphinxAtStartPar
+After installation, proceed to:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}} \sphinxhyphen{} Quick 5\sphinxhyphen{}minute introduction
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}} \sphinxhyphen{} Comprehensive 10\sphinxhyphen{}minute tutorial
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/networks::doc}]{\sphinxcrossref{\DUrole{doc}{Working with Networks}}}} \sphinxhyphen{} Detailed usage guide
+
+\end{itemize}
+
+
+\subsubsection{Getting Help}
+\label{\detokenize{getting_started/installation:getting-help}}
+\sphinxAtStartPar
+If you encounter installation issues:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+Check \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
+\begin{footnote}[3]\sphinxAtStartFootnote
+\sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
+%
+\end{footnote}
+
+\item {} 
+\sphinxAtStartPar
+Search for similar problems
+
+\item {} 
+\sphinxAtStartPar
+Open a new issue with:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Your operating system and version
+
+\item {} 
+\sphinxAtStartPar
+Python version (\sphinxcode{\sphinxupquote{python \sphinxhyphen{}\sphinxhyphen{}version}})
+
+\item {} 
+\sphinxAtStartPar
+Error message and full traceback
+
+\item {} 
+\sphinxAtStartPar
+Installation command used
+
+\end{itemize}
+
+\end{enumerate}
+
+\sphinxAtStartPar
+For any errors, please open an issue at \sphinxurl{https://github.com/SkBlaz/py3plex/issues}
+
+\sphinxstepscope
+
+
+\subsection{5\sphinxhyphen{}Minute Quickstart}
+\label{\detokenize{getting_started/quickstart_5min:minute-quickstart}}\label{\detokenize{getting_started/quickstart_5min::doc}}
+\sphinxAtStartPar
+Create a multilayer network, compute statistics, and visualize—all in 5 minutes.
+
+\sphinxAtStartPar
+\sphinxstylestrong{You will learn:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Create a multilayer network with \sphinxcode{\sphinxupquote{add\_edges()}}
+
+\item {} 
+\sphinxAtStartPar
+Display network statistics with \sphinxcode{\sphinxupquote{basic\_stats()}}
+
+\item {} 
+\sphinxAtStartPar
+Compute layer\sphinxhyphen{}specific metrics
+
+\item {} 
+\sphinxAtStartPar
+Visualize your network
+
+\item {} 
+\sphinxAtStartPar
+Query with the SQL\sphinxhyphen{}like DSL
+
+\end{itemize}
+
+
+\subsubsection{Installation}
+\label{\detokenize{getting_started/quickstart_5min:installation}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+For Docker setup, see {\hyperref[\detokenize{getting_started/installation::doc}]{\sphinxcrossref{\DUrole{doc}{Installation and Setup}}}}.
+
+
+\subsubsection{Create Your First Network}
+\label{\detokenize{getting_started/quickstart_5min:create-your-first-network}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Format: [source\PYGZus{}node, source\PYGZus{}layer, target\PYGZus{}node, target\PYGZus{}layer, weight]}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Carol}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Dave}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}
+\PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{list}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Number of nodes: 6
+Number of edges: 4
+Number of unique nodes (as node\PYGZhy{}layer tuples): 6
+Number of unique node IDs (across all layers): 4
+Nodes per layer:
+  Layer \PYGZsq{}friends\PYGZsq{}: 3 nodes
+  Layer \PYGZsq{}colleagues\PYGZsq{}: 3 nodes
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Key concept:} The network has 6 node\sphinxhyphen{}layer pairs but only 4 unique people. Alice appears in both layers as \sphinxcode{\sphinxupquote{(\textquotesingle{}Alice\textquotesingle{}, \textquotesingle{}friends\textquotesingle{})}} and \sphinxcode{\sphinxupquote{(\textquotesingle{}Alice\textquotesingle{}, \textquotesingle{}colleagues\textquotesingle{})}}.
+
+
+\subsubsection{Visualize}
+\label{\detokenize{getting_started/quickstart_5min:visualize}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{n+nn}{.}\PYG{n+nn}{multilayer}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}
+
+\PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}\PYG{p}{(}\PYG{p}{[}\PYG{n}{network}\PYG{p}{]}\PYG{p}{,} \PYG{n}{display}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Nodes are colored by layer. Edges connect nodes within and across layers.
+
+
+\subsubsection{Basic Analysis}
+\label{\detokenize{getting_started/quickstart_5min:basic-analysis}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{statistics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multilayer\PYGZus{}statistics} \PYG{k}{as} \PYG{n}{mls}
+
+\PYG{c+c1}{\PYGZsh{} Layer density: how connected is each layer?}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Friends density: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{mls}\PYG{o}{.}\PYG{n}{layer\PYGZus{}density}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Colleagues density: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{mls}\PYG{o}{.}\PYG{n}{layer\PYGZus{}density}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{colleagues}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Node activity: what fraction of layers does Bob appear in?}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Bob}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{s activity: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{mls}\PYG{o}{.}\PYG{n}{node\PYGZus{}activity}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Friends density: 0.667
+Colleagues density: 0.667
+Bob\PYGZsq{}s activity: 1.000
+\end{sphinxVerbatim}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Density 0.667} — 2 of 3 possible edges exist
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Activity 1.0} — Bob appears in 100\% of layers (both)
+
+\end{itemize}
+
+
+\subsubsection{Query with DSL}
+\label{\detokenize{getting_started/quickstart_5min:query-with-dsl}}
+\sphinxAtStartPar
+Use SQL\sphinxhyphen{}like queries for network exploration:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}
+
+\PYG{c+c1}{\PYGZsh{} Find high\PYGZhy{}degree nodes}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE degree \PYGZgt{} 1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Found }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ high\PYGZhy{}degree nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Get nodes in a specific layer}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE layer=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} for complete DSL documentation.
+
+
+\subsubsection{Key Concepts}
+\label{\detokenize{getting_started/quickstart_5min:key-concepts}}\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Node\sphinxhyphen{}layer pairs:} Nodes are \sphinxcode{\sphinxupquote{(node\_id, layer\_id)}} tuples. Alice in friends is different from Alice in colleagues.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Layers preserve context:} Each layer represents a different relationship type. Statistics and algorithms respect layer boundaries.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{NetworkX compatible:} py3plex uses NetworkX internally. All NetworkX algorithms work.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Multilayer statistics:} Metrics like node activity and edge overlap reveal cross\sphinxhyphen{}layer patterns invisible to single\sphinxhyphen{}layer tools.
+
+\end{enumerate}
+
+
+\subsubsection{Next Steps}
+\label{\detokenize{getting_started/quickstart_5min:next-steps}}
+\sphinxAtStartPar
+\sphinxstylestrong{Continue Learning:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}} — Complete workflow with community detection and embeddings
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/installation::doc}]{\sphinxcrossref{\DUrole{doc}{Installation and Setup}}}} — Optional dependencies and setup options
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/common_issues::doc}]{\sphinxcrossref{\DUrole{doc}{Common Issues and Troubleshooting}}}} — Solutions to common problems
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Advanced Topics:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/recipes_and_workflows::doc}]{\sphinxcrossref{\DUrole{doc}{Analysis Recipes \& Workflows}}}} — Ready\sphinxhyphen{}to\sphinxhyphen{}use analysis workflows and patterns
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} — SQL\sphinxhyphen{}like DSL for querying multilayer networks
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/graph_ops::doc}]{\sphinxcrossref{\DUrole{doc}{Dplyr\sphinxhyphen{}style Chainable Graph Operations}}}} — Dplyr\sphinxhyphen{}style chainable graph operations
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Examples:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/}} directory — 50+ working examples
+
+\end{itemize}
+
+\sphinxstepscope
+
+
+\subsection{10\sphinxhyphen{}Minute Tutorial}
+\label{\detokenize{getting_started/tutorial_10min:minute-tutorial}}\label{\detokenize{getting_started/tutorial_10min::doc}}
+\sphinxAtStartPar
+Build a complete multilayer network analysis pipeline: load data, compute metrics, detect communities, and visualize.
+
+\sphinxAtStartPar
+\sphinxstylestrong{You will learn:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Load networks from files
+
+\item {} 
+\sphinxAtStartPar
+Navigate and extract subnetworks
+
+\item {} 
+\sphinxAtStartPar
+Compute centrality and multilayer statistics
+
+\item {} 
+\sphinxAtStartPar
+Detect communities across layers
+
+\item {} 
+\sphinxAtStartPar
+Generate random walks for embeddings
+
+\item {} 
+\sphinxAtStartPar
+Create visualizations
+
+\end{itemize}
+
+
+\subsubsection{Prerequisites}
+\label{\detokenize{getting_started/tutorial_10min:prerequisites}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\bigskip\hrule\bigskip
+
+
+
+\subsubsection{Part 1: Loading Networks (2 min)}
+\label{\detokenize{getting_started/tutorial_10min:part-1-loading-networks-2-min}}
+\sphinxAtStartPar
+Create from scratch:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{D}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}
+\PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{list}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Load from file:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}
+    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datasets/multiedgelist.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} Format: source target layer}
+    \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}  \PYG{c+c1}{\PYGZsh{} Set to True for directed networks}
+\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Supported formats:} \sphinxcode{\sphinxupquote{multiedgelist}} (source, target, layer), \sphinxcode{\sphinxupquote{edgelist}} (source, target), \sphinxcode{\sphinxupquote{gpickle}}, \sphinxcode{\sphinxupquote{gml}}, \sphinxcode{\sphinxupquote{graphml}}
+
+
+\subsubsection{Part 2: Exploring Structure (2 min)}
+\label{\detokenize{getting_started/tutorial_10min:part-2-exploring-structure-2-min}}
+\sphinxAtStartPar
+Iterate through nodes and edges:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}nodes}\PYG{p}{(}\PYG{n}{data}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} ((\PYGZsq{}1\PYGZsq{}, \PYGZsq{}1\PYGZsq{}), \PYGZob{}\PYGZsq{}type\PYGZsq{}: \PYGZsq{}1\PYGZsq{}\PYGZcb{})}
+
+\PYG{k}{for} \PYG{n}{edge} \PYG{o+ow}{in} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}edges}\PYG{p}{(}\PYG{n}{data}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{edge}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} ((\PYGZsq{}1\PYGZsq{}, \PYGZsq{}1\PYGZsq{}), (\PYGZsq{}2\PYGZsq{}, \PYGZsq{}1\PYGZsq{}), \PYGZob{}\PYGZsq{}weight\PYGZsq{}: \PYGZsq{}1\PYGZsq{}\PYGZcb{})}
+
+\PYG{n}{neighbors} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}neighbors}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{layer\PYGZus{}id}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Extract subnetworks:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Single layer}
+\PYG{n}{layer\PYGZus{}1} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{subnetwork}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{subset\PYGZus{}by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layers}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Specific nodes across all layers}
+\PYG{n}{subset} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{subnetwork}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{subset\PYGZus{}by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node\PYGZus{}names}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Specific node\PYGZhy{}layer pairs}
+\PYG{n}{pairs} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{subnetwork}\PYG{p}{(}\PYG{p}{[}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,} \PYG{n}{subset\PYGZus{}by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node\PYGZus{}layer\PYGZus{}names}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Part 3: Computing Metrics (2 min)}
+\label{\detokenize{getting_started/tutorial_10min:part-3-computing-metrics-2-min}}
+\sphinxAtStartPar
+Layer\sphinxhyphen{}specific centrality (using NetworkX):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{layer\PYGZus{}1} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{subnetwork}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{subset\PYGZus{}by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layers}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{degree\PYGZus{}cent} \PYG{o}{=} \PYG{n}{layer\PYGZus{}1}\PYG{o}{.}\PYG{n}{monoplex\PYGZus{}nx\PYGZus{}wrapper}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{betweenness} \PYG{o}{=} \PYG{n}{layer\PYGZus{}1}\PYG{o}{.}\PYG{n}{monoplex\PYGZus{}nx\PYGZus{}wrapper}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Multilayer centrality:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}algorithms}\PYG{n+nn}{.}\PYG{n+nn}{centrality}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{MultilayerCentrality}
+
+\PYG{n}{calc} \PYG{o}{=} \PYG{n}{MultilayerCentrality}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{n}{ml\PYGZus{}degree} \PYG{o}{=} \PYG{n}{calc}\PYG{o}{.}\PYG{n}{overlapping\PYGZus{}degree\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{weighted}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{n}{ml\PYGZus{}betweenness} \PYG{o}{=} \PYG{n}{calc}\PYG{o}{.}\PYG{n}{multilayer\PYGZus{}betweenness\PYGZus{}centrality}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Multilayer statistics:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{statistics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multilayer\PYGZus{}statistics} \PYG{k}{as} \PYG{n}{mls}
+
+\PYG{n}{density} \PYG{o}{=} \PYG{n}{mls}\PYG{o}{.}\PYG{n}{layer\PYGZus{}density}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Edge density within a layer}
+\PYG{n}{activity} \PYG{o}{=} \PYG{n}{mls}\PYG{o}{.}\PYG{n}{node\PYGZus{}activity}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{node}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Fraction of layers node appears in}
+\PYG{n}{overlap} \PYG{o}{=} \PYG{n}{mls}\PYG{o}{.}\PYG{n}{edge\PYGZus{}overlap}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Shared edges between layers}
+\PYG{n}{similarity} \PYG{o}{=} \PYG{n}{mls}\PYG{o}{.}\PYG{n}{layer\PYGZus{}similarity}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{method}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{jaccard}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Available statistics:} \sphinxcode{\sphinxupquote{layer\_density}}, \sphinxcode{\sphinxupquote{entropy\_of\_multiplexity}}, \sphinxcode{\sphinxupquote{node\_activity}}, \sphinxcode{\sphinxupquote{edge\_overlap}}, \sphinxcode{\sphinxupquote{layer\_similarity}}, \sphinxcode{\sphinxupquote{algebraic\_connectivity}}, \sphinxcode{\sphinxupquote{multilayer\_clustering\_coefficient}}, and more.
+
+
+\subsubsection{Part 4: Community Detection (2 min)}
+\label{\detokenize{getting_started/tutorial_10min:part-4-community-detection-2-min}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}modularity}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{louvain\PYGZus{}multilayer}
+
+\PYG{n}{partition} \PYG{o}{=} \PYG{n}{louvain\PYGZus{}multilayer}\PYG{p}{(}
+    \PYG{n}{network}\PYG{p}{,}
+    \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,}      \PYG{c+c1}{\PYGZsh{} Resolution (higher = more communities)}
+    \PYG{n}{omega}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,}      \PYG{c+c1}{\PYGZsh{} Inter\PYGZhy{}layer coupling}
+    \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Communities: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{collections}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Counter}
+\PYG{n}{sizes} \PYG{o}{=} \PYG{n}{Counter}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Sizes: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{dict}\PYG{p}{(}\PYG{n}{sizes}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Part 5: Random Walks (1 min)}
+\label{\detokenize{getting_started/tutorial_10min:part-5-random-walks-1-min}}
+\sphinxAtStartPar
+Basic walk:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{,} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{,} \PYG{n}{generate\PYGZus{}walks}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}
+\PYG{n}{start} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{G}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+
+\PYG{n}{walk} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{start\PYGZus{}node}\PYG{o}{=}\PYG{n}{start}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Node2Vec biased walks:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} BFS\PYGZhy{}like (local)}
+\PYG{n}{walk\PYGZus{}bfs} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{start}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{2.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} DFS\PYGZhy{}like (explore)}
+\PYG{n}{walk\PYGZus{}dfs} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{start}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Generate walks for embeddings:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Use with Word2Vec: model = Word2Vec([[str(n) for n in w] for w in walks])}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Part 6: Visualization (1 min)}
+\label{\detokenize{getting_started/tutorial_10min:part-6-visualization-1-min}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{n+nn}{.}\PYG{n+nn}{multilayer}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{hairball\PYGZus{}plot}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{n}{network\PYGZus{}colors}\PYG{p}{,} \PYG{n}{graph} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}layers}\PYG{p}{(}\PYG{n}{style}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{hairball}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{hairball\PYGZus{}plot}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{,} \PYG{n}{network\PYGZus{}colors}\PYG{p}{,} \PYG{n}{layout\PYGZus{}algorithm}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{force}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{network.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{dpi}\PYG{o}{=}\PYG{l+m+mi}{150}\PYG{p}{,} \PYG{n}{bbox\PYGZus{}inches}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+With community colors:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{n+nn}{.}\PYG{n+nn}{colors}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{colors\PYGZus{}default}
+
+\PYG{n}{top\PYGZus{}communities} \PYG{o}{=} \PYG{p}{[}\PYG{n}{c} \PYG{k}{for} \PYG{n}{c}\PYG{p}{,} \PYG{n}{\PYGZus{}} \PYG{o+ow}{in} \PYG{n}{Counter}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{o}{.}\PYG{n}{most\PYGZus{}common}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{p}{]}
+\PYG{n}{color\PYGZus{}map} \PYG{o}{=} \PYG{n+nb}{dict}\PYG{p}{(}\PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{top\PYGZus{}communities}\PYG{p}{,} \PYG{n}{colors\PYGZus{}default}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{5}\PYG{p}{]}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{node\PYGZus{}colors} \PYG{o}{=} \PYG{p}{[}\PYG{n}{color\PYGZus{}map}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{gray}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)} \PYG{k}{for} \PYG{n}{n} \PYG{o+ow}{in} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{]}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{hairball\PYGZus{}plot}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{,} \PYG{n}{node\PYGZus{}colors}\PYG{p}{,} \PYG{n}{layout\PYGZus{}algorithm}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{force}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{communities.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{dpi}\PYG{o}{=}\PYG{l+m+mi}{150}\PYG{p}{,} \PYG{n}{bbox\PYGZus{}inches}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Complete Example}
+\label{\detokenize{getting_started/tutorial_10min:complete-example}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}modularity}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{louvain\PYGZus{}multilayer}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{n+nn}{.}\PYG{n+nn}{multilayer}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{hairball\PYGZus{}plot}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{n+nn}{.}\PYG{n+nn}{colors}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{colors\PYGZus{}default}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{collections}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Counter}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{c+c1}{\PYGZsh{} Load}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}
+    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datasets/multiedgelist2.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}
+\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Analyze}
+\PYG{n}{layer\PYGZus{}1} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{subnetwork}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{subset\PYGZus{}by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layers}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{degree\PYGZus{}cent} \PYG{o}{=} \PYG{n}{layer\PYGZus{}1}\PYG{o}{.}\PYG{n}{monoplex\PYGZus{}nx\PYGZus{}wrapper}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Top 5 by degree:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{degree\PYGZus{}cent}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{k}{lambda} \PYG{n}{x}\PYG{p}{:} \PYG{n}{x}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{n}{reverse}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{5}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Detect communities}
+\PYG{n}{partition} \PYG{o}{=} \PYG{n}{louvain\PYGZus{}multilayer}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{omega}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Communities: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Visualize}
+\PYG{n}{network\PYGZus{}colors}\PYG{p}{,} \PYG{n}{graph} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}layers}\PYG{p}{(}\PYG{n}{style}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{hairball}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{top\PYGZus{}communities} \PYG{o}{=} \PYG{p}{[}\PYG{n}{c} \PYG{k}{for} \PYG{n}{c}\PYG{p}{,} \PYG{n}{\PYGZus{}} \PYG{o+ow}{in} \PYG{n}{Counter}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{o}{.}\PYG{n}{most\PYGZus{}common}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{]}
+\PYG{n}{color\PYGZus{}map} \PYG{o}{=} \PYG{n+nb}{dict}\PYG{p}{(}\PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{top\PYGZus{}communities}\PYG{p}{,} \PYG{n}{colors\PYGZus{}default}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{node\PYGZus{}colors} \PYG{o}{=} \PYG{p}{[}\PYG{n}{color\PYGZus{}map}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{partition}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{lightgray}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)} \PYG{k}{for} \PYG{n}{n} \PYG{o+ow}{in} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{]}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{12}\PYG{p}{,} \PYG{l+m+mi}{12}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{hairball\PYGZus{}plot}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{,} \PYG{n}{node\PYGZus{}colors}\PYG{p}{,} \PYG{n}{layout\PYGZus{}algorithm}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{force}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{analysis.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{dpi}\PYG{o}{=}\PYG{l+m+mi}{150}\PYG{p}{,} \PYG{n}{bbox\PYGZus{}inches}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Common Issues}
+\label{\detokenize{getting_started/tutorial_10min:common-issues}}
+\sphinxAtStartPar
+\sphinxstylestrong{File Not Found:} Use absolute paths or run from repository root.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Visualization not showing:} In Jupyter, add \sphinxcode{\sphinxupquote{\%matplotlib inline}}. In scripts, use \sphinxcode{\sphinxupquote{plt.show()}} or save to file.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Missing dependencies:} Install extras with \sphinxcode{\sphinxupquote{pip install py3plex{[}viz,algos{]}}}
+
+
+\subsubsection{Next Steps}
+\label{\detokenize{getting_started/tutorial_10min:next-steps}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{concepts/multilayer_networks_101::doc}]{\sphinxcrossref{\DUrole{doc}{Multilayer Networks 101}}}} — Theory and concepts
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/statistics::doc}]{\sphinxcrossref{\DUrole{doc}{Network Statistics}}}} — All available statistics
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/community_detection::doc}]{\sphinxcrossref{\DUrole{doc}{Community Detection}}}} — Parameter tuning
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{user_guide/visualization::doc}]{\sphinxcrossref{\DUrole{doc}{Visualization}}}} — Advanced visualization
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/}} — 80+ working examples
+
+\end{itemize}
+
+\sphinxstepscope
+
+
+\subsection{Common Issues and Troubleshooting}
+\label{\detokenize{getting_started/common_issues:common-issues-and-troubleshooting}}\label{\detokenize{getting_started/common_issues::doc}}
+\sphinxAtStartPar
+This guide helps you troubleshoot common problems when getting started with py3plex.
+
+
+\subsubsection{Installation Issues}
+\label{\detokenize{getting_started/common_issues:installation-issues}}
+
+\paragraph{“No module named ‘numpy’”}
+\label{\detokenize{getting_started/common_issues:no-module-named-numpy}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Import error when trying to use py3plex.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Install numpy first:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }numpy
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\paragraph{Compilation Errors on Windows}
+\label{\detokenize{getting_started/common_issues:compilation-errors-on-windows}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} C++ compilation errors during installation on Windows.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Install Visual C++ Build Tools:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+Download from: \sphinxurl{https://visualstudio.microsoft.com/visual-cpp-build-tools/}
+
+\item {} 
+\sphinxAtStartPar
+Install “Desktop development with C++”
+
+\item {} 
+\sphinxAtStartPar
+Retry installation
+
+\end{enumerate}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\paragraph{“Permission denied” on Linux/macOS}
+\label{\detokenize{getting_started/common_issues:permission-denied-on-linux-macos}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Permission errors during pip install.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 1:} Use pip install with \textendash{}user flag:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}\PYGZhy{}user\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 2:} Use a virtual environment (recommended):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+python3\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }venv\PYG{+w}{ }py3plex\PYGZhy{}env
+\PYG{n+nb}{source}\PYG{+w}{ }py3plex\PYGZhy{}env/bin/activate\PYG{+w}{  }\PYG{c+c1}{\PYGZsh{} On Windows: py3plex\PYGZhy{}env\PYGZbs{}Scripts\PYGZbs{}activate}
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\paragraph{Old Version Installed}
+\label{\detokenize{getting_started/common_issues:old-version-installed}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Changes not reflecting or documentation mentions newer features.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Upgrade to the latest version:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}\PYGZhy{}upgrade\PYG{+w}{ }py3plex
+\end{sphinxVerbatim}
+
+
+\subsubsection{Data Loading Issues}
+\label{\detokenize{getting_started/common_issues:data-loading-issues}}
+
+\paragraph{File Not Found Errors}
+\label{\detokenize{getting_started/common_issues:file-not-found-errors}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} \sphinxcode{\sphinxupquote{FileNotFoundError}} when loading networks.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 1:} Use absolute paths:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{os}
+
+\PYG{n}{network\PYGZus{}path} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/absolute/path/to/data.edgelist}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}
+    \PYG{n}{network\PYGZus{}path}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{edgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 2:} Ensure you’re running from the correct directory:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{os}
+
+\PYG{c+c1}{\PYGZsh{} Check current directory}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Current directory:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{os}\PYG{o}{.}\PYG{n}{getcwd}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} List files}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Files:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{os}\PYG{o}{.}\PYG{n}{listdir}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{.}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 3:} Use paths relative to script location:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{os}
+
+\PYG{n}{script\PYGZus{}dir} \PYG{o}{=} \PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{dirname}\PYG{p}{(}\PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{abspath}\PYG{p}{(}\PYG{n+nv+vm}{\PYGZus{}\PYGZus{}file\PYGZus{}\PYGZus{}}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{data\PYGZus{}path} \PYG{o}{=} \PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}\PYG{n}{script\PYGZus{}dir}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{network.edgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Empty or Malformed Networks}
+\label{\detokenize{getting_started/common_issues:empty-or-malformed-networks}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Network loads but has no nodes or edges.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Check file format matches input\_type:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} For simple edge lists (source target)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{edgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} For multilayer edge lists (source target layer)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Always verify after loading}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Visualization Issues}
+\label{\detokenize{getting_started/common_issues:visualization-issues}}
+
+\paragraph{Visualization Not Showing}
+\label{\detokenize{getting_started/common_issues:visualization-not-showing}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} No window appears when calling visualization functions.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 1:} For Jupyter notebooks, add at the top:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{o}{\PYGZpc{}}\PYG{n}{matplotlib} \PYG{n}{inline}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 2:} For scripts, explicitly show the plot:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{c+c1}{\PYGZsh{} Your visualization code}
+\PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}\PYG{p}{(}\PYG{p}{[}\PYG{n}{network}\PYG{p}{]}\PYG{p}{,} \PYG{n}{display}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Explicitly show}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 3:} Save to file instead of displaying:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{n+nn}{.}\PYG{n+nn}{multilayer}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{hairball\PYGZus{}plot}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{hairball\PYGZus{}plot}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{p}{,} \PYG{n}{layout\PYGZus{}algorithm}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{force}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{network.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{dpi}\PYG{o}{=}\PYG{l+m+mi}{150}\PYG{p}{,} \PYG{n}{bbox\PYGZus{}inches}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{“No Display Found” Error}
+\label{\detokenize{getting_started/common_issues:no-display-found-error}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Error on headless servers or SSH sessions without X11.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Use Agg backend for matplotlib:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}
+\PYG{n}{matplotlib}\PYG{o}{.}\PYG{n}{use}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Agg}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Must be before importing pyplot}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+\PYG{c+c1}{\PYGZsh{} Now visualization will save to file instead of displaying}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{visualization}\PYG{n+nn}{.}\PYG{n+nn}{multilayer}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}
+\PYG{n}{draw\PYGZus{}multilayer\PYGZus{}default}\PYG{p}{(}\PYG{p}{[}\PYG{n}{network}\PYG{p}{]}\PYG{p}{,} \PYG{n}{display}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{output.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Blurry or Low\sphinxhyphen{}Quality Plots}
+\label{\detokenize{getting_started/common_issues:blurry-or-low-quality-plots}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Plots look pixelated or blurry.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Increase DPI when saving:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{network.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{dpi}\PYG{o}{=}\PYG{l+m+mi}{300}\PYG{p}{,} \PYG{n}{bbox\PYGZus{}inches}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Missing Dependencies}
+\label{\detokenize{getting_started/common_issues:missing-dependencies}}
+
+\paragraph{“No module named ‘plotly’”}
+\label{\detokenize{getting_started/common_issues:no-module-named-plotly}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Interactive visualization features not working.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Install visualization extras:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}viz\PYG{o}{]}
+\end{sphinxVerbatim}
+
+
+\paragraph{“No module named ‘infomap’”}
+\label{\detokenize{getting_started/common_issues:no-module-named-infomap}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Infomap community detection not working.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Install Infomap support:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}infomap\PYG{o}{]}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Or use alternative community detection methods:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{community\PYGZus{}louvain}
+\PYG{n}{communities} \PYG{o}{=} \PYG{n}{community\PYGZus{}louvain}\PYG{o}{.}\PYG{n}{best\PYGZus{}partition}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Performance Issues}
+\label{\detokenize{getting_started/common_issues:performance-issues}}
+
+\paragraph{Very Slow Loading}
+\label{\detokenize{getting_started/common_issues:very-slow-loading}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Loading large networks takes too long.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 1:} Use Arrow/Parquet format for large networks:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Install Arrow support}
+pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}arrow\PYG{o}{]}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{io}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{read}\PYG{p}{,} \PYG{n}{write}
+
+\PYG{c+c1}{\PYGZsh{} Save in efficient format}
+\PYG{n}{write}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{network.arrow}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Load much faster}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{read}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{network.arrow}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution 2:} Process in chunks or use subnetworks:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Extract a single layer for testing}
+\PYG{n}{layer\PYGZus{}1} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{subnetwork}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{subset\PYGZus{}by}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layers}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Work with the smaller network}
+\PYG{n}{layer\PYGZus{}1}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Out of Memory Errors}
+\label{\detokenize{getting_started/common_issues:out-of-memory-errors}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Python crashes or raises MemoryError with large networks.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} See {\hyperref[\detokenize{deployment/performance_scalability::doc}]{\sphinxcrossref{\DUrole{doc}{Performance and Scalability Best Practices}}}} for:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Memory\sphinxhyphen{}efficient loading strategies
+
+\item {} 
+\sphinxAtStartPar
+Batch processing techniques
+
+\item {} 
+\sphinxAtStartPar
+Sparse matrix representations
+
+\item {} 
+\sphinxAtStartPar
+Subnetwork extraction
+
+\end{itemize}
+
+
+\subsubsection{Algorithm Issues}
+\label{\detokenize{getting_started/common_issues:algorithm-issues}}
+
+\paragraph{Community Detection Returns Trivial Results}
+\label{\detokenize{getting_started/common_issues:community-detection-returns-trivial-results}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Each node in its own community or all nodes in one community.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Adjust algorithm parameters:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}modularity}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{p}{(}
+    \PYG{n}{louvain\PYGZus{}multilayer}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Try different resolution parameters}
+\PYG{n}{partition} \PYG{o}{=} \PYG{n}{louvain\PYGZus{}multilayer}\PYG{p}{(}
+    \PYG{n}{network}\PYG{p}{,}
+    \PYG{n}{gamma}\PYG{o}{=}\PYG{l+m+mf}{0.5}\PYG{p}{,}    \PYG{c+c1}{\PYGZsh{} Lower = fewer, larger communities}
+    \PYG{n}{omega}\PYG{o}{=}\PYG{l+m+mf}{1.5}\PYG{p}{,}    \PYG{c+c1}{\PYGZsh{} Higher = more layer consistency}
+    \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Random Walk or Embedding Errors}
+\label{\detokenize{getting_started/common_issues:random-walk-or-embedding-errors}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Random walk or Node2Vec functions fail.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Ensure network is connected:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Check connectivity}
+\PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{is\PYGZus{}connected}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{to\PYGZus{}undirected}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Warning: Network is not connected}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} Get largest component}
+    \PYG{n}{largest} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{nx}\PYG{o}{.}\PYG{n}{connected\PYGZus{}components}\PYG{p}{(}
+        \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{to\PYGZus{}undirected}\PYG{p}{(}\PYG{p}{)}
+    \PYG{p}{)}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{n+nb}{len}\PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} Create subgraph}
+    \PYG{n}{subgraph} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{subgraph}\PYG{p}{(}\PYG{n}{largest}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Docker Issues}
+\label{\detokenize{getting_started/common_issues:docker-issues}}
+
+\paragraph{Docker Build Fails}
+\label{\detokenize{getting_started/common_issues:docker-build-fails}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Docker build fails or takes very long.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Clear Docker cache and rebuild:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+docker\PYG{+w}{ }system\PYG{+w}{ }prune\PYG{+w}{ }\PYGZhy{}a
+docker\PYG{+w}{ }build\PYG{+w}{ }\PYGZhy{}\PYGZhy{}no\PYGZhy{}cache\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }py3plex:latest\PYG{+w}{ }.
+\end{sphinxVerbatim}
+
+
+\paragraph{Cannot Access Files in Docker}
+\label{\detokenize{getting_started/common_issues:cannot-access-files-in-docker}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Docker container can’t see your data files.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solution:} Mount volumes correctly:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Mount current directory}
+docker\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}v\PYG{+w}{ }\PYG{k}{\PYGZdl{}(}\PYG{n+nb}{pwd}\PYG{k}{)}:/data\PYG{+w}{ }py3plex:latest\PYG{+w}{ }/data/network.edgelist
+
+\PYG{c+c1}{\PYGZsh{} On Windows (PowerShell)}
+docker\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}v\PYG{+w}{ }\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{PWD}\PYG{l+s+si}{\PYGZcb{}}:/data\PYG{+w}{ }py3plex:latest\PYG{+w}{ }/data/network.edgelist
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{deployment/cli_and_docker::doc}]{\sphinxcrossref{\DUrole{doc}{Docker Usage Guide}}}} for complete Docker documentation.
+
+
+\subsubsection{Getting Help}
+\label{\detokenize{getting_started/common_issues:getting-help}}
+\sphinxAtStartPar
+If you encounter an issue not covered here:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Search GitHub Issues:} \sphinxurl{https://github.com/SkBlaz/py3plex/issues}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Check Documentation:} \sphinxurl{https://skblaz.github.io/py3plex/}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Browse Examples:} \sphinxurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
+
+\end{enumerate}
+
+\sphinxAtStartPar
+When reporting issues, include:
+* Python version (\sphinxcode{\sphinxupquote{python \sphinxhyphen{}\sphinxhyphen{}version}})
+* py3plex version (\sphinxcode{\sphinxupquote{pip show py3plex}})
+* Operating system
+* Full error traceback
+* Minimal code to reproduce the problem
+
+
+\subsubsection{Related Pages}
+\label{\detokenize{getting_started/common_issues:related-pages}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/installation::doc}]{\sphinxcrossref{\DUrole{doc}{Installation and Setup}}}} \sphinxhyphen{} Complete installation guide
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}} \sphinxhyphen{} Quick introduction
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}} \sphinxhyphen{} Comprehensive tutorial
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{deployment/performance_scalability::doc}]{\sphinxcrossref{\DUrole{doc}{Performance and Scalability Best Practices}}}} \sphinxhyphen{} Performance optimization
+
+\end{itemize}
+
+
+\bigskip\hrule\bigskip
+
+
 
 \section{Part II: Concepts \& Architecture}
 \label{\detokenize{index:part-ii-concepts-architecture}}
@@ -9425,7 +11221,7 @@ Complete examples are available in \sphinxcode{\sphinxupquote{examples/io\_and\_
 \label{\detokenize{user_guide/io_and_formats:see-also}}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../getting\_started/quickstart\_5min}}} \sphinxhyphen{} Getting started guide
+{\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}} \sphinxhyphen{} Getting started guide
 
 \item {} 
 \sphinxAtStartPar
@@ -11677,7 +13473,7 @@ Export as PDF/SVG for publication\sphinxhyphen{}quality figures
 
 \sphinxAtStartPar
 For more examples, see the \sphinxhref{https://github.com/SkBlaz/py3plex/tree/main/examples}{visualization examples}%
-\begin{footnote}[3]\sphinxAtStartFootnote
+\begin{footnote}[4]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/tree/main/examples}
 %
 \end{footnote}
@@ -14117,7 +15913,7 @@ Example performance optimization:
 \label{\detokenize{user_guide/dsl:further-reading}}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../getting\_started/quickstart\_5min}}} \sphinxhyphen{} Network construction basics
+{\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}} \sphinxhyphen{} Network construction basics
 
 \item {} 
 \sphinxAtStartPar
@@ -19139,7 +20935,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://skblaz.github.io/py3plex/}{Py3plex Documentation}%
-\begin{footnote}[4]\sphinxAtStartFootnote
+\begin{footnote}[5]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://skblaz.github.io/py3plex/}
 %
 \end{footnote}
@@ -19151,7 +20947,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.docker.com/}{Docker Documentation}%
-\begin{footnote}[5]\sphinxAtStartFootnote
+\begin{footnote}[6]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.docker.com/}
 %
 \end{footnote}
@@ -19159,7 +20955,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.docker.com/compose/}{Docker Compose Documentation}%
-\begin{footnote}[6]\sphinxAtStartFootnote
+\begin{footnote}[7]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.docker.com/compose/}
 %
 \end{footnote}
@@ -19167,7 +20963,7 @@ Example GitLab CI configuration:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md}{DOCKER.md}%
-\begin{footnote}[7]\sphinxAtStartFootnote
+\begin{footnote}[8]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/blob/master/DOCKER.md}
 %
 \end{footnote} \sphinxhyphen{} Main Docker guide in the repository
@@ -20288,7 +22084,7 @@ For networks \textgreater{}100k nodes, consider:
 
 \sphinxAtStartPar
 For performance issues, open an issue on \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{GitHub Issues}%
-\begin{footnote}[8]\sphinxAtStartFootnote
+\begin{footnote}[9]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}.
@@ -20973,7 +22769,7 @@ GUI tests run automatically on GitHub Actions for any changes to the \sphinxcode
 
 \sphinxhref{https://github.com/SkBlaz/py3plex/actions/workflows/gui-tests.yml}{\sphinxincludegraphics{{/home/runner/work/py3plex/py3plex/docfiles/_build/latex/.doctrees/images/e88da8a94cd277889f5a6d7d93e54df14ae68fa5/badge}.svg}}
 %
-\begin{footnote}[9]\sphinxAtStartFootnote
+\begin{footnote}[10]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/actions/workflows/gui-tests.yml}
 %
 \end{footnote}
@@ -21241,7 +23037,7 @@ curl\PYG{+w}{ }http://localhost:8080/api/graphs/\PYG{n+nv}{\PYGZdl{}GRAPH\PYGZus
 \label{\detokenize{gui/gui_user_guide:contributing}}
 \sphinxAtStartPar
 This GUI is part of the \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex}%
-\begin{footnote}[10]\sphinxAtStartFootnote
+\begin{footnote}[11]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} project.
@@ -21296,7 +23092,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex}%
-\begin{footnote}[11]\sphinxAtStartFootnote
+\begin{footnote}[12]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} \sphinxhyphen{} Multilayer network analysis
@@ -21304,7 +23100,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://fastapi.tiangolo.com/}{FastAPI}%
-\begin{footnote}[12]\sphinxAtStartFootnote
+\begin{footnote}[13]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://fastapi.tiangolo.com/}
 %
 \end{footnote} \sphinxhyphen{} Modern Python web framework
@@ -21312,7 +23108,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://docs.celeryproject.org/}{Celery}%
-\begin{footnote}[13]\sphinxAtStartFootnote
+\begin{footnote}[14]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://docs.celeryproject.org/}
 %
 \end{footnote} \sphinxhyphen{} Distributed task queue
@@ -21320,7 +23116,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://react.dev/}{React}%
-\begin{footnote}[14]\sphinxAtStartFootnote
+\begin{footnote}[15]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://react.dev/}
 %
 \end{footnote} \sphinxhyphen{} UI library
@@ -21328,7 +23124,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://vitejs.dev/}{Vite}%
-\begin{footnote}[15]\sphinxAtStartFootnote
+\begin{footnote}[16]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://vitejs.dev/}
 %
 \end{footnote} \sphinxhyphen{} Frontend build tool
@@ -21336,7 +23132,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://tailwindcss.com/}{Tailwind CSS}%
-\begin{footnote}[16]\sphinxAtStartFootnote
+\begin{footnote}[17]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://tailwindcss.com/}
 %
 \end{footnote} \sphinxhyphen{} Utility\sphinxhyphen{}first CSS
@@ -21357,7 +23153,7 @@ Built with:
 \item {} 
 \sphinxAtStartPar
 \sphinxstylestrong{py3plex Paper}: \sphinxhref{https://doi.org/10.1007/s41109-019-0203-7}{Applied Network Science 2019}%
-\begin{footnote}[17]\sphinxAtStartFootnote
+\begin{footnote}[18]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://doi.org/10.1007/s41109-019-0203-7}
 %
 \end{footnote}
@@ -26590,7 +28386,7 @@ See \sphinxcode{\sphinxupquote{MANIFEST.in}} for complete inclusion/exclusion ru
 
 \item {} 
 \sphinxAtStartPar
-\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../getting\_started/installation}}} \sphinxhyphen{} Installation guide
+{\hyperref[\detokenize{getting_started/installation::doc}]{\sphinxcrossref{\DUrole{doc}{Installation and Setup}}}} \sphinxhyphen{} Installation guide
 
 \end{itemize}
 
@@ -27428,7 +29224,7 @@ See \DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{architecture}}} for system archi
 \item {} 
 \sphinxAtStartPar
 Browse \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{existing issues}%
-\begin{footnote}[18]\sphinxAtStartFootnote
+\begin{footnote}[19]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues}
 %
 \end{footnote}
@@ -27436,7 +29232,7 @@ Browse \sphinxhref{https://github.com/SkBlaz/py3plex/issues}{existing issues}%
 \item {} 
 \sphinxAtStartPar
 Check \sphinxhref{https://github.com/SkBlaz/py3plex/issues?q=is\%3Aissue+is\%3Aopen+label\%3A\%22good+first+issue\%22}{good first issues}%
-\begin{footnote}[19]\sphinxAtStartFootnote
+\begin{footnote}[20]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/issues?q=is\%3Aissue+is\%3Aopen+label\%3A\%22good+first+issue\%22}
 %
 \end{footnote}
@@ -27463,7 +29259,7 @@ Working code examples for various use cases.
 \label{\detokenize{examples/index:examples}}\label{\detokenize{examples/index::doc}}
 \sphinxAtStartPar
 This page provides a curated list of example scripts demonstrating py3plex features. All examples are available in the \sphinxhref{https://github.com/SkBlaz/py3plex/tree/master/examples}{examples/ directory}%
-\begin{footnote}[20]\sphinxAtStartFootnote
+\begin{footnote}[21]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
 %
 \end{footnote} of the repository.
@@ -28089,11 +29885,11 @@ See {\hyperref[\detokenize{dev/contributing::doc}]{\sphinxcrossref{\DUrole{doc}{
 \label{\detokenize{examples/index:related-documentation}}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../getting\_started/quickstart\_5min}}} \sphinxhyphen{} Quick start guide
+{\hyperref[\detokenize{getting_started/quickstart_5min::doc}]{\sphinxcrossref{\DUrole{doc}{5\sphinxhyphen{}Minute Quickstart}}}} \sphinxhyphen{} Quick start guide
 
 \item {} 
 \sphinxAtStartPar
-\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../getting\_started/tutorial\_10min}}} \sphinxhyphen{} 10\sphinxhyphen{}minute tutorial
+{\hyperref[\detokenize{getting_started/tutorial_10min::doc}]{\sphinxcrossref{\DUrole{doc}{10\sphinxhyphen{}Minute Tutorial}}}} \sphinxhyphen{} 10\sphinxhyphen{}minute tutorial
 
 \item {} 
 \sphinxAtStartPar
@@ -58806,7 +60602,7 @@ We maintain a list of publications using py3plex to showcase applications and bu
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://github.com/SkBlaz/py3plex}{py3plex GitHub}%
-\begin{footnote}[21]\sphinxAtStartFootnote
+\begin{footnote}[22]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex}
 %
 \end{footnote} \sphinxhyphen{} Source code and issues
@@ -58814,7 +60610,7 @@ We maintain a list of publications using py3plex to showcase applications and bu
 \item {} 
 \sphinxAtStartPar
 \sphinxhref{https://doi.org/10.1007/s41109-019-0203-7}{Applied Network Science paper}%
-\begin{footnote}[22]\sphinxAtStartFootnote
+\begin{footnote}[23]\sphinxAtStartFootnote
 \sphinxnolinkurl{https://doi.org/10.1007/s41109-019-0203-7}
 %
 \end{footnote} \sphinxhyphen{} Primary publication
