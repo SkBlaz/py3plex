@@ -49,7 +49,7 @@ mkdir -p fuzzing/crashes
 
 # Fuzzer 1: Network loading
 echo "-----------------------------------"
-echo "Fuzzer 1/2: Network Loading"
+echo "Fuzzer 1/3: Network Loading"
 echo "-----------------------------------"
 python3 fuzzing/fuzz_load_network.py \
     fuzzing/seeds/ \
@@ -60,7 +60,7 @@ python3 fuzzing/fuzz_load_network.py \
 
 echo ""
 echo "-----------------------------------"
-echo "Fuzzer 2/2: Line Parsing"
+echo "Fuzzer 2/3: Line Parsing"
 echo "-----------------------------------"
 python3 fuzzing/fuzz_parse_line.py \
     fuzzing/seeds/ \
@@ -70,12 +70,24 @@ python3 fuzzing/fuzz_parse_line.py \
     2>&1 | tee fuzzing/fuzz_parse_line.log
 
 echo ""
+echo "-----------------------------------"
+echo "Fuzzer 3/3: DSL Query Parsing"
+echo "-----------------------------------"
+python3 fuzzing/fuzz_dsl.py \
+    fuzzing/seeds/ \
+    -max_total_time="$DURATION" \
+    -artifact_prefix=fuzzing/crashes/ \
+    -print_final_stats=1 \
+    2>&1 | tee fuzzing/fuzz_dsl.log
+
+echo ""
 echo "=================================="
 echo "Fuzzing Campaign Complete"
 echo "=================================="
 echo "Logs saved to:"
 echo "  - fuzzing/fuzz_load_network.log"
 echo "  - fuzzing/fuzz_parse_line.log"
+echo "  - fuzzing/fuzz_dsl.log"
 echo ""
 
 # Check for crashes
