@@ -129,7 +129,7 @@ Next Steps
 
 **Advanced Topics:**
 
-* :ref:`recipes` — Ready-to-use analysis workflows and patterns
+* :doc:`../user_guide/recipes_and_workflows` — Ready-to-use analysis workflows and patterns
 * :doc:`../user_guide/dsl` — SQL-like DSL for querying multilayer networks
 * :doc:`../user_guide/graph_ops` — Dplyr-style chainable graph operations
 
