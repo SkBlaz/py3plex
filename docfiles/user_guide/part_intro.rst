@@ -3,6 +3,28 @@ User Guide
 
 This section provides comprehensive how-to guides for every major py3plex capability.
 
+.. admonition:: 🔍 Featured: DSL Query Language
+   :class: dsl-example
+
+   One of py3plex's standout features is the **SQL-like DSL** for querying networks:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Declarative, readable network queries
+       result = (
+           Q.nodes()
+            .from_layers(L["social"] + L["work"])
+            .where(degree__gt=5)
+            .compute("betweenness_centrality")
+            .order_by("-betweenness_centrality")
+            .limit(10)
+            .execute(network)
+       )
+
+   The DSL makes complex analyses concise and maintainable. See :doc:`dsl` for complete details!
+
 **This section covers:**
 
 * **Networks** — Create, load, query, and extract subnetworks

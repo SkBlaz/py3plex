@@ -122,7 +122,7 @@ Multiplex and multilayer network structures
 
 \item {} 
 \sphinxAtStartPar
-SQL\sphinxhyphen{}like DSL for network queries
+\sphinxstylestrong{SQL\sphinxhyphen{}like DSL for network queries} — first\sphinxhyphen{}class feature
 
 \item {} 
 \sphinxAtStartPar
@@ -149,6 +149,57 @@ High\sphinxhyphen{}performance I/O with Arrow/Parquet support
 Full NetworkX compatibility
 
 \end{itemize}
+
+\begin{sphinxadmonition}{note}{🔍 DSL: Query Networks Like SQL}
+
+\sphinxAtStartPar
+The py3plex DSL lets you query networks using intuitive SQL\sphinxhyphen{}like syntax or a type\sphinxhyphen{}safe Python builder API:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}\PYG{p}{,} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} String DSL: Simple and readable}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE layer=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{social}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{ AND degree \PYGZgt{} 5 }\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{COMPUTE betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Builder API: Type\PYGZhy{}safe with autocompletion}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The DSL is \sphinxstylestrong{perfect for}:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Interactive network exploration
+
+\item {} 
+\sphinxAtStartPar
+Rapid prototyping
+
+\item {} 
+\sphinxAtStartPar
+Educational purposes
+
+\item {} 
+\sphinxAtStartPar
+Production pipelines
+
+\end{itemize}
+
+\sphinxAtStartPar
+📖 See the complete {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} guide for all features!
+\end{sphinxadmonition}
 
 
 \chapter{Quick Start}
@@ -1112,18 +1163,33 @@ Bob\PYGZsq{}s activity: 1.000
 \subsubsection{Query with DSL}
 \label{\detokenize{getting_started/quickstart_5min:query-with-dsl}}
 \sphinxAtStartPar
+Py3plex features a powerful SQL\sphinxhyphen{}like DSL for querying networks!
+
+\begin{sphinxadmonition}{note}{🔍 DSL Example: Network Queries}
+
+\sphinxAtStartPar
 Use SQL\sphinxhyphen{}like queries for network exploration:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{execute\PYGZus{}query}\PYG{p}{,} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
 
-\PYG{c+c1}{\PYGZsh{} Find high\PYGZhy{}degree nodes}
+\PYG{c+c1}{\PYGZsh{} String DSL syntax}
 \PYG{n}{result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE degree \PYGZgt{} 1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
 \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Found }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{count}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ high\PYGZhy{}degree nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 
-\PYG{c+c1}{\PYGZsh{} Get nodes in a specific layer}
-\PYG{n}{result} \PYG{o}{=} \PYG{n}{execute\PYGZus{}query}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{SELECT nodes WHERE layer=}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Builder API (recommended for production)}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{friends}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
 \end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The DSL makes complex network analysis intuitive and concise!
+\end{sphinxadmonition}
 
 \sphinxAtStartPar
 See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} for complete DSL documentation.
@@ -1470,6 +1536,46 @@ With community colors:
 \PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{analysis.png}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{dpi}\PYG{o}{=}\PYG{l+m+mi}{150}\PYG{p}{,} \PYG{n}{bbox\PYGZus{}inches}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
 \PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
 \end{sphinxVerbatim}
+
+
+\subsubsection{Bonus: Using the DSL (1 min)}
+\label{\detokenize{getting_started/tutorial_10min:bonus-using-the-dsl-1-min}}
+\sphinxAtStartPar
+The SQL\sphinxhyphen{}like DSL makes many analysis tasks even simpler:
+
+\begin{sphinxadmonition}{note}{🔍 DSL Example: Quick Analysis}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Find top influential nodes}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Display as DataFrame}
+\PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{df}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Compare layers}
+\PYG{k}{for} \PYG{n}{layer\PYGZus{}id} \PYG{o+ow}{in} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{:}
+    \PYG{n}{layer\PYGZus{}result} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}id}\PYG{p}{]}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Layer }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}id}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}result}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} for comprehensive DSL documentation!
+\end{sphinxadmonition}
 
 
 \subsubsection{Common Issues}
@@ -6016,6 +6122,30 @@ Comprehensive how\sphinxhyphen{}to guides for every major feature.
 \sphinxAtStartPar
 This section provides comprehensive how\sphinxhyphen{}to guides for every major py3plex capability.
 
+\begin{sphinxadmonition}{note}{🔍 Featured: DSL Query Language}
+
+\sphinxAtStartPar
+One of py3plex’s standout features is the \sphinxstylestrong{SQL\sphinxhyphen{}like DSL} for querying networks:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Declarative, readable network queries}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{+} \PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The DSL makes complex analyses concise and maintainable. See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} for complete details!
+\end{sphinxadmonition}
+
 \sphinxAtStartPar
 \sphinxstylestrong{This section covers:}
 \begin{itemize}
@@ -6083,6 +6213,31 @@ Start with {\hyperref[\detokenize{user_guide/networks::doc}]{\sphinxcrossref{\DU
 \label{\detokenize{user_guide/networks:working-with-networks}}\label{\detokenize{user_guide/networks::doc}}
 \sphinxAtStartPar
 This guide covers everything you need to know about creating, loading, and manipulating multilayer networks in py3plex.
+
+\begin{sphinxadmonition}{note}{🔍 DSL Tip: Query Networks Easily}
+
+\sphinxAtStartPar
+Once you’ve created a network, use the DSL to explore it:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Get all nodes in a layer}
+\PYG{n}{friends} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{friends}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Find high\PYGZhy{}degree nodes}
+\PYG{n}{hubs} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} for comprehensive query capabilities!
+\end{sphinxadmonition}
 
 
 \subsubsection{Creating Networks from Scratch}
@@ -7198,6 +7353,37 @@ Repository: \sphinxurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
 \sphinxAtStartPar
 \sphinxstyleemphasis{How to measure and compare the structure of your multilayer network.}
 
+\begin{sphinxadmonition}{note}{🔍 DSL for Quick Statistics}
+
+\sphinxAtStartPar
+Compute statistics efficiently with the DSL:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Compute degree and clustering for all nodes}
+\PYG{n}{stats} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{clustering}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Compare layers}
+\PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer2}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer3}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{:}
+    \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer}\PYG{p}{]}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{p}{)}
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: avg degree = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+DSL makes comparative analysis straightforward!
+\end{sphinxadmonition}
+
 
 \bigskip\hrule\bigskip
 
@@ -8109,6 +8295,34 @@ Repository: \sphinxurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
 \label{\detokenize{user_guide/community_detection:community-detection}}\label{\detokenize{user_guide/community_detection::doc}}
 \sphinxAtStartPar
 \sphinxstyleemphasis{Finding groups that span multiple layers of interaction.}
+
+\begin{sphinxadmonition}{note}{💡 DSL Tip: Filter by Communities}
+
+\sphinxAtStartPar
+After detecting communities, use DSL to analyze them:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Find high\PYGZhy{}degree nodes in specific community}
+\PYG{c+c1}{\PYGZsh{} (assuming you stored community IDs as node attributes)}
+
+\PYG{c+c1}{\PYGZsh{} Get all nodes and their properties}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{20}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Export for further analysis}
+\PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{to\PYGZus{}csv}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{community\PYGZus{}hubs.csv}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Combine traditional algorithms with DSL queries for powerful workflows!
+\end{sphinxadmonition}
 
 
 \bigskip\hrule\bigskip
@@ -10660,6 +10874,33 @@ Repository: \sphinxurl{https://github.com/SkBlaz/py3plex}
 \sphinxAtStartPar
 py3plex provides a comprehensive I/O system for reading and writing multilayer graphs in various formats. The system is designed to be extensible, efficient, and easy to use.
 
+\begin{sphinxadmonition}{note}{🔍 DSL Example: Export Query Results}
+
+\sphinxAtStartPar
+DSL makes it easy to export analysis results:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Analyze and export in one pipeline}
+\PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{+} \PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{100}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{export\PYGZus{}csv}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{top\PYGZus{}influencers.csv}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{export\PYGZus{}json}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{top\PYGZus{}influencers.json}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Results automatically saved to files!}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Declarative exports streamline data analysis workflows!
+\end{sphinxadmonition}
+
 
 \subsubsection{Supported Formats}
 \label{\detokenize{user_guide/io_and_formats:supported-formats}}
@@ -11244,6 +11485,33 @@ Complete examples are available in \sphinxcode{\sphinxupquote{examples/io\_and\_
 \label{\detokenize{user_guide/visualization:visualization}}\label{\detokenize{user_guide/visualization::doc}}
 \sphinxAtStartPar
 \sphinxstyleemphasis{From hairball to insight: making multilayer networks visible.}
+
+\begin{sphinxadmonition}{note}{💡 DSL Tip: Filter Before Visualizing}
+
+\sphinxAtStartPar
+Use DSL to create focused visualizations:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Get high\PYGZhy{}degree nodes for cleaner visualization}
+\PYG{n}{important\PYGZus{}nodes} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Create subnetwork with just these nodes}
+\PYG{n}{subgraph} \PYG{o}{=} \PYG{n}{important\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{to\PYGZus{}networkx}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Now visualize the focused subgraph}
+\PYG{c+c1}{\PYGZsh{} (clearer than visualizing entire network)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Filter first, visualize second for better insights!
+\end{sphinxadmonition}
 
 
 \bigskip\hrule\bigskip
@@ -16940,6 +17208,39 @@ You’re integrating with pandas workflows
 This guide provides \sphinxstylestrong{practical recipes} for \sphinxstylestrong{common analysis workflows} in py3plex.
 Each recipe is a \sphinxstylestrong{complete, ready\sphinxhyphen{}to\sphinxhyphen{}use solution} for a real\sphinxhyphen{}world task.
 
+\begin{sphinxadmonition}{note}{🔍 DSL for Rapid Analysis}
+
+\sphinxAtStartPar
+Many recipes can be expressed concisely using the DSL:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Quick hub identification}
+\PYG{n}{hubs} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Multi\PYGZhy{}layer comparison}
+\PYG{k}{for} \PYG{n}{layer\PYGZus{}name} \PYG{o+ow}{in} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{family}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{:}
+    \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{clustering}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer\PYGZus{}name}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{result}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+See the DSL recipes section below for more patterns!
+\end{sphinxadmonition}
+
 \sphinxAtStartPar
 \sphinxstylestrong{Related Example Scripts:}
 
@@ -17136,6 +17437,32 @@ Complete pipelines: \sphinxcode{\sphinxupquote{examples/pipelines/example\_6\_co
 \item {} 
 \sphinxAtStartPar
 \phantomsection\label{\detokenize{user_guide/recipes_and_workflows:id36}}{\hyperref[\detokenize{user_guide/recipes_and_workflows:further-reading}]{\sphinxcrossref{Further Reading}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/recipes_and_workflows:id37}}{\hyperref[\detokenize{user_guide/recipes_and_workflows:dsl-query-recipes}]{\sphinxcrossref{DSL Query Recipes}}}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/recipes_and_workflows:id38}}{\hyperref[\detokenize{user_guide/recipes_and_workflows:recipe-18-hub-identification-with-dsl}]{\sphinxcrossref{Recipe 18: Hub Identification with DSL}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/recipes_and_workflows:id39}}{\hyperref[\detokenize{user_guide/recipes_and_workflows:recipe-19-multi-layer-comparative-analysis}]{\sphinxcrossref{Recipe 19: Multi\sphinxhyphen{}Layer Comparative Analysis}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/recipes_and_workflows:id40}}{\hyperref[\detokenize{user_guide/recipes_and_workflows:recipe-20-advanced-filtering-and-export}]{\sphinxcrossref{Recipe 20: Advanced Filtering and Export}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/recipes_and_workflows:id41}}{\hyperref[\detokenize{user_guide/recipes_and_workflows:recipe-21-parameterized-query-templates}]{\sphinxcrossref{Recipe 21: Parameterized Query Templates}}}
+
+\item {} 
+\sphinxAtStartPar
+\phantomsection\label{\detokenize{user_guide/recipes_and_workflows:id42}}{\hyperref[\detokenize{user_guide/recipes_and_workflows:recipe-22-dsl-with-explain-mode}]{\sphinxcrossref{Recipe 22: DSL with EXPLAIN Mode}}}
+
+\end{itemize}
 
 \end{itemize}
 \end{sphinxcontents}
@@ -18419,6 +18746,227 @@ See Citations section in main documentation for complete reference list
 
 \end{itemize}
 
+
+\subsubsection{DSL Query Recipes}
+\label{\detokenize{user_guide/recipes_and_workflows:dsl-query-recipes}}
+\sphinxAtStartPar
+The py3plex DSL provides powerful, concise syntax for network queries. These recipes showcase common patterns.
+
+
+\paragraph{Recipe 18: Hub Identification with DSL}
+\label{\detokenize{user_guide/recipes_and_workflows:recipe-18-hub-identification-with-dsl}}
+\sphinxAtStartPar
+\sphinxstylestrong{Task:} Find and rank influential nodes across layers using the DSL.
+
+\begin{sphinxadmonition}{note}{🔍 DSL Example: Hub Identification}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Load network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}
+    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{data/network.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Find top 20 hubs by betweenness centrality}
+\PYG{n}{hubs} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Pre\PYGZhy{}filter by degree for efficiency}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{clustering}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{20}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{export\PYGZus{}csv}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{top\PYGZus{}hubs.csv}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Display results}
+\PYG{n}{df} \PYG{o}{=} \PYG{n}{hubs}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{df}\PYG{p}{)}
+\end{sphinxVerbatim}
+\end{sphinxadmonition}
+
+\sphinxAtStartPar
+\sphinxstylestrong{When to use:} Identifying key players, finding bridge nodes, influence analysis.
+
+
+\paragraph{Recipe 19: Multi\sphinxhyphen{}Layer Comparative Analysis}
+\label{\detokenize{user_guide/recipes_and_workflows:recipe-19-multi-layer-comparative-analysis}}
+\sphinxAtStartPar
+\sphinxstylestrong{Task:} Compare network structure across different layers using DSL.
+
+\begin{sphinxadmonition}{note}{🔍 DSL Example: Layer Comparison}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{pandas}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{pd}
+
+\PYG{c+c1}{\PYGZsh{} Analyze each layer separately}
+\PYG{n}{layers} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{family}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}
+\PYG{n}{results} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+
+\PYG{k}{for} \PYG{n}{layer\PYGZus{}name} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
+    \PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{clustering}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} Calculate layer\PYGZhy{}level statistics}
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{layer\PYGZus{}stats} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{layer\PYGZus{}name}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{nodes}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{result}\PYG{o}{.}\PYG{n}{count}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{max\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{max}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{avg\PYGZus{}clustering}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{clustering}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{n}{results}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{layer\PYGZus{}stats}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Create comparison table}
+\PYG{n}{comparison\PYGZus{}df} \PYG{o}{=} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{results}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{comparison\PYGZus{}df}\PYG{p}{)}
+\end{sphinxVerbatim}
+\end{sphinxadmonition}
+
+\sphinxAtStartPar
+\sphinxstylestrong{When to use:} Understanding layer\sphinxhyphen{}specific properties, detecting structural differences.
+
+
+\paragraph{Recipe 20: Advanced Filtering and Export}
+\label{\detokenize{user_guide/recipes_and_workflows:recipe-20-advanced-filtering-and-export}}
+\sphinxAtStartPar
+\sphinxstylestrong{Task:} Complex multi\sphinxhyphen{}criteria filtering with automated export.
+
+\begin{sphinxadmonition}{note}{🔍 DSL Example: Advanced Filtering}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Find nodes that meet multiple criteria}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{c+c1}{\PYGZsh{} Combine layers using set operations}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{+} \PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bots}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{c+c1}{\PYGZsh{} Multiple filter conditions}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gte}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{,} \PYG{n}{clustering\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mf}{0.3}\PYG{p}{)}
+     \PYG{c+c1}{\PYGZsh{} Compute multiple measures}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{c+c1}{\PYGZsh{} Sort and limit}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{50}\PYG{p}{)}
+     \PYG{c+c1}{\PYGZsh{} Export in multiple formats}
+     \PYG{o}{.}\PYG{n}{export\PYGZus{}json}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{filtered\PYGZus{}nodes.json}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{orient}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{records}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Also available as pandas DataFrame}
+\PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Or as NetworkX subgraph}
+\PYG{n}{subgraph} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}networkx}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\end{sphinxVerbatim}
+\end{sphinxadmonition}
+
+\sphinxAtStartPar
+\sphinxstylestrong{When to use:} Targeted analysis, automated reporting, filtering complex networks.
+
+
+\paragraph{Recipe 21: Parameterized Query Templates}
+\label{\detokenize{user_guide/recipes_and_workflows:recipe-21-parameterized-query-templates}}
+\sphinxAtStartPar
+\sphinxstylestrong{Task:} Create reusable query templates for systematic analysis.
+
+\begin{sphinxadmonition}{note}{💡 DSL Example: Query Templates}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}\PYG{p}{,} \PYG{n}{Param}
+
+\PYG{c+c1}{\PYGZsh{} Define a reusable query template}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{find\PYGZus{}top\PYGZus{}nodes}\PYG{p}{(}\PYG{n}{layer\PYGZus{}name}\PYG{p}{,} \PYG{n}{degree\PYGZus{}threshold}\PYG{p}{,} \PYG{n}{top\PYGZus{}n}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Reusable template for finding top nodes in a layer\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{k}{return} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{layer\PYGZus{}name}\PYG{p}{]}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{n}{degree\PYGZus{}threshold}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{n}{top\PYGZus{}n}\PYG{p}{)}
+    \PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Use the template with different parameters}
+\PYG{n}{social\PYGZus{}hubs} \PYG{o}{=} \PYG{n}{find\PYGZus{}top\PYGZus{}nodes}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{n}{work\PYGZus{}hubs} \PYG{o}{=} \PYG{n}{find\PYGZus{}top\PYGZus{}nodes}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{l+m+mi}{20}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Alternative: Use Param for dynamic parameter binding}
+\PYG{n}{query} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{Param}\PYG{o}{.}\PYG{n}{str}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{n}{Param}\PYG{o}{.}\PYG{n}{int}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{min\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{n}{Param}\PYG{o}{.}\PYG{n}{int}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{top\PYGZus{}n}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Execute with different parameters}
+\PYG{n}{result1} \PYG{o}{=} \PYG{n}{query}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{min\PYGZus{}degree}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{,} \PYG{n}{top\PYGZus{}n}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{)}
+\PYG{n}{result2} \PYG{o}{=} \PYG{n}{query}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{min\PYGZus{}degree}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{top\PYGZus{}n}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{)}
+\end{sphinxVerbatim}
+\end{sphinxadmonition}
+
+\sphinxAtStartPar
+\sphinxstylestrong{When to use:} Batch analysis, systematic parameter sweeps, reproducible workflows.
+
+
+\paragraph{Recipe 22: DSL with EXPLAIN Mode}
+\label{\detokenize{user_guide/recipes_and_workflows:recipe-22-dsl-with-explain-mode}}
+\sphinxAtStartPar
+\sphinxstylestrong{Task:} Optimize queries before execution on large networks.
+
+\begin{sphinxadmonition}{note}{💡 DSL Example: Query Optimization}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Build a potentially expensive query}
+\PYG{n}{query} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} O(n\(\sp{\text{3}}\)) operation!}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Check the execution plan first}
+\PYG{n}{plan} \PYG{o}{=} \PYG{n}{query}\PYG{o}{.}\PYG{n}{explain}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Query Execution Plan:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{step} \PYG{o+ow}{in} \PYG{n}{plan}\PYG{o}{.}\PYG{n}{steps}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{} }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{step}\PYG{o}{.}\PYG{n}{description}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  Complexity: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{step}\PYG{o}{.}\PYG{n}{estimated\PYGZus{}complexity}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Check for warnings}
+\PYG{k}{if} \PYG{n}{plan}\PYG{o}{.}\PYG{n}{warnings}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{Warnings:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{warning} \PYG{o+ow}{in} \PYG{n}{plan}\PYG{o}{.}\PYG{n}{warnings}\PYG{p}{:}
+        \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{⚠️  }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{warning}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Optimized version: filter first to reduce computation}
+\PYG{n}{optimized\PYGZus{}query} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Pre\PYGZhy{}filter to reduce nodes}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Execute the optimized query}
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{optimized\PYGZus{}query}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\end{sphinxVerbatim}
+\end{sphinxadmonition}
+
+\sphinxAtStartPar
+\sphinxstylestrong{When to use:} Large networks, expensive centrality computations, performance optimization.
+
 \sphinxstepscope
 
 
@@ -18426,6 +18974,39 @@ See Citations section in main documentation for complete reference list
 \label{\detokenize{user_guide/case_studies:use-cases-case-studies}}\label{\detokenize{user_guide/case_studies:case-studies}}\label{\detokenize{user_guide/case_studies::doc}}
 \sphinxAtStartPar
 \sphinxstyleemphasis{“In theory there is no difference between theory and practice. In practice there is.”} — Yogi Berra
+
+\begin{sphinxadmonition}{note}{🔍 DSL in Case Studies}
+
+\sphinxAtStartPar
+Throughout these case studies, notice how DSL simplifies analysis:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} Identify candidate proteins (biological networks)}
+\PYG{n}{candidates} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{clustering}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{50}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{ppi\PYGZus{}network}\PYG{p}{)}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Compare social media presence (social networks)}
+\PYG{k}{for} \PYG{n}{platform} \PYG{o+ow}{in} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{twitter}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{facebook}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{instagram}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{:}
+    \PYG{n}{influencers} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{n}{platform}\PYG{p}{]}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+         \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{social\PYGZus{}network}\PYG{p}{)}
+    \PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{platform}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{influencers}\PYG{o}{.}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ influencers}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+DSL enables rapid iteration in exploratory analysis!
+\end{sphinxadmonition}
 
 \sphinxAtStartPar
 This chapter provides complete, end\sphinxhyphen{}to\sphinxhyphen{}end case studies demonstrating py3plex in different research domains. Each case study includes:
@@ -29263,6 +29844,48 @@ This page provides a curated list of example scripts demonstrating py3plex featu
 \sphinxnolinkurl{https://github.com/SkBlaz/py3plex/tree/master/examples}
 %
 \end{footnote} of the repository.
+
+\begin{sphinxadmonition}{note}{🔍 Featured: DSL Examples}
+
+\sphinxAtStartPar
+The DSL examples showcase py3plex’s SQL\sphinxhyphen{}like query language:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}\PYG{p}{,} \PYG{n}{L}
+
+\PYG{c+c1}{\PYGZsh{} From example\PYGZus{}dsl\PYGZus{}builder\PYGZus{}api.py \PYGZhy{} Comprehensive DSL v2}
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{+} \PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{20}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{export\PYGZus{}csv}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{top\PYGZus{}influencers.csv}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Recommended starting points:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{example\_dsl\_builder\_api.py}} — Complete DSL v2 tutorial
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{example\_dsl\_queries.py}} — String DSL syntax
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{example\_dsl\_advanced.py}} — Advanced patterns
+
+\end{itemize}
+
+\sphinxAtStartPar
+See {\hyperref[\detokenize{user_guide/dsl::doc}]{\sphinxcrossref{\DUrole{doc}{SQL\sphinxhyphen{}like DSL for Multilayer Networks}}}} for full DSL documentation!
+\end{sphinxadmonition}
 
 
 \subsubsection{Getting Started Examples}

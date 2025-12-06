@@ -9,6 +9,7 @@
   <title>Network Statistics &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ca2d1f9e" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -182,6 +183,32 @@
   <section id="network-statistics">
 <h1>Network Statistics<a class="headerlink" href="#network-statistics" title="Link to this heading"></a></h1>
 <p><em>How to measure and compare the structure of your multilayer network.</em></p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL for Quick Statistics</p>
+<p>Compute statistics efficiently with the DSL:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Compute degree and clustering for all nodes</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Compare layers</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">,</span> <span class="s2">&quot;layer2&quot;</span><span class="p">,</span> <span class="s2">&quot;layer3&quot;</span><span class="p">]:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: avg degree = </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>DSL makes comparative analysis straightforward!</p>
+</div>
 <hr class="docutils" />
 <p>Once you’ve loaded a multilayer network, the next question is: <em>what does it look like?</em> This chapter shows you how to compute statistics that answer fundamental questions about your network’s structure:</p>
 <ul class="simple">

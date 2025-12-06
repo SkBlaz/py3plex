@@ -9,6 +9,7 @@
   <title>10-Minute Tutorial &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ca2d1f9e" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -57,6 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#part-5-random-walks-1-min">Part 5: Random Walks (1 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#part-6-visualization-1-min">Part 6: Visualization (1 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bonus-using-the-dsl-1-min">Bonus: Using the DSL (1 min)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
@@ -348,6 +350,41 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;analysis.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
+</div>
+</section>
+<section id="bonus-using-the-dsl-1-min">
+<h2>Bonus: Using the DSL (1 min)<a class="headerlink" href="#bonus-using-the-dsl-1-min" title="Link to this heading"></a></h2>
+<p>The SQL-like DSL makes many analysis tasks even simpler:</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL Example: Quick Analysis</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Find top influential nodes</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Display as DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Compare layers</span>
+<span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">]:</span>
+    <span class="n">layer_result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_id</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">layer_result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for comprehensive DSL documentation!</p>
 </div>
 </section>
 <section id="common-issues">

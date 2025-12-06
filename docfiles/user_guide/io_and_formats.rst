@@ -3,6 +3,31 @@ I/O and Serialization
 
 py3plex provides a comprehensive I/O system for reading and writing multilayer graphs in various formats. The system is designed to be extensible, efficient, and easy to use.
 
+.. admonition:: 🔍 DSL Example: Export Query Results
+   :class: dsl-example
+
+   DSL makes it easy to export analysis results:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Analyze and export in one pipeline
+       (
+           Q.nodes()
+            .from_layers(L["social"] + L["work"])
+            .compute("betweenness_centrality", "degree")
+            .order_by("-betweenness_centrality")
+            .limit(100)
+            .export_csv("top_influencers.csv")
+            .export_json("top_influencers.json")
+            .execute(network)
+       )
+
+       # Results automatically saved to files!
+
+   Declarative exports streamline data analysis workflows!
+
 Supported Formats
 -----------------
 

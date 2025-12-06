@@ -9,6 +9,7 @@
   <title>User Guide &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ca2d1f9e" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -138,6 +139,25 @@
   <section id="user-guide">
 <h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading"></a></h1>
 <p>This section provides comprehensive how-to guides for every major py3plex capability.</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 Featured: DSL Query Language</p>
+<p>One of py3plex’s standout features is the <strong>SQL-like DSL</strong> for querying networks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Declarative, readable network queries</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The DSL makes complex analyses concise and maintainable. See <a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for complete details!</p>
+</div>
 <p><strong>This section covers:</strong></p>
 <ul class="simple">
 <li><p><strong>Networks</strong> — Create, load, query, and extract subnetworks</p></li>

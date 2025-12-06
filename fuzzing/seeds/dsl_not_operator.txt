@@ -1,0 +1,1 @@
+SELECT nodes WHERE NOT layer="layer1"

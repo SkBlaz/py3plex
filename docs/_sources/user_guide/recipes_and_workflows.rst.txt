@@ -7,6 +7,37 @@ Analysis Recipes & Workflows
 This guide provides **practical recipes** for **common analysis workflows** in py3plex. 
 Each recipe is a **complete, ready-to-use solution** for a real-world task.
 
+.. admonition:: 🔍 DSL for Rapid Analysis
+   :class: dsl-example
+
+   Many recipes can be expressed concisely using the DSL:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Quick hub identification
+       hubs = (
+           Q.nodes()
+            .where(degree__gt=5)
+            .compute("betweenness_centrality")
+            .order_by("-betweenness_centrality")
+            .limit(10)
+            .execute(network)
+       )
+
+       # Multi-layer comparison
+       for layer_name in ["social", "work", "family"]:
+           result = (
+               Q.nodes()
+                .from_layers(L[layer_name])
+                .compute("degree", "clustering")
+                .execute(network)
+           )
+           print(f"{layer_name}: {result.count} nodes")
+
+   See the DSL recipes section below for more patterns!
+
 **Related Example Scripts:**
 
 Many recipes have corresponding runnable example scripts in the repository:
@@ -1147,3 +1178,218 @@ See ``examples/`` directory for 50+ complete, working examples covering all majo
 - Kivelä et al. (2014) - Multilayer networks theory
 - De Domenico et al. (2013) - Mathematical framework
 - See Citations section in main documentation for complete reference list
+
+========================
+DSL Query Recipes
+========================
+
+The py3plex DSL provides powerful, concise syntax for network queries. These recipes showcase common patterns.
+
+Recipe 18: Hub Identification with DSL
+=======================================
+
+**Task:** Find and rank influential nodes across layers using the DSL.
+
+.. admonition:: 🔍 DSL Example: Hub Identification
+   :class: dsl-example
+
+   .. code-block:: python
+
+       from py3plex.core import multinet
+       from py3plex.dsl import Q, L
+
+       # Load network
+       network = multinet.multi_layer_network().load_network(
+           "data/network.txt", input_type="multiedgelist"
+       )
+
+       # Find top 20 hubs by betweenness centrality
+       hubs = (
+           Q.nodes()
+            .where(degree__gt=3)  # Pre-filter by degree for efficiency
+            .compute("betweenness_centrality", "degree", "clustering")
+            .order_by("-betweenness_centrality")
+            .limit(20)
+            .export_csv("top_hubs.csv")
+            .execute(network)
+       )
+
+       # Display results
+       df = hubs.to_pandas()
+       print(df)
+
+**When to use:** Identifying key players, finding bridge nodes, influence analysis.
+
+
+Recipe 19: Multi-Layer Comparative Analysis
+============================================
+
+**Task:** Compare network structure across different layers using DSL.
+
+.. admonition:: 🔍 DSL Example: Layer Comparison
+   :class: dsl-example
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+       import pandas as pd
+
+       # Analyze each layer separately
+       layers = ["social", "work", "family"]
+       results = []
+
+       for layer_name in layers:
+           result = (
+               Q.nodes()
+                .from_layers(L[layer_name])
+                .compute("degree", "betweenness_centrality", "clustering")
+                .execute(network)
+           )
+           
+           # Calculate layer-level statistics
+           df = result.to_pandas()
+           layer_stats = {
+               'layer': layer_name,
+               'nodes': result.count,
+               'avg_degree': df['degree'].mean(),
+               'max_centrality': df['betweenness_centrality'].max(),
+               'avg_clustering': df['clustering'].mean(),
+           }
+           results.append(layer_stats)
+
+       # Create comparison table
+       comparison_df = pd.DataFrame(results)
+       print(comparison_df)
+
+**When to use:** Understanding layer-specific properties, detecting structural differences.
+
+
+Recipe 20: Advanced Filtering and Export
+=========================================
+
+**Task:** Complex multi-criteria filtering with automated export.
+
+.. admonition:: 🔍 DSL Example: Advanced Filtering
+   :class: dsl-example
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Find nodes that meet multiple criteria
+       result = (
+           Q.nodes()
+            # Combine layers using set operations
+            .from_layers(L["social"] + L["work"] - L["bots"])
+            # Multiple filter conditions
+            .where(degree__gte=5, clustering__gt=0.3)
+            # Compute multiple measures
+            .compute("betweenness_centrality", "pagerank", "degree")
+            # Sort and limit
+            .order_by("-pagerank")
+            .limit(50)
+            # Export in multiple formats
+            .export_json("filtered_nodes.json", orient="records")
+            .execute(network)
+       )
+
+       # Also available as pandas DataFrame
+       df = result.to_pandas()
+       
+       # Or as NetworkX subgraph
+       subgraph = result.to_networkx(network)
+
+**When to use:** Targeted analysis, automated reporting, filtering complex networks.
+
+
+Recipe 21: Parameterized Query Templates
+=========================================
+
+**Task:** Create reusable query templates for systematic analysis.
+
+.. admonition:: 💡 DSL Example: Query Templates
+   :class: dsl-info
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L, Param
+
+       # Define a reusable query template
+       def find_top_nodes(layer_name, degree_threshold, top_n):
+           """Reusable template for finding top nodes in a layer"""
+           return (
+               Q.nodes()
+                .from_layers(L[layer_name])
+                .where(degree__gt=degree_threshold)
+                .compute("betweenness_centrality", "pagerank")
+                .order_by("-betweenness_centrality")
+                .limit(top_n)
+           )
+
+       # Use the template with different parameters
+       social_hubs = find_top_nodes("social", 5, 10).execute(network)
+       work_hubs = find_top_nodes("work", 3, 20).execute(network)
+
+       # Alternative: Use Param for dynamic parameter binding
+       query = (
+           Q.nodes()
+            .from_layers(L[Param.str("layer")])
+            .where(degree__gt=Param.int("min_degree"))
+            .compute("betweenness_centrality")
+            .limit(Param.int("top_n"))
+       )
+
+       # Execute with different parameters
+       result1 = query.execute(network, layer="social", min_degree=5, top_n=10)
+       result2 = query.execute(network, layer="work", min_degree=3, top_n=20)
+
+**When to use:** Batch analysis, systematic parameter sweeps, reproducible workflows.
+
+
+Recipe 22: DSL with EXPLAIN Mode
+=================================
+
+**Task:** Optimize queries before execution on large networks.
+
+.. admonition:: 💡 DSL Example: Query Optimization
+   :class: dsl-info
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Build a potentially expensive query
+       query = (
+           Q.nodes()
+            .compute("betweenness_centrality")  # O(n³) operation!
+            .order_by("-betweenness_centrality")
+            .limit(10)
+       )
+
+       # Check the execution plan first
+       plan = query.explain().execute(network)
+       
+       print("Query Execution Plan:")
+       for step in plan.steps:
+           print(f"- {step.description}")
+           print(f"  Complexity: {step.estimated_complexity}")
+
+       # Check for warnings
+       if plan.warnings:
+           print("\nWarnings:")
+           for warning in plan.warnings:
+               print(f"⚠️  {warning}")
+
+       # Optimized version: filter first to reduce computation
+       optimized_query = (
+           Q.nodes()
+            .where(degree__gt=5)  # Pre-filter to reduce nodes
+            .compute("betweenness_centrality")
+            .order_by("-betweenness_centrality")
+            .limit(10)
+       )
+
+       # Execute the optimized query
+       result = optimized_query.execute(network)
+
+**When to use:** Large networks, expensive centrality computations, performance optimization.

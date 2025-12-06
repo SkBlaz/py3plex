@@ -3,6 +3,35 @@ Examples
 
 This page provides a curated list of example scripts demonstrating py3plex features. All examples are available in the `examples/ directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ of the repository.
 
+.. admonition:: 🔍 Featured: DSL Examples
+   :class: dsl-example
+
+   The DSL examples showcase py3plex's SQL-like query language:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # From example_dsl_builder_api.py - Comprehensive DSL v2
+       result = (
+           Q.nodes()
+            .from_layers(L["social"] + L["work"])
+            .where(degree__gt=5)
+            .compute("betweenness_centrality", "pagerank")
+            .order_by("-betweenness_centrality")
+            .limit(20)
+            .export_csv("top_influencers.csv")
+            .execute(network)
+       )
+
+   **Recommended starting points:**
+   
+   * ``example_dsl_builder_api.py`` — Complete DSL v2 tutorial
+   * ``example_dsl_queries.py`` — String DSL syntax
+   * ``example_dsl_advanced.py`` — Advanced patterns
+
+   See :doc:`../user_guide/dsl` for full DSL documentation!
+
 Getting Started Examples
 ------------------------
 

@@ -3,6 +3,35 @@ Network Statistics
 
 *How to measure and compare the structure of your multilayer network.*
 
+.. admonition:: 🔍 DSL for Quick Statistics
+   :class: dsl-example
+
+   Compute statistics efficiently with the DSL:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Compute degree and clustering for all nodes
+       stats = (
+           Q.nodes()
+            .compute("degree", "clustering")
+            .execute(network)
+       )
+
+       # Compare layers
+       for layer in ["layer1", "layer2", "layer3"]:
+           result = (
+               Q.nodes()
+                .from_layers(L[layer])
+                .compute("degree")
+                .execute(network)
+           )
+           df = result.to_pandas()
+           print(f"{layer}: avg degree = {df['degree'].mean():.2f}")
+
+   DSL makes comparative analysis straightforward!
+
 ----
 
 Once you've loaded a multilayer network, the next question is: *what does it look like?* This chapter shows you how to compute statistics that answer fundamental questions about your network's structure:

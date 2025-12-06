@@ -9,6 +9,7 @@
   <title>5-Minute Quickstart &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ca2d1f9e" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -222,16 +223,27 @@ Bob&#39;s activity: 1.000
 </section>
 <section id="query-with-dsl">
 <h2>Query with DSL<a class="headerlink" href="#query-with-dsl" title="Link to this heading"></a></h2>
+<p>Py3plex features a powerful SQL-like DSL for querying networks!</p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔍 DSL Example: Network Queries</p>
 <p>Use SQL-like queries for network exploration:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
-<span class="c1"># Find high-degree nodes</span>
+<span class="c1"># String DSL syntax</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE degree &gt; 1&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> high-degree nodes&quot;</span><span class="p">)</span>
 
-<span class="c1"># Get nodes in a specific layer</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;friends&quot;&#39;</span><span class="p">)</span>
+<span class="c1"># Builder API (recommended for production)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
+</div>
+<p>The DSL makes complex network analysis intuitive and concise!</p>
 </div>
 <p>See <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for complete DSL documentation.</p>
 </section>

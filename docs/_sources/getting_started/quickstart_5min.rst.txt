@@ -92,18 +92,31 @@ Basic Analysis
 Query with DSL
 --------------
 
-Use SQL-like queries for network exploration:
+Py3plex features a powerful SQL-like DSL for querying networks!
 
-.. code-block:: python
+.. admonition:: 🔍 DSL Example: Network Queries
+   :class: dsl-example
 
-    from py3plex.dsl import execute_query
-    
-    # Find high-degree nodes
-    result = execute_query(network, 'SELECT nodes WHERE degree > 1')
-    print(f"Found {result['count']} high-degree nodes")
-    
-    # Get nodes in a specific layer
-    result = execute_query(network, 'SELECT nodes WHERE layer="friends"')
+   Use SQL-like queries for network exploration:
+
+   .. code-block:: python
+
+       from py3plex.dsl import execute_query, Q, L
+       
+       # String DSL syntax
+       result = execute_query(network, 'SELECT nodes WHERE degree > 1')
+       print(f"Found {result['count']} high-degree nodes")
+       
+       # Builder API (recommended for production)
+       result = (
+           Q.nodes()
+            .from_layers(L["friends"])
+            .where(degree__gt=1)
+            .compute("betweenness_centrality")
+            .execute(network)
+       )
+
+   The DSL makes complex network analysis intuitive and concise!
 
 See :doc:`../user_guide/dsl` for complete DSL documentation.
 

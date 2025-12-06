@@ -1,6 +1,48 @@
 Chapter 12: Case Study 1 — Social Multiplex Network
 ===================================================
 
+.. admonition:: 🔍 DSL in Case Studies
+   :class: dsl-example
+
+   This case study demonstrates DSL throughout the analysis workflow:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # 1. Quick exploratory analysis
+       for platform in ["facebook", "twitter", "linkedin"]:
+           stats = (
+               Q.nodes()
+                .from_layers(L[platform])
+                .compute("degree", "clustering")
+                .execute(network)
+           )
+           df = stats.to_pandas()
+           print(f"{platform}: avg degree = {df['degree'].mean():.2f}")
+
+       # 2. Find cross-platform influencers
+       influencers = (
+           Q.nodes()
+            .from_layers(L["facebook"] + L["twitter"] + L["linkedin"])
+            .where(degree__gt=50)
+            .compute("betweenness_centrality")
+            .order_by("-betweenness_centrality")
+            .limit(20)
+            .export_csv("influencers.csv")
+            .execute(network)
+       )
+
+       # 3. Platform-specific analysis
+       twitter_only = (
+           Q.nodes()
+            .from_layers(L["twitter"] - L["facebook"] - L["linkedin"])
+            .compute("degree")
+            .execute(network)
+       )
+
+   DSL enables rapid iteration in exploratory research!
+
 *TODO: Develop from user_guide/case_studies.rst and examples*
 
 Domain Context

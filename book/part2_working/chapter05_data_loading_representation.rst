@@ -3,6 +3,36 @@ Chapter 5: Data Loading and Representation
 
 This chapter covers how to load multilayer networks from various data sources, choose appropriate formats, and represent complex network structures correctly.
 
+.. admonition:: 💡 DSL Tip: Validate Data After Loading
+   :class: dsl-info
+
+   Use DSL to quickly validate loaded data:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Check layer sizes
+       for layer in network.get_layers():
+           count = Q.nodes().from_layers(L[layer]).execute(network).count
+           print(f"{layer}: {count} nodes")
+
+       # Find potential data issues
+       isolated = Q.nodes().where(degree=0).execute(network)
+       if isolated.count > 0:
+           print(f"Warning: {isolated.count} isolated nodes")
+
+       # Verify high-degree nodes make sense
+       hubs = (
+           Q.nodes()
+            .where(degree__gt=20)
+            .compute("degree")
+            .execute(network)
+       )
+       print(f"Hubs (degree > 20): {hubs.count}")
+
+   Quick validation catches data issues early!
+
 Data Loading Basics
 -------------------
 

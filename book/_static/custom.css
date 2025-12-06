@@ -1,0 +1,121 @@
+/* Custom styles for py3plex book documentation */
+
+/* DSL Example Box - Prominent colored styling */
+.dsl-example {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: 3px solid #5568d3 !important;
+    border-radius: 8px !important;
+    padding: 15px 20px !important;
+    margin: 20px 0 !important;
+    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2) !important;
+}
+
+.dsl-example .admonition-title {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+    font-size: 1.1em !important;
+    padding: 10px 15px !important;
+    margin: -15px -20px 15px -20px !important;
+    border-radius: 5px 5px 0 0 !important;
+}
+
+.dsl-example .admonition-title::before {
+    content: "🔍 ";
+    font-size: 1.2em;
+}
+
+.dsl-example p,
+.dsl-example .highlight {
+    color: #ffffff !important;
+}
+
+.dsl-example code {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    color: #ffffff !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+}
+
+.dsl-example .highlight pre {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 5px !important;
+    padding: 12px !important;
+}
+
+/* Alternative DSL box style - info variant */
+.dsl-info {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%) !important;
+    border: 2px solid #36d1dc !important;
+    border-radius: 8px !important;
+    padding: 15px 20px !important;
+    margin: 20px 0 !important;
+    box-shadow: 0 4px 6px rgba(54, 209, 220, 0.2) !important;
+}
+
+.dsl-info .admonition-title {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+    padding: 10px 15px !important;
+    margin: -15px -20px 15px -20px !important;
+    border-radius: 5px 5px 0 0 !important;
+}
+
+.dsl-info .admonition-title::before {
+    content: "💡 ";
+    font-size: 1.2em;
+}
+
+.dsl-info p,
+.dsl-info .highlight {
+    color: #ffffff !important;
+}
+
+.dsl-info code {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    color: #ffffff !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+}
+
+.dsl-info .highlight pre {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 5px !important;
+    padding: 12px !important;
+}
+
+/* DSL highlight - for inline mentions */
+.dsl-highlight {
+    background-color: #f0f7ff !important;
+    border-left: 4px solid #667eea !important;
+    padding: 12px 15px !important;
+    margin: 15px 0 !important;
+    border-radius: 4px !important;
+}
+
+.dsl-highlight .admonition-title {
+    color: #667eea !important;
+    font-weight: bold !important;
+    margin-bottom: 8px !important;
+}
+
+/* Make tip admonitions with DSL content stand out */
+.admonition.tip.dsl-tip {
+    background-color: #f0f7ff !important;
+    border-left: 5px solid #667eea !important;
+}
+
+.admonition.tip.dsl-tip .admonition-title {
+    color: #667eea !important;
+}
+
+/* Emphasize code blocks in DSL sections */
+.dsl-code-emphasis .highlight {
+    border-left: 4px solid #667eea !important;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1) !important;
+}
