@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explainable Centrality in Multilayer Networks &mdash; py3plex 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Chapter 5: Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/part_intro.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/community_detection.html">Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">Reference &amp; Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Explainable Centrality in Multilayer Networks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/explainable_centrality.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="explainable-centrality-in-multilayer-networks">
+<h1>Explainable Centrality in Multilayer Networks<a class="headerlink" href="#explainable-centrality-in-multilayer-networks" title="Link to this heading"></a></h1>
+<p>This tutorial demonstrates how to use <strong>explainable centrality</strong> to get <strong>human-readable explanations</strong> for why certain nodes have high or low centrality scores in multilayer networks.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">py3plex.algorithms.centrality.explain</span></code> module provides tools to <strong>decompose centrality scores</strong> into interpretable components:</p>
+<ul class="simple">
+<li><p><strong>Per-layer contributions</strong>: How much each layer contributes to a node’s centrality</p></li>
+<li><p><strong>Inter-layer connectivity</strong>: Number of edges crossing between layers</p></li>
+<li><p><strong>Neighborhood structure</strong>: Local motifs like triangles</p></li>
+<li><p><strong>Ranking information</strong>: Rank and percentile among all nodes</p></li>
+</ul>
+<p>This is particularly useful for:</p>
+<ul class="simple">
+<li><p>Understanding <strong>bridge nodes</strong> that connect different layers</p></li>
+<li><p>Identifying <strong>layer-specific influences</strong> on centrality</p></li>
+<li><p>Explaining centrality to non-technical stakeholders</p></li>
+<li><p>Debugging and validating centrality computations</p></li>
+</ul>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality.explain</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">explain_node_centrality</span><span class="p">,</span>
+    <span class="n">explain_top_k_central_nodes</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multiplex_degree_centrality</span>
+
+<span class="c1"># Create a multilayer network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Compute centrality</span>
+<span class="n">centrality</span> <span class="o">=</span> <span class="n">multiplex_degree_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+
+<span class="c1"># Explain a single node</span>
+<span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_node_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span> <span class="n">centrality</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Per-layer degree: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;degree_per_layer&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-layer edges: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;num_interlayer_edges&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="explanation-components">
+<h2>Explanation Components<a class="headerlink" href="#explanation-components" title="Link to this heading"></a></h2>
+<p>Each explanation is a dictionary with the following fields:</p>
+<section id="score">
+<h3><code class="docutils literal notranslate"><span class="pre">score</span></code><a class="headerlink" href="#score" title="Link to this heading"></a></h3>
+<p>The node’s centrality score from the input centrality_scores dict.</p>
+</section>
+<section id="layer-breakdown">
+<h3><code class="docutils literal notranslate"><span class="pre">layer_breakdown</span></code><a class="headerlink" href="#layer-breakdown" title="Link to this heading"></a></h3>
+<p>Estimated contribution of each layer to the node’s centrality.</p>
+<ul class="simple">
+<li><p>For <strong>degree centrality</strong>: exact per-layer degree counts</p></li>
+<li><p>For <strong>betweenness</strong>: approximate proportional to degree in each layer</p></li>
+<li><p>For <strong>eigenvector/PageRank</strong>: approximate based on neighbor centralities</p></li>
+</ul>
+</section>
+<section id="degree-per-layer">
+<h3><code class="docutils literal notranslate"><span class="pre">degree_per_layer</span></code><a class="headerlink" href="#degree-per-layer" title="Link to this heading"></a></h3>
+<p>The node’s degree (number of connections) in each layer it appears in.</p>
+</section>
+<section id="num-interlayer-edges">
+<h3><code class="docutils literal notranslate"><span class="pre">num_interlayer_edges</span></code><a class="headerlink" href="#num-interlayer-edges" title="Link to this heading"></a></h3>
+<p>Count of edges connecting the node to other layers (identifies bridge nodes).</p>
+</section>
+<section id="local-motifs">
+<h3><code class="docutils literal notranslate"><span class="pre">local_motifs</span></code><a class="headerlink" href="#local-motifs" title="Link to this heading"></a></h3>
+<p>Dictionary of local network motifs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">triangles</span></code>: Number of triangles the node participates in</p></li>
+</ul>
+</section>
+<section id="rank">
+<h3><code class="docutils literal notranslate"><span class="pre">rank</span></code><a class="headerlink" href="#rank" title="Link to this heading"></a></h3>
+<p>The node’s rank when sorted by centrality (1 = highest).</p>
+</section>
+<section id="percentile">
+<h3><code class="docutils literal notranslate"><span class="pre">percentile</span></code><a class="headerlink" href="#percentile" title="Link to this heading"></a></h3>
+<p>Percentile rank from 0-100 (higher is more central).</p>
+</section>
+</section>
+<section id="supported-centrality-methods">
+<h2>Supported Centrality Methods<a class="headerlink" href="#supported-centrality-methods" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">method</span></code> parameter controls how layer contributions are approximated:</p>
+<section id="degree">
+<h3><code class="docutils literal notranslate"><span class="pre">degree</span></code><a class="headerlink" href="#degree" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Layer breakdown = exact degree in each layer</p></li>
+<li><p>Most accurate explanation</p></li>
+</ul>
+</section>
+<section id="betweenness">
+<h3><code class="docutils literal notranslate"><span class="pre">betweenness</span></code><a class="headerlink" href="#betweenness" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Layer breakdown ≈ proportional to degree in each layer</p></li>
+<li><p>Heuristic approximation</p></li>
+</ul>
+</section>
+<section id="eigenvector-pagerank">
+<h3><code class="docutils literal notranslate"><span class="pre">eigenvector</span></code> / <code class="docutils literal notranslate"><span class="pre">pagerank</span></code><a class="headerlink" href="#eigenvector-pagerank" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Layer breakdown ≈ sum of neighbor centralities per layer</p></li>
+<li><p>Heuristic approximation</p></li>
+</ul>
+</section>
+</section>
+<section id="explaining-top-k-nodes">
+<h2>Explaining Top-K Nodes<a class="headerlink" href="#explaining-top-k-nodes" title="Link to this heading"></a></h2>
+<p>To explain multiple high-centrality nodes at once:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get explanations for top 5 nodes</span>
+<span class="n">top_explanations</span> <span class="o">=</span> <span class="n">explain_top_k_central_nodes</span><span class="p">(</span>
+    <span class="n">net</span><span class="p">,</span>
+    <span class="n">centrality</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span>
+    <span class="n">k</span><span class="o">=</span><span class="mi">5</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">explanation</span> <span class="ow">in</span> <span class="n">top_explanations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: score=</span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;rank=</span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<section id="identifying-bridge-nodes">
+<h3>Identifying Bridge Nodes<a class="headerlink" href="#identifying-bridge-nodes" title="Link to this heading"></a></h3>
+<p>Bridge nodes connect different layers and often have high centrality:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_node_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">centrality</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;num_interlayer_edges&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> is a bridge node connecting:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">degree</span> <span class="ow">in</span> <span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;degree_per_layer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s2"> connections&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="comparing-layer-influences">
+<h3>Comparing Layer Influences<a class="headerlink" href="#comparing-layer-influences" title="Link to this heading"></a></h3>
+<p>See which layers contribute most to a node’s centrality:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_node_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">centrality</span><span class="p">)</span>
+
+<span class="c1"># Sort layers by contribution</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+    <span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;layer_breakdown&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer contributions for </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">contrib</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">contrib</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="understanding-ranking">
+<h3>Understanding Ranking<a class="headerlink" href="#understanding-ranking" title="Link to this heading"></a></h3>
+<p>Contextualize a node’s centrality score:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_node_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">centrality</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Rank: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">centrality</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Percentile: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;percentile&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Score: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="example-social-collaboration-network">
+<h2>Example: Social-Collaboration Network<a class="headerlink" href="#example-social-collaboration-network" title="Link to this heading"></a></h2>
+<p>Complete example analyzing a network with bridge nodes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality.explain</span><span class="w"> </span><span class="kn">import</span> <span class="n">explain_top_k_central_nodes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multiplex_degree_centrality</span>
+
+<span class="c1"># Create network</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Social layer: A-B-C chain</span>
+<span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Collaboration layer: B-D-E chain (B is bridge)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+
+<span class="c1"># Compute and explain</span>
+<span class="n">centrality</span> <span class="o">=</span> <span class="n">multiplex_degree_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">explanations</span> <span class="o">=</span> <span class="n">explain_top_k_central_nodes</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">centrality</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Display results</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">explanations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Score: </span><span class="si">{</span><span class="n">exp</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Layers: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">exp</span><span class="p">[</span><span class="s1">&#39;degree_per_layer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="p">[</span><span class="s1">&#39;degree_per_layer&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ** Bridge node **&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="explain-node-centrality-graph-node-centrality-scores-method-degree">
+<h3><code class="docutils literal notranslate"><span class="pre">explain_node_centrality(graph,</span> <span class="pre">node,</span> <span class="pre">centrality_scores,</span> <span class="pre">method='degree')</span></code><a class="headerlink" href="#explain-node-centrality-graph-node-centrality-scores-method-degree" title="Link to this heading"></a></h3>
+<p>Generate detailed explanation for a single node’s centrality.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">graph</span></code>: py3plex multi_layer_network object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">node</span></code>: Node identifier (string or (node_id, layer) tuple)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">centrality_scores</span></code>: Dictionary mapping nodes to centrality scores</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code>: Centrality method (‘degree’, ‘betweenness’, ‘eigenvector’, ‘pagerank’)</p></li>
+</ul>
+<p><strong>Returns:</strong> Dictionary with explanation fields</p>
+</section>
+<section id="explain-top-k-central-nodes-graph-centrality-scores-method-degree-k-5">
+<h3><code class="docutils literal notranslate"><span class="pre">explain_top_k_central_nodes(graph,</span> <span class="pre">centrality_scores,</span> <span class="pre">method='degree',</span> <span class="pre">k=5)</span></code><a class="headerlink" href="#explain-top-k-central-nodes-graph-centrality-scores-method-degree-k-5" title="Link to this heading"></a></h3>
+<p>Generate explanations for the top-k most central nodes.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">graph</span></code>: py3plex multi_layer_network object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">centrality_scores</span></code>: Dictionary mapping nodes to centrality scores</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code>: Centrality method (‘degree’, ‘betweenness’, ‘eigenvector’, ‘pagerank’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code>: Number of top nodes to explain (default: 5)</p></li>
+</ul>
+<p><strong>Returns:</strong> Dictionary mapping node -&gt; explanation_dict</p>
+</section>
+</section>
+<section id="notes-and-limitations">
+<h2>Notes and Limitations<a class="headerlink" href="#notes-and-limitations" title="Link to this heading"></a></h2>
+<section id="heuristic-nature">
+<h3>Heuristic Nature<a class="headerlink" href="#heuristic-nature" title="Link to this heading"></a></h3>
+<p>The layer breakdown for <strong>betweenness</strong> and <strong>eigenvector/PageRank</strong> centralities are <strong>heuristic approximations</strong>, not exact decompositions. They provide interpretable insights but should not be treated as mathematically rigorous attributions.</p>
+<p>For fully rigorous explanations, consider using <strong>Shapley values</strong> or other game-theoretic attribution methods (not currently implemented).</p>
+</section>
+<section id="performance">
+<h3>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h3>
+<p>Explanation is <strong>fast</strong> and scales linearly with the number of nodes explained. It does <strong>not</strong> require recomputing centrality.</p>
+</section>
+<section id="node-format">
+<h3>Node Format<a class="headerlink" href="#node-format" title="Link to this heading"></a></h3>
+<p>The module supports both:</p>
+<ul class="simple">
+<li><p><strong>Flat node IDs</strong>: <code class="docutils literal notranslate"><span class="pre">'A'</span></code>, <code class="docutils literal notranslate"><span class="pre">'B'</span></code>, etc. (for single-layer or aggregated views)</p></li>
+<li><p><strong>Tuple node IDs</strong>: <code class="docutils literal notranslate"><span class="pre">('A',</span> <span class="pre">'layer1')</span></code>, <code class="docutils literal notranslate"><span class="pre">('B',</span> <span class="pre">'layer2')</span></code>, etc. (for multilayer views)</p></li>
+</ul>
+<p>The function automatically adapts to the node format in <code class="docutils literal notranslate"><span class="pre">centrality_scores</span></code>.</p>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="multilayer_centrality.html"><span class="doc">Multilayer Network Centrality Measures</span></a> - Computing centrality measures</p></li>
+<li><p><a class="reference internal" href="../algorithm_guide.html"><span class="doc">Algorithm Selection Guide</span></a> - Overview of all algorithms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_explainable_centrality.py</span></code> - Complete working example</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Battiston, F., et al. (2014). “Structural measures for multiplex networks.” Physical Review E, 89(3), 032804.</p></li>
+<li><p>De Domenico, M., et al. (2015). “Ranking in interconnected multilayer networks reveals versatile nodes.” Nature Communications, 6, 6868.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -80,6 +80,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#layer-algebra">Layer Algebra</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#complete-builder-example">Complete Builder Example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#queryresult-object">QueryResult Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#declarative-file-exports">Declarative File Exports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#explain-mode">EXPLAIN Mode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#parameterized-queries">Parameterized Queries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#convert-builder-to-dsl-string">Convert Builder to DSL String</a></li>
@@ -221,62 +222,63 @@
 <li><p><a class="reference internal" href="#layer-algebra" id="id16">Layer Algebra</a></p></li>
 <li><p><a class="reference internal" href="#complete-builder-example" id="id17">Complete Builder Example</a></p></li>
 <li><p><a class="reference internal" href="#queryresult-object" id="id18">QueryResult Object</a></p></li>
-<li><p><a class="reference internal" href="#explain-mode" id="id19">EXPLAIN Mode</a></p></li>
-<li><p><a class="reference internal" href="#parameterized-queries" id="id20">Parameterized Queries</a></p></li>
-<li><p><a class="reference internal" href="#convert-builder-to-dsl-string" id="id21">Convert Builder to DSL String</a></p></li>
-<li><p><a class="reference internal" href="#error-handling-with-suggestions" id="id22">Error Handling with Suggestions</a></p></li>
-<li><p><a class="reference internal" href="#measure-registry" id="id23">Measure Registry</a></p></li>
+<li><p><a class="reference internal" href="#declarative-file-exports" id="id19">Declarative File Exports</a></p></li>
+<li><p><a class="reference internal" href="#explain-mode" id="id20">EXPLAIN Mode</a></p></li>
+<li><p><a class="reference internal" href="#parameterized-queries" id="id21">Parameterized Queries</a></p></li>
+<li><p><a class="reference internal" href="#convert-builder-to-dsl-string" id="id22">Convert Builder to DSL String</a></p></li>
+<li><p><a class="reference internal" href="#error-handling-with-suggestions" id="id23">Error Handling with Suggestions</a></p></li>
+<li><p><a class="reference internal" href="#measure-registry" id="id24">Measure Registry</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#example-queries" id="id24">Example Queries</a></p>
+<li><p><a class="reference internal" href="#example-queries" id="id25">Example Queries</a></p>
 <ul>
-<li><p><a class="reference internal" href="#basic-queries" id="id25">Basic Queries</a></p></li>
-<li><p><a class="reference internal" href="#complex-queries" id="id26">Complex Queries</a></p></li>
-<li><p><a class="reference internal" href="#analytical-queries" id="id27">Analytical Queries</a></p></li>
+<li><p><a class="reference internal" href="#basic-queries" id="id26">Basic Queries</a></p></li>
+<li><p><a class="reference internal" href="#complex-queries" id="id27">Complex Queries</a></p></li>
+<li><p><a class="reference internal" href="#analytical-queries" id="id28">Analytical Queries</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#working-with-results" id="id28">Working with Results</a></p>
+<li><p><a class="reference internal" href="#working-with-results" id="id29">Working with Results</a></p>
 <ul>
-<li><p><a class="reference internal" href="#formatting-results" id="id29">Formatting Results</a></p></li>
+<li><p><a class="reference internal" href="#formatting-results" id="id30">Formatting Results</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#convenience-functions" id="id30">Convenience Functions</a></p></li>
-<li><p><a class="reference internal" href="#use-cases" id="id31">Use Cases</a></p>
+<li><p><a class="reference internal" href="#convenience-functions" id="id31">Convenience Functions</a></p></li>
+<li><p><a class="reference internal" href="#use-cases" id="id32">Use Cases</a></p>
 <ul>
-<li><p><a class="reference internal" href="#hub-identification" id="id32">Hub Identification</a></p></li>
-<li><p><a class="reference internal" href="#layer-comparison" id="id33">Layer Comparison</a></p></li>
-<li><p><a class="reference internal" href="#node-importance-ranking" id="id34">Node Importance Ranking</a></p></li>
-<li><p><a class="reference internal" href="#network-filtering" id="id35">Network Filtering</a></p></li>
+<li><p><a class="reference internal" href="#hub-identification" id="id33">Hub Identification</a></p></li>
+<li><p><a class="reference internal" href="#layer-comparison" id="id34">Layer Comparison</a></p></li>
+<li><p><a class="reference internal" href="#node-importance-ranking" id="id35">Node Importance Ranking</a></p></li>
+<li><p><a class="reference internal" href="#network-filtering" id="id36">Network Filtering</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#error-handling" id="id36">Error Handling</a></p>
+<li><p><a class="reference internal" href="#error-handling" id="id37">Error Handling</a></p>
 <ul>
-<li><p><a class="reference internal" href="#legacy-error-types" id="id37">Legacy Error Types</a></p></li>
-<li><p><a class="reference internal" href="#dsl-v2-error-types" id="id38">DSL v2 Error Types</a></p></li>
-<li><p><a class="reference internal" href="#common-dsl-errors" id="id39">Common DSL Errors</a></p></li>
+<li><p><a class="reference internal" href="#legacy-error-types" id="id38">Legacy Error Types</a></p></li>
+<li><p><a class="reference internal" href="#dsl-v2-error-types" id="id39">DSL v2 Error Types</a></p></li>
+<li><p><a class="reference internal" href="#common-dsl-errors" id="id40">Common DSL Errors</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#complete-working-examples" id="id40">Complete Working Examples</a></p>
+<li><p><a class="reference internal" href="#complete-working-examples" id="id41">Complete Working Examples</a></p>
 <ul>
-<li><p><a class="reference internal" href="#example-1-basic-network-querying" id="id41">Example 1: Basic Network Querying</a></p></li>
-<li><p><a class="reference internal" href="#example-2-multilayer-network-analysis" id="id42">Example 2: Multilayer Network Analysis</a></p></li>
-<li><p><a class="reference internal" href="#example-3-hub-identification" id="id43">Example 3: Hub Identification</a></p></li>
-<li><p><a class="reference internal" href="#example-4-layer-comparison-workflow" id="id44">Example 4: Layer Comparison Workflow</a></p></li>
-<li><p><a class="reference internal" href="#example-files" id="id45">Example Files</a></p></li>
+<li><p><a class="reference internal" href="#example-1-basic-network-querying" id="id42">Example 1: Basic Network Querying</a></p></li>
+<li><p><a class="reference internal" href="#example-2-multilayer-network-analysis" id="id43">Example 2: Multilayer Network Analysis</a></p></li>
+<li><p><a class="reference internal" href="#example-3-hub-identification" id="id44">Example 3: Hub Identification</a></p></li>
+<li><p><a class="reference internal" href="#example-4-layer-comparison-workflow" id="id45">Example 4: Layer Comparison Workflow</a></p></li>
+<li><p><a class="reference internal" href="#example-files" id="id46">Example Files</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#api-reference" id="id46">API Reference</a></p>
+<li><p><a class="reference internal" href="#api-reference" id="id47">API Reference</a></p>
 <ul>
-<li><p><a class="reference internal" href="#main-functions" id="id47">Main Functions</a></p></li>
-<li><p><a class="reference internal" href="#id1" id="id48">Convenience Functions</a></p></li>
-<li><p><a class="reference internal" href="#dsl-v2-builder-api" id="id49">DSL v2 Builder API</a></p></li>
+<li><p><a class="reference internal" href="#main-functions" id="id48">Main Functions</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id49">Convenience Functions</a></p></li>
+<li><p><a class="reference internal" href="#dsl-v2-builder-api" id="id50">DSL v2 Builder API</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#limitations-and-future-work" id="id50">Limitations and Future Work</a></p></li>
-<li><p><a class="reference internal" href="#best-practices" id="id51">Best Practices</a></p></li>
-<li><p><a class="reference internal" href="#performance-considerations" id="id52">Performance Considerations</a></p></li>
-<li><p><a class="reference internal" href="#further-reading" id="id53">Further Reading</a></p></li>
-<li><p><a class="reference internal" href="#see-also" id="id54">See Also</a></p></li>
+<li><p><a class="reference internal" href="#limitations-and-future-work" id="id51">Limitations and Future Work</a></p></li>
+<li><p><a class="reference internal" href="#best-practices" id="id52">Best Practices</a></p></li>
+<li><p><a class="reference internal" href="#performance-considerations" id="id53">Performance Considerations</a></p></li>
+<li><p><a class="reference internal" href="#further-reading" id="id54">Further Reading</a></p></li>
+<li><p><a class="reference internal" href="#see-also" id="id55">See Also</a></p></li>
 </ul>
 </nav>
 <section id="overview">
@@ -400,6 +402,12 @@
 </tr>
 <tr class="row-odd"><td><p>Order and limit</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().compute(&quot;degree&quot;).order_by(&quot;-degree&quot;).limit(10)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Export to CSV</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().compute(&quot;degree&quot;).export_csv(&quot;output.csv&quot;)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Export to JSON</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().compute(&quot;degree&quot;).export_json(&quot;output.json&quot;)</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -736,8 +744,136 @@ to reference layers and combine them with operators:</p>
 </pre></div>
 </div>
 </section>
+<section id="declarative-file-exports">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Declarative File Exports</a><a class="headerlink" href="#declarative-file-exports" title="Link to this heading"></a></h3>
+<p>DSL v2 supports declarative file exports, allowing you to export query results
+to files as part of the query pipeline itself. The export is a side-effect -
+the query still returns a <code class="docutils literal notranslate"><span class="pre">QueryResult</span></code> object to Python.</p>
+<p><strong>Basic CSV Export</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Export to CSV file</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;results/social_degree.csv&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Result is still available in Python</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>JSON Export with Options</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export to JSON with custom format</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_json</span><span class="p">(</span>
+         <span class="s2">&quot;results/top_nodes.json&quot;</span><span class="p">,</span>
+         <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">],</span>
+         <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Generic Export Method</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export with explicit format specification</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export</span><span class="p">(</span>
+         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;results/output.csv&quot;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span>
+         <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">],</span>
+         <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;;&quot;</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Supported Export Formats:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">csv</span></code> - Comma-separated values (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> - JSON format with various orientations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tsv</span></code> - Tab-separated values</p></li>
+</ul>
+<p><strong>Export Options:</strong></p>
+<p><em>CSV/TSV Options:</em></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">delimiter</span></code> - Field delimiter (default: <code class="docutils literal notranslate"><span class="pre">,</span></code> for CSV, <code class="docutils literal notranslate"><span class="pre">\t</span></code> for TSV)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">columns</span></code> - List of columns to include/order</p></li>
+</ul>
+<p><em>JSON Options:</em></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">orient</span></code> - JSON orientation (<code class="docutils literal notranslate"><span class="pre">records</span></code>, <code class="docutils literal notranslate"><span class="pre">columns</span></code>, <code class="docutils literal notranslate"><span class="pre">split</span></code>, <code class="docutils literal notranslate"><span class="pre">index</span></code>, <code class="docutils literal notranslate"><span class="pre">values</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">indent</span></code> - Indentation level (default: 2)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">columns</span></code> - List of columns to include/order</p></li>
+</ul>
+<p><strong>Column Selection</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export only specific columns in specific order</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span>
+         <span class="s2">&quot;results/selected.csv&quot;</span><span class="p">,</span>
+         <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">]</span>  <span class="c1"># Only export ID and degree</span>
+     <span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Complete Export Example</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+
+<span class="c1"># Create network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># ... add nodes and edges ...</span>
+
+<span class="c1"># Export social layer analysis to CSV</span>
+<span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;results/social_analysis.csv&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Export work layer analysis to JSON</span>
+<span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_json</span><span class="p">(</span><span class="s2">&quot;results/work_analysis.json&quot;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Export combined analysis with custom delimiter</span>
+<span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;results/all_nodes.tsv&quot;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The export functionality automatically creates parent directories if needed and
+provides clear error messages for unsupported formats or file I/O issues.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For a comprehensive example with 7 different usage patterns, see:
+<code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_export.py</span></code></p>
+</div>
+</section>
 <section id="explain-mode">
-<h3><a class="toc-backref" href="#id19" role="doc-backlink">EXPLAIN Mode</a><a class="headerlink" href="#explain-mode" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">EXPLAIN Mode</a><a class="headerlink" href="#explain-mode" title="Link to this heading"></a></h3>
 <p>Get a query execution plan without actually running the query:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
@@ -764,7 +900,7 @@ to reference layers and combine them with operators:</p>
 </ul>
 </section>
 <section id="parameterized-queries">
-<h3><a class="toc-backref" href="#id20" role="doc-backlink">Parameterized Queries</a><a class="headerlink" href="#parameterized-queries" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Parameterized Queries</a><a class="headerlink" href="#parameterized-queries" title="Link to this heading"></a></h3>
 <p>Use <code class="docutils literal notranslate"><span class="pre">Param</span></code> to create queries with placeholders that are bound at execution time:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">Param</span>
 
@@ -785,7 +921,7 @@ to reference layers and combine them with operators:</p>
 </ul>
 </section>
 <section id="convert-builder-to-dsl-string">
-<h3><a class="toc-backref" href="#id21" role="doc-backlink">Convert Builder to DSL String</a><a class="headerlink" href="#convert-builder-to-dsl-string" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Convert Builder to DSL String</a><a class="headerlink" href="#convert-builder-to-dsl-string" title="Link to this heading"></a></h3>
 <p>Convert a builder query back to DSL string format:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
@@ -803,7 +939,7 @@ to reference layers and combine them with operators:</p>
 </ul>
 </section>
 <section id="error-handling-with-suggestions">
-<h3><a class="toc-backref" href="#id22" role="doc-backlink">Error Handling with Suggestions</a><a class="headerlink" href="#error-handling-with-suggestions" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Error Handling with Suggestions</a><a class="headerlink" href="#error-handling-with-suggestions" title="Link to this heading"></a></h3>
 <p>DSL v2 provides helpful error messages with “Did you mean?” suggestions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">UnknownMeasureError</span>
 
@@ -818,7 +954,7 @@ to reference layers and combine them with operators:</p>
 </div>
 </section>
 <section id="measure-registry">
-<h3><a class="toc-backref" href="#id23" role="doc-backlink">Measure Registry</a><a class="headerlink" href="#measure-registry" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Measure Registry</a><a class="headerlink" href="#measure-registry" title="Link to this heading"></a></h3>
 <p>DSL v2 includes a centralized registry for network measures. View available measures:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">measure_registry</span>
 
@@ -837,9 +973,9 @@ to reference layers and combine them with operators:</p>
 </section>
 </section>
 <section id="example-queries">
-<h2><a class="toc-backref" href="#id24" role="doc-backlink">Example Queries</a><a class="headerlink" href="#example-queries" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Example Queries</a><a class="headerlink" href="#example-queries" title="Link to this heading"></a></h2>
 <section id="basic-queries">
-<h3><a class="toc-backref" href="#id25" role="doc-backlink">Basic Queries</a><a class="headerlink" href="#basic-queries" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Basic Queries</a><a class="headerlink" href="#basic-queries" title="Link to this heading"></a></h3>
 <p>Select all nodes in a layer:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot;&#39;</span><span class="p">)</span>
 </pre></div>
@@ -854,7 +990,7 @@ to reference layers and combine them with operators:</p>
 </div>
 </section>
 <section id="complex-queries">
-<h3><a class="toc-backref" href="#id26" role="doc-backlink">Complex Queries</a><a class="headerlink" href="#complex-queries" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Complex Queries</a><a class="headerlink" href="#complex-queries" title="Link to this heading"></a></h3>
 <p>Combine multiple conditions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes in transport layer with high degree</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
@@ -881,7 +1017,7 @@ to reference layers and combine them with operators:</p>
 </div>
 </section>
 <section id="analytical-queries">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">Analytical Queries</a><a class="headerlink" href="#analytical-queries" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Analytical Queries</a><a class="headerlink" href="#analytical-queries" title="Link to this heading"></a></h3>
 <p>Compute centrality for a layer:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
@@ -903,7 +1039,7 @@ to reference layers and combine them with operators:</p>
 </section>
 </section>
 <section id="working-with-results">
-<h2><a class="toc-backref" href="#id28" role="doc-backlink">Working with Results</a><a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Working with Results</a><a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">execute_query</span></code> function returns a dictionary containing:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">query</span></code>: Original query string</p></li>
@@ -936,7 +1072,7 @@ to reference layers and combine them with operators:</p>
 </pre></div>
 </div>
 <section id="formatting-results">
-<h3><a class="toc-backref" href="#id29" role="doc-backlink">Formatting Results</a><a class="headerlink" href="#formatting-results" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Formatting Results</a><a class="headerlink" href="#formatting-results" title="Link to this heading"></a></h3>
 <p>Use <code class="docutils literal notranslate"><span class="pre">format_result</span></code> for human-readable output:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_result</span>
 
@@ -947,7 +1083,7 @@ to reference layers and combine them with operators:</p>
 </section>
 </section>
 <section id="convenience-functions">
-<h2><a class="toc-backref" href="#id30" role="doc-backlink">Convenience Functions</a><a class="headerlink" href="#convenience-functions" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">Convenience Functions</a><a class="headerlink" href="#convenience-functions" title="Link to this heading"></a></h2>
 <p>The DSL module provides convenience functions for common operations:</p>
 <p>Select nodes by layer:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">select_nodes_by_layer</span>
@@ -977,9 +1113,9 @@ to reference layers and combine them with operators:</p>
 </div>
 </section>
 <section id="use-cases">
-<h2><a class="toc-backref" href="#id31" role="doc-backlink">Use Cases</a><a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">Use Cases</a><a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
 <section id="hub-identification">
-<h3><a class="toc-backref" href="#id32" role="doc-backlink">Hub Identification</a><a class="headerlink" href="#hub-identification" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Hub Identification</a><a class="headerlink" href="#hub-identification" title="Link to this heading"></a></h3>
 <p>Find important nodes in each layer:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;transport&#39;</span><span class="p">]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
@@ -991,7 +1127,7 @@ to reference layers and combine them with operators:</p>
 </div>
 </section>
 <section id="layer-comparison">
-<h3><a class="toc-backref" href="#id33" role="doc-backlink">Layer Comparison</a><a class="headerlink" href="#layer-comparison" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Layer Comparison</a><a class="headerlink" href="#layer-comparison" title="Link to this heading"></a></h3>
 <p>Compare network properties across layers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;transport&#39;</span><span class="p">]</span>
 
@@ -1007,7 +1143,7 @@ to reference layers and combine them with operators:</p>
 </div>
 </section>
 <section id="node-importance-ranking">
-<h3><a class="toc-backref" href="#id34" role="doc-backlink">Node Importance Ranking</a><a class="headerlink" href="#node-importance-ranking" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Node Importance Ranking</a><a class="headerlink" href="#node-importance-ranking" title="Link to this heading"></a></h3>
 <p>Rank nodes by multiple measures:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
@@ -1028,7 +1164,7 @@ to reference layers and combine them with operators:</p>
 </div>
 </section>
 <section id="network-filtering">
-<h3><a class="toc-backref" href="#id35" role="doc-backlink">Network Filtering</a><a class="headerlink" href="#network-filtering" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Network Filtering</a><a class="headerlink" href="#network-filtering" title="Link to this heading"></a></h3>
 <p>Create subnetworks based on queries:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get high-degree nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes WHERE degree &gt; 5&#39;</span><span class="p">)</span>
@@ -1044,10 +1180,10 @@ to reference layers and combine them with operators:</p>
 </section>
 </section>
 <section id="error-handling">
-<h2><a class="toc-backref" href="#id36" role="doc-backlink">Error Handling</a><a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">Error Handling</a><a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
 <p>The DSL raises specific exceptions for different error types.</p>
 <section id="legacy-error-types">
-<h3><a class="toc-backref" href="#id37" role="doc-backlink">Legacy Error Types</a><a class="headerlink" href="#legacy-error-types" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">Legacy Error Types</a><a class="headerlink" href="#legacy-error-types" title="Link to this heading"></a></h3>
 <p>For string DSL queries:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">DSLSyntaxError</span><span class="p">,</span> <span class="n">DSLExecutionError</span>
 
@@ -1061,7 +1197,7 @@ to reference layers and combine them with operators:</p>
 </div>
 </section>
 <section id="dsl-v2-error-types">
-<h3><a class="toc-backref" href="#id38" role="doc-backlink">DSL v2 Error Types</a><a class="headerlink" href="#dsl-v2-error-types" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">DSL v2 Error Types</a><a class="headerlink" href="#dsl-v2-error-types" title="Link to this heading"></a></h3>
 <p>For builder API queries, more specific error types are available:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Q</span><span class="p">,</span>
@@ -1099,7 +1235,7 @@ to reference layers and combine them with operators:</p>
 </ul>
 </section>
 <section id="common-dsl-errors">
-<h3><a class="toc-backref" href="#id39" role="doc-backlink">Common DSL Errors</a><a class="headerlink" href="#common-dsl-errors" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">Common DSL Errors</a><a class="headerlink" href="#common-dsl-errors" title="Link to this heading"></a></h3>
 <p>Here’s an example of a common error and how to fix it:</p>
 <p><strong>Malformed Query (missing quotes around layer name):</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Wrong - missing quotes around layer name</span>
@@ -1125,10 +1261,10 @@ Hint: Use layer=&quot;social&quot; instead of layer=social
 </section>
 </section>
 <section id="complete-working-examples">
-<h2><a class="toc-backref" href="#id40" role="doc-backlink">Complete Working Examples</a><a class="headerlink" href="#complete-working-examples" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id41" role="doc-backlink">Complete Working Examples</a><a class="headerlink" href="#complete-working-examples" title="Link to this heading"></a></h2>
 <p>This section provides complete, runnable examples demonstrating various DSL features with expected outputs.</p>
 <section id="example-1-basic-network-querying">
-<h3><a class="toc-backref" href="#id41" role="doc-backlink">Example 1: Basic Network Querying</a><a class="headerlink" href="#example-1-basic-network-querying" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">Example 1: Basic Network Querying</a><a class="headerlink" href="#example-1-basic-network-querying" title="Link to this heading"></a></h3>
 <p>Create a simple social network and query it:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span><span class="p">,</span> <span class="n">format_result</span>
@@ -1177,7 +1313,7 @@ High-degree nodes: 3
 </div>
 </section>
 <section id="example-2-multilayer-network-analysis">
-<h3><a class="toc-backref" href="#id42" role="doc-backlink">Example 2: Multilayer Network Analysis</a><a class="headerlink" href="#example-2-multilayer-network-analysis" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id43" role="doc-backlink">Example 2: Multilayer Network Analysis</a><a class="headerlink" href="#example-2-multilayer-network-analysis" title="Link to this heading"></a></h3>
 <p>Analyze a network with multiple layers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
@@ -1227,7 +1363,7 @@ family layer: 3 nodes
 </div>
 </section>
 <section id="example-3-hub-identification">
-<h3><a class="toc-backref" href="#id43" role="doc-backlink">Example 3: Hub Identification</a><a class="headerlink" href="#example-3-hub-identification" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id44" role="doc-backlink">Example 3: Hub Identification</a><a class="headerlink" href="#example-3-hub-identification" title="Link to this heading"></a></h3>
 <p>Find and rank important nodes using multiple centrality measures:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
@@ -1285,7 +1421,7 @@ Top nodes by betweenness centrality:
 </div>
 </section>
 <section id="example-4-layer-comparison-workflow">
-<h3><a class="toc-backref" href="#id44" role="doc-backlink">Example 4: Layer Comparison Workflow</a><a class="headerlink" href="#example-4-layer-comparison-workflow" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id45" role="doc-backlink">Example 4: Layer Comparison Workflow</a><a class="headerlink" href="#example-4-layer-comparison-workflow" title="Link to this heading"></a></h3>
 <p>Compare network structure across different layers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
@@ -1359,7 +1495,7 @@ transport    4        0.0000           0.0000
 </div>
 </section>
 <section id="example-files">
-<h3><a class="toc-backref" href="#id45" role="doc-backlink">Example Files</a><a class="headerlink" href="#example-files" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id46" role="doc-backlink">Example Files</a><a class="headerlink" href="#example-files" title="Link to this heading"></a></h3>
 <p>Additional complete examples are available in the repository:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_builder_api.py</span></code> - <strong>Comprehensive builder API examples</strong> (recommended starting point for DSL v2)</p></li>
@@ -1382,9 +1518,9 @@ transport    4        0.0000           0.0000
 </section>
 </section>
 <section id="api-reference">
-<h2><a class="toc-backref" href="#id46" role="doc-backlink">API Reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id47" role="doc-backlink">API Reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
 <section id="main-functions">
-<h3><a class="toc-backref" href="#id47" role="doc-backlink">Main Functions</a><a class="headerlink" href="#main-functions" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id48" role="doc-backlink">Main Functions</a><a class="headerlink" href="#main-functions" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute a DSL query on a multilayer network.</span>
 
@@ -1410,7 +1546,7 @@ transport    4        0.0000           0.0000
 </div>
 </section>
 <section id="id1">
-<h3><a class="toc-backref" href="#id48" role="doc-backlink">Convenience Functions</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id49" role="doc-backlink">Convenience Functions</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">select_nodes_by_layer</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select all nodes in a specific layer.&quot;&quot;&quot;</span>
 
@@ -1425,7 +1561,7 @@ transport    4        0.0000           0.0000
 </div>
 </section>
 <section id="dsl-v2-builder-api">
-<h3><a class="toc-backref" href="#id49" role="doc-backlink">DSL v2 Builder API</a><a class="headerlink" href="#dsl-v2-builder-api" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id50" role="doc-backlink">DSL v2 Builder API</a><a class="headerlink" href="#dsl-v2-builder-api" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Q</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Query factory for creating QueryBuilder instances.&quot;&quot;&quot;</span>
 
@@ -1512,7 +1648,7 @@ transport    4        0.0000           0.0000
 </section>
 </section>
 <section id="limitations-and-future-work">
-<h2><a class="toc-backref" href="#id50" role="doc-backlink">Limitations and Future Work</a><a class="headerlink" href="#limitations-and-future-work" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id51" role="doc-backlink">Limitations and Future Work</a><a class="headerlink" href="#limitations-and-future-work" title="Link to this heading"></a></h2>
 <p>Current limitations:</p>
 <ul class="simple">
 <li><p>Edge queries are not yet fully supported</p></li>
@@ -1531,7 +1667,7 @@ transport    4        0.0000           0.0000
 </ul>
 </section>
 <section id="best-practices">
-<h2><a class="toc-backref" href="#id51" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id52" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
 <p><strong>1. Choose the Right API</strong></p>
 <ul class="simple">
 <li><p><strong>Builder API (Q.nodes())</strong>: Recommended for production code, complex queries, and when type hints are important</p></li>
@@ -1632,7 +1768,7 @@ transport    4        0.0000           0.0000
 </div>
 </section>
 <section id="performance-considerations">
-<h2><a class="toc-backref" href="#id52" role="doc-backlink">Performance Considerations</a><a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id53" role="doc-backlink">Performance Considerations</a><a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Computing centrality measures can be expensive on large networks</p></li>
 <li><p>Filter by layer first to reduce search space</p></li>
@@ -1662,7 +1798,7 @@ transport    4        0.0000           0.0000
 </div>
 </section>
 <section id="further-reading">
-<h2><a class="toc-backref" href="#id53" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id54" role="doc-backlink">Further Reading</a><a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="../getting_started/quickstart_5min.html"><span class="doc">5-Minute Quickstart</span></a> - Network construction basics</p></li>
 <li><p><a class="reference internal" href="../concepts/multilayer_networks_101.html"><span class="doc">Multilayer Networks 101</span></a> - Understanding multilayer networks</p></li>
@@ -1671,7 +1807,7 @@ transport    4        0.0000           0.0000
 </ul>
 </section>
 <section id="see-also">
-<h2><a class="toc-backref" href="#id54" role="doc-backlink">See Also</a><a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id55" role="doc-backlink">See Also</a><a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="graph_ops.html"><span class="doc">Dplyr-style Chainable Graph Operations</span></a> - Dplyr-style chainable graph operations (alternative API for complex transformations)</p></li>
 <li><p>NetworkX documentation for centrality measures</p></li>
