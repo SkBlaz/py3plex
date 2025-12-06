@@ -64,7 +64,7 @@ Algorithms specifically designed for multilayer structure:
 
 A SQL-like DSL (Domain-Specific Language) for expressing complex network analyses concisely:
 
-.. admonition:: 🔍 DSL Example: Concise Network Analysis
+.. admonition:: DSL Example: Concise Network Analysis
    :class: dsl-example
 
    Instead of writing loops and conditions, use declarative queries:

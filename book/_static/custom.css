@@ -22,8 +22,7 @@
 }
 
 .dsl-example .admonition-title::before {
-    content: "🔍 ";
-    font-size: 1.2em;
+    content: "";
 }
 
 .dsl-example p,
@@ -66,8 +65,7 @@
 }
 
 .dsl-info .admonition-title::before {
-    content: "💡 ";
-    font-size: 1.2em;
+    content: "";
 }
 
 .dsl-info p,

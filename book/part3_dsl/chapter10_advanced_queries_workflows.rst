@@ -250,7 +250,7 @@ The ``SimulationResult`` object provides rich analysis capabilities:
     )
 This chapter explores advanced DSL patterns for complex multilayer network analyses.
 
-.. admonition:: 🔍 Advanced DSL Patterns
+.. admonition:: Advanced DSL Patterns
    :class: dsl-example
 
    The DSL supports sophisticated analysis workflows:

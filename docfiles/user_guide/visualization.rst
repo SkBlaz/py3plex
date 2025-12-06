@@ -3,7 +3,7 @@ Visualization
 
 *From hairball to insight: making multilayer networks visible.*
 
-.. admonition:: 💡 DSL Tip: Filter Before Visualizing
+.. admonition:: DSL Tip: Filter Before Visualizing
    :class: dsl-info
 
    Use DSL to create focused visualizations:

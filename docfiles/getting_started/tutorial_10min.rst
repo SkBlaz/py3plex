@@ -240,7 +240,7 @@ Bonus: Using the DSL (1 min)
 
 The SQL-like DSL makes many analysis tasks even simpler:
 
-.. admonition:: 🔍 DSL Example: Quick Analysis
+.. admonition:: DSL Example: Quick Analysis
    :class: dsl-example
 
    .. code-block:: python

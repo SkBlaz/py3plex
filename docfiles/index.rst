@@ -28,7 +28,7 @@ py3plex provides scalable analysis and visualization of multilayer and multiplex
 * High-performance I/O with Arrow/Parquet support
 * Full NetworkX compatibility
 
-.. admonition:: 🔍 DSL: Query Networks Like SQL
+.. admonition:: DSL: Query Networks Like SQL
    :class: dsl-example
 
    The py3plex DSL lets you query networks using intuitive SQL-like syntax or a type-safe Python builder API:
@@ -61,7 +61,7 @@ py3plex provides scalable analysis and visualization of multilayer and multiplex
    * Educational purposes
    * Production pipelines
 
-   📖 See the complete :doc:`user_guide/dsl` guide for all features!
+   See the complete :doc:`user_guide/dsl` guide for all features!
 
 Quick Start
 ===========

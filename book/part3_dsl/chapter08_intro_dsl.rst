@@ -3,7 +3,7 @@ Chapter 8: Introduction to the Py3plex DSL
 
 This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like query language for expressing multilayer network analyses concisely. The DSL is a **major first-class feature** that sets py3plex apart from other network libraries.
 
-.. admonition:: 🔍 DSL at a Glance
+.. admonition:: DSL at a Glance
    :class: dsl-example
 
    The DSL provides intuitive SQL-like syntax for network queries:
@@ -193,7 +193,7 @@ Layer Filtering
 
 The DSL provides powerful layer algebra operations.
 
-.. admonition:: 💡 DSL Layer Algebra
+.. admonition:: DSL Layer Algebra
    :class: dsl-info
 
    Layer algebra lets you combine layers with set operations:

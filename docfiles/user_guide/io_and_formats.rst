@@ -3,7 +3,7 @@ I/O and Serialization
 
 py3plex provides a comprehensive I/O system for reading and writing multilayer graphs in various formats. The system is designed to be extensible, efficient, and easy to use.
 
-.. admonition:: 🔍 DSL Example: Export Query Results
+.. admonition:: DSL Example: Export Query Results
    :class: dsl-example
 
    DSL makes it easy to export analysis results:

@@ -3,7 +3,7 @@ Working with Networks
 
 This guide covers everything you need to know about creating, loading, and manipulating multilayer networks in py3plex.
 
-.. admonition:: 🔍 DSL Tip: Query Networks Easily
+.. admonition:: DSL Tip: Query Networks Easily
    :class: dsl-example
 
    Once you've created a network, use the DSL to explore it:

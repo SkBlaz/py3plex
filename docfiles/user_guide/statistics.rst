@@ -3,7 +3,7 @@ Network Statistics
 
 *How to measure and compare the structure of your multilayer network.*
 
-.. admonition:: 🔍 DSL for Quick Statistics
+.. admonition:: DSL for Quick Statistics
    :class: dsl-example
 
    Compute statistics efficiently with the DSL:

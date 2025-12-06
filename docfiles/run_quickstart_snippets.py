@@ -315,7 +315,7 @@ def main():
         print(f"Error: {quickstart_path} not found")
         sys.exit(1)
     
-    print(f"📖 Processing: {quickstart_path}")
+    print(f"Processing: {quickstart_path}")
     
     # Run the snippets
     runner = QuickstartRunner(quickstart_path)

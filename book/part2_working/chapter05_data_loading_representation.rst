@@ -3,7 +3,7 @@ Chapter 5: Data Loading and Representation
 
 This chapter covers how to load multilayer networks from various data sources, choose appropriate formats, and represent complex network structures correctly.
 
-.. admonition:: 💡 DSL Tip: Validate Data After Loading
+.. admonition:: DSL Tip: Validate Data After Loading
    :class: dsl-info
 
    Use DSL to quickly validate loaded data:

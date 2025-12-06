@@ -3,7 +3,7 @@ Chapter 7: Core Algorithms: Communities, Centrality, Dynamics
 
 This chapter covers py3plex's three major algorithm families for multilayer network analysis: community detection, centrality measures, and dynamics/spreading processes.
 
-.. admonition:: 💡 DSL Tip: Streamline Algorithm Workflows
+.. admonition:: DSL Tip: Streamline Algorithm Workflows
    :class: dsl-info
 
    The DSL simplifies many algorithmic workflows:

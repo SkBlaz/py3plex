@@ -3,7 +3,7 @@ User Guide
 
 This section provides comprehensive how-to guides for every major py3plex capability.
 
-.. admonition:: 🔍 Featured: DSL Query Language
+.. admonition:: Featured: DSL Query Language
    :class: dsl-example
 
    One of py3plex's standout features is the **SQL-like DSL** for querying networks:
