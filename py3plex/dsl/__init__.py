@@ -77,6 +77,8 @@ from .ast import (
     NullModelStmt,
     PathStmt,
     ExtendedQuery,
+    # Execution context
+    DSLExecutionContext,
 )
 
 from .builder import (
@@ -112,6 +114,16 @@ from .errors import (
 
 from .registry import measure_registry
 
+from .operator_registry import (
+    DSLOperator,
+    OperatorRegistry,
+    operator_registry,
+    register_operator,
+    get_operator,
+    list_operators,
+    describe_operator,
+)
+
 # Import legacy functions for backward compatibility
 from py3plex.dsl_legacy import (
     execute_query,
@@ -142,6 +154,56 @@ from py3plex.dsl_legacy import (
     _parse_return_clause,
     _tokenize_match_pattern,
 )
+
+# Decorator for registering custom DSL operators
+from typing import Callable, Any, Optional as Opt
+
+
+def dsl_operator(
+    name: Opt[str] = None,
+    *,
+    description: Opt[str] = None,
+    category: Opt[str] = None,
+    overwrite: bool = False,
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    """Decorator to register a Python function as a DSL operator.
+    
+    This allows users to extend the DSL with custom operators that can be
+    used in DSL scripts alongside built-in operators.
+    
+    Args:
+        name: Optional operator name (defaults to function name)
+        description: Optional description of the operator
+        category: Optional category for grouping (e.g., "centrality", "dynamics")
+        overwrite: If True, allow overwriting existing operators
+    
+    Returns:
+        Decorator function that registers the operator
+    
+    Example:
+        @dsl_operator("layer_resilience", category="dynamics")
+        def layer_resilience_op(context: DSLExecutionContext, alpha: float = 0.1):
+            '''Compute resilience score for selected layers.'''
+            # Use context.graph, context.current_layers, etc.
+            return {node: score for node in context.current_nodes}
+        
+        # Now use it in DSL:
+        # SELECT nodes FROM LAYER("infra")
+        # COMPUTE layer_resilience(alpha=0.2) AS resilience
+    """
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        op_name = name or func.__name__
+        register_operator(
+            name=op_name,
+            func=func,
+            description=description or func.__doc__,
+            category=category,
+            overwrite=overwrite,
+        )
+        return func
+    
+    return decorator
+
 
 __all__ = [
     # AST
@@ -196,6 +258,17 @@ __all__ = [
     "TypeMismatchError",
     # Registry
     "measure_registry",
+    # Operator registry (plugin system)
+    "DSLOperator",
+    "OperatorRegistry",
+    "operator_registry",
+    "register_operator",
+    "get_operator",
+    "list_operators",
+    "describe_operator",
+    "dsl_operator",
+    # Execution context
+    "DSLExecutionContext",
     # Legacy functions (backward compatibility)
     "execute_query",
     "format_result",

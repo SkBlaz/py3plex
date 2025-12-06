@@ -7,7 +7,7 @@ AST nodes, which are then executed by the same engine.
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Mapping, Optional, Union
 
 
 class Target(Enum):
@@ -401,3 +401,36 @@ class ExtendedQuery:
     nullmodel: Optional[NullModelStmt] = None
     path: Optional[PathStmt] = None
     dsl_version: str = "2.0"
+
+
+# ==============================================================================
+# DSL Execution Context
+# ==============================================================================
+
+
+@dataclass
+class DSLExecutionContext:
+    """Execution context passed to DSL operators.
+    
+    This context provides access to the network and query state that operators
+    need to compute results. It is passed as the first argument to all operator
+    functions.
+    
+    Attributes:
+        graph: The underlying multilayer network structure
+        current_layers: List of active layers being queried (None = all layers)
+        current_nodes: List of nodes being processed (None = all nodes)
+        params: Global parameters from the query (e.g., random seed, k values)
+        target: Query target type (nodes or edges)
+    
+    Example:
+        def my_operator(context: DSLExecutionContext, alpha: float = 0.1) -> dict:
+            nodes = context.current_nodes or context.graph.get_nodes()
+            # Compute something with nodes...
+            return {node: value for node in nodes}
+    """
+    graph: Any  # multilayer network object
+    current_layers: Optional[List[str]] = None
+    current_nodes: Optional[List[Any]] = None
+    params: Mapping[str, Any] = field(default_factory=dict)
+    target: str = "nodes"  # "nodes" or "edges"

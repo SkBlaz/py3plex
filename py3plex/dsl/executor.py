@@ -22,9 +22,11 @@ from .ast import (
     ParamRef,
     PlanStep,
     ExecutionPlan,
+    DSLExecutionContext,
 )
 from .result import QueryResult
 from .registry import measure_registry
+from .operator_registry import operator_registry
 from .errors import (
     DslExecutionError,
     ParameterMissingError,
@@ -204,14 +206,51 @@ def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
         # Create subgraph for computation
         subgraph = G.subgraph([item for item in items if item in G]).copy()
         
+        # Create execution context for operators
+        active_layers = None
+        if select.layer_expr:
+            active_layers = list(_evaluate_layer_expr(select.layer_expr, network))
+        
+        context = DSLExecutionContext(
+            graph=network,
+            current_layers=active_layers,
+            current_nodes=items,
+            params={},  # Could be populated from query parameters
+            target=select.target.value,
+        )
+        
         for compute_item in select.compute:
             try:
-                measure_fn = measure_registry.get(compute_item.name)
-                values = measure_fn(subgraph, items)
-                result_name = compute_item.result_name
-                attributes[result_name] = values
+                # First, check operator registry for custom operators
+                operator = operator_registry.get(compute_item.name)
+                
+                if operator is not None:
+                    # Call custom operator with context
+                    values = operator.func(context)
+                    result_name = compute_item.result_name
+                    
+                    # Ensure values is a dict mapping nodes to values
+                    if not isinstance(values, dict):
+                        # If operator returns a single value, apply to all nodes
+                        values = {node: values for node in items}
+                    
+                    attributes[result_name] = values
+                else:
+                    # Fall back to measure_registry for built-in measures
+                    measure_fn = measure_registry.get(compute_item.name)
+                    values = measure_fn(subgraph, items)
+                    result_name = compute_item.result_name
+                    attributes[result_name] = values
+                    
             except UnknownMeasureError:
-                # Re-raise unknown measure errors (they have helpful suggestions)
+                # Check if it's an unknown operator too
+                if not operator_registry.has(compute_item.name):
+                    # Provide helpful error with both registries
+                    available = (
+                        list(measure_registry.list_measures()) +
+                        list(operator_registry.list_operators().keys())
+                    )
+                    raise UnknownMeasureError(compute_item.name, available)
                 raise
             except Exception as e:
                 # Log specific error and continue with other measures
