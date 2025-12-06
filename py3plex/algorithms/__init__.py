@@ -7,6 +7,9 @@ This module provides access to various network analysis algorithms.
 from .multicentrality import multiplex_participation_coefficient
 from .meta_flow_report import MetaFlowReport, run_meta_analysis
 
+# Centrality explanation module
+from . import centrality
+
 # SIR epidemic simulator (requires numpy and scipy)
 try:
     from .sir_multiplex import (
@@ -40,4 +43,5 @@ __all__ = [
     "basic_reproduction_number",
     "summarize",
     "EpidemicResult",
+    "centrality",
 ]
