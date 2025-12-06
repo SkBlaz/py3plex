@@ -1,4 +1,4 @@
-Chapter 4: Installation and Getting Started
+Installation and Getting Started
 ===========================================
 
 This chapter covers installing py3plex and running your first multilayer network analysis. We provide a minimal quickstart example followed by installation details for different use cases.

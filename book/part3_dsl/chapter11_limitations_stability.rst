@@ -1,4 +1,4 @@
-Chapter 11: Limitations and Stability Guarantees
+Limitations and Stability Guarantees
 ================================================
 
 *This chapter explicitly marks feature status for user confidence*

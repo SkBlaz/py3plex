@@ -1,4 +1,4 @@
-Chapter 6: Visualization and Exploration
+Visualization and Exploration
 ========================================
 
 *TODO: This chapter will be expanded from docfiles/visualization_guide.rst and user_guide/visualization.rst*

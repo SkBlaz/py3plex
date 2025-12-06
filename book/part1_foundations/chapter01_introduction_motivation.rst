@@ -1,4 +1,4 @@
-Chapter 1: Introduction & Motivation
+Introduction & Motivation
 ====================================
 
 Why Multilayer Networks?

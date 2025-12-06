@@ -1,4 +1,4 @@
-Chapter 9: The Builder API and Explain Plans
+The Builder API and Explain Plans
 ============================================
 
 *TODO: Expand with examples from docfiles/user_guide/dsl.rst sections on builder API*

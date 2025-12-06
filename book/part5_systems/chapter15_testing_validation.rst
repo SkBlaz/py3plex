@@ -1,4 +1,4 @@
-Chapter 15: Testing and Validation
+Testing and Validation
 ===================================
 
 *TODO: Consolidate from docfiles/dev/ and tests/ structure*

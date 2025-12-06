@@ -1,4 +1,4 @@
-Chapter 3: Design of Py3plex
+Design of Py3plex
 =============================
 
 This chapter explains how py3plex is architected and why it makes specific design choices. Understanding these design principles will help you use the library more effectively and debug unexpected behavior.

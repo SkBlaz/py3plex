@@ -1,4 +1,4 @@
-Chapter 10: Advanced Queries and Workflows
+Advanced Queries and Workflows
 ==========================================
 
 This chapter covers advanced DSL patterns including dynamics simulation,

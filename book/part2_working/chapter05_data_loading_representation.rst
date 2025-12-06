@@ -1,4 +1,4 @@
-Chapter 5: Data Loading and Representation
+Data Loading and Representation
 ==========================================
 
 This chapter covers how to load multilayer networks from various data sources, choose appropriate formats, and represent complex network structures correctly.

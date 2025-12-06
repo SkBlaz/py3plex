@@ -1,4 +1,4 @@
-Chapter 12: Case Study 1 — Social Multiplex Network
+Case Study 1 — Social Multiplex Network
 ===================================================
 
 .. admonition:: DSL in Case Studies

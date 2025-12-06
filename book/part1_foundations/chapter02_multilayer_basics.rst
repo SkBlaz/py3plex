@@ -1,4 +1,4 @@
-Chapter 2: Multilayer Network Basics
+Multilayer Network Basics
 ====================================
 
 This chapter establishes the formal foundations of multilayer networks. We define key concepts, introduce mathematical notation, and show how different types of multilayer networks relate to each other.
