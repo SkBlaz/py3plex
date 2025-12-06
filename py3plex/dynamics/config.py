@@ -212,8 +212,11 @@ def _parse_action(
     - "-> X": always transition to X
     - "p=expr -> X": transition to X with probability expr
     
+    Note: This function should not receive strings with ':' - those should
+    be handled at the _parse_rule level.
+    
     Args:
-        action_str: Action string
+        action_str: Action string (without ':' conditional syntax)
         compartments: List of compartment names
         parameters: Parameter dictionary
     
@@ -227,10 +230,11 @@ def _parse_action(
         return lambda node, state, nc, rng, params: state[node]
     
     # Check for probabilistic transition: "p=expr -> X"
-    if 'p=' in action_str:
-        parts = action_str.split('->')
-        prob_part = parts[0].strip()
-        target_part = parts[1].strip() if len(parts) > 1 else None
+    if 'p=' in action_str and '->' in action_str:
+        # Split on -> to separate probability from target
+        arrow_idx = action_str.index('->')
+        prob_part = action_str[:arrow_idx].strip()
+        target_part = action_str[arrow_idx+2:].strip()
         
         if not target_part:
             raise ValueError(f"Invalid action format: {action_str}")
