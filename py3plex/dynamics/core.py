@@ -528,7 +528,7 @@ class DynamicsResult:
     def __init__(
         self,
         trajectory: List[Any],
-        dynamics: Optional['DynamicsProcess'] = None,
+        dynamics: Optional[DynamicsProcess] = None,
         metadata: Optional[Dict[str, Any]] = None
     ):
         """Initialize DynamicsResult.

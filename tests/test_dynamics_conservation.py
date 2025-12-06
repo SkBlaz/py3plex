@@ -38,9 +38,9 @@ class TestConservationLaws:
         state_counts = results.get_measure("state_counts")
         
         for t in range(len(state_counts['S'])):
-            total = (state_counts.get('S', np.zeros(1))[t] +
-                    state_counts.get('I', np.zeros(1))[t] +
-                    state_counts.get('R', np.zeros(1))[t])
+            total = (state_counts.get('S', np.zeros(len(state_counts['S'])))[t] +
+                    state_counts.get('I', np.zeros(len(state_counts['S'])))[t] +
+                    state_counts.get('R', np.zeros(len(state_counts['S'])))[t])
             assert total == N, f"Conservation violated at t={t}: {total} != {N}"
     
     def test_sis_node_conservation(self):
@@ -119,8 +119,9 @@ class TestConservationLaws:
         state_counts = results.get_measure("state_counts")
         
         for t in range(len(state_counts['S'])):
-            total = (state_counts['S'][t] + state_counts.get('I', np.zeros(1))[t] +
-                    state_counts.get('R', np.zeros(1))[t])
+            total = (state_counts.get('S', np.zeros(len(state_counts['S'])))[t] +
+                    state_counts.get('I', np.zeros(len(state_counts['S'])))[t] +
+                    state_counts.get('R', np.zeros(len(state_counts['S'])))[t])
             assert total == N, f"Multilayer conservation violated at t={t}"
 
 

@@ -173,8 +173,9 @@ class MultiRandomWalkDynamics(DynamicsProcess):
             # Explicit starting positions
             return list(self.init_strategy)
         elif self.init_strategy == 'random':
-            # Random starting positions - use index to avoid numpy type issues
-            return [nodes[rng.integers(0, len(nodes))] for _ in range(self.n_walkers)]
+            # Random starting positions - use vectorized approach
+            indices = rng.integers(0, len(nodes), size=self.n_walkers)
+            return [nodes[i] for i in indices]
         else:
             raise ValueError(f"Unknown init_strategy: {self.init_strategy}")
     

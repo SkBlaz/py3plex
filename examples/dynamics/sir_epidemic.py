@@ -45,11 +45,10 @@ def create_simple_multilayer_network():
         }])
     
     # Digital layer: random connections
-    import random
-    random.seed(42)
+    rng = np.random.default_rng(42)
     for i in range(30):  # Add 30 random edges
-        source = random.randint(0, 19)
-        target = random.randint(0, 19)
+        source = rng.integers(0, 20)
+        target = rng.integers(0, 20)
         if source != target:
             network.add_edges([{
                 'source': source,
