@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-py3plex is a Python library (version 0.96) for analyzing and visualizing multilayer and multiplex networks. It provides:
+py3plex is a Python library (version 1.0) for analyzing and visualizing multilayer and multiplex networks. It provides:
 
 **Core Features:**
 - Native support for multilayer network structures

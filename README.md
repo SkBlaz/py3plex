@@ -30,6 +30,15 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * **Documentation:** [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
 * **PDF Documentation:** [py3plex_documentation.pdf](docs/py3plex_documentation.pdf)
 * **Examples:** [examples/](examples/) - 50+ example scripts demonstrating usage
+* **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
+
+## For AI/LLM Assistants
+
+This repository is designed to be LLM-friendly:
+
+* **[llm.md](llm.md)** - Comprehensive documentation optimized for LLM agents
+* **[CLAUDE.md](CLAUDE.md)** - Claude/Anthropic AI context file
+* **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - GitHub Copilot instructions
 
 # Citations
 ```
