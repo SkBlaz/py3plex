@@ -1398,6 +1398,173 @@ DSL v2 Builder API
         def str(name: str) -> ParamRef:
             """Create string parameter."""
 
+DSL-Based Dynamics Simulation
+------------------------------
+
+The py3plex DSL extends beyond network queries to support declarative dynamics
+simulation on multilayer networks. This section demonstrates how to use the
+dynamics DSL for epidemic modeling and other dynamical processes.
+
+For detailed documentation and formalism, see :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows`.
+
+Quick Start
+~~~~~~~~~~~
+
+The dynamics DSL uses a builder API similar to the query DSL:
+
+.. code-block:: python
+
+    from py3plex.dynamics import D, SIS
+    from py3plex.core import multinet
+
+    # Create network
+    network = multinet.multi_layer_network()
+    # ... add nodes and edges ...
+
+    # Define SIS simulation
+    sim = (
+        D.process(SIS(beta=0.3, mu=0.1))  # Transmission and recovery rates
+         .initial(infected=0.05)           # 5% initially infected
+         .steps(100)                       # Run for 100 time steps
+         .measure("prevalence", "incidence")  # Track measures
+         .replicates(10)                   # Run 10 independent simulations
+         .seed(42)                         # For reproducibility
+    )
+
+    # Execute simulation
+    result = sim.run(network)
+
+    # Access results
+    print(f"Mean final prevalence: {result.data['prevalence'][:, -1].mean():.3f}")
+
+    # Convert to pandas for analysis
+    df_dict = result.to_pandas()
+    prevalence_df = df_dict['prevalence']
+
+Available Processes
+~~~~~~~~~~~~~~~~~~~
+
+The dynamics module supports several built-in processes:
+
+- **SIS** - Susceptible-Infected-Susceptible (endemic diseases)
+- **SIR** - Susceptible-Infected-Recovered (epidemic diseases with immunity)
+- **RandomWalk** - Random walk dynamics on networks
+
+Each process has configurable parameters:
+
+.. code-block:: python
+
+    from py3plex.dynamics import SIS, SIR, RandomWalk
+
+    # SIS with transmission rate β=0.3, recovery rate μ=0.1
+    SIS(beta=0.3, mu=0.1)
+
+    # SIR with transmission rate β=0.4, recovery rate γ=0.15
+    SIR(beta=0.4, gamma=0.15)
+
+    # Random walk with teleportation probability
+    RandomWalk(teleport=0.05)
+
+Multilayer Dynamics
+~~~~~~~~~~~~~~~~~~~
+
+The dynamics DSL seamlessly integrates with layer selection:
+
+.. code-block:: python
+
+    from py3plex.dsl import L
+
+    # Simulate on specific layers
+    sim = (
+        D.process(SIS(beta=0.25, mu=0.08))
+         .on_layers(L["offline"] + L["online"])  # Select layers using layer algebra
+         .coupling(node_replicas="strong")       # Nodes share states across layers
+         .initial(infected=0.1)
+         .steps(120)
+         .measure("prevalence", "prevalence_by_layer")
+         .replicates(15)
+    )
+
+    result = sim.run(multilayer_network)
+
+Integration with Query DSL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use query DSL to specify targeted initial conditions:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+
+    # Start infection at high-degree nodes (hubs)
+    sim = (
+        D.process(SIS(beta=0.35, mu=0.12))
+         .initial(
+             infected=Q.nodes().where(degree__gte=5)  # Query selects hubs
+         )
+         .steps(100)
+         .measure("prevalence")
+         .replicates(10)
+    )
+
+    result = sim.run(network)
+
+This powerful combination allows precise control over initial conditions based
+on network structure, centrality, or any other computable property.
+
+Result Analysis
+~~~~~~~~~~~~~~~
+
+The ``SimulationResult`` object provides rich analysis capabilities:
+
+.. code-block:: python
+
+    # Get summary statistics
+    summary = result.summary()
+    print(summary)
+
+    # Plot time series with confidence intervals
+    import matplotlib.pyplot as plt
+    result.plot("prevalence")
+    plt.show()
+
+    # Export to pandas for custom analysis
+    df_dict = result.to_pandas()
+    prevalence_df = df_dict['prevalence']
+
+    # Compute mean trajectory across replicates
+    mean_trajectory = (
+        prevalence_df
+        .groupby('t')['value']
+        .agg(['mean', 'std'])
+    )
+
+Complete Example
+~~~~~~~~~~~~~~~~
+
+See ``examples/network_analysis/example_dsl_dynamics.py`` for a comprehensive
+example demonstrating:
+
+- SIS and SIR epidemic simulations
+- Multilayer dynamics with coupling
+- Random walk dynamics
+- Query DSL integration for initial conditions
+- Parameter comparison across simulations
+
+Run the example::
+
+    python examples/network_analysis/example_dsl_dynamics.py
+
+Further Reading
+^^^^^^^^^^^^^^^
+
+For mathematical formalism and detailed documentation:
+
+- :doc:`../../../book/part3_dsl/chapter10_advanced_queries_workflows` - Complete dynamics DSL guide with formalism
+- ``examples/network_analysis/example_dsl_dynamics.py`` - Comprehensive dynamics examples
+- ``examples/advanced/example_dynamics_core.py`` - Core dynamics classes (OOP-style)
+- :doc:`../sir_epidemic_simulator` - SIR multiplex simulator documentation
+
 Limitations and Future Work
 ----------------------------
 
