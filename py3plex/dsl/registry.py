@@ -211,3 +211,57 @@ def _compute_communities(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any,
     if nodes is not None:
         return {node: partition.get(node, -1) for node in nodes}
     return partition
+
+
+# ==============================================================================
+# Register built-in measures as operators (unified system)
+# ==============================================================================
+
+# Import operator registry for unified registration
+from .operator_registry import register_operator
+from .ast import DSLExecutionContext
+
+
+def _make_operator_adapter(measure_fn: Callable) -> Callable:
+    """Create an adapter that converts a measure function to an operator.
+    
+    This allows existing measure functions (which take a NetworkX graph)
+    to work with the new operator system (which expects DSLExecutionContext).
+    """
+    def adapter(context: DSLExecutionContext) -> Dict[Any, Any]:
+        # Extract subgraph from context
+        G = context.graph.core_network
+        if context.current_nodes:
+            subgraph = G.subgraph([n for n in context.current_nodes if n in G]).copy()
+            return measure_fn(subgraph, context.current_nodes)
+        return measure_fn(G, None)
+    
+    # Preserve metadata
+    adapter.__name__ = measure_fn.__name__
+    adapter.__doc__ = measure_fn.__doc__
+    return adapter
+
+
+# Register a few key measures as operators for demonstration
+# This shows how the unified system works for both built-in and custom operators
+
+register_operator(
+    "multiplex_degree",
+    _make_operator_adapter(_compute_degree),
+    description="Multiplex node degree (unified operator system)",
+    category="centrality"
+)
+
+register_operator(
+    "multiplex_betweenness",
+    _make_operator_adapter(_compute_betweenness),
+    description="Multiplex betweenness centrality (unified operator system)",
+    category="centrality"
+)
+
+register_operator(
+    "multiplex_pagerank",
+    _make_operator_adapter(_compute_pagerank),
+    description="Multiplex PageRank (unified operator system)",
+    category="centrality"
+)
