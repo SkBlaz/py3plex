@@ -50,7 +50,7 @@ For conference proceedings, you may also cite:
 APA Style
 ~~~~~~~~~
 
-Škrlj, B., Kralj, J., & Lavrač, N. (2019). Py3plex toolkit for visualization and analysis of multilayer networks. *Applied Network Science*, *4*(1), 94. https://doi.org/10.1007/s41109-019-0203-7
+Škrlj, B., Kralj, J., & Lavrač, N. (2019). Py3plex toolkit for visualization and analysis of multilayer networks. *Applied Network Science*, *4*\ (1), 94. https://doi.org/10.1007/s41109-019-0203-7
 
 MLA Style
 ~~~~~~~~~

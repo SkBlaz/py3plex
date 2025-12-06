@@ -58,6 +58,23 @@ See :doc:`getting_started/quickstart_5min` (5 min) or :doc:`getting_started/tuto
 Documentation Contents
 ======================
 
+Part I: Getting Started
+-----------------------
+
+Installation, quick start guides, and tutorials to get you up and running with py3plex.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Getting Started
+
+   getting_started/part_intro
+   getting_started/installation
+   getting_started/quickstart_5min
+   getting_started/tutorial_10min
+   getting_started/common_issues
+
+----
+
 Part II: Concepts & Architecture
 --------------------------------
 
