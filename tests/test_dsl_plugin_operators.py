@@ -71,7 +71,11 @@ def cleanup_registry():
     after = set(operator_registry.list_operators().keys())
     added = after - before
     for op_name in added:
-        operator_registry.unregister(op_name)
+        success = operator_registry.unregister(op_name)
+        if not success:
+            # Log warning if cleanup failed (shouldn't happen in tests)
+            import warnings
+            warnings.warn(f"Failed to unregister test operator: {op_name}")
 
 
 class TestOperatorRegistry:

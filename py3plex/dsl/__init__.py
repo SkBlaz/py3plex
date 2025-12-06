@@ -156,14 +156,14 @@ from py3plex.dsl_legacy import (
 )
 
 # Decorator for registering custom DSL operators
-from typing import Callable, Any, Optional as Opt
+from typing import Callable, Any, Optional
 
 
 def dsl_operator(
-    name: Opt[str] = None,
+    name: Optional[str] = None,
     *,
-    description: Opt[str] = None,
-    category: Opt[str] = None,
+    description: Optional[str] = None,
+    category: Optional[str] = None,
     overwrite: bool = False,
 ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Decorator to register a Python function as a DSL operator.

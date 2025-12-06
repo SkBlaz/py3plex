@@ -232,8 +232,14 @@ def _make_operator_adapter(measure_fn: Callable) -> Callable:
         # Extract subgraph from context
         G = context.graph.core_network
         if context.current_nodes:
-            subgraph = G.subgraph([n for n in context.current_nodes if n in G]).copy()
-            return measure_fn(subgraph, context.current_nodes)
+            # Filter to nodes that exist in the graph
+            valid_nodes = [n for n in context.current_nodes if n in G]
+            if valid_nodes:
+                subgraph = G.subgraph(valid_nodes).copy()
+                return measure_fn(subgraph, valid_nodes)
+            else:
+                # No valid nodes, return empty dict
+                return {}
         return measure_fn(G, None)
     
     # Preserve metadata

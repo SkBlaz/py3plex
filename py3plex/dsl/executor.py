@@ -242,16 +242,17 @@ def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
                     result_name = compute_item.result_name
                     attributes[result_name] = values
                     
-            except UnknownMeasureError:
-                # Check if it's an unknown operator too
+            except UnknownMeasureError as e:
+                # If both registries don't have it, provide combined suggestions
                 if not operator_registry.has(compute_item.name):
-                    # Provide helpful error with both registries
                     available = (
                         list(measure_registry.list_measures()) +
                         list(operator_registry.list_operators().keys())
                     )
                     raise UnknownMeasureError(compute_item.name, available)
-                raise
+                else:
+                    # Re-raise original error
+                    raise
             except Exception as e:
                 # Log specific error and continue with other measures
                 import logging

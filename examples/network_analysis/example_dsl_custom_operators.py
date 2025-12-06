@@ -70,9 +70,14 @@ def layer_versatility_op(context: DSLExecutionContext) -> dict:
                 versatility[node_id] = set()
             versatility[node_id].add(node[1])  # Add layer
     
-    # Convert to count
-    return {node: len(versatility.get(node[0] if isinstance(node, tuple) else node, set())) 
-            for node in context.current_nodes}
+    # Convert to count - extract node ID for lookup
+    scores = {}
+    for node in context.current_nodes:
+        node_id = node[0] if isinstance(node, tuple) else node
+        layer_count = len(versatility.get(node_id, set()))
+        scores[node] = layer_count
+    
+    return scores
 
 
 # Example 2: Operator with parameters
