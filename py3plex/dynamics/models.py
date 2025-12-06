@@ -67,9 +67,10 @@ class RandomWalkDynamics(DynamicsProcess):
         if self.start_node is not None:
             return self.start_node
         else:
-            # Random start
+            # Random start - use index to avoid numpy type issues
             nodes = list(iter_multilayer_nodes(self.graph))
-            return rng.choice(nodes)
+            idx = rng.integers(0, len(nodes))
+            return nodes[idx]
     
     def step(self, state: Any, t: int) -> Any:
         """Perform one random walk step.
@@ -94,8 +95,9 @@ class RandomWalkDynamics(DynamicsProcess):
             # No neighbors, stay in place
             return current_pos
         
-        # Move to random neighbor
-        return self.rng.choice(neighbors)
+        # Move to random neighbor - use index to avoid numpy type issues
+        idx = self.rng.integers(0, len(neighbors))
+        return neighbors[idx]
     
     def visit_counts(self, trajectory: List[Any]) -> Dict[Any, int]:
         """Compute visit counts from a trajectory.
@@ -171,8 +173,9 @@ class MultiRandomWalkDynamics(DynamicsProcess):
             # Explicit starting positions
             return list(self.init_strategy)
         elif self.init_strategy == 'random':
-            # Random starting positions
-            return [rng.choice(nodes) for _ in range(self.n_walkers)]
+            # Random starting positions - use vectorized approach
+            indices = rng.integers(0, len(nodes), size=self.n_walkers)
+            return [nodes[i] for i in indices]
         else:
             raise ValueError(f"Unknown init_strategy: {self.init_strategy}")
     
@@ -213,8 +216,9 @@ class MultiRandomWalkDynamics(DynamicsProcess):
                 new_state.append(walker_pos)
                 continue
             
-            # Move to random neighbor
-            next_pos = self.rng.choice(neighbors)
+            # Move to random neighbor - use index to avoid numpy type issues
+            idx = self.rng.integers(0, len(neighbors))
+            next_pos = neighbors[idx]
             new_state.append(next_pos)
         
         return new_state
@@ -317,9 +321,13 @@ class SISDynamics(DynamicsProcess):
         
         # Determine initially infected
         if isinstance(self.initial_infected, (int, float)):
-            # Fraction
+            # Fraction - use index-based selection to avoid numpy type issues
             n_infected = int(len(nodes) * self.initial_infected)
-            infected_nodes = set(rng.choice(nodes, size=n_infected, replace=False))
+            if n_infected > 0:
+                selected_indices = rng.choice(len(nodes), size=n_infected, replace=False)
+                infected_nodes = set(nodes[i] for i in selected_indices)
+            else:
+                infected_nodes = set()
         else:
             # Explicit set
             infected_nodes = set(self.initial_infected)
@@ -543,8 +551,9 @@ class AdaptiveSISDynamics(SISDynamics):
                 # Remove S-I edge
                 self.graph.remove_edge(u, v)
                 
-                # Add S-S edge
-                target = self.rng.choice(susceptible_nodes)
+                # Add S-S edge - use index to avoid numpy type issues
+                idx = self.rng.integers(0, len(susceptible_nodes))
+                target = susceptible_nodes[idx]
                 self.graph.add_edge(s_node, target)
         
         return new_state
@@ -610,10 +619,11 @@ class TemporalRandomWalk(TemporalDynamicsProcess):
         if self.start_node is not None:
             return self.start_node
         else:
-            # Random start from initial graph
+            # Random start from initial graph - use index to avoid numpy type issues
             G0 = self.graph.get_graph(0)
             nodes = list(G0.nodes())
-            return rng.choice(nodes)
+            idx = rng.integers(0, len(nodes))
+            return nodes[idx]
     
     def step(self, state: Any, t: int) -> Any:
         """Perform one step using graph at time t."""
@@ -636,4 +646,6 @@ class TemporalRandomWalk(TemporalDynamicsProcess):
         if not neighbors:
             return current_pos
         
-        return self.rng.choice(neighbors)
+        # Use index to avoid numpy type issues
+        idx = self.rng.integers(0, len(neighbors))
+        return neighbors[idx]

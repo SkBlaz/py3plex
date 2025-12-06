@@ -117,18 +117,18 @@ class DynamicsProcess(ABC):
         state: Optional[Any] = None,
         record: bool = True,
         callbacks: Optional[List[Callable[[Any, int], None]]] = None,
-    ) -> Union[Any, List[Any]]:
+    ) -> Union[Any, 'DynamicsResult']:
         """Run the dynamics process for a specified number of steps.
         
         Args:
             steps: Number of discrete time steps to simulate
             state: Initial state (if None, calls initialize_state())
-            record: If True, return trajectory; if False, return final state only
+            record: If True, return DynamicsResult; if False, return final state only
             callbacks: Optional list of callback functions called after each step
                       with signature callback(state, t)
         
         Returns:
-            If record=True: list of states (trajectory)
+            If record=True: DynamicsResult wrapping the trajectory
             If record=False: final state only
         """
         if state is None:
@@ -146,7 +146,15 @@ class DynamicsProcess(ABC):
                 for callback in callbacks:
                     callback(state, t + 1)
         
-        return trajectory if record else state
+        if record:
+            metadata = {
+                'steps': steps,
+                'seed': self.seed,
+                'params': self.params,
+            }
+            return DynamicsResult(trajectory, dynamics=self, metadata=metadata)
+        else:
+            return state
 
 
 class ContinuousTimeProcess(ABC):
@@ -495,3 +503,176 @@ class TemporalDynamicsProcess(DynamicsProcess):
             New state at time t+1
         """
         pass
+
+
+class DynamicsResult:
+    """Result container for OOP-style dynamics with measure extraction.
+    
+    This class wraps a trajectory (list of states) and provides convenient
+    methods for extracting time series of various measures, matching the API
+    described in the py3plex book.
+    
+    Attributes:
+        trajectory: List of states over time
+        dynamics: Reference to the dynamics object (optional, for measure computation)
+        metadata: Optional dictionary of simulation metadata
+    
+    Example:
+        >>> sir = SIRDynamics(G, beta=0.3, gamma=0.1)
+        >>> sir.set_seed(42)
+        >>> results = sir.run(steps=100)
+        >>> prevalence = results.get_measure("prevalence")
+        >>> state_counts = results.get_measure("state_counts")
+    """
+    
+    def __init__(
+        self,
+        trajectory: List[Any],
+        dynamics: Optional[DynamicsProcess] = None,
+        metadata: Optional[Dict[str, Any]] = None
+    ):
+        """Initialize DynamicsResult.
+        
+        Args:
+            trajectory: List of states over time
+            dynamics: Optional reference to the dynamics object
+            metadata: Optional metadata dictionary
+        """
+        self.trajectory = trajectory
+        self.dynamics = dynamics
+        self.metadata = metadata or {}
+    
+    def get_measure(self, measure_name: str) -> Any:
+        """Extract a time series measure from the trajectory.
+        
+        Supported measures:
+        - "prevalence": Fraction of nodes in infected state over time (for epidemic models)
+        - "state_counts": Dictionary mapping state -> count array over time
+        - "trajectory": Raw trajectory (list of states)
+        - Custom measures if dynamics object provides a compute_measure method
+        
+        Args:
+            measure_name: Name of the measure to extract
+        
+        Returns:
+            Measure data (typically numpy array or dict of arrays)
+        
+        Raises:
+            ValueError: If measure_name is unknown
+        """
+        if measure_name == "trajectory":
+            return self.trajectory
+        
+        # Check if dynamics object has a compute_measure method
+        if self.dynamics and hasattr(self.dynamics, 'compute_measure'):
+            return self.dynamics.compute_measure(measure_name, self.trajectory)
+        
+        # Try built-in measures based on trajectory structure
+        if not self.trajectory:
+            raise ValueError("Empty trajectory, cannot compute measures")
+        
+        first_state = self.trajectory[0]
+        
+        # For compartmental models (dict of node -> state string)
+        if isinstance(first_state, dict):
+            if measure_name == "state_counts":
+                return self._compute_state_counts()
+            elif measure_name == "prevalence":
+                return self._compute_prevalence()
+            else:
+                raise ValueError(
+                    f"Unknown measure '{measure_name}'. "
+                    f"Available: 'prevalence', 'state_counts', 'trajectory'"
+                )
+        
+        # For other types, delegate to dynamics object if available
+        if self.dynamics:
+            raise ValueError(
+                f"Measure '{measure_name}' not supported for this dynamics type. "
+                f"Available: 'trajectory'"
+            )
+        
+        raise ValueError(f"Unknown measure '{measure_name}'")
+    
+    def _compute_state_counts(self) -> Dict[str, np.ndarray]:
+        """Compute counts of each state over time for compartmental models.
+        
+        Returns:
+            Dictionary mapping state name -> array of counts
+        """
+        # Determine all possible states
+        all_states = set()
+        for state in self.trajectory:
+            all_states.update(state.values())
+        
+        # Initialize count arrays
+        state_counts = {s: np.zeros(len(self.trajectory), dtype=int) for s in all_states}
+        
+        # Count states at each time step
+        for t, state in enumerate(self.trajectory):
+            for node_state in state.values():
+                state_counts[node_state][t] += 1
+        
+        return state_counts
+    
+    def _compute_prevalence(self) -> np.ndarray:
+        """Compute prevalence (fraction infected) over time for epidemic models.
+        
+        Assumes states are 'S', 'I', 'R', 'E', etc. and counts 'I' as infected.
+        
+        Returns:
+            Array of prevalence values over time
+        """
+        prevalence = np.zeros(len(self.trajectory))
+        
+        for t, state in enumerate(self.trajectory):
+            total = len(state)
+            infected = sum(1 for v in state.values() if v == 'I')
+            prevalence[t] = infected / total if total > 0 else 0.0
+        
+        return prevalence
+    
+    def to_pandas(self):
+        """Convert trajectory to pandas DataFrame.
+        
+        Returns:
+            DataFrame with columns [t, node, state] or similar
+        
+        Raises:
+            ImportError: If pandas is not available
+        """
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ImportError(
+                "pandas is required for to_pandas(). "
+                "Install with: pip install pandas"
+            )
+        
+        rows = []
+        first_state = self.trajectory[0] if self.trajectory else None
+        
+        if isinstance(first_state, dict):
+            # Compartmental model: expand node states
+            for t, state in enumerate(self.trajectory):
+                for node, node_state in state.items():
+                    rows.append({"t": t, "node": node, "state": node_state})
+            return pd.DataFrame(rows)
+        
+        # For other types, just return time series
+        return pd.DataFrame({
+            "t": list(range(len(self.trajectory))),
+            "state": self.trajectory
+        })
+    
+    def __len__(self) -> int:
+        """Return length of trajectory."""
+        return len(self.trajectory)
+    
+    def __getitem__(self, index: int) -> Any:
+        """Get state at specific time step."""
+        return self.trajectory[index]
+    
+    def __repr__(self) -> str:
+        """String representation."""
+        return f"DynamicsResult(steps={len(self.trajectory)}, metadata={self.metadata})"

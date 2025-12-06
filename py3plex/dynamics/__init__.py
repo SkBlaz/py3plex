@@ -91,6 +91,7 @@ from .core import (
     ContinuousTimeProcess,
     TemporalGraph,
     TemporalDynamicsProcess,
+    DynamicsResult,
 )
 
 # Discrete-time models
@@ -148,6 +149,7 @@ __all__ = [
     "ContinuousTimeProcess",
     "TemporalGraph",
     "TemporalDynamicsProcess",
+    "DynamicsResult",
     # Discrete-time models (NEW)
     "RandomWalkDynamics",
     "MultiRandomWalkDynamics",

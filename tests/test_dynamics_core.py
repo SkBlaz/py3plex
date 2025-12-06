@@ -107,9 +107,12 @@ class TestRandomWalkDynamics:
         walk1 = RandomWalkDynamics(simple_graph, seed=42, start_node=0)
         walk2 = RandomWalkDynamics(simple_graph, seed=42, start_node=0)
         
-        traj1 = walk1.run(steps=50)
-        traj2 = walk2.run(steps=50)
+        results1 = walk1.run(steps=50)
+        results2 = walk2.run(steps=50)
         
+        # Extract trajectories and compare
+        traj1 = results1.get_measure("trajectory")
+        traj2 = results2.get_measure("trajectory")
         assert traj1 == traj2
     
     def test_different_seeds(self, simple_graph):
@@ -117,9 +120,12 @@ class TestRandomWalkDynamics:
         walk1 = RandomWalkDynamics(simple_graph, seed=42, start_node=0)
         walk2 = RandomWalkDynamics(simple_graph, seed=123, start_node=0)
         
-        traj1 = walk1.run(steps=50)
-        traj2 = walk2.run(steps=50)
+        results1 = walk1.run(steps=50)
+        results2 = walk2.run(steps=50)
         
+        # Extract trajectories and compare
+        traj1 = results1.get_measure("trajectory")
+        traj2 = results2.get_measure("trajectory")
         assert traj1 != traj2
 
 
@@ -537,9 +543,12 @@ class TestReproducibility:
         walk1 = RandomWalkDynamics(simple_graph, seed=42, start_node=0)
         walk2 = RandomWalkDynamics(simple_graph, seed=42, start_node=0)
         
-        traj1 = walk1.run(steps=50)
-        traj2 = walk2.run(steps=50)
+        results1 = walk1.run(steps=50)
+        results2 = walk2.run(steps=50)
         
+        # Extract trajectories and compare
+        traj1 = results1.get_measure("trajectory")
+        traj2 = results2.get_measure("trajectory")
         assert traj1 == traj2
     
     def test_sis_reproducibility(self, small_graph):
