@@ -235,6 +235,44 @@ Complete Example
     plt.savefig("analysis.png", dpi=150, bbox_inches='tight')
     plt.close()
 
+Bonus: Using the DSL (1 min)
+----------------------------
+
+The SQL-like DSL makes many analysis tasks even simpler:
+
+.. admonition:: 🔍 DSL Example: Quick Analysis
+   :class: dsl-example
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Find top influential nodes
+       result = (
+           Q.nodes()
+            .where(degree__gt=3)
+            .compute("betweenness_centrality", "pagerank")
+            .order_by("-betweenness_centrality")
+            .limit(10)
+            .execute(network)
+       )
+
+       # Display as DataFrame
+       df = result.to_pandas()
+       print(df)
+
+       # Compare layers
+       for layer_id in ['1', '2']:
+           layer_result = (
+               Q.nodes()
+                .from_layers(L[layer_id])
+                .compute("degree")
+                .execute(network)
+           )
+           print(f"Layer {layer_id}: {layer_result.count} nodes")
+
+   See :doc:`../user_guide/dsl` for comprehensive DSL documentation!
+
 Common Issues
 -------------
 
