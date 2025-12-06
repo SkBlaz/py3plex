@@ -236,6 +236,25 @@ class TestFluentExportAPI:
 
         assert isinstance(result, QueryResult)
         assert output_file.exists()
+    
+    def test_export_to_dsl_string(self, tmp_path):
+        """Test that export is serialized to DSL string."""
+        output_file = tmp_path / "export.csv"
+
+        q = (
+            Q.nodes()
+            .from_layers(L["social"])
+            .compute("degree")
+            .export_csv(str(output_file), columns=["id", "degree"])
+        )
+        
+        dsl_str = q.to_dsl()
+        
+        # Verify DSL string contains EXPORT clause
+        assert "EXPORT TO" in dsl_str
+        assert str(output_file) in dsl_str
+        assert "FORMAT CSV" in dsl_str
+        assert "COLUMNS (id, degree)" in dsl_str
 
     def test_export_tsv(self, sample_network, tmp_path):
         """Test TSV export (CSV with tab delimiter)."""
