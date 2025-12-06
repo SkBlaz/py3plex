@@ -64,20 +64,38 @@ Algorithms specifically designed for multilayer structure:
 
 A SQL-like DSL (Domain-Specific Language) for expressing complex network analyses concisely:
 
-.. code-block:: python
+.. admonition:: 🔍 DSL Example: Concise Network Analysis
+   :class: dsl-example
 
-    from py3plex.dsl import Q, L
-    
-    # Find high-degree nodes in the coauthor layer
-    result = (
-        Q.nodes()
-         .from_layers(L["coauthor"])
-         .where(degree__gt=5)
-         .compute("betweenness_centrality")
-         .execute(network)
-    )
+   Instead of writing loops and conditions, use declarative queries:
 
-This replaces dozens of lines of manual filtering and iteration with a clear, composable query.
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Find high-degree nodes in the coauthor layer
+       result = (
+           Q.nodes()
+            .from_layers(L["coauthor"])
+            .where(degree__gt=5)
+            .compute("betweenness_centrality", "pagerank")
+            .order_by("-betweenness_centrality")
+            .limit(10)
+            .execute(network)
+       )
+
+       # Export for further analysis
+       result.to_pandas().to_csv("top_researchers.csv")
+
+   This replaces dozens of lines of manual filtering and iteration with a clear, composable query.
+
+   **Key DSL features:**
+   
+   * SQL-like syntax familiar to data analysts
+   * Layer algebra: ``L["social"] + L["work"] - L["bots"]``
+   * Type-safe Python builder API
+   * Export to pandas, NetworkX, Arrow, CSV, JSON
+   * EXPLAIN mode for query optimization
 
 **4. Visualization for Multilayer Networks**
 

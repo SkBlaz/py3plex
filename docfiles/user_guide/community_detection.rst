@@ -3,6 +3,32 @@ Community Detection
 
 *Finding groups that span multiple layers of interaction.*
 
+.. admonition:: 💡 DSL Tip: Filter by Communities
+   :class: dsl-info
+
+   After detecting communities, use DSL to analyze them:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Find high-degree nodes in specific community
+       # (assuming you stored community IDs as node attributes)
+       
+       # Get all nodes and their properties
+       result = (
+           Q.nodes()
+            .compute("degree", "betweenness_centrality")
+            .order_by("-degree")
+            .limit(20)
+            .execute(network)
+       )
+
+       # Export for further analysis
+       result.to_pandas().to_csv("community_hubs.csv")
+
+   Combine traditional algorithms with DSL queries for powerful workflows!
+
 ----
 
 Networks are rarely homogeneous. People cluster into social groups. Proteins form functional modules. Cities organize into regional hubs. **Community detection** finds these natural groupings—but in multilayer networks, the question is more subtle: *do communities exist within layers, across layers, or both?*

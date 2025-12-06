@@ -3,6 +3,34 @@ Chapter 4: Installation and Getting Started
 
 This chapter covers installing py3plex and running your first multilayer network analysis. We provide a minimal quickstart example followed by installation details for different use cases.
 
+.. admonition:: 🔍 DSL Quick Start
+   :class: dsl-example
+
+   After installation, try the DSL for instant network exploration:
+
+   .. code-block:: python
+
+       from py3plex.core import multinet
+       from py3plex.dsl import Q, L
+
+       # Create a simple network
+       network = multinet.multi_layer_network()
+       network.add_edges([
+           ['Alice', 'friends', 'Bob', 'friends', 1],
+           ['Bob', 'friends', 'Carol', 'friends', 1],
+       ], input_type="list")
+
+       # Query it with DSL
+       result = (
+           Q.nodes()
+            .compute("degree")
+            .order_by("-degree")
+            .execute(network)
+       )
+       print(result.to_pandas())
+
+   DSL makes network analysis intuitive from day one!
+
 Quick Install
 -------------
 

@@ -11,8 +11,30 @@ This book covers:
 * Mathematical foundations of multilayer networks
 * The py3plex library architecture and design philosophy
 * Hands-on examples and workflows for real network analysis
-* A powerful SQL-like DSL for network queries
+* **A powerful SQL-like DSL for network queries**
 * Production deployment and reproducibility practices
+
+.. admonition:: 🔍 DSL Feature Highlight
+   :class: dsl-example
+
+   Py3plex includes a first-class DSL for querying networks with SQL-like syntax:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Find top influencers using builder API
+       result = (
+           Q.nodes()
+            .from_layers(L["social"])
+            .where(degree__gt=5)
+            .compute("betweenness_centrality")
+            .order_by("-betweenness_centrality")
+            .limit(10)
+            .execute(network)
+       )
+
+   See **Part III** for complete DSL coverage!
 
 Target Audience
 ---------------

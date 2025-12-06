@@ -1,7 +1,38 @@
 Chapter 7: Core Algorithms: Communities, Centrality, Dynamics
 =============================================================
 
-*TODO: This chapter consolidates algorithm documentation from multiple sources*
+This chapter covers py3plex's three major algorithm families for multilayer network analysis: community detection, centrality measures, and dynamics/spreading processes.
+
+.. admonition:: 💡 DSL Tip: Streamline Algorithm Workflows
+   :class: dsl-info
+
+   The DSL simplifies many algorithmic workflows:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Quick centrality analysis
+       top_central = (
+           Q.nodes()
+            .from_layers(L["social"])
+            .compute("betweenness_centrality", "pagerank", "degree")
+            .order_by("-betweenness_centrality")
+            .limit(20)
+            .execute(network)
+       )
+
+       # Multi-layer comparison
+       for layer in ["social", "work"]:
+           result = (
+               Q.nodes()
+                .from_layers(L[layer])
+                .compute("betweenness_centrality")
+                .execute(network)
+           )
+           print(f"{layer}: avg BC = {sum(result.measures['betweenness_centrality'].values()) / result.count:.4f}")
+
+   See Chapter 8 for comprehensive DSL coverage!
 
 Overview
 --------

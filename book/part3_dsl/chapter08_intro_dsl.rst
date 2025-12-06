@@ -1,7 +1,33 @@
 Chapter 8: Introduction to the Py3plex DSL
 ==========================================
 
-This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like query language for expressing multilayer network analyses concisely. The DSL is a major feature that sets py3plex apart from other network libraries.
+This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like query language for expressing multilayer network analyses concisely. The DSL is a **major first-class feature** that sets py3plex apart from other network libraries.
+
+.. admonition:: 🔍 DSL at a Glance
+   :class: dsl-example
+
+   The DSL provides intuitive SQL-like syntax for network queries:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Simple: Find high-degree nodes
+       result = Q.nodes().where(degree__gt=5).execute(network)
+
+       # Powerful: Multi-layer analysis with export
+       result = (
+           Q.nodes()
+            .from_layers(L["social"] + L["work"])
+            .where(degree__gt=3)
+            .compute("betweenness_centrality", "pagerank")
+            .order_by("-betweenness_centrality")
+            .limit(20)
+            .export_csv("top_influencers.csv")
+            .execute(network)
+       )
+
+   Express complex analyses in a few readable lines!
 
 Why a DSL for Networks?
 -----------------------
@@ -166,6 +192,29 @@ Layer Filtering
 ---------------
 
 The DSL provides powerful layer algebra operations.
+
+.. admonition:: 💡 DSL Layer Algebra
+   :class: dsl-info
+
+   Layer algebra lets you combine layers with set operations:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Union: nodes in social OR work
+       Q.nodes().from_layers(L["social"] + L["work"])
+
+       # Difference: nodes in social but NOT bots
+       Q.nodes().from_layers(L["social"] - L["bots"])
+
+       # Intersection: nodes in both social AND work
+       Q.nodes().from_layers(L["social"] & L["work"])
+
+       # Complex: (social OR work) - bots
+       Q.nodes().from_layers(L["social"] + L["work"] - L["bots"])
+
+   This makes multi-layer queries intuitive and expressive!
 
 Simple Layer Selection
 ~~~~~~~~~~~~~~~~~~~~~~

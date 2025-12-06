@@ -3,6 +3,29 @@ Working with Networks
 
 This guide covers everything you need to know about creating, loading, and manipulating multilayer networks in py3plex.
 
+.. admonition:: 🔍 DSL Tip: Query Networks Easily
+   :class: dsl-example
+
+   Once you've created a network, use the DSL to explore it:
+
+   .. code-block:: python
+
+       from py3plex.dsl import Q, L
+
+       # Get all nodes in a layer
+       friends = Q.nodes().from_layers(L["friends"]).execute(network)
+
+       # Find high-degree nodes
+       hubs = (
+           Q.nodes()
+            .where(degree__gt=2)
+            .compute("degree", "betweenness_centrality")
+            .order_by("-degree")
+            .execute(network)
+       )
+
+   See :doc:`dsl` for comprehensive query capabilities!
+
 Creating Networks from Scratch
 -------------------------------
 
