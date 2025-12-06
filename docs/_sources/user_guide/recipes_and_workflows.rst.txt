@@ -7,6 +7,17 @@ Analysis Recipes & Workflows
 This guide provides **practical recipes** for **common analysis workflows** in py3plex. 
 Each recipe is a **complete, ready-to-use solution** for a real-world task.
 
+**Related Example Scripts:**
+
+Many recipes have corresponding runnable example scripts in the repository:
+
+* I/O examples: ``examples/io_and_data/example_IO.py``, ``examples/io_and_data/example_new_io.py``
+* Community detection: ``examples/communities/example_community_detection.py``
+* Network statistics: ``examples/network_analysis/example_multilayer_statistics.py``
+* Visualization: ``examples/visualization/example_multilayer_visualization.py``
+* DSL queries: ``examples/network_analysis/example_dsl_queries.py``
+* Complete pipelines: ``examples/pipelines/example_6_complex_pipeline.py``
+
 .. contents:: Recipe Index
    :local:
    :depth: 2
@@ -19,6 +30,8 @@ Recipe 1: Load Network from Multiple File Formats
 ==================================================
 
 **Task:** Load **multilayer networks** from various **file formats** (edgelist, GraphML, CSV).
+
+**Script:** ``examples/io_and_data/example_IO.py``
 
 .. code-block:: python
 
@@ -67,6 +80,8 @@ Recipe 2: Create Synthetic Benchmark Networks
 ==============================================
 
 **Task:** Generate **synthetic multilayer networks** for **testing algorithms**.
+
+**Script:** ``examples/getting_started/example_random_generator.py``
 
 .. code-block:: python
 
@@ -236,6 +251,8 @@ Recipe 6: Compute Multilayer Statistics
 
 **Task:** Calculate multilayer-specific metrics that account for cross-layer structure.
 
+**Script:** ``examples/network_analysis/example_multilayer_statistics.py``
+
 .. code-block:: python
 
     from py3plex.core import multinet
@@ -387,6 +404,8 @@ Recipe 9: Multilayer Community Detection
 
 **Task:** Detect communities that span multiple layers.
 
+**Script:** ``examples/communities/example_community_detection.py``
+
 .. code-block:: python
 
     from py3plex.core import multinet
@@ -487,6 +506,8 @@ Recipe 11: Basic Network Visualization
 =======================================
 
 **Task:** Create publication-ready network visualizations.
+
+**Script:** ``examples/visualization/example_multilayer_visualization.py``
 
 .. code-block:: python
 
@@ -739,6 +760,8 @@ Recipe 15: Random Walks for Node Embeddings
 ============================================
 
 **Task:** Generate node embeddings using random walks (Node2Vec approach).
+
+**Script:** ``examples/advanced/example_random_walks.py``
 
 .. code-block:: python
 

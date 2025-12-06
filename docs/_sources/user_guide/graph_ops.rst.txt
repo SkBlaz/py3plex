@@ -521,28 +521,53 @@ Comparison with DSL
 
 The graph_ops module complements the existing SQL-like DSL:
 
-+-----------------------+-------------------------------------------+-------------------------------------------+
-| Feature               | DSL                                       | graph_ops                                 |
-+=======================+===========================================+===========================================+
-| Syntax                | SQL-like strings                          | Python method chaining                    |
-+-----------------------+-------------------------------------------+-------------------------------------------+
-| Filtering             | WHERE clauses                             | ``.filter()`` with lambdas                |
-+-----------------------+-------------------------------------------+-------------------------------------------+
-| Aggregation           | COMPUTE measures                          | ``.group_by().summarise()``               |
-+-----------------------+-------------------------------------------+-------------------------------------------+
-| Custom logic          | Limited                                   | Full Python expressiveness                |
-+-----------------------+-------------------------------------------+-------------------------------------------+
-| Type safety           | None (strings)                            | Full with type hints                      |
-+-----------------------+-------------------------------------------+-------------------------------------------+
-| Best for              | Quick queries, exploration                | Complex transformations, data pipelines   |
-+-----------------------+-------------------------------------------+-------------------------------------------+
+.. list-table:: DSL vs graph_ops Comparison
+   :header-rows: 1
+   :widths: 20 40 40
 
-Use the DSL for quick, exploratory queries. Use graph_ops for complex data transformations,
-custom aggregations, and integration with pandas workflows.
+   * - Feature
+     - DSL
+     - graph_ops
+   * - **Syntax**
+     - SQL-like strings or Builder API
+     - Python method chaining
+   * - **Filtering**
+     - WHERE clauses
+     - ``.filter()`` with lambdas
+   * - **Aggregation**
+     - COMPUTE measures
+     - ``.group_by().summarise()``
+   * - **Custom logic**
+     - Limited
+     - Full Python expressiveness
+   * - **Type safety**
+     - None (strings) / Partial (Builder API)
+     - Full with type hints
+   * - **Best for**
+     - Quick queries, exploration
+     - Complex transformations, data pipelines
+
+When to Use Which
+~~~~~~~~~~~~~~~~~
+
+**Use DSL when:**
+
+- You need quick, exploratory queries
+- You want SQL-like syntax for familiar, readable code
+- You're doing simple filtering and centrality computation
+- You need to quickly prototype an analysis
+
+**Use graph_ops when:**
+
+- You need complex data transformations with custom logic
+- You want full type hints and IDE autocompletion
+- You're building reusable analysis pipelines
+- You need grouping and aggregation operations
+- You're integrating with pandas workflows
 
 See Also
 --------
 
-- :doc:`dsl` - SQL-like DSL for network queries
+- :doc:`dsl` - SQL-like DSL for network queries (use for quick exploratory queries)
 - :doc:`networks` - Working with multilayer networks
 - :doc:`statistics` - Network statistics and measures

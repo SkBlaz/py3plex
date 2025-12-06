@@ -353,6 +353,19 @@ make<span class="w"> </span>coverage<span class="w">      </span><span class="c1
 <h2>Working with the Repository<a class="headerlink" href="#working-with-the-repository" title="Link to this heading"></a></h2>
 <section id="initial-setup">
 <h3>Initial Setup<a class="headerlink" href="#initial-setup" title="Link to this heading"></a></h3>
+<p><strong>Recommended (Makefile-based):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+
+<span class="c1"># Create virtual environment and install dependencies</span>
+make<span class="w"> </span>setup
+
+<span class="c1"># Install package in editable mode with dev dependencies</span>
+make<span class="w"> </span>dev-install
+</pre></div>
+</div>
+<p><strong>Alternative (manual venv + pip):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone repository</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex

@@ -100,7 +100,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#comparison-with-dsl">Comparison with DSL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-with-dsl">Comparison with DSL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#when-to-use-which">When to Use Which</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
 </ul>
 </li>
@@ -171,55 +174,59 @@
 <nav class="contents local" id="table-of-contents">
 <p class="topic-title">Table of Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
-<li><p><a class="reference internal" href="#key-concepts" id="id2">Key Concepts</a></p>
+<li><p><a class="reference internal" href="#overview" id="id2">Overview</a></p></li>
+<li><p><a class="reference internal" href="#key-concepts" id="id3">Key Concepts</a></p>
 <ul>
-<li><p><a class="reference internal" href="#nodeframe-and-edgeframe" id="id3">NodeFrame and EdgeFrame</a></p></li>
-<li><p><a class="reference internal" href="#top-level-helpers" id="id4">Top-level Helpers</a></p></li>
+<li><p><a class="reference internal" href="#nodeframe-and-edgeframe" id="id4">NodeFrame and EdgeFrame</a></p></li>
+<li><p><a class="reference internal" href="#top-level-helpers" id="id5">Top-level Helpers</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#quick-start-example" id="id5">Quick Start Example</a></p></li>
-<li><p><a class="reference internal" href="#verb-reference" id="id6">Verb Reference</a></p>
+<li><p><a class="reference internal" href="#quick-start-example" id="id6">Quick Start Example</a></p></li>
+<li><p><a class="reference internal" href="#verb-reference" id="id7">Verb Reference</a></p>
 <ul>
-<li><p><a class="reference internal" href="#filter" id="id7">Filter</a></p></li>
-<li><p><a class="reference internal" href="#select" id="id8">Select</a></p></li>
-<li><p><a class="reference internal" href="#mutate" id="id9">Mutate</a></p></li>
-<li><p><a class="reference internal" href="#arrange-sort" id="id10">Arrange (Sort)</a></p></li>
-<li><p><a class="reference internal" href="#head-take" id="id11">Head (Take)</a></p></li>
-<li><p><a class="reference internal" href="#group-by-summarise" id="id12">Group By + Summarise</a></p></li>
+<li><p><a class="reference internal" href="#filter" id="id8">Filter</a></p></li>
+<li><p><a class="reference internal" href="#select" id="id9">Select</a></p></li>
+<li><p><a class="reference internal" href="#mutate" id="id10">Mutate</a></p></li>
+<li><p><a class="reference internal" href="#arrange-sort" id="id11">Arrange (Sort)</a></p></li>
+<li><p><a class="reference internal" href="#head-take" id="id12">Head (Take)</a></p></li>
+<li><p><a class="reference internal" href="#group-by-summarise" id="id13">Group By + Summarise</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#export-methods" id="id13">Export Methods</a></p>
+<li><p><a class="reference internal" href="#export-methods" id="id14">Export Methods</a></p>
 <ul>
-<li><p><a class="reference internal" href="#to-pandas" id="id14">to_pandas</a></p></li>
-<li><p><a class="reference internal" href="#to-subgraph" id="id15">to_subgraph</a></p></li>
+<li><p><a class="reference internal" href="#to-pandas" id="id15">to_pandas</a></p></li>
+<li><p><a class="reference internal" href="#to-subgraph" id="id16">to_subgraph</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#mapping-to-dplyr-concepts" id="id16">Mapping to dplyr Concepts</a></p></li>
-<li><p><a class="reference internal" href="#complete-examples" id="id17">Complete Examples</a></p>
+<li><p><a class="reference internal" href="#mapping-to-dplyr-concepts" id="id17">Mapping to dplyr Concepts</a></p></li>
+<li><p><a class="reference internal" href="#complete-examples" id="id18">Complete Examples</a></p>
 <ul>
-<li><p><a class="reference internal" href="#example-1-hub-identification" id="id18">Example 1: Hub Identification</a></p></li>
-<li><p><a class="reference internal" href="#example-2-layer-comparison" id="id19">Example 2: Layer Comparison</a></p></li>
-<li><p><a class="reference internal" href="#example-3-edge-filtering-and-analysis" id="id20">Example 3: Edge Filtering and Analysis</a></p></li>
-<li><p><a class="reference internal" href="#example-4-subgraph-extraction" id="id21">Example 4: Subgraph Extraction</a></p></li>
+<li><p><a class="reference internal" href="#example-1-hub-identification" id="id19">Example 1: Hub Identification</a></p></li>
+<li><p><a class="reference internal" href="#example-2-layer-comparison" id="id20">Example 2: Layer Comparison</a></p></li>
+<li><p><a class="reference internal" href="#example-3-edge-filtering-and-analysis" id="id21">Example 3: Edge Filtering and Analysis</a></p></li>
+<li><p><a class="reference internal" href="#example-4-subgraph-extraction" id="id22">Example 4: Subgraph Extraction</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#api-reference" id="id22">API Reference</a></p>
+<li><p><a class="reference internal" href="#api-reference" id="id23">API Reference</a></p>
 <ul>
-<li><p><a class="reference internal" href="#nodes" id="id23">nodes()</a></p></li>
-<li><p><a class="reference internal" href="#edges" id="id24">edges()</a></p></li>
-<li><p><a class="reference internal" href="#nodeframe" id="id25">NodeFrame</a></p></li>
-<li><p><a class="reference internal" href="#edgeframe" id="id26">EdgeFrame</a></p></li>
-<li><p><a class="reference internal" href="#groupednodeframe" id="id27">GroupedNodeFrame</a></p></li>
+<li><p><a class="reference internal" href="#nodes" id="id24">nodes()</a></p></li>
+<li><p><a class="reference internal" href="#edges" id="id25">edges()</a></p></li>
+<li><p><a class="reference internal" href="#nodeframe" id="id26">NodeFrame</a></p></li>
+<li><p><a class="reference internal" href="#edgeframe" id="id27">EdgeFrame</a></p></li>
+<li><p><a class="reference internal" href="#groupednodeframe" id="id28">GroupedNodeFrame</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#best-practices" id="id28">Best Practices</a></p></li>
-<li><p><a class="reference internal" href="#comparison-with-dsl" id="id29">Comparison with DSL</a></p></li>
-<li><p><a class="reference internal" href="#see-also" id="id30">See Also</a></p></li>
+<li><p><a class="reference internal" href="#best-practices" id="id29">Best Practices</a></p></li>
+<li><p><a class="reference internal" href="#comparison-with-dsl" id="id30">Comparison with DSL</a></p>
+<ul>
+<li><p><a class="reference internal" href="#when-to-use-which" id="id31">When to Use Which</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#see-also" id="id32">See Also</a></p></li>
 </ul>
 </nav>
 <section id="overview">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>Py3plex provides a dplyr-style, fluent method-chaining interface for working with nodes
 and edges in multilayer networks. This API is inspired by R’s dplyr package and provides
 verbs like <code class="docutils literal notranslate"><span class="pre">filter</span></code>, <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">mutate</span></code>, <code class="docutils literal notranslate"><span class="pre">arrange</span></code>, <code class="docutils literal notranslate"><span class="pre">group_by</span></code>, and <code class="docutils literal notranslate"><span class="pre">summarise</span></code>.</p>
@@ -246,9 +253,9 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </ul>
 </section>
 <section id="key-concepts">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Key Concepts</a><a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Key Concepts</a><a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
 <section id="nodeframe-and-edgeframe">
-<h3><a class="toc-backref" href="#id3" role="doc-backlink">NodeFrame and EdgeFrame</a><a class="headerlink" href="#nodeframe-and-edgeframe" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">NodeFrame and EdgeFrame</a><a class="headerlink" href="#nodeframe-and-edgeframe" title="Link to this heading"></a></h3>
 <p>The two main “frame” types wrap collections of nodes or edges:</p>
 <ul class="simple">
 <li><p><strong>NodeFrame</strong>: A chainable view over a collection of nodes</p></li>
@@ -262,7 +269,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <p>All verbs return a new NodeFrame/EdgeFrame, enabling method chaining.</p>
 </section>
 <section id="top-level-helpers">
-<h3><a class="toc-backref" href="#id4" role="doc-backlink">Top-level Helpers</a><a class="headerlink" href="#top-level-helpers" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Top-level Helpers</a><a class="headerlink" href="#top-level-helpers" title="Link to this heading"></a></h3>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">nodes()</span></code> and <code class="docutils literal notranslate"><span class="pre">edges()</span></code> functions to create frames:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">edges</span>
 
@@ -282,7 +289,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </section>
 </section>
 <section id="quick-start-example">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink">Quick Start Example</a><a class="headerlink" href="#quick-start-example" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Quick Start Example</a><a class="headerlink" href="#quick-start-example" title="Link to this heading"></a></h2>
 <p>Here’s a complete working example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">edges</span>
@@ -343,9 +350,9 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </div>
 </section>
 <section id="verb-reference">
-<h2><a class="toc-backref" href="#id6" role="doc-backlink">Verb Reference</a><a class="headerlink" href="#verb-reference" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Verb Reference</a><a class="headerlink" href="#verb-reference" title="Link to this heading"></a></h2>
 <section id="filter">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink">Filter</a><a class="headerlink" href="#filter" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Filter</a><a class="headerlink" href="#filter" title="Link to this heading"></a></h3>
 <p>Filter nodes/edges using a predicate function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using a lambda predicate</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
@@ -365,7 +372,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </div>
 </section>
 <section id="select">
-<h3><a class="toc-backref" href="#id8" role="doc-backlink">Select</a><a class="headerlink" href="#select" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Select</a><a class="headerlink" href="#select" title="Link to this heading"></a></h3>
 <p>Keep only the specified attributes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
 </pre></div>
@@ -377,7 +384,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <p>If no fields are passed, behaves as a no-op.</p>
 </section>
 <section id="mutate">
-<h3><a class="toc-backref" href="#id9" role="doc-backlink">Mutate</a><a class="headerlink" href="#mutate" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Mutate</a><a class="headerlink" href="#mutate" title="Link to this heading"></a></h3>
 <p>Compute new attributes from existing values:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
@@ -393,7 +400,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </div>
 </section>
 <section id="arrange-sort">
-<h3><a class="toc-backref" href="#id10" role="doc-backlink">Arrange (Sort)</a><a class="headerlink" href="#arrange-sort" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Arrange (Sort)</a><a class="headerlink" href="#arrange-sort" title="Link to this heading"></a></h3>
 <p>Sort nodes/edges by an attribute or custom key:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sort by attribute name</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -408,7 +415,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </div>
 </section>
 <section id="head-take">
-<h3><a class="toc-backref" href="#id11" role="doc-backlink">Head (Take)</a><a class="headerlink" href="#head-take" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Head (Take)</a><a class="headerlink" href="#head-take" title="Link to this heading"></a></h3>
 <p>Keep only the first n rows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># First 10 nodes</span>
 </pre></div>
@@ -419,7 +426,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </div>
 </section>
 <section id="group-by-summarise">
-<h3><a class="toc-backref" href="#id12" role="doc-backlink">Group By + Summarise</a><a class="headerlink" href="#group-by-summarise" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Group By + Summarise</a><a class="headerlink" href="#group-by-summarise" title="Link to this heading"></a></h3>
 <p>Group data and compute aggregations:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -443,9 +450,9 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </section>
 </section>
 <section id="export-methods">
-<h2><a class="toc-backref" href="#id13" role="doc-backlink">Export Methods</a><a class="headerlink" href="#export-methods" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Export Methods</a><a class="headerlink" href="#export-methods" title="Link to this heading"></a></h2>
 <section id="to-pandas">
-<h3><a class="toc-backref" href="#id14" role="doc-backlink">to_pandas</a><a class="headerlink" href="#to-pandas" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">to_pandas</a><a class="headerlink" href="#to-pandas" title="Link to this heading"></a></h3>
 <p>Convert the current selection to a pandas DataFrame:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 
@@ -464,7 +471,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </div>
 </section>
 <section id="to-subgraph">
-<h3><a class="toc-backref" href="#id15" role="doc-backlink">to_subgraph</a><a class="headerlink" href="#to-subgraph" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">to_subgraph</a><a class="headerlink" href="#to-subgraph" title="Link to this heading"></a></h3>
 <p>Build a py3plex subgraph containing only the selected nodes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">subgraph</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -480,7 +487,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </section>
 </section>
 <section id="mapping-to-dplyr-concepts">
-<h2><a class="toc-backref" href="#id16" role="doc-backlink">Mapping to dplyr Concepts</a><a class="headerlink" href="#mapping-to-dplyr-concepts" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Mapping to dplyr Concepts</a><a class="headerlink" href="#mapping-to-dplyr-concepts" title="Link to this heading"></a></h2>
 <p>The following table shows the correspondence between dplyr verbs and graph_ops methods:</p>
 <table class="docutils align-default">
 <thead>
@@ -517,9 +524,9 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </div>
 </section>
 <section id="complete-examples">
-<h2><a class="toc-backref" href="#id17" role="doc-backlink">Complete Examples</a><a class="headerlink" href="#complete-examples" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Complete Examples</a><a class="headerlink" href="#complete-examples" title="Link to this heading"></a></h2>
 <section id="example-1-hub-identification">
-<h3><a class="toc-backref" href="#id18" role="doc-backlink">Example 1: Hub Identification</a><a class="headerlink" href="#example-1-hub-identification" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Example 1: Hub Identification</a><a class="headerlink" href="#example-1-hub-identification" title="Link to this heading"></a></h3>
 <p>Find and analyze hub nodes across layers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
@@ -546,7 +553,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </div>
 </section>
 <section id="example-2-layer-comparison">
-<h3><a class="toc-backref" href="#id19" role="doc-backlink">Example 2: Layer Comparison</a><a class="headerlink" href="#example-2-layer-comparison" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Example 2: Layer Comparison</a><a class="headerlink" href="#example-2-layer-comparison" title="Link to this heading"></a></h3>
 <p>Compare network properties across different layers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -567,7 +574,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </div>
 </section>
 <section id="example-3-edge-filtering-and-analysis">
-<h3><a class="toc-backref" href="#id20" role="doc-backlink">Example 3: Edge Filtering and Analysis</a><a class="headerlink" href="#example-3-edge-filtering-and-analysis" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Example 3: Edge Filtering and Analysis</a><a class="headerlink" href="#example-3-edge-filtering-and-analysis" title="Link to this heading"></a></h3>
 <p>Filter edges and compute statistics:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">edges</span>
 
@@ -588,7 +595,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </div>
 </section>
 <section id="example-4-subgraph-extraction">
-<h3><a class="toc-backref" href="#id21" role="doc-backlink">Example 4: Subgraph Extraction</a><a class="headerlink" href="#example-4-subgraph-extraction" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Example 4: Subgraph Extraction</a><a class="headerlink" href="#example-4-subgraph-extraction" title="Link to this heading"></a></h3>
 <p>Create a subgraph from filtered nodes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
 
@@ -607,9 +614,9 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </section>
 </section>
 <section id="api-reference">
-<h2><a class="toc-backref" href="#id22" role="doc-backlink">API Reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">API Reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
 <section id="nodes">
-<h3><a class="toc-backref" href="#id23" role="doc-backlink">nodes()</a><a class="headerlink" href="#nodes" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">nodes()</a><a class="headerlink" href="#nodes" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">nodes</span><span class="p">(</span><span class="n">multinet</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a NodeFrame from a py3plex multi_layer_network.</span>
 
@@ -624,7 +631,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </div>
 </section>
 <section id="edges">
-<h3><a class="toc-backref" href="#id24" role="doc-backlink">edges()</a><a class="headerlink" href="#edges" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">edges()</a><a class="headerlink" href="#edges" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="n">multinet</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EdgeFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an EdgeFrame from a py3plex multi_layer_network.</span>
 
@@ -639,7 +646,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </div>
 </section>
 <section id="nodeframe">
-<h3><a class="toc-backref" href="#id25" role="doc-backlink">NodeFrame</a><a class="headerlink" href="#nodeframe" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">NodeFrame</a><a class="headerlink" href="#nodeframe" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NodeFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A chainable view over a collection of nodes.</span>
@@ -662,7 +669,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </div>
 </section>
 <section id="edgeframe">
-<h3><a class="toc-backref" href="#id26" role="doc-backlink">EdgeFrame</a><a class="headerlink" href="#edgeframe" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">EdgeFrame</a><a class="headerlink" href="#edgeframe" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">EdgeFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A chainable view over a collection of edges.</span>
@@ -684,7 +691,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </div>
 </section>
 <section id="groupednodeframe">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">GroupedNodeFrame</a><a class="headerlink" href="#groupednodeframe" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">GroupedNodeFrame</a><a class="headerlink" href="#groupednodeframe" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">GroupedNodeFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A grouped view of nodes for aggregation operations.</span>
@@ -701,7 +708,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </section>
 </section>
 <section id="best-practices">
-<h2><a class="toc-backref" href="#id28" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Best Practices</a><a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p><strong>Start simple</strong>: Begin with basic filters and add complexity incrementally</p></li>
 <li><p><strong>Use method chaining</strong>: Chain operations for readable, fluent code</p></li>
@@ -716,9 +723,15 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </ol>
 </section>
 <section id="comparison-with-dsl">
-<h2><a class="toc-backref" href="#id29" role="doc-backlink">Comparison with DSL</a><a class="headerlink" href="#comparison-with-dsl" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">Comparison with DSL</a><a class="headerlink" href="#comparison-with-dsl" title="Link to this heading"></a></h2>
 <p>The graph_ops module complements the existing SQL-like DSL:</p>
-<table class="docutils align-default">
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">DSL vs graph_ops Comparison</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Feature</p></th>
 <th class="head"><p>DSL</p></th>
@@ -726,39 +739,55 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Syntax</p></td>
-<td><p>SQL-like strings</p></td>
+<tr class="row-even"><td><p><strong>Syntax</strong></p></td>
+<td><p>SQL-like strings or Builder API</p></td>
 <td><p>Python method chaining</p></td>
 </tr>
-<tr class="row-odd"><td><p>Filtering</p></td>
+<tr class="row-odd"><td><p><strong>Filtering</strong></p></td>
 <td><p>WHERE clauses</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.filter()</span></code> with lambdas</p></td>
 </tr>
-<tr class="row-even"><td><p>Aggregation</p></td>
+<tr class="row-even"><td><p><strong>Aggregation</strong></p></td>
 <td><p>COMPUTE measures</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">.group_by().summarise()</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Custom logic</p></td>
+<tr class="row-odd"><td><p><strong>Custom logic</strong></p></td>
 <td><p>Limited</p></td>
 <td><p>Full Python expressiveness</p></td>
 </tr>
-<tr class="row-even"><td><p>Type safety</p></td>
-<td><p>None (strings)</p></td>
+<tr class="row-even"><td><p><strong>Type safety</strong></p></td>
+<td><p>None (strings) / Partial (Builder API)</p></td>
 <td><p>Full with type hints</p></td>
 </tr>
-<tr class="row-odd"><td><p>Best for</p></td>
+<tr class="row-odd"><td><p><strong>Best for</strong></p></td>
 <td><p>Quick queries, exploration</p></td>
 <td><p>Complex transformations, data pipelines</p></td>
 </tr>
 </tbody>
 </table>
-<p>Use the DSL for quick, exploratory queries. Use graph_ops for complex data transformations,
-custom aggregations, and integration with pandas workflows.</p>
+<section id="when-to-use-which">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">When to Use Which</a><a class="headerlink" href="#when-to-use-which" title="Link to this heading"></a></h3>
+<p><strong>Use DSL when:</strong></p>
+<ul class="simple">
+<li><p>You need quick, exploratory queries</p></li>
+<li><p>You want SQL-like syntax for familiar, readable code</p></li>
+<li><p>You’re doing simple filtering and centrality computation</p></li>
+<li><p>You need to quickly prototype an analysis</p></li>
+</ul>
+<p><strong>Use graph_ops when:</strong></p>
+<ul class="simple">
+<li><p>You need complex data transformations with custom logic</p></li>
+<li><p>You want full type hints and IDE autocompletion</p></li>
+<li><p>You’re building reusable analysis pipelines</p></li>
+<li><p>You need grouping and aggregation operations</p></li>
+<li><p>You’re integrating with pandas workflows</p></li>
+</ul>
+</section>
 </section>
 <section id="see-also">
-<h2><a class="toc-backref" href="#id30" role="doc-backlink">See Also</a><a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">See Also</a><a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> - SQL-like DSL for network queries</p></li>
+<li><p><a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> - SQL-like DSL for network queries (use for quick exploratory queries)</p></li>
 <li><p><a class="reference internal" href="networks.html"><span class="doc">Working with Networks</span></a> - Working with multilayer networks</p></li>
 <li><p><a class="reference internal" href="statistics.html"><span class="doc">Network Statistics</span></a> - Network statistics and measures</p></li>
 </ul>

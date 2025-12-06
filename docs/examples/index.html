@@ -342,26 +342,29 @@
 </section>
 <section id="running-examples">
 <h2>Running Examples<a class="headerlink" href="#running-examples" title="Link to this heading"></a></h2>
-<p>All examples can be run directly with Python:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic usage</span>
-python<span class="w"> </span>examples/example_multilayer_visualization.py
+<p>All examples can be run directly with Python from the repository root:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run a visualization example</span>
+python<span class="w"> </span>examples/visualization/example_multilayer_visualization.py
 
-<span class="c1"># With custom data</span>
-python<span class="w"> </span>examples/example_load_network.py<span class="w"> </span>path/to/your/network.edgelist
+<span class="c1"># Run a community detection example</span>
+python<span class="w"> </span>examples/communities/example_community_detection.py
 
-<span class="c1"># From repository root</span>
-<span class="nb">cd</span><span class="w"> </span>py3plex
-python<span class="w"> </span>examples/basic/example_load_network.py
+<span class="c1"># Run a getting started example</span>
+python<span class="w"> </span>examples/getting_started/tutorial_10min.py
+
+<span class="c1"># Run a network analysis example</span>
+python<span class="w"> </span>examples/network_analysis/example_dsl_queries.py
 </pre></div>
 </div>
 <p>Many examples accept command-line arguments:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/example_community_detection.py<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span>--input<span class="w"> </span>data.graphml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/communities/example_community_detection.py<span class="w"> </span>--algorithm<span class="w"> </span>louvain
 </pre></div>
 </div>
 </section>
 <section id="example-template">
 <h2>Example Template<a class="headerlink" href="#example-template" title="Link to this heading"></a></h2>
-<p>Use this template for your own scripts:</p>
+<p>Use this template when creating new example scripts. The pattern includes
+a docstring, a <code class="docutils literal notranslate"><span class="pre">main()</span></code> function, and an <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">&quot;__main__&quot;:</span></code> guard:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Example: Your Feature</span>
 <span class="sd">=====================</span>
@@ -369,7 +372,7 @@ python<span class="w"> </span>examples/basic/example_load_network.py
 <span class="sd">Description of what this example demonstrates.</span>
 
 <span class="sd">Usage:</span>
-<span class="sd">    python example_your_feature.py</span>
+<span class="sd">    python examples/&lt;category&gt;/example_your_feature.py</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
@@ -397,8 +400,9 @@ python<span class="w"> </span>examples/basic/example_load_network.py
 <h2>Contributing Examples<a class="headerlink" href="#contributing-examples" title="Link to this heading"></a></h2>
 <p>To contribute an example:</p>
 <ol class="arabic simple">
-<li><p>Create a well-documented script in <code class="docutils literal notranslate"><span class="pre">examples/</span></code></p></li>
-<li><p>Use the template above</p></li>
+<li><p>Create a well-documented script in the appropriate <code class="docutils literal notranslate"><span class="pre">examples/&lt;category&gt;/</span></code> directory</p></li>
+<li><p>Use the template above with docstring + <code class="docutils literal notranslate"><span class="pre">main()</span></code> + <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">&quot;__main__&quot;:</span></code></p></li>
+<li><p>Follow the naming convention: <code class="docutils literal notranslate"><span class="pre">example_&lt;feature&gt;.py</span></code></p></li>
 <li><p>Test that it runs without errors</p></li>
 <li><p>Add it to this index with a brief description</p></li>
 <li><p>Submit a pull request</p></li>

@@ -125,6 +125,33 @@
   <section id="installation-and-setup">
 <h1>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Link to this heading"></a></h1>
 <p>This guide covers all aspects of installing py3plex and setting up your environment.</p>
+<section id="installation-modes">
+<h2>Installation Modes<a class="headerlink" href="#installation-modes" title="Link to this heading"></a></h2>
+<p>Choose the installation method based on your needs:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode</p></th>
+<th class="head"><p>Command</p></th>
+<th class="head"><p>When to Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>User Install</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">py3plex</span></code></p></td>
+<td><p>Standard usage: running analyses, using the library</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Developer Install</strong></p></td>
+<td><p>Clone repo + <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">setup</span></code> + <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dev-install</span></code></p></td>
+<td><p>Contributing code, running tests, building docs</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="basic-installation">
 <h2>Basic Installation<a class="headerlink" href="#basic-installation" title="Link to this heading"></a></h2>
 <section id="install-from-github-recommended">
@@ -220,12 +247,20 @@ See <a class="reference internal" href="../user_guide/io_and_formats.html"><span
 <section id="development-installation">
 <h3>Development Installation<a class="headerlink" href="#development-installation" title="Link to this heading"></a></h3>
 <p>For contributors, install with development tools (testing, linting):</p>
+<p><strong>Recommended (Makefile-based):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
+<span class="nb">cd</span><span class="w"> </span>py3plex
+make<span class="w"> </span>setup<span class="w">        </span><span class="c1"># Create virtual environment</span>
+make<span class="w"> </span>dev-install<span class="w">  </span><span class="c1"># Install with dev dependencies</span>
+</pre></div>
+</div>
+<p><strong>Alternative (manual):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
 </pre></div>
 </div>
-<p>This installs:</p>
+<p>Both methods install:</p>
 <ul class="simple">
 <li><p>pytest and coverage tools</p></li>
 <li><p>black, ruff, isort for code formatting</p></li>
