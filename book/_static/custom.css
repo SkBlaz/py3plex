@@ -1,19 +1,19 @@
 /* Custom styles for py3plex book documentation */
 
-/* DSL Example Box - Prominent colored styling */
+/* DSL Example Box - Simple bordered styling */
 .dsl-example {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    border: 3px solid #5568d3 !important;
+    background: #ffffff !important;
+    border: 2px solid #cccccc !important;
     border-radius: 8px !important;
     padding: 15px 20px !important;
     margin: 20px 0 !important;
-    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 .dsl-example .admonition-title {
-    background-color: rgba(255, 255, 255, 0.15) !important;
+    background-color: #f5f5f5 !important;
     border: none !important;
-    color: #ffffff !important;
+    color: #333333 !important;
     font-weight: bold !important;
     font-size: 1.1em !important;
     padding: 10px 15px !important;
@@ -28,37 +28,37 @@
 
 .dsl-example p,
 .dsl-example .highlight {
-    color: #ffffff !important;
+    color: inherit !important;
 }
 
 .dsl-example code {
-    background-color: rgba(0, 0, 0, 0.3) !important;
-    color: #ffffff !important;
+    background-color: #f5f5f5 !important;
+    color: inherit !important;
     padding: 2px 6px !important;
     border-radius: 3px !important;
 }
 
 .dsl-example .highlight pre {
-    background-color: rgba(0, 0, 0, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background-color: #f8f8f8 !important;
+    border: 1px solid #e0e0e0 !important;
     border-radius: 5px !important;
     padding: 12px !important;
 }
 
 /* Alternative DSL box style - info variant */
 .dsl-info {
-    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%) !important;
-    border: 2px solid #36d1dc !important;
+    background: #ffffff !important;
+    border: 2px solid #cccccc !important;
     border-radius: 8px !important;
     padding: 15px 20px !important;
     margin: 20px 0 !important;
-    box-shadow: 0 4px 6px rgba(54, 209, 220, 0.2) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 .dsl-info .admonition-title {
-    background-color: rgba(255, 255, 255, 0.15) !important;
+    background-color: #f5f5f5 !important;
     border: none !important;
-    color: #ffffff !important;
+    color: #333333 !important;
     font-weight: bold !important;
     padding: 10px 15px !important;
     margin: -15px -20px 15px -20px !important;
@@ -72,19 +72,19 @@
 
 .dsl-info p,
 .dsl-info .highlight {
-    color: #ffffff !important;
+    color: inherit !important;
 }
 
 .dsl-info code {
-    background-color: rgba(0, 0, 0, 0.3) !important;
-    color: #ffffff !important;
+    background-color: #f5f5f5 !important;
+    color: inherit !important;
     padding: 2px 6px !important;
     border-radius: 3px !important;
 }
 
 .dsl-info .highlight pre {
-    background-color: rgba(0, 0, 0, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background-color: #f8f8f8 !important;
+    border: 1px solid #e0e0e0 !important;
     border-radius: 5px !important;
     padding: 12px !important;
 }
