@@ -28,7 +28,7 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 ## Getting Started
 
 * **Documentation:** [https://skblaz.github.io/py3plex/](https://skblaz.github.io/py3plex/)
-* **PDF Documentation:** [py3plex_documentation.pdf](docs/py3plex_documentation.pdf)
+* **Technical Book (PDF):** [Practical Multilayer Network Analysis with Py3plex](docs/py3plex_book.pdf) - Complete handbook (106 pages)
 * **Examples:** [examples/](examples/) - 50+ example scripts demonstrating usage
 * **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 

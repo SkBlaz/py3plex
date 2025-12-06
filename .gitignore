@@ -104,3 +104,4 @@ workflow_results/
 comparison_results/
 network.gpickle
 network.txt
+book/_build/
