@@ -1,7 +1,7 @@
 """Query executor for DSL v2.
 
 This module provides the execution engine that runs AST queries against
-multilayer networks.
+multilayer networks. It supports temporal queries via the TemporalMultinetView wrapper.
 """
 
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
@@ -22,6 +22,7 @@ from .ast import (
     ParamRef,
     PlanStep,
     ExecutionPlan,
+    TemporalContext,
 )
 from .result import QueryResult
 from .registry import measure_registry
@@ -53,8 +54,48 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     if bound_query.explain:
         return _build_execution_plan(network, bound_query)
     
-    # Step 3: Execute SELECT statement
-    return _execute_select(network, bound_query.select)
+    # Step 3: Wrap network in temporal view if needed
+    actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
+    
+    # Step 4: Execute SELECT statement
+    return _execute_select(actual_network, bound_query.select)
+
+
+def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalContext]) -> Any:
+    """Apply temporal filtering to network if temporal context exists.
+    
+    Args:
+        network: Base multilayer network
+        temporal_context: Optional temporal context from query
+        
+    Returns:
+        TemporalMultinetView if temporal context exists, otherwise original network
+    """
+    if temporal_context is None:
+        return network
+    
+    # Import here to avoid circular dependencies
+    from py3plex.temporal_view import TemporalMultinetView
+    
+    # Create temporal view
+    view = TemporalMultinetView(network)
+    
+    # Apply temporal slice based on context kind
+    if temporal_context.kind == "at":
+        # Point-in-time snapshot
+        if temporal_context.t0 is not None:
+            return view.snapshot_at(temporal_context.t0)
+        else:
+            raise DslExecutionError("AT clause requires a timestamp")
+    
+    elif temporal_context.kind == "during":
+        # Time range
+        return view.with_slice(temporal_context.t0, temporal_context.t1)
+    
+    else:
+        raise DslExecutionError(f"Unknown temporal context kind: {temporal_context.kind}")
+    
+    return view
 
 
 def _bind_parameters(query: Query, params: Dict[str, Any]) -> Query:
