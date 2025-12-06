@@ -201,20 +201,25 @@ class CompartmentalDynamics(DynamicsProcess):
         state = {}
         
         # Assign nodes to compartments based on fractions
-        remaining_nodes = list(nodes)
+        remaining_indices = list(range(len(nodes)))
         
         for compartment, fraction in self.initial_fractions.items():
             n = int(len(nodes) * fraction)
-            if n > 0 and remaining_nodes:
-                assigned = rng.choice(remaining_nodes, size=min(n, len(remaining_nodes)), replace=False)
-                for node in assigned:
-                    state[node] = compartment
-                    remaining_nodes.remove(node)
+            if n > 0 and remaining_indices:
+                # Use index-based selection to avoid numpy type issues
+                selected_indices = rng.choice(
+                    remaining_indices,
+                    size=min(n, len(remaining_indices)),
+                    replace=False
+                )
+                for idx in selected_indices:
+                    state[nodes[idx]] = compartment
+                    remaining_indices.remove(idx)
         
         # Assign remaining nodes to first compartment (typically 'S')
         default_compartment = self.compartments[0]
-        for node in remaining_nodes:
-            state[node] = default_compartment
+        for idx in remaining_indices:
+            state[nodes[idx]] = default_compartment
         
         return state
     
