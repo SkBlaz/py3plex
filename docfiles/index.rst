@@ -140,6 +140,7 @@ Comprehensive how-to guides for every major feature.
    user_guide/networks
    user_guide/statistics
    user_guide/community_detection
+   user_guide/multilayer_dynamics
    user_guide/random_walks_embeddings
    user_guide/io_and_formats
    user_guide/visualization
