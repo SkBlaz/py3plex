@@ -62,8 +62,13 @@ class SISContinuousTime(ContinuousTimeProcess):
         
         # Determine initially infected
         if isinstance(self.initial_infected, (int, float)):
+            # Fraction - use index-based selection to avoid numpy type issues
             n_infected = int(len(nodes) * self.initial_infected)
-            infected_nodes = set(rng.choice(nodes, size=n_infected, replace=False))
+            if n_infected > 0:
+                selected_indices = rng.choice(len(nodes), size=n_infected, replace=False)
+                infected_nodes = set(nodes[i] for i in selected_indices)
+            else:
+                infected_nodes = set()
         else:
             infected_nodes = set(self.initial_infected)
         
