@@ -2303,9 +2303,66 @@ class multi_layer_network:
         pass
 
     def get_tensor(self, sparsity_type="bsr"):
+        """Get sparse tensor representation of the multilayer network.
+
+        Returns the supra-adjacency matrix in the specified sparse format.
+        This method provides a tensor-like view of the multilayer network,
+        useful for mathematical analysis and matrix-based algorithms.
+
+        Args:
+            sparsity_type: Sparse matrix format to use. Options include:
+                - 'bsr' (default): Block Sparse Row format
+                - 'csr': Compressed Sparse Row format
+                - 'csc': Compressed Sparse Column format
+                - 'coo': Coordinate format
+                - 'lil': List of Lists format
+                - 'dok': Dictionary of Keys format
+
+        Returns:
+            scipy.sparse matrix: Supra-adjacency matrix in specified format
+
+        Example:
+            >>> net = multi_layer_network()
+            >>> tensor = net.get_tensor(sparsity_type='csr')
+            >>> print(tensor.shape)
+
+        Note:
+            The returned matrix is the same as get_supra_adjacency_matrix(mtype='sparse')
+            but with control over the specific sparse format used.
         """
-        TODO
-        """
+        if self.numeric_core_network is None:
+            self._encode_to_numeric()
+
+        # Get the sparse matrix
+        sparse_matrix = self.numeric_core_network
+
+        # Convert to requested format if needed
+        if sparsity_type != 'bsr':
+            try:
+                # Convert to the requested sparse format
+                convert_method = getattr(sparse_matrix, f'to{sparsity_type}', None)
+                if convert_method:
+                    return convert_method()
+                else:
+                    import warnings
+                    warnings.warn(
+                        f"Sparse format '{sparsity_type}' not available. "
+                        f"Returning matrix in {type(sparse_matrix).__name__} format.",
+                        UserWarning,
+                        stacklevel=2
+                    )
+                    return sparse_matrix
+            except Exception as e:
+                import warnings
+                warnings.warn(
+                    f"Failed to convert to '{sparsity_type}' format: {e}. "
+                    f"Returning matrix in {type(sparse_matrix).__name__} format.",
+                    UserWarning,
+                    stacklevel=2
+                )
+                return sparse_matrix
+
+        return sparse_matrix
 
     def _encode_to_numeric(self):
         """Encode network to numeric format for matrix operations.

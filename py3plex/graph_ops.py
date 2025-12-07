@@ -831,9 +831,9 @@ class NodeFrame:
     def to_subgraph(self) -> Any:
         """Build a py3plex subgraph containing only the selected nodes.
 
-        TODO: Currently returns a new multi_layer_network with the selected
-        nodes and all edges between them. Full implementation depends on
-        py3plex's subnetwork extraction capabilities.
+        Returns a new multi_layer_network with the selected nodes and all edges
+        between them. Uses py3plex's subnetwork method if available, otherwise
+        constructs the subgraph by copying nodes and edges.
 
         Returns:
             A new py3plex multi_layer_network containing only selected nodes
