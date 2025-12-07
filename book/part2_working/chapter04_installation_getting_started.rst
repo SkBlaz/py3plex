@@ -58,12 +58,12 @@ System Requirements
 
 **Core dependencies** (installed automatically):
 
-* NetworkX (≥2.5) — Graph data structures
-* NumPy (≥0.8) — Numerical computing
-* SciPy (≥1.1.0) — Sparse matrices
-* pandas — Data manipulation
-* matplotlib — Visualization
-* scikit-learn — ML utilities
+* NetworkX (≥2.8) — Graph data structures and algorithms
+* NumPy (≥1.22) — Numerical computing and array operations
+* SciPy (≥1.8) — Sparse matrices and scientific computing
+* pandas (≥1.4) — Data manipulation and analysis
+* matplotlib (≥3.5) — Visualization and plotting
+* scikit-learn (≥1.0) — Machine learning utilities
 
 Hello Multilayer Network
 -------------------------
