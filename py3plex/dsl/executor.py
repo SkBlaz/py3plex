@@ -4,6 +4,7 @@ This module provides the execution engine that runs AST queries against
 multilayer networks. It supports temporal queries via the TemporalMultinetView wrapper.
 """
 
+import copy
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
 import networkx as nx
 
@@ -106,7 +107,6 @@ def _bind_parameters(query: Query, params: Dict[str, Any]) -> Query:
     Traverses the AST and replaces ParamRef nodes with actual values.
     """
     # Create a deep copy of the query to avoid mutating the original
-    import copy
     bound_query = copy.deepcopy(query)
     
     # Bind limit parameter if it's a ParamRef

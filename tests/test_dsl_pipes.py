@@ -10,6 +10,8 @@ While basic chaining is covered in test_dsl_v2.py, this focuses on:
 """
 
 import pytest
+import networkx as nx
+
 from py3plex.core import multinet
 from py3plex.dsl import (
     Q,
@@ -239,6 +241,8 @@ class TestMultipleMethodCalls:
         # All three conditions should apply
         for node in result.items:
             assert node[1] == "social"
+            # Note: Using core_network.degree() here is intentional for this test
+            # as it validates the filtered results match expected degree constraints
             degree = rich_network.core_network.degree(node)
             assert 1 < degree < 5
     
@@ -376,7 +380,6 @@ class TestExportMethodsInPipes:
         
         G = result.to_networkx(rich_network)
         
-        import networkx as nx
         assert isinstance(G, nx.Graph)
 
 
@@ -533,7 +536,7 @@ class TestErrorHandlingInPipes:
     
     def test_unknown_measure_in_pipe(self, rich_network):
         """Test that unknown measure raises error with suggestion."""
-        with pytest.raises(Exception):  # Could be UnknownMeasureError or DslError
+        with pytest.raises((UnknownMeasureError, DslError)):
             result = (
                 Q.nodes()
                  .where(layer="social")
