@@ -1,0 +1,1007 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multilayer Dynamics &mdash; py3plex 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
+
+  
+      <script src="../_static/jquery.js?v=ae6b746b"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=7ba34365"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Random Walk Algorithms" href="random_walks_embeddings.html" />
+    <link rel="prev" title="Community Detection" href="community_detection.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/part_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart_5min.html">5-Minute Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/tutorial_10min.html">10-Minute Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/common_issues.html">Common Issues and Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts &amp; Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/part_intro.html">Concepts &amp; Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/multilayer_networks_101.html">Multilayer Networks 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/py3plex_core_model.html">Chapter 4: The py3plex Core Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/design_principles.html">Chapter 5: Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/algorithm_landscape.html">Algorithm Landscape</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="part_intro.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multilayer Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview-of-dynamics-models">Overview of Dynamics Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sir-epidemic-dynamics">SIR Epidemic Dynamics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-example">Basic Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-sir-example">Multilayer SIR Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#understanding-sir-parameters">Understanding SIR Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sis-epidemic-dynamics">SIS Epidemic Dynamics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Basic Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sis-vs-sir-comparison">SIS vs SIR Comparison</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#endemic-threshold">Endemic Threshold</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#random-walk-dynamics">Random Walk Dynamics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Basic Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-random-walk">Multilayer Random Walk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lazy-random-walks">Lazy Random Walks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-results">Working with Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#available-measures">Available Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extracting-measures">Extracting Measures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#converting-to-pandas">Converting to Pandas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualization">Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mathematical-formalism">Mathematical Formalism</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sir-model">SIR Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sis-model">SIS Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#random-walk">Random Walk</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-topics">Advanced Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multilayer-coupling">Multilayer Coupling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-varying-parameters">Time-Varying Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#heterogeneous-parameters">Heterogeneous Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dsl-integration">DSL Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples-and-tutorials">Examples and Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-takeaways">Key Takeaways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsl.html">SQL-like DSL for Multilayer Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_ops.html">Dplyr-style Chainable Graph Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case_studies.html">Use Cases &amp; Case Studies</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments &amp; Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/part_intro.html">Environments &amp; Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/cli_and_docker.html">Docker Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment/performance_scalability.html">Performance and Scalability Best Practices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Py3plex GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui/part_intro.html">GUI: Web Interface for Network Exploration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_user_guide.html">Py3plex GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_deployment.html">GUI Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_api_reference.html">GUI API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_architecture.html">Py3plex GUI Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui/gui_testing.html">GUI Testing Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; Contributor Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/part_intro.html">Developer &amp; Contributor Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/development_guide.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/code_architecture.html">Architecture and Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/repo_layout.html">Repository Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to py3plex</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Citation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/part_intro.html">Reference &amp; Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm_reference.html">Algorithm Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/citation_and_acknowledgements.html">Citation and References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py3plex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multilayer Dynamics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/multilayer_dynamics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multilayer-dynamics">
+<h1>Multilayer Dynamics<a class="headerlink" href="#multilayer-dynamics" title="Link to this heading"></a></h1>
+<p><em>Simulating epidemic spread, diffusion, and other dynamical processes on multilayer networks.</em></p>
+<div class="dsl-example admonition">
+<p class="admonition-title">🔬 DSL for Dynamics</p>
+<p>Run dynamics simulations declaratively with the DSL:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">SIS</span>
+
+<span class="c1"># Define and run SIS simulation</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">SIS</span><span class="p">(</span><span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">initial</span><span class="p">(</span><span class="n">infected</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">steps</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Peak prevalence: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;prevalence&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for complete dynamics DSL documentation!</p>
+</div>
+<hr class="docutils" />
+<p>Many real-world phenomena involve <strong>processes that evolve over time</strong> on network structures. Epidemics spread through contact networks. Information diffuses through social media. Ideas propagate through collaboration networks. <strong>Multilayer dynamics</strong> capture how these processes unfold when nodes interact through multiple, simultaneous channels.</p>
+<p>This chapter shows you how to:</p>
+<ul class="simple">
+<li><p>Simulate <strong>epidemic dynamics</strong> (SIR, SIS) on multilayer networks</p></li>
+<li><p>Run <strong>random walks</strong> and analyze exploration patterns</p></li>
+<li><p>Configure <strong>initial conditions</strong> and <strong>parameters</strong></p></li>
+<li><p>Extract and visualize <strong>simulation results</strong></p></li>
+<li><p>Understand how <strong>layer structure affects dynamics</strong></p></li>
+</ul>
+<p>py3plex provides a clean, object-oriented API for dynamics that integrates seamlessly with the rest of the library.</p>
+<hr class="docutils" />
+<section id="overview-of-dynamics-models">
+<h2>Overview of Dynamics Models<a class="headerlink" href="#overview-of-dynamics-models" title="Link to this heading"></a></h2>
+<p>py3plex supports three main classes of dynamics:</p>
+<p><strong>Epidemic Models</strong></p>
+<ul class="simple">
+<li><p><strong>SIR (Susceptible-Infected-Recovered)</strong> — Models diseases with lasting immunity (measles, chickenpox)</p></li>
+<li><p><strong>SIS (Susceptible-Infected-Susceptible)</strong> — Models diseases without immunity (common cold, computer viruses)</p></li>
+</ul>
+<p><strong>Diffusion Processes</strong></p>
+<ul class="simple">
+<li><p><strong>Random Walk</strong> — Models exploration, search, and diffusion on networks</p></li>
+</ul>
+<p>All models support:</p>
+<ul class="simple">
+<li><p>✅ <strong>Multilayer networks</strong> — Different interaction contexts (physical, digital, etc.)</p></li>
+<li><p>✅ <strong>Reproducible simulations</strong> — Seeded random number generation</p></li>
+<li><p>✅ <strong>Rich output measures</strong> — Prevalence, state counts, trajectories</p></li>
+<li><p>✅ <strong>Clean API</strong> — Object-oriented design aligned with best practices</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="sir-epidemic-dynamics">
+<h2>SIR Epidemic Dynamics<a class="headerlink" href="#sir-epidemic-dynamics" title="Link to this heading"></a></h2>
+<p>The <strong>SIR model</strong> simulates epidemic spread where infected individuals recover with lasting immunity. This is appropriate for many infectious diseases and for modeling information spread where people don’t “forget” what they’ve learned.</p>
+<p><strong>States:</strong></p>
+<ul class="simple">
+<li><p><strong>S (Susceptible)</strong> — Not infected, can become infected</p></li>
+<li><p><strong>I (Infected)</strong> — Currently infected, can transmit to susceptibles</p></li>
+<li><p><strong>R (Recovered)</strong> — Recovered with immunity, cannot be re-infected</p></li>
+</ul>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">beta</span></code> (β) — Transmission rate (probability per contact per time step)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code> (γ) — Recovery rate (probability of recovery per time step)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">initial_infected</span></code> — Fraction or number of initially infected nodes</p></li>
+</ul>
+<section id="basic-example">
+<h3>Basic Example<a class="headerlink" href="#basic-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Create a network</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Create SIR dynamics</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>              <span class="c1"># Infection probability</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>             <span class="c1"># Recovery probability</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span>   <span class="c1"># 10% initially infected</span>
+<span class="p">)</span>
+
+<span class="c1"># Set seed for reproducibility</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Run simulation</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Extract measures</span>
+<span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+<span class="n">state_counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;state_counts&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Peak prevalence: </span><span class="si">{</span><span class="n">prevalence</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final recovered: </span><span class="si">{</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Peak prevalence: 35.29%
+Final recovered: 30
+</pre></div>
+</div>
+<p>The epidemic infects about 88% of the network before dying out naturally.</p>
+</section>
+<section id="multilayer-sir-example">
+<h3>Multilayer SIR Example<a class="headerlink" href="#multilayer-sir-example" title="Link to this heading"></a></h3>
+<p>On multilayer networks, infection can spread through different interaction contexts:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+
+<span class="c1"># Create two-layer network</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Add nodes to two layers</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;physical&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;digital&#39;</span><span class="p">}</span>
+    <span class="p">])</span>
+
+<span class="c1"># Physical layer: local ring connections</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;physical&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;physical&#39;</span>
+    <span class="p">}])</span>
+
+<span class="c1"># Digital layer: random connections (more global)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span>
+            <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+            <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;digital&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;digital&#39;</span>
+        <span class="p">}])</span>
+
+<span class="c1"># Run SIR dynamics</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Analyze results</span>
+<span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+<span class="n">state_counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;state_counts&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Peak prevalence: </span><span class="si">{</span><span class="n">prevalence</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2"> at step </span><span class="si">{</span><span class="n">prevalence</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attack rate: </span><span class="si">{</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">40</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Peak prevalence: 30.00% at step 10
+Attack rate: 55.00%
+</pre></div>
+</div>
+<p>The multilayer structure allows faster spread through the digital layer while maintaining local spread through physical contacts.</p>
+</section>
+<section id="understanding-sir-parameters">
+<h3>Understanding SIR Parameters<a class="headerlink" href="#understanding-sir-parameters" title="Link to this heading"></a></h3>
+<p>The <strong>basic reproduction number</strong> R₀ determines epidemic outcome:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}R_0 = \\frac{\\beta}{\\gamma} \\times \\langle k \\rangle\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\\langle k \\rangle\)</span> is the average degree.</p>
+<ul class="simple">
+<li><p><strong>R₀ &gt; 1</strong>: Epidemic spreads (each infected person infects &gt;1 others on average)</p></li>
+<li><p><strong>R₀ &lt; 1</strong>: Epidemic dies out quickly</p></li>
+<li><p><strong>R₀ ≈ 1</strong>: Epidemic threshold — critical point</p></li>
+</ul>
+<p><strong>Parameter Effects:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare different parameters</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Low transmission (R₀≈9)&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;High transmission (R₀≈18)&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Slow recovery&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Fast recovery&#39;</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+    <span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">],</span>
+                     <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">prevalence</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time step&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Prevalence (fraction infected)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;SIR Dynamics with Different Parameters&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Output Characteristics:</strong></p>
+<ul class="simple">
+<li><p><strong>Higher β</strong>: Faster, higher peak, larger attack rate</p></li>
+<li><p><strong>Higher γ</strong>: Faster recovery, lower peak, smaller attack rate</p></li>
+<li><p><strong>Slow recovery</strong>: Epidemic lasts longer, more sustained infections</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="sis-epidemic-dynamics">
+<h2>SIS Epidemic Dynamics<a class="headerlink" href="#sis-epidemic-dynamics" title="Link to this heading"></a></h2>
+<p>The <strong>SIS model</strong> simulates diseases without lasting immunity — individuals recover but can be immediately re-infected. This creates an <strong>endemic equilibrium</strong> where infection persists indefinitely (unlike SIR which always dies out).</p>
+<p><strong>States:</strong></p>
+<ul class="simple">
+<li><p><strong>S (Susceptible)</strong> — Not infected, can become infected</p></li>
+<li><p><strong>I (Infected)</strong> — Currently infected, can transmit and recover</p></li>
+</ul>
+<p><strong>No recovered state</strong> — recovered individuals return to susceptible.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">beta</span></code> (β) — Transmission rate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code> (γ) — Recovery rate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">initial_infected</span></code> — Fraction or number initially infected</p></li>
+</ul>
+<section id="id1">
+<h3>Basic Example<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SISDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Create a small-world network</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">watts_strogatz_graph</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Create SIS dynamics</span>
+<span class="n">sis</span> <span class="o">=</span> <span class="n">SISDynamics</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>      <span class="c1"># Infection rate</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>     <span class="c1"># Recovery rate</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="p">)</span>
+
+<span class="c1"># Set seed and run</span>
+<span class="n">sis</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Extract measures</span>
+<span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+
+<span class="c1"># Endemic equilibrium (mean of last 50 steps)</span>
+<span class="n">endemic_level</span> <span class="o">=</span> <span class="n">prevalence</span><span class="p">[</span><span class="o">-</span><span class="mi">50</span><span class="p">:]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Endemic prevalence: </span><span class="si">{</span><span class="n">endemic_level</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std deviation: </span><span class="si">{</span><span class="n">prevalence</span><span class="p">[</span><span class="o">-</span><span class="mi">50</span><span class="p">:]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Endemic prevalence: 89.48%
+Std deviation: 2.77%
+</pre></div>
+</div>
+<p>The infection reaches a <strong>stable endemic state</strong> where it persists indefinitely, unlike SIR.</p>
+</section>
+<section id="sis-vs-sir-comparison">
+<h3>SIS vs SIR Comparison<a class="headerlink" href="#sis-vs-sir-comparison" title="Link to this heading"></a></h3>
+<p>The key difference: <strong>SIS sustains infection, SIR dies out</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SISDynamics</span><span class="p">,</span> <span class="n">SIRDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># SIS dynamics</span>
+<span class="n">sis</span> <span class="o">=</span> <span class="n">SISDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">sis</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">sis_results</span> <span class="o">=</span> <span class="n">sis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">sis_prevalence</span> <span class="o">=</span> <span class="n">sis_results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+
+<span class="c1"># SIR dynamics</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">sir_results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">sir_prevalence</span> <span class="o">=</span> <span class="n">sir_results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot comparison</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sis_prevalence</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SIS (no immunity)&#39;</span><span class="p">,</span>
+         <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sir_prevalence</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SIR (with immunity)&#39;</span><span class="p">,</span>
+         <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time step&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Prevalence&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;SIS vs SIR Epidemic Dynamics&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Output Characteristics:</strong></p>
+<ul class="simple">
+<li><p><strong>SIS</strong>: Initial outbreak → settles to endemic equilibrium → persists indefinitely</p></li>
+<li><p><strong>SIR</strong>: Initial outbreak → peak → gradual decline → complete extinction</p></li>
+</ul>
+</section>
+<section id="endemic-threshold">
+<h3>Endemic Threshold<a class="headerlink" href="#endemic-threshold" title="Link to this heading"></a></h3>
+<p>SIS has an <strong>epidemic threshold</strong> below which infection dies out:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+<span class="n">avg_degree</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span> <span class="o">/</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">beta_values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">beta</span> <span class="ow">in</span> <span class="n">beta_values</span><span class="p">:</span>
+    <span class="n">sis</span> <span class="o">=</span> <span class="n">SISDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">sis</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">sis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Endemic level (mean of last 50 steps)</span>
+    <span class="n">endemic</span> <span class="o">=</span> <span class="n">prevalence</span><span class="p">[</span><span class="o">-</span><span class="mi">50</span><span class="p">:]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">R0</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">/</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">avg_degree</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;endemic&quot;</span> <span class="k">if</span> <span class="n">endemic</span> <span class="o">&gt;</span> <span class="mf">0.01</span> <span class="k">else</span> <span class="s2">&quot;extinct&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;β=</span><span class="si">{</span><span class="n">beta</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R₀=</span><span class="si">{</span><span class="n">R0</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">endemic</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>β=0.01, R₀=0.46: 0.00% (extinct)
+β=0.02, R₀=0.92: 0.00% (extinct)
+β=0.03, R₀=1.38: 27.35% (endemic)
+β=0.05, R₀=2.29: 56.41% (endemic)
+β=0.10, R₀=4.59: 75.00% (endemic)
+β=0.20, R₀=9.18: 83.06% (endemic)
+β=0.30, R₀=13.76: 86.24% (endemic)
+</pre></div>
+</div>
+<p><strong>Threshold occurs at R₀ ≈ 1</strong> (between β=0.02 and β=0.03 in this network).</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="random-walk-dynamics">
+<h2>Random Walk Dynamics<a class="headerlink" href="#random-walk-dynamics" title="Link to this heading"></a></h2>
+<p>Random walks simulate <strong>exploration</strong> and <strong>diffusion</strong> on networks. At each step, a walker moves to a random neighbor (or stays in place with some probability).</p>
+<p><strong>Use cases:</strong></p>
+<ul class="simple">
+<li><p>Computing <strong>PageRank</strong> and other centrality measures</p></li>
+<li><p>Modeling <strong>search</strong> and <strong>navigation</strong></p></li>
+<li><p>Analyzing <strong>community structure</strong> through exploration patterns</p></li>
+<li><p>Understanding <strong>information diffusion</strong></p></li>
+</ul>
+<section id="id2">
+<h3>Basic Example<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomWalkDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="c1"># Create network</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+
+<span class="c1"># Create random walk starting at node 0</span>
+<span class="n">walk</span> <span class="o">=</span> <span class="n">RandomWalkDynamics</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">,</span>
+    <span class="n">start_node</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">lazy_probability</span><span class="o">=</span><span class="mf">0.1</span>  <span class="c1"># 10% chance to stay in place</span>
+<span class="p">)</span>
+
+<span class="c1"># Set seed and run</span>
+<span class="n">walk</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">walk</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># Get trajectory</span>
+<span class="n">trajectory</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;trajectory&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Walk length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start: </span><span class="si">{</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, End: </span><span class="si">{</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Count visits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="n">visits</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+<span class="n">top_5</span> <span class="o">=</span> <span class="n">visits</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most visited nodes:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">top_5</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> visits&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Walk length: 1001
+Start: 0, End: 2
+Most visited nodes:
+  Node 33: 87 visits
+  Node 0: 76 visits
+  Node 2: 64 visits
+  Node 1: 58 visits
+  Node 32: 51 visits
+</pre></div>
+</div>
+<p>High-degree nodes (hubs) get visited more frequently due to more incoming edges.</p>
+</section>
+<section id="multilayer-random-walk">
+<h3>Multilayer Random Walk<a class="headerlink" href="#multilayer-random-walk" title="Link to this heading"></a></h3>
+<p>Random walks on multilayer networks can <strong>switch between layers</strong> at inter-layer connections:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomWalkDynamics</span>
+
+<span class="c1"># Create two-layer network with different structures</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ring&#39;</span><span class="p">})</span>
+    <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;star&#39;</span><span class="p">})</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+
+<span class="c1"># Layer 1: Ring topology</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">,</span>
+        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;ring&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;ring&#39;</span>
+    <span class="p">}])</span>
+
+<span class="c1"># Layer 2: Star topology (node 0 is hub)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;star&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;star&#39;</span>
+    <span class="p">}])</span>
+
+<span class="c1"># Inter-layer connections</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([{</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;ring&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;star&#39;</span>
+    <span class="p">}])</span>
+
+<span class="c1"># Run random walk</span>
+<span class="n">walk</span> <span class="o">=</span> <span class="n">RandomWalkDynamics</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">start_node</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;ring&#39;</span><span class="p">))</span>
+<span class="n">walk</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">walk</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">trajectory</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;trajectory&quot;</span><span class="p">)</span>
+
+<span class="c1"># Analyze layer switching</span>
+<span class="n">switches</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">switches</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer switches: </span><span class="si">{</span><span class="n">switches</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Switch rate: </span><span class="si">{</span><span class="n">switches</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer switches: 348
+Switch rate: 34.77%
+</pre></div>
+</div>
+<p>The walker frequently moves between layers, exploring both network structures.</p>
+</section>
+<section id="lazy-random-walks">
+<h3>Lazy Random Walks<a class="headerlink" href="#lazy-random-walks" title="Link to this heading"></a></h3>
+<p>The <strong>lazy probability</strong> controls how often the walker stays in place:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">path_graph</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Simple chain</span>
+
+<span class="n">lazy_probs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">lazy_p</span> <span class="ow">in</span> <span class="n">lazy_probs</span><span class="p">:</span>
+    <span class="n">walk</span> <span class="o">=</span> <span class="n">RandomWalkDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">start_node</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                              <span class="n">lazy_probability</span><span class="o">=</span><span class="n">lazy_p</span><span class="p">)</span>
+    <span class="n">walk</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">walk</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">trajectory</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;trajectory&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Lazy p=</span><span class="si">{</span><span class="n">lazy_p</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time step&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Node position&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Random Walk with Different Lazy Probabilities&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Output Characteristics:</strong></p>
+<ul class="simple">
+<li><p><strong>lazy_p = 0.0</strong>: Active walk, explores quickly</p></li>
+<li><p><strong>lazy_p = 0.5</strong>: Balanced, moderate exploration</p></li>
+<li><p><strong>lazy_p = 0.8</strong>: Mostly stationary, slow exploration</p></li>
+</ul>
+<p>Higher lazy probability → slower diffusion, more time at current location.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="working-with-results">
+<h2>Working with Results<a class="headerlink" href="#working-with-results" title="Link to this heading"></a></h2>
+<p>All dynamics simulations return a <code class="docutils literal notranslate"><span class="pre">DynamicsResult</span></code> object with rich output measures.</p>
+<section id="available-measures">
+<h3>Available Measures<a class="headerlink" href="#available-measures" title="Link to this heading"></a></h3>
+<p><strong>Epidemic Models (SIR, SIS):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;prevalence&quot;</span></code> — Fraction of nodes infected at each time step (array)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;state_counts&quot;</span></code> — Count of nodes in each state over time (dict of arrays)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;trajectory&quot;</span></code> — Full state history (list of dicts mapping node → state)</p></li>
+</ul>
+<p><strong>Random Walk:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;trajectory&quot;</span></code> — Sequence of visited nodes (list)</p></li>
+</ul>
+</section>
+<section id="extracting-measures">
+<h3>Extracting Measures<a class="headerlink" href="#extracting-measures" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run simulation</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Get prevalence over time</span>
+<span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get state counts</span>
+<span class="n">state_counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;state_counts&quot;</span><span class="p">)</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]</span>  <span class="c1"># Susceptible over time</span>
+<span class="n">I</span> <span class="o">=</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span>  <span class="c1"># Infected over time</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>  <span class="c1"># Recovered over time</span>
+
+<span class="c1"># Get full trajectory (memory intensive for large networks)</span>
+<span class="n">trajectory</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;trajectory&quot;</span><span class="p">)</span>
+<span class="c1"># trajectory[t] is dict: {node: state} at time t</span>
+</pre></div>
+</div>
+</section>
+<section id="converting-to-pandas">
+<h3>Converting to Pandas<a class="headerlink" href="#converting-to-pandas" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert to pandas DataFrame</span>
+<span class="n">df_dict</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># For epidemic models, returns dict of DataFrames</span>
+<span class="n">prevalence_df</span> <span class="o">=</span> <span class="n">df_dict</span><span class="p">[</span><span class="s1">&#39;prevalence&#39;</span><span class="p">]</span>
+<span class="n">state_counts_df</span> <span class="o">=</span> <span class="n">df_dict</span><span class="p">[</span><span class="s1">&#39;state_counts&#39;</span><span class="p">]</span>
+
+<span class="c1"># Export to CSV</span>
+<span class="n">prevalence_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;prevalence.csv&quot;</span><span class="p">)</span>
+<span class="n">state_counts_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;state_counts.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="visualization">
+<h3>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Run SIR simulation</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>
+<span class="n">state_counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;state_counts&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create figure with two subplots</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Plot state counts</span>
+<span class="n">steps</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Susceptible&#39;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Infected&#39;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Recovered&#39;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time step&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Number of nodes&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;SIR Epidemic Dynamics&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="c1"># Plot prevalence</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">prevalence</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">prevalence</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time step&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Prevalence (fraction infected)&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Infection Prevalence Over Time&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This produces publication-ready epidemic curves showing the full dynamics.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="mathematical-formalism">
+<h2>Mathematical Formalism<a class="headerlink" href="#mathematical-formalism" title="Link to this heading"></a></h2>
+<section id="sir-model">
+<h3>SIR Model<a class="headerlink" href="#sir-model" title="Link to this heading"></a></h3>
+<p><strong>Discrete-time update rules</strong> (per time step):</p>
+<p>For each susceptible node <em>i</em>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}P(S_i \\rightarrow I_i) = 1 - \\prod_{j \\in N(i)} (1 - \\beta)^{\\mathbb{1}_{I_j}}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N(i)\)</span> are neighbors and <span class="math notranslate nohighlight">\(\\mathbb{1}_{I_j}\)</span> indicates if neighbor <em>j</em> is infected.</p>
+<p>For each infected node <em>i</em>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}P(I_i \\rightarrow R_i) = \\gamma\end{split}\]</div>
+<p><strong>Continuous-time interpretation:</strong></p>
+<p>Transition rates: <span class="math notranslate nohighlight">\(S \\xrightarrow{\\beta \\lambda_i} I \\xrightarrow{\\gamma} R\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(\\lambda_i = \\sum_{j \\in N(i)} \\mathbb{1}_{I_j}\)</span> is the number of infected neighbors.</p>
+</section>
+<section id="sis-model">
+<h3>SIS Model<a class="headerlink" href="#sis-model" title="Link to this heading"></a></h3>
+<p><strong>Discrete-time update rules:</strong></p>
+<p>Same infection rule as SIR, but recovery returns to susceptible:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}P(I_i \\rightarrow S_i) = \\gamma\end{split}\]</div>
+<p><strong>Endemic equilibrium</strong> (mean-field approximation):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\\rho^* = 1 - \\frac{\\gamma}{\\beta \\langle k \\rangle}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\\rho^*\)</span> is endemic prevalence and <span class="math notranslate nohighlight">\(\\langle k \\rangle\)</span> is average degree.</p>
+</section>
+<section id="random-walk">
+<h3>Random Walk<a class="headerlink" href="#random-walk" title="Link to this heading"></a></h3>
+<p><strong>Transition probability</strong> from node <em>i</em> to node <em>j</em>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}P(i \\rightarrow j) =
+\\begin{cases}
+p_{\\text{lazy}} &amp; \\text{if } j = i \\\\
+\\frac{1 - p_{\\text{lazy}}}{\\text{degree}(i)} &amp; \\text{if } j \\in N(i) \\\\
+0 &amp; \\text{otherwise}
+\\end{cases}\end{split}\]</div>
+<p><strong>Stationary distribution</strong> (long-run proportion of time at each node):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\\pi_i \\propto \\text{degree}(i)\end{split}\]</div>
+<p>High-degree nodes are visited more frequently.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="advanced-topics">
+<h2>Advanced Topics<a class="headerlink" href="#advanced-topics" title="Link to this heading"></a></h2>
+<section id="multilayer-coupling">
+<h3>Multilayer Coupling<a class="headerlink" href="#multilayer-coupling" title="Link to this heading"></a></h3>
+<p>In multilayer networks, nodes can have <strong>different infection states in different layers</strong> (weak coupling) or <strong>share a single state across all layers</strong> (strong coupling).</p>
+<p>py3plex uses <strong>strong coupling by default</strong> — each node has one state shared across all its layer-specific replicas. This is appropriate for most epidemic models (a person is either infected or not, regardless of which social context you observe them in).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Strong coupling (default): node state shared across layers</span>
+<span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">multilayer_network</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># Infection can spread through any layer</span>
+<span class="c1"># Recovery is per-node, not per-layer</span>
+</pre></div>
+</div>
+</section>
+<section id="time-varying-parameters">
+<h3>Time-Varying Parameters<a class="headerlink" href="#time-varying-parameters" title="Link to this heading"></a></h3>
+<p>Parameters can be <strong>functions of time</strong> for more realistic models:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seasonal variation in transmission</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">seasonal_beta</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+    <span class="k">return</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="mi">365</span><span class="p">))</span>
+
+<span class="c1"># Note: Advanced feature, check core module support</span>
+<span class="c1"># sir = SIRDynamics(G, beta=seasonal_beta, gamma=0.1)</span>
+</pre></div>
+</div>
+</section>
+<section id="heterogeneous-parameters">
+<h3>Heterogeneous Parameters<a class="headerlink" href="#heterogeneous-parameters" title="Link to this heading"></a></h3>
+<p>Different nodes can have different recovery rates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Assign random recovery rates</span>
+<span class="n">n_nodes</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+<span class="n">recovery_rates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">)</span>
+
+<span class="c1"># Note: Advanced feature, check core module support</span>
+<span class="c1"># sir = SIRDynamics(G, beta=0.3, gamma=recovery_rates)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<p><strong>Simulation speed</strong> depends on:</p>
+<ul class="simple">
+<li><p><strong>Network size</strong>: Larger networks take longer</p></li>
+<li><p><strong>Number of steps</strong>: More steps = more computation</p></li>
+<li><p><strong>Trajectory storage</strong>: Storing full state history uses memory</p></li>
+</ul>
+<p><strong>Tips for efficiency:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For large networks, avoid storing full trajectory</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Only extract measures you need</span>
+<span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">)</span>  <span class="c1"># Lightweight</span>
+<span class="c1"># trajectory = results.get_measure(&quot;trajectory&quot;)  # Heavy for large networks</span>
+
+<span class="c1"># Use moderate step counts for exploration</span>
+<span class="c1"># Refine with more steps once parameters are tuned</span>
+</pre></div>
+</div>
+<p><strong>Typical performance</strong> (on modern laptop):</p>
+<ul class="simple">
+<li><p>Network with 1000 nodes, 100 steps: ~1 second</p></li>
+<li><p>Network with 10,000 nodes, 100 steps: ~10 seconds</p></li>
+<li><p>Network with 100,000 nodes, 100 steps: ~2 minutes</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="dsl-integration">
+<h2>DSL Integration<a class="headerlink" href="#dsl-integration" title="Link to this heading"></a></h2>
+<p>The <a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> provides declarative syntax for dynamics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">SIS</span><span class="p">,</span> <span class="n">SIR</span><span class="p">,</span> <span class="n">RandomWalk</span>
+
+<span class="c1"># Define simulation</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">D</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">SIS</span><span class="p">(</span><span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">initial</span><span class="p">(</span><span class="n">infected</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">steps</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s2">&quot;prevalence&quot;</span><span class="p">,</span> <span class="s2">&quot;incidence&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">replicates</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Run 10 independent trials</span>
+     <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Execute</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+
+<span class="c1"># Aggregate across replicates</span>
+<span class="n">mean_prevalence</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;prevalence&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">std_prevalence</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;prevalence&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>See also:</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> — Complete DSL documentation</p></li>
+<li><p><span class="xref std std-doc">../../../book/part3_dsl/chapter10_advanced_queries_workflows</span> — Advanced dynamics DSL with formalism</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="examples-and-tutorials">
+<h2>Examples and Tutorials<a class="headerlink" href="#examples-and-tutorials" title="Link to this heading"></a></h2>
+<p><strong>Working examples</strong> in <code class="docutils literal notranslate"><span class="pre">examples/dynamics/</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sir_epidemic.py</span></code> — Complete SIR epidemic simulation with multilayer networks and parameter comparison</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sis_dynamics.py</span></code> — SIS dynamics, endemic equilibrium, threshold analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">random_walk.py</span></code> — Random walks on multilayer networks, layer switching, hitting times</p></li>
+</ul>
+<p><strong>Run an example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/dynamics/sir_epidemic.py
+</pre></div>
+</div>
+<p><strong>Additional resources:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/network_analysis/example_dsl_dynamics.py</span></code> — Dynamics using DSL</p></li>
+<li><p><a class="reference internal" href="../sir_epidemic_simulator.html"><span class="doc">SIR Epidemic Simulator on Multiplex Graphs</span></a> — Detailed SIR epidemic documentation</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="key-takeaways">
+<h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading"></a></h2>
+<p>✅ <strong>Three dynamics models</strong>: SIR (with immunity), SIS (without immunity), RandomWalk (diffusion)</p>
+<p>✅ <strong>Clean API</strong>: <code class="docutils literal notranslate"><span class="pre">DynamicsClass(network,</span> <span class="pre">params).set_seed(seed).run(steps)</span></code></p>
+<p>✅ <strong>Rich outputs</strong>: Prevalence, state counts, trajectories via <code class="docutils literal notranslate"><span class="pre">results.get_measure()</span></code></p>
+<p>✅ <strong>Multilayer support</strong>: Dynamics spread through multiple interaction contexts</p>
+<p>✅ <strong>Reproducible</strong>: Always use <code class="docutils literal notranslate"><span class="pre">.set_seed()</span></code> for deterministic results</p>
+<p>✅ <strong>Tunable parameters</strong>: Adjust β, γ to model different scenarios</p>
+<p>✅ <strong>Visualization ready</strong>: Extract numpy arrays or pandas DataFrames for plotting</p>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Experiment with parameters</strong>: How does R₀ affect your specific network?</p></li>
+<li><p><strong>Compare layer effects</strong>: Run dynamics on single layers vs full multilayer network</p></li>
+<li><p><strong>Analyze real data</strong>: Apply to your domain (social networks, biological systems, etc.)</p></li>
+<li><p><strong>Combine with DSL</strong>: Use declarative syntax for complex workflows</p></li>
+<li><p><strong>Read formalism</strong>: See book chapters for mathematical foundations</p></li>
+</ul>
+<p><strong>Related documentation:</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> — Query and dynamics DSL</p></li>
+<li><p><a class="reference internal" href="statistics.html"><span class="doc">Network Statistics</span></a> — Network statistics and measures</p></li>
+<li><p><a class="reference internal" href="community_detection.html"><span class="doc">Community Detection</span></a> — Finding communities</p></li>
+<li><p><a class="reference internal" href="visualization.html"><span class="doc">Visualization</span></a> — Plotting networks and results</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="community_detection.html" class="btn btn-neutral float-left" title="Community Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="random_walks_embeddings.html" class="btn btn-neutral float-right" title="Random Walk Algorithms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, Blaž Škrlj.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

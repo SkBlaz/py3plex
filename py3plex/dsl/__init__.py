@@ -69,6 +69,7 @@ from .ast import (
     ComputeItem,
     OrderItem,
     ParamRef,
+    TemporalContext,
     # Execution plan
     PlanStep,
     ExecutionPlan,
@@ -222,6 +223,7 @@ __all__ = [
     "ComputeItem",
     "OrderItem",
     "ParamRef",
+    "TemporalContext",
     "PlanStep",
     "ExecutionPlan",
     # DSL Extensions AST

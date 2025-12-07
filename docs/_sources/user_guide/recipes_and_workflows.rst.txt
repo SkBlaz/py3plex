@@ -7,7 +7,7 @@ Analysis Recipes & Workflows
 This guide provides **practical recipes** for **common analysis workflows** in py3plex. 
 Each recipe is a **complete, ready-to-use solution** for a real-world task.
 
-.. admonition:: 🔍 DSL for Rapid Analysis
+.. admonition:: DSL for Rapid Analysis
    :class: dsl-example
 
    Many recipes can be expressed concisely using the DSL:
@@ -1190,7 +1190,7 @@ Recipe 18: Hub Identification with DSL
 
 **Task:** Find and rank influential nodes across layers using the DSL.
 
-.. admonition:: 🔍 DSL Example: Hub Identification
+.. admonition:: DSL Example: Hub Identification
    :class: dsl-example
 
    .. code-block:: python
@@ -1226,7 +1226,7 @@ Recipe 19: Multi-Layer Comparative Analysis
 
 **Task:** Compare network structure across different layers using DSL.
 
-.. admonition:: 🔍 DSL Example: Layer Comparison
+.. admonition:: DSL Example: Layer Comparison
    :class: dsl-example
 
    .. code-block:: python
@@ -1269,7 +1269,7 @@ Recipe 20: Advanced Filtering and Export
 
 **Task:** Complex multi-criteria filtering with automated export.
 
-.. admonition:: 🔍 DSL Example: Advanced Filtering
+.. admonition:: DSL Example: Advanced Filtering
    :class: dsl-example
 
    .. code-block:: python
@@ -1307,7 +1307,7 @@ Recipe 21: Parameterized Query Templates
 
 **Task:** Create reusable query templates for systematic analysis.
 
-.. admonition:: 💡 DSL Example: Query Templates
+.. admonition:: DSL Example: Query Templates
    :class: dsl-info
 
    .. code-block:: python
@@ -1351,7 +1351,7 @@ Recipe 22: DSL with EXPLAIN Mode
 
 **Task:** Optimize queries before execution on large networks.
 
-.. admonition:: 💡 DSL Example: Query Optimization
+.. admonition:: DSL Example: Query Optimization
    :class: dsl-info
 
    .. code-block:: python

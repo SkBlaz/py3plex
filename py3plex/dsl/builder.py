@@ -16,6 +16,10 @@ Example:
     ... )
     >>> 
     >>> result = q.execute(network, k=5)
+    >>> 
+    >>> # Temporal queries
+    >>> q = Q.edges().at(150.0).execute(network)  # Snapshot at t=150
+    >>> q = Q.edges().during(100.0, 200.0).execute(network)  # Range [100, 200]
 """
 
 from typing import Any, Dict, List, Optional, Union
@@ -36,6 +40,7 @@ from .ast import (
     OrderItem,
     ParamRef,
     ExecutionPlan,
+    TemporalContext,
 )
 from .result import QueryResult
 
@@ -344,6 +349,63 @@ class QueryBuilder:
             Self for chaining
         """
         self._select.limit = n
+        return self
+    
+    def at(self, t: float) -> "QueryBuilder":
+        """Add temporal snapshot constraint (AT clause).
+        
+        Filters edges to only those active at a specific point in time.
+        For point-in-time edges (with 't' attribute), includes edges where t_edge == t.
+        For interval edges (with 't_start', 't_end'), includes edges where t is in [t_start, t_end].
+        
+        Args:
+            t: Timestamp for snapshot
+            
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> # Snapshot at specific time
+            >>> Q.edges().at(150.0).execute(network)
+        """
+        self._select.temporal_context = TemporalContext(
+            kind="at",
+            t0=float(t),
+            t1=float(t)
+        )
+        return self
+    
+    def during(
+        self,
+        t0: Optional[float] = None,
+        t1: Optional[float] = None
+    ) -> "QueryBuilder":
+        """Add temporal range constraint (DURING clause).
+        
+        Filters edges to only those active during a time range [t0, t1].
+        For point-in-time edges, includes edges where t is in [t0, t1].
+        For interval edges, includes edges where the interval overlaps [t0, t1].
+        
+        Args:
+            t0: Start of time range (None means -infinity)
+            t1: End of time range (None means +infinity)
+            
+        Returns:
+            Self for chaining
+            
+        Examples:
+            >>> # Time range query
+            >>> Q.edges().during(100.0, 200.0).execute(network)
+            
+            >>> # Open-ended ranges
+            >>> Q.edges().during(100.0, None).execute(network)  # From 100 onwards
+            >>> Q.edges().during(None, 200.0).execute(network)  # Up to 200
+        """
+        self._select.temporal_context = TemporalContext(
+            kind="during",
+            t0=t0,
+            t1=t1
+        )
         return self
     
     def to(self, target: str) -> "QueryBuilder":

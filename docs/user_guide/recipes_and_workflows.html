@@ -9,7 +9,7 @@
   <title>Analysis Recipes &amp; Workflows &mdash; py3plex 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ea41ae2" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
 
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Working with Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="statistics.html">Network Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="community_detection.html">Community Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multilayer_dynamics.html">Multilayer Dynamics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io_and_formats.html">I/O and Serialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization</a></li>
@@ -202,7 +203,7 @@
 <p>This guide provides <strong>practical recipes</strong> for <strong>common analysis workflows</strong> in py3plex.
 Each recipe is a <strong>complete, ready-to-use solution</strong> for a real-world task.</p>
 <div class="dsl-example admonition">
-<p class="admonition-title">🔍 DSL for Rapid Analysis</p>
+<p class="admonition-title">DSL for Rapid Analysis</p>
 <p>Many recipes can be expressed concisely using the DSL:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
@@ -1358,7 +1359,7 @@ Unique nodes: 120
 <h3><a class="toc-backref" href="#id38" role="doc-backlink">Recipe 18: Hub Identification with DSL</a><a class="headerlink" href="#recipe-18-hub-identification-with-dsl" title="Link to this heading"></a></h3>
 <p><strong>Task:</strong> Find and rank influential nodes across layers using the DSL.</p>
 <div class="dsl-example admonition">
-<p class="admonition-title">🔍 DSL Example: Hub Identification</p>
+<p class="admonition-title">DSL Example: Hub Identification</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
@@ -1390,7 +1391,7 @@ Unique nodes: 120
 <h3><a class="toc-backref" href="#id39" role="doc-backlink">Recipe 19: Multi-Layer Comparative Analysis</a><a class="headerlink" href="#recipe-19-multi-layer-comparative-analysis" title="Link to this heading"></a></h3>
 <p><strong>Task:</strong> Compare network structure across different layers using DSL.</p>
 <div class="dsl-example admonition">
-<p class="admonition-title">🔍 DSL Example: Layer Comparison</p>
+<p class="admonition-title">DSL Example: Layer Comparison</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
@@ -1429,7 +1430,7 @@ Unique nodes: 120
 <h3><a class="toc-backref" href="#id40" role="doc-backlink">Recipe 20: Advanced Filtering and Export</a><a class="headerlink" href="#recipe-20-advanced-filtering-and-export" title="Link to this heading"></a></h3>
 <p><strong>Task:</strong> Complex multi-criteria filtering with automated export.</p>
 <div class="dsl-example admonition">
-<p class="admonition-title">🔍 DSL Example: Advanced Filtering</p>
+<p class="admonition-title">DSL Example: Advanced Filtering</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Find nodes that meet multiple criteria</span>
@@ -1463,7 +1464,7 @@ Unique nodes: 120
 <h3><a class="toc-backref" href="#id41" role="doc-backlink">Recipe 21: Parameterized Query Templates</a><a class="headerlink" href="#recipe-21-parameterized-query-templates" title="Link to this heading"></a></h3>
 <p><strong>Task:</strong> Create reusable query templates for systematic analysis.</p>
 <div class="dsl-info admonition">
-<p class="admonition-title">💡 DSL Example: Query Templates</p>
+<p class="admonition-title">DSL Example: Query Templates</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">Param</span>
 
 <span class="c1"># Define a reusable query template</span>
@@ -1503,7 +1504,7 @@ Unique nodes: 120
 <h3><a class="toc-backref" href="#id42" role="doc-backlink">Recipe 22: DSL with EXPLAIN Mode</a><a class="headerlink" href="#recipe-22-dsl-with-explain-mode" title="Link to this heading"></a></h3>
 <p><strong>Task:</strong> Optimize queries before execution on large networks.</p>
 <div class="dsl-info admonition">
-<p class="admonition-title">💡 DSL Example: Query Optimization</p>
+<p class="admonition-title">DSL Example: Query Optimization</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Build a potentially expensive query</span>
