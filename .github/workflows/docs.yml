@@ -73,19 +73,46 @@ jobs:
         fi
       timeout-minutes: 10
     
-    - name: Copy PDF to docs directory
+    - name: Build Book PDF
+      run: |
+        cd book
+        echo "📖 Building Book PDF..."
+        # Build LaTeX source files
+        sphinx-build -b latex . _build/latex --keep-going
+        cd _build/latex
+        # Compile PDF (run twice to resolve cross-references)
+        pdflatex -interaction=nonstopmode py3plex_book.tex || true
+        pdflatex -interaction=nonstopmode py3plex_book.tex || true
+        # Check if PDF was generated
+        if [ -f "py3plex_book.pdf" ] && [ -s "py3plex_book.pdf" ]; then
+          PDF_SIZE=$(wc -c < py3plex_book.pdf)
+          echo "✅ Book PDF generated successfully ($PDF_SIZE bytes)"
+        else
+          echo "❌ Book PDF generation failed - file not created or empty"
+          exit 1
+        fi
+      timeout-minutes: 10
+    
+    - name: Copy PDFs to docs directory
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
-        echo "📦 Copying PDF to docs directory..."
+        echo "📦 Copying PDFs to docs directory..."
         mkdir -p docs
-        # Verify PDF exists before copying
+        # Verify documentation PDF exists before copying
         if [ ! -f "docfiles/_build/latex/py3plex.pdf" ]; then
-          echo "❌ Error: PDF file not found at docfiles/_build/latex/py3plex.pdf"
+          echo "❌ Error: Documentation PDF not found at docfiles/_build/latex/py3plex.pdf"
           exit 1
         fi
         cp docfiles/_build/latex/py3plex.pdf docs/py3plex_documentation.pdf
         ls -lh docs/py3plex_documentation.pdf
-        echo "✅ PDF copied successfully"
+        # Verify book PDF exists before copying
+        if [ ! -f "book/_build/latex/py3plex_book.pdf" ]; then
+          echo "❌ Error: Book PDF not found at book/_build/latex/py3plex_book.pdf"
+          exit 1
+        fi
+        cp book/_build/latex/py3plex_book.pdf docs/py3plex_book.pdf
+        ls -lh docs/py3plex_book.pdf
+        echo "✅ PDFs copied successfully"
       timeout-minutes: 1
     
     - name: Upload documentation artifacts
@@ -97,12 +124,14 @@ jobs:
         retention-days: 30
       timeout-minutes: 2
     
-    - name: Upload PDF artifact
+    - name: Upload PDF artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: documentation-pdf
-        path: docfiles/_build/latex/py3plex.pdf
+        name: documentation-pdfs
+        path: |
+          docfiles/_build/latex/py3plex.pdf
+          book/_build/latex/py3plex_book.pdf
         retention-days: 30
       timeout-minutes: 2
     
