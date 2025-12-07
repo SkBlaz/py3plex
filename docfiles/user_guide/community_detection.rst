@@ -10,22 +10,36 @@ Community Detection
 
    .. code-block:: python
 
+       from py3plex.core import multinet
        from py3plex.dsl import Q, L
+       from py3plex.algorithms.community_detection import community_louvain
 
-       # Find high-degree nodes in specific community
-       # (assuming you stored community IDs as node attributes)
+       # Step 1: Detect communities
+       communities = community_louvain.best_partition(network.core_network)
        
-       # Get all nodes and their properties
+       # Step 2: Store community IDs as node attributes
+       for node, comm_id in communities.items():
+           network.core_network.nodes[node]['community'] = comm_id
+       
+       # Step 3: Find high-degree nodes in specific community
        result = (
            Q.nodes()
+            .where(community=0)  # Filter by community ID
             .compute("degree", "betweenness_centrality")
             .order_by("-degree")
-            .limit(20)
+            .limit(10)
             .execute(network)
        )
-
-       # Export for further analysis
-       result.to_pandas().to_csv("community_hubs.csv")
+       
+       # Step 4: Export for further analysis
+       df = result.to_pandas()
+       df.to_csv("community_hubs.csv", index=False)
+       
+       # Example output:
+       #                  id  degree  betweenness_centrality
+       #     (Alice, social)       3                   0.667
+       #       (Bob, social)       2                   0.000
+       #   (Charlie, social)       2                   0.000
 
    Combine traditional algorithms with DSL queries for powerful workflows!
 
