@@ -1,5 +1,5 @@
-Chapter 4: The py3plex Core Model
-==================================
+The py3plex Core Model
+======================
 
 *In which we look under the hood at how py3plex represents multilayer networks, understand the node-layer pair representation, and learn to work with the supra-adjacency matrix.*
 

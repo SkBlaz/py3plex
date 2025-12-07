@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  7 DEC 2025 06:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  7 DEC 2025 07:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -5458,7 +5458,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [303]
-<gui_load_data.png, id=7102, 1053.9375pt x 677.53125pt>
+<gui_load_data.png, id=7100, 1053.9375pt x 677.53125pt>
 File: gui_load_data.png Graphic file (type png)
 <use gui_load_data.png>
 Package pdftex.def Info: gui_load_data.png  used on input line 24649.
@@ -5872,7 +5872,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [305]
-<gui_visualize.png, id=7112, 1053.9375pt x 677.53125pt>
+<gui_visualize.png, id=7110, 1053.9375pt x 677.53125pt>
 File: gui_visualize.png Graphic file (type png)
 <use gui_visualize.png>
 Package pdftex.def Info: gui_visualize.png  used on input line 24814.
@@ -5887,12 +5887,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [306 <./gui_visualize.png (PNG copy)>]
-<gui_analyze.png, id=7117, 1053.9375pt x 677.53125pt>
+<gui_analyze.png, id=7115, 1053.9375pt x 677.53125pt>
 File: gui_analyze.png Graphic file (type png)
 <use gui_analyze.png>
 Package pdftex.def Info: gui_analyze.png  used on input line 24847.
 (pdftex.def)             Requested size: 452.97523pt x 291.21902pt.
-<gui_export.png, id=7118, 1053.9375pt x 677.53125pt>
+<gui_export.png, id=7116, 1053.9375pt x 677.53125pt>
 File: gui_export.png Graphic file (type png)
 <use gui_export.png>
 Package pdftex.def Info: gui_export.png  used on input line 24884.
@@ -5916,7 +5916,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [308 <./gui_export.png (PNG copy)>]
-<gui_flower_dashboard.png, id=7127, 1053.9375pt x 677.53125pt>
+<gui_flower_dashboard.png, id=7125, 1053.9375pt x 677.53125pt>
 File: gui_flower_dashboard.png Graphic file (type png)
 <use gui_flower_dashboard.png>
 Package pdftex.def Info: gui_flower_dashboard.png  used on input line 24935.
@@ -32134,12 +32134,12 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `py3plex.out' has not changed.
-(rerunfilecheck)             Checksum: 14F533119712CCA592938DA39100D2BC;211601.
+(rerunfilecheck)             Checksum: EC2D99379DA99D127480E2E756FBF034;211479.
 
  ) 
 Here is how much of TeX's memory you used:
  24517 strings out of 476182
- 512214 string characters out of 5795595
+ 512194 string characters out of 5795595
  2298975 words of memory out of 5000000
  42570 multiletter control sequences out of 15000+600000
  672849 words of font info for 119 fonts, out of 8000000 for 9000
@@ -32161,10 +32161,10 @@ hare/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public
 texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/
 lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on py3plex.pdf (699 pages, 3528223 bytes).
+Output written on py3plex.pdf (699 pages, 3527977 bytes).
 PDF statistics:
- 12211 PDF objects out of 12825 (max. 8388607)
- 11351 compressed objects within 114 object streams
+ 12209 PDF objects out of 12825 (max. 8388607)
+ 11349 compressed objects within 114 object streams
  3488 named destinations out of 3580 (max. 500000)
  9624 words of extra memory for PDF output out of 10000 (max. 10000000)
 

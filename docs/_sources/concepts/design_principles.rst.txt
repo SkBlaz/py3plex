@@ -1,5 +1,5 @@
-Chapter 5: Design Principles
-=============================
+Design Principles
+=================
 
 *In which we explore the philosophy behind py3plex's API, understand why certain design choices were made, and learn how these principles make the library easier to use and extend.*
 

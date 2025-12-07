@@ -103,7 +103,7 @@
 \contentsline {subsubsection}{Common Pitfalls}{29}{subsubsection*.95}%
 \contentsline {subsubsection}{Key Terminology}{29}{subsubsection*.96}%
 \contentsline {subsubsection}{Next Steps}{29}{subsubsection*.97}%
-\contentsline {subsection}{\numberline {3.2.3}Chapter 4: The py3plex Core Model}{29}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.3}The py3plex Core Model}{29}{subsection.3.2.3}%
 \contentsline {subsubsection}{Network Types: Multilayer vs Multiplex}{29}{subsubsection*.98}%
 \contentsline {subsubsection}{The \sphinxstyleliteralintitle {\sphinxupquote {multi\_layer\_network}} Class}{31}{subsubsection*.99}%
 \contentsline {paragraph}{Basic Structure}{31}{paragraph*.100}%
@@ -146,7 +146,7 @@
 \contentsline {paragraph}{Why Node\sphinxhyphen {}Layer Pairs?}{44}{paragraph*.137}%
 \contentsline {subsubsection}{What You Learned}{45}{subsubsection*.138}%
 \contentsline {subsubsection}{What’s Next?}{45}{subsubsection*.139}%
-\contentsline {subsection}{\numberline {3.2.4}Chapter 5: Design Principles}{45}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.4}Design Principles}{45}{subsection.3.2.4}%
 \contentsline {subsubsection}{Core Philosophy}{46}{subsubsection*.140}%
 \contentsline {paragraph}{Simple, Off\sphinxhyphen {}the\sphinxhyphen {}Shelf Functionality}{46}{paragraph*.141}%
 \contentsline {paragraph}{NetworkX Compatibility}{46}{paragraph*.142}%
