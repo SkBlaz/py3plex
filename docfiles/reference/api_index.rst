@@ -85,6 +85,29 @@ Domain-Specific Language (DSL)
    :undoc-members:
    :show-inheritance:
 
+Uncertainty Quantification
+---------------------------
+
+.. automodule:: py3plex.uncertainty
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.uncertainty.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.uncertainty.context
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.uncertainty.estimation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Algorithms
 ----------
 
@@ -153,6 +176,11 @@ Multilayer Algorithms
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: py3plex.algorithms.multilayer_algorithms.centrality
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.algorithms.centrality_toolkit
    :members:
    :undoc-members:
    :show-inheritance:
