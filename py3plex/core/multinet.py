@@ -2338,24 +2338,45 @@ class multi_layer_network:
 
         # Convert to requested format if needed
         if sparsity_type != 'bsr':
-            try:
-                # Convert to the requested sparse format
-                convert_method = getattr(sparse_matrix, f'to{sparsity_type}', None)
-                if convert_method:
-                    return convert_method()
-                else:
+            # Map of format names to conversion method names
+            format_methods = {
+                'csr': 'tocsr',
+                'csc': 'tocsc',
+                'coo': 'tocoo',
+                'lil': 'tolil',
+                'dok': 'todok',
+                'bsr': 'tobsr'
+            }
+            
+            method_name = format_methods.get(sparsity_type)
+            if method_name:
+                try:
+                    convert_method = getattr(sparse_matrix, method_name, None)
+                    if convert_method:
+                        return convert_method()
+                    else:
+                        import warnings
+                        warnings.warn(
+                            f"Sparse format '{sparsity_type}' conversion method '{method_name}' not available. "
+                            f"Returning matrix in {type(sparse_matrix).__name__} format.",
+                            UserWarning,
+                            stacklevel=2
+                        )
+                        return sparse_matrix
+                except Exception as e:
                     import warnings
                     warnings.warn(
-                        f"Sparse format '{sparsity_type}' not available. "
+                        f"Failed to convert to '{sparsity_type}' format: {e}. "
                         f"Returning matrix in {type(sparse_matrix).__name__} format.",
                         UserWarning,
                         stacklevel=2
                     )
                     return sparse_matrix
-            except Exception as e:
+            else:
                 import warnings
                 warnings.warn(
-                    f"Failed to convert to '{sparsity_type}' format: {e}. "
+                    f"Unknown sparse format '{sparsity_type}'. "
+                    f"Supported formats: {', '.join(format_methods.keys())}. "
                     f"Returning matrix in {type(sparse_matrix).__name__} format.",
                     UserWarning,
                     stacklevel=2

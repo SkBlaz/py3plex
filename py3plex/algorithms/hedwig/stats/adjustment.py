@@ -26,8 +26,6 @@ def _holdout(ruleset, holdout_ratio=0.3, alpha=0.05):
         but may also reduce statistical power. The holdout set should
         be large enough to provide reliable validation.
     """
-    import random
-    
     if not ruleset:
         return ruleset
     
