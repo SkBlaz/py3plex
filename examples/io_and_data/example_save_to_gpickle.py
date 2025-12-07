@@ -54,8 +54,8 @@ print("Network saved successfully!")
 
 print("\nReloading network from gpickle format...")
 # Create a new network object and load from the gpickle file
-# Note: Must specify directed=True to match the saved network
 multilayer_network_new = multinet.multi_layer_network()
+# Must specify directed=True to match the saved network
 multilayer_network_new.load_network(output_path, input_type="gpickle", directed=True)
 
 print("Network reloaded successfully!")
