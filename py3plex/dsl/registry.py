@@ -211,3 +211,80 @@ def _compute_communities(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any,
     if nodes is not None:
         return {node: partition.get(node, -1) for node in nodes}
     return partition
+
+
+# ============================================================================
+# Example: Registering measures as operators (demonstrating unified system)
+# ============================================================================
+
+# Import operator functions to show how measures can also be operators
+from .operator_registry import register_operator
+from .context import DSLExecutionContext
+
+
+# Register a few built-in measures as operators to demonstrate the unified system
+# This shows that the operator registry can coexist with the measure registry
+
+
+def _multiplex_degree_operator(context: DSLExecutionContext) -> Dict[Any, int]:
+    """Compute degree as an operator (demonstrates operator pattern).
+    
+    This is an example of how measures can be implemented as operators,
+    receiving a DSLExecutionContext and computing results based on it.
+    """
+    G = context.graph.core_network
+    nodes = context.current_nodes or []
+    
+    # Compute degree for nodes in the subgraph
+    result = {}
+    for node in nodes:
+        if node in G:
+            result[node] = G.degree(node)
+        else:
+            result[node] = 0
+    
+    return result
+
+
+def _layer_count_operator(context: DSLExecutionContext) -> Dict[Any, int]:
+    """Count the number of layers each node appears in.
+    
+    This is a multilayer-specific operator that demonstrates accessing
+    layer information from the context.
+    """
+    # Count layers for each unique node ID
+    node_layers = {}
+    for node in context.current_nodes or []:
+        if isinstance(node, tuple) and len(node) >= 2:
+            node_id, layer = node[0], node[1]
+            if node_id not in node_layers:
+                node_layers[node_id] = set()
+            node_layers[node_id].add(layer)
+    
+    # Assign layer counts
+    result = {}
+    for node in context.current_nodes or []:
+        if isinstance(node, tuple) and len(node) >= 2:
+            node_id = node[0]
+            result[node] = len(node_layers.get(node_id, set()))
+        else:
+            result[node] = 0
+    
+    return result
+
+
+# Register the operators
+register_operator(
+    "multiplex_degree",
+    _multiplex_degree_operator,
+    description="Compute degree considering multilayer structure",
+    category="centrality",
+)
+
+register_operator(
+    "layer_count",
+    _layer_count_operator,
+    description="Count number of layers each node appears in",
+    category="multilayer",
+)
+

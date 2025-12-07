@@ -12,6 +12,7 @@ DSL Extensions (v2.1):
 5. Network comparison (C.compare())
 6. Null models (N.model())
 7. Path queries (P.shortest(), P.random_walk())
+8. Plugin system for user-defined operators (@dsl_operator)
 
 Example Usage:
     >>> from py3plex.dsl import Q, L, Param, C, N, P
@@ -38,6 +39,12 @@ Example Usage:
     >>> 
     >>> # Find paths
     >>> paths = P.shortest("Alice", "Bob").crossing_layers().execute(network)
+    >>> 
+    >>> # Define custom operators
+    >>> @dsl_operator("my_measure")
+    ... def my_custom_measure(context, param: float = 1.0):
+    ...     # Use context.graph, context.current_layers, etc.
+    ...     return result
 
 The DSL also supports a string syntax:
     SELECT nodes
@@ -51,6 +58,8 @@ The DSL also supports a string syntax:
 All frontends (string DSL, builder API) compile into a single AST which is
 executed by the same engine, ensuring consistent behavior.
 """
+
+from typing import Any, Dict, Optional
 
 from .ast import (
     # Core AST nodes
@@ -112,6 +121,17 @@ from .errors import (
 )
 
 from .registry import measure_registry
+
+from .operator_registry import (
+    DSLOperator,
+    operator_registry,
+    register_operator,
+    get_operator,
+    list_operators,
+    unregister_operator,
+)
+
+from .context import DSLExecutionContext
 
 # Import legacy functions for backward compatibility
 from py3plex.dsl_legacy import (
@@ -198,6 +218,17 @@ __all__ = [
     "TypeMismatchError",
     # Registry
     "measure_registry",
+    # Operator Registry
+    "DSLOperator",
+    "operator_registry",
+    "register_operator",
+    "get_operator",
+    "list_operators",
+    "unregister_operator",
+    "dsl_operator",
+    "describe_operator",
+    # Execution Context
+    "DSLExecutionContext",
     # Legacy functions (backward compatibility)
     "execute_query",
     "format_result",
@@ -217,3 +248,84 @@ __all__ = [
 
 # DSL version for metadata and backwards compatibility
 DSL_VERSION = "2.1"
+
+
+# ============================================================================
+# Public API: DSL Operator Decorator
+# ============================================================================
+
+
+def dsl_operator(
+    name: Optional[str] = None,
+    *,
+    description: Optional[str] = None,
+    category: Optional[str] = None,
+    overwrite: bool = False,
+):
+    """Decorator to register a Python function as a DSL operator.
+    
+    This decorator allows users to define custom operators that can be used
+    in DSL queries. The decorated function should accept a DSLExecutionContext
+    as its first argument, followed by any keyword arguments.
+    
+    Args:
+        name: Operator name (defaults to function name if not provided)
+        description: Human-readable description (defaults to function docstring)
+        category: Optional category for organization (e.g., "centrality", "dynamics")
+        overwrite: If True, allow replacing existing operators
+        
+    Returns:
+        Decorator function that registers the operator
+        
+    Example:
+        >>> @dsl_operator("layer_resilience", category="dynamics")
+        ... def layer_resilience_op(context: DSLExecutionContext, alpha: float = 0.1):
+        ...     '''Compute resilience score for current layers.'''
+        ...     # Access context.graph, context.current_layers, etc.
+        ...     return 42.0
+        
+        >>> # Use in DSL:
+        >>> # measure layer_resilience(alpha=0.2) on layers ["infra", "power"]
+    """
+    def decorator(func):
+        op_name = name or func.__name__
+        op_description = description or func.__doc__
+        
+        register_operator(
+            name=op_name,
+            func=func,
+            description=op_description,
+            category=category,
+            overwrite=overwrite,
+        )
+        
+        return func
+    
+    return decorator
+
+
+def describe_operator(name: str) -> Optional[Dict[str, Any]]:
+    """Get detailed information about a registered operator.
+    
+    Args:
+        name: Operator name
+        
+    Returns:
+        Dictionary with operator metadata, or None if not found
+        
+    Example:
+        >>> info = describe_operator("layer_resilience")
+        >>> print(info["description"])
+        Compute resilience score for current layers.
+    """
+    op = get_operator(name)
+    if op is None:
+        return None
+    
+    return {
+        "name": op.name,
+        "description": op.description,
+        "category": op.category,
+        "function": op.func.__name__,
+    }
+

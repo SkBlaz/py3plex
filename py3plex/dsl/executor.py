@@ -4,7 +4,7 @@ This module provides the execution engine that runs AST queries against
 multilayer networks. It supports temporal queries via the TemporalMultinetView wrapper.
 """
 
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union
 import networkx as nx
 
 from .ast import (
@@ -26,6 +26,8 @@ from .ast import (
 )
 from .result import QueryResult
 from .registry import measure_registry
+from .operator_registry import get_operator
+from .context import DSLExecutionContext
 from .errors import (
     DslExecutionError,
     ParameterMissingError,
@@ -245,12 +247,39 @@ def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
         # Create subgraph for computation
         subgraph = G.subgraph([item for item in items if item in G]).copy()
         
+        # Build execution context for operators
+        active_layers = None
+        if select.layer_expr:
+            active_layers = list(_evaluate_layer_expr(select.layer_expr, network))
+        
+        context = DSLExecutionContext(
+            graph=network,
+            current_layers=active_layers,
+            current_nodes=items,
+            params={},
+        )
+        
         for compute_item in select.compute:
             try:
-                measure_fn = measure_registry.get(compute_item.name)
-                values = measure_fn(subgraph, items)
-                result_name = compute_item.result_name
-                attributes[result_name] = values
+                # First, try to resolve from operator registry
+                operator = get_operator(compute_item.name)
+                if operator is not None:
+                    # Call custom operator with context
+                    result = operator.func(context)
+                    result_name = compute_item.result_name
+                    
+                    # Convert result to dict if it's not already
+                    if isinstance(result, dict):
+                        attributes[result_name] = result
+                    else:
+                        # If result is a scalar, assign it to all nodes
+                        attributes[result_name] = {node: result for node in items}
+                else:
+                    # Fall back to measure registry (built-in measures)
+                    measure_fn = measure_registry.get(compute_item.name)
+                    values = measure_fn(subgraph, items)
+                    result_name = compute_item.result_name
+                    attributes[result_name] = values
             except UnknownMeasureError:
                 # Re-raise unknown measure errors (they have helpful suggestions)
                 raise
