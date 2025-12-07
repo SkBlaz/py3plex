@@ -1,12 +1,19 @@
 Reproducible Environments
 ======================================
 
-*TODO: Consolidate environment setup practices—defer details to Appendix*
+Reproducibility is fundamental to scientific computing. This chapter covers practices for creating consistent, reproducible analysis environments using py3plex. **For detailed Docker configurations and deployment recipes, see Appendix B.**
 
 Reproducibility Principles
 ---------------------------
 
-[Why reproducibility matters in network science]
+Reproducible research requires:
+
+1. **Isolated environments** — Avoid conflicts between projects and system packages
+2. **Dependency pinning** — Lock package versions to prevent drift
+3. **Seed management** — Control randomness in stochastic processes
+4. **Environment documentation** — Record exact configurations used
+
+Without these practices, analyses may produce different results on different machines or at different times, undermining scientific validity.
 
 Environment Management
 ----------------------
@@ -14,108 +21,249 @@ Environment Management
 Python Virtual Environments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Use ``venv`` or ``conda`` to isolate py3plex installations:
+
+**Using venv (built-in):**
+
 .. code-block:: bash
 
-    # venv
+    # Create virtual environment
     python3 -m venv py3plex-env
+    
+    # Activate (Linux/macOS)
     source py3plex-env/bin/activate
+    
+    # Activate (Windows)
+    py3plex-env\Scripts\activate
+    
+    # Install py3plex
     pip install py3plex
     
-    # conda
+    # Deactivate when done
+    deactivate
+
+**Using conda:**
+
+.. code-block:: bash
+
+    # Create conda environment
     conda create -n py3plex python=3.10
+    
+    # Activate
     conda activate py3plex
+    
+    # Install py3plex
     pip install py3plex
+    
+    # Deactivate
+    conda deactivate
+
+**Recommendation:** Use ``venv`` for simple projects, ``conda`` when you need non-Python dependencies (e.g., graph-tool, igraph bindings).
 
 Dependency Pinning
 ~~~~~~~~~~~~~~~~~~
 
+Lock exact package versions to ensure reproducibility:
+
 .. code-block:: bash
 
-    # Generate requirements.txt
+    # Generate requirements file with exact versions
     pip freeze > requirements.txt
     
-    # Reproduce environment
+    # This creates entries like:
+    # py3plex==1.0.1
+    # numpy==1.24.3
+    # networkx==3.1
+    # ...
+    
+    # Reproduce environment on another machine
     pip install -r requirements.txt
+
+**Best practices:**
+
+* Commit ``requirements.txt`` to version control
+* Regenerate when dependencies change
+* Use separate files for development (``requirements-dev.txt``) and production
+
+**Example requirements.txt structure:**
+
+.. code-block:: text
+
+    # Core dependencies
+    py3plex==1.0.1
+    numpy>=1.22.0
+    scipy>=1.8.0
+    networkx>=2.8
+    
+    # Optional features
+    matplotlib>=3.5.0
+    pandas>=1.4.0
 
 Docker Containers (Overview)
 -----------------------------
 
-[High-level benefits—detailed configs in Appendix B]
+Docker provides the strongest reproducibility guarantees by packaging the entire environment—OS, Python, libraries, and code—into a container.
 
 Why Docker?
 ~~~~~~~~~~~
 
-* **Isolation** — No system Python conflicts
-* **Reproducibility** — Identical environment across machines
-* **Portability** — Share complete environment
+* **Complete isolation** — No system Python conflicts, no OS differences
+* **Perfect reproducibility** — Identical environment across machines and time
+* **Portability** — Share complete analysis environment with collaborators
+* **Deployment** — Easy transition from development to production
 
 Basic Docker Usage
 ~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
-    # Build image
+    # Build py3plex image
     docker build -t py3plex:latest .
     
-    # Run analysis
-    docker run --rm py3plex:latest python analysis.py
+    # Run analysis script
+    docker run --rm -v $(pwd):/workspace py3plex:latest \
+        python /workspace/analysis.py
+    
+    # Interactive shell
+    docker run --rm -it py3plex:latest bash
 
-[For detailed Dockerfile, Compose configs → See Appendix B]
+**When to use Docker:**
+
+* **Multi-machine reproducibility** — Running on clusters, cloud, or different dev machines
+* **Long-term archival** — Preserve exact environment for future replication
+* **Production deployment** — Consistent behavior from dev to production
+
+**For detailed Dockerfile examples, docker-compose configurations, and deployment recipes, see Appendix B.**
 
 Seed Management
 ---------------
 
-[Ensuring deterministic results]
+Controlling Randomness
+~~~~~~~~~~~~~~~~~~~~~~
 
-Setting Seeds
-~~~~~~~~~~~~~
+Set seeds for all stochastic processes to ensure deterministic results:
 
 .. code-block:: python
 
-    # For dynamics
-    from py3plex.dynamics.models import SIRDynamics
+    import random
+    import numpy as np
+    
+    # Set global seeds
+    random.seed(42)
+    np.random.seed(42)
+    
+    # For dynamics models
+    from py3plex.dynamics import SIRDynamics
     
     sir = SIRDynamics(network, beta=0.3, gamma=0.1)
-    sir.set_seed(42)  # Reproducible results
+    sir.set_seed(42)  # Reproducible epidemic simulation
+    results = sir.run(steps=100)
     
     # For random graph generation
-    import random
-    random.seed(42)
+    import networkx as nx
+    G = nx.erdos_renyi_graph(100, 0.1, seed=42)
+
+**Seed management checklist:**
+
+1. Set seeds at the **start** of scripts before any randomness
+2. Document seed values in code comments and papers
+3. Use **different seeds** for different experiments (42, 43, 44, ...)
+4. Re-run with multiple seeds to assess variability
 
 Recording Environments
 ----------------------
 
-Environment Captures
-~~~~~~~~~~~~~~~~~~~~
+Document Analysis Environments
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Record environment details for publication and replication:
 
 .. code-block:: python
 
-    # Save environment info
     import platform
+    import sys
     import py3plex
+    import numpy as np
+    import networkx as nx
     
-    print(f"Python: {platform.python_version()}")
-    print(f"py3plex: {py3plex.__version__}")
-    print(f"Platform: {platform.platform()}")
+    # Print environment summary
+    print("Environment Information:")
+    print(f"  Python: {sys.version}")
+    print(f"  Platform: {platform.platform()}")
+    print(f"  py3plex: {py3plex.__version__}")
+    print(f"  NumPy: {np.__version__}")
+    print(f"  NetworkX: {nx.__version__}")
 
-Version Control
-~~~~~~~~~~~~~~~
+**Include in papers/reports:**
 
-[Git for code, data versioning strategies]
+* Python version (e.g., Python 3.10.8)
+* py3plex version (e.g., 1.0.1)
+* Key dependency versions (NumPy, NetworkX, SciPy)
+* Operating system (Linux, macOS, Windows)
+* Hardware details for performance-critical analyses
+
+Version Control for Code
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use Git to track code changes:
+
+.. code-block:: bash
+
+    # Initialize repository
+    git init
+    git add analysis.py requirements.txt
+    git commit -m "Initial analysis code"
+    
+    # Tag important versions
+    git tag -a v1.0 -m "Version used for paper submission"
+
+**Best practices:**
+
+* Commit ``requirements.txt`` and environment configs
+* Use meaningful commit messages
+* Tag versions used for publications
+* Don't commit large datasets (use Git LFS or external storage)
+
+Version Control for Data
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For input datasets:
+
+* **Small datasets (<100 MB):** Commit directly to Git
+* **Medium datasets (100 MB - 1 GB):** Use Git LFS
+* **Large datasets (>1 GB):** Store externally (Zenodo, OSF, Dataverse) and include download script
+
+**Example download script:**
+
+.. code-block:: python
+
+    # download_data.py
+    import urllib.request
+    
+    # Dataset DOI and URL
+    DOI = "10.5281/zenodo.1234567"
+    URL = "https://zenodo.org/record/1234567/files/network.edgelist"
+    
+    print(f"Downloading dataset from {DOI}")
+    urllib.request.urlretrieve(URL, "data/network.edgelist")
+    print("Download complete")
 
 Summary
 -------
 
-**Key practices:**
+**Essential practices for reproducible py3plex analyses:**
 
-* Use virtual environments or containers
-* Pin dependencies with requirements.txt
-* Set seeds for stochastic processes
-* Record environment details in papers/reports
+1. **Use virtual environments** (venv or conda) to isolate dependencies
+2. **Pin exact versions** with ``pip freeze > requirements.txt``
+3. **Set random seeds** for all stochastic processes
+4. **Record environment details** in papers and code comments
+5. **Use version control** (Git) for code, Git LFS or external storage for data
+6. **Consider Docker** for maximum reproducibility and deployment
 
-[Detailed Docker configs and CI setup → Appendices]
+**For production deployments:**
 
-*Source files:*
-- docfiles/deployment/cli_and_docker.rst (high-level)
-- Dockerfile and docker-compose.yml → Appendix B
-- docfiles/dev/development_guide.rst
+* Use Docker containers for complete environment isolation
+* See Appendix B for Dockerfile templates and docker-compose configurations
+* See Appendix A for repository structure best practices
+
+**Next chapter:** Overview of the py3plex GUI for visual exploration
