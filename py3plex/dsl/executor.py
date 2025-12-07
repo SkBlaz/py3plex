@@ -26,6 +26,8 @@ from .ast import (
 )
 from .result import QueryResult
 from .registry import measure_registry
+from .operator_registry import get_operator
+from .context import DSLExecutionContext
 from .errors import (
     DslExecutionError,
     ParameterMissingError,
@@ -58,7 +60,7 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
     
     # Step 4: Execute SELECT statement
-    return _execute_select(actual_network, bound_query.select)
+    return _execute_select(actual_network, bound_query.select, params)
 
 
 def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalContext]) -> Any:
@@ -211,8 +213,16 @@ def _get_measure_complexity(measure: str, n: int, m: int) -> str:
     return complexities.get(measure, "Unknown")
 
 
-def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
-    """Execute a SELECT statement."""
+def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None) -> QueryResult:
+    """Execute a SELECT statement.
+    
+    Args:
+        network: Multilayer network object
+        select: SELECT statement AST
+        params: Parameter bindings for operators
+    """
+    params = params or {}
+    
     # Get core network
     if not hasattr(network, 'core_network') or network.core_network is None:
         return QueryResult(
@@ -245,12 +255,51 @@ def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
         # Create subgraph for computation
         subgraph = G.subgraph([item for item in items if item in G]).copy()
         
+        # Determine active layers if any were filtered
+        active_layers = None
+        if select.layer_expr:
+            active_layers = list(_evaluate_layer_expr(select.layer_expr, network))
+        
         for compute_item in select.compute:
             try:
-                measure_fn = measure_registry.get(compute_item.name)
-                values = measure_fn(subgraph, items)
-                result_name = compute_item.result_name
-                attributes[result_name] = values
+                # First check the operator registry (new pluggable operators)
+                operator = get_operator(compute_item.name)
+                
+                if operator is not None:
+                    # Use pluggable operator with execution context
+                    context = DSLExecutionContext(
+                        graph=subgraph,
+                        network=network,
+                        current_layers=active_layers,
+                        current_nodes=items,
+                        params=params or {},
+                        meta={"compute_item": compute_item.name}
+                    )
+                    
+                    # Call the operator function with context
+                    # The operator should return a dict mapping nodes to values
+                    result = operator.func(context)
+                    
+                    # Handle different return types
+                    if isinstance(result, dict):
+                        values = result
+                    elif isinstance(result, (int, float, str)):
+                        # Scalar result - apply to all nodes
+                        values = {node: result for node in items}
+                    else:
+                        # Assume iterable or other - try to convert
+                        values = {node: result for node in items}
+                    
+                    result_name = compute_item.result_name
+                    attributes[result_name] = values
+                    
+                else:
+                    # Fall back to measure registry (backward compatibility)
+                    measure_fn = measure_registry.get(compute_item.name)
+                    values = measure_fn(subgraph, items)
+                    result_name = compute_item.result_name
+                    attributes[result_name] = values
+                    
             except UnknownMeasureError:
                 # Re-raise unknown measure errors (they have helpful suggestions)
                 raise

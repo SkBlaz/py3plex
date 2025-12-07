@@ -12,6 +12,7 @@ DSL Extensions (v2.1):
 5. Network comparison (C.compare())
 6. Null models (N.model())
 7. Path queries (P.shortest(), P.random_walk())
+8. Pluggable operator system (@dsl_operator decorator)
 
 Example Usage:
     >>> from py3plex.dsl import Q, L, Param, C, N, P
@@ -38,6 +39,14 @@ Example Usage:
     >>> 
     >>> # Find paths
     >>> paths = P.shortest("Alice", "Bob").crossing_layers().execute(network)
+    >>> 
+    >>> # Register custom operators
+    >>> from py3plex.dsl import dsl_operator
+    >>> 
+    >>> @dsl_operator("custom_measure")
+    >>> def my_measure(context, param: float = 1.0):
+    ...     # Use context.graph, context.current_nodes, etc.
+    ...     return {"result": param * len(context.current_nodes or [])}
 
 The DSL also supports a string syntax:
     SELECT nodes
@@ -51,6 +60,8 @@ The DSL also supports a string syntax:
 All frontends (string DSL, builder API) compile into a single AST which is
 executed by the same engine, ensuring consistent behavior.
 """
+
+from typing import Optional
 
 from .ast import (
     # Core AST nodes
@@ -113,6 +124,19 @@ from .errors import (
 
 from .registry import measure_registry
 
+# Import new operator system
+from .operator_registry import (
+    DSLOperator,
+    register_operator,
+    get_operator,
+    has_operator,
+    list_operators,
+    describe_operator,
+    unregister_operator,
+)
+
+from .context import DSLExecutionContext
+
 # Import legacy functions for backward compatibility
 from py3plex.dsl_legacy import (
     execute_query,
@@ -143,6 +167,56 @@ from py3plex.dsl_legacy import (
     _parse_return_clause,
     _tokenize_match_pattern,
 )
+
+
+# Decorator for user-defined DSL operators
+def dsl_operator(
+    name: Optional[str] = None,
+    *,
+    description: Optional[str] = None,
+    category: Optional[str] = None,
+    overwrite: bool = False,
+):
+    """Decorator to register a Python function as a DSL operator.
+    
+    This decorator allows users to define custom DSL operators that can be
+    invoked from DSL queries just like built-in operators.
+    
+    Args:
+        name: Operator name (defaults to function name if not provided)
+        description: Optional description of what the operator does
+        category: Optional category (e.g., "centrality", "dynamics", "io")
+        overwrite: If True, allow overwriting existing operator
+        
+    Returns:
+        Decorator function
+        
+    Example:
+        >>> from py3plex.dsl import dsl_operator
+        >>> 
+        >>> @dsl_operator("layer_resilience", description="Compute layer resilience")
+        >>> def layer_resilience_op(context, alpha: float = 0.1):
+        ...     # context provides access to graph, layers, nodes, params
+        ...     result = len(context.current_layers or []) * alpha
+        ...     return result
+        >>> 
+        >>> # Now "layer_resilience" can be used in DSL queries via COMPUTE clause
+    """
+    from typing import Callable, Any, Optional
+    
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        op_name = name or func.__name__
+        register_operator(
+            name=op_name,
+            func=func,
+            description=description or func.__doc__,
+            category=category,
+            overwrite=overwrite,
+        )
+        return func
+    
+    return decorator
+
 
 __all__ = [
     # AST
@@ -198,6 +272,16 @@ __all__ = [
     "TypeMismatchError",
     # Registry
     "measure_registry",
+    # Operator system (new in DSL v2.1)
+    "DSLOperator",
+    "dsl_operator",
+    "register_operator",
+    "get_operator",
+    "has_operator",
+    "list_operators",
+    "describe_operator",
+    "unregister_operator",
+    "DSLExecutionContext",
     # Legacy functions (backward compatibility)
     "execute_query",
     "format_result",
