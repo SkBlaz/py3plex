@@ -211,3 +211,104 @@ def _compute_communities(G: nx.Graph, nodes: Optional[List] = None) -> Dict[Any,
     if nodes is not None:
         return {node: partition.get(node, -1) for node in nodes}
     return partition
+
+
+# ============================================================================
+# Example: Migrating built-in operators to new system
+# ============================================================================
+# 
+# Below are examples of how to use the new operator registry system alongside
+# the existing measure registry. These operators demonstrate the new API.
+#
+
+from .operator_registry import register_operator, DSLExecutionContext
+
+
+# Example 1: Simple operator that uses context
+def _operator_node_count(context: DSLExecutionContext) -> int:
+    """Count the number of nodes in the current selection.
+    
+    Args:
+        context: Execution context with graph, current_nodes, etc.
+        
+    Returns:
+        Number of selected nodes
+    """
+    if context.current_nodes is not None:
+        return len(context.current_nodes)
+    elif hasattr(context.graph, 'get_nodes'):
+        return len(list(context.graph.get_nodes()))
+    return 0
+
+
+register_operator(
+    "node_count",
+    _operator_node_count,
+    description="Count nodes in current selection",
+    category="statistics"
+)
+
+
+# Example 2: Operator with parameters
+def _operator_layer_degree(context: DSLExecutionContext, layer: Optional[str] = None) -> Dict[Any, int]:
+    """Compute degree for nodes in a specific layer.
+    
+    Args:
+        context: Execution context
+        layer: Optional layer name (defaults to all current layers)
+        
+    Returns:
+        Dict mapping nodes to their degrees
+    """
+    if not hasattr(context.graph, 'core_network'):
+        return {}
+    
+    G = context.graph.core_network
+    nodes = context.current_nodes or []
+    
+    # Filter nodes by layer if specified
+    if layer is not None:
+        nodes = [n for n in nodes if isinstance(n, tuple) and len(n) >= 2 and n[1] == layer]
+    
+    # Compute degrees
+    return {node: G.degree(node) if node in G else 0 for node in nodes}
+
+
+register_operator(
+    "layer_degree",
+    _operator_layer_degree,
+    description="Compute node degree within a specific layer",
+    category="centrality"
+)
+
+
+# Example 3: Operator that accesses multiple context fields
+def _operator_layer_stats(context: DSLExecutionContext) -> Dict[str, Any]:
+    """Compute statistics about current layer selection.
+    
+    Args:
+        context: Execution context
+        
+    Returns:
+        Dict with layer statistics
+    """
+    stats = {
+        "num_layers": len(context.current_layers) if context.current_layers else 0,
+        "num_nodes": len(context.current_nodes) if context.current_nodes else 0,
+    }
+    
+    if hasattr(context.graph, 'core_network') and context.graph.core_network:
+        G = context.graph.core_network
+        nodes = context.current_nodes or []
+        stats["num_edges"] = sum(1 for n in nodes if n in G for _ in G.neighbors(n)) // 2
+    
+    return stats
+
+
+register_operator(
+    "layer_stats",
+    _operator_layer_stats,
+    description="Compute statistics about layer selection",
+    category="statistics"
+)
+

@@ -26,6 +26,7 @@ from .ast import (
 )
 from .result import QueryResult
 from .registry import measure_registry
+from .operator_registry import get_operator, DSLExecutionContext
 from .errors import (
     DslExecutionError,
     ParameterMissingError,
@@ -58,7 +59,7 @@ def execute_ast(network: Any, query: Query, params: Optional[Dict[str, Any]] = N
     actual_network = _apply_temporal_context(network, bound_query.select.temporal_context)
     
     # Step 4: Execute SELECT statement
-    return _execute_select(actual_network, bound_query.select)
+    return _execute_select(actual_network, bound_query.select, params)
 
 
 def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalContext]) -> Any:
@@ -211,8 +212,10 @@ def _get_measure_complexity(measure: str, n: int, m: int) -> str:
     return complexities.get(measure, "Unknown")
 
 
-def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
+def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str, Any]] = None) -> QueryResult:
     """Execute a SELECT statement."""
+    params = params or {}
+    
     # Get core network
     if not hasattr(network, 'core_network') or network.core_network is None:
         return QueryResult(
@@ -245,12 +248,43 @@ def _execute_select(network: Any, select: SelectStmt) -> QueryResult:
         # Create subgraph for computation
         subgraph = G.subgraph([item for item in items if item in G]).copy()
         
+        # Build execution context for operators
+        context = DSLExecutionContext(
+            graph=network,
+            current_layers=list(_evaluate_layer_expr(select.layer_expr, network)) if select.layer_expr else None,
+            current_nodes=items,
+            params=params,
+        )
+        
         for compute_item in select.compute:
             try:
-                measure_fn = measure_registry.get(compute_item.name)
-                values = measure_fn(subgraph, items)
-                result_name = compute_item.result_name
-                attributes[result_name] = values
+                # First, try to get from operator registry (new system)
+                operator = get_operator(compute_item.name)
+                
+                if operator is not None:
+                    # Use new operator system - pass context as first argument
+                    # Extract any additional parameters (future enhancement)
+                    values = operator.func(context)
+                    
+                    # Convert to dict format expected by DSL
+                    if isinstance(values, dict):
+                        result_values = values
+                    elif isinstance(values, (int, float, str)):
+                        # Scalar value - apply to all items
+                        result_values = {item: values for item in items}
+                    else:
+                        # Assume iterable of values
+                        result_values = {item: val for item, val in zip(items, values)}
+                    
+                    result_name = compute_item.result_name
+                    attributes[result_name] = result_values
+                else:
+                    # Fall back to measure registry (backward compatibility)
+                    measure_fn = measure_registry.get(compute_item.name)
+                    values = measure_fn(subgraph, items)
+                    result_name = compute_item.result_name
+                    attributes[result_name] = values
+                    
             except UnknownMeasureError:
                 # Re-raise unknown measure errors (they have helpful suggestions)
                 raise
