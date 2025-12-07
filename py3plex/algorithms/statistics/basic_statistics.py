@@ -90,35 +90,26 @@ def core_network_statistics(
     Returns:
         DataFrame containing network statistics
     """
-    rframe = pd.DataFrame(
-        columns=[
-            "Name",
-            "classes",
-            "nodes",
-            "edges",
-            "degree",
-            "diameter",
-            "connected components",
-            "clustering coefficient",
-            "density",
-            "flow_hierarchy",
-        ]
-    )
     nodes = len(G.nodes())
     edges = len(G.edges())
-    cc = len(list(nx.connected_components(G.to_undirected())))
+    
+    # Convert to simple undirected graph for analysis
+    # MultiGraphs need to be converted to simple Graphs for some algorithms
+    G_undirected = G.to_undirected()
+    if isinstance(G_undirected, nx.MultiGraph):
+        G_undirected = nx.Graph(G_undirected)
+    
+    num_components = len(list(nx.connected_components(G_undirected)))
 
     try:
-        cc = nx.average_clustering(G.to_undirected())
+        clustering = nx.average_clustering(G_undirected)
     except (nx.NetworkXError, ValueError, ZeroDivisionError):
-        cc = None
+        clustering = None
 
     try:
         dx = nx.density(G)
     except (nx.NetworkXError, ZeroDivisionError):
         dx = None
-
-    clustering = None
 
     if labels is not None:
         number_of_classes = labels.shape[1]
@@ -146,9 +137,11 @@ def core_network_statistics(
         "diameter": diameter,
         "degree": mean_degree,
         "flow hierarchy": flow_hierarchy,
-        "connected components": cc,
+        "connected components": num_components,
         "clustering coefficient": clustering,
         "density": dx,
     }
-    rframe = rframe.append(point, ignore_index=True)
+    
+    # Create DataFrame directly from the data point
+    rframe = pd.DataFrame([point])
     return rframe

@@ -160,6 +160,7 @@ def compute_enrichment(
         )
 
     finalFrame = pd.DataFrame()
+    all_results = []
 
     for k, v in topology_map.items():
 
@@ -177,11 +178,10 @@ def compute_enrichment(
         [range(n)[i : i + step] for i in range(0, n, step)]  # generate jobs
 
         # result container
-        tmpframe = pd.DataFrame(columns=["observation", "term", "pval"])
         results = [parallel_enrichment(x) for x in range(n)]
 
         # for batch in jobs:
-        tmpframe = tmpframe.append(results, ignore_index=True)
+        tmpframe = pd.DataFrame(results)
 
         # multitest corrections on partition level
         if multitest_method == "raw":
@@ -198,7 +198,12 @@ def compute_enrichment(
             tmpframe["significant"] = pd.Series(significant)
             tmpframe = tmpframe[tmpframe["significant"]]
 
-        finalFrame = finalFrame.append(tmpframe, ignore_index=True)
+        all_results.append(tmpframe)
+
+    if all_results:
+        finalFrame = pd.concat(all_results, ignore_index=True)
+    else:
+        finalFrame = pd.DataFrame()
 
     return finalFrame
 
