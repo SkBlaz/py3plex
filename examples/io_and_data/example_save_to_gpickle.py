@@ -17,7 +17,7 @@ SKIP_CI: external_deps - Requires specific dataset files
 
 import os
 from py3plex.core import multinet
-from py3plex.utils import get_dataset_path
+from py3plex.utils import get_dataset_path, get_data_path
 
 # Path to the input dataset
 dataset = get_dataset_path("imdb_gml.gml")
@@ -41,7 +41,9 @@ multilayer_network = multinet.multi_layer_network().load_network(
 print(f"Network loaded successfully from {dataset}")
 
 # Define output path for gpickle file
-output_path = get_dataset_path("imdb.gpickle")
+# Get the datasets directory and construct output path
+datasets_dir = get_data_path("datasets")
+output_path = os.path.join(datasets_dir, "imdb.gpickle")
 
 print(f"\nSaving network to gpickle format: {output_path}")
 # Save the network in gpickle format
@@ -52,8 +54,9 @@ print("Network saved successfully!")
 
 print("\nReloading network from gpickle format...")
 # Create a new network object and load from the gpickle file
+# Note: Must specify directed=True to match the saved network
 multilayer_network_new = multinet.multi_layer_network()
-multilayer_network_new.load_network(output_path, input_type="gpickle")
+multilayer_network_new.load_network(output_path, input_type="gpickle", directed=True)
 
 print("Network reloaded successfully!")
 
