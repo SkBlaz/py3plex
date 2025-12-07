@@ -246,7 +246,8 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     if select.target == Target.NODES:
         items = list(network.get_nodes())
     else:
-        items = list(network.get_edges())
+        # Get edges with data to access attributes like weight
+        items = list(network.get_edges(data=True))
     
     # Step 2: Apply layer filter
     if select.layer_expr:
@@ -259,53 +260,79 @@ def _execute_select(network: Any, select: SelectStmt, params: Optional[Dict[str,
     
     # Step 4: Compute measures
     attributes: Dict[str, Dict] = {}
-    if select.compute and select.target == Target.NODES:
-        # Create subgraph for computation
-        subgraph = G.subgraph([item for item in items if item in G]).copy()
-        
-        # Build execution context for operators
-        active_layers = None
-        if select.layer_expr:
-            active_layers = list(_evaluate_layer_expr(select.layer_expr, network))
-        
-        context = DSLExecutionContext(
-            graph=network,
-            current_layers=active_layers,
-            current_nodes=items,
-            params={},
-        )
-        
-        for compute_item in select.compute:
-            try:
-                # First, try to resolve from operator registry
-                operator = get_operator(compute_item.name)
-                if operator is not None:
-                    # Call custom operator with context
-                    result = operator.func(context)
+    if select.compute:
+        if select.target == Target.NODES:
+            # Node measures - existing implementation
+            # Create subgraph for computation
+            subgraph = G.subgraph([item for item in items if item in G]).copy()
+            
+            # Build execution context for operators
+            active_layers = None
+            if select.layer_expr:
+                active_layers = list(_evaluate_layer_expr(select.layer_expr, network))
+            
+            context = DSLExecutionContext(
+                graph=network,
+                current_layers=active_layers,
+                current_nodes=items,
+                params={},
+            )
+            
+            for compute_item in select.compute:
+                try:
+                    # First, try to resolve from operator registry
+                    operator = get_operator(compute_item.name)
+                    if operator is not None:
+                        # Call custom operator with context
+                        result = operator.func(context)
+                        result_name = compute_item.result_name
+                        
+                        # Convert result to dict if it's not already
+                        if isinstance(result, dict):
+                            attributes[result_name] = result
+                        else:
+                            # If result is a scalar, assign it to all nodes
+                            attributes[result_name] = {node: result for node in items}
+                    else:
+                        # Fall back to measure registry (built-in measures)
+                        measure_fn = measure_registry.get(compute_item.name)
+                        values = measure_fn(subgraph, items)
+                        result_name = compute_item.result_name
+                        attributes[result_name] = values
+                except UnknownMeasureError:
+                    # Re-raise unknown measure errors (they have helpful suggestions)
+                    raise
+                except Exception as e:
+                    # Log specific error and continue with other measures
+                    import logging
+                    logging.getLogger(__name__).warning(
+                        f"Error computing measure '{compute_item.name}': {e}"
+                    )
+                    attributes[compute_item.result_name] = {}
+        else:
+            # Edge measures - new implementation
+            for compute_item in select.compute:
+                try:
+                    # Check if this is an edge-specific measure
+                    measure_fn = measure_registry.get(compute_item.name, target="edges")
                     result_name = compute_item.result_name
                     
-                    # Convert result to dict if it's not already
-                    if isinstance(result, dict):
-                        attributes[result_name] = result
-                    else:
-                        # If result is a scalar, assign it to all nodes
-                        attributes[result_name] = {node: result for node in items}
-                else:
-                    # Fall back to measure registry (built-in measures)
-                    measure_fn = measure_registry.get(compute_item.name)
-                    values = measure_fn(subgraph, items)
-                    result_name = compute_item.result_name
+                    # Compute the measure on edges
+                    values = measure_fn(G, items)
                     attributes[result_name] = values
-            except UnknownMeasureError:
-                # Re-raise unknown measure errors (they have helpful suggestions)
-                raise
-            except Exception as e:
-                # Log specific error and continue with other measures
-                import logging
-                logging.getLogger(__name__).warning(
-                    f"Error computing measure '{compute_item.name}': {e}"
-                )
-                attributes[compute_item.result_name] = {}
+                except UnknownMeasureError:
+                    # Re-raise with context that this is an edge query
+                    raise
+                except DslExecutionError:
+                    # Re-raise DSL execution errors (e.g., wrong target)
+                    raise
+                except Exception as e:
+                    # Log specific error and continue with other measures
+                    import logging
+                    logging.getLogger(__name__).warning(
+                        f"Error computing edge measure '{compute_item.name}': {e}"
+                    )
+                    attributes[compute_item.result_name] = {}
     
     # Step 5: Apply ORDER BY
     if select.order_by:
@@ -514,9 +541,65 @@ def _evaluate_special(item: Any, special: SpecialPredicate,
 
 
 def _get_attribute_value(item: Any, attribute: str, network: Any, G: nx.Graph) -> Any:
-    """Get an attribute value from a node or edge."""
-    # Handle nodes (tuples of (node_id, layer))
+    """Get an attribute value from a node or edge.
+    
+    For nodes (tuples of (node_id, layer)):
+        - 'layer': returns the layer name
+        - 'degree': returns node degree
+        - other: looks up node attributes
+    
+    For edges (tuples of ((node_id, layer), (node_id, layer), {data})):
+        - 'source_layer': returns source node's layer
+        - 'target_layer': returns target node's layer
+        - 'layer': returns source layer (for intralayer edges) or None
+        - 'weight': returns edge weight (default 1.0)
+        - other: looks up edge attributes
+    """
+    # Check if this is an edge (tuple with 2 node tuples as first elements)
     if isinstance(item, tuple) and len(item) >= 2:
+        first_elem = item[0]
+        second_elem = item[1]
+        
+        # Check if this is an edge: ((node, layer), (node, layer), {data}?)
+        if isinstance(first_elem, tuple) and isinstance(second_elem, tuple):
+            if len(first_elem) >= 2 and len(second_elem) >= 2:
+                # This is an edge
+                source_node, source_layer = first_elem[0], first_elem[1]
+                target_node, target_layer = second_elem[0], second_elem[1]
+                
+                # Handle edge-specific attributes
+                if attribute == "source_layer":
+                    return str(source_layer)
+                elif attribute == "target_layer":
+                    return str(target_layer)
+                elif attribute == "layer":
+                    # For intralayer edges, return the common layer
+                    if source_layer == target_layer:
+                        return str(source_layer)
+                    return None
+                elif attribute == "weight":
+                    # Get edge data if available
+                    if len(item) >= 3 and isinstance(item[2], dict):
+                        return item[2].get('weight', 1.0)
+                    # Try to get from graph
+                    if G.has_edge(first_elem, second_elem):
+                        edge_data = G.get_edge_data(first_elem, second_elem)
+                        if edge_data:
+                            return edge_data.get('weight', 1.0)
+                    return 1.0
+                else:
+                    # Try to get from edge data dict
+                    if len(item) >= 3 and isinstance(item[2], dict):
+                        if attribute in item[2]:
+                            return item[2][attribute]
+                    # Try to get from graph
+                    if G.has_edge(first_elem, second_elem):
+                        edge_data = G.get_edge_data(first_elem, second_elem)
+                        if edge_data and attribute in edge_data:
+                            return edge_data[attribute]
+                return None
+        
+        # This is a node (tuple of (node_id, layer))
         node_id, layer = item[0], item[1]
         
         if attribute == "layer":
@@ -536,9 +619,23 @@ def _get_attribute_value(item: Any, attribute: str, network: Any, G: nx.Graph) -
     return None
 
 
+def _get_edge_key(edge: Any) -> Tuple[Any, Any]:
+    """Get a hashable key for an edge.
+    
+    Converts edge tuple (u, v, {data}?) to simple (u, v) for use as dict key.
+    """
+    if isinstance(edge, tuple) and len(edge) >= 2:
+        return (edge[0], edge[1])
+    return edge
+
+
 def _apply_ordering(items: List[Any], order_by: List[OrderItem],
                     attributes: Dict[str, Dict]) -> List[Any]:
-    """Apply ORDER BY to items."""
+    """Apply ORDER BY to items.
+    
+    For nodes: Uses computed attributes
+    For edges: Uses computed attributes or edge data attributes (e.g., weight)
+    """
     if not order_by:
         return items
     
@@ -547,11 +644,17 @@ def _apply_ordering(items: List[Any], order_by: List[OrderItem],
         for order_item in order_by:
             key = order_item.key
             
-            # Get value from computed attributes
+            # Get value from computed attributes first
             if key in attributes:
-                value = attributes[key].get(item, 0)
+                # For edges, use hashable key
+                item_key = _get_edge_key(item) if isinstance(item, tuple) and len(item) >= 3 else item
+                value = attributes[key].get(item_key, 0)
             else:
-                value = 0
+                # For edges, try to get from edge data (e.g., weight)
+                if isinstance(item, tuple) and len(item) >= 3 and isinstance(item[2], dict):
+                    value = item[2].get(key, 0)
+                else:
+                    value = 0
             
             # Negate for descending
             if order_item.desc and isinstance(value, (int, float)):
