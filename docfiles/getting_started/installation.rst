@@ -422,7 +422,6 @@ Next Steps
 After installation, proceed to:
 
 * :doc:`tutorial_10min` - 10-minute comprehensive tutorial
-* :doc:`tutorial_10min` - Comprehensive 10-minute tutorial
 * :doc:`../user_guide/networks` - Detailed usage guide
 
 Getting Help

@@ -339,7 +339,6 @@ Related Documentation
 ---------------------
 
 * :doc:`../getting_started/tutorial_10min` - 10-minute tutorial
-* :doc:`../getting_started/tutorial_10min` - 10-minute tutorial
 * :doc:`../user_guide/networks` - Working with networks
 * :doc:`../user_guide/visualization` - Visualization guide
 
