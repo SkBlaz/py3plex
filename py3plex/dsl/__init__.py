@@ -4,7 +4,7 @@ This module provides a Domain-Specific Language (DSL) version 2 for querying and
 analyzing multilayer networks. DSL v2 introduces:
 
 1. Unified AST representation
-2. Pythonic builder API (Q, L, Param)  
+2. Pythonic builder API (Q, L, Param)
 3. Multilayer-specific abstractions (layer algebra, intralayer/interlayer)
 4. Improved ergonomics (ORDER BY, LIMIT, EXPLAIN, rich results)
 
@@ -16,7 +16,7 @@ DSL Extensions (v2.1):
 
 Example Usage:
     >>> from py3plex.dsl import Q, L, Param, C, N, P
-    >>> 
+    >>>
     >>> # Build a query using the builder API
     >>> q = (
     ...     Q.nodes()
@@ -26,20 +26,20 @@ Example Usage:
     ...      .order_by("bc", desc=True)
     ...      .limit(20)
     ... )
-    >>> 
+    >>>
     >>> # Execute the query
     >>> result = q.execute(network, k=5)
     >>> df = result.to_pandas()
-    >>> 
+    >>>
     >>> # Compare two networks
     >>> comparison = C.compare("baseline", "treatment").using("multiplex_jaccard").execute(networks)
-    >>> 
+    >>>
     >>> # Generate null models
     >>> nullmodels = N.configuration().samples(100).seed(42).execute(network)
-    >>> 
+    >>>
     >>> # Find paths
     >>> paths = P.shortest("Alice", "Bob").crossing_layers().execute(network)
-    >>> 
+    >>>
     >>> # Define custom operators
     >>> @dsl_operator("my_measure")
     ... def my_custom_measure(context, param: float = 1.0):
@@ -263,34 +263,34 @@ def dsl_operator(
     overwrite: bool = False,
 ):
     """Decorator to register a Python function as a DSL operator.
-    
+
     This decorator allows users to define custom operators that can be used
     in DSL queries. The decorated function should accept a DSLExecutionContext
     as its first argument, followed by any keyword arguments.
-    
+
     Args:
         name: Operator name (defaults to function name if not provided)
         description: Human-readable description (defaults to function docstring)
         category: Optional category for organization (e.g., "centrality", "dynamics")
         overwrite: If True, allow replacing existing operators
-        
+
     Returns:
         Decorator function that registers the operator
-        
+
     Example:
         >>> @dsl_operator("layer_resilience", category="dynamics")
         ... def layer_resilience_op(context: DSLExecutionContext, alpha: float = 0.1):
         ...     '''Compute resilience score for current layers.'''
         ...     # Access context.graph, context.current_layers, etc.
         ...     return 42.0
-        
+
         >>> # Use in DSL:
         >>> # measure layer_resilience(alpha=0.2) on layers ["infra", "power"]
     """
     def decorator(func):
         op_name = name or func.__name__
         op_description = description or func.__doc__
-        
+
         register_operator(
             name=op_name,
             func=func,
@@ -298,21 +298,21 @@ def dsl_operator(
             category=category,
             overwrite=overwrite,
         )
-        
+
         return func
-    
+
     return decorator
 
 
 def describe_operator(name: str) -> Optional[Dict[str, Any]]:
     """Get detailed information about a registered operator.
-    
+
     Args:
         name: Operator name
-        
+
     Returns:
         Dictionary with operator metadata, or None if not found
-        
+
     Example:
         >>> info = describe_operator("layer_resilience")
         >>> print(info["description"])
@@ -321,7 +321,7 @@ def describe_operator(name: str) -> Optional[Dict[str, Any]]:
     op = get_operator(name)
     if op is None:
         return None
-    
+
     return {
         "name": op.name,
         "description": op.description,
