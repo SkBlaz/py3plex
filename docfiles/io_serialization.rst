@@ -358,6 +358,5 @@ See Also
 --------
 
 * :doc:`getting_started/tutorial_10min` - Getting started tutorial
-* :doc:`getting_started/tutorial_10min` - Complete tutorial
 * :doc:`networkx_interop` - NetworkX integration details
 * :doc:`deployment/performance_scalability` - Performance optimization tips
