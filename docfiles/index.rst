@@ -98,7 +98,7 @@ Create a multilayer network:
 Start Here
 ==========
 
-**New to py3plex?** → Begin with the :doc:`getting_started/quickstart_5min` to create your first network in 5 minutes.
+**New to py3plex?** → Begin with the :doc:`getting_started/tutorial_10min` to go from basics to advanced analysis in 10 minutes.
 
 **Already familiar with multilayer networks?** → Jump to :doc:`how-to/run_community_detection` or explore the :doc:`how-to/part_intro`.
 
@@ -138,7 +138,6 @@ Step-by-step tutorials for beginners. Start here if you're new to py3plex.
 
    getting_started/part_intro
    getting_started/installation
-   getting_started/quickstart_5min
    getting_started/tutorial_10min
    getting_started/common_issues
 

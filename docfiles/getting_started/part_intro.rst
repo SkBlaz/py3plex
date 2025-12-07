@@ -6,8 +6,7 @@ This section provides step-by-step tutorials to help you install py3plex and com
 **What's in this section:**
 
 * :doc:`installation` — Installation options and dependencies
-* :doc:`quickstart_5min` — Create a network, compute statistics, and visualize in 5 minutes
-* :doc:`tutorial_10min` — Complete workflow from loading data to community detection
+* :doc:`tutorial_10min` — Comprehensive 10-minute tutorial from basics to advanced analysis
 * :doc:`common_issues` — Solutions to installation and runtime problems
 
 **Why Tutorials?**
@@ -20,13 +19,12 @@ Recommended Path
 **Complete Beginner?**
 
 1. :doc:`installation` — Set up your environment
-2. :doc:`quickstart_5min` — Your first network in 5 minutes
-3. :doc:`tutorial_10min` — Complete analysis workflow
-4. Then explore :doc:`../how-to/part_intro` for specific tasks
+2. :doc:`tutorial_10min` — Complete tutorial from basics to advanced topics
+3. Then explore :doc:`../how-to/part_intro` for specific tasks
 
 **Experienced with Networks?**
 
-1. Skim :doc:`quickstart_5min` to see py3plex syntax
+1. Skim :doc:`tutorial_10min` to see py3plex syntax and features
 2. Jump to :doc:`../how-to/part_intro` for task-oriented guides
 3. Check :doc:`../concepts/py3plex_core_model` for the data model
 

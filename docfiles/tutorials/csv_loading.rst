@@ -383,8 +383,7 @@ Next Steps
 
 After loading CSV data:
 
-* :doc:`../getting_started/quickstart_5min` - Learn basic operations
-* :doc:`../getting_started/tutorial_10min` - Perform network analysis
+* :doc:`../getting_started/tutorial_10min` - Learn basic operations and analysis
 * :doc:`../user_guide/visualization` - Create publication-quality visualizations
 * :doc:`../user_guide/community_detection` - Detect communities and clusters
 

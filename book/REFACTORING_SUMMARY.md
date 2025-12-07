@@ -173,7 +173,7 @@ Material was restructured from 85+ RST files in `docfiles/`:
 
 **Working with Py3plex:**
 - `getting_started/installation.rst` → Chapter 4
-- `getting_started/quickstart_5min.rst` → Chapter 4
+- `getting_started/tutorial_10min.rst` → Chapter 4
 - `user_guide/io_and_formats.rst` → Chapter 5
 - `io_serialization.rst` → Chapter 5
 
