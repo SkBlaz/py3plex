@@ -55,6 +55,16 @@ except ImportError:
     RICCI_AVAILABLE = False
     RicciBackendNotAvailable = None
 
+# Mapping of sparse matrix format names to conversion method names (for get_tensor)
+SPARSE_FORMAT_METHODS = {
+    'csr': 'tocsr',
+    'csc': 'tocsc',
+    'coo': 'tocoo',
+    'lil': 'tolil',
+    'dok': 'todok',
+    'bsr': 'tobsr'
+}
+
 logger = get_logger(__name__)
 try:
     import tqdm
@@ -2338,17 +2348,7 @@ class multi_layer_network:
 
         # Convert to requested format if needed
         if sparsity_type != 'bsr':
-            # Map of format names to conversion method names
-            format_methods = {
-                'csr': 'tocsr',
-                'csc': 'tocsc',
-                'coo': 'tocoo',
-                'lil': 'tolil',
-                'dok': 'todok',
-                'bsr': 'tobsr'
-            }
-            
-            method_name = format_methods.get(sparsity_type)
+            method_name = SPARSE_FORMAT_METHODS.get(sparsity_type)
             if method_name:
                 try:
                     convert_method = getattr(sparse_matrix, method_name, None)
@@ -2376,7 +2376,7 @@ class multi_layer_network:
                 import warnings
                 warnings.warn(
                     f"Unknown sparse format '{sparsity_type}'. "
-                    f"Supported formats: {', '.join(format_methods.keys())}. "
+                    f"Supported formats: {', '.join(SPARSE_FORMAT_METHODS.keys())}. "
                     f"Returning matrix in {type(sparse_matrix).__name__} format.",
                     UserWarning,
                     stacklevel=2

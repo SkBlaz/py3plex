@@ -15,11 +15,15 @@ def _holdout(ruleset, holdout_ratio=0.3, alpha=0.05):
     
     Args:
         ruleset: List of rules with p-values
-        holdout_ratio: Proportion of data to hold out for validation (default: 0.3)
+        holdout_ratio: Proportion of data to hold out for validation (default: 0.3).
+                      Must be between 0 and 1 (exclusive).
         alpha: Significance level for filtering (default: 0.05)
     
     Returns:
         List of rules that pass both discovery and holdout validation
+        
+    Raises:
+        ValueError: If holdout_ratio is not in the valid range (0, 1)
         
     Note:
         This is a conservative approach that reduces false positives
@@ -28,6 +32,12 @@ def _holdout(ruleset, holdout_ratio=0.3, alpha=0.05):
     """
     if not ruleset:
         return ruleset
+    
+    # Validate holdout_ratio
+    if not (0 < holdout_ratio < 1):
+        raise ValueError(
+            f"holdout_ratio must be between 0 and 1 (exclusive), got {holdout_ratio}"
+        )
     
     # Create a copy to avoid modifying the original
     rules = list(ruleset)
@@ -38,11 +48,10 @@ def _holdout(ruleset, holdout_ratio=0.3, alpha=0.05):
     # Calculate split point
     n_total = len(rules)
     n_holdout = max(1, int(n_total * holdout_ratio))
-    n_discovery = n_total - n_holdout
     
     # Split into discovery and holdout sets
     # Use every k-th rule for holdout to maintain representative sampling
-    k = int(1 / holdout_ratio) if holdout_ratio > 0 else n_total
+    k = max(1, int(1 / holdout_ratio))
     holdout_indices = set(list(range(0, n_total, k))[:n_holdout])
     
     discovery_rules = [r for i, r in enumerate(rules) if i not in holdout_indices]

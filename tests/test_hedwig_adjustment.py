@@ -38,11 +38,6 @@ class TestHedwigAdjustment(unittest.TestCase):
             rule.pval = pval
             rule.id = f"rule_{i}"
             self.rules.append(rule)
-
-    def _check_hedwig(self):
-        """Skip test if hedwig not available."""
-        if not self.HEDWIG_AVAILABLE:
-            self.skipTest("hedwig not available")
     def test_holdout_returns_list(self):
         """Test that _holdout returns a list."""
         result = self.adjustment._holdout(self.rules)
