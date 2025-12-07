@@ -22,6 +22,6 @@ py3plex is a Python library for analyzing and visualizing multilayer and multipl
 
 **Next steps:**
 
-* **Never used py3plex?** → Start with :doc:`../getting_started/quickstart_5min`
+* **Never used py3plex?** → Start with :doc:`../getting_started/tutorial_10min`
 * **Want to understand the theory?** → Read :doc:`../concepts/multilayer_networks_101`
 * **Need specific tasks?** → Jump to :doc:`../how-to/part_intro`

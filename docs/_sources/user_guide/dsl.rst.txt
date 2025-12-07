@@ -1865,7 +1865,7 @@ Example performance optimization::
 Further Reading
 ---------------
 
-- :doc:`../getting_started/quickstart_5min` - Network construction basics
+- :doc:`../getting_started/tutorial_10min` - Network construction basics
 - :doc:`../concepts/multilayer_networks_101` - Understanding multilayer networks
 - :doc:`../reference/algorithm_reference` - Network analysis algorithms
 - :doc:`recipes_and_workflows` - Common analysis patterns

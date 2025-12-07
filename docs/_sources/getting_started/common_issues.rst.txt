@@ -366,6 +366,5 @@ Related Pages
 -------------
 
 * :doc:`installation` - Complete installation guide
-* :doc:`quickstart_5min` - Quick introduction
-* :doc:`tutorial_10min` - Comprehensive tutorial
+* :doc:`tutorial_10min` - Comprehensive tutorial from basics to advanced topics
 * :doc:`../deployment/performance_scalability` - Performance optimization

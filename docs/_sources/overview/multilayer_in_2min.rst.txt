@@ -171,7 +171,7 @@ Stick with single-layer when:
 Next Steps
 ----------
 
-* **Try it yourself:** :doc:`../getting_started/quickstart_5min`
+* **Try it yourself:** :doc:`../getting_started/tutorial_10min`
 * **Deeper theory:** :doc:`../concepts/multilayer_networks_101`
 * **See how py3plex works:** :doc:`../concepts/py3plex_core_model`
 * **Start analyzing:** :doc:`../how-to/load_and_build_networks`
