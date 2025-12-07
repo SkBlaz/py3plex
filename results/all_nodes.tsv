@@ -1,9 +1,0 @@
-id	degree
-('Bob', 'social')	3
-('Charlie', 'social')	3
-('Diana', 'social')	3
-('Alice', 'social')	2
-('Alice', 'work')	2
-('Bob', 'work')	2
-('Frank', 'work')	2
-('Eve', 'social')	1
