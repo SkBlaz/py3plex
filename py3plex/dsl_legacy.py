@@ -741,7 +741,7 @@ def _evaluate_condition(node_or_edge: Any, condition: Dict[str, Any],
     """Evaluate a single condition against a node or edge.
     
     Args:
-        node_or_edge: Node tuple (node_id, layer) or edge tuple
+        node_or_edge: Node tuple (node_id, layer) or edge tuple ((u, layer), (v, layer), {data}?)
         condition: Condition dictionary
         network: Multilayer network object
         context: Context dictionary with computed values
@@ -754,52 +754,87 @@ def _evaluate_condition(node_or_edge: Any, condition: Dict[str, Any],
     expected_value = condition['value']
     is_negated = condition.get('negated', False)
     
-    # Extract node attributes
+    # Check if this is an edge or node
+    is_edge = False
     if isinstance(node_or_edge, tuple) and len(node_or_edge) >= 2:
-        node_id, layer = node_or_edge[0], node_or_edge[1]
-    else:
-        # For edges
-        return False
+        first_elem = node_or_edge[0]
+        second_elem = node_or_edge[1]
+        # Check if this is an edge: ((node, layer), (node, layer), {data}?)
+        if isinstance(first_elem, tuple) and isinstance(second_elem, tuple):
+            is_edge = True
     
     # Get actual value based on attribute
     actual_value = None
     
-    if attribute == 'layer':
-        actual_value = str(layer)
-    
-    elif attribute == 'degree':
-        # Get degree from NetworkX
-        if hasattr(network, 'core_network') and network.core_network:
-            actual_value = network.core_network.degree(node_or_edge)
+    if is_edge:
+        # Handle edge attributes
+        source, target = node_or_edge[0], node_or_edge[1]
+        source_layer = source[1] if isinstance(source, tuple) and len(source) >= 2 else None
+        target_layer = target[1] if isinstance(target, tuple) and len(target) >= 2 else None
+        
+        if attribute == 'source_layer':
+            actual_value = str(source_layer) if source_layer else None
+        elif attribute == 'target_layer':
+            actual_value = str(target_layer) if target_layer else None
+        elif attribute == 'layer':
+            # For intralayer edges, return the common layer
+            if source_layer == target_layer:
+                actual_value = str(source_layer)
+            else:
+                actual_value = None
+        elif attribute == 'weight':
+            # Get weight from edge data
+            if len(node_or_edge) >= 3 and isinstance(node_or_edge[2], dict):
+                actual_value = node_or_edge[2].get('weight', 1.0)
+            else:
+                actual_value = 1.0
         else:
-            actual_value = 0
-    
-    elif attribute in ['betweenness', 'betweenness_centrality']:
-        # Use cached centrality if available
-        if 'betweenness_centrality' in context:
-            actual_value = context['betweenness_centrality'].get(node_or_edge, 0)
-        else:
-            actual_value = 0
-    
-    elif attribute in ['closeness', 'closeness_centrality']:
-        if 'closeness_centrality' in context:
-            actual_value = context['closeness_centrality'].get(node_or_edge, 0)
-        else:
-            actual_value = 0
-    
-    elif attribute in ['eigenvector', 'eigenvector_centrality']:
-        if 'eigenvector_centrality' in context:
-            actual_value = context['eigenvector_centrality'].get(node_or_edge, 0)
-        else:
-            actual_value = 0
-    
+            # Try to get from edge data
+            if len(node_or_edge) >= 3 and isinstance(node_or_edge[2], dict):
+                actual_value = node_or_edge[2].get(attribute)
     else:
-        # Try to get from node attributes
-        if hasattr(network, 'core_network') and network.core_network:
-            node_data = network.core_network.nodes.get(node_or_edge, {})
-            actual_value = node_data.get(attribute)
+        # Handle node attributes
+        if isinstance(node_or_edge, tuple) and len(node_or_edge) >= 2:
+            node_id, layer = node_or_edge[0], node_or_edge[1]
         else:
-            actual_value = None
+            return False
+        
+        if attribute == 'layer':
+            actual_value = str(layer)
+        
+        elif attribute == 'degree':
+            # Get degree from NetworkX
+            if hasattr(network, 'core_network') and network.core_network:
+                actual_value = network.core_network.degree(node_or_edge)
+            else:
+                actual_value = 0
+        
+        elif attribute in ['betweenness', 'betweenness_centrality']:
+            # Use cached centrality if available
+            if 'betweenness_centrality' in context:
+                actual_value = context['betweenness_centrality'].get(node_or_edge, 0)
+            else:
+                actual_value = 0
+        
+        elif attribute in ['closeness', 'closeness_centrality']:
+            if 'closeness_centrality' in context:
+                actual_value = context['closeness_centrality'].get(node_or_edge, 0)
+            else:
+                actual_value = 0
+        
+        elif attribute in ['eigenvector', 'eigenvector_centrality']:
+            if 'eigenvector_centrality' in context:
+                actual_value = context['eigenvector_centrality'].get(node_or_edge, 0)
+            else:
+                actual_value = 0
+        
+        else:
+            # Try to get from node attributes
+            if hasattr(network, 'core_network') and network.core_network:
+                node_data = network.core_network.nodes.get(node_or_edge, {})
+                actual_value = node_data.get(attribute)
+            else:
+                actual_value = None
     
     # Evaluate comparison
     if actual_value is None:
@@ -1131,7 +1166,8 @@ def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[s
         if not hasattr(network, 'core_network') or network.core_network is None:
             all_items = []
         else:
-            all_items = list(network.get_edges())
+            # Get edges with data to access attributes like weight
+            all_items = list(network.get_edges(data=True))
     
     # Apply layer filter if specified
     if layers is not None:
@@ -1163,13 +1199,21 @@ def _execute_select_query(network: Any, query: str, tokens: List[str]) -> Dict[s
     result['count'] = len(filtered_items)
     
     # Compute measures if requested
-    if measures and target == 'nodes':
+    if measures:
         result['computed'] = {}
         for measure in measures:
             try:
-                computed_values = _compute_measure(network, measure, filtered_items)
+                # Determine if this is an edge or node measure
+                if target == 'edges':
+                    # For edge measures, use DSL v2 measure registry
+                    from py3plex.dsl.registry import measure_registry
+                    measure_fn = measure_registry.get(measure, target="edges")
+                    computed_values = measure_fn(network.core_network, filtered_items)
+                else:
+                    # For node measures, use legacy compute function
+                    computed_values = _compute_measure(network, measure, filtered_items)
                 result['computed'][measure] = computed_values
-            except DSLExecutionError as e:
+            except Exception as e:
                 logger.error(f"Error computing {measure}: {e}")
                 result['computed'][measure] = {}
     
