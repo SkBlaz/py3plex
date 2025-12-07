@@ -248,95 +248,215 @@ The ``SimulationResult`` object provides rich analysis capabilities:
         .groupby('t')['value']
         .agg(['mean', 'std'])
     )
-This chapter explores advanced DSL patterns for complex multilayer network analyses.
 
-.. admonition:: Advanced DSL Patterns
-   :class: dsl-example
+.. admonition:: Status: Dynamics DSL
+   :class: note
 
-   The DSL supports sophisticated analysis workflows:
-
-   .. code-block:: python
-
-       from py3plex.dsl import Q, L, Param
-
-       # 1. Parameterized queries for systematic analysis
-       query = (
-           Q.nodes()
-            .from_layers(L[Param.str("layer")])
-            .where(degree__gt=Param.int("threshold"))
-            .compute("betweenness_centrality")
-            .limit(Param.int("top_n"))
-       )
-
-       # Execute with different parameters
-       for layer in ["social", "work", "family"]:
-           result = query.execute(network, layer=layer, threshold=5, top_n=20)
-           result.to_pandas().to_csv(f"{layer}_hubs.csv")
-
-       # 2. Multi-layer comparative analysis
-       comparison = []
-       for layer in network.get_layers():
-           stats = (
-               Q.nodes()
-                .from_layers(L[layer])
-                .compute("degree", "betweenness_centrality", "clustering")
-                .execute(network)
-           )
-           df = stats.to_pandas()
-           comparison.append({
-               'layer': layer,
-               'nodes': stats.count,
-               'avg_degree': df['degree'].mean(),
-               'max_bc': df['betweenness_centrality'].max(),
-           })
-
-       # 3. EXPLAIN mode for optimization
-       expensive_query = Q.nodes().compute("betweenness_centrality")
-       plan = expensive_query.explain().execute(network)
-       for step in plan.steps:
-           print(f"{step.description}: {step.estimated_complexity}")
-
-   Advanced patterns enable complex research workflows!
-
-*TODO: Expand from advanced DSL examples and patterns*
+   The dynamics DSL API shown above is **experimental**. The core dynamics classes
+   (``SIRDynamics``, ``SISDynamics``, ``RandomWalkDynamics``) are stable and production-ready.
+   The builder API (``D.process()``) is under active development.
 
 Complex Query Patterns
 -----------------------
 
-Multilayer Motifs
-~~~~~~~~~~~~~~~~~
+Beyond basic filtering and computation, the DSL supports advanced analysis patterns.
 
-[Pattern detection across layers]
+Parameterized Comparative Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Multilayer Paths
-~~~~~~~~~~~~~~~~
+Systematic comparison across layers using parameterized queries:
 
-[Path queries respecting layer structure]
+.. code-block:: python
 
-Aggregations and Grouping
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+    from py3plex.dsl import Q, L, Param
 
-[Aggregate measures by layer]
+    # Define reusable parameterized query
+    hub_analysis = (
+        Q.nodes()
+         .from_layers(L[Param.str("layer")])
+         .where(degree__gt=Param.int("threshold"))
+         .compute("betweenness_centrality", "clustering")
+         .order_by("-betweenness_centrality")
+         .limit(Param.int("top_n"))
+    )
+
+    # Execute for multiple layers
+    for layer in ["social", "work", "family"]:
+        result = hub_analysis.execute(
+            network,
+            layer=layer,
+            threshold=5,
+            top_n=20
+        )
+        df = result.to_pandas()
+        df.to_csv(f"{layer}_hubs.csv")
+        print(f"{layer}: {result.count} hubs, max BC = {df['betweenness_centrality'].max():.3f}")
+
+Multi-Layer Statistical Summaries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Aggregate statistics across all layers:
+
+.. code-block:: python
+
+    # Collect statistics for each layer
+    layer_stats = []
+    for layer_name in network.get_layers():
+        result = (
+            Q.nodes()
+             .from_layers(L[layer_name])
+             .compute("degree", "betweenness_centrality", "clustering")
+             .execute(network)
+        )
+        df = result.to_pandas()
+        
+        layer_stats.append({
+            'layer': layer_name,
+            'node_count': result.count,
+            'avg_degree': df['degree'].mean(),
+            'max_betweenness': df['betweenness_centrality'].max(),
+            'avg_clustering': df['clustering'].mean(),
+        })
+    
+    # Convert to DataFrame for analysis
+    import pandas as pd
+    summary_df = pd.DataFrame(layer_stats)
+    print(summary_df)
+
+Layer Algebra for Complex Filters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Combine layers using set operations:
+
+.. code-block:: python
+
+    from py3plex.dsl import L
+    
+    # Nodes in social OR work layers
+    social_or_work = (
+        Q.nodes()
+         .from_layers(L["social"] + L["work"])
+         .compute("degree")
+         .execute(network)
+    )
+    
+    # Nodes in social BUT NOT bots
+    legitimate_social = (
+        Q.nodes()
+         .from_layers(L["social"] - L["bots"])
+         .compute("degree")
+         .execute(network)
+    )
+    
+    # Intersection of layers
+    overlap = (
+        Q.nodes()
+         .from_layers(L["layer1"] & L["layer2"])
+         .execute(network)
+    )
+
+Aggregations by Node Attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Group and aggregate by node properties:
+
+.. code-block:: python
+
+    # Compute average centrality by community
+    result = (
+        Q.nodes()
+         .compute("betweenness_centrality", "community")
+         .execute(network)
+    )
+    
+    df = result.to_pandas()
+    community_centrality = df.groupby('community')['betweenness_centrality'].agg(['mean', 'std', 'max'])
+    print(community_centrality)
 
 Result Conversion
 -----------------
 
+The DSL provides flexible export capabilities for different analysis workflows.
+
 To Pandas DataFrames
 ~~~~~~~~~~~~~~~~~~~~
 
+Convert query results to pandas for statistical analysis:
+
 .. code-block:: python
 
+    # Execute query
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree", "betweenness_centrality", "clustering")
+         .execute(network)
+    )
+    
+    # Convert to DataFrame
     df = result.to_pandas()
+    
+    # Standard pandas operations
+    print(df.describe())
+    print(df[df['degree'] > 10])
+    df.to_csv("results.csv", index=False)
+
+**DataFrame structure:**
+
+* Each row is a node
+* Columns include: node_id, layer, computed measures
 
 To NetworkX
 ~~~~~~~~~~~
 
-[Export query results as NetworkX graphs]
+Export filtered nodes as a NetworkX subgraph:
 
-To Arrow/Parquet
-~~~~~~~~~~~~~~~~
+.. code-block:: python
 
-[High-performance export]
+    # Query for high-degree nodes
+    result = (
+        Q.nodes()
+         .where(degree__gt=10)
+         .execute(network)
+    )
+    
+    # Extract as NetworkX subgraph
+    node_ids = list(result.node_ids)
+    subgraph = network.core_network.subgraph(node_ids)
+    
+    # Use NetworkX algorithms
+    import networkx as nx
+    communities = nx.community.louvain_communities(subgraph)
+
+To CSV/JSON
+~~~~~~~~~~~
+
+Direct export without intermediate DataFrame:
+
+.. code-block:: python
+
+    # Export to CSV
+    (
+        Q.nodes()
+         .from_layers(L["social"])
+         .compute("degree", "betweenness_centrality")
+         .export_csv("social_centrality.csv")
+         .execute(network)
+    )
+    
+    # Export to JSON
+    (
+        Q.nodes()
+         .compute("degree")
+         .export_json("node_degrees.json", orient="records")
+         .execute(network)
+    )
+
+**Supported formats:**
+
+* CSV (with custom delimiter)
+* JSON (various orientations)
+* pandas DataFrame (in-memory)
 
 Workflow Integration
 --------------------
@@ -344,17 +464,93 @@ Workflow Integration
 Pipeline Composition
 ~~~~~~~~~~~~~~~~~~~~
 
-[Chain multiple queries]
+Chain multiple queries in analysis pipelines:
+
+.. code-block:: python
+
+    # Step 1: Find high-degree nodes
+    hubs = (
+        Q.nodes()
+         .where(degree__gt=20)
+         .execute(network)
+    )
+    
+    # Step 2: Compute centrality only for hubs
+    hub_centrality = (
+        Q.nodes()
+         .where(node_id__in=list(hubs.node_ids))
+         .compute("betweenness_centrality", "closeness_centrality")
+         .execute(network)
+    )
+    
+    # Step 3: Identify super-hubs
+    super_hubs = (
+        Q.nodes()
+         .where(
+             node_id__in=list(hubs.node_ids),
+             betweenness_centrality__gt=0.1
+         )
+         .execute(network)
+    )
+    
+    print(f"Hubs: {hubs.count}, Super-hubs: {super_hubs.count}")
 
 Combining with sklearn
 ~~~~~~~~~~~~~~~~~~~~~~
 
-[Integration with machine learning pipelines]
+Integrate DSL results with machine learning pipelines:
+
+.. code-block:: python
+
+    from sklearn.cluster import KMeans
+    from sklearn.preprocessing import StandardScaler
+    
+    # Extract features using DSL
+    result = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality", "clustering")
+         .execute(network)
+    )
+    
+    df = result.to_pandas()
+    
+    # Prepare features
+    features = df[['degree', 'betweenness_centrality', 'clustering']].values
+    scaler = StandardScaler()
+    features_scaled = scaler.fit_transform(features)
+    
+    # Cluster nodes
+    kmeans = KMeans(n_clusters=5, random_state=42)
+    df['cluster'] = kmeans.fit_predict(features_scaled)
+    
+    # Analyze clusters
+    print(df.groupby('cluster')[['degree', 'betweenness_centrality']].mean())
 
 Custom Measures
 ~~~~~~~~~~~~~~~
 
-[Extending the DSL with custom functions]
+While the DSL provides built-in measures, you can compute custom measures using pandas:
+
+.. code-block:: python
+
+    # Get base measures
+    result = (
+        Q.nodes()
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
+    )
+    
+    df = result.to_pandas()
+    
+    # Compute custom measure
+    df['influence_score'] = (
+        0.6 * df['degree'] / df['degree'].max() +
+        0.4 * df['betweenness_centrality'] / df['betweenness_centrality'].max()
+    )
+    
+    # Find top nodes by custom measure
+    top_influential = df.nlargest(10, 'influence_score')
+    print(top_influential[['node_id', 'influence_score']])
 
 Performance Tips
 ----------------
